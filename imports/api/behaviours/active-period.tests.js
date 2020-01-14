@@ -5,6 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
+import { Factory } from 'meteor/dburles:factory';
 
 import { freshFixture } from '/imports/api/test-utils.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -32,7 +33,7 @@ if (Meteor.isServer) {
     const createMembership = function (beginDate, endDate) {
       const newMembership = {
         communityId: Fixture.demoCommunityId,
-        person: { userId: Fixture.demoUserId },
+        userId: Fixture.demoUserId,
         role: 'manager',
       };
       if (beginDate || endDate) newMembership.activeTime = {};
@@ -137,11 +138,14 @@ if (Meteor.isServer) {
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, false);
 
+      done();
+    });
+
+    it('doesn\'t allow changing non active-period fields', function (done) {
       // it('doesnt update active value, when nothing relevant is touched', function (done) {
-      Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
-        { _id: testMembershipId, modifier: { $set: { accepted: true } } });
-      testMembership = Memberships.findOne(testMembershipId);
-      chai.assert.equal(testMembership.active, false);
+      chai.assert.throws(() =>
+        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId }, { _id: testMembershipId, modifier: { $set: { accepted: true } } })
+      );
 
       done();
     });

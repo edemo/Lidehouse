@@ -29,7 +29,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Partners, _id);
-//    checkModifier(doc, modifier, Partners.modifiableFields);
+    checkModifier(doc, modifier, Partners.nonModifiableFields, true);
     checkPermissions(this.userId, 'partners.update', doc);
 
     const result = Partners.update({ _id }, modifier);

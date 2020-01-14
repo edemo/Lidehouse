@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
+import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
 import { MoneyAccounts } from './money-accounts.js';
 
 export const insert = new ValidatedMethod({

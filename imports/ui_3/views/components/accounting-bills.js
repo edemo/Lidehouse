@@ -123,13 +123,13 @@ Template.Accounting_bills.viewmodel({
   },
   partnersFilterSelector() {
     const selector = { communityId: this.communityId() };
-    selector.relation = this.activePartnerRelation() === 'parcel' ? undefined : this.activePartnerRelation();
+    selector.relation = this.activePartnerRelation();
     if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
     return selector;
   },
   partnersTableDataFn() {
     const self = this;
-    return () => Partners.relCollection(this.activePartnerRelation()).find(self.partnersFilterSelector()).fetch();
+    return () => Partners.find(self.partnersFilterSelector()).fetch();
   },
   partnersOptionsFn() {
     return () => Object.create({

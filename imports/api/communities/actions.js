@@ -21,7 +21,7 @@ Communities.actions = {
         id: 'af.community.insert',
         collection: Communities,
         type: 'method',
-        meteormethod: 'communities.create',
+        meteormethod: 'communities.insert',
       });
     },
   },

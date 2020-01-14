@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Fraction } from 'fractional';
+import { _ } from 'meteor/jquery';
 
 import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
@@ -16,6 +17,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from './parcels.js';
 import './methods.js';
+import { Partners } from '../partners/partners.js';
 
 Parcels.actions = {
   new: {
@@ -60,12 +62,12 @@ Parcels.actions = {
         const representor = Memberships.findOneActive({ parcelId: doc._id, 'ownership.representor': true });
         if (representor) {
           if (!representor.accepted) {
-            if (!representor.personId) colorClass = 'warning';
+            if (!representor.userId) colorClass = 'warning';
             else colorClass = 'info';
           }
         } else {  // no representor
           if (Memberships.findOneActive({ parcelId: doc._id, accepted: false })) {
-            if (Memberships.findOneActive({ parcelId: doc._id, personId: { $exists: false } })) colorClass = 'warning';
+            if (Memberships.findOneActive({ parcelId: doc._id, userId: { $exists: false } })) colorClass = 'warning';
             else colorClass = 'info';
           }
         }
@@ -164,7 +166,7 @@ function onJoinParcelInsertSuccess(parcelId) {
   const communityId = FlowRouter.current().params._cid;
   const communityName = Communities.findOne(communityId).name;
   Memberships.methods.insert.call({
-    person: { userId: Meteor.userId() },
+    userId: Meteor.userId(),
     communityId,
     approved: false,  // any user can submit not-yet-approved memberships
     role: 'owner',

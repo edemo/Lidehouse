@@ -258,7 +258,7 @@ FlowRouter.route('/contracts', {
 CommunityRelatedRoutes.push('Contracts');
 
 FlowRouter.route('/parcels-finances', {
-  name: 'Parcel finances',
+  name: 'Parcels finances',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Parcels_finances' });
   },
@@ -266,7 +266,7 @@ FlowRouter.route('/parcels-finances', {
     return __(FlowRouter.current().route.name);
   },
 });
-CommunityRelatedRoutes.push('Parcel finances');
+CommunityRelatedRoutes.push('Parcels finances');
 
 FlowRouter.route('/community-finances', {
   name: 'Community finances',

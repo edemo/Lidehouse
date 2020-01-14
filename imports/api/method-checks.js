@@ -10,7 +10,7 @@ export function checkConstraint(predicate, errorMessage) {
   }
 }
 
-export function checkLoggedIn(userId) {
+export function checkRegisteredUser(userId) {
   if (!userId) {
     throw new Meteor.Error('err_notLoggedIn',
       'Only logged in users can perform this activity.');

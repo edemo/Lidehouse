@@ -18,11 +18,11 @@ export const Render = {
   formatNumber: $.fn.dataTable.render.number(' ', ',', 0),  // numeral no good here, it renders a string, so sorting not working correctly on this column afterwards
   // https://datatables.net/manual/data/renderers#Number-helper
   formatDate(cellData, renderType, currentRow) {
-    if (!cellData) return '---';
+    if (!cellData) return __('never');
     return moment(cellData).format('L');
   },
   formatTime(cellData, renderType, currentRow) {
-    if (!cellData) return '---';
+    if (!cellData) return __('never');
     return moment(cellData).format('L LT');
   },
   checkmarkBoolean(cellData, renderType, currentRow) {
@@ -38,7 +38,7 @@ export const Render = {
     occupants.forEach((m) => {
       const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
       const occupancyDetail = m.ownership ? '(' + m.ownership.share.toStringLong() + ')' : '';
-      result += `${m.Person().displayName()} ${occupancyDetail} ${repBadge}<br>`;
+      result += `${m.person().displayName()} ${occupancyDetail} ${repBadge}<br>`;
     });
     return result;
   },

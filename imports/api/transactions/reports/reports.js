@@ -99,7 +99,7 @@ export const Reports = {
       name: 'Albetéteim', label: 'Összes albetét',
       children: [],
     };
-    Memberships.findActive({ communityId, approved: true, role: 'owner', personId: Meteor.userId() })
+    Memberships.findActive({ communityId, approved: true, role: 'owner', userId: Meteor.userId() })
       .map(m => myParcels.children.push({ name: m.parcel().ref /* + '. ' + __('parcel')*/ }));
 
     report.addFilter({ communityId });

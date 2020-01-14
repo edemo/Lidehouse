@@ -49,7 +49,7 @@ ParcelBillings.schema = new SimpleSchema({
 const chooseParcelBilling = {
   options() {
     const communityId = Session.get('activeCommunityId');
-    const activeParcelBillingId = Session.get('activeParcelBillingId')
+    const activeParcelBillingId = Session.get('activeParcelBillingId');
     const parcelBillings = activeParcelBillingId
       ? ParcelBillings.find(activeParcelBillingId)
       : ParcelBillings.findActive({ communityId });

@@ -82,7 +82,7 @@ Template.Parcels_finances.viewmodel({
       const communityId = self.communityId();
       let parcels = Tracker.nonreactive(() => Parcels.find({ communityId, approved: true }).fetch());
       if (!self.showAllParcels()) {
-        const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
+        const myParcelIds = Memberships.find({ communityId, !!!: Meteor.userId() }).map(m => m.parcelId);
         parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
       }
       return parcels;

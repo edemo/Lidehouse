@@ -239,53 +239,8 @@
     "role": {
       "label": "Tisztség"
     },
-    "person": {
-      "natural": "magánszemély",
-      "legal": "jogi személyiség",
-      "label": "Személy",
-      "userId": {
-        "label": "Kapcsolt felhasználó (ha már regisztrált)"
-      },
-      "idCard": {
-        "label" : "Személy hivatalos adatai",
-        "type": {
-          "label": "Személy típusa"
-        },
-        "name": {
-          "label": "Név",
-          "placeholder": "(pl. Kovács János vagy Kulcslyuk Kft.)"
-        },
-        "address": {
-          "label": "Bejelentett cím",
-          "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
-        },
-        "identifier": {
-          "label": "Szig. szám ill. cégjegyzékszám",
-          "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
-        },
-        "dob": {
-          "label": "Születési ill. alapítási idő"
-        },
-        "mothersName": {
-          "label": "Anyja leánykori neve",
-          "placeholder": "(csak magánszemély esetén)"
-        }
-      },
-      "contact": {
-        "label" : "Kapcsolattartási adatok",
-        "address": {
-          "label": "Levelezési cím",
-          "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
-        },
-        "phone": {
-          "label": "Telefonszám",
-          "placeholder": "(pl. +36 30 123 4567)"
-        },
-        "email": {
-          "label": "Email cím",
-          "placeholder": "(pl. tibi45@dmail.com)"
-        }
-      }
+    "partnerId": {
+      "label": "Személy"
     },
     "ownership": {
       "label": "Tulajdon",
@@ -305,11 +260,11 @@
     }
   },
   "schemaDelegations": {
-    "sourcePersonId": {
+    "sourceId": {
       "label": "Meghatalmazó",
       "placeholder": "(pl. Miki75)"
     },
-    "targetPersonId": {
+    "targetId": {
       "label": "Meghatalmazott",
       "placeholder": "(pl. Miki75)"
     },
@@ -762,18 +717,44 @@
       "customer": "Vevő",
       "parcel": "Albetét tulajdonos"      
     },
-    "name": {
-      "label": "Partner neve",
-      "placeholder": "(pl Kulcslyuk kft)"
+    "userId": {
+      "label": "Kapcsolt felhasználó (ha már regisztrált)"
     },
-    "bankAccountNumber": { 
-      "label": "Bankszámlaszám",
-      "placeholder": "(pl 12345678-00000000-00000078)"
-    },
-    "taxNumber": { 
-      "label": "Adószám",
-      "placeholder": "(pl 123456-2-42)",
-      "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
+    "idCard": {
+      "label" : "Személy hivatalos adatai",
+      "type": {
+        "label": "Személy típusa",
+        "natural": "magánszemély",
+        "legal": "jogi személyiség"
+      },
+      "name": {
+        "label": "Név",
+        "placeholder": "(pl. Kovács János vagy Kulcslyuk Kft.)"
+      },
+      "address": {
+        "label": "Bejelentett cím",
+        "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
+      },
+      "identifier": {
+        "label": "Szig. szám ill. cégjegyzékszám",
+        "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
+      },
+      "dob": {
+        "label": "Születési ill. alapítási idő"
+      },
+      "mothersName": {
+        "label": "Anyja leánykori neve",
+        "placeholder": "(csak magánszemély esetén)"
+      },
+      "bankAccountNumber": { 
+        "label": "Bankszámlaszám",
+        "placeholder": "(pl 12345678-00000000-00000078)"
+      },
+      "taxNumber": { 
+        "label": "Adószám",
+        "placeholder": "(pl 123456-2-42)",
+        "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
+      }
     },
     "contact": {
       "label" : "Kapcsolattartási adatok",
@@ -889,6 +870,24 @@
           "label": "Pénz számla"
         }
       }
+    }
+  },
+  "schemaPayments": {
+    "bills": {
+      "label": "Számlák kifizetve ",
+      "$": {
+        "id": {
+          "label": "Számla"
+        },
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "(pl. 14560)"
+        }
+      }
+    },
+    "outstanding": {
+      "label": "Fennmaradó összeg",
+      "placeholder": "(pl. 14560)"
     }
   },
   "schemaReconiliation": {

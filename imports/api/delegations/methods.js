@@ -5,11 +5,12 @@ import { _ } from 'meteor/underscore';
 
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { delegationConfirmationEmail } from '/imports/email/delegation-confirmation.js';
+import { Partners } from '/imports/api/partners/partners.js';
 import { Delegations } from './delegations.js';
 
 // User can only delegate to those who allow incoming delegations
-function checkTargetUserAllowsDelegatingTo(targetPersonId, doc) {
-  const targetUser = Meteor.users.findOne(targetPersonId);
+function checkTargetUserAllowsDelegatingTo(targetId, doc) {
+  const targetUser = Partners.findOne(targetId).user();
   if (!targetUser) return;  // If user is not a registered user, then he allows delegation. His signature will be on the paper delegation form.
   if (!targetUser.settings.delegatee) {
     throw new Meteor.Error('err_otherPartyNotAllowed', 'Other party not allowed this activity',
@@ -22,11 +23,12 @@ export const insert = new ValidatedMethod({
   validate: Delegations.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    if (this.userId !== doc.sourcePersonId) {
+    doc = Delegations._transform(doc);
+    if (this.userId !== doc.sourceUser()._id) {
       // Normal user can only delegate his own votes, but special permission allows for others' as well
       checkPermissions(this.userId, 'delegations.forOthers', doc);
     }
-    checkTargetUserAllowsDelegatingTo(doc.targetPersonId, doc);
+    checkTargetUserAllowsDelegatingTo(doc.targetId, doc);
     const delegationId = Delegations.insert(doc);
     const delegation = Delegations.findOne(delegationId); // Refetch needed for timestamps and helper methods
 
@@ -48,12 +50,12 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Delegations, _id);
-    checkModifier(doc, modifier, ['targetPersonId', 'scope', 'scopeObjectId']);
-    if (this.userId !== doc.sourcePersonId) {
+    checkModifier(doc, modifier, ['targetId', 'scope', 'scopeObjectId']);
+    if (this.userId !== doc.sourceUser()._id) {
       // Normal user can only delegate his own votes, but special permission allows for others' as well
       checkPermissions(this.userId, 'delegations.forOthers', doc);
     }
-    checkTargetUserAllowsDelegatingTo(modifier.$set.targetPersonId, doc);
+    checkTargetUserAllowsDelegatingTo(modifier.$set.targetId, doc);
 
     Delegations.update({ _id }, modifier);
 
@@ -77,7 +79,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Delegations, _id);
-    if (this.userId !== doc.sourcePersonId && this.userId !== doc.targetPersonId) {
+    if (this.userId !== doc.sourceUser()._id && this.userId !== doc.targetUser()._id) {
       // User can only remove delegations that delegetes from him, or delegates to him, unless special permissions
       checkPermissions(this.userId, 'delegations.forOthers', doc);
     }
@@ -99,11 +101,12 @@ export const allow = new ValidatedMethod({
 
   run({ value }) {
     const userId = this.userId;
+    const user = Meteor.users.findOne(userId);
     if (value === false) {
       let affectedVotings = [];
-      const affectedDelegations = Delegations.find({ targetPersonId: userId }).fetch();
+      const affectedDelegations = Delegations.find({ targetId: { $in: user.partnerIds() } }).fetch();
       affectedDelegations.forEach(delegation => affectedVotings = _.uniq(_.union(affectedVotings, delegation.getAffectedVotings().fetch()), v => v._id));
-      Delegations.remove({ targetPersonId: userId });
+      Delegations.remove({ targetId: { $in: user.partnerIds() } });
       if (Meteor.isServer) {
         affectedVotings.forEach(voting => voting.voteEvaluate(false));
         affectedDelegations.forEach(delegation => delegationConfirmationEmail(delegation, 'remove'));

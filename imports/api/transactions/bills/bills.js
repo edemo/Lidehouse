@@ -16,11 +16,24 @@ import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer, chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const Bills = {};
+
+export const choosePayment = {
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    const payments = Transactions.find({ communityId, category: 'payment', reconciledId: { $exists: false } });
+    const options = payments.map(function option(payment) {
+      return { label: `${payment.partner()} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note || ''}`, value: payment._id };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};
 
 export const chooseConteerAccount = {
   options() {
@@ -62,16 +75,20 @@ Bills.receiptSchema = new SimpleSchema({
   'lines.$': { type: Bills.lineSchema },
 });
 
+Bills.paymentSchema = new SimpleSchema({
+  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePayment },
+  amount: { type: Number, decimal: true },
+//  valueDate: { type: Date },
+});
+
 Bills.extensionSchema = new SimpleSchema([
   Transactions.partnerSchema,
   Bills.receiptSchema, {
     issueDate: { type: Date },
     deliveryDate: { type: Date },
     dueDate: { type: Date },
-    payments: { type: Array, defaultValue: [] },
-    'payments.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-    // cached value, so client can ask to sort on outstanding amount:
-    outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+    payments: { type: [Bills.paymentSchema], defaultValue: [] },
+    outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value
   //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
   },
 ]);
@@ -87,37 +104,37 @@ Meteor.startup(function indexBills() {
 
 Transactions.categoryHelpers('bill', {
   getPayments() {
-    return (this.payments || []).map(id => Transactions.findOne(id));
+    return (this.payments || []).map(payment => Transactions.findOne(payment.id));
   },
   paymentCount() {
     return this.payments.length;
   },
   makeJournalEntries(accountingMethod) {
-    const self = this;
 //    const communityId = this.communityId;
 //    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });
 //    this.valueDate = this.issueDate;
-    function copyLinesInto(txSide) {
-      self.lines.forEach(line => {
-        if (!line) return; // can be null, when a line is deleted from the array
-        txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer });
-      });
-    }
     if (accountingMethod === 'accrual') {
-      this[this.conteerSide()] = []; copyLinesInto(this[this.conteerSide()]);
-      this[this.relationSide()] = [{ account: this.relationAccount() }];
-    } // else we have no accounting to do
+      this.debit = [];
+      this.credit = [];
+      this.lines.forEach(line => {
+        if (!line) return; // can be null, when a line is deleted from the array
+        this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer });
+        let contraAccount = this.relationAccount();
+        if (this.relation === 'parcel') contraAccount += ParcelBillings.findOne(line.billingId).payinType;
+        this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer });
+      });
+    } // else if (accountingMethod === 'cash') >> we have no accounting to do
     return { debit: this.debit, credit: this.credit };
   },
   autofillOutstanding() {
     let paid = 0;
-    this.getPayments().forEach(p => paid += p.amount);
+    this.payments.forEach(p => paid += p.amount);
     this.outstanding = this.amount - paid;
   },
   updateOutstandings(directionSign) {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a bill without a partner');
-    Partners.relCollection(this.relation).update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } }, { selector: { role: 'owner' } });
+    Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
     if (this.relation === 'parcel') {
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array

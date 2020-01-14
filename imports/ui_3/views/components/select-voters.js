@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Session } from 'meteor/session';
-import { Person, choosePerson } from '/imports/api/users/person.js';
+import { choosePerson } from '/imports/api/partners/partners.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';

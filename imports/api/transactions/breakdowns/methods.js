@@ -43,7 +43,7 @@ export const clone = new ValidatedMethod({
 
   run({ name, communityId }) {
     const doc = checkExists(Breakdowns, { communityId: null, name });
-    checkNotExists(Breakdowns, { communityId, name });
+//    checkNotExists(Breakdowns, { communityId, name });
     checkPermissions(this.userId, 'breakdowns.update', { communityId });
 
     return Breakdowns.clone(name, communityId);

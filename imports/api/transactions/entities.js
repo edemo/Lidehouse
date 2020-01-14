@@ -1,4 +1,5 @@
 import { Transactions } from "./transactions";
+import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
 
 Transactions.entities = {
@@ -11,7 +12,8 @@ Transactions.entities = {
   },
   payment: {
     name: 'payment',
-    fields: ['amount', 'valueDate', 'payAccount'],
+    fields: ['amount', 'valueDate', 'payAccount', 'bills'],
+    omitFields: () => (Session.get('modalContext').billId ? ['bills'] : undefined),
   },
   remission: {
     name: 'remission',
@@ -19,7 +21,7 @@ Transactions.entities = {
   },
   barter: {
     name: 'barter',
-    omitFields: ['debit', 'credit'],
+    omitFields: () => ['debit', 'credit'],
   },
   receipt: {
     name: 'receipt',

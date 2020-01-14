@@ -16,18 +16,21 @@ export const castVote = new ValidatedMethod({
     castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
     'castedVote.$': { type: Number },
     voters: { type: Array, optional: true },
-    'voters.$': { type: String /* personId = userId or IdCard identifier */ },
+    'voters.$': { type: String, regEx: SimpleSchema.RegEx.Id }, // partnerId
   }).validator({ clean: true }),  // we 'clean' here to convert the vote strings (eg "1") into numbers (1)
 
   run({ topicId, castedVote, voters }) {
     const topic = checkExists(Topics, topicId);
+    const user = Meteor.users.findOne(this.userId);
     checkNeededStatus('opened', topic);
     let _voters = voters;
     if (_voters) {
       checkPermissions(this.userId, 'vote.castForOthers', topic);
     } else {
       checkPermissions(this.userId, 'vote.cast', topic);
-      _voters = [this.userId];
+      const voterId = user.partnerId(topic.communityId);
+      debugAssert(voterId);
+      _voters = [voterId];
     }
 
     const topicModifier = {};

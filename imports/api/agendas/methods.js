@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
-import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
+import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
 
 export const insert = new ValidatedMethod({
   name: 'agendas.insert',

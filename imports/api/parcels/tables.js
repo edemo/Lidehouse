@@ -43,9 +43,9 @@ export function parcelFinancesColumns() {
 
 export function highlightMyRow(row, data, index) {
   const parcelId = data._id;
-  const leadParcelId = Parcels.findOne(data._id).leadParcelId();
-  const isMine = Memberships.findOne({ parcelId, personId: Meteor.userId() }) ||
-    Memberships.findOne({ parcelId: leadParcelId, personId: Meteor.userId() });
+  const leadParcelId = Parcels.findOne(parcelId).leadParcelId();
+  const isMine = Memberships.findOne({ parcelId, userId: Meteor.userId() }) ||
+    Memberships.findOne({ parcelId: leadParcelId, userId: Meteor.userId() });
   if (isMine) {
     $(row).addClass('tr-bold');
   }

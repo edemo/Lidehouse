@@ -238,53 +238,8 @@
     "role": {
       "label": "Role"
     },
-    "person": {
-      "natural": "natural person",
-      "legal": "legal entity",
-      "label": "Person",
-      "userId": {
-        "label": "Linked user account (if already registered)"
-      },
-      "idCard": {
-        "label" : "Person's official data",
-        "type": {
-          "label": "Person type"
-        },
-        "name": {
-          "label": "Name",
-          "placeholder": "(eg. John Smith or ACME Inc.)"
-        },
-        "address": {
-          "label": "Official address",
-          "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
-        },
-        "identifier": {
-          "label": "Official identifier",
-          "placeholder": "(id card number or company registration number)"
-        },
-        "dob": {
-          "label": "Date of birth or formation"
-        },
-        "mothersName": {
-          "label": "Mother's maiden name",
-          "placeholder": "(only for natural person)"
-        }
-      },
-      "contact": {
-        "label" : "Person's contact",
-        "address": {
-          "label": "Mailing address",
-          "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
-        },
-        "phone": {
-          "label": "Phone number",
-          "placeholder": "(pl. +36 30 123 4567)"
-        },
-        "email": {
-          "label": "Email address",
-          "placeholder": "(eg. jsmith45@dmail.com)"
-        }
-      }
+    "partnerId": {
+      "label": "Person"
     },
     "ownership": {
       "label": "Owner",
@@ -304,11 +259,11 @@
     }
   },
   "schemaDelegations": {
-    "sourcePersonId": {
+    "sourceId": {
       "label": "Delegator",
       "placeholder": "(eg. Mike75)"
     },
-    "targetPersonId": {
+    "targetId": {
       "label": "Delegatee",
       "placeholder": "(eg. Mike75)"
     },
@@ -756,18 +711,44 @@
       "customer": "Customer",
       "parcel": "Parcel owner"      
     },
-    "name": {
-      "label": "Partner name",
-      "placeholder": "(eg. Super-Clean Inc.)"
+    "userId": {
+      "label": "Linked user account (if already registered)"
     },
-    "bankAccountNumber": { 
-      "label": "Bank account number",
-      "placeholder": "(eg. 12345678-00000000-00000078)"
-    },
-    "taxNumber": { 
-      "label": "Tax number",
-      "placeholder": "(eg. international VAT number)",
-      "help": "Not mandatory, but you can set this, if you'd like it to appear on invoices and bills."
+    "idCard": {
+      "label" : "Person's official data",
+      "type": {
+        "label": "Person type",
+        "natural": "natural person",
+        "legal": "legal entity"
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "(eg. John Smith or ACME Inc.)"
+      },
+      "address": {
+        "label": "Official address",
+        "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
+      },
+      "identifier": {
+        "label": "Official identifier",
+        "placeholder": "(id card number or company registration number)"
+      },
+      "dob": {
+        "label": "Date of birth or formation"
+      },
+      "mothersName": {
+        "label": "Mother's maiden name",
+        "placeholder": "(only for natural person)"
+      },
+      "bankAccountNumber": { 
+        "label": "Bank account number",
+        "placeholder": "(eg. 12345678-00000000-00000078)"
+      },
+      "taxNumber": { 
+        "label": "Tax number",
+        "placeholder": "(eg. international VAT number)",
+        "help": "Not mandatory, but you can set this, if you'd like it to appear on invoices and bills."
+      }
     },
     "contact": {
       "label" : "Person's contact",
@@ -882,6 +863,24 @@
           "label": "Money account"
         }
       }
+    }
+  },
+  "schemaPayments": {
+    "bills": {
+      "label": "Paid bills",
+      "$": {
+        "id": {
+          "label": "Bill"
+        },
+        "amount": {
+          "label": "Amount",
+          "placeholder": "(eg. 14560)"
+        }
+      }
+    },
+    "outstanding": {
+      "label": "Outstanding amount",
+      "placeholder": "(eg. 14560)"
     }
   },
   "schemaReconiliation": {

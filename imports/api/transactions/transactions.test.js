@@ -23,7 +23,6 @@ if (Meteor.isServer) {
     after(function () {
     });
 
-
     describe('Bills lifecycle with accrual method', function () {
       let billId;
       let bill;
@@ -59,7 +58,7 @@ if (Meteor.isServer) {
 
       it('Can not registerPayment without accounts', function () {
         chai.assert.throws(() => {
-          FixtureA.builder.create('payment', { billId, amount: 300, valueDate: Clock.currentTime() });
+          FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 300 }], amount: 300, valueDate: Clock.currentTime() });
         }, 'Bill has to be conteered first');
       });
 
@@ -73,19 +72,19 @@ if (Meteor.isServer) {
         chai.assert.equal(tx.category, 'bill');
         chai.assert.equal(tx.amount, 300);
         chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '85', localizer: '@' }]);
-        chai.assert.deepEqual(tx.credit, [{ account: '46' }]);
+        chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '46', localizer: '@' }]);
       });
 
       it('Can register Payments', function () {
         const bankAccount = '31';
-        const paymentId1 = FixtureA.builder.create('payment', { billId, amount: 100, valueDate: Clock.currentTime(), payAccount: bankAccount });
+        const paymentId1 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.outstanding, 200);
         chai.assert.equal(bill.partner().outstanding, 200);
 
-        const paymentId2 = FixtureA.builder.create('payment', { billId, amount: 200, valueDate: Clock.currentTime(), payAccount: bankAccount });
+        const paymentId2 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 200 }], amount: 200, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 2);
@@ -108,14 +107,14 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId1 });
         tx1 = Transactions.findOne(paymentId1);
         chai.assert.isTrue(tx1.isPosted());
-        chai.assert.deepEqual(tx1.debit, [{ account: '46' }]);
-        chai.assert.deepEqual(tx1.credit, [{ account: bankAccount }]);
+        chai.assert.deepEqual(tx1.debit, [{ amount: 100, account: '46', localizer: '@' }]);
+        chai.assert.deepEqual(tx1.credit, [{ amount: 100, account: bankAccount, localizer: '@' }]);
 
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
         tx2 = Transactions.findOne(paymentId2);
         chai.assert.isTrue(tx2.isPosted());
-        chai.assert.deepEqual(tx2.debit, [{ account: '46' }]);
-        chai.assert.deepEqual(tx2.credit, [{ account: bankAccount }]);
+        chai.assert.deepEqual(tx2.debit, [{ amount: 200, account: '46', localizer: '@' }]);
+        chai.assert.deepEqual(tx2.credit, [{ amount: 200, account: bankAccount, localizer: '@' }]);
       });
     });
 
@@ -152,7 +151,7 @@ if (Meteor.isServer) {
       });
 
       it('Can pay bill by registering a payment tx - later a statementEntry will be matched to it', function () {
-        FixtureA.builder.create('payment', { billId, amount: 100, valueDate: Clock.currentDate(), payAccount: bankAccount });
+        FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, valueDate: Clock.currentDate(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 1);
@@ -169,7 +168,7 @@ if (Meteor.isServer) {
           amount: -100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongRelation, txId: bill.payments[0] });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongRelation, txId: bill.payments[0].id });
         }, 'err_notAllowed');
 
         const entryIdWrongAmount = FixtureA.builder.create('statementEntry', {
@@ -179,7 +178,7 @@ if (Meteor.isServer) {
           amount: 100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAmount, txId: bill.payments[0] });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAmount, txId: bill.payments[0].id });
         }, 'err_notAllowed');
 
         const entryIdWrongDate = FixtureA.builder.create('statementEntry', {
@@ -189,7 +188,7 @@ if (Meteor.isServer) {
           amount: -100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongDate, txId: bill.payments[0] });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongDate, txId: bill.payments[0].id });
         }, 'err_notAllowed');
       });
 
@@ -200,7 +199,7 @@ if (Meteor.isServer) {
           name: 'Supplier Inc',
           amount: -100,
         });
-        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, txId: bill.payments[0] });
+        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, txId: bill.payments[0].id });
 
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);

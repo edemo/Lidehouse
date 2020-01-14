@@ -6,7 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, releaseAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
@@ -41,6 +41,7 @@ export const apply = new ValidatedMethod({
 //        if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
         const parcels = parcelBilling.parcels(localizer);
         parcels.forEach((parcel) => {
+          releaseAssert(parcel, 'Could not find parcel - Please check if parcel ref matches the building+floor+door exactly');
           const line = {
             billingId: parcelBilling._id,
             period: billingPeriod.label,
@@ -84,7 +85,7 @@ export const apply = new ValidatedMethod({
           line.account = Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.payinType;
           line.localizer = Localizer.parcelRef2code(parcel.ref);
           line.title = `${parcelBilling.title}`;
-
+    console.log('payer', parcel.leadParcel().payer());
           // Creating the bill - adding line to the bill
           const leadParcelId = parcel.leadParcelId();
           bills[leadParcelId] = bills[leadParcelId] || {
@@ -93,13 +94,14 @@ export const apply = new ValidatedMethod({
             relation: 'parcel',
             defId: Txdefs.findOne({ communityId, category: 'bill', 'data.relation': 'parcel' })._id,
   //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
-            partnerId: parcel.leadParcel().payer()._id,
+            partnerId: parcel.leadParcel().payer().partnerId,
             valueDate: Clock.currentDate(),
             issueDate: Clock.currentDate(),
             deliveryDate: date,
             dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
             lines: [],
           };
+          console.log('new bill', bills[leadParcelId]);
           bills[leadParcelId].lines.push(line);
 
           // Updating the meter readings

@@ -58,12 +58,12 @@ Template.registerHelper('currentDate', function currentDate() {
 });
 
 Template.registerHelper('displayTime', function displayTime(time) {
-  if (!time) return '';
+  if (!time) return __('never');
   return moment(time).format('L LT');
 });
 
 Template.registerHelper('displayDate', function displayDate(time) {
-  if (!time) return '';
+  if (!time) return __('never');
   return moment(time).format('L');
 });
 

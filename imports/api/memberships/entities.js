@@ -8,8 +8,8 @@ Memberships.entities = {
   roleship: {
     name: 'roleship',
     schema: Memberships.simpleSchema({ role: 'manager' }),
-    inputFields: ['role', 'person'],
-    modifiableFields: ['person'],
+    inputFields: ['role', 'partnerId'],
+    modifiableFields: ['role', 'partnerId'],
     implicitFields: {
       communityId: getActiveCommunityId,
       approved: true,
@@ -18,8 +18,8 @@ Memberships.entities = {
   ownership: {
     name: 'ownership',
     schema: Memberships.simpleSchema({ role: 'owner' }),
-    inputFields: ['person', 'ownership'],
-    modifiableFields: ['person', 'ownership'],
+    inputFields: ['partnerId', 'ownership'],
+    modifiableFields: ['partnerId', 'ownership'],
     implicitFields: {
       communityId: getActiveCommunityId,
       parcelId: () => Session.get('modalContext').parcelId,
@@ -30,8 +30,8 @@ Memberships.entities = {
   benefactorship: {
     name: 'benefactorship',
     schema: Memberships.simpleSchema({ role: 'benefactor' }),
-    inputFields: ['person', 'benefactorship'],
-    modifiableFields: ['person', 'benefactorship'],
+    inputFields: ['partnerId', 'benefactorship'],
+    modifiableFields: ['partnerId', 'benefactorship'],
     implicitFields: {
       communityId: getActiveCommunityId,
       parcelId: () => Session.get('modalContext').parcelId,
@@ -42,8 +42,7 @@ Memberships.entities = {
   delegate: {
     name: 'delegate',
     schema: Memberships.simpleSchema({ role: 'delegate' }),
-    inputFields: ['person'],
-    omitFields: ['person.userId'],
+    inputFields: ['partnerId'],
     implicitFields: {
       communityId: getActiveCommunityId,
       role: 'delegate',

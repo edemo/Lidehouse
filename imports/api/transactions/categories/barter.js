@@ -12,7 +12,7 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
-import { chooseBill } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import { chooseBill } from '/imports/api/transactions/payments/payments.js';
 
 const barterSchema = new SimpleSchema({
 //  supplier: { type: Transactions.partnerSchema },
@@ -38,6 +38,7 @@ Transactions.categoryHelpers('barter', {
         txSide.push({ amount: line.amount * ratio, account: line.account, localizer: line.localizer });
       });
     }
+    // TODO: this does not work for parcel bills, needs payin digit
     if (accountingMethod === 'accrual') {
       this.debit = [{ account: supplierBill.relationAccount() }];
       this.credit = [{ account: customerBill.relationAccount() }];
@@ -66,8 +67,8 @@ Transactions.categoryHelpers('barter', {
     const supplierBill = this.supplierBill();
     const customerBill = this.customerBill();
     debugAssert(supplierBill.partnerId && customerBill.partnerId, 'Cannot process a barter without partners');
-    Partners.relCollection(supplierBill.relation).update(supplierBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    Partners.relCollection(customerBill.relation).update(customerBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    Partners.update(supplierBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    Partners.update(customerBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
     if (customerBill.relation === 'parcel') {
       customerBill.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array

@@ -453,10 +453,10 @@ export function insertDemoHouse(lang, demoOrTest) {
 //    topicIds: [voteTopicBike, voteTopicWallColor, voteTopicManager],
   });
 
-  const ownerships = Memberships.findActive({ communityId: demoCommunityId, role: 'owner', 'person.userId': { $exists: true } }).fetch();
+  const ownerships = Memberships.findActive({ communityId: demoCommunityId, role: 'owner', userId: { $exists: true } }).fetch();
   function castDemoVotes(topicId, votes) {
     votes.forEach((v, index) => {
-      if (v) castVote._execute({ userId: ownerships[index].person.userId }, { topicId, castedVote: v });
+      if (v) castVote._execute({ userId: ownerships[index].userId }, { topicId, castedVote: v });
     });
   }
 
@@ -659,16 +659,28 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   Clock.starts(3, 'month', 'ago');
   const supplier0 = demoBuilder.create('supplier', {
-    name: __('demo.contract.0.partner'),
+    idCard: {
+      type: 'legal',
+      name: __('demo.contract.0.partner'),
+    },
   });
   const supplier1 = demoBuilder.create('supplier', {
-    name: __('demo.contract.1.partner'),
+    idCard: {
+      type: 'legal',
+      name: __('demo.contract.1.partner'),
+    },
   });
   const supplier2 = demoBuilder.create('supplier', {
-    name: __('demo.contract.2.partner'),
+    idCard: {
+      type: 'legal',
+      name: __('demo.contract.2.partner'),
+    },
   });
   const customer0 = demoBuilder.create('customer', {
-    name: __('demo.contract.10.partner'),
+    idCard: {
+      type: 'legal',
+      name: __('demo.contract.10.partner'),
+    },
   });
 
   const contract0 = demoBuilder.create('contract', {
@@ -981,9 +993,9 @@ export function insertDemoHouse(lang, demoOrTest) {
       demoBuilder.execute(Transactions.methods.post, { _id: billId });
       demoBuilder.create('payment', {
         relation: 'supplier',
-        billId,
-        valueDate: new Date(`${lastYear}-${mm}-25`),
+        bills: [{ id: billId, amount: 282600 }],
         amount: 282600,
+        valueDate: new Date(`${lastYear}-${mm}-25`),
         partnerId: supplier2,
         payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
       });
@@ -1008,9 +1020,9 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoBuilder.execute(Transactions.methods.post, { _id: invoiceId });
   demoBuilder.create('payment', {
     relation: 'customer',
-    billId: invoiceId,
-    valueDate: new Date(`${lastYear}-03-25`),
+    bills: [{ id: invoiceId, amount: 25000 }],
     amount: 25000,
+    valueDate: new Date(`${lastYear}-03-25`),
     partnerId: customer0,
     payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
   });
@@ -1154,12 +1166,13 @@ const DEMO_LIFETIME = moment.duration(2, 'hours').asMilliseconds();
 
 function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `purgeDemoUserWithParcel parameter not defined ${userId} ${parcelId} ${communityId}`);
+  const user = Meteor.users().findOne(userId);
   // Purge user activity
   Topics.remove({ userId });
   Topics.remove({ 'participantIds.$': userId });
   Comments.remove({ userId });
-  Delegations.remove({ sourcePersonId: userId });
-  Delegations.remove({ targetPersonId: userId });
+  Delegations.remove({ sourceId: user.partnerId(communityId) });
+  Delegations.remove({ targetId: user.partnerId(communityId) });
   // Purge votes
   const demoUserVote = 'voteCasts.' + userId;
   const demoUserVoteIndirect = 'voteCastsIndirect.' + userId;
@@ -1228,8 +1241,6 @@ Meteor.methods({
         demoBuilder.execute(Meters.methods.registerReading, { _id: heatingMeterId,
           reading: { date: Clock.currentTime(), value: 133 } });
         Clock.clear();
-
-        Localizer.addParcel(demoCommunityId, demoParcel, lang);
 
         const demoManagerId = demoBuilder.getUserWithRole('manager');
         const chatPartnerId = demoBuilder.getUserWithRole('owner');

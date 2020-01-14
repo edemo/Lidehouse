@@ -17,6 +17,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 
 export const Parcels = new Mongo.Collection('parcels');
 
@@ -183,6 +184,7 @@ function updateCommunity(parcel, revertSign = 1) {
 if (Meteor.isServer) {
   Parcels.after.insert(function (userId, doc) {
     updateCommunity(doc, 1);
+    Localizer.addParcel(doc);
   });
 
   Parcels.before.update(function (userId, doc, fieldNames, modifier, options) {
@@ -191,10 +193,12 @@ if (Meteor.isServer) {
 
   Parcels.after.update(function (userId, doc, fieldNames, modifier, options) {
     updateCommunity(doc, 1);
+    Localizer.updateParcel(doc);
   });
 
   Parcels.after.remove(function (userId, doc) {
     updateCommunity(doc, -1);
+    Localizer.removeParcel(doc);
   });
 }
 

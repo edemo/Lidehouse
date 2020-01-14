@@ -68,12 +68,17 @@ export const reconcile = new ValidatedMethod({
     const entry = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.reconcile', entry);
     if (!txId) { // not present means auto match requested
-      const partner = Partners.findByName(entry.communityId, entry.partner);
+      console.log("Looking for partner", entry.name, entry.communityId);
+      const partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': entry.name });
       if (!partner) return;
-      const matchingBill = Transactions.findOne({ category: 'bill', partnerId: partner._id, outstanding: moneyFlowSign(partner.getRelation()) * entry.amount });
+      console.log("Looking for bill");
+      const matchingBill = Transactions.findOne({ category: 'bill', partnerId: partner._id, outstanding: moneyFlowSign(partner.relation) * entry.amount });
       if (!matchingBill) return;
+      console.log("Looking for payment");
       const matchingPayment = matchingBill.getPayments().find(payment => !payment.reconciledId && payment.amount === matchingBill.outstanding);
       if (matchingPayment) {
+        console.log("matchingPayment", matchingPayment);
+
         txId = matchingPayment._id;
       } else {
         const tx = {
@@ -82,10 +87,11 @@ export const reconcile = new ValidatedMethod({
           defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBill.relation })._id,
           valueDate: entry.valueDate,
           amount: matchingBill.outstanding,
-          billId: matchingBill._id,
+          bills: [{ amount: matchingBill.outstanding, id: matchingBill._id }],
           relation: matchingBill.relation,
           partnerId: matchingBill.partnerId,
         };
+        console.log("Creating matchingPayment", tx);
         txId = Transactions.methods.insert._execute({ userId: this.userId }, tx);
       }
     }

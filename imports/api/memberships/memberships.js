@@ -17,7 +17,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Person, PersonSchema } from '/imports/api/users/person.js';
+import { Partners, choosePerson } from '/imports/api/partners/partners.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -35,13 +35,8 @@ Memberships.baseSchema = new SimpleSchema({
     },
   },
   rank: { type: String, optional: true, allowedValues: ranks, autoform: autoformOptions(ranks) },
-  person: { type: PersonSchema },
-  personId: { type: String, optional: true, autoform: { omit: true },
-    autoValue() {
-      return this.field('person.userId').value || this.field('person.idCard.identifier').value || undefined;
-    },
-  },
-  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePerson },
 });
 
 // Parcels can be jointly owned, with each owner having a fractional *share* of it
@@ -70,11 +65,11 @@ Benefactorships.schema = new SimpleSchema({
   benefactorship: { type: BenefactorshipSchema } },
 );
 
-Memberships.idSet = ['communityId', 'role', 'parcelId', 'person.idCard.name', 'person.contact.email'];
+Memberships.idSet = ['communityId', 'role', 'parcelId', 'partner.idCard.name', 'partner.contact.email'];
 
 Meteor.startup(function indexMemberships() {
   Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
-  Memberships.ensureIndex({ personId: 1 }, { sparse: true });
+  Memberships.ensureIndex({ userId: 1 }, { sparse: true });
   if (Meteor.isServer) {
     Memberships._ensureIndex({ communityId: 1, parcelId: 1, approved: 1, active: 1, role: 1 });
   }
@@ -104,52 +99,28 @@ Memberships.helpers({
   entityName() {
     return entityOf(this.role);
   },
-  hasPerson() {
-    return !!(this.person);
-  },
-  Person() {
-    debugAssert(this.person);
-    return new Person(this.person);
-  },
-  user() {
-    debugAssert(this.person.userId);
-    return Meteor.users.findOne(this.person.userId);
-  },
-  // --- Partner interface ---
-  getName() {
-    return this.Person().displayName();
-  },
-  getRelation() {
-    return 'parcel';
-  },
-  // -------------------------
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);
     return community;
   },
+  person() {
+    if (!this.partnerId) return undefined;
+    return Partners.findOne(this.partnerId);
+  },
+  user() {
+    debugAssert(this.userId);
+    return Meteor.users.findOne(this.userId);
+  },
   parcel() {
-    const parcelId = this.parcelId;
-    if (!parcelId) return undefined;
+    if (!this.parcelId) return undefined;
     // parcelId is not changeable on the membership, so no need to be reactive here
-    return Tracker.nonreactive(() => Parcels.findOne(parcelId));
+    return Tracker.nonreactive(() => Parcels.findOne(this.parcelId));
   },
   totalunits() {
     const community = this.community();
     if (!community) return undefined;
     return community.totalunits;
-  },
-  isOwnership() {
-    if (this.role === 'owner') return true;
-    debugAssert(!this.ownership);
-    return false;
-  },
-  hasOwnership() {
-    if (this.ownership) {
-      debugAssert(this.role === 'owner');
-      return true;
-    }
-    return false;
   },
   isRepresentor() {
     return (this.ownership && this.ownership.representor);
@@ -181,7 +152,7 @@ Memberships.helpers({
     return result;
   },
   toString() {
-    return `${this.Person().displayName('hu')}, ${this.displayRole()}`;
+    return `${this.partner().displayName('hu')}, ${this.displayRole()}`;
   },
 });
 
@@ -206,21 +177,39 @@ Meteor.startup(function attach() {
   });
 });
 
-Memberships.publicFields = {
-  'person.idCard.address': 0,
-  'person.idCard.identifier': 0,
-  'person.idCard.mothersName': 0,
-  'person.idCard.dob': 0,
-  'person.contact': 0,
-};
+// --- Before/after actions ---
+
+if (Meteor.isServer) {
+  Memberships.before.insert(function (userId, doc) {
+    // If partner is provided, userId is being copied over, to have direct access to it
+    if (!doc.userId && doc.partnerId) {
+      const partner = Partners.findOne(doc.partnerId);
+      doc.userId = partner.userId;
+    }
+    // If partner is not provided, it can be created automatically
+    if (doc.userId && !doc.partnerId) {
+      const partnerObject = { communityId: doc.communityId, relation: 'parcel', userId: doc.userId };
+      const partner = Partners.findOne(partnerObject);
+      doc.partnerId = partner ? partner._id : Partners.insert(partnerObject);
+    }
+  });
+
+  Memberships.before.update(function (userId, doc, fieldNames, modifier, options) {
+  });
+
+  Memberships.after.update(function (userId, doc, fieldNames, modifier, options) {
+  });
+
+  Memberships.after.remove(function (userId, doc) {
+  });
+}
 
 Memberships.modifiableFields = [
   // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',
-  'personId',
-].concat(PersonSchema.modifiableFields);
+];
 
 Factory.define('membership', Memberships, {
   userId: () => Factory.get('user'),

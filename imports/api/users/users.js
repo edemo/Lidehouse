@@ -18,6 +18,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Partners } from '/imports/api/partners/partners.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 
@@ -87,7 +88,7 @@ const frequencyValues = ['never', 'weekly', 'daily', 'frequent'];
 const levelValues = ['never', 'high', 'medium', 'low'];
 
 const UserSettingsSchema = new SimpleSchema({
-  language: { type: String, allowedValues: availableLanguages, optional: true, autoform: { firstOption: false } },
+  language: { type: String, allowedValues: availableLanguages, defaultValue: 'en', autoform: { firstOption: false } },
   delegatee: { type: Boolean, defaultValue: true },
   notiFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'never', autoform: autoformOptions(frequencyValues, 'schemaUsers.settings.notiFrequency.') },
 //  notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: autoformOptions(levelValues, 'schemaUsers.settings.notiLevel.') },
@@ -179,20 +180,20 @@ Meteor.users.helpers({
     return this.fullName(lang) || this.safeUsername();     // or fallback to the username
   },
   displayOfficialName(communityId = getActiveCommunityId(), lang = getCurrentUserLang()) {
-    const membership = Memberships.findOne({ communityId, approved: true, personId: this._id, 'person.idCard.name': { $exists: true } });
-    if (membership) { return membership.Person().displayName(lang)};
+    const partner = Partners.findOne({ communityId, userId: this._id, 'idCard.name': { $exists: true } });
+    if (partner) return partner.displayName(lang);
     return this.displayProfileName(lang);
   },
   toString() {
     return this.displayOfficialName();
   },
   personNameMismatch(communityId = getActiveCommunityId()) {
-    const membership = Memberships.findOne({ communityId, approved: true, personId: this._id, 'person.idCard.name': { $exists: true } });
-    const personName = membership ? membership.person.idCard.name : undefined;
+    const partner = Partners.findOne({ communityId, userId: this._id, 'idCard.name': { $exists: true } });
+    const personName = partner ? partner.idCard.name : undefined;
     if (!personName || !this.profile) return;
     if (!this.profile.firstName && !this.profile.lastName) return;
     if (!this.profile.firstName || !this.profile.lastName) return 'different';
-    const nameMatch = namesMatch(this.profile, membership.person.idCard);
+    const nameMatch = namesMatch(this.profile, partner.idCard);
     if (nameMatch) return;
     else return 'different';
   },
@@ -206,11 +207,19 @@ Meteor.users.helpers({
     // TODO: A verification email has to be sent to the user now
   },
   // Memberships
+  partnerId(communityId) {
+    const partner = Partners.findOne({ communityId, userId: this._id });
+    return partner._id;
+  },
+  partnerIds() {
+    const partnerIds = Partners.find({ userId: this._id }).map(p => p._id);
+    return partnerIds;
+  },
   memberships(communityId) {
-    return Memberships.findActive({ communityId, approved: true, personId: this._id });
+    return Memberships.findActive({ communityId, approved: true, userId: this._id });
   },
   ownerships(communityId) {
-    return Memberships.findActive({ communityId, approved: true, role: 'owner', personId: this._id });
+    return Memberships.findActive({ communityId, approved: true, role: 'owner', userId: this._id });
   },
   ownedParcels(communityId) {
     const parcelIds = _.pluck(this.ownerships(communityId).fetch(), 'parcelId');
@@ -225,31 +234,31 @@ Meteor.users.helpers({
     if (!communityId) return [];
     let roles;
     if (parcelId) {
-      const communityScopedRoles = Memberships.findActive({ communityId, parcelId: { $exists: false }, approved: true, personId: this._id }).map(m => m.role);
-      const parcelScopedRoles = Memberships.findActive({ communityId, parcelId, approved: true, personId: this._id }).map(m => m.role);
+      const communityScopedRoles = Memberships.findActive({ communityId, parcelId: { $exists: false }, approved: true, userId: this._id }).map(m => m.role);
+      const parcelScopedRoles = Memberships.findActive({ communityId, parcelId, approved: true, userId: this._id }).map(m => m.role);
       roles = communityScopedRoles.concat(parcelScopedRoles);
     } else { // parcelId may be undefined, when permission is not parcelScoped
-      roles = Memberships.findActive({ communityId, approved: true, personId: this._id }).map(m => m.role);
+      roles = Memberships.findActive({ communityId, approved: true, userId: this._id }).map(m => m.role);
     }
     return _.uniq(roles);
   },
   communities() {
-    const memberships = Memberships.findActive({ approved: true, personId: this._id }).fetch();
+    const memberships = Memberships.findActive({ approved: true, userId: this._id }).fetch();
     const communityIds = _.uniq(_.pluck(memberships, 'communityId'));
     const communities = Communities.find({ _id: { $in: communityIds } });
     // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },
   isInCommunity(communityId) {
-    return !!Memberships.findOneActive({ communityId, approved: true, personId: this._id });
+    return !!Memberships.findOneActive({ communityId, approved: true, userId: this._id });
   },
   isUnapprovedInCommunity(communityId) {
-    return !!Memberships.findOne({ communityId, approved: false, personId: this._id });
+    return !!Memberships.findOne({ communityId, approved: false, userId: this._id });
   },
   // Voting
   votingUnits(communityId) {
     let sum = 0;
-    Memberships.findActive({ communityId, approved: true, role: 'owner', personId: this._id }).forEach(m => (sum += m.votingUnits()));
+    Memberships.findActive({ communityId, approved: true, role: 'owner', userId: this._id }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
   hasRole(roleName, communityId) {
@@ -283,8 +292,8 @@ Meteor.users.helpers({
   totalDelegatedToMeUnits(communityId) {
     let total = 0;
     // TODO: needs traversing calculation
-    Delegations.find({ targetPersonId: this._id }).forEach(function addUpUnits(d) {
-      const sourceUser = Meteor.users.findOne(d.sourcePersonId);
+    Delegations.find({ targetId: this.partnerId(communityId) }).forEach(function addUpUnits(d) {
+      const sourceUser = Meteor.users.findOne(d.sourceUser()._id);
       total += sourceUser.votingUnits();
     });
     return total;
