@@ -580,20 +580,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  const specVoterIds = [];
-  ownerships.forEach((ownership) => {
-    if (ownership.votingUnits() === 1066 ||
-    ownership.votingUnits() === 996 ||
-    ownership.votingUnits() === 622 ||
-    ownership.votingUnits() === 427) {
-      specVoterIds.push(ownership.person.userId);
-    }
-  });
-  const otherVoters = ownerships.filter(owner => owner.votingUnits() === 587);
-  specVoterIds.push(otherVoters[0].person.userId);
-  specVoterIds.forEach((voterId) => {
-    castVote._execute({ userId: voterId }, { topicId: voteTopicBike, castedVote: [0] });
-  });
+  castDemoVotes(voteTopicBike, [[0], [0], [0], [0], [1], [0], [0], [0]]);
   Clock.clear();
 
   // ===== Shareddocs =====
