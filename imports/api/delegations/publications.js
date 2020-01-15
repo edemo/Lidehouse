@@ -22,7 +22,10 @@ Meteor.publishComposite('delegations.fromUser', function delegationsFromUser(par
   }).validate(params);
   const { communityId } = params;
 
-  const user = Meteor.users.findOneOrNull(this.userId);
+  const user = Meteor.users.findOne(this.userId);
+  if (!user) {
+    return this.ready();
+  }
 
 // Everyone has access to all of his own stuff automatically
   return {
@@ -48,7 +51,10 @@ Meteor.publishComposite('delegations.toUser', function delegationsToUser(params)
   }).validate(params);
   const { communityId } = params;
 
-  const user = Meteor.users.findOneOrNull(this.userId);
+  const user = Meteor.users.findOne(this.userId);
+  if (!user) {
+    return this.ready();
+  }
 
   return {
     find() {

@@ -89,7 +89,7 @@ Meteor.publish('transactions.incomplete', function transactionsInCommunity(param
   return Transactions.find({ communityId, complete: false }, { limit: 100 });
 });
 
-Meteor.publish('transactions.unreconciled', function paymentsUnreconciled(params) {
+Meteor.publish('transactions.unreconciled', function transactionsUnreconciled(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
