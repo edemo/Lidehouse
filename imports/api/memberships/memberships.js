@@ -152,7 +152,7 @@ Memberships.helpers({
     return result;
   },
   toString() {
-    return `${this.partner().displayName('hu')}, ${this.displayRole()}`;
+    return `${this.person().displayName('hu')}, ${this.displayRole()}`;
   },
 });
 

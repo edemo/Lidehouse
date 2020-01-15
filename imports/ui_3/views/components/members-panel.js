@@ -16,7 +16,7 @@ const MEMBERS_TO_SHOW = 10;
 Template.Members_panel.onCreated(function onCreated() {
 //  const communityId = Session.get('activeCommunityId');
 //  const manager = Memberships.findOneActive({ communityId, role: 'manager' });
-//  if (manager) Session.set('messengerPersonId', manager.person.userId);
+//  if (manager) Session.set('messengerPersonId', manager.userId);
 });
 
 Template.Members_panel.onRendered(function onRendered() {
@@ -27,8 +27,8 @@ Template.Members_panel.viewmodel({
   leaders() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
-    let managers = Memberships.findActive({ communityId, role: { $in: leaderRoles }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
-    managers = _.uniq(managers, false, m => m.person.userId);
+    let managers = Memberships.findActive({ communityId, role: { $in: leaderRoles }, userId: { $exists: true, $ne: Meteor.userId() } }).fetch();
+    managers = _.uniq(managers, false, m => m.userId);
     if (personSearch) {
       managers = managers.filter(m => m.person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }
@@ -37,17 +37,17 @@ Template.Members_panel.viewmodel({
   members() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
-    let nonManagers = Memberships.findActive({ communityId, role: { $not: { $in: leaderRoles } }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
-    nonManagers = _.uniq(nonManagers, false, m => m.person.userId);
+    let nonManagers = Memberships.findActive({ communityId, role: { $not: { $in: leaderRoles } }, userId: { $exists: true, $ne: Meteor.userId() } }).fetch();
+    nonManagers = _.uniq(nonManagers, false, m => m.userId);
     if (nonManagers.length > MEMBERS_TO_SHOW * 2) this.tooManyMembers(true);
     if (personSearch) {
       nonManagers = nonManagers.filter(m => m.person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     } else {
       if (this.tooManyMembers()) {
-        nonManagers = nonManagers.filter(m => Rooms.getRoom(Session.get('roomMode'), m.person.userId));
+        nonManagers = nonManagers.filter(m => Rooms.getRoom(Session.get('roomMode'), m.userId));
       } else {
         nonManagers = _.sortBy(nonManagers, m => {
-          const room = Rooms.getRoom(Session.get('roomMode'), m.person.userId);
+          const room = Rooms.getRoom(Session.get('roomMode'), m.userId);
           return room ? -1 * room.updatedAt : 0;
         });
       }
@@ -69,7 +69,7 @@ Template.Member_slot.onCreated(function onMsgPersonCreated() {
 
 Template.Member_slot.helpers({
   selectedClass() {
-    const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
+    const room = Rooms.getRoom(Session.get('roomMode'), this.userId);
     if (room && room._id === FlowRouter.getParam('_rid')) return 'selected';
     return '';
   },
@@ -97,19 +97,19 @@ Template.Member_slot.helpers({
     return params;
   },
   hasUnreadMessages() {
-    const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
+    const room = Rooms.getRoom(Session.get('roomMode'), this.userId);
     if (!room) return false;
     return room.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES) > 0;
   },
   unreadMessagesCount() {
-    const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
+    const room = Rooms.getRoom(Session.get('roomMode'), this.userId);
     return room.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
   },
 });
 
 Template.Member_slot.events({
   'click .member-slot'(event, instance) {
-    Rooms.goToRoom(Session.get('roomMode'), instance.data.person.userId);
+    Rooms.goToRoom(Session.get('roomMode'), instance.data.userId);
     $('#right-sidebar').toggleClass('sidebar-open');
     if ($(window).width() > 768) $('.js-focused').focus();
   },
