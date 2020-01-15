@@ -85,7 +85,6 @@ export const apply = new ValidatedMethod({
           line.account = Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.payinType;
           line.localizer = Localizer.parcelRef2code(parcel.ref);
           line.title = `${parcelBilling.title}`;
-    console.log('payer', parcel.leadParcel().payer());
           // Creating the bill - adding line to the bill
           const leadParcelId = parcel.leadParcelId();
           bills[leadParcelId] = bills[leadParcelId] || {
@@ -101,7 +100,6 @@ export const apply = new ValidatedMethod({
             dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
             lines: [],
           };
-          console.log('new bill', bills[leadParcelId]);
           bills[leadParcelId].lines.push(line);
 
           // Updating the meter readings
