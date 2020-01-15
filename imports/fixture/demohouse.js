@@ -1153,7 +1153,7 @@ const DEMO_LIFETIME = moment.duration(2, 'hours').asMilliseconds();
 
 function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `purgeDemoUserWithParcel parameter not defined ${userId} ${parcelId} ${communityId}`);
-  const user = Meteor.users().findOne(userId);
+  const user = Meteor.users.findOne(userId);
   // Purge user activity
   Topics.remove({ userId });
   Topics.remove({ 'participantIds.$': userId });
