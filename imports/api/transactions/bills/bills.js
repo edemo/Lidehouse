@@ -104,10 +104,13 @@ Meteor.startup(function indexBills() {
 
 Transactions.categoryHelpers('bill', {
   getPayments() {
-    return (this.payments || []).map(payment => Transactions.findOne(payment.id));
+    return (this.payments || []);
+  },
+  getPaymentTransactions() {
+    return this.getPayments().map(payment => Transactions.findOne(payment.id));
   },
   paymentCount() {
-    return this.payments.length;
+    return this.getPayments().length;
   },
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
@@ -128,7 +131,7 @@ Transactions.categoryHelpers('bill', {
   },
   autofillOutstanding() {
     let paid = 0;
-    this.payments.forEach(p => paid += p.amount);
+    this.getPayments().forEach(p => paid += p.amount);
     this.outstanding = this.amount - paid;
   },
   updateOutstandings(directionSign) {

@@ -47,7 +47,7 @@ Transactions.categoryHelpers('remission', {
     debugAssert(this.billId, 'Cannot process a remission without connecting it to a bill first');
     const bill = Transactions.findOne(this.billId);
     return Transactions.update(this.billId,
-      { $set: { amount: bill.amount /* triggers outstanding calc */, payments: bill.payments.concat([this._id]) } },
+      { $set: { amount: bill.amount /* triggers outstanding calc */, payments: bill.getPayments().concat([this._id]) } },
       { selector: { category: 'bill' } },
     );
   },

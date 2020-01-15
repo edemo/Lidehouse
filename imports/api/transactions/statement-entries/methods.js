@@ -75,7 +75,7 @@ export const reconcile = new ValidatedMethod({
       const matchingBill = Transactions.findOne({ category: 'bill', partnerId: partner._id, outstanding: moneyFlowSign(partner.relation) * entry.amount });
       if (!matchingBill) return;
       console.log("Looking for payment");
-      const matchingPayment = matchingBill.getPayments().find(payment => !payment.reconciledId && payment.amount === matchingBill.outstanding);
+      const matchingPayment = matchingBill.getPaymentTransactions().find(payment => !payment.reconciledId && payment.amount === matchingBill.outstanding);
       if (matchingPayment) {
         console.log("matchingPayment", matchingPayment);
 

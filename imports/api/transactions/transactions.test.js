@@ -44,7 +44,7 @@ if (Meteor.isServer) {
       it('Can create without accounts', function () {
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
-        chai.assert.equal(bill.payments.length, 0);
+        chai.assert.equal(bill.getPayments().length, 0);
         chai.assert.equal(bill.outstanding, 300);
         chai.assert.equal(bill.isPosted(), false);
         chai.assert.equal(bill.partner().outstanding, 300);
@@ -80,14 +80,14 @@ if (Meteor.isServer) {
         const paymentId1 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
-        chai.assert.equal(bill.payments.length, 1);
+        chai.assert.equal(bill.getPayments().length, 1);
         chai.assert.equal(bill.outstanding, 200);
         chai.assert.equal(bill.partner().outstanding, 200);
 
         const paymentId2 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 200 }], amount: 200, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
-        chai.assert.equal(bill.payments.length, 2);
+        chai.assert.equal(bill.getPayments().length, 2);
         chai.assert.equal(bill.outstanding, 0);
         chai.assert.equal(bill.partner().outstanding, 0);
 
@@ -154,8 +154,8 @@ if (Meteor.isServer) {
         FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, valueDate: Clock.currentDate(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
-        chai.assert.equal(bill.payments.length, 1);
-        chai.assert.equal(bill.getPayments()[0].isReconciled(), false);
+        chai.assert.equal(bill.getPayments().length, 1);
+        chai.assert.equal(bill.getPaymentTransactions()[0].isReconciled(), false);
         chai.assert.equal(bill.outstanding, 200);
         chai.assert.equal(bill.partner().outstanding, 200);
       });
@@ -168,7 +168,7 @@ if (Meteor.isServer) {
           amount: -100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongRelation, txId: bill.payments[0].id });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongRelation, txId: bill.getPayments()[0].id });
         }, 'err_notAllowed');
 
         const entryIdWrongAmount = FixtureA.builder.create('statementEntry', {
@@ -178,7 +178,7 @@ if (Meteor.isServer) {
           amount: 100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAmount, txId: bill.payments[0].id });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAmount, txId: bill.getPayments()[0].id });
         }, 'err_notAllowed');
 
         const entryIdWrongDate = FixtureA.builder.create('statementEntry', {
@@ -188,7 +188,7 @@ if (Meteor.isServer) {
           amount: -100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongDate, txId: bill.payments[0].id });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongDate, txId: bill.getPayments()[0].id });
         }, 'err_notAllowed');
       });
 
@@ -199,12 +199,12 @@ if (Meteor.isServer) {
           name: 'Supplier Inc',
           amount: -100,
         });
-        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, txId: bill.payments[0].id });
+        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, txId: bill.getPayments()[0].id });
 
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
-        chai.assert.equal(bill.payments.length, 1);
-        chai.assert.equal(bill.getPayments()[0].isReconciled(), true);
+        chai.assert.equal(bill.getPayments().length, 1);
+        chai.assert.equal(bill.getPaymentTransactions()[0].isReconciled(), true);
         chai.assert.equal(bill.outstanding, 200);
         chai.assert.equal(bill.partner().outstanding, 200);
       });
@@ -227,8 +227,8 @@ if (Meteor.isServer) {
         chai.assert.equal(entry2.isReconciled(), true);
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
-        chai.assert.equal(bill.payments.length, 2);
-        chai.assert.equal(bill.getPayments()[1].isReconciled(), true);
+        chai.assert.equal(bill.getPayments().length, 2);
+        chai.assert.equal(bill.getPaymentTransactions()[1].isReconciled(), true);
         chai.assert.equal(bill.outstanding, 0);
         chai.assert.equal(bill.partner().outstanding, 0);
       });

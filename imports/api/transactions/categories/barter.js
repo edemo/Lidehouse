@@ -51,12 +51,12 @@ Transactions.categoryHelpers('barter', {
     debugAssert(this.supplierBillId && this.customerBillId, 'Cannot process a barter without connecting it to a bills first');
     const supplierBill = Transactions.findOne(this.supplierBillId);
     const supplierRes = Transactions.update(this.supplierBill,
-      { $set: { amount: supplierBill.amount /* triggers outstanding calc */, payments: supplierBill.payments.concat([this._id]) } },
+      { $set: { amount: supplierBill.amount /* triggers outstanding calc */, payments: supplierBill.getPayments().concat([this._id]) } },
       { selector: { category: 'bill' } },
     );
     const customerBill = Transactions.findOne(this.customerBillId);
     const customerRes = Transactions.update(this.customerBill,
-      { $set: { amount: customerBill.amount /* triggers outstanding calc */, payments: customerBill.payments.concat([this._id]) } },
+      { $set: { amount: customerBill.amount /* triggers outstanding calc */, payments: customerBill.getPayments().concat([this._id]) } },
       { selector: { category: 'bill' } },
     );
     return supplierRes + customerRes;
