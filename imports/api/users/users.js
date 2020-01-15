@@ -209,7 +209,7 @@ Meteor.users.helpers({
   // Memberships
   partnerId(communityId) {
     const partner = Partners.findOne({ communityId, userId: this._id });
-    return partner._id;
+    return partner ? partner._id : undefined;
   },
   partnerIds() {
     const partnerIds = Partners.find({ userId: this._id }).map(p => p._id);

@@ -32,7 +32,7 @@ export function receiptColumns() {
   const columns = [
 //    { data: 'serial', title: __('schemaTransactions.serial.label') },
     { data: 'serialId()', title: __('schemaGeneral.serialId.label') },
-    { data: 'partner', title: 'Partner' },
+    { data: 'partner()', title: 'Partner' },
 //    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
