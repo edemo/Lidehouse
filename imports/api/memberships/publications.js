@@ -49,10 +49,9 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
   return {
     find() {
       if (user.hasPermission('memberships.inCommunity', { communityId })) {
-        const fields = user.hasPermission('memberships.details', { communityId }) ? {} : Memberships.publicFields;
-        return Memberships.find({ communityId }, { fields });
+        return Memberships.find({ communityId });
       } // Otherwise, only the active leaders of the community can be seen
-      return Memberships.findActive({ communityId, role: { $in: leaderRoles } }, { fields: Memberships.publicFields });
+      return Memberships.findActive({ communityId, role: { $in: leaderRoles } });
     },
 
     children: [{

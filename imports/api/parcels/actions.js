@@ -84,7 +84,7 @@ Parcels.actions = {
           communityId: doc.communityId,
           parcelId: doc._id,
         },
-        size: currentUserHasPermission('memberships.details', doc) ? 'lg' : 'md',
+        size: currentUserHasPermission('partners.details', doc) ? 'lg' : 'md',
       });
     },
   },

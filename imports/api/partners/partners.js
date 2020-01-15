@@ -226,8 +226,9 @@ if (Meteor.isClient) {
     },
     options() {
       const communityId = Session.get('activeCommunityId');
-      Session.get('activePartnerRelation', 'parcel');
+      Session.set('activePartnerRelation', 'parcel');
       const partners = Partners.find({ communityId, relation: 'parcel' });
+      console.log(Partners.find({ communityId, relation: 'parcel' }).fetch());
       const options = partners.map(function option(p) {
         return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
       });

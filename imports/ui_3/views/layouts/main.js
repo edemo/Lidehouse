@@ -38,6 +38,7 @@ Template.Main_layout.onCreated(function() {
     const communityId = Session.get('activeCommunityId');
     if (communityId) {
       this.subscribe('memberships.inCommunity', { communityId });
+      this.subscribe('partners.inCommunity', { communityId });
       this.subscribe('breakdowns.inCommunity', { communityId });
     }
   });

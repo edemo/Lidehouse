@@ -29,7 +29,7 @@ function communityPublication(userId, _id) {
     },
     children: [{
       find(community) {
-        return Memberships.findActive({ communityId: community._id, role: { $in: leaderRoles } }, { fields: Memberships.publicFields });
+        return Memberships.findActive({ communityId: community._id, role: { $in: leaderRoles } });
       },
       children: [{
         find(membership) {

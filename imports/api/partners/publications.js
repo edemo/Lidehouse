@@ -16,5 +16,6 @@ Meteor.publish('partners.inCommunity', function partnersInCommunity(params) {
   if (!user.hasPermission('partners.inCommunity', { communityId })) {
     return this.ready();
   }
-  return Partners.find({ communityId });
+  const fields = user.hasPermission('partners.details', { communityId }) ? {} : Partners.publicFields;
+  return Partners.find({ communityId }, { fields });
 });
