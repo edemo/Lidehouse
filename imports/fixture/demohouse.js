@@ -1167,7 +1167,7 @@ function purgeDemoUserWithParcel(userId, parcelId, communityId) {
     { $unset: { [demoUserVote]: 1 } }, { multi: true, selector: { category: 'vote' } });
   const modifiedTopics = Topics.find({ [demoUserVoteIndirect]: { $exists: true } });
   if (Meteor.isServer) {
-    modifiedTopics.forEach(topic => topic.voteEvaluate(false));
+    modifiedTopics.forEach(topic => topic.voteEvaluate());
   }
   // Purge parcel
   const parcel = Parcels.findOne(parcelId);
