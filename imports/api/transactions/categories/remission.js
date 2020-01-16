@@ -44,25 +44,31 @@ Transactions.categoryHelpers('remission', {
     return { debit: this.debit, credit: this.credit };
   },
   registerOnBill() {
-    debugAssert(this.billId, 'Cannot process a remission without connecting it to a bill first');
-    const bill = Transactions.findOne(this.billId);
-    return Transactions.update(this.billId,
-      { $set: { amount: bill.amount /* triggers outstanding calc */, payments: bill.getPayments().concat([this._id]) } },
-      { selector: { category: 'bill' } },
-    );
+    const result = [];
+    this.bills.forEach(bp => {
+      const bill = Transactions.findOne(bp.id);
+      const pb = _.extend({}, bp);
+      pb.id = this._id; // replacing the bill._id with the payment._id
+      result.push(Transactions.update(bill._id,
+        { $set: { amount: bill.amount /* triggers outstanding calc */, payments: bill.getPayments().concat([pb]) } },
+        { selector: { category: 'bill' } },
+      ));
+    });
+    return result;
   },
   updateOutstandings(sign) {
     if (Meteor.isClient) return;
-    debugAssert(this.billId, 'Cannot process a remission without connecting it to a bill first');
-    debugAssert(this.partnerId, 'Cannot process a remission without a partner');
-    const bill = Transactions.findOne(this.billId);
+    debugAssert(this.partnerId, 'Cannot process a payment without a partner');
     Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
     if (this.relation === 'parcel') {
-      bill.lines.forEach(line => {
-        if (!line) return; // can be null, when a line is deleted from the array
-        debugAssert(line.localizer, 'Cannot process a parcel remission without bill localizer fields');
-        const ref = Localizer.code2parcelRef(line.localizer);
-        Parcels.update({ communityId: this.communityId, ref }, { $inc: { outstanding: (-1) * sign * line.amount } });
+      this.bills.forEach(bp => {
+        const bill = Transactions.findOne(bp.id);
+          bill.lines.forEach(line => {
+            if (!line) return; // can be null, when a line is deleted from the array
+            debugAssert(line.localizer, 'Cannot process a parcel payment without bill localizer fields');
+            const ref = Localizer.code2parcelRef(line.localizer);
+            Parcels.update({ communityId: this.communityId, ref }, { $inc: { outstanding: (-1) * sign * line.amount } });
+          });
       });
     }
   },
