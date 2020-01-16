@@ -62,6 +62,23 @@ Partners.actions = {
       });
     },
   },
+  notifyOutstanding: {
+    name: 'notifyOutstanding',
+    color(options, doc) {
+      const expired = doc.highestExpiredBillDayCount();
+      if (expired > 30 && expired < 90) return 'warning';
+      if (expired > 90) return 'danger';
+      return 'white';
+    },
+    icon: () => 'fa fa-exclamation',
+    visible: (options, doc) => currentUserHasPermission('partners.notifyOutstanding', doc) && doc.highestExpiredBillDayCount(),
+    run(options, doc) {
+      Modal.confirmAndCall(Partners.methods.notifyOutstanding, { _id: doc._id }, {
+        action: 'notifyOutstanding',
+        message: 'It will send a notification',
+      });
+    },
+  },
 };
 
 //-------------------------------------------------------

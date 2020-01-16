@@ -1,0 +1,28 @@
+<div>
+    <table class="table table-hover">
+        <tbody>    
+            <tr>
+                <td class="project-title">
+                    <h3 class = "topicTitle">{{_ 'email.BillNotification'}}</h3>
+                    <br>
+                    <p><strong>{{_ 'email.Dear'}} {{displayPartnerName}}{{_ 'email.glyphAfterDear'}}</strong></p>
+                    <br>
+                    <p>{{_ 'email.BillNotificationText'}}</p>
+                    <br>
+                    <p><strong>{{_ 'schemaBills.amount.label'}}: {{bill.amount}}</strong></p>
+                    <p><strong>{{_ 'schemaGeneral.serialId.label'}}: {{bill.serialId}}</strong></p>
+                    <p><strong>{{_ 'schemaBills.dueDate.label'}}: {{displayValue bill.dueDate}}</strong></p>
+                    {{#if community.primaryBankAccount}}
+                        <br>
+                        {{_ 'email.TransferToBankAccount'}}:
+                        <p><strong>{{_ 'schemaPartners.idCard.bankAccountNumber.label'}}: {{community.primaryBankAccount.ban}}</strong></p>
+                    {{/if}}
+                    <p>{{_ 'email.serialIdMessageField'}}</p>
+                    <div class='btn-container'>
+                        <a href="{{link}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

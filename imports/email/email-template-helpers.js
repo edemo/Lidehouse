@@ -4,6 +4,8 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { numeral } from 'meteor/numeral:numeral';
 import { _ } from 'meteor/underscore';
+import { __ } from '/imports/localization/i18n.js';
+import { Communities } from '/imports/api/communities/communities.js';
 
 // Global helpers for all email templates
 // TODO: duplicates from the clients side - maybe we should try reference in the client helpers here?
@@ -16,6 +18,10 @@ export const EmailTemplateHelpers = {
   },
   _(text, kw) {
     const user = Meteor.users.findOne(this.userId);
+    if (!user) {
+      const community = Communities.findOne(this.communityId);
+      return TAPi18n.__(text, kw.hash, community.settings.language);
+    }
     return TAPi18n.__(text, kw.hash, user.settings.language);
   },
   displayValue(val) {
@@ -39,6 +45,23 @@ export const EmailTemplateHelpers = {
   },
   entriesOf(obj) {
     return Object.entries(obj);
+  },
+  community() {
+    return this.communityId && Communities.findOne(this.communityId);
+  },
+  displayPartnerName() {
+    if (this.partner.idCard && this.partner.idCard.name) return this.partner.idCard.name;
+    if (this.partner.userId) {
+      const user = this.partner.user();
+      if (user) return user.displayProfileName(user.settings.language);
+    }
+    if (this.partner.contact && this.partner.contact.email) {
+      const emailSplit = this.partner.contact.email.split('@');
+      const emailName = emailSplit[0];
+      return `[${emailName}]`;
+    }
+    if (this.partner.userId && !this.partner.user()) return __('deletedUser');
+    return __('unknownUser');
   },
 };
 
