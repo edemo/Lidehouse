@@ -128,10 +128,10 @@
             {{#if isBill}}
             <table class="table invoice-total"> 
               <tbody>
-              {{#each payment in docVm.payments}}
+              {{#each payment in docVm.getPaymentTransactions}}
               <tr>
-                  <td>
-                    {{#if not @index}}{{_ 'schemaBills.payments.label'}}: {{/if}}
+                  <td class="text-capitalize">
+                    {{_ payment.entityName}}: 
                     {{displayDate payment.valueDate}}
                     {{>Action_buttons_group collection='transactions' doc=payment actions='view' size='sm'}}
                   </td>

@@ -193,7 +193,7 @@ Transactions.categoryValues.forEach(category => {
           doc.relation = bill.relation;
           doc.partnerId = bill.partnerId;
           doc.contractId = bill.contractId;
-          doc.bills = [{ id: billId, amount: doc.amount, valueDate: doc.valueDate }];
+          doc.bills = [{ id: billId, amount: doc.amount }];
         }
       }
       return doc;
