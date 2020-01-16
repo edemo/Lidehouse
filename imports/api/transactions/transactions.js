@@ -121,7 +121,7 @@ Transactions.helpers({
   },
   partner() {
     if (this.partnerId) return Partners.findOne(this.partnerId);
-    return this.partnerTxt;
+    return this.partnerName;
   },
   contract() {
     return Contracts.findOne(this.contractId);

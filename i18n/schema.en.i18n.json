@@ -589,7 +589,7 @@
     "contractId": {
       "label": "Contract"
     },
-    "partnerTxt": {
+    "partnerName": {
       "label": "Partner",
       "placeholder": "(eg. Super Clean Inc)"
     },

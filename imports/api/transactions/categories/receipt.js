@@ -12,7 +12,7 @@ import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
 const receiptSchema = new SimpleSchema({
-  partnerTxt: { type: String, max: 100, optional: true },
+  partnerName: { type: String, max: 100, optional: true },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
   // amount overrides non-optional value of transactions, with optional & calculated value
   amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },

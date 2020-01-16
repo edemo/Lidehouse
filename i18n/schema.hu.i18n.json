@@ -594,7 +594,7 @@
     "contractId": {
       "label": "Szerződés"
     },
-    "partnerTxt": {
+    "partnerName": {
       "label": "Partner",
       "placeholder": "(pl. Kulcslyuk kft)"
     },
