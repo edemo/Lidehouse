@@ -74,7 +74,7 @@ Partners.actions = {
     visible: (options, doc) => currentUserHasPermission('partners.notifyOutstanding', doc) && doc.highestExpiredBillDayCount(),
     run(options, doc) {
       Modal.confirmAndCall(Partners.methods.notifyOutstanding, { _id: doc._id }, {
-        action: 'notifyOutstanding',
+        action: 'notify outstanding',
         message: 'It will send a notification',
       });
     },
