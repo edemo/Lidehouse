@@ -78,7 +78,7 @@ Bills.receiptSchema = new SimpleSchema({
 Bills.paymentSchema = new SimpleSchema({
   id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePayment },
   amount: { type: Number, decimal: true },
-//  valueDate: { type: Date },
+  valueDate: { type: Date, optional: true },
 });
 
 Bills.extensionSchema = new SimpleSchema([

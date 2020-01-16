@@ -53,7 +53,8 @@ if (Meteor.isClient) {
         });
       },
       changed(newDoc, oldDoc) {
-        console.warn('Changed transaction noticed! From: ', oldDoc, ' To: ', newDoc);
+//        console.warn('Changed transaction noticed! From: ', oldDoc, ' To: ', newDoc);
+//      Normal that changes come through for createdAt, createdBy, updatedAt, updatedBy, serial, complete
       },
       removed(doc) {
         JournalEntries.remove({ txId: doc._id });

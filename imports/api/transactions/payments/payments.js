@@ -32,6 +32,7 @@ export const chooseBill = {
 Payments.billSchema = new SimpleSchema({
   id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBill },
   amount: { type: Number, decimal: true },
+  valueDate: { type: Date, optional: true },
 });
 
 const paymentSchema = new SimpleSchema([Transactions.partnerSchema, {
