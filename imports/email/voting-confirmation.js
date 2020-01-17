@@ -5,13 +5,15 @@ import { _ } from 'meteor/underscore';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Partners } from '/imports/api/partners/partners.js';
 
 export function voteCastConfirmationEmail(voters, topicId, registrator) {
   const topic = Topics.findOne(topicId);
   const community = Communities.findOne(topic.communityId).name;
   const link = FlowRouterHelpers.urlFor('Topic show', { _tid: topicId });
   voters.forEach((voterId) => {
-    const user = Meteor.users.findOne(voterId);
+    const partner = Partners.findOne(voterId);
+    const user = partner.user();
     if (!user) return;
     const language = user.language();
     const personName = user.displayOfficialName(topic.communityId, language);

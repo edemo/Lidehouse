@@ -167,6 +167,7 @@ Meteor.startup(function attach() {
 
 Factory.define('bill', Transactions, {
   category: 'bill',
+  relation: 'supplier',
   valueDate: () => Clock.currentDate(),
   partnerId: () => Factory.get('supplier'),
   issueDate: () => Clock.currentDate(),
