@@ -164,7 +164,7 @@ Factory.define('customer', Partners, {
   contact: {
     address: () => faker.address.streetAddress('###'),
     phone: () => faker.phone.phoneNumberFormat(1),
-    email: () => `${faker.random.word()}.demouser@honline.hu`,
+    email: () => `${faker.name.firstName()}.demouser@honline.hu`,
   },
 });
 
@@ -179,7 +179,7 @@ Factory.define('supplier', Partners, {
   contact: {
     address: () => faker.address.streetAddress('###'),
     phone: () => faker.phone.phoneNumberFormat(1),
-    email: () => `${faker.random.word()}.demouser@honline.hu`,
+    email: () => `${faker.name.firstName()}.demouser@honline.hu`,
   },
 });
 
@@ -194,7 +194,7 @@ Factory.define('member', Partners, {
   contact: {
     address: () => faker.address.streetAddress('###'),
     phone: () => faker.phone.phoneNumberFormat(1),
-    email: () => `${faker.random.word()}.demouser@honline.hu`,
+    email: () => `${faker.name.firstName()}.demouser@honline.hu`,
   },
 });
 

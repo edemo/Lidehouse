@@ -57,7 +57,7 @@ export const castVote = new ValidatedMethod({
 
     if (Meteor.isServer) {
       const updatedTopic = Topics.findOne(topicId);
-      updatedTopic.voteEvaluate(false); // writes only voteParticipation, no results
+      updatedTopic.voteEvaluate();
       if (topic.vote.effect === 'legal') voteCastConfirmationEmail(_voters, topicId, this.userId);
     }
   },

@@ -1,12 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 import { Migrations } from 'meteor/percolate:migrations';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { _ } from 'meteor/underscore';
 
 Migrations.add({
   version: 1,
@@ -130,6 +134,40 @@ Migrations.add({
         { $set: { category: 'comment' } },
         { multi: true }
       );
+    }
+    upgrade();
+  },
+});
+
+Migrations.add({
+  version: 9,
+  name: 'Membership persons become partners, and partners cast the votes, delegate and pay the bills',
+  up() {
+    function upgrade() {
+      Memberships.find({}).forEach((doc) => {
+        let partnerId = Partners.findOne({ communityId: doc.communityId, 'idCard.name': doc.person.idCard.name })._id;
+        if (!partnerId) partnerId = Partners.insert(doc.person);
+        Memberships.update(doc._id, { $set: { partnerId }, $unset: { person: '', personId: '' } });
+      });
+      Topics.find({ category: 'vote' }).forEach((doc) => {
+        const newVoteCasts = {};
+        _.each(doc.voteCasts, (vote, userId) => {
+          const partnerId = Meteor.users.findOne(userId).partnerId(doc.communityId);
+          newVoteCasts[partnerId] = vote;
+        });
+        Topics.update(doc._id, { $set: { voteCasts: newVoteCasts } });
+        doc.voteEvaluate(); // calculates all the rest of the voteResults fields
+        // We assume here that the registered delegations have not changed since the voting, but that's OK, noone delegated actually
+      });
+      Delegations.find({}).forEach((doc) => {
+        const sourceUserId = doc.sourcePersonId;
+        const sourceUser = Meteor.users.find(sourceUserId);
+        const sourcePartnerId = sourceUser.partnerId(doc.communityId);
+        const targetUserId = doc.targetPersonId;
+        const targetUser = Meteor.users.find(targetUserId);
+        const targetPartnerId = targetUser.partnerId(doc.communityId);
+        Delegations.update(doc._id, { $set: { sourceId: sourcePartnerId, targetId: targetPartnerId }, $unset: { sourcePersonId: '', targetPersonId: '' } });
+      });
     }
     upgrade();
   },

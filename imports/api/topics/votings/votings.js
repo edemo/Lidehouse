@@ -84,7 +84,7 @@ Votings.extensionSchema = new SimpleSchema({
   voteCasts: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
   voteCastsIndirect: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
   votePaths: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
-    // userId -> ranked array of choice indexes (or single entry in the array)
+    // partnerId -> ranked array of choice indexes (or single entry in the array)
   voteResults: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
     // votershipId -> {}
   voteSummary: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
@@ -143,7 +143,7 @@ Topics.categoryHelpers('vote', {
   votingClosed() {
     return this.status === 'votingFinished' || this.status === 'closed';
   },
-  voteEvaluate(revealResults) {
+  voteEvaluate() {
     if (Meteor.isClient) return; // 'voteEvaluate' should only run on the server, client does not have the necessary data to perform it
     const voteResults = {};         // results by voterships
     const voteCastsIndirect = {};   // results by users
@@ -198,10 +198,7 @@ Topics.categoryHelpers('vote', {
 
       getVoteResult(partnerId);
     });
-
-    Topics.update(this._id, { $set: { voteParticipation } }, { selector: { category: 'vote' } });
-//    if (!revealResults) return;
-    Topics.update(this._id, { $set: { voteCastsIndirect, votePaths, voteResults, voteSummary } }, { selector: { category: 'vote' } });
+    Topics.update(this._id, { $set: { voteParticipation, voteCastsIndirect, votePaths, voteResults, voteSummary } }, { selector: { category: 'vote' } });
   },
   voteResultsDisplay() {
     const topic = this;
@@ -301,7 +298,7 @@ const votingFinished = {
     return message;
   },
   onEnter(event, topic) {
-    topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
+    topic.voteEvaluate();
    // Topics.update(topic._id, { $set: { closesAt: new Date() } });
   },
 };

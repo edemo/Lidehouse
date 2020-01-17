@@ -18,7 +18,7 @@ export function billColumns() {
     { data: 'deliveryDate', title: __('schemaBills.deliveryDate.label'), render: Render.formatDate },
     { data: 'dueDate', title: __('schemaBills.dueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
-    { data: 'outstanding', title: __('schemaBills.outstanding.label'), render: displayOutstanding },
+    { data: 'outstanding', title: __('schemaBills.outstanding.label'), render: Render.formatNumber },
     { data: 'paymentDate', title: __('schemaBills.paymentDate.label'), render: Render.formatDate },
     { data: 'note', title: __('schemaTransactions.note.label') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
