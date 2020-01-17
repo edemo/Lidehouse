@@ -300,11 +300,6 @@ Transactions.helpers({
     this.amount = totalAmount;
     this.tax = totalTax;
   },
-  expiredBillDayCount() {
-    const diff = moment().diff(this.dueDate, 'days');
-    if (diff < 0) return 0;
-    return diff;
-  },
 });
 
 Transactions.attachBaseSchema(Transactions.baseSchema);

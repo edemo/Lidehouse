@@ -21,7 +21,6 @@ export const BillNotification_Email = {
       link: FlowRouterHelpers.urlFor('Parcels finances'),
       alertColor: 'alert-warning',
       communityId: params.cid,
-      footer: TAPi18n.__('email.defaultFooter', {}, Partners.findOne(params.pid).getLanguage()),
     }),
   },
 };

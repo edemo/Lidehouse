@@ -28,7 +28,6 @@ export function sendOutstandingNotificationEmail(partnerId) {
         partner,
         link: FlowRouterHelpers.urlFor('Parcels finances'),
         alertColor: 'alert-warning',
-        footer: TAPi18n.__('email.defaultFooter', {}, language),
       },
     });
   }

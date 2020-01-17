@@ -25,7 +25,6 @@ export function sendBillNotificationEmail(bill) {
       link: FlowRouterHelpers.urlFor('Parcels finances'),
       alertColor: 'alert-warning',
       communityId: community._id,
-      footer: TAPi18n.__('email.defaultFooter', {}, language),
     },
   });
 }

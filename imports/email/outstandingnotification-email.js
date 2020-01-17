@@ -22,7 +22,6 @@ export const OutstandingNotification_Email = {
       partner: Partners.findOne(params.pid),
       link: FlowRouterHelpers.urlFor('Parcels finances'),
       alertColor: 'alert-warning',
-      footer: TAPi18n.__('email.defaultFooter', {}, Partners.findOne(params.pid).getLanguage()),
     }),
   },
 };

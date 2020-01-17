@@ -149,6 +149,11 @@ Transactions.categoryHelpers('bill', {
   display() {
     return `${moment(this.deliveryDate).format('L')} ${this.partner()} ${this.amount}`;
   },
+  overdueDays() {
+    const diff = moment().diff(this.dueDate, 'days');
+    if (diff < 0) return 0;
+    return diff;
+  },
 });
 
 Transactions.attachVariantSchema(Bills.extensionSchema, { selector: { category: 'bill' } });

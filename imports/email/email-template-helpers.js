@@ -49,20 +49,6 @@ export const EmailTemplateHelpers = {
   community() {
     return this.communityId && Communities.findOne(this.communityId);
   },
-  displayPartnerName() {
-    if (this.partner.idCard && this.partner.idCard.name) return this.partner.idCard.name;
-    if (this.partner.userId) {
-      const user = this.partner.user();
-      if (user) return user.displayProfileName(user.settings.language);
-    }
-    if (this.partner.contact && this.partner.contact.email) {
-      const emailSplit = this.partner.contact.email.split('@');
-      const emailName = emailSplit[0];
-      return `[${emailName}]`;
-    }
-    if (this.partner.userId && !this.partner.user()) return __('deletedUser');
-    return __('unknownUser');
-  },
 };
 
 // ------------- Sample ----------------

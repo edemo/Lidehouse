@@ -110,11 +110,11 @@ Partners.helpers({
   toString() {
     return this.displayName();
   },
-  highestExpiredBillDayCount() {
+  mostOverdueDays() {
     if (this.outstanding === 0) return 0;
     const Transactions = Mongo.Collection.get('transactions');
     const outstandings = Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $gt: 0 } }).fetch();
-    const daysOfExpiring = outstandings.map(bill => bill.expiredBillDayCount());
+    const daysOfExpiring = outstandings.map(bill => bill.overdueDays());
     return Math.max.apply(Math, daysOfExpiring);
   },
 });
