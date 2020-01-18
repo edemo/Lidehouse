@@ -119,8 +119,9 @@ export class CommunityBuilder {
   build(name, data) {
     const dataExtended = _.extend({ communityId: this.communityId }, data);
     if (name) {
-      const doc = Factory.build(name, dataExtended);
+      const doc = Factory.build(name);
       delete doc._id; // for some reason Factory builds an _id onto it
+      _.each(dataExtended, (value, key) => Object.setByString(doc, key, value));
       return doc;
     }
     return dataExtended;

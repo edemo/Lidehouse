@@ -101,11 +101,21 @@ Partners.helpers({
     if (this.userId && !this.user()) return __('deletedUser');
     return __('unknownUser');
   },
+  getLanguage() {
+    return this.user() ? this.user().settings.language : this.community().settings.language;
+  },
   activeRoles(communityId) {
     return _.uniq(Memberships.findActive({ communityId, approved: true, partnerId: this._id }).fetch().map(m => m.role));
   },
   toString() {
     return this.displayName();
+  },
+  mostOverdueDays() {
+    if (this.outstanding === 0) return 0;
+    const Transactions = Mongo.Collection.get('transactions');
+    const outstandings = Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $gt: 0 } }).fetch();
+    const daysOfExpiring = outstandings.map(bill => bill.overdueDays());
+    return Math.max.apply(Math, daysOfExpiring);
   },
 });
 

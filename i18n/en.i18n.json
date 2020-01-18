@@ -143,6 +143,7 @@
   "actionDone_move": "moved",
   "actionDone_import": "imported",
   "actionDone_post": "posted",
+  "actionDone_notify": "notified",
 
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "delete user": "delete your account permanently",

@@ -17,7 +17,11 @@
                     <tr>
                         <td class="alert {{alertColor}}">
                             {{{_ 'email.NotificationSubject' name=community.name}}}
-                            <p><small>{{{_ 'email.NotificationInstructions'}}}</small></p>
+                            <p><small>{{{_ 'email.dontReply'}}}</small>
+                            {{#if this.notificationInstructions}}
+                                <small>{{this.notificationInstructions}}</small>
+                            {{/if}}
+                            </p>
                         </td>
                     </tr>
                     <tr>
@@ -39,7 +43,13 @@
                 <div class="footer">
                     <table width="100%">
                         <tr>
-                            <td class="aligncenter content-block">{{{_ 'email.NotificationFooter' frequency=(_ frequencyKey) link=(urlFor 'User data page') adminEmail=adminEmail }}}</td>
+                            <td class="aligncenter content-block">
+                                {{#if this.footer}}
+                                    {{{this.footer}}}
+                                {{else}}
+                                    {{_ 'email.defaultFooter'}}
+                                {{/if}}
+                            </td>
                         </tr>
                     </table>
                 </div></div>

@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { Communities } from '/imports/api/communities/communities.js';
 
@@ -9,9 +10,6 @@ export const Notification_Layout = {
   helpers: {
     user() {
       return Meteor.users.findOne(this.userId);
-    },
-    community() {
-      return Communities.findOne(this.communityId);
     },
     frequencyKey() {
       return 'schemaUsers.settings.notiFrequency.' + Meteor.users.findOne(this.userId).settings.notiFrequency;
