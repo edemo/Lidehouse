@@ -32,8 +32,8 @@ if (Meteor.isServer) {
   // Mock version of the real client's helper function
   const userHasNowSeen = function (userId, topicId) {
     const topic = Topics.findOne(topicId);
-    const comments = topic.comments().fetch(); // returns newest-first order
-    const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
+    const lastComment = topic.comments().fetch()[0]; // returns newest-first order
+    const lastseenTimestamp = lastComment ? lastComment.createdAt : topic.createdAt;
     const newLastSeenInfo = { timestamp: lastseenTimestamp };
     updateMyLastSeen._execute({ userId }, { topicId, lastSeenInfo: newLastSeenInfo });
   };
@@ -229,6 +229,7 @@ if (Meteor.isServer) {
         it('notifies on new topic', function (done) {
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.creatorId, managerId);
+          chai.assert.isTrue(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
           chai.assert.isTrue(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
           done();
         });
@@ -237,6 +238,7 @@ if (Meteor.isServer) {
           userHasNowSeen(userId, topicId);
           
           const topic = Topics.findOne(topicId);
+          chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
           chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
           done();
         });
@@ -244,6 +246,7 @@ if (Meteor.isServer) {
         it('doesn\'t notify on own topic', function (done) {
           const myTopicId = Fixture.builder.create('forum', { creatorId: userId });
           const topic = Topics.findOne(myTopicId);
+          chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
           chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
           done();
         });
@@ -253,7 +256,9 @@ if (Meteor.isServer) {
             creatorId: managerId, topicId, text: 'comment 1' });
 
           const topic = Topics.findOne(topicId);
+          chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
           chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
+          chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 1);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 1);
           const unseenComments = topic.unseenCommentListBy(userId, Meteor.users.SEEN_BY.NOTI);
           chai.assert.equal(unseenComments[0].text, 'comment 1');
@@ -264,6 +269,7 @@ if (Meteor.isServer) {
           userHasNowSeen(userId, topicId);
 
           const topic = Topics.findOne(topicId);
+          chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 0);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 0);
           done();
         });

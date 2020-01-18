@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkModifier, checkPermissions, checkNoOutstanding } from '/imports/api/method-checks.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
+import { sendOutstandingNotificationEmail } from '/imports/email/outstanding-notification.js';
 import { Partners } from './partners.js';
 
 
@@ -51,6 +52,19 @@ export const remove = new ValidatedMethod({
   },
 });
 
+export const notifyOutstanding = new ValidatedMethod({
+  name: 'partners.notifyOutstanding',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ _id }) {
+    const doc = checkExists(Partners, _id);
+    checkPermissions(this.userId, 'partners.notifyOutstanding', doc);
+    return sendOutstandingNotificationEmail(_id);
+  },
+});
+
 Partners.methods = Partners.methods || {};
-_.extend(Partners.methods, { insert, update, remove });
+_.extend(Partners.methods, { insert, update, remove, notifyOutstanding });
 _.extend(Partners.methods, crudBatchOps(Partners));

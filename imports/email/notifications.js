@@ -3,15 +3,19 @@ import { Meteor } from 'meteor/meteor';
 import { Mailer } from 'meteor/lookback:emails';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
+import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { Topics } from '/imports/api/topics/topics.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { emailSender } from '/imports/startup/server/email-sender.js';
 import { Communities } from '../api/communities/communities';
+import { Partners } from '../api/partners/partners';
+
 
 function sendNotifications(user) {
   user.communities().forEach((community) => {
     const topicsWithEvents = Topics.topicsWithUnseenEvents(user._id, community._id, Meteor.users.SEEN_BY.NOTI);
     const topicsToDisplay = topicsWithEvents.filter(t => t.hasThingsToDisplay());
+    const frequencyKey = 'schemaUsers.settings.notiFrequency.' + user.settings.notiFrequency;
     if (topicsToDisplay.length > 0) {
       emailSender.sendHTML({
         to: user.getPrimaryEmail(),
@@ -23,6 +27,8 @@ function sendNotifications(user) {
           userId: user._id,
           communityId: community._id,
           topicsToDisplay,
+          notificationInstructions: TAPi18n.__('defaultNotificationInstructions', {}, user.settings.language),
+          footer: TAPi18n.__('email.NotificationFooter', { link: FlowRouterHelpers.urlFor('User data page'), adminEmail: community.admin().profile.publicEmail, frequency: frequencyKey }, user.settings.language),
         },
       });
     }

@@ -340,7 +340,7 @@ Factory.define('vote', Topics, {
   closesAt: () => moment().add(14, 'day').toDate(),
   vote: {
     procedure: 'online',
-    effect: 'legal',
+    effect: 'poll',
     type: 'choose',
     choices: ['white', 'red', 'yellow', 'grey'],
   },
