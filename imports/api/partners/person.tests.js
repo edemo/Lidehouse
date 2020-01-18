@@ -24,7 +24,7 @@ if (Meteor.isServer) {
   let Fixture;
   let parcelId;
 
-  describe('person', function () {
+  describe.only('person', function () {
     this.timeout(150000);
     before(function () {
       sinon.stub(Email);          // Mocking the Email sending
@@ -63,6 +63,7 @@ if (Meteor.isServer) {
 
         it('[1] user creates an account for himself', function (done) {
           userId = Accounts.createUser({ email: 'newuser@honline.hu', password: 'password' });
+          Meteor.users.methods.update._execute({ userId }, { _id: userId, modifier: { $set: { profile: { firstName: 'Jimmy', lastName: 'Boyy' } } } });
           done();
         });
 
@@ -134,6 +135,7 @@ if (Meteor.isServer) {
 
           const membership = Memberships.findOne(membershipId);
           chai.assert.equal(membership.person().id(), userId);
+          chai.assert.equal(membership.person().displayName(), 'Jimmy Boyy');    // Only has profile name
           const user = Meteor.users.findOne(userId);
           // Now he has privileges
           chai.assert.isTrue(user.hasRole('owner', Fixture.demoCommunityId));
@@ -145,11 +147,12 @@ if (Meteor.isServer) {
         it('[4] later manager certifies the person', function (done) {
           Partners.methods.update._execute({ userId: Fixture.demoManagerId }, {
             _id: partnerId,
-            modifier: { $set: { idCard: { type: 'natural', identifier: 'JIMS_ID_NUMBER' } } },
+            modifier: { $set: { idCard: { type: 'natural', identifier: 'JIMS_ID_NUMBER', name: 'Jim Smith' } } },
           });
 
           const membership = Memberships.findOne(membershipId);
           chai.assert.equal(membership.person().id(), userId);    // userId binds stronger than idCard.identifier
+          chai.assert.equal(membership.person().displayName(), 'Jim Smith');    // Certified name binds stronger than profile name
 
           done();
         });
@@ -245,11 +248,13 @@ if (Meteor.isServer) {
       });
 
       describe('Scenario B2: manager links person, who is not yet a user, but will be', function () {
-        let membershipId;
+        let membershipId, membershipId2, membershipId3;
         let partnerId;
         let userId, user;
         after(function () {
           Memberships.remove(membershipId);
+          Memberships.remove(membershipId2);
+          Memberships.remove(membershipId3);
           Partners.remove(partnerId);
           Meteor.users.remove(userId);
         });
@@ -353,13 +358,48 @@ if (Meteor.isServer) {
           done();
         });
 
-        it('[3] user accepts enrollment (and verifies account)', function (done) {
+        it('[3] admin gives another role to the same user', function (done) {
+          membershipId2 = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, {
+            communityId: Fixture.demoCommunityId,
+            approved: true,
+            partnerId,
+            role: 'overseer',
+          });
+
+          sinon.assert.calledTwice(Email.send); // no further emails were sent
+          const membership2 = Memberships.findOne(membershipId2);
+          chai.assert.equal(membership2.person().id(), userId);
+          chai.assert.isFalse(membership2.accepted);
+
+          done();
+        });
+
+        it('[4] user accepts enrollment (and verifies account)', function (done) {
           Memberships.methods.accept._execute({ userId });
 
           const membership = Memberships.findOne(membershipId);
           chai.assert.isDefined(membership.person().userId);
           chai.assert.equal(membership.person().id(), userId);
           chai.assert.isTrue(membership.accepted);    // now he is accepted state
+
+          const membership2 = Memberships.findOne(membershipId2);
+          chai.assert.isTrue(membership2.accepted);    // accepted on both roles
+
+          done();
+        });
+
+        it('[5] Further roles can be given to the same user, after invitation is accepted', function (done) {
+          membershipId3 = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, {
+            communityId: Fixture.demoCommunityId,
+            approved: true,
+            partnerId,
+            role: 'treasurer',
+          });
+
+          sinon.assert.calledTwice(Email.send); // no further emails sent
+
+          const membership3 = Memberships.findOne(membershipId3);
+          // TODO: chai.assert.isTrue(membership3.accepted);    // what makes him into accepted state, should we send him a noti, which he approves with a click, or by not objecting to it?
 
           done();
         });
