@@ -18,6 +18,8 @@ function sendNotifications(user) {
         subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
         template: 'Notification_Email',
         data: {
+          type: 'Notifications',
+          alertColor: 'alert-good',
           userId: user._id,
           communityId: community._id,
           topicsToDisplay,
@@ -36,6 +38,8 @@ export function processNotifications(frequency) {
   // console.log(usersToBeNotified.fetch());
   usersToBeNotified.forEach(user => sendNotifications(user));
 }
+
+//--------------------------------------------------------------
 
 export const EXPIRY_NOTI_DAYS = 3;
 
@@ -63,10 +67,11 @@ export function notifyExpiringVotings() {
           subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
           template: 'Voteexpires_Email',
           data: {
+            type: 'Notifications',
+            alertColor: 'alert-warning',
             userId: user._id,
             communityId: community._id,
             topics: notVotedYetVotings,
-            alertColor: 'alert-warning',
           },
         });
       }
