@@ -492,12 +492,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  castDemoVotes(voteTopicLoan, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1], [0], [0], [0]]);
+  castDemoVotes(voteTopicLoan, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1]]);
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(6, 'weeks').toDate());
   demoBuilder.execute(statusChange, { topicId: voteTopicLoan, status: 'votingFinished' });
   demoBuilder.execute(statusChange, { topicId: voteTopicLoan, status: 'closed' });
   Clock.clear();
-  
+
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(142, 'hours').toDate());
   const voteTopicParking = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.parking.title'),
