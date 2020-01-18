@@ -6,7 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { Topics } from '/imports/api/topics/topics.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
-import { emailSender } from '/imports/startup/server/email-sender.js';
+import { EmailSender } from '/imports/startup/server/email-sender.js';
 import { Communities } from '../api/communities/communities';
 import { Partners } from '../api/partners/partners';
 
@@ -17,7 +17,7 @@ function sendNotifications(user) {
     const topicsToDisplay = topicsWithEvents.filter(t => t.hasThingsToDisplay());
     const frequencyKey = 'schemaUsers.settings.notiFrequency.' + user.settings.notiFrequency;
     if (topicsToDisplay.length > 0) {
-      emailSender.sendHTML({
+      EmailSender.send({
         to: user.getPrimaryEmail(),
         subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
         template: 'Notification_Email',
@@ -68,7 +68,7 @@ export function notifyExpiringVotings() {
         return !voting.voteCastsIndirect[voter._id];
       });
       if (notVotedYetVotings.length > 0) {
-        emailSender.sendHTML({
+        EmailSender.send({
           to: user.getPrimaryEmail(),
           subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
           template: 'Voteexpires_Email',

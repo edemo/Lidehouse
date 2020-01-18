@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
+import { _ } from 'meteor/underscore';
 import { Mailer } from 'meteor/lookback:emails';
 import { Email } from 'meteor/email';
+import { debugAssert } from '/imports/utils/assert.js';
 import { EmailTemplates, SampleEmailTemplates } from '/imports/email/email-templates.js';
 import { EmailTemplateHelpers, SampleEmailTemplateHelpers } from '/imports/email/email-template-helpers.js';
 import { Notification_Layout } from '/imports/email/notification-layout.js';
@@ -45,39 +47,38 @@ defaultRoles.forEach((role) => {
   fakeEmailAddresses.push(`${role.name}@test.com`);
 });
 
-export const emailSender = {
+export const EmailSender = {
   config: {
     from: 'Honline <noreply@honline.hu>',
     bcc: 'Honline <noreply@honline.hu>',
     siteName: 'Honline',
   },
-  sendHTML(options) {
+  send(options) {
     if (options.to.includes('demouser@honline.hu') || options.to.includes('dummyuser@honline.hu')
       || fakeEmailAddresses.includes(options.to)) return;
-    Mailer.send({
+    const sendOptions = {
       from: this.config.from,
       to: options.to,
       bcc: this.config.bcc,
       subject: options.subject,
-      template: options.template,
-      data: options.data,
-    });
-  },
-  sendPlainText(options) {
-    if (options.to.includes('demouser@honline.hu') || options.to.includes('dummyuser@honline.hu')
-    || fakeEmailAddresses.includes(options.to)) return;
-    Email.send({
-      from: this.config.from,
-      to: options.to,
-      bcc: this.config.bcc,
-      subject: options.subject,
-      text: options.text,
-    });
+    };
+    if (options.template) {
+      _.extend(sendOptions, {
+        template: options.template,
+        data: options.data,
+      });
+      Mailer.send(sendOptions);
+    } else if (options.text) {
+      _.extend(sendOptions, {
+        text: options.text,
+      });
+      Email.send(sendOptions);
+    } else debugAssert(false, 'Email has to be html or plain text');
   },
 };
 
 Mailer.config({
-  from: emailSender.config.from,
+  from: EmailSender.config.from,
 //  replyTo: 'Honline <noreply@honline.hu>',
   testEmail: null,  // set your email here to be able to send by url 
   plainTextOpts: {

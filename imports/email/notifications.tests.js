@@ -18,7 +18,7 @@ import '/i18n/email.en.i18n.json';
 import { processNotifications, notifyExpiringVotings, EXPIRY_NOTI_DAYS } from './notifications.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 
-import { emailSender } from '/imports/startup/server/email-sender.js';   // We will be mocking it over
+import { EmailSender } from '/imports/startup/server/email-sender.js';   // We will be mocking it over
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
 if (Meteor.isServer) {
@@ -26,7 +26,7 @@ if (Meteor.isServer) {
 
   let Fixture;
 
-  describe.only('Notifications', function () {
+  describe('Notifications', function () {
     this.timeout(15000);
     let topicId;
     let ticketId;
@@ -55,7 +55,7 @@ if (Meteor.isServer) {
       ownerWithRepresentorOnParcel = Meteor.users.findOne(Fixture.dummyUsers[5]);
       ownerWithNotiNever = Meteor.users.findOne(Fixture.dummyUsers[1]);
       // Mocking the Email sending
-      sinon.stub(emailSender);
+      sinon.stub(EmailSender);
     });
     afterEach(function () {
       sinon.resetHistory();
@@ -79,43 +79,44 @@ if (Meteor.isServer) {
         }
 
         processNotifications('frequent');
-        sinon.assert.calledOnce(emailSender.sendHTML);
-        assertGotAllEmails(ownerWithNotiFrequent, emailSender.sendHTML.getCall(0).args[0], 1);
+        sinon.assert.calledOnce(EmailSender.send);
+        assertGotAllEmails(ownerWithNotiFrequent, EmailSender.send.getCall(0).args[0], 1);
 
         processNotifications('daily');
-        sinon.assert.calledThrice(emailSender.sendHTML);
-        assertGotAllEmails(ownerWithNotiDaily, emailSender.sendHTML.getCall(1).args[0], 2);
+        sinon.assert.calledThrice(EmailSender.send);
+        assertGotAllEmails(ownerWithNotiDaily, EmailSender.send.getCall(1).args[0], 2);
       });
 
       it('No emails after you seen it all', function () {
         processNotifications('frequent');
-        sinon.assert.notCalled(emailSender.sendHTML);
+        sinon.assert.notCalled(EmailSender.send);
         processNotifications('daily');
-        sinon.assert.notCalled(emailSender.sendHTML);
+        sinon.assert.notCalled(EmailSender.send);
         processNotifications('weekly');
-        sinon.assert.calledThrice(emailSender.sendHTML);
+        sinon.assert.calledThrice(EmailSender.send);
       });
 
       it('No email about your own comment', function () {
         Fixture.builder.create('comment', { topicId, creatorId: ownerWithNotiFrequent._id, text: 'Hello' });
         processNotifications('frequent');
-        sinon.assert.notCalled(emailSender.sendHTML);
+        sinon.assert.notCalled(EmailSender.send);
         processNotifications('daily');
-        sinon.assert.calledTwice(emailSender.sendHTML);
+        sinon.assert.calledTwice(EmailSender.send);
       });
 
       it('Emails about other users comment', function () {
         Fixture.builder.create('comment', { topicId, creatorId: ownerWithNotiNever._id, text: 'Hello' });
         processNotifications('frequent');
-        sinon.assert.calledOnce(emailSender.sendHTML);
-        const emailData = emailSender.sendHTML.getCall(0).args[0];
+        sinon.assert.calledOnce(EmailSender.send);
+        const emailData = EmailSender.send.getCall(0).args[0];
+        chai.assert.equal(emailData.template, 'Notification_Email');
         chai.assert.equal(emailData.data.userId, ownerWithNotiFrequent._id);
         chai.assert.equal(emailData.data.communityId, demoCommunity._id);
         chai.assert.equal(emailData.data.topicsToDisplay[0].topic._id, topicId);
         chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments.length, 1);
         chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments[0].text, 'Hello');
         processNotifications('daily');
-        sinon.assert.calledThrice(emailSender.sendHTML);
+        sinon.assert.calledThrice(EmailSender.send);
         processNotifications('weekly');
       });
 
@@ -130,7 +131,7 @@ if (Meteor.isServer) {
         processNotifications('frequent');
         processNotifications('daily');
         processNotifications('weekly');
-        sinon.assert.notCalled(emailSender.sendHTML);
+        sinon.assert.notCalled(EmailSender.send);
       });
 
       it('Doesnt send email when former hidden comment is visible again', function () {
@@ -139,18 +140,18 @@ if (Meteor.isServer) {
         processNotifications('frequent');
         processNotifications('daily');
         processNotifications('weekly');
-        sinon.assert.notCalled(emailSender.sendHTML);
+        sinon.assert.notCalled(EmailSender.send);
       });
 
       it('Doesnt email closed group content outside the group', function () {
         const privateTopicId = Fixture.builder.create('room', { creatorId: Fixture.demoManagerId, participantIds: [ownerWithNotiWeekly._id, Fixture.demoManagerId] });
         Fixture.builder.create('comment', { topicId: privateTopicId, creatorId: Fixture.demoManagerId, text: 'Hello buddy' });
         processNotifications('frequent');
-        sinon.assert.notCalled(emailSender.sendHTML);
+        sinon.assert.notCalled(EmailSender.send);
         processNotifications('daily');
-        sinon.assert.notCalled(emailSender.sendHTML);
+        sinon.assert.notCalled(EmailSender.send);
         processNotifications('weekly');
-        sinon.assert.calledOnce(emailSender.sendHTML);
+        sinon.assert.calledOnce(EmailSender.send);
       });
 
       // The private chat is now moderated (in email noti) by the moderators -- that's not too good, but OK for now, and can be viewed in the app
@@ -160,9 +161,9 @@ if (Meteor.isServer) {
         Fixture.builder.create('comment', { creatorId: moderatedUserId, topicId: privateTopicId, text: 'Hello buddy' });
         processNotifications('frequent');
         processNotifications('daily');
-        sinon.assert.notCalled(emailSender.sendHTML);
+        sinon.assert.notCalled(EmailSender.send);
         processNotifications('weekly');
-        sinon.assert.calledOnce(emailSender.sendHTML);
+        sinon.assert.calledOnce(EmailSender.send);
       });
 
       it('Doesnt email other communites comment', function () {
@@ -174,7 +175,7 @@ if (Meteor.isServer) {
         Topics.methods.statusChange._execute({ userId: demoManager._id }, 
           { topicId: ticketId, status: 'confirmed', dataUpdate });
         processNotifications('daily');
-        sinon.assert.calledTwice(emailSender.sendHTML);
+        sinon.assert.calledTwice(EmailSender.send);
       });
     });
 
@@ -193,21 +194,21 @@ if (Meteor.isServer) {
       it('Emails about vote closes soon', function () {
         notifyExpiringVotings();
 
-        sinon.assert.calledThrice(emailSender.sendHTML);
-        const emailData = emailSender.sendHTML.getCall(0).args[0];
+        sinon.assert.calledThrice(EmailSender.send);
+        const emailData = EmailSender.send.getCall(0).args[0];
         chai.assert.equal(emailData.template, 'Voteexpires_Email');
         chai.assert.equal(emailData.data.communityId, demoCommunity._id);
         chai.assert.equal(emailData.data.topics.length, 1);
         chai.assert.deepEqual(emailData.data.topics, Topics.find(topicId).fetch());
 
-        sinon.assert.alwaysCalledWithMatch(emailSender.sendHTML, { data: sinon.match({ communityId: demoCommunity._id }) });
-        sinon.assert.calledWithMatch(emailSender.sendHTML, { to: ownerWithNotiWeekly.getPrimaryEmail() });
-        sinon.assert.calledWithMatch(emailSender.sendHTML, { to: ownerWithNotiDaily.getPrimaryEmail() });
-        sinon.assert.calledWithMatch(emailSender.sendHTML, { to: ownerWithNotiFrequent.getPrimaryEmail() });
-        sinon.assert.neverCalledWithMatch(emailSender.sendHTML, { to: userWhoHasVoted.getPrimaryEmail() });
-        sinon.assert.neverCalledWithMatch(emailSender.sendHTML, { to: demoManager.getPrimaryEmail() });
-        sinon.assert.neverCalledWithMatch(emailSender.sendHTML, { to: ownerWithRepresentorOnParcel.getPrimaryEmail() });
-        sinon.assert.neverCalledWithMatch(emailSender.sendHTML, { to: ownerWithNotiNever.getPrimaryEmail() });
+        sinon.assert.alwaysCalledWithMatch(EmailSender.send, { data: sinon.match({ communityId: demoCommunity._id }) });
+        sinon.assert.calledWithMatch(EmailSender.send, { to: ownerWithNotiWeekly.getPrimaryEmail() });
+        sinon.assert.calledWithMatch(EmailSender.send, { to: ownerWithNotiDaily.getPrimaryEmail() });
+        sinon.assert.calledWithMatch(EmailSender.send, { to: ownerWithNotiFrequent.getPrimaryEmail() });
+        sinon.assert.neverCalledWithMatch(EmailSender.send, { to: userWhoHasVoted.getPrimaryEmail() });
+        sinon.assert.neverCalledWithMatch(EmailSender.send, { to: demoManager.getPrimaryEmail() });
+        sinon.assert.neverCalledWithMatch(EmailSender.send, { to: ownerWithRepresentorOnParcel.getPrimaryEmail() });
+        sinon.assert.neverCalledWithMatch(EmailSender.send, { to: ownerWithNotiNever.getPrimaryEmail() });
       });
     });
 
@@ -216,15 +217,15 @@ if (Meteor.isServer) {
         const legalVoteId = Fixture.builder.create('vote', { creatorId: Fixture.demoManagerId, 'vote.effect': 'legal' });
         castVote._execute({ userId: ownerWithNotiFrequent._id }, { topicId: legalVoteId, castedVote: [2] });
         castVote._execute({ userId: ownerWithNotiNever._id }, { topicId: legalVoteId, castedVote: [2] });
-        sinon.assert.calledTwice(emailSender.sendPlainText);
-        sinon.assert.calledWithMatch(emailSender.sendPlainText, { to: ownerWithNotiFrequent.getPrimaryEmail() });
-        sinon.assert.calledWithMatch(emailSender.sendPlainText, { to: ownerWithNotiNever.getPrimaryEmail() });
-        sinon.assert.alwaysCalledWithMatch(emailSender.sendPlainText, { text: sinon.match(/vote has been registered/) });
+        sinon.assert.calledTwice(EmailSender.send);
+        sinon.assert.calledWithMatch(EmailSender.send, { to: ownerWithNotiFrequent.getPrimaryEmail() });
+        sinon.assert.calledWithMatch(EmailSender.send, { to: ownerWithNotiNever.getPrimaryEmail() });
+        sinon.assert.alwaysCalledWithMatch(EmailSender.send, { text: sinon.match(/vote has been registered/) });
       });
       it('Not confirms polls', function () {
         const pollVoteId = Fixture.builder.create('vote', { creatorId: Fixture.demoManagerId });
         castVote._execute({ userId: ownerWithNotiDaily._id }, { topicId: pollVoteId, castedVote: [2] });
-        sinon.assert.notCalled(emailSender.sendPlainText);
+        sinon.assert.notCalled(EmailSender.send);
       });
     });
 
@@ -236,17 +237,18 @@ if (Meteor.isServer) {
         partnerId = Fixture.builder.create('supplier', { creatorId: Fixture.demoManagerId });
         const partner = Partners.findOne(partnerId);
         billId = Fixture.builder.create('bill', { creatorId: Fixture.demoManagerId, partnerId });
-        sinon.assert.notCalled(emailSender.sendHTML);
+        sinon.assert.notCalled(EmailSender.send);
         Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: billId });
-        sinon.assert.calledOnce(emailSender.sendHTML);
-        sinon.assert.calledWithMatch(emailSender.sendHTML, { to: partner.getPrimaryEmail() });
+        sinon.assert.calledOnce(EmailSender.send);
+        sinon.assert.calledWithMatch(EmailSender.send, { template: 'BillNotification_Email' });
+        sinon.assert.calledWithMatch(EmailSender.send, { to: partner.getPrimaryEmail() });
       });
       it('Sends outstanding notification', function () {
         /*Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: billId });
-        sinon.assert.calledOnce(emailSender.sendHTML);
+        sinon.assert.calledOnce(EmailSender.send);
         const bill = Transactions.findOne(billId);
         const partner = Partners.findOne(bill.partnerId);
-        sinon.assert.calledWithMatch(emailSender.sendHTML, { to: partner.getPrimaryEmail() });*/
+        sinon.assert.calledWithMatch(EmailSender.send, { to: partner.getPrimaryEmail() });*/
       });
     });
   });

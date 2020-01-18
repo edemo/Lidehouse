@@ -3,7 +3,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
 import { Accounts } from 'meteor/accounts-base';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { emailSender } from '/imports/startup/server/email-sender.js';
+import { EmailSender } from '/imports/startup/server/email-sender.js';
 
 if (Meteor.settings.mailSender) {
   process.env.MAIL_URL = Meteor.settings.mailSender;
@@ -23,8 +23,8 @@ function dualTranslate(symbol, context, lang, separator) {
 
 // Accounts.emailTemplates
 
-Accounts.emailTemplates.siteName = emailSender.config.siteName;
-Accounts.emailTemplates.from = emailSender.config.from;
+Accounts.emailTemplates.siteName = EmailSender.config.siteName;
+Accounts.emailTemplates.from = EmailSender.config.from;
 
 Accounts.emailTemplates.enrollAccount = {
   subject(user) {

@@ -11,14 +11,14 @@ export function sendOutstandingNotificationEmail(partnerId) {
 
   if (Meteor.isServer) {
 
-    import { emailSender } from '/imports/startup/server/email-sender.js';
+    import { EmailSender } from '/imports/startup/server/email-sender.js';
 
     const partner = Partners.findOne(partnerId);
     const outstandings = Transactions.find({ partnerId: partner._id, category: 'bill', outstanding: { $gt: 0 } }).fetch();
     const community = Communities.findOne(partner.communityId);
     const language = partner.getLanguage();
 
-    emailSender.sendHTML({
+    EmailSender.send({
       to: partner.contact.email,
       subject: TAPi18n.__('email.ArrearsReminder', { name: community.name }, language),
       template: 'OutstandingNotification_Email',

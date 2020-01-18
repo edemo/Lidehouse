@@ -48,9 +48,9 @@ export function delegationConfirmationEmail(delegation, method, formerDelegation
       }, language) :
       '';
 
-    import { emailSender } from '/imports/startup/server/email-sender.js';
+    import { EmailSender } from '/imports/startup/server/email-sender.js';
     
-    emailSender.sendPlainText({
+    EmailSender.send({
       to: user.getPrimaryEmail(),
       subject: TAPi18n.__('email.ConfirmDelegationSubject', { community, methodType: methodType() }, language),
       text: TAPi18n.__('email.ConfirmDelegationText', {

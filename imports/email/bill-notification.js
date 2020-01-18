@@ -7,7 +7,7 @@ import { Partners } from '../api/partners/partners';
 
 export function sendBillNotificationEmail(bill) {
 
-  import { emailSender } from '/imports/startup/server/email-sender.js';
+  import { EmailSender } from '/imports/startup/server/email-sender.js';
 
   const partner = Partners.findOne(bill.partnerId);
   const emailAddress = partner.primaryEmail();
@@ -15,7 +15,7 @@ export function sendBillNotificationEmail(bill) {
   if (!emailAddress) return;
   const community = Communities.findOne(bill.communityId);
 
-  emailSender.sendHTML({
+  EmailSender.send({
     to: emailAddress,
     subject: TAPi18n.__('email.BillNotification', { name: community.name }, language),
     template: 'BillNotification_Email',

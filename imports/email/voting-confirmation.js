@@ -35,9 +35,9 @@ export function voteCastConfirmationEmail(voters, topicId, registrator) {
       voteValue.push(choice);
     });
     
-    import { emailSender } from '/imports/startup/server/email-sender.js';
+    import { EmailSender } from '/imports/startup/server/email-sender.js';
 
-    emailSender.sendPlainText({
+    EmailSender.send({
       to: user.getPrimaryEmail(),
       subject: TAPi18n.__('email.ConfirmVoteSubject', { community }, language),
       text: TAPi18n.__('email.ConfirmVoteText', {
