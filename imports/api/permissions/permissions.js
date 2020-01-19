@@ -122,7 +122,7 @@ export const Permissions = [
   { name: 'partners.insert',        roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'partners.update',        roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'partners.remove',        roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'partners.notifyOutstanding',        roles: ['manager', 'accountant', 'treasurer'] },
+  { name: 'partners.remindOutstandings',        roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'partners.upsert',        roles: ['manager'] },
   { name: 'parcelBillings.inCommunity', roles: ['manager', 'accountant', 'treasurer', 'overseer'] },
   { name: 'parcelBillings.insert',  roles: ['manager', 'accountant'] },

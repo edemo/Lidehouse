@@ -52,19 +52,19 @@ export const remove = new ValidatedMethod({
   },
 });
 
-export const notifyOutstanding = new ValidatedMethod({
-  name: 'partners.notifyOutstanding',
+export const remindOutstandings = new ValidatedMethod({
+  name: 'partners.remindOutstandings',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
 
   run({ _id }) {
     const doc = checkExists(Partners, _id);
-    checkPermissions(this.userId, 'partners.notifyOutstanding', doc);
+    checkPermissions(this.userId, 'partners.remindOutstandings', doc);
     return sendOutstandingsEmail(_id);
   },
 });
 
 Partners.methods = Partners.methods || {};
-_.extend(Partners.methods, { insert, update, remove, notifyOutstanding });
+_.extend(Partners.methods, { insert, update, remove, remindOutstandings });
 _.extend(Partners.methods, crudBatchOps(Partners));

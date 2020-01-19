@@ -51,6 +51,23 @@ Partners.actions = {
       });
     },
   },
+  remindOutstandings: {
+    name: 'remindOutstandings',
+    color(options, doc) {
+      const expired = doc.mostOverdueDays();
+      if (expired > 30 && expired < 90) return 'warning';
+      if (expired > 90) return 'danger';
+      return 'white';
+    },
+    icon: () => 'fa fa-exclamation',
+    visible: (options, doc) => currentUserHasPermission('partners.remindOutstandings', doc) && doc.mostOverdueDays(),
+    run(options, doc) {
+      Modal.confirmAndCall(Partners.methods.remindOutstandings, { _id: doc._id }, {
+        action: 'remind outstandings',
+        message: 'It will send a notification',
+      });
+    },
+  },
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
@@ -59,23 +76,6 @@ Partners.actions = {
       Modal.confirmAndCall(Partners.methods.remove, { _id: doc._id }, {
         action: 'delete partner',
         message: 'It will disappear forever',
-      });
-    },
-  },
-  notifyOutstanding: {
-    name: 'notifyOutstanding',
-    color(options, doc) {
-      const expired = doc.mostOverdueDays();
-      if (expired > 30 && expired < 90) return 'warning';
-      if (expired > 90) return 'danger';
-      return 'white';
-    },
-    icon: () => 'fa fa-exclamation',
-    visible: (options, doc) => currentUserHasPermission('partners.notifyOutstanding', doc) && doc.mostOverdueDays(),
-    run(options, doc) {
-      Modal.confirmAndCall(Partners.methods.notifyOutstanding, { _id: doc._id }, {
-        action: 'notify outstanding',
-        message: 'It will send a notification',
       });
     },
   },

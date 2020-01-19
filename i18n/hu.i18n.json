@@ -747,7 +747,7 @@
   "delete breakdown": "törli a könyvelési bontást",
   "delete txdef": "törli a tranzakció típust",
   "delete transaction": "törli a tranzakciót",
-  "notify outstanding": "elküldi az értesítést",
+  "remind outstandings": "elküldi az értesítést",
   "delete parcelship": "törli a vezető albetétet",
   "enable delegations": "engedélyezi a bejövő meghatalmazásokat",
   "disable delegations": "visszautasítja a bejövő meghatalmazásokat",

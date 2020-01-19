@@ -250,7 +250,7 @@ if (Meteor.isServer) {
 
       it('Sends outstandings reminder', function () {
         sinon.assert.notCalled(EmailSender.send);
-        Partners.methods.notifyOutstanding._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
+        Partners.methods.remindOutstandings._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
         const partner = Partners.findOne(partnerId);
         sinon.assert.calledOnce(EmailSender.send);
         sinon.assert.calledWithMatch(EmailSender.send, { template: 'Outstandings_Email' });
