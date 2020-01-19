@@ -23,7 +23,7 @@ export function sendBillEmail(bill) {
       community,
       bill,
       link: FlowRouterHelpers.urlFor('Parcels finances'),
-      alertColor: 'alert-warning',
+      alert: 'good',
     },
   });
 }

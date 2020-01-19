@@ -69,6 +69,7 @@ export const Notifications_Email = {
       user: Meteor.users.findOne(params.uid),
       community: Communities.findOne(params.cid),
       topicsToDisplay: Topics.topicsWithUnseenEvents(params.uid, params.cid, Meteor.users.SEEN_BY.NOTI).filter(t => t.hasThingsToDisplay()),
+      alert: 'good',
       notificationInstructions: TAPi18n.__('NotificationInstructions', {}, Meteor.users.findOne(params.uid).settings.language),
       footer: TAPi18n.__('email.NotificationFooter', { link: FlowRouterHelpers.urlFor('User data page'), adminEmail: Communities.findOne(params.cid).admin().profile.publicEmail, frequency: 'schemaUsers.settings.notiFrequency.' + Meteor.users.findOne(params.uid).settings.notiFrequency }, Meteor.users.findOne(params.uid).settings.language),
     }),

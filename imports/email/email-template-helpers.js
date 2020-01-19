@@ -4,6 +4,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { numeral } from 'meteor/numeral:numeral';
 import { _ } from 'meteor/underscore';
+import { debugAssert } from '/imports/utils/assert.js';
 import { __ } from '/imports/localization/i18n.js';
 
 // Global helpers for all email templates
@@ -28,6 +29,14 @@ export const EmailTemplateHelpers = {
   subject(type, user, community) {
     const lang = user ? user.settings.language : community.settings.language;
     return TAPi18n.__('email.' + type, {}, lang) + ' ' + TAPi18n.__('email.fromTheCommunity', { name: community.name }, lang);
+  },
+  goodOrBad(color) {
+    switch (color) {
+      case 'info': return 'good';
+      case 'warning': return 'warning';
+      case 'danger': return 'bad';
+      default: debugAssert(false); return undefined;
+    }
   },
   urlFor(route, hash = {}) {
     let result;

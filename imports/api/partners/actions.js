@@ -53,12 +53,7 @@ Partners.actions = {
   },
   remindOutstandings: {
     name: 'remindOutstandings',
-    color(options, doc) {
-      const expired = doc.mostOverdueDays();
-      if (expired > 30 && expired < 90) return 'warning';
-      if (expired > 90) return 'danger';
-      return 'white';
-    },
+    color: (options, doc) => doc.mostOverdueDaysColor(),
     icon: () => 'fa fa-exclamation',
     visible: (options, doc) => currentUserHasPermission('partners.remindOutstandings', doc) && doc.mostOverdueDays(),
     run(options, doc) {

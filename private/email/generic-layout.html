@@ -15,7 +15,7 @@
             <div class="content">
                 <table class="main" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td class="alert {{alertColor}}">
+                        <td class="alert alert-{{alert}}">
                             {{{subject type user community}}}
                             <p><small>{{{_ 'email.DontReplyToThis'}}}</small>
                             {{#if this.notificationInstructions}}
@@ -47,7 +47,7 @@
                                 {{#if this.footer}}
                                     {{{this.footer}}}
                                 {{else}}
-                                    {{_ 'email.GenericFooter'}}
+                                    {{{_ 'email.GenericFooter' adminEmail=community.admin.getPrimaryEmail}}}
                                 {{/if}}
                             </td>
                         </tr>

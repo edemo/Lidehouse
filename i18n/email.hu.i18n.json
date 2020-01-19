@@ -34,7 +34,7 @@
     "fromTheCommunity": "a __name__ társasházból",
     "DontReplyToThis": "Erre az email-re kérjük ne válaszoljon, mert egy automata rendszer küldi ki.<br>",
     "GenericFooter": ["Ha úgy érzi tévedésből kapta ezt a levelet, vagy nem ért egyet annak tartalmával,",
-      "mielőbb lépjen kapcsolatba a társasházzal az email-ben megadott elérhetőségen, vagy értesítse a társasház adminisztrátorát."],
+      "mielőbb lépjen kapcsolatba a társasházzal az email-ben megadott elérhetőségen, vagy értesítse a társasház <a href=\"mailto:__adminEmail__\">adminisztrátorát</a>."],
     "Dear": "Kedves", "glyphAfterDear": "!",
     "OutstandingsPretext": "Könyvelésünk szerint Önnek a társasház felé kifizetetlen számláiból az alábbi hátraléka mutatkozik.",
     "OutstandingsTotal": "Tartozás összege",

@@ -22,7 +22,7 @@ export function sendOutstandingsEmail(partnerId) {
       community,
       partner,
       link: FlowRouterHelpers.urlFor('Parcels finances'),
-      alertColor: 'alert-warning',
+      alert: EmailTemplateHelpers.goodOrBad(partner.mostOverdueDaysColor()),
     },
   });
 }

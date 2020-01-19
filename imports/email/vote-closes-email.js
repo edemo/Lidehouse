@@ -22,7 +22,7 @@ export const Vote_closes_Email = {
         user: Meteor.users.findOne(params.uid),
         community: topics[0].community(),
         topics,
-        alertColor: 'alert-warning',
+        alert: 'warning',
       };
     },
   },

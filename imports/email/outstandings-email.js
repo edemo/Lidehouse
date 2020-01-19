@@ -3,7 +3,8 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { __ } from '/imports/localization/i18n.js';
 import '/imports/api/users/users.js';
-import { Partners } from '../api/partners/partners';
+import { Partners } from '/imports/api/partners/partners';
+import { EmailTemplateHelpers } from './email-template-helpers.js';
 
 export const Outstandings_Email = {
   path: 'email/outstandings-email.html',    // Relative to the 'private' dir.
@@ -22,7 +23,7 @@ export const Outstandings_Email = {
         community: partner.community(),
         partner,
         link: FlowRouterHelpers.urlFor('Parcels finances'),
-        alertColor: 'alert-warning',
+        alert: EmailTemplateHelpers.goodOrBad(partner.mostOverdueDaysColor()),
       };
     },
   },

@@ -8,12 +8,5 @@ export const Generic_Layout = {
   path: 'email/generic-layout.html',   // Relative to 'private' dir.
   css: 'email/style.css',
   helpers: {
-    adminEmail() {
-      return Communities.findOne(this.communityId).admin().profile.publicEmail;
-    },
-    alertColor() {
-      if (this.alertColor) return this.alertColor;
-      return 'alert-good';
-    },
   },
 };

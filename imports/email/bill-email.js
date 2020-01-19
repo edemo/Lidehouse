@@ -22,7 +22,7 @@ export const Bill_Email = {
         community: bill.community(),
         bill,
         link: FlowRouterHelpers.urlFor('Parcels finances'),
-        alertColor: 'alert-warning',
+        alert: 'good',
       };
     },
   },

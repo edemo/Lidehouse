@@ -26,7 +26,7 @@ function sendNotifications(user) {
           user,
           community,
           topicsToDisplay,
-          alertColor: 'alert-good',
+          alert: 'good',
           notificationInstructions: TAPi18n.__('NotificationInstructions', {}, user.settings.language),
           footer: TAPi18n.__('email.NotificationFooter', { link: FlowRouterHelpers.urlFor('User data page'), adminEmail: community.admin().profile.publicEmail, frequency: frequencyKey }, user.settings.language),
         },
@@ -78,7 +78,7 @@ export function notifyExpiringVotings() {
             user,
             community,
             topics: notVotedYetVotings,
-            alertColor: 'alert-warning',
+            alert: 'warning',
           },
         });
       }

@@ -116,6 +116,12 @@ Partners.helpers({
     const daysOfExpiring = this.outstandingBills().map(bill => bill.overdueDays());
     return Math.max.apply(Math, daysOfExpiring);
   },
+  mostOverdueDaysColor() {
+    const days = this.mostOverdueDays();
+    if (days > 30 && days < 90) return 'warning';
+    if (days > 90) return 'danger';
+    return 'info';
+  },
   toString() {
     return this.displayName();
   },
