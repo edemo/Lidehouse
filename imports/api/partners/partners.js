@@ -113,7 +113,7 @@ Partners.helpers({
   },
   mostOverdueDays() {
     if (this.outstanding === 0) return 0;
-    const daysOfExpiring = this.outstandingBills.map(bill => bill.overdueDays());
+    const daysOfExpiring = this.outstandingBills().map(bill => bill.overdueDays());
     return Math.max.apply(Math, daysOfExpiring);
   },
   toString() {

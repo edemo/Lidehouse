@@ -56,6 +56,10 @@ Template.Autoform_modal.helpers({
     else if (id.action === 'view') return __(id.object) + ' ' + __('viewing data');
     else return __(id.object) + ' ' + __(id.action);
   },
+  debugInfo() {
+    if (Meteor.isDevelopment && this.doc) return ` [${this.doc._id}]`;
+    return '';
+  },
 });
 
 AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {

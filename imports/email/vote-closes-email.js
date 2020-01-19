@@ -14,13 +14,16 @@ export const Vote_closes_Email = {
   },
 
   route: {
-    path: '/vote-closes-email/:uid/:cid/:tid',
-    data: params => ({
-      type: 'Notifications',
-      user: Meteor.users.findOne(params.uid),
-      community: Communities.findOne(params.cid),
-      topics: Topics.find({ _id: params.tid }).fetch(),
-      alertColor: 'alert-warning',
-    }),
+    path: '/vote-closes-email/:uid/:tid1/:tid2',
+    data: (params) => {
+      const topics = Topics.find({ _id: { $in: [params.tid1, params.tid2] } }).fetch();
+      return {
+        type: 'Notifications',
+        user: Meteor.users.findOne(params.uid),
+        community: topics[0].community(),
+        topics,
+        alertColor: 'alert-warning',
+      };
+    },
   },
 };

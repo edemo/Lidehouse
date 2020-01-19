@@ -4,13 +4,14 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { EmailSender } from '/imports/startup/server/email-sender.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 
 export function voteCastConfirmationEmail(voters, topicId, registrator) {
   debugAssert(Meteor.isServer);
+  import { EmailSender } from '/imports/startup/server/email-sender.js';
+
   const topic = Topics.findOne(topicId);
   const community = Communities.findOne(topic.communityId).name;
   const link = FlowRouterHelpers.urlFor('Topic show', { _tid: topicId });

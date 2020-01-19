@@ -1,12 +1,13 @@
 import { Meteor } from 'meteor/meteor';
-import { EmailSender } from '/imports/startup/server/email-sender.js';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Partners } from '../api/partners/partners';
+import { Partners } from '/imports/api/partners/partners';
 import { EmailTemplateHelpers } from './email-template-helpers.js';
 
 export function sendOutstandingsEmail(partnerId) {
   debugAssert(Meteor.isServer);
+  import { EmailSender } from '/imports/startup/server/email-sender.js';
+
   const partner = Partners.findOne(partnerId);
   const user = partner.user();
   const community = partner.community();
