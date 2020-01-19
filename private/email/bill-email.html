@@ -3,24 +3,62 @@
         <tbody>    
             <tr>
                 <td class="project-title">
-                    <h3 class = "topicTitle">{{_ 'email.BillSubject'}}</h3>
-                    <br>
                     <p><strong>{{_ 'email.Dear'}} {{bill.partner.displayName}}{{_ 'email.glyphAfterDear'}}</strong></p>
                     <br>
-                    <p>{{_ 'email.BillText'}}</p>
+                    <p>{{{_ 'email.BillText' link=link}}}</p>
                     <br>
-                    <p><strong>{{_ 'schemaBills.amount.label'}}: {{bill.amount}}</strong></p>
+                    <!--p><strong>{{_ 'schemaBills.amount.label'}}: {{bill.amount}}</strong></p>
                     <p><strong>{{_ 'schemaGeneral.serialId.label'}}: {{bill.serialId}}</strong></p>
-                    <p><strong>{{_ 'schemaBills.dueDate.label'}}: {{displayValue bill.dueDate}}</strong></p>
-                    {{#if community.primaryBankAccount}}
-                        <br>
-                        {{_ 'email.PaymentMethods'}}:
-                        <p><strong>{{_ 'schemaPartners.idCard.bankAccountNumber.label'}}: {{community.primaryBankAccount.ban}}</strong></p>
-                    {{/if}}
-                    <p>{{_ 'email.serialIdMessageField'}}</p>
-                    <div class='btn-container'>
-                        <a href="{{link}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
-                    </div>
+                    <p><strong>{{_ 'schemaBills.dueDate.label'}}: {{displayValue bill.dueDate}}</strong></p-->
+
+                    <table class="aligncenter" width="100%" cellpadding="0" cellspacing="0">
+                        <tbody>
+                        <tr>
+                            <td class="content-block">
+                                <h2 class='"text-capitalize"'>{{_ 'parcel_bill'}} {{_ 'schemaTransactions.serialId.label'}}: {{bill.serialId}}</h2>
+                            </td>
+                        </tr>
+                        <tr><td class="content-block">
+                            <table class="invoice">
+                            <tbody>
+                                <tr>
+                                    <td>{{_ 'Partner'}}: {{bill.partner.displayName}}
+                                    <br>{{_ 'schemaBills.dueDate.label'}}: {{displayValue bill.dueDate}}</td>
+                                </tr>
+                                <tr><td>
+                                    <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                        <tbody>
+                                        {{#each line in bill.lines}}
+                                        <tr>
+                                            <td>{{line.title}}</td>
+                                            <td class="alignright">{{line.amount}}</td>
+                                        </tr>
+                                        {{/each}}
+                                        <tr class="total">
+                                            <td class="alignright" width="80%">{{_ 'schemaBills.amount.label'}}</td>
+                                            <td class="alignright">{{bill.amount}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td></tr>
+                            </tbody>
+                            </table>
+                        </td></tr>
+                        <tr><td class="content-block">
+                            <a href="{{link}}">{{_ 'View details'}}</a>
+                        </td></tr>
+                        <tr><td class="content-block">
+                            {{community.name}}, {{community.displayAddress}}
+                        </td></tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <p>{{_ 'email.PaymentMethods'}}:<br>
+                        <strong>{{_ 'schemaPartners.idCard.bankAccountNumber.label'}}: {{community.primaryBankAccount.ban}}</strong>
+                    </p>
+                    <p>{{_ 'email.PaymentInstructions'}}:<br>
+                        <strong>{{_ 'schemaStatementEntries.note.label'}}: {{bill.serialId}}</strong>
+                    </p>
                 </td>
             </tr>
         </tbody>
