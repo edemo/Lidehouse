@@ -10,8 +10,8 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import '/imports/api/users/users.js';
 
-function displayLocalizer(localizer, communityId) {
-  const loc = Localizer.get(communityId);
+function displayLocalizer(localizer, community) {
+  const loc = Localizer.get(community._id);
   if (!localizer || !loc) return '';
   return loc.display(localizer).substring(1);
 }
@@ -21,28 +21,12 @@ export const Notifications_Email = {
   // scss: 'email/style.css',             // Mail specific SCSS.
 
   helpers: {
-    user() {
-      return Meteor.users.findOne(this.userId);
-    },
-    community() {
-      return Communities.findOne(this.communityId);
-    },
-    curb(text, chars) {
-      if (text.length < chars) return text;
-      return text.substr(0, chars) + `... [${TAPi18n.__('see full text with View button', {}, Meteor.users.findOne(this.userId).settings.language)}]`;
-    },
     userUrlFor(user) {
       return FlowRouterHelpers.urlFor('User show', { _id: user._id });
     },
-    topicUrlFor(topic) {
-      if (topic.category === 'room') {
-        return FlowRouterHelpers.urlFor('Room show', { _rid: topic._id });
-      }
-      return FlowRouterHelpers.urlFor('Topic show', { _tid: topic._id });
-    },
     voteHasBeenClosed(topic) {
       if (topic.status === 'closed' && topic.category === 'vote') {
-        const unseenComments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY.NOTI);
+        const unseenComments = topic.unseenCommentListBy(this.user._id, Meteor.users.SEEN_BY.NOTI);
         const closingEvent = unseenComments.find(comment => comment.type === 'statusChangeTo' && comment.status === 'closed');
         if (closingEvent) return true;
         return false;
@@ -65,14 +49,16 @@ export const Notifications_Email = {
       return t.isUnseen ? '' : 'oldTopic';
     },
     displayStatusChangeDataUpdate(key, value) {
-      const user = Meteor.users.findOne(this.userId);
-      if (key === 'localizer') return displayLocalizer(value, this.communityId);
+      if (key === 'localizer') return displayLocalizer(value, this.community);
       if (key === 'partnerId') return Partners.findOne(value) ? Partners.findOne(value).name : '';
       if (key === 'contractId') return Contracts.findOne(value) ? Contracts.findOne(value).title : '';
-      if (key === 'chargeType') return TAPi18n.__('schemaTickets.ticket.chargeType.' + value, {}, user.settings.language);
+      if (key === 'chargeType') return TAPi18n.__('schemaTickets.ticket.chargeType.' + value, {}, this.user.settings.language);
       if (_.isDate(value)) return moment(value).format('L');
-      if (_.isString(value)) return TAPi18n.__(value, {}, user.settings.language);
+      if (_.isString(value)) return TAPi18n.__(value, {}, this.user.settings.language);
       return value;
+    },
+    frequencyKey() {
+      return 'schemaUsers.settings.notiFrequency.' + this.user.settings.notiFrequency;
     },
   },
 
@@ -80,8 +66,8 @@ export const Notifications_Email = {
     path: '/notifications-email/:uid/:cid',
     data: params => ({
       type: 'Notifications',
-      userId: params.uid,
-      communityId: params.cid,
+      user: Meteor.users.findOne(params.uid),
+      community: Communities.findOne(params.cid),
       topicsToDisplay: Topics.topicsWithUnseenEvents(params.uid, params.cid, Meteor.users.SEEN_BY.NOTI).filter(t => t.hasThingsToDisplay()),
       notificationInstructions: TAPi18n.__('defaultNotificationInstructions', {}, Meteor.users.findOne(params.uid).settings.language),
       footer: TAPi18n.__('email.NotificationFooter', { link: FlowRouterHelpers.urlFor('User data page'), adminEmail: Communities.findOne(params.cid).admin().profile.publicEmail, frequency: 'schemaUsers.settings.notiFrequency.' + Meteor.users.findOne(params.uid).settings.notiFrequency }, Meteor.users.findOne(params.uid).settings.language),

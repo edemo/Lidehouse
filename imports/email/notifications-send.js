@@ -23,10 +23,10 @@ function sendNotifications(user) {
         template: 'Notifications_Email',
         data: {
           type: 'Notifications',
-          alertColor: 'alert-good',
-          userId: user._id,
-          communityId: community._id,
+          user,
+          community,
           topicsToDisplay,
+          alertColor: 'alert-good',
           notificationInstructions: TAPi18n.__('defaultNotificationInstructions', {}, user.settings.language),
           footer: TAPi18n.__('email.NotificationFooter', { link: FlowRouterHelpers.urlFor('User data page'), adminEmail: community.admin().profile.publicEmail, frequency: frequencyKey }, user.settings.language),
         },
@@ -75,10 +75,10 @@ export function notifyExpiringVotings() {
           template: 'Vote_closes_Email',
           data: {
             type: 'Notifications',
-            alertColor: 'alert-warning',
-            userId: user._id,
-            communityId: community._id,
+            user,
+            community,
             topics: notVotedYetVotings,
+            alertColor: 'alert-warning',
           },
         });
       }

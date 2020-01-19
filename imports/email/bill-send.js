@@ -18,11 +18,11 @@ export function sendBillEmail(bill) {
     template: 'Bill_Email',
     data: {
       type: 'Bill',
+      user,
+      community,
+      bill,
       link: FlowRouterHelpers.urlFor('Parcels finances'),
       alertColor: 'alert-warning',
-      bill,
-      partner,
-      communityId: community._id,
     },
   });
 }

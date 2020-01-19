@@ -8,12 +8,6 @@ export const Generic_Layout = {
   path: 'email/generic-layout.html',   // Relative to 'private' dir.
   css: 'email/style.css',
   helpers: {
-    user() {
-      return Meteor.users.findOne(this.userId);
-    },
-    frequencyKey() {
-      return 'schemaUsers.settings.notiFrequency.' + Meteor.users.findOne(this.userId).settings.notiFrequency;
-    },
     adminEmail() {
       return Communities.findOne(this.communityId).admin().profile.publicEmail;
     },

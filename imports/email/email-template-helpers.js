@@ -5,7 +5,6 @@ import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { numeral } from 'meteor/numeral:numeral';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
-import { Communities } from '/imports/api/communities/communities.js';
 
 // Global helpers for all email templates
 // TODO: duplicates from the clients side - maybe we should try reference in the client helpers here?
@@ -17,20 +16,18 @@ export const EmailTemplateHelpers = {
     return moment(time).format('L LT');
   },
   _(text, kw) {
-    const user = Meteor.users.findOne(this.userId);
-    const community = Communities.findOne(this.communityId);
-    const lang = user ? user.settings.language : community.settings.language;
+    const lang = this.user ? this.user.settings.language : this.community.settings.language;
     return TAPi18n.__(text, kw.hash, lang);
   },
   displayValue(val) {
-    const user = Meteor.users.findOne(this.userId);
+    const lang = this.user ? this.user.settings.language : this.community.settings.language;
     if (_.isDate(val)) return moment(val).format('L');
-    if (_.isString(val)) return TAPi18n.__(val, user.settings.language);
+    if (_.isString(val)) return TAPi18n.__(val, {}, lang);
     return val;
   },
   subject(type, user, community) {
     const lang = user ? user.settings.language : community.settings.language;
-    return TAPi18n.__('email.' + type, {}, lang) + TAPi18n.__('email.fromTheCommunity', { name: community.name }, lang);
+    return TAPi18n.__('email.' + type, {}, lang) + ' ' + TAPi18n.__('email.fromTheCommunity', { name: community.name }, lang);
   },
   urlFor(route, hash = {}) {
     let result;
@@ -38,6 +35,17 @@ export const EmailTemplateHelpers = {
       result = FlowRouterHelpers.urlFor(route, hash);
     } else { result = route; }
     return result;
+  },
+  topicUrlFor(topic) {
+    if (topic.category === 'room') {
+      return FlowRouterHelpers.urlFor('Room show', { _rid: topic._id });
+    }
+    return FlowRouterHelpers.urlFor('Topic show', { _tid: topic._id });
+  },
+  curb(text, chars) {
+    const lang = this.user ? this.user.settings.language : this.community.settings.language;
+    if (text.length < chars) return text;
+    return text.substr(0, chars) + `... [${TAPi18n.__('see full text with View button', {}, lang)}]`;
   },
   displayPercent(number) {
     return numeral(number).format('0.00') + '%';
@@ -47,9 +55,6 @@ export const EmailTemplateHelpers = {
   },
   entriesOf(obj) {
     return Object.entries(obj);
-  },
-  community() {
-    return this.communityId && Communities.findOne(this.communityId);
   },
 };
 

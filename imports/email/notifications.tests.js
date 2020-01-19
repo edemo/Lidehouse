@@ -73,8 +73,8 @@ if (Meteor.isServer) {
           chai.assert.equal(emailData.to, user.getPrimaryEmail());
           chai.assert.match(emailData.subject, /Updates/);
           chai.assert.equal(emailData.template, 'Notifications_Email');
-          chai.assert.equal(emailData.data.userId, user._id);
-          chai.assert.equal(emailData.data.communityId, demoCommunity._id);
+          chai.assert.equal(emailData.data.user._id, user._id);
+          chai.assert.equal(emailData.data.community._id, demoCommunity._id);
           chai.assert.equal(emailData.data.topicsToDisplay.length, count);
         }
 
@@ -110,8 +110,9 @@ if (Meteor.isServer) {
         sinon.assert.calledOnce(EmailSender.send);
         const emailData = EmailSender.send.getCall(0).args[0];
         chai.assert.equal(emailData.template, 'Notifications_Email');
-        chai.assert.equal(emailData.data.userId, ownerWithNotiFrequent._id);
-        chai.assert.equal(emailData.data.communityId, demoCommunity._id);
+        chai.assert.equal(emailData.data.user._id, ownerWithNotiFrequent._id);
+        chai.assert.equal(emailData.data.community._id, demoCommunity._id);
+        chai.assert.equal(emailData.data.topicsToDisplay.length, 1);
         chai.assert.equal(emailData.data.topicsToDisplay[0].topic._id, topicId);
         chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments.length, 1);
         chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments[0].text, 'Hello');
@@ -197,11 +198,11 @@ if (Meteor.isServer) {
         sinon.assert.calledThrice(EmailSender.send);
         const emailData = EmailSender.send.getCall(0).args[0];
         chai.assert.equal(emailData.template, 'Vote_closes_Email');
-        chai.assert.equal(emailData.data.communityId, demoCommunity._id);
+        chai.assert.equal(emailData.data.community._id, demoCommunity._id);
         chai.assert.equal(emailData.data.topics.length, 1);
         chai.assert.deepEqual(emailData.data.topics, Topics.find(topicId).fetch());
 
-        sinon.assert.alwaysCalledWithMatch(EmailSender.send, { data: sinon.match({ communityId: demoCommunity._id }) });
+        sinon.assert.alwaysCalledWithMatch(EmailSender.send, { data: sinon.match({ community: demoCommunity }) });
         sinon.assert.calledWithMatch(EmailSender.send, { to: ownerWithNotiWeekly.getPrimaryEmail() });
         sinon.assert.calledWithMatch(EmailSender.send, { to: ownerWithNotiDaily.getPrimaryEmail() });
         sinon.assert.calledWithMatch(EmailSender.send, { to: ownerWithNotiFrequent.getPrimaryEmail() });
@@ -233,22 +234,28 @@ if (Meteor.isServer) {
       let billId;
       let partnerId;
 
-      it('Sends bill notification', function () {
+      it('Sends new bill', function () {
         partnerId = Fixture.builder.create('supplier', { creatorId: Fixture.demoManagerId });
         const partner = Partners.findOne(partnerId);
         billId = Fixture.builder.create('bill', { creatorId: Fixture.demoManagerId, partnerId });
+        const bill = Transactions.findOne(billId);
         sinon.assert.notCalled(EmailSender.send);
+
         Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: billId });
         sinon.assert.calledOnce(EmailSender.send);
         sinon.assert.calledWithMatch(EmailSender.send, { template: 'Bill_Email' });
-        sinon.assert.calledWithMatch(EmailSender.send, { to: partner.getPrimaryEmail() });
+        sinon.assert.calledWithMatch(EmailSender.send, { to: partner.primaryEmail() });
+        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ user: partner.user(), community: bill.community(), bill }) });
       });
-      it('Sends outstanding notification', function () {
-        /*Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: billId });
+
+      it('Sends outstandings reminder', function () {
+        sinon.assert.notCalled(EmailSender.send);
+        Partners.methods.notifyOutstanding._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
+        const partner = Partners.findOne(partnerId);
         sinon.assert.calledOnce(EmailSender.send);
-        const bill = Transactions.findOne(billId);
-        const partner = Partners.findOne(bill.partnerId);
-        sinon.assert.calledWithMatch(EmailSender.send, { to: partner.getPrimaryEmail() });*/
+        sinon.assert.calledWithMatch(EmailSender.send, { template: 'Outstandings_Email' });
+        sinon.assert.calledWithMatch(EmailSender.send, { to: partner.primaryEmail() });
+        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ user: partner.user(), community: partner.community(), partner }) });
       });
     });
   });

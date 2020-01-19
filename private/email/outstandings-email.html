@@ -10,7 +10,7 @@
                     <p>{{_ 'email.OutstandingsText'}}</p>
                     <br>
                     <p><strong>{{_ 'email.AmountOfDebt'}}: {{partner.outstanding}} {{community.settings.currency}}</strong></p>
-                    <p>{{_ 'email.QuantityOfBills' quantity=outstandings.length}}</p>
+                    <p>{{_ 'email.QuantityOfBills' quantity=partner.outstandingBills.count}}</p>
                     {{#if community.primaryBankAccount}}
                         <br>
                         {{_ 'email.TransferToBankAccount'}}:
