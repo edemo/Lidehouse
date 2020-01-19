@@ -27,7 +27,7 @@ function sendNotifications(user) {
           community,
           topicsToDisplay,
           alertColor: 'alert-good',
-          notificationInstructions: TAPi18n.__('defaultNotificationInstructions', {}, user.settings.language),
+          notificationInstructions: TAPi18n.__('NotificationInstructions', {}, user.settings.language),
           footer: TAPi18n.__('email.NotificationFooter', { link: FlowRouterHelpers.urlFor('User data page'), adminEmail: community.admin().profile.publicEmail, frequency: frequencyKey }, user.settings.language),
         },
       });

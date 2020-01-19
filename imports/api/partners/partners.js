@@ -105,11 +105,11 @@ Partners.helpers({
     return this.user() ? this.user().settings.language : this.community().settings.language;
   },
   activeRoles(communityId) {
-    return _.uniq(Memberships.findActive({ communityId, approved: true, partnerId: this._id }).fetch().map(m => m.role));
+    return _.uniq(Memberships.findActive({ communityId, approved: true, partnerId: this._id }).map(m => m.role));
   },
   outstandingBills() {
     const Transactions = Mongo.Collection.get('transactions');
-    return Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $gt: 0 } }).fetch();
+    return Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $gt: 0 } });
   },
   mostOverdueDays() {
     if (this.outstanding === 0) return 0;

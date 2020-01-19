@@ -80,10 +80,16 @@ Communities.helpers({
     if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
     return cashAccount;
   },
+  userWithRole(role) {
+    const membershipWithRole = Memberships.findOneActive({ communityId: this._id, role });
+    if (!membershipWithRole) return undefined;
+    return membershipWithRole.user();
+  },
   admin() {
-    const adminMembership = Memberships.findOneActive({ communityId: this._id, role: 'admin' });
-    if (!adminMembership) return undefined;
-    return adminMembership.user();
+    return this.userWithRole('admin');
+  },
+  treasurer() {
+    return this.userWithRole('treasurer') || this.userWithRole('manager') || this.userWithRole('admin');
   },
   techsupport() {
     return this.admin(); // TODO: should be the person with do.techsupport permission

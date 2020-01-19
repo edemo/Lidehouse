@@ -3,22 +3,21 @@
         <tbody>    
             <tr>
                 <td class="project-title">
-                    <h3 class = "topicTitle">{{_ 'email.OutstandingsSubject'}}</h3>
-                    <br>
                     <p><strong>{{_ 'email.Dear'}} {{partner.displayName}}{{_ 'email.glyphAfterDear'}}</strong></p>
                     <br>
-                    <p>{{_ 'email.OutstandingsText'}}</p>
-                    <br>
-                    <p><strong>{{_ 'email.AmountOfDebt'}}: {{partner.outstanding}} {{community.settings.currency}}</strong></p>
-                    <p>{{_ 'email.QuantityOfBills' quantity=partner.outstandingBills.count}}</p>
-                    {{#if community.primaryBankAccount}}
-                        <br>
-                        {{_ 'email.TransferToBankAccount'}}:
-                        <p><strong>{{_ 'schemaPartners.idCard.bankAccountNumber.label'}}: {{community.primaryBankAccount.ban}}</strong></p>
-                    {{/if}}
-                    <div class='btn-container'>
-                        <a href="{{link}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                    <p>{{_ 'email.OutstandingsPretext'}}</p>
+                    <p><strong>{{_ 'email.OutstandingsTotal'}}: {{partner.outstanding}} {{community.settings.currency}}</strong>,
+                        {{_ 'email.OutstandingsDetails' quantity=partner.outstandingBills.count}}</p>
+                    <div class='content-block aligncenter'>
+                        <a href="{{link}}" class="btn btn-primary btn-sm">{{_ 'View my bills'}}</a>
                     </div>
+                    <p>{{_ 'email.OutstandingsCallToAction'}}</p>
+                    <p>{{_ 'email.PaymentMethods'}}:
+                        <strong>{{_ 'schemaPartners.idCard.bankAccountNumber.label'}}: {{community.primaryBankAccount.ban}}</strong>
+                    </p>
+                    <p>{{_ 'email.OutstandingsContact'}}: 
+                      <a href="mailto:{{community.treasurer.getPrimaryEmail}}">{{community.treasurer.getPrimaryEmail}}</a>
+                    </p>
                 </td>
             </tr>
         </tbody>

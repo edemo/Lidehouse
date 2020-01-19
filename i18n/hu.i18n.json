@@ -219,7 +219,9 @@
   "apply": "kivetés",
   "registerPayment": "Kifizetés rögzítése",
   "registerRemission": "Elengedés",
-  "registerReading": "leolvasás",
+  "registerReading": "Leolvasás",
+  "remindOutstandings": "Hátralék emlékeztető küldés",
+  "View my bills": "Számláim megtekintése",
 
   "join": "Csatlakozás",
   "create": "Létrehozás",
