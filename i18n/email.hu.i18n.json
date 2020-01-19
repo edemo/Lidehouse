@@ -46,8 +46,8 @@
     "PaymentInstructions": "A közlemény rovatba kérjük írja be a számla azonosító számát.",
 
     "NotificationSubject": "Értesítések a __name__ társasházból",
-    "NotificationInstructions": "A témák melletti Megtekintés gomb elviszi az adott téma oldalára, ahol van lehetősége hozzászólni.",
-    "NotificationFooter": ["Ön azért kapja ezeket az értesítéseket, mert beállításaiban az szerepel, hogy a társasházban történő eseményekről email értesítőt küldjünk __frequency__.<br>",
+    "NotificationsHeader": "A témák melletti Megtekintés gomb elviszi az adott téma oldalára, ahol van lehetősége hozzászólni.",
+    "NotificationsFooter": ["Ön azért kapja ezeket az értesítéseket, mert beállításaiban az szerepel, hogy a társasházban történő eseményekről email értesítőt küldjünk __frequency__.<br>",
       "Az email értesítések gyakoriságát átállíthatja vagy teljesen ki is kapcsolhatja <a href=\"__link__\"> ezen a linken</a>.<br>",
       "Ha bármi egyéb kérdése lenne, lépjen kapcsolatba a társasház <a href=\"mailto:__adminEmail__\">adminisztrátorával</a>."],
     "VoteClosesTitle": "Felhívjuk figyelmét, hogy az alábbi szavazás(ok) hamarosan lezárul(nak), és Ön még nem adott le szavazatot ezekben a kérdésekben. A zöld gombra kattintva ezt még pár napig megteheti. Vagy ha gondolja beállíthat egy meghatalmazást, hogy most és a jövőben a hasonló kérdésekben valaki szavazhasson Ön helyett.",

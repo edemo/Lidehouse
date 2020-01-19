@@ -1,8 +1,6 @@
 
 import { Meteor } from 'meteor/meteor';
-import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
-import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -15,7 +13,6 @@ function sendNotifications(user) {
   user.communities().forEach((community) => {
     const topicsWithEvents = Topics.topicsWithUnseenEvents(user._id, community._id, Meteor.users.SEEN_BY.NOTI);
     const topicsToDisplay = topicsWithEvents.filter(t => t.hasThingsToDisplay());
-    const frequencyKey = 'schemaUsers.settings.notiFrequency.' + user.settings.notiFrequency;
     if (topicsToDisplay.length > 0) {
       EmailSender.send({
         to: user.getPrimaryEmail(),
@@ -27,8 +24,8 @@ function sendNotifications(user) {
           community,
           topicsToDisplay,
           alert: 'good',
-          notificationInstructions: TAPi18n.__('NotificationInstructions', {}, user.settings.language),
-          footer: TAPi18n.__('email.NotificationFooter', { link: FlowRouterHelpers.urlFor('User data page'), adminEmail: community.admin().profile.publicEmail, frequency: frequencyKey }, user.settings.language),
+          header: 'NotificationsHeader',
+          footer: 'NotificationsFooter',
         },
       });
     }

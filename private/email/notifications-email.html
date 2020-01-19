@@ -3,7 +3,7 @@
   
     <table class="table table-hover">
         <tbody>    
-            {{#let hider=(te.topic.hiddenBy this.userId)}}
+            {{#let hider=(te.topic.hiddenBy user._id)}}
             <tr class='topic-row'>
                 <td class='topic-icon-container'>
                     <a href=""><img alt="image" class="img-icon" src="{{categoryImgUrlFor te.topic.category}}"></a>
@@ -36,7 +36,7 @@
     <table class="table table-hover">
         <tbody>
             {{#each comment in te.unseenComments}}
-            {{#let hider=(comment.hiddenBy this.userId)}}
+            {{#let hider=(comment.hiddenBy user._id)}}
             <tr class="social-comment">   
                 <td class='puffer'>
                 </td>
@@ -51,7 +51,7 @@
                   {{#if hider}}
                     <span>{{_ 'Content hidden by' hider=(_ hider)}}</span>
                   {{else}}  
-                    <a href="{{userUrlFor  comment.creator}}">{{comment.creator.displayOfficialName this.communityId user.settings.language}}</a>
+                    <a href="{{userUrlFor  comment.creator}}">{{comment.creator.displayOfficialName community._id user.settings.language}}</a>
                     {{#if (equals comment.category 'statusChangeTo')}}
                         {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
                         {{_ 'changed the status'}}: <span class="label {{eventStatusObject.color}}">

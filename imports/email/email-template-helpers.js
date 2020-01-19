@@ -13,6 +13,9 @@ export const EmailTemplateHelpers = {
   equals(a, b) {
     return a == b;
   },
+  or(a, b) {
+    return a || b;
+  },
   displayTime(time) {
     return moment(time).format('L LT');
   },

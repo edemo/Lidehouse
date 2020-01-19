@@ -18,9 +18,7 @@
                         <td class="alert alert-{{alert}}">
                             {{{subject type user community}}}
                             <p><small>{{{_ 'email.DontReplyToThis'}}}</small>
-                            {{#if this.notificationInstructions}}
-                                <small>{{this.notificationInstructions}}</small>
-                            {{/if}}
+                            {{#if header}}<small>{{{_ (concat 'email.' header)}}}</small>{{/if}}
                             </p>
                         </td>
                     </tr>
@@ -44,11 +42,13 @@
                     <table width="100%">
                         <tr>
                             <td class="aligncenter content-block">
-                                {{#if this.footer}}
-                                    {{{this.footer}}}
-                                {{else}}
-                                    {{{_ 'email.GenericFooter' adminEmail=community.admin.getPrimaryEmail}}}
-                                {{/if}}
+                                {{#let footer=(or this.footer 'GenericFooter')}}
+                                {{{_ (concat 'email.' footer)
+                                  link=(urlFor 'User data page')
+                                  frequency=(_ (concat 'schemaUsers.settings.notiFrequency.' user.settings.notiFrequency))
+                                  adminEmail=community.admin.getPrimaryEmail
+                                }}}
+                                {{/let}}
                             </td>
                         </tr>
                     </table>

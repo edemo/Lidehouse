@@ -39,8 +39,8 @@
     "PaymentMethods": "You may transfer the amount to this bank account",
     "PaymentInstructions": "Please provide the bill ID at the remarks.",
 
-    "NotificationInstructions": "The View button next to the topics will take you to that topic's page, where you can comment on it.",
-    "NotificationFooter": ["You are receiving these notifications, because you have asked us to send you email notifications about the activities in your community __frequency__.<br>",
+    "NotificationsHeader": "The View button next to the topics will take you to that topic's page, where you can comment on it.",
+    "NotificationsFooter": ["You are receiving these notifications, because you have asked us to send you email notifications about the activities in your community __frequency__.<br>",
       "You can change your email notification settings or turn it off completely <a href=\"__link__\"> on this link</a>.<br>",
       "Should you have any questions, feel free to contact the community's <a href=\"mailto:__adminEmail__\">administrator<br>."],
     "VoteClosesTitle": "Attention! The following voting(s) below will be closing soon, and you have not yet voted on these issues. By clicking on the green button you may still do so for a couple of days. You may also set up a delegation and let someone else vote for you on this and on similar issues in the future.",
