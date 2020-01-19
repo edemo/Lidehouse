@@ -18,17 +18,19 @@ export const EmailTemplateHelpers = {
   },
   _(text, kw) {
     const user = Meteor.users.findOne(this.userId);
-    if (!user) {
-      const community = Communities.findOne(this.communityId);
-      return TAPi18n.__(text, kw.hash, community.settings.language);
-    }
-    return TAPi18n.__(text, kw.hash, user.settings.language);
+    const community = Communities.findOne(this.communityId);
+    const lang = user ? user.settings.language : community.settings.language;
+    return TAPi18n.__(text, kw.hash, lang);
   },
   displayValue(val) {
     const user = Meteor.users.findOne(this.userId);
     if (_.isDate(val)) return moment(val).format('L');
     if (_.isString(val)) return TAPi18n.__(val, user.settings.language);
     return val;
+  },
+  subject(type, user, community) {
+    const lang = user ? user.settings.language : community.settings.language;
+    return TAPi18n.__('email.' + type, {}, lang) + TAPi18n.__('email.fromTheCommunity', { name: community.name }, lang);
   },
   urlFor(route, hash = {}) {
     let result;

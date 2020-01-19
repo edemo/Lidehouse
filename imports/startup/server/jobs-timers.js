@@ -5,7 +5,7 @@ import { closeClosableVotings, openScheduledVotings } from '/imports/api/topics/
 import { closeInactiveTopics } from '/imports/api/topics/methods.js';
 import { cleanExpiredEmails } from '/imports/startup/server/accounts-verification.js';
 import { cleanCanceledVoteAttachments } from '/imports/api/shareddocs/methods.js';
-import { processNotifications, notifyExpiringVotings } from '/imports/email/notifications.js';
+import { processNotifications, notifyExpiringVotings } from '/imports/email/notifications-send.js';
 
 const bindEnv = func => Meteor.bindEnvironment(func, (err) => { throw err; });
 

@@ -3,9 +3,9 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { Communities } from '/imports/api/communities/communities.js';
 
-export const Notification_Layout = {
-  name: 'Notification_Layout',
-  path: 'email/notification-layout.html',   // Relative to 'private' dir.
+export const Generic_Layout = {
+  name: 'Generic_Layout',
+  path: 'email/generic-layout.html',   // Relative to 'private' dir.
   css: 'email/style.css',
   helpers: {
     user() {

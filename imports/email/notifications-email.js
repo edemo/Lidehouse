@@ -16,8 +16,8 @@ function displayLocalizer(localizer, communityId) {
   return loc.display(localizer).substring(1);
 }
 
-export const Notification_Email = {
-  path: 'email/notification-email.html',    // Relative to the 'private' dir.
+export const Notifications_Email = {
+  path: 'email/notifications-email.html',    // Relative to the 'private' dir.
   // scss: 'email/style.css',             // Mail specific SCSS.
 
   helpers: {
@@ -77,8 +77,9 @@ export const Notification_Email = {
   },
 
   route: {
-    path: '/notification-email/:uid/:cid',
+    path: '/notifications-email/:uid/:cid',
     data: params => ({
+      type: 'Notifications',
       userId: params.uid,
       communityId: params.cid,
       topicsToDisplay: Topics.topicsWithUnseenEvents(params.uid, params.cid, Meteor.users.SEEN_BY.NOTI).filter(t => t.hasThingsToDisplay()),

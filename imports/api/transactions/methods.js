@@ -13,7 +13,7 @@ import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
-import { sendBillNotificationEmail } from '/imports/email/bill-notification.js';
+import { sendBillEmail } from '/imports/email/bill-send.js';
 import '/imports/api/transactions/breakdowns/methods.js';
 import '/imports/api/transactions/txdefs/methods.js';
 
@@ -58,7 +58,7 @@ export const post = new ValidatedMethod({
     if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
     if (doc.category === 'bill') {
       if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-      if (Meteor.isServer) sendBillNotificationEmail(doc);
+      if (Meteor.isServer) sendBillEmail(doc);
     } else if (doc.category === 'payment' || doc.category === 'remission') {
       doc.bills.forEach(bp => checkBillIsPosted(bp.id));
     } else if (doc.category === 'barter') {

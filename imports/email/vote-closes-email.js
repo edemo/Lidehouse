@@ -5,8 +5,8 @@ import { moment } from 'meteor/momentjs:moment';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/users/users.js';
 
-export const Voteexpires_Email = {
-  path: 'email/voteexpires-email.html',    // Relative to the 'private' dir.
+export const Vote_closes_Email = {
+  path: 'email/vote-closes-email.html',    // Relative to the 'private' dir.
   // scss: 'email/style.css',             // Mail specific SCSS.
 
   helpers: {
@@ -20,8 +20,9 @@ export const Voteexpires_Email = {
   },
 
   route: {
-    path: '/voteexpires-email/:uid/:cid/:tid',
+    path: '/vote-closes-email/:uid/:cid/:tid',
     data: params => ({
+      type: 'Notifications',
       userId: params.uid,
       communityId: params.cid,
       topics: Topics.find({ _id: params.tid }).fetch(),

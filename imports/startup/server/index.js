@@ -7,7 +7,7 @@ import './live-fixtures.js';
 import './accounts-email-config.js';
 import './accounts-verification.js';
 
-import '../../email/notifications.js';
+import '../../email/notifications-send.js';
 import './email-sender.js';
 
 import './validated-method.js';

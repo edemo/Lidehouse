@@ -3,12 +3,15 @@ import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
 
+import { debugAssert } from '/imports/utils/assert.js';
+import { EmailSender } from '/imports/startup/server/email-sender.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
 export function delegationConfirmationEmail(delegation, method, formerDelegation) {
+  debugAssert(Meteor.isServer);
   const community = Communities.findOne(delegation.communityId).name;
   const date = delegation.updatedAt.toLocaleDateString();
   const link = FlowRouterHelpers.urlFor('Delegations');
@@ -47,8 +50,6 @@ export function delegationConfirmationEmail(delegation, method, formerDelegation
         formerScopeObject: scopeObject(formerDelegation),
       }, language) :
       '';
-
-    import { EmailSender } from '/imports/startup/server/email-sender.js';
     
     EmailSender.send({
       to: user.getPrimaryEmail(),

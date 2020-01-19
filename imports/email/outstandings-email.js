@@ -7,16 +7,17 @@ import '/imports/api/users/users.js';
 import { Communities } from '../api/communities/communities';
 import { Partners } from '../api/partners/partners';
 
-export const OutstandingNotification_Email = {
-  path: 'email/outstandingnotification-email.html',    // Relative to the 'private' dir.
+export const Outstandings_Email = {
+  path: 'email/outstandings-email.html',    // Relative to the 'private' dir.
   // scss: 'email/style.css',             // Mail specific SCSS.
 
   helpers: {
   },
 
   route: {
-    path: '/outstandingnotification-email/:pid/:cid',
+    path: '/outstandings-email/:pid/:cid',
     data: params => ({
+      type: 'Outstandings',
       communityId: Communities.findOne(params.cid),
       outstandings: Transactions.find({ partnerId: params.pid, category: 'bill', outstanding: { $gt: 0 } }).fetch(),
       partner: Partners.findOne(params.pid),

@@ -1,17 +1,17 @@
 
 import { Meteor } from 'meteor/meteor';
-import { Mailer } from 'meteor/lookback:emails';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
+import { debugAssert } from '/imports/utils/assert.js';
+import { Communities } from '/imports/api/communities/communities';
 import { Topics } from '/imports/api/topics/topics.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { EmailSender } from '/imports/startup/server/email-sender.js';
-import { Communities } from '../api/communities/communities';
-import { Partners } from '../api/partners/partners';
-
+import { EmailTemplateHelpers } from './email-template-helpers';
 
 function sendNotifications(user) {
+  debugAssert(Meteor.isServer);
   user.communities().forEach((community) => {
     const topicsWithEvents = Topics.topicsWithUnseenEvents(user._id, community._id, Meteor.users.SEEN_BY.NOTI);
     const topicsToDisplay = topicsWithEvents.filter(t => t.hasThingsToDisplay());
@@ -19,8 +19,8 @@ function sendNotifications(user) {
     if (topicsToDisplay.length > 0) {
       EmailSender.send({
         to: user.getPrimaryEmail(),
-        subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
-        template: 'Notification_Email',
+        subject: EmailTemplateHelpers.subject('Notifications', user, community),
+        template: 'Notifications_Email',
         data: {
           type: 'Notifications',
           alertColor: 'alert-good',
@@ -50,6 +50,7 @@ export function processNotifications(frequency) {
 export const EXPIRY_NOTI_DAYS = 3;
 
 export function notifyExpiringVotings() {
+  debugAssert(Meteor.isServer);
   Communities.find().forEach((community) => {
     const expiringVotings = Topics.find({
       communityId: community._id,
@@ -70,8 +71,8 @@ export function notifyExpiringVotings() {
       if (notVotedYetVotings.length > 0) {
         EmailSender.send({
           to: user.getPrimaryEmail(),
-          subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
-          template: 'Voteexpires_Email',
+          subject: EmailTemplateHelpers.subject('Notifications', user, community),
+          template: 'Vote_closes_Email',
           data: {
             type: 'Notifications',
             alertColor: 'alert-warning',

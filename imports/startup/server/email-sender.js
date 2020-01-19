@@ -5,7 +5,7 @@ import { Email } from 'meteor/email';
 import { debugAssert } from '/imports/utils/assert.js';
 import { EmailTemplates, SampleEmailTemplates } from '/imports/email/email-templates.js';
 import { EmailTemplateHelpers, SampleEmailTemplateHelpers } from '/imports/email/email-template-helpers.js';
-import { Notification_Layout } from '/imports/email/notification-layout.js';
+import { Generic_Layout } from '/imports/email/generic-layout.js';
 import { defaultRoles } from '/imports/api/permissions/roles.js';
 
 /* SSR EmailSender
@@ -90,7 +90,7 @@ Meteor.startup(() => {
   Mailer.init({
     templates: EmailTemplates,     // Global Templates namespace, see lib/templates.js.
     helpers: EmailTemplateHelpers, // Global template helper namespace.
-    layout: Notification_Layout,
+    layout: Generic_Layout,
   });
   /* --Sample--
   Mailer.init({

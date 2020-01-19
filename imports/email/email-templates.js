@@ -1,10 +1,10 @@
-import { Notification_Email } from './notification-email.js';
-import { Voteexpires_Email } from './voteexpires-email.js';
-import { BillNotification_Email } from './billnotification-email.js';
-import { OutstandingNotification_Email } from './outstandingnotification-email.js';
+import { Notifications_Email } from './notifications-email.js';
+import { Vote_closes_Email } from './vote-closes-email.js';
+import { Bill_Email } from './bill-email.js';
+import { Outstandings_Email } from './outstandings-email.js';
 
 export const EmailTemplates = {
-  Notification_Email, Voteexpires_Email, BillNotification_Email, OutstandingNotification_Email,
+  Notifications_Email, Vote_closes_Email, Bill_Email, Outstandings_Email,
 };
 
 // -------------- Sample -------------------

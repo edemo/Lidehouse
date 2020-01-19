@@ -15,7 +15,7 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import '/i18n/en.i18n.json';
 import '/i18n/email.en.i18n.json';
-import { processNotifications, notifyExpiringVotings, EXPIRY_NOTI_DAYS } from './notifications.js';
+import { processNotifications, notifyExpiringVotings, EXPIRY_NOTI_DAYS } from './notifications-send.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 
 import { EmailSender } from '/imports/startup/server/email-sender.js';   // We will be mocking it over
@@ -26,7 +26,7 @@ if (Meteor.isServer) {
 
   let Fixture;
 
-  describe('Notifications', function () {
+  describe.only('Notifications', function () {
     this.timeout(15000);
     let topicId;
     let ticketId;
@@ -72,7 +72,7 @@ if (Meteor.isServer) {
         function assertGotAllEmails(user, emailData, count) {
           chai.assert.equal(emailData.to, user.getPrimaryEmail());
           chai.assert.match(emailData.subject, /Updates/);
-          chai.assert.equal(emailData.template, 'Notification_Email');
+          chai.assert.equal(emailData.template, 'Notifications_Email');
           chai.assert.equal(emailData.data.userId, user._id);
           chai.assert.equal(emailData.data.communityId, demoCommunity._id);
           chai.assert.equal(emailData.data.topicsToDisplay.length, count);
@@ -109,7 +109,7 @@ if (Meteor.isServer) {
         processNotifications('frequent');
         sinon.assert.calledOnce(EmailSender.send);
         const emailData = EmailSender.send.getCall(0).args[0];
-        chai.assert.equal(emailData.template, 'Notification_Email');
+        chai.assert.equal(emailData.template, 'Notifications_Email');
         chai.assert.equal(emailData.data.userId, ownerWithNotiFrequent._id);
         chai.assert.equal(emailData.data.communityId, demoCommunity._id);
         chai.assert.equal(emailData.data.topicsToDisplay[0].topic._id, topicId);
@@ -196,7 +196,7 @@ if (Meteor.isServer) {
 
         sinon.assert.calledThrice(EmailSender.send);
         const emailData = EmailSender.send.getCall(0).args[0];
-        chai.assert.equal(emailData.template, 'Voteexpires_Email');
+        chai.assert.equal(emailData.template, 'Vote_closes_Email');
         chai.assert.equal(emailData.data.communityId, demoCommunity._id);
         chai.assert.equal(emailData.data.topics.length, 1);
         chai.assert.deepEqual(emailData.data.topics, Topics.find(topicId).fetch());
@@ -240,7 +240,7 @@ if (Meteor.isServer) {
         sinon.assert.notCalled(EmailSender.send);
         Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: billId });
         sinon.assert.calledOnce(EmailSender.send);
-        sinon.assert.calledWithMatch(EmailSender.send, { template: 'BillNotification_Email' });
+        sinon.assert.calledWithMatch(EmailSender.send, { template: 'Bill_Email' });
         sinon.assert.calledWithMatch(EmailSender.send, { to: partner.getPrimaryEmail() });
       });
       it('Sends outstanding notification', function () {
