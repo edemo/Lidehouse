@@ -6,7 +6,9 @@ import { Communities } from '/imports/api/communities/communities';
 import { Topics } from '/imports/api/topics/topics.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { EmailSender } from '/imports/startup/server/email-sender.js';
-import { EmailTemplateHelpers } from './email-template-helpers';
+import { EmailTemplateHelpers } from './email-template-helpers.js';
+import { Notifications_Email } from './notifications-email.js';
+import { Vote_closes_Email } from './vote-closes-email.js';
 
 function sendNotifications(user) {
   debugAssert(Meteor.isServer);
@@ -19,13 +21,10 @@ function sendNotifications(user) {
         subject: EmailTemplateHelpers.subject('Notifications', user, community),
         template: 'Notifications_Email',
         data: {
-          type: 'Notifications',
           user,
           community,
           topicsToDisplay,
-          alert: 'good',
-          header: 'NotificationsHeader',
-          footer: 'NotificationsFooter',
+          ...Notifications_Email.layoutData,
         },
       });
     }
@@ -71,11 +70,10 @@ export function notifyExpiringVotings() {
           subject: EmailTemplateHelpers.subject('Notifications', user, community),
           template: 'Vote_closes_Email',
           data: {
-            type: 'Notifications',
             user,
             community,
             topics: notVotedYetVotings,
-            alert: 'warning',
+            ...Vote_closes_Email.layoutData,
           },
         });
       }

@@ -20,6 +20,13 @@ export const Notifications_Email = {
   path: 'email/notifications-email.html',    // Relative to the 'private' dir.
   // scss: 'email/style.css',             // Mail specific SCSS.
 
+  layoutData: {
+    type: 'Notifications',
+    header: 'NotificationsHeader',
+    footer: 'NotificationsFooter',
+    alert: 'good',
+  },
+
   helpers: {
     userUrlFor(user) {
       return FlowRouterHelpers.urlFor('User show', { _id: user._id });
@@ -65,13 +72,10 @@ export const Notifications_Email = {
   route: {
     path: '/notifications-email/:uid/:cid',
     data: params => ({
-      type: 'Notifications',
       user: Meteor.users.findOne(params.uid),
       community: Communities.findOne(params.cid),
       topicsToDisplay: Topics.topicsWithUnseenEvents(params.uid, params.cid, Meteor.users.SEEN_BY.NOTI).filter(t => t.hasThingsToDisplay()),
-      alert: 'good',
-      header: 'NotificationsHeader',
-      footer: 'NotificationsFooter',
+      ...Notifications_Email.layoutData,
     }),
   },
 };

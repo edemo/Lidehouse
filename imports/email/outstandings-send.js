@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Partners } from '/imports/api/partners/partners';
 import { EmailTemplateHelpers } from './email-template-helpers.js';
+import { Outstandings_Email } from './outstandings-email.js';
 
 export function sendOutstandingsEmail(partnerId) {
   debugAssert(Meteor.isServer);
@@ -17,12 +17,10 @@ export function sendOutstandingsEmail(partnerId) {
     subject: EmailTemplateHelpers.subject('Outstandings', user, community),
     template: 'Outstandings_Email',
     data: {
-      type: 'Outstandings',
       user,
       community,
       partner,
-      link: FlowRouterHelpers.urlFor('Parcels finances'),
-      alert: EmailTemplateHelpers.goodOrBad(partner.mostOverdueDaysColor()),
+      ...Outstandings_Email.layoutData(partner),
     },
   });
 }

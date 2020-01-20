@@ -10,7 +10,9 @@ export const Vote_closes_Email = {
   path: 'email/vote-closes-email.html',    // Relative to the 'private' dir.
   // scss: 'email/style.css',             // Mail specific SCSS.
 
-  helpers: {
+  layoutData: {
+    type: 'Notifications',
+    alert: 'warning',
   },
 
   route: {
@@ -18,11 +20,10 @@ export const Vote_closes_Email = {
     data: (params) => {
       const topics = Topics.find({ _id: { $in: [params.tid1, params.tid2] } }).fetch();
       return {
-        type: 'Notifications',
         user: Meteor.users.findOne(params.uid),
         community: topics[0].community(),
         topics,
-        alert: 'warning',
+        ...Vote_closes_Email.layoutData,
       };
     },
   },

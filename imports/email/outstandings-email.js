@@ -9,6 +9,11 @@ import { EmailTemplateHelpers } from './email-template-helpers.js';
 export const Outstandings_Email = {
   path: 'email/outstandings-email.html',    // Relative to the 'private' dir.
   // scss: 'email/style.css',             // Mail specific SCSS.
+  
+  layoutData: partner => ({
+    type: 'Outstandings',
+    alert: EmailTemplateHelpers.goodOrBad(partner.mostOverdueDaysColor()),
+  }),
 
   helpers: {
   },
@@ -18,12 +23,10 @@ export const Outstandings_Email = {
     data: (params) => {
       const partner = Partners.findOne(params.pid);
       return {
-        type: 'Outstandings',
         user: partner.user(),
         community: partner.community(),
         partner,
-        link: FlowRouterHelpers.urlFor('Parcels finances'),
-        alert: EmailTemplateHelpers.goodOrBad(partner.mostOverdueDaysColor()),
+        ...Outstandings_Email.layoutData(partner),
       };
     },
   },

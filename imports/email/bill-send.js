@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
-import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { debugAssert } from '/imports/utils/assert.js';
 import { EmailTemplateHelpers } from './email-template-helpers.js';
+import { Bill_Email } from './bill-email.js';
 
 export function sendBillEmail(bill) {
   debugAssert(Meteor.isServer);
@@ -18,12 +18,10 @@ export function sendBillEmail(bill) {
     subject: EmailTemplateHelpers.subject('Bill', user, community),
     template: 'Bill_Email',
     data: {
-      type: 'Bill',
       user,
       community,
       bill,
-      link: FlowRouterHelpers.urlFor('Parcels finances'),
-      alert: 'good',
+      ...Bill_Email.layoutData,
     },
   });
 }

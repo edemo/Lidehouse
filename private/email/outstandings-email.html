@@ -9,7 +9,7 @@
                     <p><strong>{{_ 'email.OutstandingsTotal'}}: {{partner.outstanding}} {{community.settings.currency}}</strong>,
                         {{_ 'email.OutstandingsDetails' quantity=partner.outstandingBills.count}}</p>
                     <div class='content-block aligncenter'>
-                        <a href="{{link}}" class="btn btn-primary btn-sm">{{_ 'View my bills'}}</a>
+                        <a href="{{urlFor 'Parcel finances'}}" class="btn btn-primary btn-sm">{{_ 'View my bills'}}</a>
                     </div>
                     <p>{{_ 'email.OutstandingsCallToAction'}}</p>
                     <p>{{_ 'email.PaymentMethods'}}:
