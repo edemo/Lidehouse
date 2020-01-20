@@ -42,11 +42,7 @@ export const EmailTemplateHelpers = {
     }
   },
   urlFor(route, hash = {}) {
-    let result;
-    if (route.charAt(0) === '/') {
-      result = FlowRouterHelpers.urlFor(route, hash);
-    } else { result = route; }
-    return result;
+    return FlowRouterHelpers.urlFor(route, hash);
   },
   topicUrlFor(topic) {
     if (topic.category === 'room') {
