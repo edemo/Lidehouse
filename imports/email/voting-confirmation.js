@@ -34,6 +34,7 @@ export function voteCastConfirmationEmail(voters, topicId, registrator) {
     }
     const voteValue = [];
     const castedVoteKey = topic.voteCastsIndirect[voterId]; // || TODO: delegations;
+    if (!castedVoteKey) return;
     castedVoteKey.forEach((key) => {
       const choice = topic.displayChoice(key, language);
       voteValue.push(choice);

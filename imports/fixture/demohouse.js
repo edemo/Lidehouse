@@ -453,10 +453,10 @@ export function insertDemoHouse(lang, demoOrTest) {
 //    topicIds: [voteTopicBike, voteTopicWallColor, voteTopicManager],
   });
 
-  const ownerships = Memberships.findActive({ communityId: demoCommunityId, role: 'owner', userId: { $exists: true } }).fetch();
+  const voterships = Communities.findOne(demoCommunityId).voterships();
   function castDemoVotes(topicId, votes) {
     votes.forEach((v, index) => {
-      if (v) castVote._execute({ userId: ownerships[index].userId }, { topicId, castedVote: v });
+      if (v) castVote._execute({ userId: voterships[index].userId }, { topicId, castedVote: v });
     });
   }
 
