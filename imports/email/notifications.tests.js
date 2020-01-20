@@ -26,7 +26,7 @@ if (Meteor.isServer) {
 
   let Fixture;
 
-  describe.only('Notifications', function () {
+  describe('Notifications', function () {
     this.timeout(15000);
     let topicId;
     let ticketId;
