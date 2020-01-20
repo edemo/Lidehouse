@@ -6,7 +6,7 @@
             {{#let hider=(te.topic.hiddenBy user._id)}}
             <tr class='topic-row'>
                 <td class='topic-icon-container'>
-                    <a href=""><img alt="image" class="img-icon" src="{{categoryImgUrlFor te.topic.category}}"></a>
+                    <img alt="image" class="img-icon" src="{{categoryImgUrlFor te.topic.category}}">
                 </td>
                 {{#if equals te.topic.category 'room'}}
                 <td class="project-title">
@@ -25,6 +25,9 @@
                           <p>{{curb te.topic.text 1000}}</p>
                         {{/if}}
                     {{/if}}
+                    <div class='btn-container'>
+                      <a href="{{topicUrlFor te.topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                    </div>
                 </td>
                 {{/if}}
             </tr>

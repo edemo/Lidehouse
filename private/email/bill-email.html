@@ -5,7 +5,9 @@
                 <td class="project-title">
                     <p><strong>{{_ 'email.Dear'}} {{bill.partner.displayName}}{{_ 'email.glyphAfterDear'}}</strong></p>
                     <br>
+                    {{#let link=(urlFor 'Parcels finances')}}
                     <p>{{{_ 'email.BillText' link=link}}}</p>
+                    {{/let}}
                     <br>
                     <!--p><strong>{{_ 'schemaBills.amount.label'}}: {{bill.amount}}</strong></p>
                     <p><strong>{{_ 'schemaGeneral.serialId.label'}}: {{bill.serialId}}</strong></p>
@@ -45,7 +47,7 @@
                             </table>
                         </td></tr>
                         <tr><td class="content-block">
-                            <a href="{{urlFor 'Parcel finances'}}">{{_ 'View details'}}</a>
+                            <a href="{{urlFor 'Parcels finances'}}">{{_ 'View details'}}</a>
                         </td></tr>
                         <tr><td class="content-block">
                             {{community.name}}, {{community.displayAddress}}
