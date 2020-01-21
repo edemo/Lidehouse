@@ -28,6 +28,7 @@
                         </div>
                         <a href="{{pathFor 'Topic show' _tid=_id}}" class="vote-title">
                             {{title}}
+                            {{> Badge value=(this.unseenCommentCountBy currentUser._id Meteor.users.SEEN_BY.EYES)}}
                         </a>
                         <div class="vote-info">
                             <i class="fa fa-comments-o"></i> <a class="text-capitalize" href="{{pathFor 'Topic show' _tid=_id}}">{{_ 'Comment'}} ({{commentCounter}})</a>
