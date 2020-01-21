@@ -15,6 +15,7 @@ import '/imports/api/topics/votings/votings.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
+import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 
 if (Meteor.isServer) {
   let Fixture;
@@ -22,6 +23,7 @@ if (Meteor.isServer) {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
+      Parcelships.remove({});
     });
 
     describe('permissions', function () {

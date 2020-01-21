@@ -12,6 +12,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { CommunityBuilder } from './community-builder.js';
+import { Parcels } from '../api/parcels/parcels.js';
 
 export function insertUnittestFixture(lang) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
@@ -43,44 +44,48 @@ export function insertUnittestFixture(lang) {
   const dummyParcels = [];
   dummyParcels[0] = demoBuilder.createParcel({
     units: 0,
-    floor: 'P',
-    door: '02',
-    type: 'parking',
-    area: 6,
+    floor: 'G',
+    door: '00',
+    type: 'other',
+    area: 0,
     habitants: 0,
   });
   dummyParcels[1] = demoBuilder.createParcel({
     units: 10,
-    floor: '1',
-    door: '12',
-    type: 'flat',
-    area: 65,
-    habitants: 1,
+    floor: 'P',
+    door: '01',
+    type: 'parking',
+    area: 10,
   });
   dummyParcels[2] = demoBuilder.createParcel({
     units: 20,
-    floor: '2',
-    door: '23',
-    type: 'flat',
-    area: 142,
-    habitants: 2,
+    floor: 'P',
+    door: '02',
+    type: 'storage',
+    area: 20,
   });
   dummyParcels[3] = demoBuilder.createParcel({
     units: 30,
-    floor: '3',
-    door: '34',
+    floor: '1',
+    door: '03',
     type: 'flat',
-    area: 98.4,
+    area: 30,
     habitants: 3,
   });
   dummyParcels[4] = demoBuilder.createParcel({
     units: 40,
-    floor: '4',
-    door: '45',
+    floor: '1',
+    door: '04',
     type: 'flat',
-    area: 70,
+    area: 40,
     habitants: 4,
   });
+
+  demoBuilder.create('meter', { parcelId: dummyParcels[3], service: 'coldWater', identifier: 'CW-01010101', activeTime: { begin: new Date('2018-01-01') } });
+
+  demoBuilder.create('parcelship', { parcelId: dummyParcels[1], leadRef: Parcels.findOne(dummyParcels[3]).ref });
+  demoBuilder.create('parcelship', { parcelId: dummyParcels[2], leadRef: Parcels.findOne(dummyParcels[3]).ref });
+
 
   // ===== Demo owners =====
 

@@ -7,6 +7,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { freshFixture } from '/imports/api/test-utils.js';
 import { insert as insertParcelship, update as updateParcelship, remove as removeParcelship } from '/imports/api/parcelships/methods.js';
+import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 
 if (Meteor.isServer) {
 
@@ -38,6 +39,7 @@ if (Meteor.isServer) {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
+      Parcelships.remove({});
     });
 
     describe('timing', function () {
