@@ -453,7 +453,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 //    topicIds: [voteTopicBike, voteTopicWallColor, voteTopicManager],
   });
 
-  const voterships = Communities.findOne(demoCommunityId).voterships();
+  const demoCommunity = Communities.findOne(demoCommunityId);
+  const voterships = _.sortBy(demoCommunity.voterships(), v => v.createdAt);
   function castDemoVotes(topicId, votes) {
     votes.forEach((v, index) => {
       if (v) castVote._execute({ userId: voterships[index].userId }, { topicId, castedVote: v });

@@ -2,7 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { debugAssert } from '/imports/utils/assert.js';
 
-let simulatedTime = null;
+const REAL_TIME_MODE = false;
+const AUTO_TICK = 1000; // milliseconds
+
+let _simulatedTime = null;
+let _startRealTime = null;
 
 export function datePartOnly(date = new Date()) {
   return moment(moment.utc(date)).startOf('day').toDate();
@@ -10,8 +14,10 @@ export function datePartOnly(date = new Date()) {
 
 export const Clock = {
   currentTime() {
-    if (simulatedTime) return simulatedTime;
-    return new Date();
+    if (!_simulatedTime) return new Date();
+    if (AUTO_TICK) _simulatedTime = new Date(_simulatedTime.getTime() + AUTO_TICK);
+    if (REAL_TIME_MODE) return new Date(_simulatedTime.getTime() + (Date.now() - _startRealTime));
+    return _simulatedTime;
   },
   currentDate() {
     return datePartOnly(Clock.currentTime());
@@ -31,27 +37,29 @@ export const Clock = {
   // WARNING: Calling these methods will make everyone see a modified Time.
   // Dont forget to call clear() after you are done!!!
   setSimulatedTime(time) {
-    simulatedTime = time || new Date();
+    _simulatedTime = time;
+    _startRealTime = Date.now();
   },
   starts(...args) {
     debugAssert(args.length === 3 && args[2] === 'ago');
     Clock.setSimulatedTime(moment().subtract(args[0], args[1]).toDate());
   },
   tick(...args) {
-    const newTime = moment(simulatedTime).add(...args).toDate();
+    const newTime = moment(_simulatedTime).add(...args).toDate();
     Clock.setSimulatedTime(newTime);
     return newTime;
   },
   tickSome(arg) {
     const some = Math.floor(Math.random() * 10) + 1;
-    const newTime = moment(simulatedTime).add(some, arg).toDate();
+    const newTime = moment(_simulatedTime).add(some, arg).toDate();
     Clock.setSimulatedTime(newTime);
     return newTime;
   },
   subtract(...args) {
-    Clock.setSimulatedTime(moment(simulatedTime).subtract(...args).toDate());
+    Clock.setSimulatedTime(moment(_simulatedTime).subtract(...args).toDate());
   },
   clear() {
-    simulatedTime = null;
+    _simulatedTime = null;
+    _startRealTime = null;
   },
 };

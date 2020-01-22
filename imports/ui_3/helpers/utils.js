@@ -1,9 +1,14 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { numeral } from 'meteor/numeral:numeral';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
+
+Template.registerHelper('Meteor', function meteor() {
+  return Meteor;
+});
 
 Template.registerHelper('and', function and(a, b) {
   return a && b;
