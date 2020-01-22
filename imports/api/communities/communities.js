@@ -72,12 +72,12 @@ Communities.helpers({
   },
   primaryBankAccount() {
     const bankAccount = MoneyAccounts.findOne({ communityId: this._id, category: 'bank', primary: true });
-    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
+//    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
     return bankAccount;
   },
   primaryCashAccount() {
     const cashAccount = MoneyAccounts.findOne({ communityId: this._id, category: 'cash', primary: true });
-    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
+//    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
     return cashAccount;
   },
   userWithRole(role) {

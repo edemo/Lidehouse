@@ -745,15 +745,6 @@
       "mothersName": {
         "label": "Anyja leánykori neve",
         "placeholder": "(csak magánszemély esetén)"
-      },
-      "bankAccountNumber": { 
-        "label": "Bankszámlaszám",
-        "placeholder": "(pl 12345678-00000000-00000078)"
-      },
-      "taxNumber": { 
-        "label": "Adószám",
-        "placeholder": "(pl 123456-2-42)",
-        "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
       }
     },
     "contact": {
@@ -770,6 +761,15 @@
         "label": "Email cím",
         "placeholder": "(pl. tibi45@dmail.com)"
       }
+    },
+    "bankAccountNumber": { 
+      "label": "Bankszámlaszám",
+      "placeholder": "(pl 12345678-00000000-00000078)"
+    },
+    "taxNumber": { 
+      "label": "Adószám",
+      "placeholder": "(pl 123456-2-42)",
+      "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
     }
   },
   "schemaBills": {
