@@ -33,7 +33,6 @@ Template.Forum_topics.viewmodel({
     return ['active', 'archived', 'muted'];
   },
   activeClass(group) {
-    console.log('activeClass', group, this.show()[group]);  // Why is it not called when I press a group button
     return this.show()[group] && 'btn-primary active';
   },
   selector() {
@@ -55,9 +54,9 @@ Template.Forum_topics.events({
   },
   'click .js-filter'(event, instance) {
     const group = $(event.target).closest('[data-value]').data('value');
-    show = instance.viewmodel.show();
-    show[group] = !show[group];
-    console.log(show);
-    instance.viewmodel.show(show);
+    const show = instance.viewmodel.show();
+    const showDeepCopy = JSON.parse(JSON.stringify(show));
+    showDeepCopy[group] = !showDeepCopy[group];
+    instance.viewmodel.show(showDeepCopy);
   },
 });
