@@ -13,7 +13,11 @@ import '../common/page-heading.js';
 import './forum-topics.html';
 
 Template.Forum_topics.viewmodel({
-  activeGroup: 'Active',
+  show: {
+    active: true,
+    archived: false,
+    muted: false,
+  },
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('topics.list', this.selector());
@@ -22,21 +26,23 @@ Template.Forum_topics.viewmodel({
   forumTopics() {
     const topics = Topics.find(this.selector(), { sort: { updatedAt: -1 } });
 //  .fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
-    if (this.activeGroup() === 'Muted') return topics.fetch().filter(t => t.hiddenBy(Meteor.userId()));
+    if (!this.show().muted) return topics.fetch().filter(t => !t.hiddenBy(Meteor.userId()));
     return topics;
   },
   groups() {
-    return ['Active', 'Archived', 'Muted'];
+    return ['active', 'archived', 'muted'];
   },
   activeClass(group) {
-    return (this.activeGroup() === group) && 'btn-primary active';
+    console.log('activeClass', group, this.show()[group]);  // Why is it not called when I press a group button
+    return this.show()[group] && 'btn-primary active';
   },
   selector() {
     const communityId = Session.get('activeCommunityId');
     const selector = { communityId, category: 'forum' };
-    const group = this.activeGroup();
-    if (group === 'Active') selector.closed = false;
-    else if (group === 'Archived') selector.closed = true;
+    const show = this.show();
+    if (show.archived) {
+      if (!show.active) selector.closed = true
+    } else selector.closed = false;
     return selector;
   },
 });
@@ -49,6 +55,9 @@ Template.Forum_topics.events({
   },
   'click .js-filter'(event, instance) {
     const group = $(event.target).closest('[data-value]').data('value');
-    instance.viewmodel.activeGroup(group);
+    show = instance.viewmodel.show();
+    show[group] = !show[group];
+    console.log(show);
+    instance.viewmodel.show(show);
   },
 });
