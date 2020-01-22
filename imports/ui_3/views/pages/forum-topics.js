@@ -26,7 +26,7 @@ Template.Forum_topics.viewmodel({
   forumTopics() {
     const topics = Topics.find(this.selector(), { sort: { updatedAt: -1 } });
 //  .fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
-    if (this.show().muted) return topics.fetch().filter(t => t.hiddenBy(Meteor.userId()));
+    if (!this.show().muted) return topics.fetch().filter(t => !t.hiddenBy(Meteor.userId()));
     return topics;
   },
   groups() {
@@ -40,10 +40,12 @@ Template.Forum_topics.viewmodel({
     const selector = { communityId, category: 'forum' };
     const show = this.show();
     if (show.archived) {
-      if (!show.active) {
-        selector.closed = true
-      } else delete selector.closed;
-    } else selector.closed = false;
+      if (show.active) delete selector.closed;
+      else selector.closed = true
+    } else {
+      if (show.active) selector.closed = false;
+      else selector.closed = { $exists: false }
+    }
     return selector;
   },
 });
@@ -56,9 +58,8 @@ Template.Forum_topics.events({
   },
   'click .js-filter'(event, instance) {
     const group = $(event.target).closest('[data-value]').data('value');
-    const show = instance.viewmodel.show();
-    const showDeepCopy = JSON.parse(JSON.stringify(show));
-    showDeepCopy[group] = !showDeepCopy[group];
-    instance.viewmodel.show(showDeepCopy);
+    const show = _.clone(instance.viewmodel.show());
+    show[group] = !show[group];
+    instance.viewmodel.show(show);
   },
 });
