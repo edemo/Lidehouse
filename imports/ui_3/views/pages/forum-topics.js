@@ -26,7 +26,7 @@ Template.Forum_topics.viewmodel({
   forumTopics() {
     const topics = Topics.find(this.selector(), { sort: { updatedAt: -1 } });
 //  .fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
-    if (!this.show().muted) return topics.fetch().filter(t => !t.hiddenBy(Meteor.userId()));
+    if (this.show().muted) return topics.fetch().filter(t => t.hiddenBy(Meteor.userId()));
     return topics;
   },
   groups() {
@@ -40,7 +40,9 @@ Template.Forum_topics.viewmodel({
     const selector = { communityId, category: 'forum' };
     const show = this.show();
     if (show.archived) {
-      if (!show.active) selector.closed = true
+      if (!show.active) {
+        selector.closed = true
+      } else delete selector.closed;
     } else selector.closed = false;
     return selector;
   },
