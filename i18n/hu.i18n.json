@@ -37,9 +37,9 @@
   "by": "által",
   "(Select one)": "(Válasszon a listából)",
 
-  "Active": "Aktív",
-  "Archived": "Archív",
-  "Muted": "Némított",
+  "active": "Aktív",
+  "archived": "Archív",
+  "muted": "Némított",
 
   // roles
   "admin": "admin",
