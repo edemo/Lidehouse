@@ -14,7 +14,7 @@ import { _ } from 'meteor/underscore';
 
 Migrations.add({
   version: 1,
-  name: 'Add CreatedBy and UpdatedBy fields (and use CreatedBy insetad of userId)',
+  name: 'Add CreatedBy and UpdatedBy fields (and use CreatedBy instead of userId)',
   up() {
     function upgrade(collection) {
       collection.find({ creatorId: { $exists: false } }).forEach(doc => {
@@ -145,8 +145,12 @@ Migrations.add({
   up() {
     function upgrade() {
       Memberships.find({}).forEach((doc) => {
-        let partnerId = Partners.findOne({ communityId: doc.communityId, 'idCard.name': doc.person.idCard.name })._id;
-        if (!partnerId) partnerId = Partners.insert(doc.person);
+        let partnerId;
+        if (doc.person && doc.person.idCard && doc.person.idCard.name) {
+          partnerId = Partners.findOne({ communityId: doc.communityId, 'idCard.name': doc.person.idCard.name })._id;
+        }
+        const person = _.extend(doc.person, { communityId: doc.communityId, relation: 'parcel' });
+        if (!partnerId) partnerId = Partners.insert(person);
         Memberships.update(doc._id, { $set: { partnerId }, $unset: { person: '', personId: '' } });
       });
       Topics.find({ category: 'vote' }).forEach((doc) => {
@@ -162,7 +166,9 @@ Migrations.add({
       Delegations.find({}).forEach((doc) => {
         const sourceUserId = doc.sourcePersonId;
         const sourceUser = Meteor.users.find(sourceUserId);
-        const sourcePartnerId = sourceUser.partnerId(doc.communityId);
+        const sourcePartnerId = sourceUser ?
+          sourceUser.partnerId(doc.communityId) :
+          Partners.findOne({ communityId: doc.communityId, 'idCard.identifier': doc.sourcePersonId })._id;
         const targetUserId = doc.targetPersonId;
         const targetUser = Meteor.users.find(targetUserId);
         const targetPartnerId = targetUser.partnerId(doc.communityId);
