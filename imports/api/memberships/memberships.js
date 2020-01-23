@@ -147,12 +147,13 @@ Memberships.helpers({
   },
   displayRole() {
     let result = __(this.role);
-    const parcel = this.parcel();
+    const parcel = this.parcel(); // TODO Cannot always retrive parcel, needs to subscribe to parcel data
     if (parcel) result += ` ${parcel.toString()}`;
     return result;
   },
   toString() {
-    return `${this.person().displayName('hu')}, ${this.displayRole()}`;
+    const display = `${this.person().displayName('hu')}, ${this.displayRole()}`;
+    return display;
   },
 });
 

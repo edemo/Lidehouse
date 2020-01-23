@@ -7,24 +7,26 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from './transactions.js';
 
 Meteor.publish('transactions.byPartner', function transactionsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
-    partnerId: { type: String },
+    partnerId: { type: String, optional: true },
+    membershipId: { type: String, optional: true },
     begin: { type: Date, optional: true },
     end: { type: Date, optional: true },
   }).validate(params);
-  const { communityId, partnerId, begin, end } = params;
+  const { communityId, partnerId, membershipId, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
-    // then he can only see his own parcels' transactions
-    const ownershipIds = _.pluck(user.ownerships(communityId).fetch(), '_id');
-    if (!partnerId || !_.contains(ownershipIds, partnerId)) {
-      return this.ready();
-    }
+    // Normal user can only see his own parcels' transactions
+    if (!partnerId && !membershipId) return this.ready();
+    if (partnerId && Partners.findOne(partnerId).userId !== this.userId) return this.ready();
+    if (membershipId && Memberships.findOne(membershipId).userId !== this.userId) return this.ready();  
   }
 
   const selector = Transactions.makeFilterSelector(params);

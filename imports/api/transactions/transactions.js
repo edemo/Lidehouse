@@ -19,7 +19,7 @@ import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -65,6 +65,7 @@ Transactions.partnerSchema = {
       } else return undefined;
     },
   },*/
+  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // only used on parcel bills
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
 };
 
@@ -122,6 +123,10 @@ Transactions.helpers({
   partner() {
     if (this.partnerId) return Partners.findOne(this.partnerId);
     return this.partnerName;
+  },
+  membership() {
+    if (this.membershipId) return Memberships.findOne(this.membershipId);
+    return undefined;
   },
   contract() {
     return Contracts.findOne(this.contractId);
@@ -265,7 +270,8 @@ Transactions.helpers({
     return this.community().asPartner();
   },
   receiver() {
-    if (this.relation === 'customer' || this.relation === 'parcel') return this.partner();
+    if (this.relation === 'customer') return this.partner();
+    if (this.relation === 'parcel') return this.membership();
     return this.community().asPartner();
   },
   lineCount() {
