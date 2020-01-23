@@ -149,6 +149,9 @@ Transactions.categoryHelpers('bill', {
   display() {
     return `${moment(this.deliveryDate).format('L')} ${this.partner()} ${this.amount}`;
   },
+  displayInHistory() {
+    return __(this.category) + (this.lineCount() ? ` (${this.lineCount()} ${__('item')})` : '');
+  },
   overdueDays() {
     const diff = moment().diff(this.dueDate, 'days');
     if (diff < 0) return 0;

@@ -69,9 +69,6 @@ Template.Parcel_history.viewmodel({
   negativeClass(tx) {
     return tx.subjectiveAmount() < 0 ? 'negative' : '';
   },
-  displayTx(tx) {
-    return __(tx.category) + (tx.lineCount() ? ` (${tx.lineCount()} ${__('item')})` : '');
-  },
 });
 
 Template.Parcel_history.events({
