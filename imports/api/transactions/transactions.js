@@ -95,7 +95,8 @@ Meteor.startup(function indexTransactions() {
   if (Meteor.isClient && MinimongoIndexing) {
     Transactions._collection._ensureIndex('relation');
   } else if (Meteor.isServer) {
-    Transactions._ensureIndex({ communityId: 1, relation: 1, serial: 1 });
+    Transactions._ensureIndex({ communityId: 1, category: 1, relation: 1, serial: 1 });
+    Transactions._ensureIndex({ communityId: 1, serialId: 1 });
     Transactions._ensureIndex({ 'bills.id': 1 });
     Transactions._ensureIndex({ 'debit.account': 1 });
     Transactions._ensureIndex({ 'credit.account': 1 });
@@ -309,8 +310,8 @@ Transactions.helpers({
 });
 
 Transactions.attachBaseSchema(Transactions.baseSchema);
-Transactions.attachBehaviour(SerialId(['category', 'relation']));
 Transactions.attachBehaviour(Timestamped);
+Transactions.attachBehaviour(SerialId(['category', 'relation']));
 
 Transactions.attachVariantSchema(undefined, { selector: { category: 'freeTx' } });
 

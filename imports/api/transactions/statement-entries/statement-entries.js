@@ -83,7 +83,7 @@ if (Meteor.isClient) {
       const communityId = Session.get('activeCommunityId');
       const txdef = Session.get('modalContext').txdef;
       const txs = Transactions.find({ communityId, defId: txdef._id, reconciledId: { $exists: false } });
-      const options = txs.map(tx => ({ label: tx.serialId(), value: tx._id }));
+      const options = txs.map(tx => ({ label: tx.serialId, value: tx._id }));
       return options;
     },
     firstOption: () => __('(Select one)'),

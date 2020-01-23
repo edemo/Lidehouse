@@ -9,6 +9,7 @@ import { noUpdate } from '/imports/utils/autoform.js';
 export function SerialId(definerFields = []) {
   const schema = new SimpleSchema({
     serial: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true, ...noUpdate } },
+    serialId: { type: String, optional: true, autoform: { omit: true, ...noUpdate } },
   });
 
   // indexing needed for quickly determining last id
@@ -20,7 +21,8 @@ export function SerialId(definerFields = []) {
   const indexes = [indexDefinition];
 
   const helpers = {
-    serialId() {
+    computeSerialId() {
+      if (Meteor.isClient) return 'not-available';
       let preKey = '';
       const language = this.community().settings.language;
       definerFields.forEach((field) => {
@@ -30,7 +32,7 @@ export function SerialId(definerFields = []) {
           preKey += TAPi18n.__(preKeyFragment, {}, language) + '/';
         }
       });
-//      debugAssert(this.serial); not exist yet when inserting
+      debugAssert(this.serial); // not exist yet when inserting
       return `${preKey}${this.serial}/${this.createdAt.getFullYear()}`;
     },
   };
@@ -46,6 +48,8 @@ export function SerialId(definerFields = []) {
           const last = collection.findOne(selector, { sort: { serial: -1 } });
           const nextSerial = last ? last.serial + 1 : 1;
           doc.serial = nextSerial;
+          const tdoc = this.transform();
+          doc.serialId = tdoc.computeSerialId();
           return true;
         },
       },

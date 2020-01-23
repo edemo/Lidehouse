@@ -217,9 +217,16 @@ export class CommunityBuilder {
     else if (typeof personSpec === 'object') person = personSpec;
     else debugAssert(false);
     let partnerId;
-    if (person.idCard) {
+    if (person.userId) {
+      const user = Meteor.users.findOne(person.userId);
+      const partner = Partners.findOne({ communityId: this.communityId, userId: person.userId });
+      if (partner) partnerId = partner._id;
+      else person.idCard = { type: 'natural', name: user.displayProfileName(user.settings.language) };
+    }
+    if (!partnerId) {
       person.communityId = this.communityId;
       person.relation = 'parcel';
+      debugAssert(person.idCard);
       partnerId = Partners.insert(person);
     }
     const membershipId = Memberships.insert({ communityId: this.communityId, userId: person.userId, partnerId, accepted: true, role, ...membershipData });
@@ -259,7 +266,7 @@ export class CommunityBuilder {
       account: '382',
       valueDate: bill.dueDate,
       name: bill.partner().getName(),
-      note: bill.serialId(),
+      note: bill.serialId,
       amount: bill.outstanding,
     });
     this.execute(StatementEntries.methods.reconcile, { _id: entryId }, this.getUserWithRole('accountant'));
