@@ -78,8 +78,8 @@
                 <li>
                     <a id="privatechat" class="right-sidebar-toggle count-info" href="">
                         <i class="fa fa-envelope"></i>  
-                        {{#if countNotifications 'private chat'}}
-                        <span class="label badge badge-danger">{{countNotifications 'private chat'}}</span>
+                        {{#if unseenEventsCount 'private chat'}}
+                        <span class="label badge badge-danger">{{unseenEventsCount 'private chat'}}</span>
                         {{/if}}  
                     </a>                    
                 </li>
@@ -87,8 +87,8 @@
                 <li>
                     <a id="techsupport" class="right-sidebar-toggle count-info" href="">
                         <i class="fa fa-lg fa-question-circle"></i>  
-                        {{#if countNotifications 'tech support'}}
-                        <span class="label badge badge-danger">{{countNotifications 'tech support'}}</span>
+                        {{#if unseenEventsCount 'tech support'}}
+                        <span class="label badge badge-danger">{{unseenEventsCount 'tech support'}}</span>
                         {{/if}}  
                     </a>                    
                 </li>   

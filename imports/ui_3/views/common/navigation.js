@@ -35,13 +35,23 @@ Template.Navigation.onRendered(function() {
 });
 
 Template.Navigation.helpers({
-  countNotifications(category) {
+  unseenEventsCount(category) {
     const communityId = Session.get('activeCommunityId');
-    let count = 0;
+    const userId = Meteor.userId();
     const topics = Topics.find({ communityId, category });
-    topics.map(t => {
-      const userId = Meteor.userId();
-      count += t.needsAttention(userId, Meteor.users.SEEN_BY.EYES);
+    let count = 0;
+    topics.map(topic => {
+      count += topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES);
+    });
+    return count;
+  },
+  needsAttentionCount(category) {
+    const communityId = Session.get('activeCommunityId');
+    const userId = Meteor.userId();
+    const topics = Topics.find({ communityId, category });
+    let count = 0;
+    topics.map(topic => {
+      count += topic.needsAttention(userId, Meteor.users.SEEN_BY.EYES);
     });
     return count;
   },

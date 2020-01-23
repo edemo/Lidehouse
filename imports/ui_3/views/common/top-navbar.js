@@ -54,11 +54,11 @@ Template.Top_navbar.helpers({
     if (!Meteor.user()) { return []; }
     return Meteor.user().communities();
   },
-  countNotifications(roomType) {
+  unseenEventsCount() {
     const communityId = Session.get('activeCommunityId');
     const userId = Meteor.userId();
+    const rooms = Topics.find({ communityId, category: 'room' });
     let count = 0;
-    const rooms = Topics.find({ communityId, category: 'room', title: roomType });
     rooms.map(room => {
       count += room.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES);
     });
