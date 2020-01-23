@@ -16,7 +16,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 export const Comments = new Mongo.Collection('comments');
 
-Comments.categoryValues = ['comment', 'statusChangeTo', 'pointAt'];
+Comments.categoryValues = ['comment', 'statusChange', 'pointAt'];
 
 Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
@@ -57,7 +57,7 @@ Comments.attachBehaviour(Likeable);
 Comments.attachBehaviour(Flagable);
 
 Comments.attachVariantSchema(undefined, { selector: { category: 'comment' } });
-Comments.attachVariantSchema(StatusChanges.extensionSchema, { selector: { category: 'statusChangeTo' } });
+Comments.attachVariantSchema(StatusChanges.extensionSchema, { selector: { category: 'statusChange' } });
 
 Comments.helpers({
   topic() {
@@ -106,7 +106,7 @@ Comments.moveSchema = new SimpleSchema({
 
 Meteor.startup(function attach() {
   Comments.simpleSchema({ category: 'comment' }).i18n('schemaComments');
-  Comments.simpleSchema({ category: 'statusChangeTo' }).i18n('schemaComments');
+  Comments.simpleSchema({ category: 'statusChange' }).i18n('schemaComments');
   Comments.moveSchema.i18n('schemaComments');
 });
 

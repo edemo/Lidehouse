@@ -100,14 +100,14 @@ function checkStatusChangeAllowed(topic, statusTo) {
 
 const statusChange = new ValidatedMethod({
   name: 'statusChange',
-  validate: doc => Comments.simpleSchema({ category: 'statusChangeTo' }).validator({ clean: true })(doc),
+  validate: doc => Comments.simpleSchema({ category: 'statusChange' }).validator({ clean: true })(doc),
   run(event) {
-    _.extend(event, { category: 'statusChangeTo' });
+    _.extend(event, { category: 'statusChange' });
     const topic = checkExists(Topics, event.topicId);
     const category = topic.category;
     const workflow = topic.workflow();
     // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic);
-    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic, topic);
+    checkPermissions(this.userId, `${category}.statusChange.${event.status}.enter`, topic, topic);
     checkStatusChangeAllowed(topic, event.status);
 
     const onLeave = workflow[topic.status].obj.onLeave;
@@ -148,7 +148,7 @@ const statusUpdate = new ValidatedMethod({
     if (topic.modifiableFieldsByStatus()) {
       topic.modifiableFieldsByStatus().forEach(key => modifiableFields.push(`${category}.${key}`));
     }
-    checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic);
+    checkPermissions(this.userId, `${category}.statusChange.${topic.status}.enter`, topic);
     checkModifier(topic, modifier, modifiableFields);
     Topics.update(_id, modifier, { selector: { category } });
   },

@@ -142,7 +142,7 @@ Topics.helpers({
         if (!this.closed && !this.hasVotedIndirect(userId)) return 1;
         break;
       case 'ticket':
-        if (!this.closed && Meteor.user().hasPermission(`ticket.statusChangeTo.${this.status}.leave`, this)) return 1;
+        if (!this.closed && Meteor.user().hasPermission(`ticket.statusChange.${this.status}.leave`, this)) return 1;
         break;
       case 'feedback':
         if (this.isUnseenBy(userId, seenType)) return 1;

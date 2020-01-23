@@ -33,7 +33,7 @@ function statusChangeSchema(doc, statusName) {
     statusObject.data.map(function (dataField) { return { [dataField]: /*TODO*/Tickets.extensionRawSchema[dataField] }; })
   ) : undefined;
   const schema = new SimpleSchema([
-    Comments.simpleSchema({ category: 'statusChangeTo' }),
+    Comments.simpleSchema({ category: 'statusChange' }),
     { status: { type: String, autoform: fixedStatusValue(statusName), autoValue() { return statusName; } } },
     statusObject.data ? { [doc.category]: { type: dataSchema, optional: true } } : {},
   ]);
@@ -96,7 +96,7 @@ Topics.actions = {
   statusUpdate: {
     name: 'statusUpdate',
     icon: () => 'fa fa-edit',
-    visible: (options, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.category}.statusChangeTo.${doc.status}.enter`, doc),
+    visible: (options, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.category}.statusChange.${doc.status}.enter`, doc),
     run(options, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -124,7 +124,7 @@ Topics.actions = {
       return newStatus.icon || 'fa fa-cogs';
     },
     visible(options, doc) {
-      return doc && currentUserHasPermission(`${doc.category}.statusChangeTo.${options.status.name}.enter`, doc);
+      return doc && currentUserHasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc);
     },
     subActions: true,
     subActionsOptions(doc) {
@@ -238,7 +238,7 @@ _.each(Topics.entities, (entity, entityName) => {
   AutoForm.addHooks(`af.${entityName}.statusChange`, {
     formToDoc(doc) {
       doc.topicId = Session.get('modalContext').topicId;
-      doc.category = 'statusChangeTo'; // `statusChangeTo.${status}`;
+      doc.category = 'statusChange'; // `statusChange.${status}`;
       doc.status = Session.get('modalContext').status;
       //  const topic = Topics.findOne(doc.topicId);
       doc.dataUpdate = doc['ticket'] || {}; // can use topic.category instrad of ticket, if other than tickets have data too
