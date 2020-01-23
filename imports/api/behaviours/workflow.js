@@ -20,7 +20,7 @@ const schema = new SimpleSchema({
     if (this.isSet) return this.value;
     const status = this.field('status').value;
     if (!status) return undefined; // don't touch
-    if (status === 'closed') return true;
+    if (status === 'closed' || status === 'deleted') return true;
     else return false;
   } },
   opensAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate),
