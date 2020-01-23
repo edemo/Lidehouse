@@ -4,15 +4,16 @@
     {{> Page_heading title=(_ 'Forum') }}
 
     <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="ibox">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-sm-4">
                 <div class="btn-group">
                 {{#each group in groups}}
                 <button type="button" class="btn {{activeClass group}} text-capitalize js-filter" data-value="{{group}}">{{_ group}}</button>
                 {{/each}}
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-sm-6">
                 <div class="input-group">
                     <input type="text" placeholder="{{_ 'search'}}" class="input-sm form-control js-search">
                     <span class="input-group-addon">
@@ -20,11 +21,10 @@
                     </span>
                 </div>
             </div>
-        </div>
-        <div>
-            <div class="text-right">
-                <button class="btn btn-primary btn-sm m-b m-t js-new topics" data-entity="forum"><i class="fa fa-plus"></i> {{_ 'Start new topic'}}</button>
+            <div class="col-sm-2 text-right">
+                <button class="btn btn-primary btn-sm js-new topics" data-entity="forum"><i class="fa fa-plus"></i> {{_ 'Start new topic'}}</button>
             </div>        
+        </div>
         </div>
         <div class="m-b-md">
             {{#each forumTopics}}
