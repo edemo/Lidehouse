@@ -18,14 +18,21 @@ Template.Forum_topics.viewmodel({
     archived: false,
     muted: false,
   },
+  searchText: '',
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('topics.list', this.selector());
     });
   },
   forumTopics() {
-    const topics = Topics.find(this.selector(), { sort: { updatedAt: -1 } });
+    let topics = Topics.find(this.selector(), { sort: { updatedAt: -1 } }).fetch();
 //  .fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
+    if (this.searchText()) {
+      topics = topics.filter(t =>
+          t.title.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+      || t.text.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+      );
+    }
     if (!this.show().muted) return topics.fetch().filter(t => !t.hiddenBy(Meteor.userId()));
     return topics;
   },
@@ -61,5 +68,8 @@ Template.Forum_topics.events({
     const show = _.clone(instance.viewmodel.show());
     show[group] = !show[group];
     instance.viewmodel.show(show);
+  },
+  'keyup .js-search'(event, instance) {
+    instance.viewmodel.searchText(event.target.value);
   },
 });
