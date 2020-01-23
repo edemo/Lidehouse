@@ -64,7 +64,7 @@ export const HouseTranslation = {
         "placeholder": "(eg. office address, phone, opening hours)",
         "help": "You can set some some text here freely and it will be displayed for everybody, not just for the members of this community. You can provide contact information here for outsiders."
       },
-      "taxNumber": {
+      "taxNo": {
         "label": "Tax number",
         "placeholder": "(eg. international VAT number)",
         "help": "Not mandatory, but you can set this, if you'd like it to appear on invoices and bills."
@@ -241,7 +241,7 @@ export const HouseTranslation = {
         "placeholder": "(pl. iroda címe, telefonszáma, nyitvatartása)",
         "help": "Az itt megadott szabad szöveges információt mindenki láthatja, nem csak a tulajdonosok. Itt adhat meg külsősök számára elérhetőségeket."
       },
-      "taxNumber": {
+      "taxNo": {
         "label": "Adószám",
         "placeholder": "(pl. 123456-2-42)",
         "help": "Nem szükséges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."

@@ -47,8 +47,8 @@ Partners.schema = new SimpleSchema({
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   idCard: { type: IdCardSchema, optional: true },
   contact: { type: ContactSchema, optional: true },
-  bankAccountNumber: { type: String, max: 100, optional: true },
-  taxNumber: { type: String, max: 50, optional: true },
+  BAN: { type: String, max: 100, optional: true },
+  taxNo: { type: String, max: 50, optional: true },
   outstanding: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 
@@ -172,8 +172,8 @@ Factory.define('customer', Partners, {
     phone: () => faker.phone.phoneNumberFormat(1),
     email: () => `${faker.name.firstName()}.demouser@honline.hu`,
   },
-  bankAccountNumber: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
-  taxNumber: () => faker.finance.account(6) + '-2-42',
+  BAN: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+  taxNo: () => faker.finance.account(6) + '-2-42',
 });
 
 Factory.define('supplier', Partners, {
@@ -187,8 +187,8 @@ Factory.define('supplier', Partners, {
     phone: () => faker.phone.phoneNumberFormat(1),
     email: () => `${faker.name.firstName()}.demouser@honline.hu`,
   },
-  bankAccountNumber: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
-  taxNumber: () => faker.finance.account(6) + '-2-42',
+  BAN: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+  taxNo: () => faker.finance.account(6) + '-2-42',
 });
 
 Factory.define('member', Partners, {
@@ -202,8 +202,8 @@ Factory.define('member', Partners, {
     phone: () => faker.phone.phoneNumberFormat(1),
     email: () => `${faker.name.firstName()}.demouser@honline.hu`,
   },
-  bankAccountNumber: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
-  taxNumber: () => faker.finance.account(6) + '-2-42',
+  BAN: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+  taxNo: () => faker.finance.account(6) + '-2-42',
 });
 
 // ------------------------------------

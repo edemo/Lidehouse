@@ -2,11 +2,11 @@
     <address>
         <strong>{{partner.toString}}</strong><br>
         {{partner.contact.address}}<br>
-        {{#if partner.bankAccountNumber}}
-          Bank: {{partner.bankAccountNumber}}<br>
+        {{#if partner.BAN}}
+          Bank: {{partner.BAN}}<br>
         {{/if}}
-        {{#if partner.taxNumber}}
-          {{_ 'schemaPartners.taxNumber.label'}}: {{partner.taxNumber}}<br>
+        {{#if partner.taxNo}}
+          {{_ 'schemaPartners.taxNo.label'}}: {{partner.taxNo}}<br>
         {{/if}}
     </address>
 </template>

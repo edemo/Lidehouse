@@ -44,7 +44,11 @@
       "label": "Accounting code",
       "placeholder": "(pl. 2)"
     },
-    "ban": {
+    "bank": {
+      "label": "Bank name",
+      "placeholder": "(pl. HSBC)"
+    },
+    "BAN": {
       "label": "Bank account number",
       "placeholder": "(eg 12345678-00000000-00000525)"
     },
@@ -756,11 +760,11 @@
         "placeholder": "(eg. jsmith45@dmail.com)"
       }
     },
-    "bankAccountNumber": { 
+    "BAN": { 
       "label": "Bank account number",
       "placeholder": "(eg. 12345678-00000000-00000078)"
     },
-    "taxNumber": { 
+    "taxNo": { 
       "label": "Tax number",
       "placeholder": "(eg. international VAT number)",
       "help": "Not mandatory, but you can set this, if you'd like it to appear on invoices and bills."

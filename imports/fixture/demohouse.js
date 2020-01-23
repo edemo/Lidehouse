@@ -64,7 +64,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     number: '86',
     lot: '4532/8',
     avatar: '/images/demohouse.jpg',
-    taxNumber: '128686-1-41',
+    taxNo: '128686-1-41',
     totalunits: 10000,
     settings: {
       language: lang,
@@ -370,14 +370,14 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoBuilder.create('bankAccount', {
     digit: '2',
     name: __('demo.bank.primaryAccount.name'),
-    ban: __('demo.bank.primaryAccount.number'),
+    BAN: __('demo.bank.primaryAccount.number'),
     sync: 'manual',
     primary: true,
   });
   demoBuilder.create('bankAccount', {
     digit: '3',
     name: __('demo.bank.savingsAccount.name'),
-    ban: __('demo.bank.savingsAccount.number'),
+    BAN: __('demo.bank.savingsAccount.number'),
     sync: 'manual',
   });
 
