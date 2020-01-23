@@ -42,7 +42,7 @@
                     <a href="{{pathFor 'Forum'}}">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Forum'}}</span>
-                        {{> Badge value=(countNotifications 'forum') align='right'}}
+                        {{> Badge color='info' value=(countNotifications 'forum') align='right'}}
                     </a>
                 </li>
                 <li class="{{isActivePath regex='votings|agendas|delegations'}}">
