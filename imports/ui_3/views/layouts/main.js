@@ -27,7 +27,7 @@ Template.Main_layout.onCreated(function() {
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
     this.subscribe('delegations.toUser', { communityId });
     this.subscribe('delegations.fromUser', { communityId });
-    this.subscribe('topics.board', { communityId });
+    this.subscribe('topics.active', { communityId });
   });
   // This autorun sets the active community automatically to the first community of the user
   // TODO: active community could be saved somewhere so he gets back where he left off last time
