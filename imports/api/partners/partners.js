@@ -27,7 +27,7 @@ const ContactSchema = new SimpleSchema({
 
 const idCardTypeValues = ['natural', 'legal'];
 const IdCardSchema = new SimpleSchema({
-  type: { type: String, allowedValues: idCardTypeValues, autoform: autoformOptions(idCardTypeValues, 'schemaMemberships.person.') },
+  type: { type: String, allowedValues: idCardTypeValues, autoform: autoformOptions(idCardTypeValues, 'schemaPartners.idCard.type.') },
   name: { type: String, optional: true },
   address: { type: String, optional: true },
   identifier: { type: String, optional: true }, // cegjegyzek szam vagy szig szam - unique!!!
