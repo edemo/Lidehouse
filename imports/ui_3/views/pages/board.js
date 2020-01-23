@@ -22,7 +22,7 @@ import './board.html';
 Template.Board.onCreated(function boardOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
-    this.subscribe('topics.board', { communityId });
+    this.subscribe('topics.active', { communityId });
   });
 });
 
