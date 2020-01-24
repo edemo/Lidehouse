@@ -77,8 +77,6 @@ AutoForm.addHooks('af.user.update', {
   },
   onSuccess(formType, result) {
     displayMessage('success', 'user data updated');
-  },
-  endSubmit() {
     if (Meteor.user() && Meteor.user().personNameMismatch()) {
       const userName = Meteor.user().fullName() || Meteor.user().profile.firstName || Meteor.user().profile.lastName ;
       const personName = Meteor.user().displayOfficialName();
