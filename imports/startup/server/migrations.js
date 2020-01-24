@@ -5,6 +5,7 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
@@ -147,11 +148,22 @@ Migrations.add({
       Memberships.find({}).forEach((doc) => {
         let partnerId;
         if (doc.person && doc.person.idCard && doc.person.idCard.name) {
-          partnerId = Partners.findOne({ communityId: doc.communityId, 'idCard.name': doc.person.idCard.name })._id;
+          const partnerByName = Partners.findOne({ communityId: doc.communityId, 'idCard.name': doc.person.idCard.name });
+          if (partnerByName) partnerId = partnerByName._id;
+        }
+        if (doc.personId) {
+          const partnerById = Partners.findOne({ communityId: doc.communityId, userId: doc.personId });
+          if (partnerById) partnerId = partnerById._id;
         }
         const person = _.extend(doc.person, { communityId: doc.communityId, relation: 'parcel' });
         if (!partnerId) partnerId = Partners.insert(person);
-        Memberships.update(doc._id, { $set: { partnerId }, $unset: { person: '', personId: '' } });
+        const newFields = { partnerId };
+        if (doc.personId &&
+            (!doc.person || !doc.person.idCard || !doc.person.idCard.identifier ||
+              doc.person.idCard.identifier !== doc.personId)) {
+          newFields.userId = doc.personId;
+        }
+        Memberships.update(doc._id, { $set: newFields, $unset: { person: '', personId: '' } });
       });
       Topics.find({ category: 'vote' }).forEach((doc) => {
         const newVoteCasts = {};
@@ -159,7 +171,7 @@ Migrations.add({
           const partnerId = Meteor.users.findOne(userId).partnerId(doc.communityId);
           newVoteCasts[partnerId] = vote;
         });
-        Topics.update(doc._id, { $set: { voteCasts: newVoteCasts } });
+        Topics.update(doc._id, { $set: { voteCasts: newVoteCasts } }, { selector: { category: 'vote' } });
         doc.voteEvaluate(); // calculates all the rest of the voteResults fields
         // We assume here that the registered delegations have not changed since the voting, but that's OK, noone delegated actually
       });
