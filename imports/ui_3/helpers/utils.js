@@ -91,6 +91,10 @@ Template.registerHelper('translateArray', function translateArray(items) {
   return (items || []).map(i => __(i));
 });
 
+Template.registerHelper('firstChar', function firstChar(text) {
+  return text.charAt(0);
+});
+
 Template.registerHelper('log', function log(stuff) {
   // eslint-disable-next-line no-console
   console.log(stuff);

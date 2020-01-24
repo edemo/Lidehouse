@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import '/imports/ui_3/views/components/ledger-report.js';
 import '/imports/ui_3/views/components/account-history.js';
 import './accounting-ledger.html';
 
@@ -25,6 +26,9 @@ Template.Accounting_ledger.viewmodel({
   },
   totalTag() {
     return ['T'];
+  },
+  yearMonthTag() {
+    return this.periodSelected();
   },
   yearMonthTags() {
 //    return PeriodBreakdown.currentYearMonths().concat('T');

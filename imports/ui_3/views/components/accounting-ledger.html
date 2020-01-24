@@ -11,7 +11,8 @@
             <select id="period" name="period" {{b 'options: periodOptions, value: periodSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
         </div>
     </div>
-    {{> Balance_report breakdown=(breakdown 'COA') tags=yearMonthTags }}
+    <!--{{> Balance_report breakdown=(breakdown 'COA') tags=yearMonthTags }}-->
+    {{> Ledger_report breakdown=(breakdown 'COA') tag=yearMonthTag }}
     {{/if}}
     {{/if}}
 

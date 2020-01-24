@@ -1,0 +1,44 @@
+<template name="Ledger_report">
+    <div class="table-responsive">
+    <table class="table table-bordered table-condensed ">
+        <thead>
+          <tr class="table-row">
+              <td><strong>{{_ 'Account'}}</strong></td>
+              <td><strong>{{_ 'schemaTransactions.debit.label'}}</strong></td>
+              <td><strong>{{_ 'schemaTransactions.credit.label'}}</strong></td>
+              <td><strong>{{firstChar (_ 'schemaTransactions.debit.label')}} {{_ 'Balance'}}</strong></td>
+              <td><strong>{{firstChar (_ 'schemaTransactions.credit.label')}} {{_ 'Balance'}}</strong></td>
+          </tr>
+        </thead>
+        <tbody>
+            {{#each account in breakdown.nodes}}
+            {{#if hasActivity account}}
+            <tr class="table-row {{headerLevelClass account}}">
+                <td class="nowrap">{{displayAccount account}}</td>
+                {{#let cellValue=(balance account tag 'debitSum')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayCell cellValue}}
+                </td>
+                {{/let}}
+                {{#let cellValue=(balance account tag 'creditSum')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayCell cellValue}}
+                </td>
+                {{/let}}
+                {{#let cellValue=(balance account 'T' 'debitSum')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="T" style="cursor: pointer">
+                    {{displayCell cellValue}}
+                </td>
+                {{/let}}
+                {{#let cellValue=(balance account 'T' 'creditSum')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="T" style="cursor: pointer">
+                    {{displayCell cellValue}}
+                </td>
+                {{/let}}
+            </tr>
+            {{/if}}
+            {{/each}}
+        </tbody>
+    </table>
+    </div>
+</template>

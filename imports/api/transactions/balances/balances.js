@@ -33,6 +33,12 @@ Balances.helpers({
   total() {
     return this.debit - this.credit;
   },
+  debitSum() {
+    return this.debit;
+  },
+  creditSum() {
+    return this.credit;
+  },
 });
 
 Meteor.startup(function indexBalances() {
@@ -42,7 +48,7 @@ Meteor.startup(function indexBalances() {
 Balances.attachSchema(Balances.schema);
 Balances.attachBehaviour(Timestamped);
 
-Balances.getTotal = function getTotal(def) {
+Balances.getSum = function getSum(def, side) {
   Balances.defSchema.validate(def);
   let result = 0;
 
@@ -63,7 +69,7 @@ Balances.getTotal = function getTotal(def) {
       localizer: def.localizer,
       tag: def.tag,
     });
-    result += balance ? balance.total() : 0;
+    result += balance ? balance[side]() : 0;
   });*/
 
   // Aggregating sub-accounts balances with regexp
@@ -71,13 +77,18 @@ Balances.getTotal = function getTotal(def) {
   if (def.account) subdef.account = new RegExp('^' + def.account);
 //  if (def.localizer) subdef.localizer = new RegExp('^' + def.localizer);
   subdef.localizer = def.localizer ? def.localizer : { $exists: false };
-  Balances.find(subdef).forEach(balance => result += balance.total());
+  Balances.find(subdef).forEach(balance => result += balance[side]());
 
   return result;
 };
 
-Balances.getDisplayTotal = function getDisplayTotal(def) {
-  const total = Balances.getTotal(def);
+Balances.getTotal = function getTotal(def) {
+  return Balances.getSum(def, 'total');
+};
+
+Balances.getDisplaySum = function getDisplaySum(def, side) {
+  const sum = Balances.getSum(def, side);
+  if (side !== 'total') return sum;
   let displaySign = 1;
   if (def.account) {
     switch (def.account.charAt(0)) {
@@ -91,7 +102,11 @@ Balances.getDisplayTotal = function getDisplayTotal(def) {
       default: break;
     }
   }
-  return displaySign * total;
+  return displaySign * sum;
+};
+
+Balances.getDisplayTotal = function getDisplayTotal(def) {
+  return Balances.getDisplaySum('total');
 };
 
 function timeTagMatches(valueDate, tag) {
