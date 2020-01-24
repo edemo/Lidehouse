@@ -10,6 +10,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/actions.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/users/users.js';
+import '/imports/ui_3/views/components/badge.js';
 import './right-sidebar.js';
 import './top-navbar.html';
 
@@ -54,21 +55,24 @@ Template.Top_navbar.helpers({
     if (!Meteor.user()) { return []; }
     return Meteor.user().communities();
   },
-  unseenEventsCount() {
+  unseenEventsCount(roomTitle) {
     const communityId = Session.get('activeCommunityId');
     const userId = Meteor.userId();
-    const rooms = Topics.find({ communityId, category: 'room' });
+    const rooms = Topics.find({ communityId, category: 'room', title: roomTitle });
     let count = 0;
     rooms.map(room => {
       count += room.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES);
     });
     return count;
   },
-  nameMismatchBadge() {
+  nameMismatchCounter() {
+    return Meteor.user().personNameMismatch() ? 1 : 0;
+  },
+  nameMismatchSeriousity() {
     const nameMismatch = Meteor.user().personNameMismatch();
-    if (nameMismatch === 'different') return 'badge-danger';
+    if (nameMismatch === 'different') return 'danger';
     // 'analog' is suspended at user.personNameMismatch()
-    // if (nameMismatch === 'analog') return 'badge-info';  
+    // if (nameMismatch === 'analog') return 'info';  
     return;
   },
 });

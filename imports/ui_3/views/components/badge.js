@@ -7,4 +7,7 @@ Template.Badge.viewmodel({
   parentSubscriptionsReady() {
     return Template.instance().parent(1).subscriptionsReady();
   },
+  extraClasses() {
+    return this.templateInstance.data.class;
+  },
 });

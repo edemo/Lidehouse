@@ -322,6 +322,8 @@
   "tech support": "technikai segítség",
   "see full text with View button": "teljes szöveg a Megtekintés gombbal",
   "View previous comments": "Korábbi %s hozzászólás megtekintése",
+  "Unread": "Olvasatlan",
+  "Todo": "Tennivaló",
 
   // voting
   "choice": "választási lehetőség",
