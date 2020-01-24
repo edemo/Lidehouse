@@ -167,13 +167,17 @@ Migrations.add({
         Memberships.update(doc._id, { $set: newFields, $unset: { person: '', personId: '' } });
       });
       Topics.find({ category: 'vote' }).forEach((doc) => {
-        const newVoteCasts = {};
+        const modifier = {};
+        modifier['$set'] = {};
         _.each(doc.voteCasts, (vote, userId) => {
           const partnerId = Meteor.users.findOne(userId).partnerId(doc.communityId);
-          newVoteCasts[partnerId] = vote;
+          modifier['$set']['voteCasts.' + partnerId] = vote;
         });
-        Topics.update(doc._id, { $set: { voteCasts: newVoteCasts } }, { selector: { category: 'vote' } });
-        doc.voteEvaluate(); // calculates all the rest of the voteResults fields
+        if (_.isEmpty(modifier.$set)) return;
+        Topics.update(doc._id, { $set: { voteCasts: {} } }, { selector: { category: 'vote' } });
+        Topics.update(doc._id, modifier, { selector: { category: 'vote' } });
+        const updatedDoc = Topics.findOne(doc._id);
+        updatedDoc.voteEvaluate(); // calculates all the rest of the voteResults fields
         // We assume here that the registered delegations have not changed since the voting, but that's OK, noone delegated actually
       });
       Delegations.find({}).forEach((doc) => {
