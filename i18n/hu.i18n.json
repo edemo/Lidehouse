@@ -440,6 +440,7 @@
   "My own only": "Csak a sajátjaim mutatása",
 
   // finances
+  "Side": "Oldal",
   "customer_bill": "kimenő számla",
   "supplier_bill": "bejövő számla",
   "parcel_bill": "díjbekérő",

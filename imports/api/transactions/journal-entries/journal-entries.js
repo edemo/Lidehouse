@@ -3,8 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { Transactions } from './transactions.js';
-import { AccountSpecification } from './account-specification.js';
+import { Transactions } from '../transactions.js';
+import { AccountSpecification } from '../account-specification.js';
 
 export const JournalEntries = new Mongo.Collection(null);
 

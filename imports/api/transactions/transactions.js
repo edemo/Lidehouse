@@ -14,7 +14,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { AccountSchema } from '/imports/api/transactions/account-specification.js';
-import { JournalEntries } from '/imports/api/transactions/entries.js';
+import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';

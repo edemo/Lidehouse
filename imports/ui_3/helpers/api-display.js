@@ -39,9 +39,14 @@ export function displayOutstanding(value) {
   return value == 0 ? value : label(value, 'info');
 }
 
+export function displayAccountText(account, communityId) {
+  if (!account) return '';
+  return ChartOfAccounts.get({ communityId }).display(account);
+}
+
 export function displayAccount(account, communityId) {
   if (!account) return '';
-  return label(ChartOfAccounts.get({ communityId }).display(account), 'success', 'tag');
+  return label(displayAccountText(account, communityId), 'success', 'tag');
 }
 
 export function displayAccountSet(accounts, communityId) {
@@ -101,6 +106,7 @@ Template.registerHelper('checkBoolean', checkBoolean);
 Template.registerHelper('checkmarkBoolean', checkmarkBoolean);
 Template.registerHelper('displayMeterService', displayMeterService);
 Template.registerHelper('displayReading', displayReading);
+Template.registerHelper('displayAccountText', displayAccountText);
 Template.registerHelper('displayAccount', displayAccount);
 Template.registerHelper('displayAccountSet', displayAccountSet);
 Template.registerHelper('displayLocalizer', displayLocalizer);
