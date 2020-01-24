@@ -23,9 +23,10 @@ MoneyAccounts.schema = new SimpleSchema({
 });
 
 MoneyAccounts.bankExtensionSchema = new SimpleSchema({
-  ban: { type: String, max: 100, optional: true },  // Bank Account Number
+  bank: { type: String, max: 100, optional: true },
+  BAN: { type: String, max: 100, optional: true },  // Bank Account Number
   sync: { type: String, defaultValue: 'none', allowedValues: MoneyAccounts.syncValues, autoform: _.extend({ value: 'none' }, autoformOptions(MoneyAccounts.syncValues, 'schemaMoneyAccounts.sync.')) },
-  protocol: { type: String, optional: true },
+//  protocol: { type: String, optional: true },
 });
 
 Meteor.startup(function indexMoneyAccounts() {
@@ -78,6 +79,6 @@ Factory.define('bankAccount', MoneyAccounts, {
   category: 'bank',
   digit: '2',
   primary: true,
-  ban: faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+  BAN: faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
   sync: 'manual',
 });

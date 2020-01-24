@@ -88,7 +88,8 @@ Migrations.add({
         const last = Topics.findOne(selector, { sort: { serial: -1 } });
         const lastSerial = last ? (last.serial || 0) : 0;
         const nextSerial = lastSerial + 1;
-        Topics.update(doc._id, { $set: { serial: nextSerial } });
+        doc.serial = nextSerial;
+        Topics.update(doc._id, { $set: { serial: nextSerial, serialId: doc.computeSerialId() } });
       });
     }
     upgrade();

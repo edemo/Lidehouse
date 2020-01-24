@@ -34,7 +34,7 @@ Communities.schema = new SimpleSchema([{
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
 }, comtype.profileSchema, {
   management: { type: String, optional: true, autoform: { type: 'textarea' } },
-  taxNumber: { type: String, max: 50, optional: true },
+  taxNo: { type: String, max: 50, optional: true },
   totalunits: { type: Number },
   settings: { type: Communities.settingsSchema },
   // redundant fields:
@@ -64,7 +64,7 @@ Communities.helpers({
   asPartner() {
     const partner = _.clone(this);
     partner.contact = { address: this.displayAddress() };
-    partner.bankAccountNumber = this.primaryBankAccount().number; 
+    partner.BAN = this.primaryBankAccount().number; 
     return partner;
   },
   moneyAccounts() {
@@ -72,12 +72,12 @@ Communities.helpers({
   },
   primaryBankAccount() {
     const bankAccount = MoneyAccounts.findOne({ communityId: this._id, category: 'bank', primary: true });
-    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
+//    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
     return bankAccount;
   },
   primaryCashAccount() {
     const cashAccount = MoneyAccounts.findOne({ communityId: this._id, category: 'cash', primary: true });
-    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
+//    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
     return cashAccount;
   },
   userWithRole(role) {
@@ -134,7 +134,7 @@ Factory.define('community', Communities, {
   number: () => faker.random.number().toString(),
   lot: () => faker.finance.account(6) + '/' + faker.finance.account(4),
   avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
-  taxNumber: () => faker.finance.account(6) + '-2-42',
+  taxNo: () => faker.finance.account(6) + '-2-42',
   totalunits: 1000,
   settings: {
     joinable: true,

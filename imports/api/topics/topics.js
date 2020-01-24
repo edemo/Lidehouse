@@ -128,20 +128,21 @@ Topics.helpers({
   needsAttention(userId, seenType = Meteor.users.SEEN_BY.EYES) {
     if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
     switch (this.category) {
-      case 'news':
-        if (this.isUnseenBy(userId, seenType)) return 1;
-        break;
-      case 'room':
-        if (this.unseenCommentCountBy(userId, seenType) > 0) return 1;
-        break;
-      case 'forum':
-        if (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0) return 1;
-        break;
+// These guys have been separated into the info badge
+//      case 'news':
+//        if (this.isUnseenBy(userId, seenType)) return 1;
+//        break;
+//      case 'room':
+//        if (this.unseenCommentCountBy(userId, seenType) > 0) return 1;
+//        break;
+//      case 'forum':
+//        if (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0) return 1;
+//        break;
       case 'vote':
         if (!this.closed && !this.hasVotedIndirect(userId)) return 1;
         break;
       case 'ticket':
-        if (Meteor.user().hasPermission(`ticket.statusChangeTo.${this.status}.leave`)) return 1;
+        if (!this.closed && Meteor.user().hasPermission(`ticket.statusChange.${this.status}.leave`, this)) return 1;
         break;
       case 'feedback':
         if (this.isUnseenBy(userId, seenType)) return 1;

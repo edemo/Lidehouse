@@ -40,14 +40,18 @@ Template.Parcel_history.viewmodel({
     return Session.get('activeCommunityId');
   },
   partnerSelected() {
-    const parcel = Parcels.findOne(this.parcelSelected());
-    const result = (parcel && parcel.payer()) ? parcel.payer()._id : undefined;
+    const parcelId = this.parcelSelected();
+    if (!parcelId) return undefined;
+    const parcel = Parcels.findOne(parcelId);
+//    const result = parcel && parcel.payerPartner() && parcel.payerPartner()._id;
+    const result = parcel && parcel.payerMembership() && parcel.payerMembership()._id;
     return result;
   },
   subscribeParams() {
     return {
       communityId: this.communityId(),
-      partnerId: this.partnerSelected() || null,
+//      partnerId: this.partnerSelected() || null,
+      membershipId: this.partnerSelected() || null,
       begin: new Date(this.beginDate()),
       end: new Date(this.endDate()),
     };
@@ -64,9 +68,6 @@ Template.Parcel_history.viewmodel({
   },
   negativeClass(tx) {
     return tx.subjectiveAmount() < 0 ? 'negative' : '';
-  },
-  displayTx(tx) {
-    return __(tx.category) + (tx.lineCount() ? ` (${tx.lineCount()} ${__('item')})` : '');
   },
 });
 

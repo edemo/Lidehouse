@@ -18,14 +18,21 @@ Template.Forum_topics.viewmodel({
     archived: false,
     muted: false,
   },
+  searchText: '',
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('topics.list', this.selector());
     });
   },
   forumTopics() {
-    const topics = Topics.find(this.selector(), { sort: { updatedAt: -1 } });
+    let topics = Topics.find(this.selector(), { sort: { updatedAt: -1 } }).fetch();
 //  .fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
+    if (this.searchText()) {
+      topics = topics.filter(t =>
+          t.title.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+      || t.text.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+      );
+    }
     if (!this.show().muted) return topics.fetch().filter(t => !t.hiddenBy(Meteor.userId()));
     return topics;
   },
@@ -33,7 +40,6 @@ Template.Forum_topics.viewmodel({
     return ['active', 'archived', 'muted'];
   },
   activeClass(group) {
-    console.log('activeClass', group, this.show()[group]);  // Why is it not called when I press a group button
     return this.show()[group] && 'btn-primary active';
   },
   selector() {
@@ -41,8 +47,12 @@ Template.Forum_topics.viewmodel({
     const selector = { communityId, category: 'forum' };
     const show = this.show();
     if (show.archived) {
-      if (!show.active) selector.closed = true
-    } else selector.closed = false;
+      if (show.active) delete selector.closed;
+      else selector.closed = true
+    } else {
+      if (show.active) selector.closed = false;
+      else selector.closed = { $exists: false }
+    }
     return selector;
   },
 });
@@ -55,9 +65,11 @@ Template.Forum_topics.events({
   },
   'click .js-filter'(event, instance) {
     const group = $(event.target).closest('[data-value]').data('value');
-    show = instance.viewmodel.show();
+    const show = _.clone(instance.viewmodel.show());
     show[group] = !show[group];
-    console.log(show);
     instance.viewmodel.show(show);
+  },
+  'keyup .js-search'(event, instance) {
+    instance.viewmodel.searchText(event.target.value);
   },
 });

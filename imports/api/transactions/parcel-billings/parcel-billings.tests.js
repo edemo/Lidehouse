@@ -194,7 +194,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerId: payer4Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'habitant', unitPrice: 5000, quantity: 4, localizer: '@A104' });
-        chai.assert.equal(parcel4.payer().outstanding, bills[0].lines[0].amount);
+        chai.assert.equal(parcel4.payerPartner().outstanding, bills[0].lines[0].amount);
         chai.assert.equal(parcel4.outstanding, bills[0].lines[0].amount);
 
         Transactions.remove({});
@@ -205,10 +205,10 @@ if (Meteor.isServer) {
         meteredParcel = Parcels.findOne(meteredParcelId);
         const bills2 = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills2.length, 2);
-        const billMetered = Transactions.findOne({ category: 'bill', partnerId: meteredParcel.payer()._id });
+        const billMetered = Transactions.findOne({ category: 'bill', partnerId: meteredParcel.payerPartner()._id });
         assertBillDetails(billMetered, { payerId: payer3Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-02' });
         assertLineDetails(billMetered.lines[0], { uom: 'm3', unitPrice: 600, quantity: 11, localizer: '@A103' });
-        chai.assert.equal(meteredParcel.payer().outstanding, billMetered.amount);
+        chai.assert.equal(meteredParcel.payerPartner().outstanding, billMetered.amount);
         chai.assert.equal(meteredParcel.outstanding, billMetered.amount);
       });
 
@@ -229,7 +229,7 @@ if (Meteor.isServer) {
         assertBillDetails(bills[0], { payerId: payer3Id, linesLength: 1, lineTitle: 'One follower parcel', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 15, quantity: 10, localizer: '@AP01' });
         chai.assert.equal(bills[0].amount, 150);
-        chai.assert.equal(leadParcel.payer().outstanding, bills[0].lines[0].amount);
+        chai.assert.equal(leadParcel.payerPartner().outstanding, bills[0].lines[0].amount);
         chai.assert.equal(followerParcel.outstanding, bills[0].lines[0].amount);
         chai.assert.equal(leadParcel.outstanding, 0);
       });

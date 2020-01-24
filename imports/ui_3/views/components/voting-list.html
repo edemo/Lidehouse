@@ -23,6 +23,7 @@
                 </td>
                 <td class="project-title">
                     <a href="{{pathFor 'Topic show' _tid=_id}}">{{title}}</a>
+                    {{> Badge color='info' value=(this.unseenCommentCountBy currentUser._id Meteor.users.SEEN_BY.EYES)}}
                     <br/>
                     {{#if votingClosed}}
                     <small>{{_ 'createdAt'}}: {{displayDate createdAt}}</small>

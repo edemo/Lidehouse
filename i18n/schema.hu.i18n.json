@@ -45,7 +45,11 @@
       "placeholder": "(pl. 2)",
       "help": "Egyedinek kell lennie. Ezzel a sorszámmal jelenik meg a főkönyvi számlák között. (Például ha a Pénz számlák a 38-as főkönyvi számlaszámon vannak, és ön 2-es sorszámot ad ennek a pénzszámlának, akkor e pénzszámla a 382-es főkönyvi számon lesz könyvelve.)"
     },
-    "ban": {
+    "bank": {
+      "label": "Bank neve",
+      "placeholder": "(pl. OTP)"
+    },
+    "BAN": {
       "label": "Bankszámlaszám",
       "placeholder": "(pl. 12345678-00000000-00000525)"
     },
@@ -745,15 +749,6 @@
       "mothersName": {
         "label": "Anyja leánykori neve",
         "placeholder": "(csak magánszemély esetén)"
-      },
-      "bankAccountNumber": { 
-        "label": "Bankszámlaszám",
-        "placeholder": "(pl 12345678-00000000-00000078)"
-      },
-      "taxNumber": { 
-        "label": "Adószám",
-        "placeholder": "(pl 123456-2-42)",
-        "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
       }
     },
     "contact": {
@@ -770,6 +765,15 @@
         "label": "Email cím",
         "placeholder": "(pl. tibi45@dmail.com)"
       }
+    },
+    "BAN": { 
+      "label": "Bankszámlaszám",
+      "placeholder": "(pl 12345678-00000000-00000078)"
+    },
+    "taxNo": { 
+      "label": "Adószám",
+      "placeholder": "(pl 123456-2-42)",
+      "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
     }
   },
   "schemaBills": {

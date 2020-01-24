@@ -90,6 +90,7 @@ export const insert = new ValidatedMethod({
         }
         setOrCheckEquals('relation');
         setOrCheckEquals('partnerId');
+        setOrCheckEquals('membershipId');
         setOrCheckEquals('contractId');
       });
     } else if (doc.category === 'barter') {

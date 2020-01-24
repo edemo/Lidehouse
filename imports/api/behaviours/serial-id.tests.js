@@ -7,6 +7,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 import faker from 'faker';
+import { Timestamped } from './timestamped.js';
 import { SerialId } from './serial-id.js';
 
 if (Meteor.isServer) {
@@ -26,15 +27,21 @@ if (Meteor.isServer) {
 
     const collection0 = new Mongo.Collection('with_0_definerField');
     collection0.attachSchema(schema);
+    collection0.attachBehaviour(Timestamped);
     collection0.attachBehaviour(SerialId());
+    collection0.helpers({ community() { return { settings: { language: 'en' } }; } });
 
     const collection1 = new Mongo.Collection('with_1_definerField');
     collection1.attachSchema(schema);
+    collection1.attachBehaviour(Timestamped);
     collection1.attachBehaviour(SerialId(['category']));
+    collection1.helpers({ community() { return { settings: { language: 'en' } }; } });
 
     const collection2 = new Mongo.Collection('with_2_definerField');
     collection2.attachSchema(schema);
+    collection2.attachBehaviour(Timestamped);
     collection2.attachBehaviour(SerialId(['category', 'otherField.color']));
+    collection2.helpers({ community() { return { settings: { language: 'en' } }; } });
     
     const docData1 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'pink' }, communityId: 'no1', serial: 0 };
     const docData2 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'green' }, communityId: 'no1', serial: 0 };

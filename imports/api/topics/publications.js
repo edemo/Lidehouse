@@ -105,7 +105,7 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
   };
 });
 
-Meteor.publishComposite('topics.board', function topicsBoard(params) {
+Meteor.publishComposite('topics.active', function topicsBoard(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
@@ -117,7 +117,7 @@ Meteor.publishComposite('topics.board', function topicsBoard(params) {
   const selector = {
     communityId,
     closed: false,
-    category: { $in: ['vote', 'forum', 'news'] },
+    category: { $in: ['vote', 'forum', 'news', 'ticket'] },
     // Filter for 'No participantIds (meaning everyone), or contains userId'
     $or: [
       { participantIds: { $exists: false } },

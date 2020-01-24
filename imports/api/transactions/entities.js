@@ -7,7 +7,7 @@ Transactions.entities = {
     name: 'bill',
     viewForm: 'Bill_show',
     editForm: 'Bill_edit',
-//    title: (doc) => __(doc.relation + '_bill') + ' ' + doc.serialId(),
+//    title: (doc) => __(doc.relation + '_bill') + ' ' + doc.serialId,
     size: 'lg',
   },
   payment: {

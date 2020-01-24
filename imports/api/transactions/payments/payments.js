@@ -22,7 +22,7 @@ export const chooseBill = {
     const communityId = Session.get('activeCommunityId');
     const bills = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
     const options = bills.map(function option(bill) {
-      return { label: `${bill.serialId()} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
+      return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
     });
     return options;
   },
@@ -97,6 +97,9 @@ Transactions.categoryHelpers('payment', {
           });
       });
     }
+  },
+  displayInHistory() {
+    return __(this.category) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');
   },
 });
 

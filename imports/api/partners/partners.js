@@ -27,14 +27,12 @@ const ContactSchema = new SimpleSchema({
 
 const idCardTypeValues = ['natural', 'legal'];
 const IdCardSchema = new SimpleSchema({
-  type: { type: String, allowedValues: idCardTypeValues, autoform: autoformOptions(idCardTypeValues, 'schemaMemberships.person.') },
+  type: { type: String, allowedValues: idCardTypeValues, autoform: autoformOptions(idCardTypeValues, 'schemaPartners.idCard.type.') },
   name: { type: String, optional: true },
   address: { type: String, optional: true },
   identifier: { type: String, optional: true }, // cegjegyzek szam vagy szig szam - unique!!!
   dob: { type: Date, optional: true },  // date of birth/company formation
   mothersName: { type: String, optional: true },
-  bankAccountNumber: { type: String, max: 100, optional: true },
-  taxNumber: { type: String, max: 50, optional: true },
 });
 
 Partners.relationValues = ['supplier', 'customer', 'parcel'];
@@ -46,9 +44,11 @@ const chooseRelation = _.extend(
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: chooseRelation },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   idCard: { type: IdCardSchema, optional: true },
   contact: { type: ContactSchema, optional: true },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
+  BAN: { type: String, max: 100, optional: true },
+  taxNo: { type: String, max: 50, optional: true },
   outstanding: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 
@@ -166,14 +166,14 @@ Factory.define('customer', Partners, {
   idCard: {
     type: 'legal',
     name: () => faker.random.word(),
-    bankAccountNumber: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
-    taxNumber: () => faker.finance.account(6) + '-2-42',
   },
   contact: {
     address: () => faker.address.streetAddress('###'),
     phone: () => faker.phone.phoneNumberFormat(1),
     email: () => `${faker.name.firstName()}.demouser@honline.hu`,
   },
+  BAN: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+  taxNo: () => faker.finance.account(6) + '-2-42',
 });
 
 Factory.define('supplier', Partners, {
@@ -181,14 +181,14 @@ Factory.define('supplier', Partners, {
   idCard: {
     type: 'legal',
     name: () => faker.random.word() + ' inc',
-    bankAccountNumber: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
-    taxNumber: () => faker.finance.account(6) + '-2-42',
   },
   contact: {
     address: () => faker.address.streetAddress('###'),
     phone: () => faker.phone.phoneNumberFormat(1),
     email: () => `${faker.name.firstName()}.demouser@honline.hu`,
   },
+  BAN: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+  taxNo: () => faker.finance.account(6) + '-2-42',
 });
 
 Factory.define('member', Partners, {
@@ -196,14 +196,14 @@ Factory.define('member', Partners, {
   idCard: {
     type: 'natural',
     name: () => faker.random.word() + ' inc',
-    bankAccountNumber: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
-    taxNumber: () => faker.finance.account(6) + '-2-42',
   },
   contact: {
     address: () => faker.address.streetAddress('###'),
     phone: () => faker.phone.phoneNumberFormat(1),
     email: () => `${faker.name.firstName()}.demouser@honline.hu`,
   },
+  BAN: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+  taxNo: () => faker.finance.account(6) + '-2-42',
 });
 
 // ------------------------------------

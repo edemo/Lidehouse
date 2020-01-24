@@ -11,7 +11,7 @@ import './actions.js';
 export function paymentsColumns() {
   const columns = [
 //    { data: 'serial', title: __('schemaTransactions.serial.label') },
-    { data: 'serialId()', title: __('schemaGeneral.serialId.label') },
+    { data: 'serialId', title: __('schemaGeneral.serialId.label') },
     { data: 'partner().displayName()', title: 'Partner' },
 //    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },

@@ -6,6 +6,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/users/users.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import '/imports/ui_3/views/components/badge.js';
 
 import './navigation.html';
@@ -35,18 +36,26 @@ Template.Navigation.onRendered(function() {
 });
 
 Template.Navigation.helpers({
-  countNotifications(category) {
-    const communityId = Session.get('activeCommunityId');
+  unseenEventsCount(category) {
+    const userId = Meteor.userId();
+    const topics = Topics.find({ communityId: getActiveCommunityId(), category });
     let count = 0;
-    const topics = Topics.find({ communityId, category });
-    topics.map(t => {
-      const userId = Meteor.userId();
-      count += t.needsAttention(userId, Meteor.users.SEEN_BY.EYES);
+    topics.map(topic => {
+      count += topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES);
+    });
+    return count;
+  },
+  needsAttentionCount(category) {
+    const userId = Meteor.userId();
+    const topics = Topics.find({ communityId: getActiveCommunityId(), category });
+    let count = 0;
+    topics.map(topic => {
+      count += topic.needsAttention(userId, Meteor.users.SEEN_BY.EYES);
     });
     return count;
   },
   countUnapprovedEntities() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = getActiveCommunityId();
     const unapprovedParcelCount = Parcels.find({ communityId, approved: false }).count();
     const unapprovedMembershipCount = Memberships.find({ communityId, approved: false }).count();
     return unapprovedParcelCount + unapprovedMembershipCount;

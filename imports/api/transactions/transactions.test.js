@@ -210,10 +210,12 @@ if (Meteor.isServer) {
       });
 
       it('Can auto reconcile from bank import', function () {
+        chai.assert.isTrue(!!bill.serialId);
         const entryId2 = FixtureA.builder.create('statementEntry', {
           account: bankAccount,
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
+          note: bill.serialId,
           amount: -200,
         });
         let entry2 = StatementEntries.findOne(entryId2);

@@ -9,8 +9,8 @@ import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/acti
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels';
 
-function flattenBankAccountNumber(bankAccountNumber) {
-  return bankAccountNumber.trim().split('-').join();
+function flattenBankAccountNumber(BAN) {
+  return BAN.trim().split('-').join();
 }
 
 export const Import = {

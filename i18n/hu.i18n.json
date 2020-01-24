@@ -37,9 +37,9 @@
   "by": "által",
   "(Select one)": "(Válasszon a listából)",
 
-  "Active": "Aktív",
-  "Archived": "Archív",
-  "Muted": "Némított",
+  "active": "Aktív",
+  "archived": "Archív",
+  "muted": "Némított",
 
   // roles
   "admin": "admin",
@@ -522,7 +522,7 @@
   "Unpaid": "Rendezetlen",
   "Show only": "Csak ami",
   "issuer": "kiállító",
-  "receiver": "befogadó",
+  "receiver": "vevő",
   "Insert bill": "Számla rögzítése",
 
   // accounts

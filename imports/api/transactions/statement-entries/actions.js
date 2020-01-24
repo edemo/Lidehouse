@@ -22,7 +22,7 @@ StatementEntries.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.insert',
         collection: StatementEntries,
-        omitFields: ['original'],
+        omitFields: ['original', 'match'],
         type: 'method',
         meteormethod: 'statementEntries.insert',
       });
@@ -144,15 +144,15 @@ AutoForm.addHooks('af.statementEntry.insert', {
 
 AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.insert', 'af.statementEntry.update'], {
   formToDoc(doc) {
-    doc.original = JSON.parse(doc.original);
+    if (doc.original) doc.original = JSON.parse(doc.original);
     return doc;
   },
   docToForm(doc) {
-    doc.original = JSON.stringify(doc.original, null, 2);
+    if (doc.original) doc.original = JSON.stringify(doc.original || {}, null, 2);
     return doc;
   },
   formToModifier(modifier) {
-    modifier.$set.original = JSON.parse(modifier.$set.original);
+    if (modifier.$set.original) modifier.$set.original = JSON.parse(modifier.$set.original);
     return modifier;
   },
 });

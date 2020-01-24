@@ -34,7 +34,7 @@ export const Notifications_Email = {
     voteHasBeenClosed(topic) {
       if (topic.status === 'closed' && topic.category === 'vote') {
         const unseenComments = topic.unseenCommentListBy(this.user._id, Meteor.users.SEEN_BY.NOTI);
-        const closingEvent = unseenComments.find(comment => comment.type === 'statusChangeTo' && comment.status === 'closed');
+        const closingEvent = unseenComments.find(comment => comment.type === 'statusChange' && comment.status === 'closed');
         if (closingEvent) return true;
         return false;
       }

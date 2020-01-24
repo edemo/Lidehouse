@@ -8,7 +8,7 @@ import { displayLocalizer, displayTicketType, displayStatus } from '/imports/ui_
 export function ticketColumns() {
   const communityId = Session.get('activeCommunityId');
   return [
-    { data: 'serialId()', title: __('schemaTickets.id.label') },
+    { data: 'serialId', title: __('schemaTickets.id.label') },
     { data: 'status', title: __('schemaTopics.status.label'), render: displayStatus },
     { data: '_id', title: __('schemaTickets.title.label'), render: Render.displayTitle },
     { data: 'ticket.localizer', title: __('schemaTickets.ticket.localizer.label'), render: l => displayLocalizer(l, communityId) },

@@ -28,7 +28,7 @@ Template.Balance_widget.viewmodel({
     let result = 0;
     parcels.forEach((parcel) => {
 //      result += Balances.getTotal({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcel.ref), tag: 'T' });
-      result += parcel.payer().outstanding;
+      result += parcel.payerPartner().outstanding;
     });
     return (-1) * result;
   },

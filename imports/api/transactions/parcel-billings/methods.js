@@ -84,23 +84,24 @@ export const apply = new ValidatedMethod({
 //          line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
           line.account = Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.payinType;
           line.localizer = Localizer.parcelRef2code(parcel.ref);
-          line.title = `${parcelBilling.title} ${parcel.ref} ${billingPeriod.label}`;
+          line.title = `${parcelBilling.title}`;
           // Creating the bill - adding line to the bill
-          const leadParcelId = parcel.leadParcelId();
-          bills[leadParcelId] = bills[leadParcelId] || {
+          const leadParcel = parcel.leadParcel();
+          bills[leadParcel._id] = bills[leadParcel._id] || {
             communityId: parcelBilling.communityId,
             category: 'bill',
             relation: 'parcel',
             defId: Txdefs.findOne({ communityId, category: 'bill', 'data.relation': 'parcel' })._id,
   //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
-            partnerId: parcel.leadParcel().payer()._id,
+            partnerId: leadParcel.payerPartner()._id,
+            membershipId: leadParcel.payerMembership()._id,
             valueDate: Clock.currentDate(),
             issueDate: Clock.currentDate(),
             deliveryDate: date,
             dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
             lines: [],
           };
-          bills[leadParcelId].lines.push(line);
+          bills[leadParcel._id].lines.push(line);
 
           // Updating the meter readings
           if (activeMeter) {

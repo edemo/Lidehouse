@@ -55,7 +55,7 @@
                     <span>{{_ 'Content hidden by' hider=(_ hider)}}</span>
                   {{else}}  
                     <a href="{{userUrlFor  comment.creator}}">{{comment.creator.displayOfficialName community._id user.settings.language}}</a>
-                    {{#if (equals comment.category 'statusChangeTo')}}
+                    {{#if (equals comment.category 'statusChange')}}
                         {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
                         {{_ 'changed the status'}}: <span class="label {{eventStatusObject.color}}">
                            {{_ (concat 'schemaTopics.status.' comment.status)}}

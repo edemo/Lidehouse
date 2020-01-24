@@ -118,9 +118,11 @@ Parcels.helpers({
   representor() {
     return this.representors().fetch()[0];
   },
-  payer() {
-    const payerMembership = this.representor() || this.owners().fetch()[0];
-    return payerMembership.person();
+  payerMembership() {
+    return this.representor() || this.owners().fetch()[0];
+  },
+  payerPartner() {
+    return this.payerMembership().person();
   },
   display() {
     return `${this.ref || '?'} (${this.location()}) ${__(this.type)}`;
