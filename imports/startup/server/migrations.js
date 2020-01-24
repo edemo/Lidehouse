@@ -80,6 +80,23 @@ Migrations.add({
 
 Migrations.add({
   version: 5,
+  name: 'Communities get a settings section and an accountingMethod',
+  up() {
+    Communities.update(
+      { settings: { $exists: false } },
+      { $set: { settings: {
+        joinable: true,
+        language: 'hu',
+        topicAgeDays: 365,
+        currency: 'Ft',
+        accountingMethod: 'accrual' } } },
+      { multi: true }
+    );
+  },
+});
+
+Migrations.add({
+  version: 6,
   name: 'Topics need serial',
   up() {
     function upgrade() {
@@ -93,23 +110,6 @@ Migrations.add({
       });
     }
     upgrade();
-  },
-});
-
-Migrations.add({
-  version: 6,
-  name: 'Communities get a settings section and an accountingMethod',
-  up() {
-    Communities.update(
-      { settings: { $exists: false } },
-      { $set: { settings: {
-        joinable: true,
-        language: 'hu',
-        topicAgeDays: 365,
-        currency: 'Ft',
-        accountingMethod: 'accrual' } } },
-      { multi: true }
-    );
   },
 });
 
