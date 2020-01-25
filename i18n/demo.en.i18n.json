@@ -11,16 +11,6 @@
     "atticCode": "A",
     "cellar": "Basement",
     "cellarCode": "B",
-    "bank": {
-      "primaryAccount": {
-        "name": "Checking account",
-        "number": "17937621-00000000-51002312"
-      },
-      "savingsAccount": {
-        "name": "Savings account",
-        "number": "17568691-00000000-51002324"
-      }
-    },      
     "user": {
       "0": {
         "firstName": "Stephen",

@@ -550,6 +550,9 @@
   "Commitments": "KÖTELEZETTSÉGEK",
   "Suppliers": "SZÁLLÍTÓK",
   "Customers": "VEVŐK",
+  "Cash register": "Pénztár",
+  "Checking account": "Folyószámla",
+  "Savings account": "Megtakarítási számla",
 
   // Tx types
   "Money transfer": "Átvezetés pénz számlák között",

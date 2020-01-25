@@ -44,13 +44,8 @@ export function defineBreakdownTemplates() {
         ],
       },
       { digit: '6', name: 'EGYÉB KÖVETELÉSEK' },
-      { digit: '8', name: 'Money accounts',  //PÉNZESZKÖZÖK
-        children: [
-        { digit: '1', name: 'Pénztár' },
-        { digit: '2', name: 'Folyószámla' },
-        { digit: '3', name: 'Megtakarítási számla' },
-        { digit: '4', name: 'Fundamenta' },
-        ],
+      { digit: '8', name: 'Money accounts',
+        include: 'Money accounts', // PÉNZESZKÖZÖK
       },
       { digit: '9', name: 'AKTÍV IDŐBELI ELHATÁROLÁSOK' },
     ],
@@ -269,7 +264,16 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '@', name: 'Parcels', children: [   //Albetétek
+    name: 'Money accounts', children: [
+      { digit: '1', name: 'Cash register', category: 'cash', primary: true }, // Pénztár
+      { digit: '2', name: 'Checking account', category: 'bank', primary: true }, // Folyószámla
+      { digit: '3', name: 'Savings account', category: 'bank', primary: false }, // Megtakarítási számla
+//      { digit: '4', name: 'Fundamenta' },
+    ],
+  });
+
+  Breakdowns.define({ communityId: null,
+    digit: '@', name: 'Parcels', children: [   // Albetétek
       { digit: '', name: 'Main building' },  //Épület, kivettem az "A"-t  a UI "building"-et ír ki
     ],
   });
@@ -295,7 +299,7 @@ export function defineBreakdownTemplates() {
           { digit: '2', name: 'Födémek' },
           { digit: '3', name: 'Tető' },
         ],
-      },          
+      },
       { digit: '3', name: 'Szakipari szerkezetek',
         children: [
           { digit: '1', name: 'Homlokzat' },

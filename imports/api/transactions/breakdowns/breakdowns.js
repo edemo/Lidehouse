@@ -86,6 +86,9 @@ Breakdowns.LeafSchema = new SimpleSchema({
   //  name: { type: String, max: 100, optional: true },
 //  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
 //  parcelNo: { type: Number, optional: true },
+  // just for money accounts - TODO it should be some freefields here
+  category: { type: String, optional: true },
+  primary: { type: Boolean, optional: true },
 });
 
 Breakdowns.Level2Schema = new SimpleSchema({
@@ -96,6 +99,9 @@ Breakdowns.Level2Schema = new SimpleSchema({
   children: { type: Array, optional: true },
   'children.$': { type: Breakdowns.LeafSchema },
   include: { type: String, optional: true, autoform: chooseBreakdown },
+  // just for money accounts - TODO it should be some freefields here
+  category: { type: String, optional: true },
+  primary: { type: Boolean, optional: true },
 });
 
 Breakdowns.Level1Schema = new SimpleSchema({
@@ -106,6 +112,9 @@ Breakdowns.Level1Schema = new SimpleSchema({
   children: { type: Array, optional: true },
   'children.$': { type: Breakdowns.Level2Schema },
   include: { type: String, optional: true, autoform: chooseBreakdown },
+  // just for money accounts - TODO it should be some freefields here
+  category: { type: String, optional: true },
+  primary: { type: Boolean, optional: true },
 });
 
 Breakdowns.schema = new SimpleSchema({

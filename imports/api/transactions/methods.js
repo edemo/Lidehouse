@@ -16,6 +16,7 @@ import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-a
 import { sendBillEmail } from '/imports/email/bill-send.js';
 import '/imports/api/transactions/breakdowns/methods.js';
 import '/imports/api/transactions/txdefs/methods.js';
+import { MoneyAccounts } from '../money-accounts/money-accounts';
 
 /*
 function runPositingRules(context, doc) {
@@ -157,22 +158,20 @@ export const cloneAccountingTemplates = new ValidatedMethod({
   }).validator(),
   run({ communityId /*, name*/ }) {
     checkPermissions(this.userId, 'breakdowns.insert', { communityId });
-    const user = Meteor.users.findOne(this.userId);
-    const breakdownsToClone = Breakdowns.find({ communityId: null }).map(brd => brd.name);
-    breakdownsToClone.forEach((breakdownName) => {
-      Breakdowns.methods.clone._execute(
-        { userId: this.userId },
-        { name: breakdownName, communityId },
-      );
+    const breakdownsToClone = Breakdowns.find({ communityId: null });
+    breakdownsToClone.forEach((breakdown) => {
+      if (Breakdowns.findOne({ communityId, name: breakdown.name })) return;  // We don't overwrite existing ones
+      Breakdowns.methods.clone._execute({ userId: this.userId }, { communityId, name: breakdown.name });
+      if (breakdown.name === 'Money accounts') {
+        breakdown.children.forEach(account => MoneyAccounts.insert(_.extend({ communityId }, account)));
+      }
     });
-    const txdefsToClone = Txdefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
-    txdefsToClone.forEach((txdefName) => {
-      Txdefs.methods.clone._execute(
-        { userId: this.userId },
-        { name: txdefName, communityId },
-      );
+    const txdefsToClone = Txdefs.find({ communityId: null });
+    txdefsToClone.forEach((txdef) => {
+      if (Txdefs.findOne({ communityId, name: txdef.name })) return;  // We don't overwrite existing ones
+      Txdefs.methods.clone._execute({ userId: this.userId }, { name: txdef.name, communityId });
     });
-    Localizer.generateParcels(communityId);
+//    Localizer.generateParcels(communityId);
   },
 });
 
