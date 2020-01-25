@@ -54,6 +54,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     }
   }
 
+  Clock.AUTO_TICK = 1000; // one second pass after each Clock call
   Clock.starts(6, 'month', 'ago');
   console.log('Creating house:', demoHouseName);
   const demoCommunityId = Communities.insert({

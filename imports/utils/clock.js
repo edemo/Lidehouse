@@ -2,9 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { debugAssert } from '/imports/utils/assert.js';
 
-const REAL_TIME_MODE = false;
-const AUTO_TICK = 1000; // milliseconds
-
 let _simulatedTime = null;
 let _startRealTime = null;
 
@@ -13,10 +10,12 @@ export function datePartOnly(date = new Date()) {
 }
 
 export const Clock = {
+  REAL_TIME_PASS: false,
+  AUTO_TICK: 0, // given in milliseconds
   currentTime() {
     if (!_simulatedTime) return new Date();
-    if (AUTO_TICK) _simulatedTime = new Date(_simulatedTime.getTime() + AUTO_TICK);
-    if (REAL_TIME_MODE) return new Date(_simulatedTime.getTime() + (Date.now() - _startRealTime));
+    if (this.AUTO_TICK) _simulatedTime = new Date(_simulatedTime.getTime() + this.AUTO_TICK);
+    if (this.REAL_TIME_PASS) return new Date(_simulatedTime.getTime() + (Date.now() - _startRealTime));
     return _simulatedTime;
   },
   currentDate() {

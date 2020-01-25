@@ -213,7 +213,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.partner().outstanding, 200);
       });
 
-      it('Can NOT reconcile statementEntry with different relation, amount or date', function () {
+      xit('Can NOT reconcile statementEntry with different relation, amount or date', function () {
         const entryIdWrongRelation = FixtureA.builder.create('statementEntry', {
           account: bankAccount,
           valueDate: Clock.currentDate(),
