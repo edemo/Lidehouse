@@ -5,6 +5,7 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
@@ -14,7 +15,7 @@ import { _ } from 'meteor/underscore';
 
 Migrations.add({
   version: 1,
-  name: 'Add CreatedBy and UpdatedBy fields (and use CreatedBy insetad of userId)',
+  name: 'Add CreatedBy and UpdatedBy fields (and use CreatedBy instead of userId)',
   up() {
     function upgrade(collection) {
       collection.find({ creatorId: { $exists: false } }).forEach(doc => {
@@ -79,6 +80,23 @@ Migrations.add({
 
 Migrations.add({
   version: 5,
+  name: 'Communities get a settings section and an accountingMethod',
+  up() {
+    Communities.update(
+      { settings: { $exists: false } },
+      { $set: { settings: {
+        joinable: true,
+        language: 'hu',
+        topicAgeDays: 365,
+        currency: 'Ft',
+        accountingMethod: 'accrual' } } },
+      { multi: true }
+    );
+  },
+});
+
+Migrations.add({
+  version: 6,
   name: 'Topics need serial',
   up() {
     function upgrade() {
@@ -92,23 +110,6 @@ Migrations.add({
       });
     }
     upgrade();
-  },
-});
-
-Migrations.add({
-  version: 6,
-  name: 'Communities get a settings section and an accountingMethod',
-  up() {
-    Communities.update(
-      { settings: { $exists: false } },
-      { $set: { settings: {
-        joinable: true,
-        language: 'hu',
-        topicAgeDays: 365,
-        currency: 'Ft',
-        accountingMethod: 'accrual' } } },
-      { multi: true }
-    );
   },
 });
 
@@ -146,24 +147,45 @@ Migrations.add({
   up() {
     function upgrade() {
       Memberships.find({}).forEach((doc) => {
-        let partnerId = Partners.findOne({ communityId: doc.communityId, 'idCard.name': doc.person.idCard.name })._id;
-        if (!partnerId) partnerId = Partners.insert(doc.person);
-        Memberships.update(doc._id, { $set: { partnerId }, $unset: { person: '', personId: '' } });
+        let partnerId;
+        if (doc.person && doc.person.idCard && doc.person.idCard.name) {
+          const partnerByName = Partners.findOne({ communityId: doc.communityId, 'idCard.name': doc.person.idCard.name });
+          if (partnerByName) partnerId = partnerByName._id;
+        }
+        if (doc.personId) {
+          const partnerById = Partners.findOne({ communityId: doc.communityId, userId: doc.personId });
+          if (partnerById) partnerId = partnerById._id;
+        }
+        const person = _.extend(doc.person, { communityId: doc.communityId, relation: 'parcel' });
+        if (!partnerId) partnerId = Partners.insert(person);
+        const newFields = { partnerId };
+        if (doc.personId &&
+            (!doc.person || !doc.person.idCard || !doc.person.idCard.identifier ||
+              doc.person.idCard.identifier !== doc.personId)) {
+          newFields.userId = doc.personId;
+        }
+        Memberships.update(doc._id, { $set: newFields, $unset: { person: '', personId: '' } });
       });
       Topics.find({ category: 'vote' }).forEach((doc) => {
-        const newVoteCasts = {};
+        const modifier = {};
+        modifier['$set'] = {};
         _.each(doc.voteCasts, (vote, userId) => {
           const partnerId = Meteor.users.findOne(userId).partnerId(doc.communityId);
-          newVoteCasts[partnerId] = vote;
+          modifier['$set']['voteCasts.' + partnerId] = vote;
         });
-        Topics.update(doc._id, { $set: { voteCasts: newVoteCasts } });
-        doc.voteEvaluate(); // calculates all the rest of the voteResults fields
+        if (_.isEmpty(modifier.$set)) return;
+        Topics.update(doc._id, { $set: { voteCasts: {} } }, { selector: { category: 'vote' } });
+        Topics.update(doc._id, modifier, { selector: { category: 'vote' } });
+        const updatedDoc = Topics.findOne(doc._id);
+        updatedDoc.voteEvaluate(); // calculates all the rest of the voteResults fields
         // We assume here that the registered delegations have not changed since the voting, but that's OK, noone delegated actually
       });
       Delegations.find({}).forEach((doc) => {
         const sourceUserId = doc.sourcePersonId;
         const sourceUser = Meteor.users.find(sourceUserId);
-        const sourcePartnerId = sourceUser.partnerId(doc.communityId);
+        const sourcePartnerId = sourceUser ?
+          sourceUser.partnerId(doc.communityId) :
+          Partners.findOne({ communityId: doc.communityId, 'idCard.identifier': doc.sourcePersonId })._id;
         const targetUserId = doc.targetPersonId;
         const targetUser = Meteor.users.find(targetUserId);
         const targetPartnerId = targetUser.partnerId(doc.communityId);

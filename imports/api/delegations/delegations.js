@@ -63,6 +63,8 @@ Delegations.schema = new SimpleSchema({
   targetId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseDelegate },
   scope: { type: String, allowedValues: Delegations.scopeValues, autoform: autoformOptions(Delegations.scopeValues, 'schemaDelegations.scope.') },
   scopeObjectId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseScopeObject },
+  sourcePersonId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for sourceId (partner)
+  targetPersonId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for targetId (partner)
 });
 
 Meteor.startup(function indexDelegations() {
