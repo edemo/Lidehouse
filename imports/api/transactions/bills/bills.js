@@ -17,7 +17,8 @@ import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/br
 import { Localizer, chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
-import { Partners, choosePartner } from '/imports/api/partners/partners.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
@@ -137,6 +138,7 @@ Transactions.categoryHelpers('bill', {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a bill without a partner');
     Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
+    Memberships.update(this.membershipId, { $inc: { outstanding: directionSign * this.amount } });
     if (this.relation === 'parcel') {
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array

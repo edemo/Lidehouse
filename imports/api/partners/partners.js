@@ -49,6 +49,7 @@ Partners.schema = new SimpleSchema({
   contact: { type: ContactSchema, optional: true },
   BAN: { type: String, max: 100, optional: true },
   taxNo: { type: String, max: 50, optional: true },
+  // Stores an accounting balance:
   outstanding: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 

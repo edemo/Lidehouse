@@ -10,7 +10,8 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Breakdowns, chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Partners, choosePartner } from '/imports/api/partners/partners.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
@@ -86,6 +87,7 @@ Transactions.categoryHelpers('payment', {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a payment without a partner');
     Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    Memberships.update(this.membershipId, { $inc: { outstanding: (-1) * sign * this.amount } });
     if (this.relation === 'parcel') {
       this.bills.forEach(bp => {
         const bill = Transactions.findOne(bp.id);

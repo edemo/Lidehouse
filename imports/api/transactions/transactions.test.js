@@ -69,7 +69,7 @@ if (Meteor.isServer) {
 
         chai.assert.equal(bill.outstanding, 1300);
         chai.assert.equal(bill.partner().outstanding, 1300);
-//        chai.assert.equal(bill.membership().outstanding, 1300);
+        chai.assert.equal(bill.membership().outstanding, 1300);
         const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP01' });
         const parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP02' });
         chai.assert.equal(parcel1.outstanding, 300);
