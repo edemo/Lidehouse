@@ -181,10 +181,7 @@ Transactions.categoryValues.forEach(category => {
       const txdef = Session.get('modalContext').txdef;
       doc.defId = txdef._id;
       _.each(txdef.data, (value, key) => doc[key] = value);
-      if (category === 'bill') {
-        doc.valueDate = doc.deliveryDate;
-        doc.lines = _.without(doc.lines, undefined);
-      } else if (category === 'receipt') {
+      if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
       } else if (category === 'payment' || category === 'remission') {
         const billId = Session.get('modalContext').billId;

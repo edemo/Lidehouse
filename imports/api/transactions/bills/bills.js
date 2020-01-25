@@ -83,6 +83,7 @@ Bills.paymentSchema = new SimpleSchema({
 Bills.extensionSchema = new SimpleSchema([
   Transactions.partnerSchema,
   Bills.receiptSchema, {
+    valueDate: { type: Date, autoValue() { return this.field('deliveryDate').value; }, autoform: { omit: true } },
     issueDate: { type: Date },
     deliveryDate: { type: Date },
     dueDate: { type: Date },
@@ -114,7 +115,6 @@ Transactions.categoryHelpers('bill', {
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
 //    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });
-//    this.valueDate = this.issueDate;
     if (accountingMethod === 'accrual') {
       this.debit = [];
       this.credit = [];
@@ -171,7 +171,6 @@ Meteor.startup(function attach() {
 Factory.define('bill', Transactions, {
   category: 'bill',
   relation: 'supplier',
-  valueDate: () => Clock.currentDate(),
   partnerId: () => Factory.get('supplier'),
   issueDate: () => Clock.currentDate(),
   deliveryDate: () => Clock.currentDate(),

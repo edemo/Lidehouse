@@ -5,6 +5,8 @@ import { moment } from 'meteor/momentjs:moment';
 import { freshFixture } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Statements } from '/imports/api/transactions/statements/statements.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -23,6 +25,58 @@ if (Meteor.isServer) {
     after(function () {
     });
 
+    describe('Bills api', function () {
+      let billId;
+      let bill;
+      before(function () {
+        const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[1]);
+        billId = FixtureA.builder.create('bill', {
+          relation: 'parcel',
+          partnerId,
+          membershipId: Memberships.findOne({ partnerId })._id,
+          issueDate: new Date('2018-01-05'),
+          deliveryDate: new Date('2018-01-02'),
+          dueDate: new Date('2018-01-30'),
+          lines: [{
+            title: 'Work 1',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 300,
+            localizer: '@AP01',
+          }, {
+            title: 'Work 2',
+            uom: 'month',
+            quantity: 2,
+            unitPrice: 500,
+            localizer: '@AP02',
+          }],
+        });
+      });
+      after(function () {
+        Transactions.remove(billId);
+      });
+
+      it('Fills calculated values correctly', function () {
+        bill = Transactions.findOne(billId);
+    
+        chai.assert.equal(bill.lines.length, 2);
+        chai.assert.equal(bill.lines[0].amount, 300);
+        chai.assert.equal(bill.lines[1].amount, 1000);
+        chai.assert.equal(bill.amount, 1300);
+        chai.assert.equal(bill.valueDate.getTime(), bill.deliveryDate.getTime());
+        chai.assert.equal(bill.getPayments().length, 0);
+        chai.assert.equal(bill.isPosted(), false);
+
+        chai.assert.equal(bill.outstanding, 1300);
+        chai.assert.equal(bill.partner().outstanding, 1300);
+//        chai.assert.equal(bill.membership().outstanding, 1300);
+        const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP01' });
+        const parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP02' });
+        chai.assert.equal(parcel1.outstanding, 300);
+        chai.assert.equal(parcel2.outstanding, 1000);
+      });
+    });
+
     describe('Bills lifecycle with accrual method', function () {
       let billId;
       let bill;
@@ -35,8 +89,6 @@ if (Meteor.isServer) {
             uom: 'piece',
             quantity: 1,
             unitPrice: 300,
-//            account: '85',
-//            localizer: '@',
           }],
         });
       });
@@ -45,8 +97,9 @@ if (Meteor.isServer) {
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.getPayments().length, 0);
-        chai.assert.equal(bill.outstanding, 300);
         chai.assert.equal(bill.isPosted(), false);
+
+        chai.assert.equal(bill.outstanding, 300);
         chai.assert.equal(bill.partner().outstanding, 300);
       });
 
