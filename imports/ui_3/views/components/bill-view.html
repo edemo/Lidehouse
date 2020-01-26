@@ -1,0 +1,138 @@
+<template name="Bill_partner">
+    <address>
+        <strong>{{partner.toString}}</strong><br>
+        {{partner.contact.address}}<br>
+        {{#if partner.BAN}}
+          Bank: {{partner.BAN}}<br>
+        {{/if}}
+        {{#if partner.taxNo}}
+          {{_ 'schemaPartners.taxNo.label'}}: {{partner.taxNo}}<br>
+        {{/if}}
+    </address>
+</template>
+
+<template name="Bill_view">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5>{{_ 'issuer'}}:</h5>
+            <address>
+                {{>Bill_partner partner=docVm.issuer}}
+            </address>
+        </div>
+
+        <div class="col-sm-6 text-right">
+            <h4>{{_ (concat docVm.relation '_' docVm.category)}}: <!--</h4> {{_ 'schemaBills.serialId.label'}}</h4-->
+            <span class="text-navy">{{docVm.serialId}}</span></h4>
+            <h5>{{_ 'receiver'}}:</h5>
+            <address>
+                {{>Bill_partner partner=docVm.receiver}}
+            </address>
+            <p>
+                {{#if isBill}}
+                    <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate docVm.issueDate}}</span><br/>
+                    <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate docVm.deliveryDate}}</span><br/>
+                    <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate docVm.dueDate}}</span>
+                {{else}}
+                    <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate docVm.valueDate}}</span><br/>
+                    <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount docVm.payAccount}}}</span><br/>
+                {{/if}}
+            </p>
+        </div>
+    </div>
+
+    <div class="table-responsive m-t">
+        <table class="table invoice-table">
+            <thead>
+                <tr>
+                    <th>{{_ 'schemaBills.lines.$.title.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                    <!--th>{{_ 'schemaBills.lines.$.tax.label'}}</th-->
+                    <th>{{_ 'schemaBills.lines.$.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each line in docVm.lines}}
+                {{#if line}}
+                <tr>
+                    <td>
+                        <div>
+                        <strong>
+                            {{line.title}}
+                            {{#if (equals docVm.relation 'parcel')}}
+                                {{#if line.localizer}}{{code2parcelRef line.localizer}}{{/if}} 
+                                {{#if line.period}}{{line.period}}{{/if}}
+                            {{/if}}
+                        </strong>
+                        </div>
+                        <small>{{line.details}}</small>
+                        {{#if currentUserHasPermission 'transactions.post'}}
+                            {{{displayAccount line.account activeCommunityId}}}
+                            {{{displayLocalizer line.localizer activeCommunityId}}}
+                        {{/if}}
+                    </td>
+                    <td>{{_ line.uom}}</td>
+                    <td>{{line.unitPrice}}</td>
+                    <td>{{line.quantity}}</td>
+                    <td>{{line.taxPct}}</td>
+                    <td>{{line.amount}}</td>
+                </tr>
+                {{/if}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div><!-- /table-responsive -->
+
+    <table class="table invoice-total">
+        <tbody>
+        <tr>
+            <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
+            <td>{{docVm.amount}}</td>
+        </tr>
+        <tr>
+            <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
+            <td>{{docVm.tax}}</td>
+        </tr>
+        <tr>
+            <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
+            <td>{{docVm.amount}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    {{#if isBill}}
+    <table class="table invoice-total"> 
+      <tbody>
+      {{#each payment in docVm.getPaymentTransactions}}
+      <tr>
+          <td class="text-capitalize">
+            {{_ payment.entityName}}: 
+            {{displayDate payment.valueDate}}
+            {{>Action_buttons_group collection='transactions' doc=payment actions='view' size='sm'}}
+          </td>
+          <td>{{payment.amount}}</td>
+      </tr>
+      {{/each}}
+      <tr>
+          <td><strong>{{_ 'schemaBills.outstanding.label'}} :</strong></td>
+          <td>{{docVm.outstanding}}</td>
+      </tr>
+      </tbody>
+    </table>
+    {{/if}}
+
+    <div class="text-right" data-id="{{docVm._id}}">
+      {{>Action_button doc=docVm action=actions.edit size='xl'}}
+      {{>Action_button doc=docVm action=actions.post size='xl'}}
+      {{>Action_button doc=docVm action=actions.registerPayment size='xl'}}
+      {{>Action_button doc=docVm action=actions.registerRemission size='xl'}}
+    </div>
+
+    {{#if docVm.note}}
+    <div class="well m-t"><strong>{{_ 'schemaBills.note.label'}}</strong>
+        {{docVm.note}}
+    </div>
+    {{/if}}
+</template>

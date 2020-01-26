@@ -63,8 +63,9 @@ Communities.helpers({
   },
   asPartner() {
     const partner = _.clone(this);
+    const bankAccount = this.primaryBankAccount();
     partner.contact = { address: this.displayAddress() };
-    partner.BAN = this.primaryBankAccount().number; 
+    partner.BAN = bankAccount && bankAccount.number;
     return partner;
   },
   moneyAccounts() {
