@@ -85,9 +85,11 @@
                             <td>
                                 <div>
                                 <strong>
-                                    {{line.title}} 
-                                    {{#if line.localizer}}{{code2parcelRef line.localizer}}{{/if}} 
-                                    {{#if line.period}}{{line.period}}{{/if}}
+                                    {{line.title}}
+                                    {{#if (equals docVm.relation 'parcel')}}
+                                        {{#if line.localizer}}{{code2parcelRef line.localizer}}{{/if}} 
+                                        {{#if line.period}}{{line.period}}{{/if}}
+                                    {{/if}}
                                 </strong>
                                 </div>
                                 <small>{{line.details}}</small>
