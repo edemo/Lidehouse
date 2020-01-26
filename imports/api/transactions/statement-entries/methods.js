@@ -57,8 +57,9 @@ function checkMatch(entry, transaction) {
     throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`);
   }
   if (transaction.amount !== moneyFlowSign(transaction.relation) * entry.amount) throwMatchError('amount');
-  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
   if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate');
+  if (!_.contains([transaction.payAccount, transaction.toAccount, transaction.fromAccount], entry.account)) throwMatchError('account');
+//  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
 }
 
 export const reconcile = new ValidatedMethod({
@@ -91,6 +92,7 @@ export const reconcile = new ValidatedMethod({
           partnerId: matchingBill.partnerId,
           defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBill.relation })._id,
           valueDate: entry.valueDate,
+          payAccount: entry.account,
           amount: matchingBill.outstanding,
           bills: [{ amount: matchingBill.outstanding, id: matchingBill._id }],
         };
@@ -99,7 +101,7 @@ export const reconcile = new ValidatedMethod({
       }
     }
     const reconciledTx = Transactions.findOne(txId);
-//    checkMatch(entry, reconciledTx);
+    checkMatch(entry, reconciledTx);
     Transactions.update(reconciledTx._id, { $set: { reconciledId: _id } });
     StatementEntries.update(entry._id, { $set: { reconciledId: txId } });
     return txId;

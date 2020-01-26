@@ -15,7 +15,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
 
-  describe('transactions', function () {
+  describe.only('transactions', function () {
     this.timeout(15000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
@@ -175,7 +175,7 @@ if (Meteor.isServer) {
       let billId;
       let bill;
 //      let statementId;
-      const bankAccount = '31';
+      const bankAccount = '381';
 
       before(function () {
         billId = FixtureA.builder.create('bill', {
@@ -213,7 +213,9 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.partner().outstanding, 200);
       });
 
-      xit('Can NOT reconcile statementEntry with different relation, amount or date', function () {
+      it('Can NOT reconcile statementEntry with different relation, amount or date', function () {
+        const txId = bill.getPayments()[0].id;
+/*        
         const entryIdWrongRelation = FixtureA.builder.create('statementEntry', {
           account: bankAccount,
           valueDate: Clock.currentDate(),
@@ -221,7 +223,17 @@ if (Meteor.isServer) {
           amount: -100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongRelation, txId: bill.getPayments()[0].id });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongRelation, txId });
+        }, 'err_notAllowed');
+*/
+        const entryIdWrongAccount = FixtureA.builder.create('statementEntry', {
+          account: bankAccount + '1',
+          valueDate: Clock.currentDate(),
+          name: 'Supplier Inc',
+          amount: -100,
+        });
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAccount, txId });
         }, 'err_notAllowed');
 
         const entryIdWrongAmount = FixtureA.builder.create('statementEntry', {
@@ -231,7 +243,7 @@ if (Meteor.isServer) {
           amount: 100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAmount, txId: bill.getPayments()[0].id });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAmount, txId });
         }, 'err_notAllowed');
 
         const entryIdWrongDate = FixtureA.builder.create('statementEntry', {
@@ -241,18 +253,19 @@ if (Meteor.isServer) {
           amount: -100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongDate, txId: bill.getPayments()[0].id });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongDate, txId });
         }, 'err_notAllowed');
       });
 
       it('Can reconcile statementEntry to existing payment - no extra payment is created', function () {
+        const txId = bill.getPayments()[0].id;
         const entryId1 = FixtureA.builder.create('statementEntry', {
           account: bankAccount,
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
           amount: -100,
         });
-        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, txId: bill.getPayments()[0].id });
+        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, txId });
 
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
