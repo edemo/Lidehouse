@@ -43,7 +43,7 @@ Meteor.startup(function indexStatementEntries() {
 
 StatementEntries.helpers({
   isReconciled() {
-    return (!!this.reconciledId);
+    return !!this.reconciledId;
   },
 });
 

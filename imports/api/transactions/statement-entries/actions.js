@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
@@ -18,11 +19,15 @@ StatementEntries.actions = {
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission('statements.insert', doc),
     run(options, doc, event, instance) {
-      Session.update('modalContext', 'account', instance.viewmodel.accountSelected());
+//      Session.update('modalContext', 'account', instance.viewmodel.accountSelected());
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.insert',
         collection: StatementEntries,
         omitFields: ['original', 'match'],
+        doc: {
+          account: instance.viewmodel.accountSelected(),
+          valueDate: new Date(),
+        },
         type: 'method',
         meteormethod: 'statementEntries.insert',
       });
@@ -89,7 +94,7 @@ StatementEntries.actions = {
       Session.update('modalContext', 'statementEntry', doc);
       Session.update('modalContext', 'txdef', options.txdef);
       Modal.show('Autoform_modal', {
-        title: 'Reconciliation',
+        title: `${__('Reconciliation')} >> ${__(options.txdef.name)}`,
         id: 'af.statementEntry.reconcile',
         schema: StatementEntries.reconcileSchema,
         type: 'method',
@@ -133,7 +138,7 @@ AutoForm.addModalHooks('af.statementEntry.reconcile');
 
 AutoForm.addHooks('af.statementEntry.insert', {
   docToForm(doc) {
-    doc.account = Session.get('modalContext').account;
+//    doc.account = Session.get('modalContext').account;
     return doc;
   },
   formToDoc(doc) {

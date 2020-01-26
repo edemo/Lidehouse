@@ -31,6 +31,19 @@ Transactions.actions = {
       fillMissingOptionParams(options, doc);
       Session.update('modalContext', 'txdef', options.txdef);
       const entity = options.entity;
+      // When called from reconciliation, prefill the values in the form
+      const reconciledStatementEntry = Session.get('modalContext').statementEntry;
+      if (reconciledStatementEntry) {
+        _.extend(doc, {
+          amount: reconciledStatementEntry.amount,  // receipt
+          lines: [{ quantity: 1, unitPrice: reconciledStatementEntry.amount }],  // payment
+          partnerName: reconciledStatementEntry.name, // receipt
+          valueDate: reconciledStatementEntry.valueDate,
+          payAccount: reconciledStatementEntry.account,  // receipt, payment
+          fromAccount: reconciledStatementEntry.account,  // transfer
+          toAccount: reconciledStatementEntry.account,  // transfer
+        });
+      }
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -175,16 +188,20 @@ Transactions.categoryValues.forEach(category => {
   AutoForm.addModalHooks(`af.${category}.update`);
 
   AutoForm.addHooks(`af.${category}.insert`, {
+    docToForm(doc) {
+      return doc;
+    },
     formToDoc(doc) {
+      const modalContext = Session.get('modalContext');
       doc.communityId = Session.get('activeCommunityId');
       doc.category = category;
-      const txdef = Session.get('modalContext').txdef;
+      const txdef = modalContext.txdef;
       doc.defId = txdef._id;
       _.each(txdef.data, (value, key) => doc[key] = value);
       if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
       } else if (category === 'payment' || category === 'remission') {
-        const billId = Session.get('modalContext').billId;
+        const billId = modalContext.billId;
         if (billId) {
           const bill = Transactions.findOne(billId);
           doc.relation = bill.relation;
