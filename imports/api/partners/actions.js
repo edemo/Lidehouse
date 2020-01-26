@@ -59,7 +59,7 @@ Partners.actions = {
     run(options, doc) {
       Modal.confirmAndCall(Partners.methods.remindOutstandings, { _id: doc._id }, {
         action: 'remind outstandings',
-        message: 'It will send a notification',
+        message: __('Sending outstandings reminder', doc.primaryEmail() || __('undefined')),
       });
     },
   },

@@ -756,7 +756,7 @@
   "delete breakdown": "törli a könyvelési bontást",
   "delete txdef": "törli a tranzakció típust",
   "delete transaction": "törli a tranzakciót",
-  "remind outstandings": "elküldi az értesítést",
+  "remind outstandings": "elküldi a hátralék emlékeztetőt",
   "delete parcelship": "törli a vezető albetétet",
   "enable delegations": "engedélyezi a bejövő meghatalmazásokat",
   "disable delegations": "visszautasítja a bejövő meghatalmazásokat",
@@ -771,7 +771,6 @@
   "import data": "importálja az adatokat",
 
   "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",
-  "It will send a notification": "Ezzel a művelettel elküldi az értesítést!",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
   "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást.",
   "This will bill all parcels": "Ezzel minden albetét számára kirójja a számított közös költséget minden hónapra.",
@@ -780,6 +779,7 @@
   "The planned date of closure was ": "A lezárás eredetileg tervezett időpontja ",
   "You should rather archive it" : "Törlés helyett inkább az aktív időszakot szerkessze és zárja le, mert akkor megmaradnak kereshetőek a múltbeli adatok. Csak akkor törölje le, ha tévedésből lett létrehozva.",
   "Connecting user": "A(z) <strong>'%s'</strong> email című felhasználót kapcsolni fogja a tagsághoz. Ha az illetőnek még nincs felhasználói fiókja a rendszerben, akkor most meghívót fog neki küldeni erre az email címre.",
+  "Sending outstandings reminder": "A(z) <strong>'%s'</strong> email címre ezzel egy hátralék emlékeztető emailt fog kiküldeni.",
   "This will publish the current account balances": "Ezzel a jelen pillanatban élő számlaegyenlegek lesznek mostantól láthatóak a tulajdonosok felé mutatott kimutatásokban",
   
   "Warning": "Figyelmeztetés",

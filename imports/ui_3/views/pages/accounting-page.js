@@ -2,14 +2,14 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries';
 import '/imports/ui_3/views/components/accounting-bills.js';
 import '/imports/ui_3/views/components/accounting-ledger.js';
 import '/imports/ui_3/views/components/accounting-transactions.js';
 import '/imports/ui_3/views/components/accounting-breakdowns.js';
 import '/imports/ui_3/views/components/accounting-reconciliation.js';
-
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries';
 import './accounting-page.html';
 
 Template.Accounting_page.viewmodel({
@@ -24,15 +24,15 @@ Template.Accounting_page.viewmodel({
     });
   },
   communityId() {
-    return Session.get('activeCommunityId');
+    return getActiveCommunityId();
   },
   countUnpostedTxs() {
     const communityId = this.communityId();
-    return Transactions.find({ communityId, complete: false }).count();
+    return Transactions.find({ communityId, postedAt: { $exists: false } }).count();
   },
   countUnreconciledTxs() {
     const communityId = this.communityId();
-    return Transactions.find({ communityId, category: 'payment', reconciledId: { $exists: false } }).count();
+    return Transactions.find({ communityId, category: { $in: ['payment', 'receipt'] }, reconciledId: { $exists: false } }).count();
   },
   countOutstandingBills() {
     const communityId = this.communityId();

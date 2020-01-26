@@ -57,9 +57,8 @@ export const post = new ValidatedMethod({
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
     if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
-    if (doc.category === 'bill') {
+    if (doc.category === 'bill' || doc.category === 'receipt') {
       if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-      if (Meteor.isServer) sendBillEmail(doc);
     } else if (doc.category === 'payment' || doc.category === 'remission') {
       doc.bills.forEach(bp => checkBillIsPosted(bp.id));
     } else if (doc.category === 'barter') {
@@ -70,7 +69,11 @@ export const post = new ValidatedMethod({
     const community = Communities.findOne(doc.communityId);
     const accountingMethod = community.settings.accountingMethod;
     const updateData = doc.makeJournalEntries(accountingMethod);
-    return Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
+    const result = Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
+    
+    if (Meteor.isServer && doc.category === 'bill') sendBillEmail(doc);
+
+    return result;
   },
 });
 
