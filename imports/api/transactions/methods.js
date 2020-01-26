@@ -90,7 +90,7 @@ export const insert = new ValidatedMethod({
         if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
         function setOrCheckEquals(field) {
           if (i === 0) doc[field] = bill[field];
-          else if (doc[field] !== bill[field]) throw new Meteor.Error(`Bills have to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
+          else if (doc[field] !== bill[field]) throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
         }
         setOrCheckEquals('relation');
         setOrCheckEquals('partnerId');

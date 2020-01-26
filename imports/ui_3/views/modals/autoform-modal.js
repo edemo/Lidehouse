@@ -4,6 +4,7 @@ import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
+import { _ } from 'meteor/underscore';
 
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
@@ -43,7 +44,7 @@ Template.Autoform_modal.helpers({
   title() {
     if (this.title) return this.title;
     const id = afId2details(this.id);
-    if (id.object === 'bill' || id.object === 'receipt') {
+    if (_.contains(['bill', 'receipt', 'payment'], id.object)) {
       const relation = Session.get('modalContext').txdef.data.relation;
       id.object = relation + '_' + id.object;
     }

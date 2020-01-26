@@ -691,7 +691,7 @@
       "label": "Original data"
     },
     "match": {
-      "label": "Matched transaction"
+      "label": "Suggested matched transaction"
     }
   },
   "schemaTxdefs": {

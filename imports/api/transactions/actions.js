@@ -4,7 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { BatchAction } from '/imports/api/batch-action.js';
@@ -201,14 +201,29 @@ Transactions.categoryValues.forEach(category => {
       if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
       } else if (category === 'payment' || category === 'remission') {
-        const billId = modalContext.billId;
-        if (billId) {
-          const bill = Transactions.findOne(billId);
-          doc.relation = bill.relation;
-          doc.partnerId = bill.partnerId;
-          doc.contractId = bill.contractId;
-          doc.bills = [{ id: billId, amount: doc.amount }];
+        if (!doc.bills.length && modalContext.billId) {
+          doc.bills = [{ id: modalContext.billId, amount: doc.amount }];
         }
+        const billId = doc.bills[0].id;
+        const bill = Transactions.findOne(billId);
+        doc.relation = bill.relation;
+        doc.partnerId = bill.partnerId;
+        // on the server it will be checked all bills match
+/*        _.each(doc.bills, (bp, index) => {
+          const billId = bp.id;
+          const bill = Transactions.findOne(billId);
+          if (index === 0) {
+            doc.relation = bill.relation;
+            doc.partnerId = bill.partnerId;
+            doc.membershipId = bill.membershipId;
+            doc.contractId = bill.contractId;
+          } else {
+            productionAssert(doc.relation === bill.relation, 'All paid bills need to have same relation');
+            productionAssert(doc.partnerId === bill.partnerId, 'All paid bills need to have same partner');
+            productionAssert(doc.membershipId === bill.membershipId, 'All paid bills need to have same membership');
+            productionAssert(doc.contractId === bill.contractId, 'All paid bills need to have same contract');
+          }
+        }); */
       }
       return doc;
     },

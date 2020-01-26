@@ -12,7 +12,6 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
-import { chooseBill } from '/imports/api/transactions/bills/bills.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };

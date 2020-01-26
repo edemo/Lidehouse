@@ -1,5 +1,5 @@
 import { _ } from 'meteor/underscore';
-import { releaseAssert } from '/imports/utils/assert.js';
+import { productionAssert } from '/imports/utils/assert.js';
 
 export function createRefFromFields(format, doc) {
   let ref = '';
@@ -19,7 +19,7 @@ export function createRefFromFields(format, doc) {
     case 'F/D':
       ref += doc.floor + '/' + doc.door;
       break;
-    default: releaseAssert(false, `Unknown parcel ref format: ${format}`);
+    default: productionAssert(false, `Unknown parcel ref format: ${format}`);
   }
   return ref;
 }
@@ -43,12 +43,12 @@ export function extractFieldsFromRef(format, doc) {
       break;
     case 'F/D':    // IV/6 means, IV floor, 6 door
       const splitted = ref.split('/');
-      releaseAssert(splitted.length === 2, `Invalid parcel ref: ${ref}`);
+      productionAssert(splitted.length === 2, `Invalid parcel ref: ${ref}`);
       extract.type = 'flat';
       extract.floor = splitted[0];
       extract.door = splitted[1];
       break;
-    default: releaseAssert(false, `Unknown parcel ref format: ${format}`);
+    default: productionAssert(false, `Unknown parcel ref format: ${format}`);
   }
   return _.extend(extract, doc);  // The doc fields can override what we calculate
 }

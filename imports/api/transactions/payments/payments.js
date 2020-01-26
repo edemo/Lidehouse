@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
@@ -18,11 +19,14 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 
 export const Payments = {};
 
-export const chooseBill = {
+export const chooseBillByProximity = {
   options() {
     const communityId = Session.get('activeCommunityId');
-    const bills = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
-    const options = bills.map(function option(bill) {
+    const relation = Session.get('modalContext').txdef.data.relation;
+    const amount = AutoForm.getFieldValue('amount');
+    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
+    const billByProximity = _.sortBy(bills.fetch(), b => (b.oustanding - amount));
+    const options = billByProximity.map(function option(bill) {
       return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
     });
     return options;
@@ -31,7 +35,7 @@ export const chooseBill = {
 };
 
 Payments.billSchema = new SimpleSchema({
-  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBill },
+  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBillByProximity },
   amount: { type: Number, decimal: true },
 });
 
