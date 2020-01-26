@@ -65,7 +65,11 @@
                     {{#let entity=row.entityName}}
                     <tr class="memberships" data-id="{{row._id}}">
                         <td><a href="" class="client-avatar js-member"><img alt="image" src={{row.person.avatar}}></a></td>
-                        <td><a href="" class="client-link js-member">{{row.person.displayName}}</a></td>
+                        <td><a href="" class="client-link js-member">{{row.person.displayName}}</a>  
+                            {{#if currentUserHasPermission 'partners.update'}}
+                            {{>Action_buttons_group collection='partners' doc=row.partnerId actions='view,edit' size='sm'}}
+                            {{/if}}
+                        </td>
                         <td>{{>Active_period row}}</td>
                             {{#if equals entity 'ownership'}}
                             <td class="contact-type nowrap">
