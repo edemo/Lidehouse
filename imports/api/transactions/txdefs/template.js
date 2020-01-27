@@ -13,7 +13,7 @@ export function defineTxdefTemplates() {
     name: 'Supplier bill', // 'Bejövő számla',
     category: 'bill',
     data: { relation: 'supplier' },
-    debit: ['8', '5'],
+    debit: ['1', '5', '8'],
     credit: ['46'],
   });
 /*

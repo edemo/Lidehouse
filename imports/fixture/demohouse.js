@@ -973,7 +973,9 @@ export function insertDemoHouse(lang, demoOrTest) {
   ['03', '06', '09', '12'].forEach(mm => {
     const billId = demoBuilder.create('bill', {
       relation: 'supplier',
-      valueDate: new Date(`${lastYear}-${mm}-20`),
+      issueDate: new Date(`${lastYear}-${mm}-15`),
+      deliveryDate: new Date(`${lastYear}-${mm}-05`),
+      dueDate: new Date(`${lastYear}-${mm}-30`),
       // amount: 282600,
       partnerId: supplier2,
       contractId: contract2,
