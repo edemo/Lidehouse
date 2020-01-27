@@ -1,6 +1,8 @@
 /* global alert */
 
 import { Template } from 'meteor/templating';
+import { Tracker } from 'meteor/tracker';
+
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
@@ -17,22 +19,31 @@ import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/api/users/users.js';
 import './profile-form.html';
 
-Template.Profile_form.onCreated(function usersShowPageOnCreated() {
-  this.getUserId = () => Meteor.userId();
-  this.autorun(() => {
-  });
-});
-
-Template.Profile_form.onRendered(function usersShowPageOnRendered() {
-  initializeHelpIcons(this, 'schemaUsers');
-});
-
-Template.Profile_form.helpers({
+Template.Profile_form.viewmodel({
+  autorun() {
+    if (Meteor.user() && Meteor.user().personNameMismatch()) {
+      const userName = Meteor.user().fullName() || Meteor.user().profile.firstName || Meteor.user().profile.lastName ;
+      const personName = Meteor.user().displayOfficialName();
+      const communityName = Communities.findOne(Session.get('activeCommunityId')).name;
+      const modalContext = {
+        title: __('Name mismatch'),
+        text: __('Name mismatch notification', { personName, userName, communityName } ),
+        btnOK: 'ok',
+      };
+      Modal.show('Modal', modalContext);
+    }
+  },
+  onRendered() {
+    initializeHelpIcons(this.templateInstance, 'schemaUsers');
+  },
+  getUserId() {
+    return Meteor.userId();
+  },
   users() {
     return Meteor.users;
   },
   document() {
-    return Meteor.users.findOne({ _id: Template.instance().getUserId() });
+    return Meteor.users.findOne({ _id: this.getUserId() });
   },
   schema() {
     const profileSchema = new SimpleSchema([
@@ -77,16 +88,5 @@ AutoForm.addHooks('af.user.update', {
   },
   onSuccess(formType, result) {
     displayMessage('success', 'user data updated');
-    if (Meteor.user() && Meteor.user().personNameMismatch()) {
-      const userName = Meteor.user().fullName() || Meteor.user().profile.firstName || Meteor.user().profile.lastName ;
-      const personName = Meteor.user().displayOfficialName();
-      const communityName = Communities.findOne(Session.get('activeCommunityId')).name;
-      const modalContext = {
-        title: __('Name mismatch'),
-        text: __('Name mismatch notification', { personName, userName, communityName } ),
-        btnOK: 'ok',
-      };
-      Modal.show('Modal', modalContext);
-    }
   },
 });
