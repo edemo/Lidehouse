@@ -59,6 +59,18 @@ Migrations.add({
 
 Migrations.add({
   version: 4,
+  name: 'Vote closesAt is set directly on topic',
+  up() {
+    Topics.find({ category: 'vote', 'vote.closesAt': { $gte: new Date() } }).forEach((topic) => {
+      const closingDate = topic.vote.closesAt;
+      Topics.update(topic._id, { $set: { closesAt: closingDate } });
+     // Topics.update(topic._id, { $unset: { 'vote.closesAt': 0 } });
+    });
+  },
+});
+
+Migrations.add({
+  version: 5,
   name: 'Topics all get a status',
   up() {
     Topics.find({ category: 'ticket', status: { $exists: false } }).forEach((ticket) => {
@@ -79,7 +91,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 5,
+  version: 6,
   name: 'Communities get a settings section and an accountingMethod',
   up() {
     Communities.update(
@@ -96,7 +108,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 6,
+  version: 7,
   name: 'Topics need serial',
   up() {
     function upgrade() {
@@ -114,7 +126,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 7,
+  version: 8,
   name: 'Remove leadRef from parcel, and create parcelships with it',
   up() {
     function upgrade() {
@@ -127,7 +139,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 8,
+  version: 9,
   name: 'Comments category is now required field',
   up() {
     function upgrade() {
@@ -142,7 +154,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 9,
+  version: 10,
   name: 'Membership persons become partners, and partners cast the votes, delegate and pay the bills',
   up() {
     function upgrade() {
@@ -182,12 +194,12 @@ Migrations.add({
       });
       Delegations.find({}).forEach((doc) => {
         const sourceUserId = doc.sourcePersonId;
-        const sourceUser = Meteor.users.find(sourceUserId);
+        const sourceUser = Meteor.users.findOne(sourceUserId);
         const sourcePartnerId = sourceUser ?
           sourceUser.partnerId(doc.communityId) :
           Partners.findOne({ communityId: doc.communityId, 'idCard.identifier': doc.sourcePersonId })._id;
         const targetUserId = doc.targetPersonId;
-        const targetUser = Meteor.users.find(targetUserId);
+        const targetUser = Meteor.users.findOne(targetUserId);
         const targetPartnerId = targetUser.partnerId(doc.communityId);
         Delegations.update(doc._id, { $set: { sourceId: sourcePartnerId, targetId: targetPartnerId }, $unset: { sourcePersonId: '', targetPersonId: '' } });
       });
