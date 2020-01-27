@@ -87,7 +87,8 @@ export function defineBreakdownTemplates() {
         children: [
          { digit: '1', name: 'Nyitómérleg számla' },
          { digit: '2', name: 'Zárómérleg számla' },
-         { digit: '3', name: 'Adózott eredmény elszámolási számla' },
+         { digit: '3', name: 'Adózott eredmény elszámolása' },
+         { digit: '4', name: 'Előző évi eredmény elszámolása' },
         ],
       },
     ],
