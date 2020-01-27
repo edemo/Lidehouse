@@ -17,7 +17,8 @@ import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/br
 import { Localizer, chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
-import { Partners, choosePartner } from '/imports/api/partners/partners.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
@@ -83,6 +84,7 @@ Bills.paymentSchema = new SimpleSchema({
 Bills.extensionSchema = new SimpleSchema([
   Transactions.partnerSchema,
   Bills.receiptSchema, {
+    valueDate: { type: Date, autoValue() { return this.field('deliveryDate').value; }, autoform: { omit: true } },
     issueDate: { type: Date },
     deliveryDate: { type: Date },
     dueDate: { type: Date },
@@ -114,7 +116,6 @@ Transactions.categoryHelpers('bill', {
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
 //    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });
-//    this.valueDate = this.issueDate;
     if (accountingMethod === 'accrual') {
       this.debit = [];
       this.credit = [];
@@ -137,6 +138,7 @@ Transactions.categoryHelpers('bill', {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a bill without a partner');
     Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
+    Memberships.update(this.membershipId, { $inc: { outstanding: directionSign * this.amount } });
     if (this.relation === 'parcel') {
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
@@ -171,7 +173,6 @@ Meteor.startup(function attach() {
 Factory.define('bill', Transactions, {
   category: 'bill',
   relation: 'supplier',
-  valueDate: () => Clock.currentDate(),
   partnerId: () => Factory.get('supplier'),
   issueDate: () => Clock.currentDate(),
   deliveryDate: () => Clock.currentDate(),
@@ -185,3 +186,15 @@ Factory.define('bill', Transactions, {
     localizer: '@',
   }],
 });
+
+export const chooseBill = {
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    const bills = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
+    const options = bills.map(function option(bill) {
+      return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};

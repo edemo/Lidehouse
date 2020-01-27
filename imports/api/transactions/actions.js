@@ -4,7 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { BatchAction } from '/imports/api/batch-action.js';
@@ -31,6 +31,19 @@ Transactions.actions = {
       fillMissingOptionParams(options, doc);
       Session.update('modalContext', 'txdef', options.txdef);
       const entity = options.entity;
+      // When called from reconciliation, prefill the values in the form
+      const reconciledStatementEntry = Session.get('modalContext').statementEntry;
+      if (reconciledStatementEntry) {
+        _.extend(doc, {
+          amount: reconciledStatementEntry.amount,  // receipt
+          lines: [{ quantity: 1, unitPrice: reconciledStatementEntry.amount }],  // payment
+          partnerName: reconciledStatementEntry.name, // receipt
+          valueDate: reconciledStatementEntry.valueDate,
+          payAccount: reconciledStatementEntry.account,  // receipt, payment
+          fromAccount: reconciledStatementEntry.account,  // transfer
+          toAccount: reconciledStatementEntry.account,  // transfer
+        });
+      }
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -175,26 +188,42 @@ Transactions.categoryValues.forEach(category => {
   AutoForm.addModalHooks(`af.${category}.update`);
 
   AutoForm.addHooks(`af.${category}.insert`, {
+    docToForm(doc) {
+      return doc;
+    },
     formToDoc(doc) {
+      const modalContext = Session.get('modalContext');
       doc.communityId = Session.get('activeCommunityId');
       doc.category = category;
-      const txdef = Session.get('modalContext').txdef;
+      const txdef = modalContext.txdef;
       doc.defId = txdef._id;
       _.each(txdef.data, (value, key) => doc[key] = value);
-      if (category === 'bill') {
-        doc.valueDate = doc.deliveryDate;
-        doc.lines = _.without(doc.lines, undefined);
-      } else if (category === 'receipt') {
+      if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
       } else if (category === 'payment' || category === 'remission') {
-        const billId = Session.get('modalContext').billId;
-        if (billId) {
-          const bill = Transactions.findOne(billId);
-          doc.relation = bill.relation;
-          doc.partnerId = bill.partnerId;
-          doc.contractId = bill.contractId;
-          doc.bills = [{ id: billId, amount: doc.amount }];
+        if (!doc.bills.length && modalContext.billId) {
+          doc.bills = [{ id: modalContext.billId, amount: doc.amount }];
         }
+        const billId = doc.bills[0].id;
+        const bill = Transactions.findOne(billId);
+        doc.relation = bill.relation;
+        doc.partnerId = bill.partnerId;
+        // on the server it will be checked all bills match
+/*        _.each(doc.bills, (bp, index) => {
+          const billId = bp.id;
+          const bill = Transactions.findOne(billId);
+          if (index === 0) {
+            doc.relation = bill.relation;
+            doc.partnerId = bill.partnerId;
+            doc.membershipId = bill.membershipId;
+            doc.contractId = bill.contractId;
+          } else {
+            productionAssert(doc.relation === bill.relation, 'All paid bills need to have same relation');
+            productionAssert(doc.partnerId === bill.partnerId, 'All paid bills need to have same partner');
+            productionAssert(doc.membershipId === bill.membershipId, 'All paid bills need to have same membership');
+            productionAssert(doc.contractId === bill.contractId, 'All paid bills need to have same contract');
+          }
+        }); */
       }
       return doc;
     },

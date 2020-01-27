@@ -42,23 +42,23 @@
                     <a href="{{pathFor 'Forum'}}">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Forum'}}</span>
-                        {{> Badge color='info' value=(unseenEventsCount 'forum') align='right'}}
+                        {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'forum') align='right'}}
                     </a>
                 </li>
                 <li class="{{isActivePath regex='votings|agendas|delegations'}}">
                     <a class="js-submenu-toggle" href="#"><i class="fa fa-legal"></i>
                         <span class="nav-label">{{_ 'Decision making'}}</span>
                         <!--span class="fa arrow"> </span-->
-                        {{> Badge color='info' value=(unseenEventsCount 'vote') align='right'}}
-                        {{> Badge color='danger' value=(needsAttentionCount 'vote') align='right'}}
+                        {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'vote') align='right'}}
+                        {{> Badge color='danger' title=(_ 'Todo') value=(needsAttentionCount 'vote') align='right'}}
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='votings|agendas|delegations' className='submenu-open'}}">
                         <li class="{{isActivePath regex='votings'}}">
                             <a href="{{pathFor 'Votings'}}">
                                 <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Votings'}}</span>
-                                {{> Badge color='info' value=(unseenEventsCount 'vote') align='right'}}
-                                {{> Badge color='danger' value=(needsAttentionCount 'vote') align='right'}}
+                                {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'vote') align='right'}}
+                                {{> Badge color='danger' title=(_ 'Todo') value=(needsAttentionCount 'vote') align='right'}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='agendas'}}">
@@ -92,8 +92,8 @@
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
                         <span class="nav-label">{{_ 'Maintenance'}}</span>
                         <!--span class="fa arrow"> </span-->
-                        {{> Badge color='info' value=(unseenEventsCount 'ticket') align='right'}}
-                        {{> Badge color='danger' value=(needsAttentionCount 'ticket') align='right'}}
+                        {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'ticket') align='right'}}
+                        {{> Badge color='danger' title=(_ 'Todo') value=(needsAttentionCount 'ticket') align='right'}}
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='tickets|worksheets|contracts' className='submenu-open'}}">
                         <li class="{{isActivePath regex='tickets'}}">
@@ -107,7 +107,7 @@
                             <a href="{{pathFor 'Worksheets'}}">
                                 <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Worksheets'}}</span>
-                                {{> Badge color='danger' value=(needsAttentionCount 'ticket') align='right'}}
+                                {{> Badge color='danger' title=(_ 'Todo') value=(needsAttentionCount 'ticket') align='right'}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='contracts'}}">
@@ -159,7 +159,7 @@
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community page'}}</span>
                         {{#if currentUserHasPermission 'parcels.update'}}
-                        {{> Badge color='danger' value=countUnapprovedEntities align='right'}}
+                        {{> Badge color='danger' title=(_ 'Todo') value=countUnapprovedEntities align='right'}}
                         {{/if}}
                     </a>
                 </li>
@@ -193,7 +193,7 @@
                     <a href="{{pathFor 'Feedbacks'}}">
                         <i><img src="/icon/si-glyph-bolt.svg"/></i>
                         <span class="nav-label">Feedbacks (dev)</span>
-                        {{> Badge value=(unseenEventsCount 'feedback') align='right'}}
+                        {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'feedback') align='right'}}
                     </a>
                 </li>
                 <li class="{{isActivePath regex='styleguide'}}">

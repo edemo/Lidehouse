@@ -47,18 +47,14 @@
                             <img alt="image" class="img-circle" src="{{currentUser.avatar}}" width="32"/>
                             <b class="caret"></b>
                         </span>                        
-                        {{#if currentUser.personNameMismatch}}
-                        <span class="badge {{nameMismatchBadge}} profil-badge">1</span>
-                        {{/if}}
+                        {{> Badge color=nameMismatchSeriousity title=(_ 'Name mismatch') value=nameMismatchCounter class="profil-badge"}}
                     </a>
                     <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="user-menu-dropdown">
                         <li>                
                             <a href="{{pathFor 'User data page' _id=currentUser._id}}">
                                 <i class="glyphicon glyphicon-cog" aria-hidden="true"></i> 
                                 {{_ 'Profile settings'}}
-                                {{#if currentUser.personNameMismatch}}
-                                <span class="badge {{nameMismatchBadge}}" style="vertical-align: text-bottom">1</span>
-                                {{/if}}
+                                {{> Badge color=nameMismatchSeriousity title=(_ 'Name mismatch') value=nameMismatchCounter style="vertical-align: text-bottom"}}
                             </a>
                         </li>
                         <li>                
@@ -78,18 +74,14 @@
                 <li>
                     <a id="privatechat" class="right-sidebar-toggle count-info" href="">
                         <i class="fa fa-envelope"></i>  
-                        {{#if unseenEventsCount 'private chat'}}
-                        <span class="label badge badge-danger">{{unseenEventsCount 'private chat'}}</span>
-                        {{/if}}  
+                        {{> Badge color='danger' title=(_ 'Unread') value=(unseenEventsCount 'private chat') class="label"}}
                     </a>                    
                 </li>
                 {{#if currentUserHasPermission 'do.techsupport'}}
                 <li>
                     <a id="techsupport" class="right-sidebar-toggle count-info" href="">
-                        <i class="fa fa-lg fa-question-circle"></i>  
-                        {{#if unseenEventsCount 'tech support'}}
-                        <span class="label badge badge-danger">{{unseenEventsCount 'tech support'}}</span>
-                        {{/if}}  
+                        <i class="fa fa-lg fa-question-circle"></i>
+                        {{> Badge color='danger' title=(_ 'Unread') value=(unseenEventsCount 'tech support') class="label"}}
                     </a>                    
                 </li>   
                 {{/if}}

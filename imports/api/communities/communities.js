@@ -5,7 +5,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
-import { debugAssert, releaseAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';

@@ -1,9 +1,14 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import '/imports/ui_3/views/components/ledger-report.js';
 import '/imports/ui_3/views/components/account-history.js';
+import '/imports/ui_3/views/components/journals-table.js';
 import './accounting-ledger.html';
 
 Template.Accounting_ledger.viewmodel({
@@ -25,6 +30,9 @@ Template.Accounting_ledger.viewmodel({
   },
   totalTag() {
     return ['T'];
+  },
+  yearMonthTag() {
+    return this.periodSelected();
   },
   yearMonthTags() {
 //    return PeriodBreakdown.currentYearMonths().concat('T');
@@ -51,5 +59,16 @@ Template.Accounting_ledger.events({
   },
   'click .js-reset'(event, instance) {
     instance.viewmodel.selectedAccount('');
+  },
+  'click .js-journals'(event, instance) {
+      //    Session.update('modalContext', 'parcelId', doc._id);
+    Modal.show('Modal', {
+      title: 'Teljes journal lista',
+      body: 'Journals_table',
+      bodyContext: {
+        communityId: getActiveCommunityId(),
+      },
+      size: 'lg',
+    });
   },
 });

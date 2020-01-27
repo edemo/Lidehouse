@@ -7,6 +7,7 @@
 </template>
 
 <template name="Action_sub_actions_button">
+    {{>Menu_overflow_guard}}
     <div class="dropdown pull-left">
         <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white" title="{{#unless long}}{{_ action.name}}{{/unless}}">
           <i class="{{action.icon}}"></i> <b class="caret"></b>

@@ -42,7 +42,7 @@ Template.Accounting_breakdowns.viewmodel({
   },
   noBreakdownsDefined() {
     const communityId = Session.get('activeCommunityId');
-    return Breakdowns.find({ communityId }).count() === 0;
+    return !Breakdowns.findOne({ communityId, name: 'COA' });
   },
   txdefs() {
     const communityId = Session.get('activeCommunityId');

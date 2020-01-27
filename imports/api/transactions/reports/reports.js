@@ -4,7 +4,7 @@ import { _ } from 'meteor/underscore';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { TableReport } from '/imports/api/transactions/reports/table-report.js';
-import { JournalEntries } from '/imports/api/transactions/entries.js';
+import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { SideBreakdown } from '/imports/api/transactions/breakdowns/tx-side.js';
 import '/imports/api/transactions/breakdowns/template.js';

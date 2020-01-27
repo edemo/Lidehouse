@@ -11,7 +11,8 @@
             <select id="period" name="period" {{b 'options: periodOptions, value: periodSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
         </div>
     </div>
-    {{> Balance_report breakdown=(breakdown 'COA') tags=yearMonthTags }}
+    <!--{{> Balance_report breakdown=(breakdown 'COA') tags=yearMonthTags }}-->
+    {{> Ledger_report breakdown=(breakdown 'COA') tag=yearMonthTag }}
     {{/if}}
     {{/if}}
 
@@ -22,5 +23,13 @@
         </h3>
         {{>Account_history beginDate=selectedBeginDate endDate=selectedEndDate accountOptions=accountOptions accountSelected=selectedAccount}}
     {{/if}}
+    {{/if}}
+
+    {{#if currentUserHasPermission 'transactions.inCommunity'}}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <button class="btn btn-default js-journals"><i class="fa fa-list"></i> {{_ 'Teljes journal lista'}}</button>
+        </div>
+    </div>
     {{/if}}
 </template>

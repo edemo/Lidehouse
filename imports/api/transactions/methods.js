@@ -16,6 +16,7 @@ import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-a
 import { sendBillEmail } from '/imports/email/bill-send.js';
 import '/imports/api/transactions/breakdowns/methods.js';
 import '/imports/api/transactions/txdefs/methods.js';
+import { MoneyAccounts } from '../money-accounts/money-accounts';
 
 /*
 function runPositingRules(context, doc) {
@@ -56,9 +57,8 @@ export const post = new ValidatedMethod({
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
     if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
-    if (doc.category === 'bill') {
+    if (doc.category === 'bill' || doc.category === 'receipt') {
       if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-      if (Meteor.isServer) sendBillEmail(doc);
     } else if (doc.category === 'payment' || doc.category === 'remission') {
       doc.bills.forEach(bp => checkBillIsPosted(bp.id));
     } else if (doc.category === 'barter') {
@@ -69,7 +69,11 @@ export const post = new ValidatedMethod({
     const community = Communities.findOne(doc.communityId);
     const accountingMethod = community.settings.accountingMethod;
     const updateData = doc.makeJournalEntries(accountingMethod);
-    return Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
+    const result = Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
+    
+    if (Meteor.isServer && doc.category === 'bill') sendBillEmail(doc);
+
+    return result;
   },
 });
 
@@ -86,7 +90,7 @@ export const insert = new ValidatedMethod({
         if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
         function setOrCheckEquals(field) {
           if (i === 0) doc[field] = bill[field];
-          else if (doc[field] !== bill[field]) throw new Meteor.Error(`Bills have to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
+          else if (doc[field] !== bill[field]) throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
         }
         setOrCheckEquals('relation');
         setOrCheckEquals('partnerId');
@@ -157,22 +161,20 @@ export const cloneAccountingTemplates = new ValidatedMethod({
   }).validator(),
   run({ communityId /*, name*/ }) {
     checkPermissions(this.userId, 'breakdowns.insert', { communityId });
-    const user = Meteor.users.findOne(this.userId);
-    const breakdownsToClone = Breakdowns.find({ communityId: null }).map(brd => brd.name);
-    breakdownsToClone.forEach((breakdownName) => {
-      Breakdowns.methods.clone._execute(
-        { userId: this.userId },
-        { name: breakdownName, communityId },
-      );
+    const breakdownsToClone = Breakdowns.find({ communityId: null });
+    breakdownsToClone.forEach((breakdown) => {
+      if (Breakdowns.findOne({ communityId, name: breakdown.name })) return;  // We don't overwrite existing ones
+      Breakdowns.methods.clone._execute({ userId: this.userId }, { communityId, name: breakdown.name });
+      if (breakdown.name === 'Money accounts') {
+        breakdown.children.forEach(account => MoneyAccounts.insert(_.extend({ communityId }, account)));
+      }
     });
-    const txdefsToClone = Txdefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
-    txdefsToClone.forEach((txdefName) => {
-      Txdefs.methods.clone._execute(
-        { userId: this.userId },
-        { name: txdefName, communityId },
-      );
+    const txdefsToClone = Txdefs.find({ communityId: null });
+    txdefsToClone.forEach((txdef) => {
+      if (Txdefs.findOne({ communityId, name: txdef.name })) return;  // We don't overwrite existing ones
+      Txdefs.methods.clone._execute({ userId: this.userId }, { name: txdef.name, communityId });
     });
-    Localizer.generateParcels(communityId);
+//    Localizer.generateParcels(communityId);
   },
 });
 

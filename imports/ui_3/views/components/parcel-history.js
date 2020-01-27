@@ -6,7 +6,7 @@ import { $ } from 'meteor/jquery';
 import { __ } from '/imports/localization/i18n.js';
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
-import { JournalEntries } from '/imports/api/transactions/entries.js';
+import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import './parcel-history.html';

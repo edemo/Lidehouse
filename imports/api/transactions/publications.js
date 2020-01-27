@@ -11,6 +11,19 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from './transactions.js';
 
+Meteor.publish('transactions.inCommunity', function transactionsInCommunity(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+  }).validate(params);
+  const { communityId } = params;
+
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
+    return this.ready();
+  }
+  return Transactions.find({ communityId });
+});
+
 Meteor.publish('transactions.byPartner', function transactionsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },

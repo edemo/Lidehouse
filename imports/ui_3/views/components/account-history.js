@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
-import { JournalEntries } from '/imports/api/transactions/entries.js';
+import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { AccountSpecification } from '/imports/api/transactions/account-specification';
 import { allTransactionsActions } from '/imports/api/transactions/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';

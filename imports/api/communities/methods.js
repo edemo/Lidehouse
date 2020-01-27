@@ -86,10 +86,10 @@ export const remove = new ValidatedMethod({
     Statements.remove({ communityId });
     StatementEntries.remove({ communityId });
     Txdefs.remove({ communityId });
-    Breakdowns.remove({ communityId });
     Parcels.remove({ communityId });
     Partners.remove({ communityId });
     Contracts.remove({ communityId });
+    Breakdowns.remove({ communityId });
     Attachments.remove({ communityId });
     Shareddocs.remove({ communityId });
     Sharedfolders.remove({ communityId });

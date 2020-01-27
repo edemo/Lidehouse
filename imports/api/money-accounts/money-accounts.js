@@ -5,9 +5,11 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
-import { debugAssert, releaseAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Communities } from '/imports/api/communities/communities.js';
 
 export const MoneyAccounts = new Mongo.Collection('moneyAccounts');
 
@@ -53,9 +55,27 @@ Meteor.startup(function attach() {
   MoneyAccounts.simpleSchema({ category: 'bank' }).i18n('schemaMoneyAccounts');
 });
 
+// --- Before/after actions ---
+
+function regenerateBreakdown(communityId) {
+  const breakdown = { communityId, name: 'Money accounts' /* digit: '-' */, children: [] };
+  MoneyAccounts.find({ communityId }, { sort: { digit: +1 } }).forEach((account) => {
+    breakdown.children.push({ digit: account.digit, name: account.name });
+  });
+  Breakdowns.define(breakdown);
+}
+
 if (Meteor.isServer) {
   MoneyAccounts.after.insert(function (userId, doc) {
-    // update breakdown
+    regenerateBreakdown(doc.communityId);
+  });
+
+  MoneyAccounts.after.update(function (userId, doc, fieldNames, modifier, options) {
+    regenerateBreakdown(doc.communityId);
+  });
+
+  MoneyAccounts.after.remove(function (userId, doc) {
+    regenerateBreakdown(doc.communityId);
   });
 }
 

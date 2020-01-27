@@ -6,7 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
-import { debugAssert, releaseAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
@@ -41,7 +41,7 @@ export const apply = new ValidatedMethod({
 //        if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
         const parcels = parcelBilling.parcels(localizer);
         parcels.forEach((parcel) => {
-          releaseAssert(parcel, 'Could not find parcel - Please check if parcel ref matches the building+floor+door exactly');
+          productionAssert(parcel, 'Could not find parcel - Please check if parcel ref matches the building+floor+door exactly');
           const line = {
             billingId: parcelBilling._id,
             period: billingPeriod.label,
