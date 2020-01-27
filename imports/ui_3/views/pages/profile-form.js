@@ -21,6 +21,12 @@ import './profile-form.html';
 
 Template.Profile_form.viewmodel({
   autorun() {
+    this.nameMismatchModal();
+  },
+  onRendered() {
+    initializeHelpIcons(this.templateInstance, 'schemaUsers');
+  },
+  nameMismatchModal() {
     if (Meteor.user() && Meteor.user().personNameMismatch()) {
       const userName = Meteor.user().fullName() || Meteor.user().profile.firstName || Meteor.user().profile.lastName ;
       const personName = Meteor.user().displayOfficialName();
@@ -32,9 +38,6 @@ Template.Profile_form.viewmodel({
       };
       Modal.show('Modal', modalContext);
     }
-  },
-  onRendered() {
-    initializeHelpIcons(this.templateInstance, 'schemaUsers');
   },
   getUserId() {
     return Meteor.userId();
@@ -53,14 +56,13 @@ Template.Profile_form.viewmodel({
     profileSchema.i18n('schemaUsers');
     return profileSchema;
   },
-});
-
-Template.Profile_form.events({
-  'click .js-delete'(event, instance) {
-    Modal.confirmAndCall(removeUser, { _id: Meteor.userId() }, {
-      action: 'delete user',
-      message: 'deleteUserWarning',
-    });
+  events: {
+    'click .js-delete'(event, instance) {
+      Modal.confirmAndCall(removeUser, { _id: Meteor.userId() }, {
+        action: 'delete user',
+        message: 'deleteUserWarning',
+      });
+    },
   },
 });
 
