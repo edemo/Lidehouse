@@ -130,7 +130,7 @@ export class CommunityBuilder {
     const doc = this.build(name, data);
     const collection = Factory.get(name).collection;
     if (collection._name === 'transactions') {
-      doc.defId = Txdefs.findOne({ communityId: this.communityId, category: doc.category, 'data.relation': doc.relation })._id;
+      doc.defId = Txdefs.findOne({ communityId: this.communityId, category: doc.category, 'data.relation': doc.relation, 'data.side': doc.side })._id;
     }
     return this.execute(collection.methods.insert, doc);
   }
@@ -278,6 +278,10 @@ export class CommunityBuilder {
   everybodyPaysTheirBills() {
     const unpaidBills = Transactions.find({ communityId: this.communityId, category: 'bill', relation: 'parcel', outstanding: { $gt: 0 } });
     unpaidBills.forEach(bill => this.payBill(bill));
+  }
+  postAllTransactions() {
+    const toPost = Transactions.find({ communityId: this.communityId, postedAt: { $exists: false } });
+    this.execute(Transactions.methods.batch.post, { args: toPost.map(t => ({ _id: t._id })) }, this.getUserWithRole('accountant'));
   }
   insertLoadsOfFakeMembers(parcelCount) {
     if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;

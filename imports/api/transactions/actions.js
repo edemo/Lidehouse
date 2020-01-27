@@ -43,6 +43,11 @@ Transactions.actions = {
           fromAccount: reconciledStatementEntry.account,  // transfer
           toAccount: reconciledStatementEntry.account,  // transfer
         });
+      } else {
+        if (!doc) doc = {};
+        _.extend(doc, {
+          valueDate: new Date(),
+        });
       }
       Modal.show('Autoform_modal', {
         body: entity.editForm,

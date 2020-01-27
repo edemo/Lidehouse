@@ -77,7 +77,7 @@ Template.Accounting_bills.viewmodel({
       category,
       'data.relation': this.activePartnerRelation(),
     });
-    return txdef && txdef._id;
+    return txdef || {};
   },
   billsFilterSelector() {
     const selector = { communityId: this.communityId(), category: 'bill' };

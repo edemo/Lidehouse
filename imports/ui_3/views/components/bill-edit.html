@@ -26,7 +26,7 @@
 
         <div class="col-sm-6 col-md-4 col-md-offset-4">
             {{#if doc}}
-                <h4>{{_ (concat partnerRelation '_bill')}}:
+                <h4>{{_ doc.txdef.name}}:
                 <span class="text-navy">{{doc.serialId}}</span></h4>
             {{/if}}
             <h5>{{_ 'receiver'}}:</h5>

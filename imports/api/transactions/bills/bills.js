@@ -9,11 +9,9 @@ import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer, chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
@@ -34,18 +32,6 @@ export const choosePayment = {
     return options;
   },
   firstOption: () => __('(Select one)'),
-};
-
-export const chooseConteerAccount = {
-  options() {
-    const txdefId = Session.get('modalContext').txdef._id;
-    const txdef = Txdefs.findOne(txdefId);
-    const coa = ChartOfAccounts.get();
-    if (!coa || !txdef) return [];
-    const nodeCodes = txdef[txdef.conteerSide()];
-    return coa.nodeOptionsOf(nodeCodes, /*leafsOnly*/ false);
-  },
-  firstOption: () => __('Conteer'),
 };
 
 const lineSchema = {

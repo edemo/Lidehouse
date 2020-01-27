@@ -6,7 +6,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import { _ } from 'meteor/underscore';
 
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -44,9 +44,9 @@ Template.Autoform_modal.helpers({
   title() {
     if (this.title) return this.title;
     const id = afId2details(this.id);
-    if (_.contains(['bill', 'receipt', 'payment'], id.object)) {
-      const relation = Session.get('modalContext').txdef.data.relation;
-      id.object = relation + '_' + id.object;
+    if (_.contains(Transactions.categoryValues, id.object)) {
+      const txdef = Session.get('modalContext').txdef;
+      id.object = txdef.name;
     }
     if (id.action === 'statusChange') {
       id.object = 'statusChange';

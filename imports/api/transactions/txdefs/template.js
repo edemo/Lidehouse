@@ -49,7 +49,7 @@ export function defineTxdefTemplates() {
     category: 'remission',
     data: { relation: 'supplier' },
     debit: ['46'],
-    credit: ['8', '5'],
+    credit: ['969'],
   });
 
   // Számlázás vevőknek
@@ -146,7 +146,7 @@ export function defineTxdefTemplates() {
 // Single entry accouting
 
   Txdefs.define({ communityId: null,
-    name: 'Income', // 'Bevétel',
+    name: 'Income receipt', // 'Bevétel',
     category: 'receipt',
     data: { relation: 'customer' },
     debit: ['38'],
@@ -154,7 +154,7 @@ export function defineTxdefTemplates() {
   });
 
   Txdefs.define({ communityId: null,
-    name: 'Expense', // 'Kiadás',
+    name: 'Expense receipt', // 'Kiadás',
     category: 'receipt',
     data: { relation: 'supplier' },
     debit: ['8'],
@@ -174,10 +174,35 @@ export function defineTxdefTemplates() {
   });
 
   Txdefs.define({ communityId: null,
-    name: 'Opening',
+    name: 'Opening asset',
     category: 'opening',
-    debit: [''],
-    credit: ['0'],
+    data: { side: 'debit' },
+    debit: ['1', '2', '3', '9'],
+    credit: ['491'],
+  });
+
+  Txdefs.define({ communityId: null,
+    name: 'Opening liability',
+    category: 'opening',
+    data: { side: 'credit' },
+    debit: ['491'],
+    credit: ['4', '5', '8'],
+  });
+
+  Txdefs.define({ communityId: null,
+    name: 'Closing asset',
+    category: 'opening',
+    data: { side: 'credit' },
+    debit: ['492'],
+    credit: ['1', '2', '3', '9'],
+  });
+
+  Txdefs.define({ communityId: null,
+    name: 'Closing liability',
+    category: 'opening',
+    data: { side: 'debit' },
+    debit: ['4', '5', '8'],
+    credit: ['492'],
   });
 
   // Joker

@@ -311,7 +311,7 @@ Transactions.helpers({
 
 Transactions.attachBaseSchema(Transactions.baseSchema);
 Transactions.attachBehaviour(Timestamped);
-Transactions.attachBehaviour(SerialId(['category', 'relation']));
+Transactions.attachBehaviour(SerialId(['category', 'relation', 'side']));
 
 Transactions.attachVariantSchema(undefined, { selector: { category: 'freeTx' } });
 
