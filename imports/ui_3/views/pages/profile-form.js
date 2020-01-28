@@ -21,13 +21,14 @@ import './profile-form.html';
 
 Template.Profile_form.viewmodel({
   autorun() {
-    this.nameMismatchModal();
+    if (!Session.get('personMismatchWarningWasShown')) this.nameMismatchModal();
   },
   onRendered() {
     initializeHelpIcons(this.templateInstance, 'schemaUsers');
   },
   nameMismatchModal() {
     if (Meteor.user() && Meteor.user().personNameMismatch()) {
+      Session.set('personMismatchWarningWasShown', true);
       const userName = Meteor.user().fullName() || Meteor.user().profile.firstName || Meteor.user().profile.lastName ;
       const personName = Meteor.user().displayOfficialName();
       const communityName = Communities.findOne(Session.get('activeCommunityId')).name;
