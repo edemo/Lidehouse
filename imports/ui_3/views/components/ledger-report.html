@@ -25,12 +25,12 @@
                     {{displayCell cellValue}}
                 </td>
                 {{/let}}
-                {{#let cellValue=(balance account 'T' 'debitSum')}}
+                {{#let cellValue=(balance account 'T' 'debitTotal')}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="T" style="cursor: pointer">
                     {{displayCell cellValue}}
                 </td>
                 {{/let}}
-                {{#let cellValue=(balance account 'T' 'creditSum')}}
+                {{#let cellValue=(balance account 'T' 'creditTotal')}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="T" style="cursor: pointer">
                     {{displayCell cellValue}}
                 </td>

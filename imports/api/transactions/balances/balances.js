@@ -39,6 +39,12 @@ Balances.helpers({
   creditSum() {
     return this.credit;
   },
+  debitTotal() {
+    return (this.debit > this.credit) ? (this.debit - this.credit) : 0;
+  },
+  creditTotal() {
+    return (this.credit > this.debit) ? (this.credit - this.debit) : 0;
+  },
 });
 
 Meteor.startup(function indexBalances() {
