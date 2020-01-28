@@ -6,7 +6,7 @@ import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/bill-edit.js';
+import '/imports/ui_3/views/components/bill-edit.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Bills } from './bills.js';
 import { Payments } from '../payments/payments.js';

@@ -7,8 +7,10 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { __ } from '/imports/localization/i18n.js';
+import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 
+import { __ } from '/imports/localization/i18n.js';
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
@@ -32,16 +34,16 @@ import './accounting-transactions.html';
 Template.Accounting_transactions.viewmodel({
   txdefSelected: '',
   txdefOptions: [],
-  creditAccountSelected: '',
-  creditAccountOptions: [],
   debitAccountSelected: '',
   debitAccountOptions: [],
+  creditAccountSelected: '',
+  creditAccountOptions: [],
   localizerSelected: '',
   localizerOptions: [],
 //  partnerSelected: '',
 //  referenceIdSelected: '',
-  beginDate: '',
-  endDate: '',
+  beginDate: moment().subtract('30', 'day').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
 //  amount: undefined,
   onCreated(instance) {
     instance.autorun(() => {
@@ -58,23 +60,34 @@ Template.Accounting_transactions.viewmodel({
   autorun: [
     function setTxdefOptions() {
       const communityId = Session.get('activeCommunityId');
-      this.txdefOptions(Txdefs.find({ communityId }).map(function (cat) {
-        return { value: cat._id, label: __(cat.name) };
-      }));
+      const txdefOptions = [{ value: '', label: __('All') }];
+      Txdefs.find({ communityId }).map(function (def) {
+        txdefOptions.push({ value: def._id, label: __(def.name) });
+      });
+      this.txdefOptions(txdefOptions);
       if (!this.txdefSelected() && this.txdefOptions() && this.txdefOptions().length > 0) {
         this.txdefSelected(this.txdefOptions()[0].value);
       }
     },
     function setFilterAccountOptions() {
-      const txdef = Txdefs.findOne(this.txdefSelected());
       const coa = ChartOfAccounts.get();
+      if (coa) {
+        const txdef = Txdefs.findOne(this.txdefSelected());
+        const debitAccountOptions = txdef ? [{ label: __('Chart Of Accounts'), value: '' }].concat(coa.nodeOptionsOf(txdef.debit)) : coa.nodeOptions();
+        this.debitAccountOptions(debitAccountOptions);
+        const creaditAccountOptions = txdef ? [{ label: __('Chart Of Accounts'), value: '' }].concat(coa.nodeOptionsOf(txdef.credit)) : coa.nodeOptions();
+        this.creditAccountOptions(creaditAccountOptions);
+        if (!this.debitAccountSelected() && this.debitAccountOptions() && this.debitAccountOptions().length > 0) {
+          this.debitAccountSelected(this.debitAccountOptions()[0].value);
+        }
+        if (!this.creditAccountSelected() && this.creditAccountOptions() && this.creditAccountOptions().length > 0) {
+          this.creditAccountSelected(this.creditAccountOptions()[0].value);
+        }
+      }
       const loc = Localizer.get();
-      if (!txdef || !coa || !loc) return;
-      this.creditAccountOptions(coa.nodeOptionsOf(txdef.credit));
-      this.debitAccountOptions(coa.nodeOptionsOf(txdef.debit));
-      this.creditAccountSelected(txdef.credit[0] || '');
-      this.debitAccountSelected(txdef.debit[0] || '');
-      this.localizerOptions(loc.nodeOptions());
+      if (loc) {
+        this.localizerOptions(loc.nodeOptions());
+      }
     },
     function txSubscription() {
       this.templateInstance.subscribe('transactions.betweenAccounts', this.subscribeParams());
@@ -97,6 +110,7 @@ Template.Accounting_transactions.viewmodel({
       defId: this.txdefSelected(),
       debitAccount: '\\^' + this.debitAccountSelected() + '\\',
       creditAccount: '\\^' + this.creditAccountSelected() + '\\',
+      localizer: this.localizerSelected(),
       begin: new Date(this.beginDate()),
       end: new Date(this.endDate()),
     };

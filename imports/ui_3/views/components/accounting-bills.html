@@ -18,8 +18,12 @@
                           <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.relation.' activePartnerRelation)}}</strong> <b class="caret"></b>
                       </a>
                       <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
-                          <li><a href="" class="js-new" data-entity="bill" data-txdef="{{findTxdef 'bill'}}"> {{_ 'new'}} {{_ (concat activePartnerRelation '_bill')}}</a></li>
-                          <li><a href="" class="js-new" data-entity="receipt" data-txdef="{{findTxdef 'receipt'}}"> {{_ 'new'}} {{_ (concat activePartnerRelation '_receipt')}}</a></li>
+                          {{#let txdef=(findTxdef 'bill')}}
+                          <li><a href="" class="js-new" data-entity="bill" data-txdef="{{txdef._id}}"> {{_ 'new'}} {{_ txdef.name}}</a></li>
+                          {{/let}}
+                          {{#let txdef=(findTxdef 'receipt')}}
+                          <li><a href="" class="js-new" data-entity="receipt" data-txdef="{{txdef._id}}"> {{_ 'new'}} {{_ txdef.name}}</a></li>
+                          {{/let}}
                       </ul>
                   </div>
                 {{/if}}

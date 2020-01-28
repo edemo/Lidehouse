@@ -5,9 +5,8 @@ import { __ } from '/imports/localization/i18n.js';
 Transactions.entities = {
   bill: {
     name: 'bill',
-    viewForm: 'Bill_show',
+    viewForm: 'Bill_view',
     editForm: 'Bill_edit',
-//    title: (doc) => __(doc.relation + '_bill') + ' ' + doc.serialId,
     size: 'lg',
   },
   payment: {
@@ -25,7 +24,7 @@ Transactions.entities = {
   },
   receipt: {
     name: 'receipt',
-    viewForm: 'Bill_show',
+    viewForm: 'Bill_view',
     editForm: 'Bill_edit',
     size: 'lg',
   },

@@ -5,7 +5,6 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
-import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
@@ -63,8 +62,9 @@ Communities.helpers({
   },
   asPartner() {
     const partner = _.clone(this);
+    const bankAccount = this.primaryBankAccount();
     partner.contact = { address: this.displayAddress() };
-    partner.BAN = this.primaryBankAccount().number; 
+    partner.BAN = bankAccount && bankAccount.number;
     return partner;
   },
   moneyAccounts() {
