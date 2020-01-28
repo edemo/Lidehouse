@@ -5,6 +5,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
@@ -86,7 +87,9 @@ Communities.helpers({
     return membershipWithRole.user();
   },
   admin() {
-    return this.userWithRole('admin');
+    const user = this.userWithRole('admin');
+    productionAssert(user, `Community was found without an admin: ${this._id}`);
+    return user;
   },
   treasurer() {
     return this.userWithRole('treasurer') || this.userWithRole('manager') || this.userWithRole('admin');
