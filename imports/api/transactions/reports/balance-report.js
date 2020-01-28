@@ -114,7 +114,7 @@ export class BalanceReport {
       return def;
     }
     const balanceDef = buildBalanceDefFrom(lineDefs);
-    const balance = Balances.getDisplayTotal(balanceDef);
+    const balance = Balances.get(balanceDef).displayTotal();
     let classes = 'cell'  + lineDef.class;
     if (balance < 0) classes += ' negative';
 

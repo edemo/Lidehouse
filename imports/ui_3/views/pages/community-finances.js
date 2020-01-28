@@ -134,12 +134,12 @@ Template.Community_finances.viewmodel({
   },
   monthlyDataFromTbalances(account) {
     return this.aggregate(
-      this.periods().map(l => Balances.getDisplayTotal({ communityId: this.communityId(), account, tag: l.code })),
-      this.aggregate(this.prePeriods().map(l => Balances.getDisplayTotal({ communityId: this.communityId(), account, tag: l.code }))).pop()
+      this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: l.code }).displayTotal()),
+      this.aggregate(this.prePeriods().map(l => Balances.get({ communityId: this.communityId(), account, tag: l.code }).displayTotal())).pop()
     );
   },
   monthlyDataFromCbalances(account) {
-    return this.periods().map(l => Balances.getDisplayTotal({ communityId: this.communityId(), account, tag: 'C' + l.code.substring(1) }));
+    return this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: 'C' + l.code.substring(1) }).displayTotal());
   },
   statusData() {
     return this.DEMO() ? {
@@ -278,8 +278,8 @@ Template.Community_finances.viewmodel({
     const communityId = Session.get('activeCommunityId');
     const coa = ChartOfAccounts.get(); if (!coa) return 0;
     const accountCode = parseInt(account, 10) ? account : coa.findNodeByName(account).code;
-    return Balances.getDisplayTotal({ communityId, account: accountCode, tag: 'P' })
-      || Balances.getDisplayTotal({ communityId, account: accountCode, tag: 'C' });
+    return Balances.get({ communityId, account: accountCode, tag: 'P' }).displayTotal()
+      || Balances.get({ communityId, account: accountCode, tag: 'C' }).displayTotal();
   },
   getStatusBalance() {
     return this.getBalance('Money accounts') - this.getBalance('Suppliers');
