@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { _ } from 'meteor/underscore';
 import { Migrations } from 'meteor/percolate:migrations';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -11,7 +12,9 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { _ } from 'meteor/underscore';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 
 Migrations.add({
   version: 1,
@@ -204,6 +207,19 @@ Migrations.add({
         const targetPartnerId = targetUser.partnerId(doc.communityId);
         Delegations.update(doc._id, { $set: { sourceId: sourcePartnerId, targetId: targetPartnerId }, $unset: { sourcePersonId: '', targetPersonId: '' } });
       });
+    }
+    upgrade();
+  },
+});
+
+Migrations.add({
+  version: 11,
+  name: 'Remove all documents from Transactions, Balances, Txdefs collections',
+  up() {
+    function upgrade() {
+      Transactions.remove({});
+      Balances.remove({});
+      Txdefs.remove({});
     }
     upgrade();
   },
