@@ -132,6 +132,7 @@ Migrations.add({
     function upgrade() {
       Parcels.find({ leadRef: { $exists: true } }).forEach((doc) => {
         Parcelships.insert({ communityId: doc.communityId, parcelId: doc._id, leadRef: doc.leadRef });
+        Parcels.update(doc._id, { $unset: { leadRef: 0 } });
       });
     }
     upgrade();

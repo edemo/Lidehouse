@@ -38,7 +38,7 @@ Parcels.schema = new SimpleSchema({
         return undefined; // means leave whats there alone for Updates, Upserts
       },
   */
-  // leadRef: { type: String, optional: true },
+  leadRef: { type: String, optional: true, autoform: { omit: true } }, // deprecated for leadRef() helper (Parcelships)
   units: { type: Number, optional: true },
   // TODO: move these into the House package
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
