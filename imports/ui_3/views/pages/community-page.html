@@ -91,7 +91,7 @@
                     {{#each row in parcelships}}
                     <tr class="parcelships" data-id="{{row._id}}">
                         <td class="text-center"> <a class="client-avatar"><i class="fa fa-lg fa-share"></i></a></td>
-                        <td><button class="js-occupants parcels" data-id="{{row.leadParcelId}}"><strong title="{{_ 'parcelship'}}">{{row.leadRef}}</strong></button></td>
+                        <td><button class="js-occupants parcels" data-id="{{row.leadParcelId}}"><strong title="{{_ 'parcelship'}}">{{row.leadParcel.ref}}</strong></button></td>
                         <td>{{>Active_period row}}</td>
                         <td><span class="label label-plain">{{_ 'lead parcel'}}</span></td>
                         <td class="text-right">

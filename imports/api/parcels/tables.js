@@ -15,7 +15,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 export function parcelColumns() {
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'leadRef()', title: __('schemaParcels.leadRef.label') },
+    { data: 'leadRef()', title: __('schemaParcelships.leadParcelId.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'lot', title: __('schemaParcels.lot.label') },
@@ -33,7 +33,7 @@ export function parcelFinancesColumns() {
     { data: 'ref', title: __('schemaParcels.ref.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
-    { data: 'followers()', title: __('follower parcels') },
+    { data: 'withFollowers()', title: __('follower parcels') },
     { data: 'outstanding', title: __('schemaBills.outstanding.label') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'finances,meters', size: 'sm' }),
@@ -54,7 +54,7 @@ export function highlightMyRow(row, data, index) {
 /* with aldeed:tabular:
 const parcelColumns = [
   { data: 'ref', title: __('schemaParcels.ref.label') },
-  { data: 'leadRef()', title: __('schemaParcels.leadRef.label') },
+  { data: 'leadRef()', title: __('schemaParcels.leadParcelId.label') },
   { data: 'location()', title: __('schemaParcels.location.label') },
   { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
   { data: 'lot', title: __('schemaParcels.lot.label') },

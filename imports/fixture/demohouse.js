@@ -333,7 +333,6 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   demoBuilder.create('parcelship', {
     parcelId: demoParcels[11],
-    leadRef: 'A206',
     leadParcelId: demoParcels[5],
   });
 
