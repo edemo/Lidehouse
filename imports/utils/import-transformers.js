@@ -8,6 +8,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels';
+import { Partners } from '../api/partners/partners';
 
 function flattenBankAccountNumber(BAN) {
   return BAN.trim().split('-').join();
@@ -39,17 +40,18 @@ export const Transformers = {
       jsons.forEach((doc) => {
         const parcel = Parcels.findOne({ communityId, ref: doc.ref.trim() });
         doc.parcelId = parcel._id;
-        doc.person = doc.person || {};
-        doc.person.idCard = doc.person.idCard || {};
-        doc.person.contact = doc.person.contact || {};
-        doc.person.idCard.type = 'natural';
         doc.role = 'owner';
         const names = doc.owners ? doc.owners.split(/,|;|\n/) : [];
         const emails = doc.emails ? doc.emails.split(/,|;| |\n/) : [];
         names.forEach((name) => {
+          let partner;
+          partner = Partners.findOne({ 'idCard.name': name });
+          if (!partner) {
+            const partnerId = Partners.insert({ communityId, relation: 'parcel', idCard: { name, type: 'natural' }, contact: { email: emails[0] } });
+            partner = Partners.findOne(partnerId);
+          }
           const tdoc = {}; $.extend(true, tdoc, doc);
-          tdoc.person.idCard.name = name;
-          tdoc.person.contact.email = emails[0] || undefined;
+          tdoc.partnerId = partner._id;
           tdoc.ownership = { share: new Fraction(1, names.length) };
           tjsons.push(tdoc);
         });

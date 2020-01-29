@@ -108,7 +108,7 @@ Memberships.helpers({
     debugAssert(community);
     return community;
   },
-  person() {
+  partner() {
     if (!this.partnerId) return undefined;
     return Partners.findOne(this.partnerId);
   },
@@ -156,7 +156,7 @@ Memberships.helpers({
     return result;
   },
   toString() {
-    const display = `${this.person().displayName('hu')}, ${this.displayRole()}`;
+    const display = `${this.partner().displayName('hu')}, ${this.displayRole()}`;
     return display;
   },
 });

@@ -38,7 +38,7 @@ export const Render = {
     occupants.forEach((m) => {
       const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
       const occupancyDetail = m.ownership ? '(' + m.ownership.share.toStringLong() + ')' : '';
-      result += `${m.person().displayName()} ${occupancyDetail} ${repBadge}<br>`;
+      result += `${m.partner().displayName()} ${occupancyDetail} ${repBadge}<br>`;
     });
     return result;
   },

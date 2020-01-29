@@ -50,7 +50,7 @@ export class CommunityBuilder {
   getUserWithRole(role) {
     const member = Memberships.findOneActive({ communityId: this.communityId, role, userId: { $exists: true } });
     if (!member) throw Error(`No user with role ${role} in the community`);
-    return member.person().userId;
+    return member.partner().userId;
   }
   sameUser() {
     return this.dummyUsers[this.nextUserIndex];

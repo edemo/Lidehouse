@@ -1,7 +1,7 @@
 {
   "email": {
     "EnrollAccountSubject": "Enrollment to __name__'s honline system",
-    "EnrollAccount": ["You have been added as a member of community __name__ with role: __roleen__. ",
+    "EnrollAccount": ["You have been added as a member of community __name__ with role: __role__. ",
       "Hereby you are invited to join the honline condominium management system, where you can follow the community issues, discuss them and even vote online. ",
       "You can start enjoying all of the system's benefits as soon as you confirm your registration.",
       "\nThe following link takes you to our simple one click registration confirmation:",

@@ -104,7 +104,7 @@ Communities.helpers({
     return voterships;
   },
   voters() {
-    const voters = this.voterships().map(v => v.person());
+    const voters = this.voterships().map(v => v.partner());
     return _.uniq(voters, false, u => u._id);
   },
   toString() {

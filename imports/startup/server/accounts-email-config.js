@@ -3,6 +3,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
 import { Accounts } from 'meteor/accounts-base';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Partners } from '/imports/api/partners/partners.js';
 import { EmailSender } from '/imports/startup/server/email-sender.js';
 
 if (Meteor.settings.mailSender) {
@@ -12,7 +13,9 @@ if (Meteor.settings.mailSender) {
 // When translating to non-english languages, we include the english version at the end, as an extra safety against wrong lang setting
 // context must be an object, see: https://github.com/TAPevents/tap-i18n/issues/196
 function dualTranslate(symbol, context, lang, separator) {
-  let result = TAPi18n.__(symbol, context, lang);
+  const translatedContext = _.clone(context);
+  translatedContext.role = TAPi18n.__(context.role, {}, lang);
+  let result = TAPi18n.__(symbol, translatedContext, lang);
   if (lang !== 'en') {
     _.extend(context, { lng: 'en' }); 
     if (separator === '/') result += ' (' + TAPi18n.__(symbol, context) + ')';
@@ -28,20 +31,20 @@ Accounts.emailTemplates.from = EmailSender.config.from;
 
 Accounts.emailTemplates.enrollAccount = {
   subject(user) {
-    const membership = Memberships.findOne({ 'person.contact.email': user.emails[0].address });
-    const community = membership.community();
+    const partner = Partners.findOne({ 'contact.email': user.emails[0].address });
+    const community = partner.community();
     return dualTranslate('email.EnrollAccountSubject', {
       name: community.name,
     }, user.language(), '/');
   },
   text(user, url) {
-    const membership = Memberships.findOne({ 'person.contact.email': user.emails[0].address });
-    const community = membership.community();
+    const partner = Partners.findOne({ 'contact.email': user.emails[0].address });
+    const community = partner.community();
+    const membership = Memberships.findOne({ partnerId: partner._id });
     const adminEmail = community.admin().getPrimaryEmail();
     return dualTranslate('email.EnrollAccount', {
       name: community.name,
-      role: TAPi18n.__(membership.role, {}, user.language()),
-      roleen: membership.role,
+      role: membership.role,
       email: adminEmail,
       url,
     },

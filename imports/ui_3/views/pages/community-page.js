@@ -235,7 +235,7 @@ Template.Occupants_box.events({
   'click .js-member'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const membership = Memberships.findOne(id);
-    Meteor.users.actions.view.run({}, membership.person().user());
+    Meteor.users.actions.view.run({}, membership.partner().user());
   },
 });
 

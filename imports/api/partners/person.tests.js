@@ -108,7 +108,7 @@ if (Meteor.isServer) {
           const membership = Memberships.findOne(membershipId);
           partnerId = membership.partnerId;
 
-          chai.assert.equal(membership.person().id(), userId);
+          chai.assert.equal(membership.partner().id(), userId);
           const user = Meteor.users.findOne(userId);
           // This user has no privileges in the community, until not approved
           chai.assert.isFalse(user.hasRole('owner', Fixture.demoCommunityId));
@@ -134,8 +134,8 @@ if (Meteor.isServer) {
           });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.equal(membership.person().id(), userId);
-          chai.assert.equal(membership.person().displayName(), 'Jimmy Boyy');    // Only has profile name
+          chai.assert.equal(membership.partner().id(), userId);
+          chai.assert.equal(membership.partner().displayName(), 'Jimmy Boyy');    // Only has profile name
           const user = Meteor.users.findOne(userId);
           // Now he has privileges
           chai.assert.isTrue(user.hasRole('owner', Fixture.demoCommunityId));
@@ -151,8 +151,8 @@ if (Meteor.isServer) {
           });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.equal(membership.person().id(), userId);    // userId binds stronger than idCard.identifier
-          chai.assert.equal(membership.person().displayName(), 'Jim Smith');    // Certified name binds stronger than profile name
+          chai.assert.equal(membership.partner().id(), userId);    // userId binds stronger than idCard.identifier
+          chai.assert.equal(membership.partner().displayName(), 'Jim Smith');    // Certified name binds stronger than profile name
 
           done();
         });
@@ -200,8 +200,8 @@ if (Meteor.isServer) {
 
           const membership = Memberships.findOne(membershipId);
           const user = Meteor.users.findOne(userId);
-          chai.assert.equal(membership.person().id(), userId);
-          chai.assert.equal(membership.person().primaryEmail(), user.getPrimaryEmail());
+          chai.assert.equal(membership.partner().id(), userId);
+          chai.assert.equal(membership.partner().primaryEmail(), user.getPrimaryEmail());
           chai.assert.isTrue(user.hasRole('accountant', Fixture.demoCommunityId));
 
           done();
@@ -234,7 +234,7 @@ if (Meteor.isServer) {
           });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.equal(membership.person().id(), 'JIMS_ID_NUMBER');
+          chai.assert.equal(membership.partner().id(), 'JIMS_ID_NUMBER');
 
           done();
         });
@@ -298,8 +298,8 @@ if (Meteor.isServer) {
           });
 
           let membership = Memberships.findOne(membershipId);
-          chai.assert.isUndefined(membership.person().userId);
-          chai.assert.isUndefined(membership.person().id());
+          chai.assert.isUndefined(membership.partner().userId);
+          chai.assert.isUndefined(membership.partner().id());
 
           Partners.methods.update._execute({ userId: Fixture.demoManagerId }, {
             _id: partnerId,
@@ -307,8 +307,8 @@ if (Meteor.isServer) {
           });
 
           membership = Memberships.findOne(membershipId);
-          chai.assert.isUndefined(membership.person().userId);
-          chai.assert.equal(membership.person().id(), 'JIMS_ID_NUMBER');
+          chai.assert.isUndefined(membership.partner().userId);
+          chai.assert.equal(membership.partner().id(), 'JIMS_ID_NUMBER');
 
           done();
         });
@@ -317,10 +317,10 @@ if (Meteor.isServer) {
           Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.isDefined(membership.person().userId);
-          userId = membership.person().userId;
+          chai.assert.isDefined(membership.partner().userId);
+          userId = membership.partner().userId;
           user = Meteor.users.findOne(userId);
-          chai.assert.equal(membership.person().id(), userId);
+          chai.assert.equal(membership.partner().id(), userId);
           chai.assert.isFalse(membership.accepted);
 
           sinon.assert.calledOnce(Email.send);
@@ -345,7 +345,7 @@ if (Meteor.isServer) {
           Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.equal(membership.person().id(), userId);
+          chai.assert.equal(membership.partner().id(), userId);
           chai.assert.isFalse(membership.accepted);
 
           sinon.assert.calledTwice(Email.send);
@@ -368,7 +368,7 @@ if (Meteor.isServer) {
 
           sinon.assert.calledTwice(Email.send); // no further emails were sent
           const membership2 = Memberships.findOne(membershipId2);
-          chai.assert.equal(membership2.person().id(), userId);
+          chai.assert.equal(membership2.partner().id(), userId);
           chai.assert.isFalse(membership2.accepted);
 
           done();
@@ -378,8 +378,8 @@ if (Meteor.isServer) {
           Memberships.methods.accept._execute({ userId });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.isDefined(membership.person().userId);
-          chai.assert.equal(membership.person().id(), userId);
+          chai.assert.isDefined(membership.partner().userId);
+          chai.assert.equal(membership.partner().id(), userId);
           chai.assert.isTrue(membership.accepted);    // now he is accepted state
 
           const membership2 = Memberships.findOne(membershipId2);
@@ -433,8 +433,8 @@ if (Meteor.isServer) {
 
           const membership = Memberships.findOne(membershipId);
           const alreadyUser = Meteor.users.findOne(alreadyUserId);
-          chai.assert.equal(membership.person().id(), alreadyUserId);
-          chai.assert.equal(membership.person().primaryEmail(), alreadyUser.getPrimaryEmail());
+          chai.assert.equal(membership.partner().id(), alreadyUserId);
+          chai.assert.equal(membership.partner().primaryEmail(), alreadyUser.getPrimaryEmail());
 
           Partners.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
@@ -461,8 +461,8 @@ if (Meteor.isServer) {
 
           const membership = Memberships.findOne(membershipId);
           const alreadyUser = Meteor.users.findOne(alreadyUserId);
-          chai.assert.equal(membership.person().id(), alreadyUserId);
-          chai.assert.equal(membership.person().primaryEmail(), alreadyUser.getPrimaryEmail());
+          chai.assert.equal(membership.partner().id(), alreadyUserId);
+          chai.assert.equal(membership.partner().primaryEmail(), alreadyUser.getPrimaryEmail());
 
           Partners.remove(partnerId);
           Memberships.remove(membershipId);

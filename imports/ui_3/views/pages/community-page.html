@@ -5,20 +5,20 @@
                 <tbody>
                 {{#each row in roleships}}
                     <tr data-id="{{row._id}}">
-                        <td><a href="{{pathFor 'User show' _id=row.person.userId}}" class="client-avatar"><img alt="image" src={{row.person.avatar}}></a></td>
-                        <td><a href="{{pathFor 'User show' _id=row.person.userId}}" class="client-link">{{row.person.displayName}}</a></td>
+                        <td><a href="{{pathFor 'User show' _id=row.partner.userId}}" class="client-avatar"><img alt="image" src={{row.partner.avatar}}></a></td>
+                        <td><a href="{{pathFor 'User show' _id=row.partner.userId}}" class="client-link">{{row.partner.displayName}}</a></td>
                         <td><span class="label label-plain">{{_ row.role}}</span> 
                             {{#if row.rank}}<span class="label label-plain">{{_ rank}}</span>{{/if}}
                         </td>
                         <td>
-                            {{#if row.person.user.profile.publicEmail}}
-                            <i class="contact-type fa fa-at"></i>{{row.person.user.profile.publicEmail}}
+                            {{#if row.partner.user.profile.publicEmail}}
+                            <i class="contact-type fa fa-at"></i>{{row.partner.user.profile.publicEmail}}
                             {{/if}}
-                            {{#if (and row.person.user.profile.publicEmail row.person.user.profile.phone)}}
+                            {{#if (and row.partner.user.profile.publicEmail row.partner.user.profile.phone)}}
                             <br>
                             {{/if}}
-                            {{#if row.person.user.profile.phone}}
-                            <i class="contact-type fa fa-phone"></i>{{row.person.user.profile.phone}}
+                            {{#if row.partner.user.profile.phone}}
+                            <i class="contact-type fa fa-phone"></i>{{row.partner.user.profile.phone}}
                             {{/if}}
                         </td>
                         <td class="text-right">
@@ -64,8 +64,8 @@
                     {{#each row in memberships}}
                     {{#let entity=row.entityName}}
                     <tr class="memberships" data-id="{{row._id}}">
-                        <td><a href="" class="client-avatar js-member"><img alt="image" src={{row.person.avatar}}></a></td>
-                        <td><a href="" class="client-link js-member">{{row.person.displayName}}</a>  
+                        <td><a href="" class="client-avatar js-member"><img alt="image" src={{row.partner.avatar}}></a></td>
+                        <td><a href="" class="client-link js-member">{{row.partner.displayName}}</a>  
                             {{#if currentUserHasPermission 'partners.update'}}
                             {{>Action_buttons_group collection='partners' doc=row.partnerId actions='view,edit' size='sm'}}
                             {{/if}}

@@ -167,7 +167,7 @@ if (Meteor.isServer) {
       const createMembership = function (newrole) {
         const newMembership = {
           communityId: Fixture.demoCommunityId,
-          person: { userId: Fixture.demoUserId },
+          userId: Fixture.demoUserId,
           role: newrole,
         };
         if (newrole === 'owner' || newrole === 'benefactor') {
