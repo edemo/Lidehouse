@@ -24,7 +24,7 @@ chai.assert.equalDate = function equalDate(d1, d2) {
 if (Meteor.isServer) {
   let Fixture;
 
-  describe('parcel billings', function () {
+  describe.only('parcel billings', function () {
     this.timeout(15000);
     let applyParcelBilling;
     let communityId;
@@ -75,9 +75,11 @@ if (Meteor.isServer) {
       it('will not apply inactive parcelBilling', function () {
         Fixture.builder.create('parcelBilling', {
           title: 'Test INACTIVE',
-          projection: 'absolute',
-          projectedPrice: 1000,
-          payinType: '4',
+          projection: {
+            base: 'absolute',
+            unitPrice: 1000,
+          },
+          digit: '4',
           localizer: '@',
           activeTime: {
             begin: moment().subtract(3, 'day').toDate(),
@@ -96,9 +98,11 @@ if (Meteor.isServer) {
       it('can apply single billing to all parcels', function () {
         Fixture.builder.create('parcelBilling', {
           title: 'Test area',
-          projection: 'area',
-          projectedPrice: 15,
-          payinType: '3',
+          projection: {
+            base: 'area',
+            unitPrice: 15,
+          },
+          digit: '3',
           localizer: '@',
         });
 
@@ -116,9 +120,11 @@ if (Meteor.isServer) {
       it('can apply billing to a certain floor', function() {
         Fixture.builder.create('parcelBilling', {
           title: 'Test floor',
-          projection: 'area',
-          projectedPrice: 25,
-          payinType: '3',
+          projection: {
+            base: 'area',
+            unitPrice: 25,
+          },
+          digit: '3',
           localizer: '@A1',
         });
 
@@ -136,9 +142,11 @@ if (Meteor.isServer) {
       xit('can apply billing to a certain parcel type', function() {
         Fixture.builder.create('parcelBilling', {
           title: 'Type test area',
-          projection: 'area',
-          projectedPrice: 100,
-          payinType: '2',
+          projection: {
+            base: 'area',
+            unitPrice: 100,
+          },
+          digit: '2',
           // localizer: '@',
           parcelType: 'storage',
         });
@@ -155,16 +163,20 @@ if (Meteor.isServer) {
       it('can apply multiple projections', function () {
         Fixture.builder.create('parcelBilling', {
           title: 'Test volume',
-          projection: 'volume',
-          projectedPrice: 50,
-          payinType: '2',
+          projection: {
+            base: 'volume',
+            unitPrice: 50,
+          },
+          digit: '2',
           localizer: '@A104',
         });
         Fixture.builder.create('parcelBilling', {
           title: 'Test absolute',
-          projection: 'absolute',
-          projectedPrice: 1000,
-          payinType: '4',
+          projection: {
+            base: 'absolute',
+            unitPrice: 1000,
+          },
+          digit: '4',
           localizer: '@A104',
         });
 
@@ -179,12 +191,16 @@ if (Meteor.isServer) {
       it('can apply consumption based billing', function () {
         Fixture.builder.create('parcelBilling', {
           title: 'Test consumption',
-          consumption: 'coldWater',
-          uom: 'm3',
-          unitPrice: 600,
-          projection: 'habitants',
-          projectedPrice: 5000,
-          payinType: '3',
+          consumption: {
+            service: 'coldWater',
+            uom: 'm3',
+            unitPrice: 600,
+          },
+          projection: {
+            base: 'habitants',
+            unitPrice: 5000,
+          },
+          digit: '3',
           localizer: '@',
         });
 
@@ -193,7 +209,7 @@ if (Meteor.isServer) {
         const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerId: payer4Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-01' });
-        assertLineDetails(bills[0].lines[0], { uom: 'habitant', unitPrice: 5000, quantity: 4, localizer: '@A104' });
+        assertLineDetails(bills[0].lines[0], { uom: 'person', unitPrice: 5000, quantity: 4, localizer: '@A104' });
         chai.assert.equal(parcel4.payerPartner().outstanding, bills[0].lines[0].amount);
         chai.assert.equal(parcel4.outstanding, bills[0].lines[0].amount);
 
@@ -215,9 +231,11 @@ if (Meteor.isServer) {
       it('bills follower parcel\'s parcel-billing to lead parcel\'s payer', function () {
         Fixture.builder.create('parcelBilling', {
           title: 'One follower parcel',
-          projection: 'area',
-          projectedPrice: 15,
-          payinType: '3',
+          projection: {
+            base: 'area',
+            unitPrice: 15,
+          },
+          digit: '3',
           localizer: '@AP01',
         });
 
@@ -249,9 +267,11 @@ if (Meteor.isServer) {
         
         Fixture.builder.create('parcelBilling', {
           title: 'Test absolute',
-          projection: 'absolute',
-          projectedPrice: 500,
-          payinType: '4',
+          projection: {
+            base: 'absolute',
+            unitPrice: 500,
+          },
+          digit: '4',
           localizer: '@A103',
         });
         const laterPayerId = Meteor.users.findOne(Fixture.dummyUsers[2]).partnerId(Fixture.demoCommunityId);
@@ -285,9 +305,11 @@ if (Meteor.isServer) {
       xit('will not apply for same period twice', function () {
         Fixture.builder.create('parcelBilling', {
           title: 'Test area',
-          projection: 'area',
-          projectedPrice: 78,
-          payinType: '3',
+          projection: {
+            base: 'area',
+            unitPrice: 78,
+          },
+          digit: '3',
           localizer: '@',
         });
 
@@ -311,12 +333,16 @@ if (Meteor.isServer) {
 
         const parcelBillingId = Fixture.builder.create('parcelBilling', {
           title: 'Test consumption',
-          consumption: 'coldWater',
-          uom: 'm3',
-          unitPrice: 600,
-          projection: 'habitants',
-          projectedPrice: 5000,
-          payinType: '3',
+          consumption: {
+            service: 'coldWater',
+            uom: 'm3',
+            unitPrice: 600,
+          },
+          projection: {
+            base: 'habitants',
+            unitPrice: 5000,
+          },
+          digit: '3',
           localizer: '@',
         });
         const meteredParcelId = Fixture.dummyParcels[3];
@@ -385,7 +411,7 @@ if (Meteor.isServer) {
           valueDate: new Date(),
           projection: 'volume',
           projectedPrice: 78,
-          payinType: '5',
+          digit: '5',
           localizer: '@',
           note: 'Test volume',
         });
@@ -411,7 +437,7 @@ if (Meteor.isServer) {
           valueDate: new Date(),
           projection: 'habitants',
           projectedPrice: 155,
-          payinType: '6',
+          digit: '6',
           localizer: '@',
           note: 'Test habitants',
         });
@@ -445,7 +471,7 @@ if (Meteor.isServer) {
           valueDate: new Date(),
           projection: 'area',
           projectedPrice: 78,
-          payinType: '4',
+          digit: '4',
           localizer: '@',
           note: 'one area is missing',
         });
@@ -469,7 +495,7 @@ if (Meteor.isServer) {
           valueDate: new Date(),
           projection: 'volume',
           projectedPrice: 78,
-          payinType: '4',
+          digit: '4',
           localizer: '@',
           note: 'one volume is missing',
         });
@@ -493,7 +519,7 @@ if (Meteor.isServer) {
           valueDate: new Date(),
           projection: 'habitants',
           projectedPrice: 140,
-          payinType: '1',
+          digit: '1',
           localizer: '@',
           note: 'one habitant is missing',
         });
@@ -520,7 +546,7 @@ if (Meteor.isServer) {
           valueDate: new Date(),
           projection: 'absolute',
           amount: 150,
-          payinType: '3',
+          digit: '3',
           localizer: '@',
           note: 'no parcel details',
         });

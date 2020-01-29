@@ -874,40 +874,52 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
     title: 'Közös költség előírás',
-    projection: 'area',
-    projectedPrice: 275,
-    payinType: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
+    projection: {
+      base: 'area',
+      unitPrice: 275,
+    },
+    digit: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
     localizer: '@',
   }));
 
   parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
     title: 'Hidegvíz előírás',
-    consumption: 'coldWater',
-    uom: 'm3',
-    unitPrice: 650,
-    projection: 'habitants',
-    projectedPrice: 2500,
-    payinType: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
+    consumption: {
+      service: 'coldWater',
+      uom: 'm3',
+      unitPrice: 650,
+    },
+    projection: {
+      base: 'habitants',
+      unitPrice: 2500,
+    },
+    digit: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
     localizer: '@A',
   }));
 
   parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
     title: 'Fűtési díj előírás',
-    consumption: 'heating',
-    uom: 'kJ',
-    unitPrice: 120,
-    projection: 'volume',
-    projectedPrice: 75,
-    payinType: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
+    consumption: {
+      service: 'heating',
+      uom: 'kJ',
+      unitPrice: 120,
+    },
+    projection: {
+      base: 'volume',
+      unitPrice: 75,
+    },
+    digit: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
     localizer: '@A',
   }));
 
   // This is a one-time, extraordinary parcel billing
   demoBuilder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
-    projection: 'absolute',
-    projectedPrice: 75000,
-    payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
+    projection: {
+      base: 'absolute',
+      unitPrice: 75000,
+    },
+    digit: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
     note: __('demo.transactions.note.0'),
     activeTime: {
@@ -928,9 +940,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.setSimulatedTime(new Date(`${lastYear}-12-20`));
   const extraBillingId = demoBuilder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
-    projection: 'area',
-    projectedPrice: 200,
-    payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
+    projection: {
+      base: 'area',
+      unitPrice: 200,
+    },
+    digit: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
     activeTime: {
       begin: new Date(`${lastYear}-12-01`),

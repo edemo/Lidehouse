@@ -17,14 +17,14 @@
                         <tbody>
                         <tr>
                             <td class="content-block">
-                                <h2 class='"text-capitalize"'>{{_ 'parcel_bill'}} {{_ 'schemaTransactions.serialId.label'}}: {{bill.serialId}}</h2>
+                                <h2 class='"text-capitalize"'>{{_ 'parcelBill'}} {{_ 'schemaTransactions.serialId.label'}}: {{bill.serialId}}</h2>
                             </td>
                         </tr>
                         <tr><td class="content-block">
                             <table class="invoice">
                             <tbody>
                                 <tr>
-                                    <td>{{_ 'Partner'}}: {{bill.partner.displayName}}
+                                    <td>{{_ 'email.Client'}}: {{bill.partner.displayName}}
                                     <br>{{_ 'schemaBills.dueDate.label'}}: {{displayValue bill.dueDate}}</td>
                                 </tr>
                                 <tr><td>
@@ -32,7 +32,11 @@
                                         <tbody>
                                         {{#each line in bill.lines}}
                                         <tr>
-                                            <td>{{line.title}}</td>
+                                            <td>{{line.title}}
+                                            {{#if (equals bill.relation 'parcel')}}
+                                                {{#if line.localizer}} - {{code2parcelRef line.localizer}}{{/if}}
+                                            {{/if}}
+                                            </td>
                                             <td class="alignright">{{line.amount}}</td>
                                         </tr>
                                         {{/each}}

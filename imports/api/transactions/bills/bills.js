@@ -109,7 +109,7 @@ Transactions.categoryHelpers('bill', {
         if (!line) return; // can be null, when a line is deleted from the array
         this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer });
         let contraAccount = this.relationAccount();
-        if (this.relation === 'parcel') contraAccount += ParcelBillings.findOne(line.billingId).payinType;
+        if (this.relation === 'parcel') contraAccount += ParcelBillings.findOne(line.billingId).digit;
         this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer });
       });
     } // else if (accountingMethod === 'cash') >> we have no accounting to do

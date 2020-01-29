@@ -918,23 +918,31 @@
       "placeholder": "(pl. 11)"
     },
     "consumption": {
-      "label": "Mért fogyasztás"
-    },
-    "uom": {
-      "label": "Fogyasztási egység",
-      "placeholder": "(pl. kW)"
-    },
-    "unitPrice": {
-      "label": "Fogyasztási egységár (Ft)"
+      "label": "Fogyasztási előírás (ha van mérőóra)",
+      "service": {
+        "help": "Csak akkor töltse ki, ha az előírást mért fogyasztáshoz szeretné kötni azoknál az albetéteknél, ahol van felszerelve mérőóra.",
+        "label": "Mért szolgáltatatás"
+      },
+      "uom": {
+        "label": "Fogyasztási egység",
+        "placeholder": "(pl. kW)"
+      },
+      "unitPrice": {
+        "label": "Fogyasztási egységár (Ft)"
+      }
     },
     "projection": {
-      "label": "Vetítési alap (ha nincs mérőóra)"
-    },
-    "projectedPrice": {
-      "label": "Vetítési egységár (Ft)",
-      "placeholder": "(pl. 14560)"
-    },
-    "payinType": {
+      "label": "Vetítési előírás (ha nincs mérőóra)",
+      "base": {
+        "help": "Csak akkor töltse ki, ha az előírást vetítéssel kívánja meghatározni azoknál az albetéteknél, ahol nincs felszerelve mérőóra.",
+        "label": "Vetítési alap"
+      },
+      "unitPrice": {
+        "label": "Vetítési egységár (Ft)",
+        "placeholder": "(pl. 14560)"
+      }
+    },      
+    "digit": {
       "label": "Előírás könyvelési kódja"
     },
     "localizer": {

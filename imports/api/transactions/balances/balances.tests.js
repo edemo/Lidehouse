@@ -95,12 +95,12 @@ if (Meteor.isServer) {
           });
         };
         assertBalance = function (account, localizer, tag, expectedBalance) {
-          const balance = Balances.getTotal({
+          const balance = Balances.get({
             communityId: Fixture.demoCommunityId,
             account,
             localizer,
             tag,
-          });
+          }).total();
           chai.assert.equal(balance, expectedBalance);
         };
       });

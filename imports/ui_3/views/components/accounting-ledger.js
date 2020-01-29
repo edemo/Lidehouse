@@ -1,7 +1,11 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { $ } from 'meteor/jquery';
 
+import '/imports/ui_3/views/modals/modal.js';
+import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period';
@@ -13,9 +17,6 @@ import './accounting-ledger.html';
 
 Template.Accounting_ledger.viewmodel({
   periodSelected: PeriodBreakdown.lastYearTag(),
-  selectedAccount: '', // '382',
-  selectedBeginDate: '', // '2018-01-01',
-  selectedEndDate: '', // '2018-12-31',
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('breakdowns.inCommunity', { communityId: this.communityId() });
@@ -49,16 +50,22 @@ Template.Accounting_ledger.viewmodel({
 });
 
 Template.Accounting_ledger.events({
-  'click .cell'(event, instance) {
+  'click .cell,.row-header'(event, instance) {
+    if (!Meteor.user().hasPermission('transactions.inCommunity')) return;
     const accountCode = $(event.target).closest('[data-account]').data('account');
-    instance.viewmodel.selectedAccount('' + accountCode);
     const periodTag = $(event.target).closest('[data-tag]').data('tag');
     const period = Period.fromTag(periodTag);
-    instance.viewmodel.selectedBeginDate(period.begin());
-    instance.viewmodel.selectedEndDate(period.end());
-  },
-  'click .js-reset'(event, instance) {
-    instance.viewmodel.selectedAccount('');
+    Modal.show('Modal', {
+      title: __('Account history'),
+      body: 'Account_history',
+      bodyContext: {
+        beginDate: period.begin(),
+        endDate: period.end(),
+        accountOptions: instance.viewmodel.accountOptions(),
+        accountSelected: '' + accountCode,
+      },
+      size: 'lg',
+    });
   },
   'click .js-journals'(event, instance) {
       //    Session.update('modalContext', 'parcelId', doc._id);
