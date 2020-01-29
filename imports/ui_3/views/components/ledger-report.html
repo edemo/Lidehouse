@@ -14,7 +14,9 @@
             {{#each account in breakdown.nodes}}
             {{#if hasActivity account}}
             <tr class="table-row {{headerLevelClass account}}">
-                <td class="nowrap">{{displayAccount account}}</td>
+                <td class="row-header nowrap" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayAccount account}}
+                </td>
                 {{#let cellValue=(balance account tag 'debitSum')}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayCell cellValue}}
@@ -25,13 +27,13 @@
                     {{displayCell cellValue}}
                 </td>
                 {{/let}}
-                {{#let cellValue=(balance account 'T' 'debitSum')}}
-                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="T" style="cursor: pointer">
+                {{#let cellValue=(balance account tag 'debitTotal')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayCell cellValue}}
                 </td>
                 {{/let}}
-                {{#let cellValue=(balance account 'T' 'creditSum')}}
-                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="T" style="cursor: pointer">
+                {{#let cellValue=(balance account tag 'creditTotal')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayCell cellValue}}
                 </td>
                 {{/let}}

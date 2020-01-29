@@ -308,7 +308,7 @@ FlowRouter.route('/bill/:_bid', {
   },
   title(params) {
     const bill = Transactions.findOne(params._bid);
-    return bill && `${bill.serial}`;
+    return bill && `${bill.serialId}`;
   },
 });
 CommunityRelatedRoutes.push('Bill show');

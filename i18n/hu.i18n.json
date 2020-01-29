@@ -441,14 +441,8 @@
 
   // finances
   "Side": "Oldal",
-  "customer_bill": "kimenő számla",
-  "supplier_bill": "bejövő számla",
-  "parcel_bill": "díjbekérő",
-  "customer_receipt": "bevétel / kimenő nyugta",
-  "supplier_receipt": "kiadás / bejövő nyugta",
-  "customer_payment": "kimenő számla teljesítés",
-  "supplier_payment": "bejövő számla teljesítés",
-  "parcel_payment": "díjbekérő teljesítés",
+  "Income": "Bevétel",
+  "Expense": "Kiadás",
   "Money accounts total": "Pénzeszközök összesen",
   "Money outstanding": "Befizetetlen előírások",
   "Commitments total": "Kötelezettségek összesen",
@@ -530,98 +524,6 @@
   "issuer": "kiállító",
   "receiver": "vevő",
   "Insert bill": "Számla rögzítése",
-
-  // accounts
-  "Chart Of Accounts": "Főkönyvi számlák",
-  "Incomes" : "BEVÉTELEK",
-  "Expenses" : "RÁFORDÍTÁSOK",
-  "Assets": "KÖVETELÉSEK",
-  "Liabilities": "FORRÁSOK",
-  "Equity": "SAJÁT TŐKE",
-  "Owners": "Tulajdonosok",
-  "Owner payin types": "Albetétek előírás típusai",
-  "Owner payins": "ALBETÉTEK ELŐÍRÁSAI",
-  "Owner obligations": "KÖVETELÉSEK ALBETÉTEKKEL SZEMBEN",
-  "Unidentified items": "NEM AZONOSÍTOTT TÉTELEK",
-  "Unidentified incomes": "Nem azonosított bevételek",
-  "Unidentified expenses": "Nem azonosított kiadások",
-  "Money accounts": "PÉNZ ESZKÖZÖK",
-  "Initilize": "Nyitó/Áthozatal",
-  "Opening": "Nyitó egyenleg",
-  "Carry": "Áthozatal előző évekről",
-  "Performance": "Idei eredmény",
-  "Commitments": "KÖTELEZETTSÉGEK",
-  "Suppliers": "SZÁLLÍTÓK",
-  "Customers": "VEVŐK",
-  "Cash register": "Pénztár",
-  "Checking account": "Folyószámla",
-  "Savings account": "Megtakarítási számla",
-
-  // Tx types
-  "Money transfer": "Átvezetés pénz számlák között",
-  "Cash withdraw": "Készpénz felvétel bankszámláról",
-  "Cash deposit": "Készpénz befizetés bankszámlára pénztárból",  
-  "Barter": "Barter (beszámítás)",
-  "Income": "Bevétel",
-  "Expense": "Kiadás",
-  "Supplier bill": "Bejövő számla",
-  "Supplier payment": "Bejövő számla kifizetése",
-  "Supplier bill remission": "Bejövő számla elengedése",
-  "Customer bill": "Kimenő számla",
-  "Customer payment": "Kimenő számla befolyás",
-  "Customer bill remission": "Kimenő számla elengedése",
-  "Parcel bill": "Albetét előírás",
-  "Parcel payment": "Albetét befizetés",
-  "Parcel bill remission": "Albetét előírás elengedése",
-  "Non identified payment": "Nem azonosított bevétel",  
-  "Identification": "Bevétel azonosítás",  
-  "Recording inventory": "Készletrevétel",
-  "Costing of inventory": "Készlet költség elszámolás",
-  "Incoming  bill costing": "Bejövő számla költségelszámolása",
-  "Accounting operation": "Könyvelési művelet",
-
-  "CustomerBill": {
-    "name": "Kimenő számla",
-    "code": "KSZ"
-  },
-  "SupplierBill": {
-    "name": "Bejövő számla",
-    "code": "BSZ"
-  },
-  "ParcelBill": {
-    "name": "Albetét előírás",
-    "code": "AE"
-  },
-  "CustomerPayment": {
-    "name": "Kimenő számla befolyás",
-    "code": "KSZF"
-  },
-  "SupplierPayment": {
-    "name": "Bejövő számla kifizetése",
-    "code": "BSZF"
-  },
-  "ParcelPayment": {
-    "name": "Albetét befizetés",
-    "code": "AEF"
-  },
-  "MoneyTransfer": {
-    "name": "Átvezetés pénz számlák között",
-    "code": "ÁP"
-  },
-  "AccountingOp": {
-    "name": "Könyvelési művelet",
-    "code": "KM"
-  },
-
-  // Localizer
-  "All locations": "Összes hely",
-  "Parcels": "Összes albetét",
-  "Places": "Elszámolási egységek",
-  "Common areas": "Közös tulajdonú helyiségek",
-  "Central": "Központi",
-  "Main building": "Főépület",
-  "Garden": "Kert",
-  "Heating system": "Kazán",
 
   // docstore
   "Show": "Listázva",

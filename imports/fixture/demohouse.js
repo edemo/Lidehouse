@@ -874,40 +874,52 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
     title: 'Közös költség előírás',
-    projection: 'area',
-    projectedPrice: 275,
-    payinType: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
+    projection: {
+      base: 'area',
+      unitPrice: 275,
+    },
+    digit: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
     localizer: '@',
   }));
 
   parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
     title: 'Hidegvíz előírás',
-    consumption: 'coldWater',
-    uom: 'm3',
-    unitPrice: 650,
-    projection: 'habitants',
-    projectedPrice: 2500,
-    payinType: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
+    consumption: {
+      service: 'coldWater',
+      uom: 'm3',
+      unitPrice: 650,
+    },
+    projection: {
+      base: 'habitants',
+      unitPrice: 2500,
+    },
+    digit: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
     localizer: '@A',
   }));
 
   parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
     title: 'Fűtési díj előírás',
-    consumption: 'heating',
-    uom: 'kJ',
-    unitPrice: 120,
-    projection: 'volume',
-    projectedPrice: 75,
-    payinType: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
+    consumption: {
+      service: 'heating',
+      uom: 'kJ',
+      unitPrice: 120,
+    },
+    projection: {
+      base: 'volume',
+      unitPrice: 75,
+    },
+    digit: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
     localizer: '@A',
   }));
 
   // This is a one-time, extraordinary parcel billing
   demoBuilder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
-    projection: 'absolute',
-    projectedPrice: 75000,
-    payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
+    projection: {
+      base: 'absolute',
+      unitPrice: 75000,
+    },
+    digit: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
     note: __('demo.transactions.note.0'),
     activeTime: {
@@ -928,9 +940,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.setSimulatedTime(new Date(`${lastYear}-12-20`));
   const extraBillingId = demoBuilder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
-    projection: 'area',
-    projectedPrice: 200,
-    payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
+    projection: {
+      base: 'area',
+      unitPrice: 200,
+    },
+    digit: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
     activeTime: {
       begin: new Date(`${lastYear}-12-01`),
@@ -955,13 +969,14 @@ export function insertDemoHouse(lang, demoOrTest) {
 // === Opening ===
 
   const openings = [
-    ['Assets', 'Cash register', 100000],
-    ['Assets', 'Checking account', 110000],
-    ['Assets', 'Savings account', 120000],
+    ['Assets', 'Cash register', 1000000],
+    ['Assets', 'Checking account', 1100000],
+    ['Assets', 'Savings account', 1200000],
   ];
   openings.forEach((opening) => {
     demoBuilder.create('opening', {
       valueDate: new Date(`${lastYear}-01-01`),
+      side: 'debit',
       amount: opening[2],
       account: demoBuilder.name2code(opening[0], opening[1]),
     });
@@ -972,7 +987,9 @@ export function insertDemoHouse(lang, demoOrTest) {
   ['03', '06', '09', '12'].forEach(mm => {
     const billId = demoBuilder.create('bill', {
       relation: 'supplier',
-      valueDate: new Date(`${lastYear}-${mm}-20`),
+      issueDate: new Date(`${lastYear}-${mm}-15`),
+      deliveryDate: new Date(`${lastYear}-${mm}-05`),
+      dueDate: new Date(`${lastYear}-${mm}-30`),
       // amount: 282600,
       partnerId: supplier2,
       contractId: contract2,
@@ -1110,6 +1127,18 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   // == Expenses
+  demoBuilder.create('expense', {
+    valueDate: new Date(`${lastYear}-01-10`),
+    lines: [{
+      title: 'Kazán',
+      uom: 'db',
+      quantity: 2,
+      unitPrice: 495000,
+      account: demoBuilder.name2code('BEFEKTETETT ESZKÖZÖK', 'MŰSZAKI BERENDEZÉSEK'),
+      localizer: demoBuilder.name2code('Localizer', 'Heating system'),
+    }],
+    payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+  });
 
   for (let mm = 1; mm < 13; mm++) {
     demoBuilder.create('expense', {
@@ -1151,6 +1180,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       payAccount: demoBuilder.name2code('Assets', 'Checking account'),
     });
   }
+
+  demoBuilder.postAllTransactions();
 
   Balances.methods.publish._execute({ userId: demoAccountantId }, { communityId: demoCommunityId });
   Clock.clear();

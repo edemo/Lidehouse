@@ -63,8 +63,9 @@ Communities.helpers({
   },
   asPartner() {
     const partner = _.clone(this);
+    const bankAccount = this.primaryBankAccount();
     partner.contact = { address: this.displayAddress() };
-    partner.BAN = this.primaryBankAccount().number; 
+    partner.BAN = bankAccount && bankAccount.number;
     return partner;
   },
   moneyAccounts() {
@@ -86,7 +87,9 @@ Communities.helpers({
     return membershipWithRole.user();
   },
   admin() {
-    return this.userWithRole('admin');
+    const user = this.userWithRole('admin');
+    productionAssert(user, `Community was found without an admin: ${this._id}`);
+    return user;
   },
   treasurer() {
     return this.userWithRole('treasurer') || this.userWithRole('manager') || this.userWithRole('admin');

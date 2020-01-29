@@ -21,8 +21,19 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
-ParcelBillings.projectionValues = ['absolute', 'area', 'volume', 'habitants'];
+ParcelBillings.projectionBaseValues = ['absolute', 'area', 'volume', 'habitants'];
 //ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+
+ParcelBillings.consumptionSchema = new SimpleSchema({
+  service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
+  uom: { type: String, max: 100 },
+  unitPrice: { type: Number, decimal: true },
+});
+
+ParcelBillings.projectionSchema = new SimpleSchema({
+  base: { type: String, allowedValues: ParcelBillings.projectionBaseValues, autoform: autoformOptions(ParcelBillings.projectionBaseValues) },
+  unitPrice: { type: Number, decimal: true },
+});
 
 ParcelBillings.appliedAtSchema = new SimpleSchema({
   date: { type: Date },
@@ -32,15 +43,9 @@ ParcelBillings.appliedAtSchema = new SimpleSchema({
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   title: { type: String, max: 100 },
-  // if consumption based
-  consumption: { type: String, optional: true, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
-  uom: { type: String, max: 100, optional: true },
-  unitPrice: { type: Number, decimal: true, optional: true },
-  // if projection based
-  projection: { type: String, optional: true, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
-  projectedPrice: { type: Number, optional: true },
-  // ---
-  payinType: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
+  consumption: { type: ParcelBillings.consumptionSchema, optional: true }, // if consumption based
+  projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
+  digit: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
   localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
   note: { type: String, optional: true, autoform: { rows: 3 } },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
@@ -98,13 +103,22 @@ ParcelBillings.helpers({
     const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: Localizer.code2parcelRef(l.code) }));
     return parcels;
   },
-  projectedUom() {
-    switch (this.projection) {
-      case 'absolute': return '-';
+  projectionUom() {
+    switch (this.projection.base) {
+      case 'absolute': return 'piece';
       case 'area': return 'm2';
       case 'volume': return 'm3';
       case 'habitants': return 'person';
-      default: debugAssert(false); return undefined;
+      default: debugAssert(false, 'No such projection base'); return undefined;
+    }
+  },
+  projectionQuantityOf(parcel) {
+    switch (this.projection.base) {
+      case 'absolute': return 1;
+      case 'area': return (parcel.area || 0);
+      case 'volume': return (parcel.volume || 0);
+      case 'habitants': return (parcel.habitants || 0);
+      default: debugAssert(false, 'No such projection base'); return undefined;
     }
   },
   applyCount() {
@@ -120,9 +134,9 @@ ParcelBillings.helpers({
   },
   toString() {
     const currency = this.community().settings.currency;
-    const consumptionPart = this.consumption ? `${this.unitPrice} ${currency}/${__('consumed')} ${this.uom}` : '';
+    const consumptionPart = this.consumption ? `${this.consumption.unitPrice} ${currency}/${__('consumed')} ${this.consumption.uom}` : '';
     const connectionPart = (this.consumption && this.projection) ? ` ${__('or')} ` : '';
-    const projectionPart = this.projection ? `${this.projectedPrice} ${currency}/${this.projectedUom()})` : '';
+    const projectionPart = this.projection ? `${this.projection.unitPrice} ${currency}/${this.projectionUom()})` : '';
     return `${this.title} (${consumptionPart}${connectionPart}${projectionPart})`;
   },
 });
@@ -138,9 +152,11 @@ Meteor.startup(function attach() {
 
 Factory.define('parcelBilling', ParcelBillings, {
   title: faker.random.word(),
-  projection: 'absolute',
-  projectedPrice: faker.random.number(),
-  payinType: '1',
+  projection: {
+    base: 'absolute',
+    unitPrice: faker.random.number(),
+  },
+  digit: '1',
   localizer: '@',
   note: faker.random.word(),
 });

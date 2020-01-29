@@ -15,7 +15,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
 
-  describe.only('transactions', function () {
+  describe('transactions', function () {
     this.timeout(15000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');

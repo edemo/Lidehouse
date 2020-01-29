@@ -1,6 +1,6 @@
 {
   // Topics
-  "TIC": "ML",
+  "TIC": "M",
   "ISS": "H",
   "MAI": "K",
   "UPG": "F",
@@ -13,8 +13,10 @@
   "BAR": "BESZ",
   "OPE": "NYIT",
   "FRE": "VEGY",
-
+  // Txdefs
   "SUP": "BE",
   "CUS": "KI",
-  "PAR": "DB"
+  "PAR": "DB",
+  "DEB": "T",
+  "CRE": "K"
 }

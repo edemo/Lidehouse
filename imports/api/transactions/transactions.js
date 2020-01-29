@@ -311,7 +311,7 @@ Transactions.helpers({
 
 Transactions.attachBaseSchema(Transactions.baseSchema);
 Transactions.attachBehaviour(Timestamped);
-Transactions.attachBehaviour(SerialId(['category', 'relation']));
+Transactions.attachBehaviour(SerialId(['category', 'relation', 'side']));
 
 Transactions.attachVariantSchema(undefined, { selector: { category: 'freeTx' } });
 
@@ -437,26 +437,28 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
   const selector = _.clone(params);
   selector.valueDate = dateFilter(params.begin, params.end);
   delete selector.begin; delete selector.end;
+  if (params.defId) {
+  } else delete selector.defId;
   if (params.account) {
     const account = withSubs(params.account);
     selector.$or = [{ 'credit.account': account }, { 'debit.account': account }];
     delete selector.account;
-  }
+  } else delete selector.account;
   if (params.localizer) {
     const localizer = withSubs(params.localizer);
     selector.$or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
     delete selector.localizer;
-  }
+  } else delete selector.localizer;
   if (params.debitAccount) {
     const debitAccount = withSubs(params.debitAccount);
     selector['debit.account'] = debitAccount;
     delete selector.debitAccount;
-  }
+  } else delete selector.debitAccount;
   if (params.creditAccount) {
     const creditAccount = withSubs(params.creditAccount);
     selector['credit.account'] = creditAccount;
     delete selector.creditAccount;
-  }
+  } else delete selector.creditAccount;
   return selector;
 };
 

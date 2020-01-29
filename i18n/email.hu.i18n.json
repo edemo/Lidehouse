@@ -29,7 +29,8 @@
 
     "Notifications": "Értesítések",
     "Confirmation": "Visszigazolás",
-    "Bill": "Díjbekérő",
+    "New bill": "Díjbekérő",
+    "Client": "Ügyfél",
     "Outstandings": "Hátralék emlékeztető",
     "fromTheCommunity": "a __name__ társasházból",
     "DontReplyToThis": "Erre az email-re kérjük ne válaszoljon, mert egy automata rendszer küldi ki.<br>",

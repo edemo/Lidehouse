@@ -15,7 +15,7 @@ export function sendBillEmail(bill) {
 
   EmailSender.send({
     to: emailAddress,
-    subject: EmailTemplateHelpers.subject('Bill', user, community),
+    subject: EmailTemplateHelpers.subject('New bill', user, community),
     template: 'Bill_Email',
     data: {
       user,

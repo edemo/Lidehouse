@@ -16,11 +16,11 @@ Template.Balance_report.onCreated(function onCreated() {
 
 Template.Balance_report.helpers({
   balance(account, tag) {
-    return Balances.getDisplayTotal({
+    return Balances.get({
       communityId: Session.get('activeCommunityId'),
       account: account.code,
       tag,
-    });
+    }).displayTotal();
   },
   hasActivity(account) {
     return !!Balances.findOne({

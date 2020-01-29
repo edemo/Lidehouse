@@ -58,9 +58,13 @@ Template.Account_history.viewmodel({
     let total = 0;
     const entriesWithRunningTotal = entries.map(e => {
       total += e.effectiveAmount(this.sign());
-      return _.extend(e, { total });
+      return _.extend(e, { 
+        total,
+        debitTotal() { return this.total > 0 ? this.total : 0 },
+        creditTotal() { return this.total < 0 ? (-1 * this.total) : 0 },
+      });
     });
-    return entriesWithRunningTotal;
+    return entriesWithRunningTotal.reverse();
   },
   negativeClass(entry) {
     return entry.effectiveAmount(this.sign()) < 0 ? 'negative' : '';
