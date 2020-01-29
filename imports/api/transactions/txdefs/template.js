@@ -177,7 +177,7 @@ export function defineTxdefTemplates() {
     name: 'Opening asset',
     category: 'opening',
     data: { side: 'debit' },
-    debit: ['1', '2', '3', '9'],
+    debit: ['1', '2', '3', '5', '8'],
     credit: ['491'],
   });
 
@@ -186,7 +186,7 @@ export function defineTxdefTemplates() {
     category: 'opening',
     data: { side: 'credit' },
     debit: ['491'],
-    credit: ['4', '5', '8'],
+    credit: ['4', '9'],
   });
 
   Txdefs.define({ communityId: null,
@@ -194,14 +194,14 @@ export function defineTxdefTemplates() {
     category: 'opening',
     data: { side: 'credit' },
     debit: ['492'],
-    credit: ['1', '2', '3', '9'],
+    credit: ['1', '2', '3', '5', '8'],
   });
 
   Txdefs.define({ communityId: null,
     name: 'Closing liability',
     category: 'opening',
     data: { side: 'debit' },
-    debit: ['4', '5', '8'],
+    debit: ['4', '9'],
     credit: ['492'],
   });
 
