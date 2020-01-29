@@ -17,6 +17,12 @@ Meteor.startup(function indexJournalEntries() {
 });
 
 JournalEntries.helpers({
+  debitAmount() {
+    return (this.side === 'debit') ? this.amount : 0;
+  },
+  creditAmount() {
+    return (this.side === 'credit') ? this.amount : 0;
+  },
   effectiveAmount(extraSign = +1) {
     let dcSign = 0;
     if (this.side === 'debit') dcSign = +1;

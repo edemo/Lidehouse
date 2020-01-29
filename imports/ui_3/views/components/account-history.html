@@ -46,30 +46,39 @@
             <tbody>
               <tr style="font-weight: bold">
                   <td>{{_ 'schemaTransactions.valueDate.label'}}</td>
-                  <td>{{_ 'ContraAccount'}}</td>
+                  <!--td>{{_ 'ContraAccount'}}</td-->
+                  <td>{{_ 'Localizer'}}</td>
                   <td>{{_ 'schemaTransactions.note.label'}}</td>
-                  <td>{{_ 'schemaTransactions.amount.label'}}</td>
+                  <td>{{_ 'schemaTransactions.debit.label'}}</td>
+                  <td>{{_ 'schemaTransactions.credit.label'}}</td>
                   <!--td></td>
                   <td></td-->
-                  <td>{{_ 'Balance'}}</td>
+                  <!--td>{{_ 'Balance'}}</td-->
+                  <td>{{firstChar (_ 'schemaTransactions.debit.label')}} {{_ 'Balance'}}</td>
+                  <td>{{firstChar (_ 'schemaTransactions.credit.label')}} {{_ 'Balance'}}</td>
                   <td></td>
                   <td></td>
               </tr>
               {{#each entry in journalEntries}}
               <tr>
                   <td>{{displayDate entry.valueDate}}</td>
-                  <td>{{{displayAccountSpecification entry.contra}}}</td>
+                  <!--td>{{{displayAccountSpecification entry.contra}}}</td-->
+                  <td>{{{displayLocalizer entry.localizer}}}</td>
                   <td>{{entry.note}}</td>
-                  <td class="{{negativeClass entry}}">{{displayMoney (entry.effectiveAmount sign)}}</td>
+                  <!--td class="{{negativeClass entry}}">{{displayMoney (entryAmount sign)}}</td-->
+                  <td>{{displayMoney (entry.debitAmount)}}</td>
+                  <td>{{displayMoney (entry.creditAmount)}}</td>
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
                   <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
-                  <td><strong>{{displayMoney entry.total}}</strong></td>
+                  <!--td><strong>{{displayMoney entry.total}}</strong></td-->
+                  <td><strong>{{displayMoney entry.debitTotal}}</strong></td>
+                  <td><strong>{{displayMoney entry.creditTotal}}</strong></td>
                   <td><button class="btn btn-white btn-xs js-view" data-id="{{entry.txId}}"><i class="fa fa-eye"></i></button></td>
-                  <td>{{{checkmarkBoolean entry.transaction.reconciledId}}}</td>
+                  <td>{{{checkmarkBoolean entry.transaction.isReconciled}}}</td>
               </tr>
               {{/each}}
             </tbody>
         </table>
     </div>
-    <p class="text-center">{{_ 'Total change in this period'}}: <strong>{{displayMoney journalEntries.pop.total}}</strong></p>
+    <!--p class="text-center">{{_ 'Total change in this period'}}: <strong>{{displayMoney journalEntries.pop.total}}</strong></p-->
 </template>
