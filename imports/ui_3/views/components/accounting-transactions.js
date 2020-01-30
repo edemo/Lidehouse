@@ -134,5 +134,5 @@ Template.Accounting_transactions.viewmodel({
 });
 
 Template.Accounting_transactions.events(
-  actionHandlers(Transactions),
+  actionHandlers(Transactions, 'new'),
 );

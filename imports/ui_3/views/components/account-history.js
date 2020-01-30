@@ -2,16 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
-import { moment } from 'meteor/momentjs:moment';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
-import { AccountSpecification } from '/imports/api/transactions/account-specification';
-import { allTransactionsActions } from '/imports/api/transactions/actions.js';
-import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import '/imports/ui_3/views/modals/confirmation.js';
-import '/imports/ui_3/views/modals/autoform-modal.js';
 import './account-history.html';
 
 Template.Account_history.viewmodel({
@@ -69,8 +61,4 @@ Template.Account_history.viewmodel({
   negativeClass(entry) {
     return entry.effectiveAmount(this.sign()) < 0 ? 'negative' : '';
   },
-});
-
-Template.Account_history.events({
-  ...(actionHandlers(Transactions)),
 });

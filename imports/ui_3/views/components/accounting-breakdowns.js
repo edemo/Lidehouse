@@ -90,7 +90,7 @@ Template.Accounting_breakdowns.viewmodel({
 });
 
 Template.Accounting_breakdowns.events({
-  ...(actionHandlers(Breakdowns)),
+  ...(actionHandlers(Breakdowns, 'new')),
   ...(actionHandlers(Txdefs, 'new')),
   ...(actionHandlers(MoneyAccounts, 'new')),
   'click #coa .js-clone'(event, instance) {

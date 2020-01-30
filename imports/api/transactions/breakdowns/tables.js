@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
+import '/imports/ui_3/views/blocks/action-buttons.js';
 import './actions.js';
 
 export function breakdownColumns() {
@@ -22,8 +23,9 @@ export function breakdownColumns() {
     { data: 'name', /*title: __('schemaBreakdowns.name.label'),*/ render: Render.translate },
 //    { data: 'type', title: __('schemaBreakdowns.type.label'), render: Render.translate },
     { data: 'nodeNames()', /*title: __('schemaBreakdowns.children.$.children.$.children.label'),*/ render: displayNames },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'breakdowns', actions: '', size: 'sm' }),
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'breakdowns', actions: '', size: 'sm' }, cell),
     },
   ];
 }

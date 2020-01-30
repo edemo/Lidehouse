@@ -2,14 +2,16 @@ import { __ } from '/imports/localization/i18n.js';
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
+import '/imports/ui_3/views/blocks/action-buttons.js';
 
 export function voteColumns() {
   return [
     { data: 'title', title: __('schemaVotings.title.label') },
     { data: 'creator()', title: __('creatorId') },
     { data: 'createdAt', title: __('createdAt'), render: Render.formatTime },
-    { data: '_id', render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'topics', actions: 'view,edit,delete', size: 'sm' }),
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'topics', actions: 'view,edit,delete', size: 'sm' }, cell),
     },
   ];
 }

@@ -1,14 +1,14 @@
 <template name="Active_period">
-    {{#let begin=this.activeTime.begin}}
-    {{#let end=this.activeTime.end}}
+    {{#let begin=doc.activeTime.begin}}
+    {{#let end=doc.activeTime.end}}
     {{#unless and (not begin) (not end)}}
         <small>{{displayDate begin}} - {{or (displayDate end) (_ 'active')}}</small>
     {{/unless}}    
-    {{#if currentUserHasPermission (concat this.entityName '.update') }}
+    {{#if currentUserHasPermission (concat doc.entityName '.update') }}
         {{#if and (not begin) (not end)}}
-        <button class="btn btn-xs btn-white js-period" data-id={{_id}}><i class="fa fa-history"></i> {{_ 'period'}}</button>
+        {{>Action_buttons_group collection=collection actions='period' doc=doc size='lg'}}
         {{else}}
-        <button class="btn btn-xs btn-white js-period" data-id={{_id}}><i class="fa fa-pencil"></i></button>
+        {{>Action_buttons_group collection=collection actions='period' doc=doc icon='fa fa-pencil' size='sm'}}
         {{/if}}
     {{/if}}
     {{/let}}
