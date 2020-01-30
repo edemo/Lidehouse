@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { _ } from 'meteor/underscore';
 import { Migrations } from 'meteor/percolate:migrations';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -11,7 +12,9 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { _ } from 'meteor/underscore';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 
 Migrations.add({
   version: 1,
@@ -59,6 +62,18 @@ Migrations.add({
 
 Migrations.add({
   version: 4,
+  name: 'Vote closesAt is set directly on topic',
+  up() {
+    Topics.find({ category: 'vote', 'vote.closesAt': { $gte: new Date() } }).forEach((topic) => {
+      const closingDate = topic.vote.closesAt;
+      Topics.update(topic._id, { $set: { closesAt: closingDate } });
+     // Topics.update(topic._id, { $unset: { 'vote.closesAt': 0 } });
+    });
+  },
+});
+
+Migrations.add({
+  version: 5,
   name: 'Topics all get a status',
   up() {
     Topics.find({ category: 'ticket', status: { $exists: false } }).forEach((ticket) => {
@@ -79,7 +94,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 5,
+  version: 6,
   name: 'Communities get a settings section and an accountingMethod',
   up() {
     Communities.update(
@@ -96,7 +111,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 6,
+  version: 7,
   name: 'Topics need serial',
   up() {
     function upgrade() {
@@ -114,12 +129,13 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 7,
+  version: 8,
   name: 'Remove leadRef from parcel, and create parcelships with it',
   up() {
     function upgrade() {
       Parcels.find({ leadRef: { $exists: true } }).forEach((doc) => {
         Parcelships.insert({ communityId: doc.communityId, parcelId: doc._id, leadRef: doc.leadRef });
+        Parcels.update(doc._id, { $unset: { leadRef: 0 } });
       });
     }
     upgrade();
@@ -127,7 +143,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 8,
+  version: 9,
   name: 'Comments category is now required field',
   up() {
     function upgrade() {
@@ -142,7 +158,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 9,
+  version: 10,
   name: 'Membership persons become partners, and partners cast the votes, delegate and pay the bills',
   up() {
     function upgrade() {
@@ -182,15 +198,28 @@ Migrations.add({
       });
       Delegations.find({}).forEach((doc) => {
         const sourceUserId = doc.sourcePersonId;
-        const sourceUser = Meteor.users.find(sourceUserId);
+        const sourceUser = Meteor.users.findOne(sourceUserId);
         const sourcePartnerId = sourceUser ?
           sourceUser.partnerId(doc.communityId) :
           Partners.findOne({ communityId: doc.communityId, 'idCard.identifier': doc.sourcePersonId })._id;
         const targetUserId = doc.targetPersonId;
-        const targetUser = Meteor.users.find(targetUserId);
+        const targetUser = Meteor.users.findOne(targetUserId);
         const targetPartnerId = targetUser.partnerId(doc.communityId);
         Delegations.update(doc._id, { $set: { sourceId: sourcePartnerId, targetId: targetPartnerId }, $unset: { sourcePersonId: '', targetPersonId: '' } });
       });
+    }
+    upgrade();
+  },
+});
+
+Migrations.add({
+  version: 11,
+  name: 'Remove all documents from Transactions, Balances, Txdefs collections',
+  up() {
+    function upgrade() {
+      Transactions.remove({});
+      Balances.remove({});
+      Txdefs.remove({});
     }
     upgrade();
   },
