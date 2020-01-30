@@ -20,7 +20,7 @@ MoneyAccounts.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   category: { type: String, allowedValues: MoneyAccounts.categoryValues, autoform: { omit: true } }, //autoform: _.extend({ value: 'bank' }, autoformOptions(MoneyAccounts.categoryValues, 'schemaMoneyAccounts.category.')) },
   name: { type: String, max: 100 },
-  digit: { type: String, max: 1 },  // Accounting Breakdown Digit
+  digit: { type: String, max: 3 },  // Accounting Breakdown Digit
   primary: { type: Boolean, optional: true },
 });
 

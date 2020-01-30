@@ -48,41 +48,25 @@ export const apply = new ValidatedMethod({
           };
           let activeMeter;
           if (parcelBilling.consumption) {
-            activeMeter = Meters.findOneActive({ parcelId: parcel._id, service: parcelBilling.consumption });
+            activeMeter = Meters.findOneActive({ parcelId: parcel._id, service: parcelBilling.consumption.service });
             if (activeMeter) {
-              line.unitPrice = parcelBilling.unitPrice;
-              line.uom = parcelBilling.uom;
+              line.unitPrice = parcelBilling.consumption.unitPrice;
+              line.uom = parcelBilling.consumption.uom;
               // TODO: Estimation if no reading available
               line.quantity = (activeMeter.lastReading().value - activeMeter.lastBilling().value);
             }
           }
           if (!activeMeter) {
-            line.unitPrice = parcelBilling.projectedPrice;
-            switch (parcelBilling.projection) {
-              case 'absolute':
-                line.uom = 'piece';
-                line.quantity = 1;
-                break;
-              case 'area':
-                line.uom = 'm2';
-                line.quantity = (parcel.area || 0);
-                break;
-              case 'volume':
-                line.uom = 'm3';
-                line.quantity = (parcel.volume || 0);
-                break;
-              case 'habitants':
-                line.uom = 'habitant';
-                line.quantity = (parcel.habitants || 0);
-                break;
-              default: debugAssert(false, 'No such projection');
-            }
+            productionAssert(parcelBilling.projection, 'Projection base is not set up in your billing');
+            line.unitPrice = parcelBilling.projection.unitPrice;
+            line.uom = parcelBilling.projectionUom();
+            line.quantity = parcelBilling.projectionQuantityOf(parcel);
           }
           debugAssert(line.uom && _.isDefined(line.quantity), 'Billing needs consumption or projection.');
           if (line.quantity === 0) return; // Should not create bill for zero amount
           line.amount = line.quantity * line.unitPrice;
-//          line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
-          line.account = Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.payinType;
+//          line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.digit;
+          line.account = Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.digit;
           line.localizer = Localizer.parcelRef2code(parcel.ref);
           line.title = `${parcelBilling.title}`;
           // Creating the bill - adding line to the bill

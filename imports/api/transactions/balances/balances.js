@@ -22,10 +22,12 @@ Balances.defSchema = new SimpleSchema([{
 }]);
 
 // Definition + values of a balance
-Balances.schema = new SimpleSchema([Balances.defSchema, {
-  debit: { type: Number, defaultValue: 0 }, // debit total
-  credit: { type: Number, defaultValue: 0 }, // credit total
-}]);
+Balances.schema = new SimpleSchema([
+  Balances.defSchema, {
+    debit: { type: Number, defaultValue: 0 }, // debit sum
+    credit: { type: Number, defaultValue: 0 }, // credit sum
+  },
+]);
 
 Balances.idSet = ['communityId', 'account', 'localizer', 'tag'];
 
@@ -39,6 +41,28 @@ Balances.helpers({
   creditSum() {
     return this.credit;
   },
+  debitTotal() {
+    return (this.debit > this.credit) ? (this.debit - this.credit) : 0;
+  },
+  creditTotal() {
+    return (this.credit > this.debit) ? (this.credit - this.debit) : 0;
+  },
+  displayTotal() {
+    let displaySign = 1;
+    if (this.account) {
+      switch (this.account.charAt(0)) {
+        case '1':
+        case '2':
+        case '3':
+        case '8': displaySign = +1; break;
+        case '4':
+        case '5':
+        case '9': displaySign = -1; break;
+        default: break;
+      }
+    }
+    return displaySign * this.total();
+  },
 });
 
 Meteor.startup(function indexBalances() {
@@ -48,9 +72,9 @@ Meteor.startup(function indexBalances() {
 Balances.attachSchema(Balances.schema);
 Balances.attachBehaviour(Timestamped);
 
-Balances.getSum = function getSum(def, side) {
+Balances.get = function get(def) {
   Balances.defSchema.validate(def);
-  let result = 0;
+  let result = _.extend({ debit: 0, credit: 0 }, def);
 
 //  This version is slower in gathering sub-accounts first,
 //  but minimongo indexing does not handle sorting, so in fact might be faster after all
@@ -74,39 +98,15 @@ Balances.getSum = function getSum(def, side) {
 
   // Aggregating sub-accounts balances with regexp
   const subdef = _.clone(def);
-  if (def.account) subdef.account = new RegExp('^' + def.account);
+  if (def.account !== undefined) subdef.account = new RegExp('^' + def.account);
 //  if (def.localizer) subdef.localizer = new RegExp('^' + def.localizer);
   subdef.localizer = def.localizer ? def.localizer : { $exists: false };
-  Balances.find(subdef).forEach(balance => result += balance[side]());
-
+  Balances.find(subdef).forEach((balance) => {
+    result.debit += balance.debit;
+    result.credit += balance.credit;
+  });
+  result = Balances._transform(result);
   return result;
-};
-
-Balances.getTotal = function getTotal(def) {
-  return Balances.getSum(def, 'total');
-};
-
-Balances.getDisplaySum = function getDisplaySum(def, side) {
-  const sum = Balances.getSum(def, side);
-  if (side !== 'total') return sum;
-  let displaySign = 1;
-  if (def.account) {
-    switch (def.account.charAt(0)) {
-      case '1':
-      case '2':
-      case '3':
-      case '8': displaySign = +1; break;
-      case '4':
-      case '5':
-      case '9': displaySign = -1; break;
-      default: break;
-    }
-  }
-  return displaySign * sum;
-};
-
-Balances.getDisplayTotal = function getDisplayTotal(def) {
-  return Balances.getDisplaySum('total');
 };
 
 function timeTagMatches(valueDate, tag) {
@@ -127,7 +127,7 @@ Balances.checkCorrect = function checkCorrect(def) {
       }
     });
   });
-  const dbBalance = Balances.getTotal(def);
+  const dbBalance = Balances.get(def).total();
   if (dbBalance !== calculatedBalance) {
     console.log('Balance inconsistency ERROR',
       `Calculated balance of '${def} is ${calculatedBalance} (from ${entryCount} entries)\nDb balance of same account: ${dbBalance}`

@@ -21,8 +21,9 @@ export function billColumns() {
     { data: 'outstanding', title: __('schemaBills.outstanding.label'), render: Render.formatNumber },
     { data: 'paymentDate', title: __('schemaBills.paymentDate.label'), render: Render.formatDate },
     { data: 'note', title: __('schemaTransactions.note.label') },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.bill }, actions: '', size: 'sm' }),
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.bill }, actions: '', size: 'sm' }, cell),
     },
   ];
   return columns;
@@ -37,8 +38,9 @@ export function receiptColumns() {
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
     { data: 'note', title: __('schemaTransactions.note.label') },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.receipt }, actions: '', size: 'sm' }),
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.receipt }, actions: '', size: 'sm' }, cell),
     },
     { data: 'reconciledId', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
   ];

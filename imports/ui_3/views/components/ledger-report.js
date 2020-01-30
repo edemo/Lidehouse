@@ -15,12 +15,13 @@ Template.Ledger_report.onCreated(function onCreated() {
 });
 
 Template.Ledger_report.helpers({
-  balance(account, tag, side) {
-    return Balances.getDisplaySum({
+  balance(account, tag, sideFunc) {
+    const balance = Balances.get({
       communityId: Session.get('activeCommunityId'),
       account: account.code,
       tag,
-    }, side);
+    });
+    return balance[sideFunc]();
   },
   hasActivity(account) {
     return !!Balances.findOne({

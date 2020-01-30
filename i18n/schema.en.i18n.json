@@ -914,23 +914,31 @@
       "placeholder": "(eg. 11)"
     },
     "consumption": {
-      "label": "Measured consumption"
-    },
-    "uom": {
-      "label": "Unit of consumption",
-      "placeholder": "(eg. kW)"
-    },
-    "unitPrice": {
-      "label": "Unit price of consumption"
+      "label": "Consumption basis (where a meter is installed)",
+      "service": {
+        "help": "Fill this if you would like to bill according to measured consumption in places where a meter is available.",
+        "label": "Measured service"
+      },
+      "uom": {
+        "label": "Unit of consumption",
+        "placeholder": "(eg. kW)"
+      },
+      "unitPrice": {
+        "label": "Unit price of consumption"
+      }
     },
     "projection": {
-      "label": "Projection basis (where no consumption meter)"
+      "label": "Projection basis (where no meter installed)",
+      "base": {
+        "help": "Fill this if you would like to bill based on projection in places where a meter is not available.",
+        "label": "Projection base"
+      },
+      "unitPrice": {
+        "label": "Unit price of projection",
+        "placeholder": "(eg. 14560)"
+      }
     },
-    "projectedPrice": {
-      "label": "Unit price of projection",
-      "placeholder": "(eg. 14560)"
-    },
-    "payinType": {
+    "digit": {
       "label": "Payin accounting code"
     },
     "localizer": {

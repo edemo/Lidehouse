@@ -27,7 +27,8 @@ Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   serial: { type: Number, optional: true },
-  ref: { type: String },  // unique within a community
+  ref: { type: String },  // 1. unique reference within a community (readable, so can be user in letters, etc)
+                          // 2. can be used to identify a parcel, which is not a true parcel, just a sub-part of a parcel
   /* autoValue() {
         if (this.isInsert) {
           const letter = this.field('type').value.substring(0,1);

@@ -23,7 +23,8 @@
 
     "Notifications": "Updates",
     "Confirmation": "Confirmation",
-    "Bill": "New bill",
+    "New bill": "New bill",
+    "Client": "Client",
     "Outstandings": "Arrears reminder",
     "fromTheCommunity": "from __name__ community",
     "DontReplyToThis": "Please don't reply to this email, as it is sent by an automated system.<br>",

@@ -85,9 +85,10 @@ export function defineBreakdownTemplates() {
       { digit: '8', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK' },
       { digit: '9', name: 'ÉVI MÉRLEGSZÁMLÁK',
         children: [
-         { digit: '1', name: 'Nyitómérleg számla' },
-         { digit: '2', name: 'Zárómérleg számla' },
-         { digit: '3', name: 'Adózott eredmény elszámolási számla' },
+         { digit: '1', name: 'Opening account' },
+         { digit: '2', name: 'Closing account' },
+         { digit: '3', name: 'Adózott eredmény elszámolása' },
+         { digit: '4', name: 'Előző évi eredmény elszámolása' },
         ],
       },
     ],
@@ -252,7 +253,7 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,
     name: 'COA', label: 'Chart Of Accounts',
     children: [
-      { digit: '0', name: 'Opening' },// TECHNIKAI SZÁMLÁK
+//      { digit: '0', name: 'Opening' },// TECHNIKAI SZÁMLÁK
       { digit: '1', include: 'BEFEKTETETT ESZKÖZÖK' },
       { digit: '2', include: 'KÉSZLETEK' },
       { digit: '3', include: 'Assets' }, //KÖVETELÉSEK

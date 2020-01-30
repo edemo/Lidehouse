@@ -42,4 +42,8 @@ export const Render = {
     });
     return result;
   },
+  actionButtons(cellData, renderType, currentRow) {
+    if (renderType === 'display') return '';
+    return ''; // TODO: It would be nice to return the number buttons
+  },
 };

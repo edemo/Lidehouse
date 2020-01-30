@@ -3,6 +3,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
+import '/imports/ui_3/views/blocks/action-buttons.js';
 import { displayLocalizer, displayTicketType, displayStatus } from '/imports/ui_3/helpers/api-display.js';
 
 export function ticketColumns() {
@@ -15,8 +16,9 @@ export function ticketColumns() {
     { data: 'creator()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },
     { data: 'ticket.type', title: __('schemaTickets.ticket.type.label'), render: displayTicketType },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'topics', actions: '', size: 'sm' }),
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'topics', actions: '', size: 'sm' }, cell),
     },
   ];
 }

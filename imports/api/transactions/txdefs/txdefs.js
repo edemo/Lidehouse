@@ -4,12 +4,15 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
+import { __ } from '/imports/localization/i18n.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const Txdefs = new Mongo.Collection('txdefs');
 
@@ -55,7 +58,8 @@ Txdefs.helpers({
     return _.contains(['payment', 'receipt', 'transfer', 'freeTx'], this.category);
   },
   conteerSide() {
-    const relation = this.data.relation;
+    if (this.data.side) return this.data.side;  // opening, closing txs
+    const relation = this.data.relation;        // bill, payment, receipt txs
     if (relation === 'supplier') return 'debit';
     if (relation === 'customer' || relation === 'parcel') return 'credit';
     return undefined;
@@ -85,5 +89,19 @@ Meteor.startup(function attach() {
   Txdefs.simpleSchema().i18n('schemaTxdefs');
 });
 
+// -------- Factory
+
 Factory.define('txdef', Txdefs, {
 });
+
+export const chooseConteerAccount = {
+  options() {
+    const txdefId = Session.get('modalContext').txdef._id;
+    const txdef = Txdefs.findOne(txdefId);
+    const coa = ChartOfAccounts.get();
+    if (!coa || !txdef) return [];
+    const nodeCodes = txdef[txdef.conteerSide()];
+    return coa.nodeOptionsOf(nodeCodes, /*leafsOnly*/ false);
+  },
+  firstOption: () => __('Chart Of Accounts'),
+};

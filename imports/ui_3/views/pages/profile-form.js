@@ -1,6 +1,8 @@
 /* global alert */
 
 import { Template } from 'meteor/templating';
+import { Tracker } from 'meteor/tracker';
+
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
@@ -17,10 +19,16 @@ import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/api/users/users.js';
 import './profile-form.html';
 
-Template.Profile_form.onCreated(function usersShowPageOnCreated() {
-  this.getUserId = () => Meteor.userId();
-  this.autorun(() => {
+Template.Profile_form.viewmodel({
+  autorun() {
+    if (!Session.get('personMismatchWarningWasShown')) this.nameMismatchModal();
+  },
+  onRendered() {
+    initializeHelpIcons(this.templateInstance, 'schemaUsers');
+  },
+  nameMismatchModal() {
     if (Meteor.user() && Meteor.user().personNameMismatch()) {
+      Session.set('personMismatchWarningWasShown', true);
       const userName = Meteor.user().fullName() || Meteor.user().profile.firstName || Meteor.user().profile.lastName ;
       const personName = Meteor.user().displayOfficialName();
       const communityName = Communities.findOne(Session.get('activeCommunityId')).name;
@@ -31,19 +39,15 @@ Template.Profile_form.onCreated(function usersShowPageOnCreated() {
       };
       Modal.show('Modal', modalContext);
     }
-  });
-});
-
-Template.Profile_form.onRendered(function usersShowPageOnRendered() {
-  initializeHelpIcons(this, 'schemaUsers');
-});
-
-Template.Profile_form.helpers({
+  },
+  getUserId() {
+    return Meteor.userId();
+  },
   users() {
     return Meteor.users;
   },
   document() {
-    return Meteor.users.findOne({ _id: Template.instance().getUserId() });
+    return Meteor.users.findOne({ _id: this.getUserId() });
   },
   schema() {
     const profileSchema = new SimpleSchema([
@@ -53,14 +57,13 @@ Template.Profile_form.helpers({
     profileSchema.i18n('schemaUsers');
     return profileSchema;
   },
-});
-
-Template.Profile_form.events({
-  'click .js-delete'(event, instance) {
-    Modal.confirmAndCall(removeUser, { _id: Meteor.userId() }, {
-      action: 'delete user',
-      message: 'deleteUserWarning',
-    });
+  events: {
+    'click .js-delete'(event, instance) {
+      Modal.confirmAndCall(removeUser, { _id: Meteor.userId() }, {
+        action: 'delete user',
+        message: 'deleteUserWarning',
+      });
+    },
   },
 });
 

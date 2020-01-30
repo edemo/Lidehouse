@@ -21,8 +21,8 @@ import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel
 import '/imports/api/transactions/parcel-billings/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
-import '/imports/ui_3/views/modals/bill-edit.js';
-import '/imports/ui_3/views/pages/bill-show.js';
+import '/imports/ui_3/views/components/bill-edit.js';
+import '/imports/ui_3/views/components/bill-view.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -64,11 +64,11 @@ Template.Accounting_bills.viewmodel({
     return (this.activePartnerRelation() === partnerRelation) && 'active';
   },
   collectionOf(activePartnerRelation) {
-    switch(activePartnerRelation) {
+    switch (activePartnerRelation) {
       case 'supplier':
       case 'customer': return 'bills';
       case 'parcel': return 'parcelBillings';
-      default: debugAssert(false, 'No such bill relation')
+      default: debugAssert(false, 'No such bill relation'); return undefined;
     }
   },
   findTxdef(category) {
@@ -77,7 +77,7 @@ Template.Accounting_bills.viewmodel({
       category,
       'data.relation': this.activePartnerRelation(),
     });
-    return txdef && txdef._id;
+    return txdef || {};
   },
   billsFilterSelector() {
     const selector = { communityId: this.communityId(), category: 'bill' };
@@ -161,9 +161,7 @@ Template.Accounting_bills.viewmodel({
 });
 
 Template.Accounting_bills.events({
-  ...(actionHandlers(Transactions)),
-  ...(actionHandlers(Partners)),
-//  ...(actionHandlers(ParcelBillings)),
+  ...(actionHandlers(Transactions, 'new')),
 });
 
 Template.Accounting_bills.events({

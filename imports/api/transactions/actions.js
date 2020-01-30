@@ -43,6 +43,11 @@ Transactions.actions = {
           fromAccount: reconciledStatementEntry.account,  // transfer
           toAccount: reconciledStatementEntry.account,  // transfer
         });
+      } else {
+        if (!doc) doc = {};
+        _.extend(doc, {
+          valueDate: new Date(),
+        });
       }
       Modal.show('Autoform_modal', {
         body: entity.editForm,
@@ -169,7 +174,7 @@ Transactions.actions = {
     run(options, doc) {
       Modal.confirmAndCall(Transactions.methods.remove, { _id: doc._id }, {
         action: 'delete transaction',
-        message: doc.isSolidified() ? 'Remove not possible after 24 hours' : '',
+        message: doc.isSolidified() ? 'Remove not possible after 24 hours' : 'It will disappear forever',
       });
     },
   },

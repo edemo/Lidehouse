@@ -1,7 +1,7 @@
 <template name="Page_heading">
 
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-12">
+        <div class="col-lg-8">
             <h2>{{title}}</h2>
             {{#unless noBreadcrumbs}}
             <ol class="breadcrumb">
@@ -19,5 +19,14 @@
             </ol>
             {{/unless}}
         </div>
+        {{#if (equals title (_ 'bill'))}}
+        <div class="col-lg-4">
+            <div class="title-action">
+                <!--a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a-->
+                <!--a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a-->
+                <a href="/invoicePrint" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i> Print Customer bill </a>
+            </div>
+        </div>
+        {{/if}}
     </div>
 </template>
