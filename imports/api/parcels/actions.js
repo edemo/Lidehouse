@@ -23,6 +23,8 @@ Parcels.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
+    color: () => 'primary',
+    label: () => __('new') + ' ' + __('parcel'),
     visible: (options, doc) => currentUserHasPermission('parcels.insert', doc),
     run() {
       Modal.show('Autoform_modal', {

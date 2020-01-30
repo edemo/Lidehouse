@@ -224,10 +224,6 @@ Template.Community_page.viewmodel({
   },
 });
 
-Template.Roleships_box.events({
-  ...(actionHandlers(Memberships, 'new')),
-});
-
 Template.Occupants_box.events({
   ...(actionHandlers(Memberships, 'new')),
   ...(actionHandlers(Parcelships, 'new')),
@@ -243,7 +239,6 @@ Template.Meters_box.events({
 });
 
 Template.Parcels_box.events({
-  ...(actionHandlers(Parcels, 'new')),
   'click .parcels .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
     instance.viewmodel.showAllParcels(!oldVal);

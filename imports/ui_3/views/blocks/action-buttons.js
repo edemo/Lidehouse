@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
+import { debugAssert } from '/imports/utils/assert.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';  // TODO get rid of
 import './menu-overflow-guard.js';
 import './action-buttons.html';
@@ -74,12 +75,15 @@ Template.Action_button.viewmodel({
     return action.name;
   },
   long() {
-    return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
+    return this.templateInstance.data.size !== 'sm';
   },
   btnSize() {
-    switch (this.templateInstance.data.size) {
-      case 'xl': return 'md';
-      default: return 'xs';
+    switch (this.templateInstance.data.size) {  // TODO: This is not just size, but the "kind" of the button
+      case 'xl': return 'md';   // This is the large, palced on the bill footer buttons
+      case 'lg': return 'xs';   // This is the long, thin version
+      case 'md': return 'sm';   // This is the 'new' buttons
+      case 'sm': return 'xs';   // this is the table cell buttons
+      default: debugAssert(false, 'No such btn size'); return undefined;
     }
   },
   getOptions() {

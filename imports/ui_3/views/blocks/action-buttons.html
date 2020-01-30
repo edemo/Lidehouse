@@ -1,7 +1,10 @@
 <template name="Action_button">
   {{#if action.visible getOptions getDoc}}
     <a {{dataObject}} href="{{action.href getOptions getDoc}}" class="btn btn-{{btnSize}} btn-{{or (action.color getOptions getDoc) 'white'}} text-capitalize js-{{action.name}}" title="{{#unless long}}{{_ title}}{{/unless}}">
-      <i class="{{action.icon getOptions getDoc}}"></i>{{#if long}} {{_ title}}{{/if}}
+      <i class="{{action.icon getOptions getDoc}}"></i>
+      {{#if long}}
+          {{#if equals size 'md'}}<strong>{{_ title}}</strong>{{else}}{{_ title}}{{/if}}
+      {{/if}}
     </a>
   {{/if}}
 </template>

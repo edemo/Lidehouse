@@ -17,7 +17,9 @@ Memberships.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission(`${options.entity}.insert`, doc),
+    color: () => 'primary',
+    label: options => __('new') + ' ' + __(options.entity.name),
+    visible: (options, doc) => currentUserHasPermission(`${options.entity.name}.insert`, doc),
     run(options) {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
