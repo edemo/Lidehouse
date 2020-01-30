@@ -234,8 +234,11 @@
     }
   },
   "schemaParcelships": {
-    "leadRef": {
+    "leadParcelId": {
       "label": "Lead parcel"
+    },
+    "parcelId": {
+      "label": "Follower parcel"
     }
   },
   "schemaMemberships" : {
