@@ -109,6 +109,9 @@ Template.Delegations_for_others.events({
 });
 
 Template.Delegations.events({
+  'click .js-new'(event) {
+    Delegations.actions.new.run({}, { sourceId: Meteor.userId() });
+  },
   'click #allow'(event) {
     event.preventDefault();
     const value = event.target.checked;
