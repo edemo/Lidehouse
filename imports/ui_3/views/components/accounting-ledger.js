@@ -24,10 +24,10 @@ Template.Accounting_ledger.viewmodel({
     });
   },
   communityId() {
-    return Session.get('activeCommunityId');
+    return getActiveCommunityId();
   },
   breakdown(name) {
-    return Breakdowns.findOneByName(name, Session.get('activeCommunityId'));
+    return Breakdowns.findOneByName(name, this.communityId());
   },
   totalTag() {
     return ['T'];
@@ -51,7 +51,8 @@ Template.Accounting_ledger.viewmodel({
 
 Template.Accounting_ledger.events({
   'click .cell,.row-header'(event, instance) {
-    if (!Meteor.user().hasPermission('transactions.inCommunity')) return;
+    const communityId = instance.viewmodel.communityId();
+    if (!Meteor.user().hasPermission('transactions.inCommunity', { communityId })) return;
     const accountCode = $(event.target).closest('[data-account]').data('account');
     const periodTag = $(event.target).closest('[data-tag]').data('tag');
     const period = Period.fromTag(periodTag);
@@ -68,13 +69,12 @@ Template.Accounting_ledger.events({
     });
   },
   'click .js-journals'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
       //    Session.update('modalContext', 'parcelId', doc._id);
     Modal.show('Modal', {
       title: 'Teljes journal lista',
       body: 'Journals_table',
-      bodyContext: {
-        communityId: getActiveCommunityId(),
-      },
+      bodyContext: { communityId },
       size: 'lg',
     });
   },

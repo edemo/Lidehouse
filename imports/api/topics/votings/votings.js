@@ -12,6 +12,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { getCurrentUserLang } from '/imports/api/users/users.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -45,7 +46,7 @@ Votings.voteTypeValues = Object.keys(Votings.voteTypes);
 
 function currentUsersPossibleEffectValues() {
   const user = Meteor.user();
-  if (!user.hasPermission('vote.insert')) return ['poll'];
+  if (!user.hasPermission('vote.insert', { communityId: getActiveCommunityId() })) return ['poll'];
   return Votings.voteEffectValues;
 }
 
