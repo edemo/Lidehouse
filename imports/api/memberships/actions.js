@@ -16,10 +16,13 @@ import './methods.js';
 Memberships.actions = {
   new: {
     name: 'new',
+//    icon: options => (Array.isArray(options.entity) ? 'fa fa-plus' : ''),
     icon: () => 'fa fa-plus',
     color: () => 'primary',
-    label: options => __('new') + ' ' + __(options.entity.name),
+    label: options => (Array.isArray(options.entity) ? `${__('new')}  ${__('occupant')}` : `${__('new')} ${__(options.entity.name)}`),
     visible: (options, doc) => currentUserHasPermission(`${options.entity.name}.insert`, doc),
+    subActions: options => Array.isArray(options.entity) && options.entity.length,
+    subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),
     run(options) {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
