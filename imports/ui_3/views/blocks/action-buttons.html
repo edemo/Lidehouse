@@ -1,9 +1,9 @@
 <template name="Action_button">
   {{#if action.visible getOptions getDoc}}
-    <a {{dataObject}} href="{{action.href getOptions getDoc}}" class="btn btn-{{btnSize}} btn-{{or (action.color getOptions getDoc) 'white'}} text-capitalize js-{{action.name}}" title="{{#unless long}}{{_ title}}{{/unless}}">
+    <a {{dataObject}} href="{{action.href getOptions getDoc}}" class="btn btn-{{btnSize}} btn-{{or (action.color getOptions getDoc) 'white'}} js-{{action.name}}" title="{{#unless long}}{{title}}{{/unless}}">
       <i class="{{action.icon getOptions getDoc}}"></i>
       {{#if long}}
-          {{#if equals size 'md'}}<strong>{{_ title}}</strong>{{else}}{{_ title}}{{/if}}
+          {{#if equals size 'md'}}<strong>{{title}}</strong>{{else}}{{title}}{{/if}}
       {{/if}}
     </a>
   {{/if}}
@@ -12,10 +12,10 @@
 <template name="Action_sub_actions_button">
     {{>Menu_overflow_guard}}
     <div class="dropdown pull-left">
-        <a href="{{action.href getOptions getDoc}}" data-toggle="dropdown" class="dropdown-toggle btn btn-{{btnSize}} btn-{{or (action.color getOptions getDoc) 'white'}} text-capitalize js-{{action.name}}" title="{{#unless long}}{{_ title}}{{/unless}}">
+        <a href="{{action.href getOptions getDoc}}" data-toggle="dropdown" class="dropdown-toggle btn btn-{{btnSize}} btn-{{or (action.color getOptions getDoc) 'white'}} js-{{action.name}}" title="{{#unless long}}{{title}}{{/unless}}">
           <i class="{{action.icon getOptions getDoc}}"></i> 
           {{#if long}}
-              {{#if equals size 'md'}}<strong>{{_ title}}</strong>{{else}}{{_ title}}{{/if}}
+              {{#if equals size 'md'}}<strong>{{title}}</strong>{{else}}{{title}}{{/if}}
           {{/if}} 
           <b class="caret"></b>
         </a>
@@ -44,9 +44,9 @@
 <template name="Action_listitem">
   {{#let enabled=(and (action.visible getOptions getDoc) 'enabled')}}
     <li class={{enabled}}>
-        <a {{dataObject}} href="{{action.href getOptions getDoc}}" class="text-capitalize js-{{action.name}}">
+        <a {{dataObject}} href="{{action.href getOptions getDoc}}" class="js-{{action.name}}">
         <span class="{{#unless enabled}}text-disabled{{/unless}}">
-            <i class="{{action.icon getOptions getDoc}}"></i> {{_ title}}
+            <i class="{{action.icon getOptions getDoc}}"></i> {{title}}
         </span>
         </a>
     </li>

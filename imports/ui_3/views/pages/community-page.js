@@ -225,8 +225,6 @@ Template.Community_page.viewmodel({
 });
 
 Template.Occupants_box.events({
-  ...(actionHandlers(Memberships, 'new')),
-  ...(actionHandlers(Parcelships, 'new')),
   'click .js-member'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const membership = Memberships.findOne(id);

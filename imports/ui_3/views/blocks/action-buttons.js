@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';  // TODO get rid of
 import './menu-overflow-guard.js';
@@ -39,8 +40,8 @@ export function actionHandlers(collection, actionNames) {
 const buttonHelpers = {
   title() {
     const action = this.templateInstance.data.action;
-    if (action.label) return action.label(this.getOptions(), this.getDoc());
-    return action.name;
+    const btnText = (action.label) ? action.label(this.getOptions(), this.getDoc()) : action.name;
+    return __(btnText).capitalize();
   },
   large() {
     return this.templateInstance.data.size === 'md' || this.templateInstance.data.size === 'xl';
