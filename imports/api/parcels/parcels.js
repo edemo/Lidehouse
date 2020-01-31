@@ -66,7 +66,6 @@ Parcels.idSet = ['communityId', 'ref'];
 
 Meteor.startup(function indexParcels() {
   Parcels.ensureIndex({ communityId: 1, ref: 1 }, { sparse: true });
-  Parcels.ensureIndex({ communityId: 1, leadRef: 1 }, { sparse: true });
   if (Meteor.isServer) {
     Parcels._ensureIndex({ lot: 1 });
   }
@@ -91,10 +90,14 @@ Parcels.helpers({
     if (leadParcel && leadParcel.ref !== this.ref) return leadParcel.ref;
     return '';
   },
-  followers() {
+  withFollowers() {
     const result = [];
     this.forEachLed(p => result.push(p));
     return result;
+  },
+  followers() {
+    const followerParcelIds = Parcelships.find({ leadParcelId: this._id }).map(p => p.parcelId);
+    return Parcels.find({ _id: { $in: followerParcelIds } });
   },
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')
@@ -123,7 +126,7 @@ Parcels.helpers({
     return this.representor() || this.owners().fetch()[0];
   },
   payerPartner() {
-    return this.payerMembership().person();
+    return this.payerMembership().partner();
   },
   display() {
     return `${this.ref || '?'} (${this.location()}) ${__(this.type)}`;
@@ -143,9 +146,9 @@ Parcels.helpers({
   },
   forEachLed(callback) {
     if (this.isLed()) return;
-    const ledParcels = Parcelships.findActive({ leadParcelId: this._id }).map(l => l.ledParcel());
-    ledParcels.push(this);
-    ledParcels.forEach(parcel => callback(parcel));
+    const followerParcels = Parcelships.findActive({ leadParcelId: this._id }).map(l => l.followerParcel());
+    followerParcels.push(this);
+    followerParcels.forEach(parcel => callback(parcel));
   },
   // Voting
   ledUnits() {

@@ -17,7 +17,7 @@ if (Meteor.isServer) {
   let userId;
   let communityId;
   let parcelId;
-  let leadRef;
+  let leadParcelId;
   let activeParcelship;
   let parcelshipId;
   let parcelshipId2;
@@ -49,9 +49,9 @@ if (Meteor.isServer) {
         userId = Fixture.demoManagerId;
         communityId = Fixture.demoCommunityId;
         parcelId = Fixture.dummyParcels[1];
-        leadRef = 'AP02';
+        leadParcelId = Fixture.dummyParcels[2];
 
-        parcelshipWithoutActiveTimeId = insertParcelship._execute({ userId }, { communityId, parcelId, leadRef });
+        parcelshipWithoutActiveTimeId = insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId });
         done();
       });
 
@@ -62,14 +62,14 @@ if (Meteor.isServer) {
 
       it('can insert only one active parcelship', function (done) {
 
-        activeParcelship = insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: now } });
+        activeParcelship = insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: now } });
 
         chai.assert.throws(() => {
-          insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past } });
+          insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past } });
         }, 'err_sanityCheckFailed');
 
         chai.assert.throws(() => {
-          insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past2 } });
+          insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past2 } });
         }, 'err_sanityCheckFailed');
 
         removeParcelship._execute({ userId }, { _id: activeParcelship });
@@ -78,56 +78,56 @@ if (Meteor.isServer) {
       });
 
       it('can\'t insert a parcelship, what touches an existing one', function (done) {
-        insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past7, end: past4 } });
+        insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past7, end: past4 } });
 
         chai.assert.throws(() => {
-          insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past5 } });
+          insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past5 } });
         }, 'err_sanityCheckFailed');
 
         chai.assert.throws(() => {
-          insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past5, end: past2 } });
+          insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past5, end: past2 } });
         }, 'err_sanityCheckFailed');
 
         chai.assert.throws(() => {
-          insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past8, end: past5 } });
+          insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past8, end: past5 } });
         }, 'err_sanityCheckFailed');
 
         chai.assert.throws(() => {
-          insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past8, end: past2 } });
+          insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past8, end: past2 } });
         }, 'err_sanityCheckFailed');
 
         chai.assert.throws(() => {
-          insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past6, end: past5 } });
+          insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past6, end: past5 } });
         }, 'err_sanityCheckFailed');
 
         done();
       });
 
       it('can insert a parcelship, what doesn\'t touches an existing one', function (done) {
-        insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past9, end: past8 } });
+        insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past9, end: past8 } });
 
         done();
       });
 
       it('can\'t insert an active parcelship, if there is a closed one with a newer closing date', function (done) {
         chai.assert.throws(() => {
-          insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past8 } });
+          insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past8 } });
         }, 'err_sanityCheckFailed');
 
         done();
       });
 
       it('can\'t insert a closed parcelship, if there is an active one with an older start date', function (done) {
-        parcelshipId = insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past3 } });
+        parcelshipId = insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past3 } });
         chai.assert.throws(() => {
-          insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past2, end: past } });
+          insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past2, end: past } });
         }, 'err_sanityCheckFailed');
 
         done();
       });
 
       it('can\'t update a parcelship, if the result touches an existing one', function (done) {
-        parcelshipId2 = insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: past10, end: past9 } });
+        parcelshipId2 = insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: past10, end: past9 } });
         chai.assert.throws(() => {
           updateParcelship._execute({ userId }, { _id: parcelshipId2, modifier: { $set: { 'activeTime.end': past6 } } });
         }, 'err_sanityCheckFailed');
@@ -143,7 +143,7 @@ if (Meteor.isServer) {
 
       it('can\'t update an active parcelship, if there is a closed one with a newer closing date', function (done) {
         updateParcelship._execute({ userId }, { _id: parcelshipId, modifier: { $set: { 'activeTime.end': past3 } } });
-        const parcelshipId3 = insertParcelship._execute({ userId }, { communityId, parcelId, leadRef, activeTime: { begin: now } });
+        const parcelshipId3 = insertParcelship._execute({ userId }, { communityId, parcelId, leadParcelId, activeTime: { begin: now } });
         chai.assert.throws(() => {
           updateParcelship._execute({ userId }, { _id: parcelshipId3, modifier: { $set: { 'activeTime.begin': past8 } } });
         }, 'err_sanityCheckFailed');

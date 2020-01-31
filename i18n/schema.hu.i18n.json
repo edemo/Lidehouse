@@ -235,8 +235,11 @@
     }
   },
   "schemaParcelships" : {
-    "leadRef": {
+    "leadParcelId": {
       "label": "Vezető albetét"
+    },
+    "parcelId": {
+      "label": "Kapcsolt albetét"
     }
   },
   "schemaMemberships" : {

@@ -98,7 +98,7 @@ Memberships.actions = {
     run(options, doc, event, instance) {
       Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, {
         action: 'invite user',
-        message: __('Connecting user', doc.person().primaryEmail() || __('undefined')),
+        message: __('Connecting user', doc.partner().primaryEmail() || __('undefined')),
       });
     },
   },

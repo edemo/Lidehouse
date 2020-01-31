@@ -21,7 +21,7 @@ Parcelships.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.parcelship.insert',
         collection: Parcelships,
-        omitFields: ['parcelId', 'leadParcelId'],
+        omitFields: ['parcelId'],
         type: 'method',
         meteormethod: 'parcelships.insert',
       });

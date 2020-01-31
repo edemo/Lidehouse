@@ -6,6 +6,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Parcels } from '../parcels/parcels.js';
+import { Parcelships } from '../parcelships/parcelships.js';
 
 Parcels.findWithRelatedDocs = function (...args) {
   return {
@@ -68,12 +69,20 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
         return Parcels.find(parcelId);
       },
       children: [{
-        find(ownParcel) {
-          return Parcels.find({
-            communityId: ownParcel.communityId,
-            $or: [{ ref: ownParcel.ref }, { leadRef: ownParcel.ref }],
-          });
+        find(parcel) {
+          return Parcelships.find({ leadParcelId: parcel._id });
         },
+        children: [{
+          find(parcelship) {
+            return Parcels.find(parcelship.parcelId);
+          },
+          children: [{
+         // Publish the Meters of the followerParcel
+            find(parcel) {
+              return Meters.find({ parcelId: parcel._id });
+            },
+          }],
+        }],
       }, {
         // Publish the Meters of the Parcel
         find(parcel) {
