@@ -16,10 +16,13 @@ function initialize(template, collection, instance) {
   });
 }
 
-function show(event, contextObj, instance) {
-  instance.context.set(contextObj);
-  // We used meteor variable to display, but the hiding is flickering
-  $('#context-menu').css('display', 'block');
+function positioningToElement(event) {
+  const left = event.target.getBoundingClientRect().left + window.scrollX + $(event.target).width();
+  const top = event.target.getBoundingClientRect().top + window.scrollY + $(event.target).height();
+  $('#context-menu').offset({ left, top });
+}
+
+function positioningToClick(event) {
   if (event.screenX > window.innerWidth/2) {
     $('#context-menu').offset({ left: event.pageX + 10, top: event.pageY - 10 });
     Meteor.defer(function () { $('#context-menu').children(':first').removeClass('pull-left'); });
@@ -29,6 +32,14 @@ function show(event, contextObj, instance) {
     Meteor.defer(function () { $('#context-menu').children(':first').removeClass('pull-right'); });
     Meteor.defer(function () { $('#context-menu').children(':first').addClass('pull-left'); });
   }
+}
+
+function show(event, contextObj, instance, options) { // options is an object
+  instance.context.set(contextObj);
+  // We used meteor variable to display, but the hiding is flickering
+  $('#context-menu').css('display', 'block');
+  if (options && options.snap) positioningToElement(event);
+  else positioningToClick(event);
 }
 
 function hide() {
