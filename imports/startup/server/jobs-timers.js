@@ -7,7 +7,7 @@ import { cleanExpiredEmails } from '/imports/startup/server/accounts-verificatio
 import { cleanCanceledVoteAttachments } from '/imports/api/shareddocs/methods.js';
 import { processNotifications, notifyExpiringVotings } from '/imports/email/notifications-send.js';
 
-const bindEnv = func => Meteor.bindEnvironment(func, (err) => { console.log(err); });
+const bindEnv = func => Meteor.bindEnvironment(func, (err) => { console.error(err); });
 
 Meteor.startup(() => {
   const dailySchedule = later.parse.recur().on(0).hour();

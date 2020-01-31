@@ -119,15 +119,14 @@ Topics.actions = {
       return newStatus.label || __('Change status to', newStatusName);
     },
     icon(options) {
-      if (!options) return 'fa fa-cogs';
-      const newStatus = options.status;
-      return newStatus.icon || 'fa fa-cogs';
+      if (!options || !options.status || !options.status.icon) return 'fa fa-cogs';
+      return options.status.icon;
     },
     visible(options, doc) {
       return doc && currentUserHasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc);
     },
-    subActions: true,
-    subActionsOptions(doc) {
+    subActions: () => true,
+    subActionsOptions(options, doc) {
       if (!doc) return [];
       return doc.possibleNextStatuses().map(status => ({ status }));
     },

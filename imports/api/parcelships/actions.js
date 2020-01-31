@@ -15,6 +15,7 @@ Parcelships.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
+    label: () => __('new') + ' ' + __('parcelship'),
     visible: (options, doc) => currentUserHasPermission('parcelships.insert', doc),
     run() {
       Modal.show('Autoform_modal', {

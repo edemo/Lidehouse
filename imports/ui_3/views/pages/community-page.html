@@ -35,11 +35,9 @@
 <template name='Roleships_box'>
     <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
     <h2>{{_ 'officers'}}</h2>
-    {{#if currentUserHasPermission 'roleship.insert'}}
-    <button class="btn btn-primary btn-sm pull-right js-new memberships" data-entity="roleship">
-        <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong>
-    </button>
-    {{/if}}
+    <div class="pull-right">
+        {{>Action_buttons_group collection='memberships' actions='new' size='md' options=(obj '{ "entity": "roleship" }')}}
+    </div> 
     <p>
         {{_ 'List of officers'}} - <i class="fa fa-user"></i> {{officers.length}}<br>
         {{_ "Click person's name to see contact info"}}
@@ -66,9 +64,7 @@
                     <tr class="memberships" data-id="{{doc._id}}">
                         <td><a href="" class="client-avatar js-member"><img alt="image" src={{doc.partner.avatar}}></a></td>
                         <td><a href="" class="client-link js-member">{{doc.partner.displayName}}</a>  
-                            {{#if currentUserHasPermission 'partners.update'}}
-                            {{>Action_buttons_group collection='partners' doc=doc.partnerId actions='view,edit' size='sm'}}
-                            {{/if}}
+                           {{>Action_buttons_group collection='partners' doc=doc.partnerId actions='view,edit' size='sm'}}
                         </td>
                         <td>{{>Active_period collection='memberships' doc=doc}}</td>
                             {{#if equals entity 'ownership'}}
@@ -108,27 +104,11 @@
 <template name="Occupants_box">
     <div>
         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
-        <h2>{{_ 'occupants'}} {{parcelshipTitle}}                
-        </h2>
-        {{#if currentUserHasPermission 'benefactorship.insert'}}
-            <div class="dropdown btn-group pull-right">
-                <button href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
-                    <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'occupant'}}</strong> <b class="caret"></b>
-                </button>
-                <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
-                    {{#if currentUserHasPermission 'ownership.insert'}}
-                    <li><a href="" class="js-new memberships" data-entity="ownership">{{_ 'new'}} {{_ 'owner'}}</a></li>
-                    {{/if}}
-                    {{#if currentUserHasPermission 'benefactorship.insert'}}
-                    <li><a href="" class="js-new memberships" data-entity="benefactorship">{{_ 'new'}} {{_ 'benefactor'}}</a></li>
-                    {{/if}}
-                    {{#if currentUserHasPermission 'parcelships.insert'}}
-                    <li><a href="" class="js-new parcelships">{{_ 'new'}} {{_ 'parcelship'}}</a></li>
-                    {{/if}}
-                </ul>
-            <button class="btn btn-white btn-sm js-import ownership" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
-            </div>  
-        {{/if}}
+        <h2>{{_ 'occupants'}} {{parcelshipTitle}}</h2>
+        <div class="pull-right">
+            {{>Action_buttons_group collection='memberships' actions='new' size='md' options=(obj '{ "entity": ["ownership","benefactorship"] }')}}
+            {{>Action_buttons_group collection='parcelships' actions='new' size='md'}}
+        </div>
         <p>
             {{_ "Click person's name to see contact info"}}
         </p>
@@ -194,10 +174,7 @@
             {{#unless showAllParcels}}
             <button class="btn btn-primary btn-sm js-show-all"><strong> {{_ 'Show all parcels'}}</strong></button>
             {{/unless}}
-            {{#if currentUserHasPermission 'parcels.insert'}}
-            <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcel'}}</strong></button>
-            <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
-            {{/if}}
+            {{>Action_buttons_group collection='parcels' actions='new,import' size='md'}}
         </div>
         <p>
             {{#if showAllParcels}}

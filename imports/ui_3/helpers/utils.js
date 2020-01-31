@@ -100,6 +100,11 @@ Template.registerHelper('log', function log(stuff) {
   console.log(stuff);
 });
 
+Template.registerHelper('obj', function obj(json) {
+  if (!json) return undefined;
+  return JSON.parse(json);
+});
+
 Template.registerHelper('entriesOf', function entriesOf(obj) {
   if (!obj) return undefined;
   return Object.entries(obj);
@@ -108,6 +113,7 @@ Template.registerHelper('entriesOf', function entriesOf(obj) {
 Template.registerHelper('keys', function keys(object) {
   return Object.keys(object);
 });
+
 Template.registerHelper('select', function select(key, object) {
   return object[key];
 });

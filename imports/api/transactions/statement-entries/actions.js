@@ -85,8 +85,8 @@ StatementEntries.actions = {
       if (!doc || doc.isReconciled()) return false;
       return currentUserHasPermission('statements.reconcile', doc);
     },
-    subActions: true,
-    subActionsOptions(doc) {
+    subActions: () => true,
+    subActionsOptions(options, doc) {
       const txdefs = Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx());
       return txdefs.map(txdef => ({ txdef }));
     },
