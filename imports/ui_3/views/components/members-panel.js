@@ -16,7 +16,7 @@ const MEMBERS_TO_SHOW = 10;
 Template.Members_panel.onCreated(function onCreated() {
 //  const communityId = Session.get('activeCommunityId');
 //  const manager = Memberships.findOneActive({ communityId, role: 'manager' });
-//  if (manager) Session.set('messengerPersonId', manager.userId);
+//  if (manager) Session.set('messengerPartnerId', manager.userId);
 });
 
 Template.Members_panel.onRendered(function onRendered() {
@@ -26,22 +26,22 @@ Template.Members_panel.viewmodel({
   tooManyMembers: false,
   leaders() {
     const communityId = Session.get('activeCommunityId');
-    const personSearch = Session.get('messengerPersonSearch');
+    const partnerSearch = Session.get('messengerPartnerSearch');
     let managers = Memberships.findActive({ communityId, role: { $in: leaderRoles }, userId: { $exists: true, $ne: Meteor.userId() } }).fetch();
     managers = _.uniq(managers, false, m => m.userId);
-    if (personSearch) {
-      managers = managers.filter(m => m.person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
+    if (partnerSearch) {
+      managers = managers.filter(m => m.partner().displayName().toLowerCase().search(partnerSearch.toLowerCase()) >= 0);
     }
     return managers;
   },
   members() {
     const communityId = Session.get('activeCommunityId');
-    const personSearch = Session.get('messengerPersonSearch');
+    const partnerSearch = Session.get('messengerPartnerSearch');
     let nonManagers = Memberships.findActive({ communityId, role: { $not: { $in: leaderRoles } }, userId: { $exists: true, $ne: Meteor.userId() } }).fetch();
     nonManagers = _.uniq(nonManagers, false, m => m.userId);
     if (nonManagers.length > MEMBERS_TO_SHOW * 2) this.tooManyMembers(true);
-    if (personSearch) {
-      nonManagers = nonManagers.filter(m => m.person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
+    if (partnerSearch) {
+      nonManagers = nonManagers.filter(m => m.partner().displayName().toLowerCase().search(partnerSearch.toLowerCase()) >= 0);
     } else {
       if (this.tooManyMembers()) {
         nonManagers = nonManagers.filter(m => Rooms.getRoom(Session.get('roomMode'), m.userId));
@@ -58,13 +58,13 @@ Template.Members_panel.viewmodel({
 
 Template.Members_panel.events({
   'keyup #search'(event) {
-    Session.set('messengerPersonSearch', event.target.value);
+    Session.set('messengerPartnerSearch', event.target.value);
   },
 });
 
 // ---------------------- Member_slot ----------------------
 
-Template.Member_slot.onCreated(function onMsgPersonCreated() {
+Template.Member_slot.onCreated(function onMsgPartnerCreated() {
 });
 
 Template.Member_slot.helpers({

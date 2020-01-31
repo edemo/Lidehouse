@@ -64,11 +64,11 @@ Template.Accounting_bills.viewmodel({
     return (this.activePartnerRelation() === partnerRelation) && 'active';
   },
   collectionOf(activePartnerRelation) {
-    switch(activePartnerRelation) {
+    switch (activePartnerRelation) {
       case 'supplier':
       case 'customer': return 'bills';
       case 'parcel': return 'parcelBillings';
-      default: debugAssert(false, 'No such bill relation')
+      default: debugAssert(false, 'No such bill relation'); return undefined;
     }
   },
   findTxdef(category) {
@@ -161,9 +161,7 @@ Template.Accounting_bills.viewmodel({
 });
 
 Template.Accounting_bills.events({
-  ...(actionHandlers(Transactions)),
-  ...(actionHandlers(Partners)),
-//  ...(actionHandlers(ParcelBillings)),
+  ...(actionHandlers(Transactions, 'new')),
 });
 
 Template.Accounting_bills.events({

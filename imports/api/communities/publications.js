@@ -33,7 +33,7 @@ function communityPublication(userId, _id) {
       },
       children: [{
         find(membership) {
-          return Meteor.users.find({ _id: membership.person.userId }, { fields: Meteor.users.publicFields });
+          return Meteor.users.find({ _id: membership.userId }, { fields: Meteor.users.publicFields });
         },
       }],
     }],

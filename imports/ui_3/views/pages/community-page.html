@@ -3,26 +3,26 @@
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <tbody>
-                {{#each row in roleships}}
-                    <tr data-id="{{row._id}}">
-                        <td><a href="{{pathFor 'User show' _id=row.person.userId}}" class="client-avatar"><img alt="image" src={{row.person.avatar}}></a></td>
-                        <td><a href="{{pathFor 'User show' _id=row.person.userId}}" class="client-link">{{row.person.displayName}}</a></td>
-                        <td><span class="label label-plain">{{_ row.role}}</span> 
-                            {{#if row.rank}}<span class="label label-plain">{{_ rank}}</span>{{/if}}
+                {{#each doc in roleships}}
+                    <tr data-id="{{doc._id}}">
+                        <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-avatar"><img alt="image" src={{doc.partner.avatar}}></a></td>
+                        <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-link">{{doc.partner.displayName}}</a></td>
+                        <td><span class="label label-plain">{{_ doc.role}}</span> 
+                            {{#if doc.rank}}<span class="label label-plain">{{_ rank}}</span>{{/if}}
                         </td>
                         <td>
-                            {{#if row.person.user.profile.publicEmail}}
-                            <i class="contact-type fa fa-at"></i>{{row.person.user.profile.publicEmail}}
+                            {{#if doc.partner.user.profile.publicEmail}}
+                            <i class="contact-type fa fa-at"></i>{{doc.partner.user.profile.publicEmail}}
                             {{/if}}
-                            {{#if (and row.person.user.profile.publicEmail row.person.user.profile.phone)}}
+                            {{#if (and doc.partner.user.profile.publicEmail doc.partner.user.profile.phone)}}
                             <br>
                             {{/if}}
-                            {{#if row.person.user.profile.phone}}
-                            <i class="contact-type fa fa-phone"></i>{{row.person.user.profile.phone}}
+                            {{#if doc.partner.user.profile.phone}}
+                            <i class="contact-type fa fa-phone"></i>{{doc.partner.user.profile.phone}}
                             {{/if}}
                         </td>
                         <td class="text-right">
-                            {{>Action_buttons_group collection='memberships' doc=row actions='edit,invite,delete' size='lg'}}
+                            {{>Action_buttons_group collection='memberships' doc=doc actions='edit,invite,delete' size='lg'}}
                         </td>
                     </tr>
                 {{/each}}
@@ -61,41 +61,41 @@
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <tbody>
-                    {{#each row in memberships}}
-                    {{#let entity=row.entityName}}
-                    <tr class="memberships" data-id="{{row._id}}">
-                        <td><a href="" class="client-avatar js-member"><img alt="image" src={{row.person.avatar}}></a></td>
-                        <td><a href="" class="client-link js-member">{{row.person.displayName}}</a>  
+                    {{#each doc in memberships}}
+                    {{#let entity=doc.entityName}}
+                    <tr class="memberships" data-id="{{doc._id}}">
+                        <td><a href="" class="client-avatar js-member"><img alt="image" src={{doc.partner.avatar}}></a></td>
+                        <td><a href="" class="client-link js-member">{{doc.partner.displayName}}</a>  
                             {{#if currentUserHasPermission 'partners.update'}}
-                            {{>Action_buttons_group collection='partners' doc=row.partnerId actions='view,edit' size='sm'}}
+                            {{>Action_buttons_group collection='partners' doc=doc.partnerId actions='view,edit' size='sm'}}
                             {{/if}}
                         </td>
-                        <td>{{>Active_period row}}</td>
+                        <td>{{>Active_period collection='memberships' doc=doc}}</td>
                             {{#if equals entity 'ownership'}}
                             <td class="contact-type nowrap">
-                                <i class="fa fa-pie-chart" title="{{_ 'ownership proportion'}}"></i> {{row.ownership.share}}
-                                {{#if row.ownership.representor}}
+                                <i class="fa fa-pie-chart" title="{{_ 'ownership proportion'}}"></i> {{doc.ownership.share}}
+                                {{#if doc.ownership.representor}}
                                 <span class="label label-plain"><i class="fa fa-star"></i> {{_ 'representor'}}</span>
                                 {{/if}}
                             </td>
                             {{/if}}
                             {{#if equals entity 'benefactorship'}}
-                            <td><span class="label label-plain">{{_ row.benefactorship.type}}</span></td>
+                            <td><span class="label label-plain">{{_ doc.benefactorship.type}}</span></td>
                             {{/if}}
                         <td class="text-right">
-                            {{>Action_buttons_group collection='memberships' doc=row actions='edit,invite,delete' size='lg'}}
+                            {{>Action_buttons_group collection='memberships' doc=doc actions='edit,invite,delete' size='lg'}}
                         </td>
                     </tr>
                     {{/let}}
                     {{/each}}
-                    {{#each row in parcelships}}
-                    <tr class="parcelships" data-id="{{row._id}}">
+                    {{#each doc in parcelships}}
+                    <tr class="parcelships" data-id="{{doc._id}}">
                         <td class="text-center"> <a class="client-avatar"><i class="fa fa-lg fa-share"></i></a></td>
-                        <td><button class="js-occupants parcels" data-id="{{row.leadParcelId}}"><strong title="{{_ 'parcelship'}}">{{row.leadRef}}</strong></button></td>
-                        <td>{{>Active_period row}}</td>
+                        <td><button class="js-occupants parcels" data-id="{{doc.leadParcelId}}"><strong title="{{_ 'parcelship'}}">{{doc.leadParcel.ref}}</strong></button></td>
+                        <td>{{>Active_period collection='parcelship' doc=doc}}</td>
                         <td><span class="label label-plain">{{_ 'lead parcel'}}</span></td>
                         <td class="text-right">
-                            {{>Action_buttons_group collection='parcelships' doc=row actions='edit,delete' size='lg'}}
+                            {{>Action_buttons_group collection='parcelships' doc=doc actions='edit,delete' size='lg'}}
                         </td>
                     </tr>
                     {{/each}}
@@ -148,7 +148,7 @@
                     {{#each rows}}
                     <tr data-id="{{_id}}">
                         <td>{{{displayMeterService this.service}}}</td>
-                        <td>{{>Active_period this}}</td>
+                        <td>{{>Active_period collection='meters' doc=this}}</td>
                         <td>{{_ 'schemaMeters.lastRead.label'}}:
                             <small>{{displayDate this.lastReading.date}}</small> 
                             {{{displayReading this.lastReading.value}}}
@@ -229,10 +229,10 @@
                 {{#if community.management}}
                 <div class="ibox communities data-id={{communityId}}">
                     <div class="ibox-content">
-                        {{#if currentUserHasPermission 'communities.update' community}}
                         <!--span class="text-muted small pull-right">{{_ 'Modifiable at Building Data edit'}}</span-->
-                        <button class="btn-white btn btn-xs js-edit pull-right"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                        {{/if}}
+                        <div class="pull-right">
+                            {{>Action_buttons_group collection='communities' actions='edit' doc=communityId size='lg'}}
+                        </div>
                         <h2>{{_ 'schemaCommunities.management.label'}}</h2>
                         <p>{{#markdown}}{{community.management}}{{/markdown}}</p>
                     </div>
@@ -248,9 +248,9 @@
                 <div class="ibox float-e-margins communities" data-id={{communityId}}>
                     <div class="ibox-title">
                         <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
-                        {{#if currentUserHasPermission 'communities.update' community}}
-                          <button class="btn-white btn btn-xs js-edit pull-right"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                        {{/if}}
+                        <div class="pull-right">
+                            {{>Action_buttons_group collection='communities' actions='edit' doc=community size='lg'}}
+                        </div>
                     </div>
                     <div>
                         <div class="ibox-content no-padding border-left-right">

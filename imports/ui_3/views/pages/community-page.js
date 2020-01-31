@@ -29,6 +29,7 @@ import { Meters } from '/imports/api/meters/meters.js';
 import '/imports/api/meters/actions.js';
 import '/imports/api/users/users.js';
 import '/imports/api/users/actions.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/active-archive-tabs.js';
 import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';
 import '/imports/ui_3/views/common/page-heading.js';
@@ -36,7 +37,6 @@ import '/imports/ui_3/views/components/action-buttons.html';
 import '/imports/ui_3/views/components/contact-long.js';
 import '/imports/ui_3/views/blocks/active-period.js';
 import '/imports/ui_3/views/blocks/menu-overflow-guard.js';
-import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './community-page.html';
 
 Template.Roleships_box.viewmodel({
@@ -225,32 +225,27 @@ Template.Community_page.viewmodel({
 });
 
 Template.Roleships_box.events({
-  ...(actionHandlers(Memberships)),
+  ...(actionHandlers(Memberships, 'new')),
 });
 
 Template.Occupants_box.events({
-  ...(actionHandlers(Memberships, 'new,period')),
-  ...(actionHandlers(Parcelships, 'new,period')),
-  ...(actionHandlers(Parcels, 'occupants')),
+  ...(actionHandlers(Memberships, 'new')),
+  ...(actionHandlers(Parcelships, 'new')),
   'click .js-member'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const membership = Memberships.findOne(id);
-    Meteor.users.actions.view.run({}, membership.person().user());
+    Meteor.users.actions.view.run({}, membership.partner().user());
   },
 });
 
 Template.Meters_box.events({
-  ...(actionHandlers(Meters, 'new,period')),
+...(actionHandlers(Meters, 'new')),
 });
 
 Template.Parcels_box.events({
-  ...(actionHandlers(Parcels)),
+  ...(actionHandlers(Parcels, 'new')),
   'click .parcels .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
     instance.viewmodel.showAllParcels(!oldVal);
   },
-});
-
-Template.Community_page.events({
-  ...(actionHandlers(Communities)),
 });

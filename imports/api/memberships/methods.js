@@ -45,7 +45,7 @@ function checkParcelMembershipsSanity(parcelId, memberships) {
       `New total shares would become: ${ownedShare}, for parcel ${parcel._id}`);
   }
   // Following check is not good, if we have activePeriods (same guy can have same role at a different time)
-  // checkNotExists(Memberships, { communityId: doc.communityId, role: doc.role, parcelId: doc.parcelId, person: doc.person });
+  // checkNotExists(Memberships, { communityId: doc.communityId, role: doc.role, parcelId: doc.parcelId, partnerId: doc.partnerId });
 }
 
 export const insert = new ValidatedMethod({
@@ -102,7 +102,7 @@ export const linkUser = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    const email = doc.person().primaryEmail();
+    const email = doc.partner().contact.email;
     if (!email) throw new Meteor.Error('err_sanityCheckFailed', 'No contact email set for this membership', doc);
     if (this.isSimulation) return;  // Not possible to find and link users on the client side, as no user data available
 

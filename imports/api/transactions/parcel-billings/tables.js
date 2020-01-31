@@ -19,8 +19,9 @@ export function parcelBillingColumns() {
     { data: 'projection.base', title: __('schemaParcelBillings.projection.base.label'), render: Render.translate },
 //    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'lastAppliedAt().date', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'parcelBillings', actions: '', size: 'sm' }),
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'parcelBillings', actions: '', size: 'sm' }, cell),
     },
   ];
   return columns;

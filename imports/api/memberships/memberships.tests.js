@@ -167,7 +167,7 @@ if (Meteor.isServer) {
       const createMembership = function (newrole) {
         const newMembership = {
           communityId: Fixture.demoCommunityId,
-          person: { userId: Fixture.demoUserId },
+          userId: Fixture.demoUserId,
           role: newrole,
         };
         if (newrole === 'owner' || newrole === 'benefactor') {
@@ -333,7 +333,7 @@ if (Meteor.isServer) {
         const userId = Fixture.demoManagerId;
         const leadParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '45', units: 0 });
         const parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '56', units: 0 });
-        insertParcelship._execute({ userId }, { communityId: Fixture.demoCommunityId, parcelId, leadRef: '45', activeTime: { begin: new Date() } });
+        insertParcelship._execute({ userId }, { communityId: Fixture.demoCommunityId, parcelId, leadParcelId, activeTime: { begin: new Date() } });
 
 
         Memberships.methods.insert._execute({ userId: Fixture.demoAdminId },

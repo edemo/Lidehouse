@@ -9,21 +9,23 @@ import { Blaze } from 'meteor/blaze';
 //import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
+import '/imports/ui_3/views/blocks/action-buttons.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
 export function parcelColumns() {
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'leadRef()', title: __('schemaParcels.leadRef.label') },
+    { data: 'leadRef()', title: __('schemaParcelships.leadParcelId.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'lot', title: __('schemaParcels.lot.label') },
     { data: 'area', title: 'm2' },
     { data: 'share()', title: __('schemaParcels.units.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'parcels', actions: 'view,edit,occupants,meters,delete', size: 'sm' }),
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      { doc: cellData, collection: 'parcels', actions: 'view,edit,occupants,meters,delete', size: 'sm' }, cell),
     },
   ];
 }
@@ -33,10 +35,11 @@ export function parcelFinancesColumns() {
     { data: 'ref', title: __('schemaParcels.ref.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
-    { data: 'followers()', title: __('follower parcels') },
+    { data: 'withFollowers()', title: __('follower parcels') },
     { data: 'outstanding', title: __('schemaBills.outstanding.label') },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'parcels', actions: 'finances,meters', size: 'sm' }),
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      rcreatedCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      { doc: cellData, collection: 'parcels', actions: 'finances,meters', size: 'sm' }, cell),
     },
   ];
 }
@@ -54,7 +57,7 @@ export function highlightMyRow(row, data, index) {
 /* with aldeed:tabular:
 const parcelColumns = [
   { data: 'ref', title: __('schemaParcels.ref.label') },
-  { data: 'leadRef()', title: __('schemaParcels.leadRef.label') },
+  { data: 'leadRef()', title: __('schemaParcels.leadParcelId.label') },
   { data: 'location()', title: __('schemaParcels.location.label') },
   { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
   { data: 'lot', title: __('schemaParcels.lot.label') },

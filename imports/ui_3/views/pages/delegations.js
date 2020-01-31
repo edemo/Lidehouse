@@ -2,12 +2,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import { AutoForm } from 'meteor/aldeed:autoform';
-import { $ } from 'meteor/jquery';
 
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
-
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
@@ -15,7 +13,6 @@ import '/imports/api/delegations/actions.js';
 import { delegationColumns } from '/imports/api/delegations/tables.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { remove as removeDelegation, allow as allowDelegations } from '/imports/api/delegations/methods.js';
-import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
@@ -104,13 +101,10 @@ Template.Delegations.helpers({
   },
 });
 
-Template.Delegations_for_others.events({
-  ...(actionHandlers(Delegations)),
-});
-
 Template.Delegations.events({
   'click .js-new'(event) {
-    Delegations.actions.new.run({}, { sourceId: Meteor.userId() });
+    const communityId = getActiveCommunityId();
+    Delegations.actions.new.run({}, { sourceId: Meteor.user().partnerId(communityId) });
   },
   'click #allow'(event) {
     event.preventDefault();

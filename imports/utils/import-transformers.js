@@ -4,10 +4,12 @@ import { Fraction } from 'fractional';
 import { flatten } from 'flat';
 import { moment } from 'meteor/momentjs:moment';
 
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels';
+import { Parcelships } from '/imports/api/parcelships/parcelships.js';
+import { Partners } from '../api/partners/partners';
 
 function flattenBankAccountNumber(BAN) {
   return BAN.trim().split('-').join();
@@ -31,6 +33,42 @@ export const Import = {
 // https://stackoverflow.com/questions/15130735/how-can-i-remove-time-from-date-with-moment-js
 
 export const Transformers = {
+  parcelships: {
+    default: (jsons, options) => {
+      const tjsons = [];
+      const communityId = getActiveCommunityId();
+      jsons.forEach((doc) => {
+        if (doc.leadRef && doc.leadRef !== doc.ref) {
+          const parcel = Parcels.findOne({ communityId, ref: doc.ref });
+          productionAssert(parcel, `No parcel with this ref ${doc.ref}`);
+          const leadParcel = Parcels.findOne({ communityId, ref: doc.leadRef });
+          productionAssert(leadParcel, `No parcel with this ref ${doc.leadRef}`);
+          const tdoc = {}; $.extend(true, tdoc, doc);
+          tdoc.parcelId = parcel._id;
+          tdoc.leadParcelId = leadParcel._id;
+          tjsons.push(tdoc);
+        }
+      });
+      return tjsons;
+    },
+  },
+  partners: {
+    default: (jsons, options) => {
+      const tjsons = [];
+      const communityId = getActiveCommunityId();
+      debugAssert(communityId);
+      jsons.forEach((doc) => {
+        const partner = Partners.findOne({ 'idCard.name': doc.idCard.name });
+        if (!partner) {
+          doc.idCard = doc.idCard || {};
+          doc.idCard.type = doc.idCard.type || 'natural';
+          doc.relation = doc.relation || 'parcel';
+          tjsons.push(doc);
+        }
+      });
+      return tjsons;
+    },
+  },
   memberships: {
     default: (jsons, options) => {
       const tjsons = [];
@@ -39,17 +77,14 @@ export const Transformers = {
       jsons.forEach((doc) => {
         const parcel = Parcels.findOne({ communityId, ref: doc.ref.trim() });
         doc.parcelId = parcel._id;
-        doc.person = doc.person || {};
-        doc.person.idCard = doc.person.idCard || {};
-        doc.person.contact = doc.person.contact || {};
-        doc.person.idCard.type = 'natural';
         doc.role = 'owner';
         const names = doc.owners ? doc.owners.split(/,|;|\n/) : [];
         const emails = doc.emails ? doc.emails.split(/,|;| |\n/) : [];
         names.forEach((name) => {
+          const partner = Partners.findOne({ 'idCard.name': name });
+          productionAssert(partner, `No partner with this name ${name}`);
           const tdoc = {}; $.extend(true, tdoc, doc);
-          tdoc.person.idCard.name = name;
-          tdoc.person.contact.email = emails[0] || undefined;
+          tdoc.partnerId = partner._id;
           tdoc.ownership = { share: new Fraction(1, names.length) };
           tjsons.push(tdoc);
         });
