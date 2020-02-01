@@ -65,7 +65,7 @@ zimme:active-route
 # i18n
 tap:i18n
 rzymek:moment-locale-hu
-gwendall:simple-schema-i18n
+shjiaye:simple-schema-i18n
 gwendall:autoform-i18n
 numeral:languages
 
