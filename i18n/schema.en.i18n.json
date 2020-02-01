@@ -913,6 +913,10 @@
       "label": "For which month",
       "placeholder": "(eg. 11)"
     },
+    "title": {
+      "label": "Title",
+      "placeholder": "(eg. Common cost)"
+    },
     "consumption": {
       "label": "Consumption basis (where a meter is installed)",
       "service": {
@@ -945,9 +949,13 @@
       "label": "Payin location",
       "help": "Billing will be applied to an individual parcel if an individual parcel is selected, or to all parcels that are under the selected group if a group is selected."
     },
-    "title": {
-      "label": "Title",
-      "placeholder": "(eg. Common cost)"
+    "type": {
+      "label": "Type, the billing applies to",
+      "help": "Choose a type if you'd like to apply to that type, but not the others."
+    },
+    "group": {
+      "label": "Group, the billing applies to",
+      "help": "Choose a group if you'd like to apply to that group, but not the others."
     },
     "note": {
       "label": "Note",

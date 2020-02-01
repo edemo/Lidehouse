@@ -43,6 +43,7 @@ Parcels.schema = new SimpleSchema({
   units: { type: Number, optional: true },
   // TODO: move these into the House package
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
+  group: { type: String, max: 25, optional: true },
   building: { type: String, max: 10, optional: true },
   floor: { type: String, max: 10, optional: true },
   door: { type: String, max: 10, optional: true },

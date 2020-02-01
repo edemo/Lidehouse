@@ -5,9 +5,11 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
+import { __ } from '/imports/localization/i18n.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -15,7 +17,6 @@ import { Breakdowns, chooseSubAccount } from '/imports/api/transactions/breakdow
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { __ } from '/imports/localization/i18n.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
@@ -40,6 +41,15 @@ ParcelBillings.appliedAtSchema = new SimpleSchema({
   period: { type: String, max: 7 /* TODO: check period format */ },
 });
 
+const selectFromExistingGroups = {
+  options() {
+    const parcels = Parcels.find({ communityId: getActiveCommunityId() }).fetch();
+    const groups = _.without(_.uniq(_.pluck(parcels, 'group')), undefined);
+    return groups ? groups.map(g => ({ label: g, value: g })) : [];
+  },
+  firstOption: () => __('All'),
+};
+
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   title: { type: String, max: 100 },
@@ -47,7 +57,9 @@ ParcelBillings.schema = new SimpleSchema({
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
   digit: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
   localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
-  note: { type: String, optional: true, autoform: { rows: 3 } },
+  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: _.extend({}, autoformOptions(Parcels.typeValues), { firstOption: () => __('All') }) },
+  group: { type: String, optional: true, autoform: selectFromExistingGroups },
+  note: { type: String, optional: true },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
 });
 

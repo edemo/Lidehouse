@@ -920,6 +920,10 @@
       "label": "Melyik hónapjára",
       "placeholder": "(pl. 11)"
     },
+    "title": {
+      "label": "Megnevezés",
+      "placeholder": "(pl. Közös költség)"
+    },
     "consumption": {
       "label": "Fogyasztási előírás (ha van mérőóra)",
       "service": {
@@ -952,9 +956,13 @@
       "label": "Előírás helye",
       "help": "Az előírás kivetésre kerül egy adott albetétre, ha egy albetétet választ ki, vagy egy adott csoport minden elemére, ha egy csoprtot választ ki."
     },
-    "title": {
-      "label": "Megnevezés",
-      "placeholder": "(pl. Közös költség)"
+    "type": {
+      "label": "Típus, amire előírunk",
+      "help": "Válasszon típust, ha csak egy adott típusra kell előírni a költséget, a többire nem."
+    },
+    "group": {
+      "label": "Csoport, amire előrunk",
+      "help": "Válasszon csoportot, ha csak egy adott csoportra kell előírni a költséget, a többire nem."
     },
     "note": {
       "label": "Megjegyzés",
