@@ -220,9 +220,12 @@ Migrations.add({
   name: 'Remove all documents from Transactions, Balances, Txdefs collections',
   up() {
     function upgrade() {
-      Transactions.remove({});
-      Balances.remove({});
-      Txdefs.remove({});
+      const newTransaction = Transactions.findOne({ category: 'bill' });
+      if (!newTransaction) {
+        Transactions.direct.remove({});
+        Balances.direct.remove({});
+        Txdefs.direct.remove({ communityId: { $ne: null } });
+      }
     }
     upgrade();
   },
