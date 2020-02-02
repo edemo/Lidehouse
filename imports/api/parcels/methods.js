@@ -5,7 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { extractFieldsFromRef } from '/imports/comtypes/house/parcelref-format.js';
+import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from './parcels.js';
 import { Memberships } from '../memberships/memberships.js';
@@ -31,7 +31,7 @@ export const insert = new ValidatedMethod({
     if (doc.ref) {
       checkNotExists(Parcels, { communityId: doc.communityId, ref: doc.ref });
       const format = community.parcelRefFormat;
-      if (format) doc = extractFieldsFromRef(format, doc);
+      if (format) doc = ParcelRefFormat.extractFieldsFromRef(format, doc);
     }
     if (!doc.approved) {
       // Nothing to check. Things will be checked when it gets approved by community admin/manager.

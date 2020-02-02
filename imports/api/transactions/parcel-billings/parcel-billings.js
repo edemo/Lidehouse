@@ -110,9 +110,10 @@ ParcelBillings.helpers({
   community() {
     return Communities.findOne(this.communityId);
   },
-  parcels(localizer) {
-    const parcelLeafs = Localizer.get(this.communityId).leafsOf(localizer || this.localizer);
-    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: Localizer.code2parcelRef(l.code) }));
+  parcels(applyLocalizer) {
+    const localizer = applyLocalizer || this.localizer;
+    const ref = Localizer.code2parcelRef(localizer);
+    const parcels = Parcels.find({ communityId: this.communityId, ref: new RegExp('^' + ref) });
     return parcels;
   },
   projectionUom() {

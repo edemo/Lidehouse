@@ -107,10 +107,10 @@ Transactions.categoryHelpers('bill', {
       this.credit = [];
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
-        this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer });
+        this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
         let contraAccount = this.relationAccount();
         if (this.relation === 'parcel') contraAccount += ParcelBillings.findOne(line.billingId).digit;
-        this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer });
+        this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer, parcelId: line.parcelId });
       });
     } // else if (accountingMethod === 'cash') >> we have no accounting to do
     return { debit: this.debit, credit: this.credit };
@@ -128,9 +128,8 @@ Transactions.categoryHelpers('bill', {
     if (this.relation === 'parcel') {
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
-        debugAssert(line.localizer, 'Cannot process a parcel bill without localizer fields');
-        const ref = Localizer.code2parcelRef(line.localizer);
-        Parcels.update({ communityId: this.communityId, ref }, { $inc: { outstanding: directionSign * line.amount } });
+        debugAssert(line.parcelId, 'Cannot process a parcel bill without parcelId field');
+        Parcels.update(line.parcelId, { $inc: { outstanding: directionSign * line.amount } });
       });
     }
   },

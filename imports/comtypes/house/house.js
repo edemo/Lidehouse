@@ -5,7 +5,6 @@ export const HouseProfileSchema = new SimpleSchema(
   [
     AddressSchema, {
       lot: { type: String, max: 100 },
-      parcelRefFormat: { type: String, optional: true },
     },
   ]
 );

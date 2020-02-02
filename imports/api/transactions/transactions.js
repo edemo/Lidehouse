@@ -58,14 +58,9 @@ Transactions.coreSchema = {
 Transactions.partnerSchema = {
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
-/*  autoValue() {
-      if (this.field('billId').value) {
-        const bill = Transactions.findOne(this.field('billId').value);
-        if (bill) return bill.partnerId;
-      } else return undefined;
-    },
-  },*/
+  // Optional location tags:
   membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // only used on parcel bills
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // only used on parcel bills
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
 };
 
