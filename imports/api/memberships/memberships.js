@@ -15,6 +15,7 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
+import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePerson } from '/imports/api/partners/partners.js';
@@ -39,8 +40,6 @@ Memberships.baseSchema = new SimpleSchema({
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePerson },
   person: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // deprecated for partnerId
   personId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for partnerId
-  // Stores an accounting balance:
-  outstanding: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 
 // Parcels can be jointly owned, with each owner having a fractional *share* of it
@@ -163,6 +162,7 @@ Memberships.helpers({
 
 Memberships.attachBaseSchema(Memberships.baseSchema);
 Memberships.attachBehaviour(ActivePeriod);
+Memberships.attachBehaviour(AccountingLocation);
 Memberships.attachBehaviour(Timestamped);
 
 Memberships.attachVariantSchema(Ownerships.schema, { selector: { role: 'owner' } });
