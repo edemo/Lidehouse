@@ -11,6 +11,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { FreeFields } from '/imports/api/behaviours/free-fields.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -43,6 +44,7 @@ Parcels.schema = new SimpleSchema({
   units: { type: Number, optional: true },
   // TODO: move these into the House package
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
+  group: { type: String, max: 25, optional: true },
   building: { type: String, max: 10, optional: true },
   floor: { type: String, max: 10, optional: true },
   door: { type: String, max: 10, optional: true },
@@ -58,8 +60,6 @@ Parcels.schema = new SimpleSchema({
   area: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
   habitants: { type: Number, optional: true },
-  // Stores an accounting balance:
-  outstanding: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 
 Parcels.idSet = ['communityId', 'ref'];
@@ -173,6 +173,7 @@ Parcels.helpers({
 
 Parcels.attachSchema(Parcels.schema);
 // Parcels.attachBehaviour(FreeFields);
+Parcels.attachBehaviour(AccountingLocation);
 Parcels.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {

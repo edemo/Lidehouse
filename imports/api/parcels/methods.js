@@ -4,7 +4,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { checkExists, checkNotExists, checkModifier, checkPermissions, checkNoOutstanding } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { extractFieldsFromRef } from '/imports/comtypes/house/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from './parcels.js';
@@ -84,7 +84,6 @@ export const remove = new ValidatedMethod({
       throw new Meteor.Error('err_unableToRemove', 'Parcel cannot be deleted while it has active owners',
        `Found: {${activeOwners.count()}}`);
     }
-    checkNoOutstanding(doc);
     Parcels.remove(_id);
     Memberships.remove({ parcelId: _id });
   },

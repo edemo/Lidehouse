@@ -16,6 +16,11 @@ import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';
 import './parcel-billings.html';
 
 Template.Parcel_billings.viewmodel({
+  onCreated(instance) {
+    instance.autorun(() => {
+      instance.subscribe('parcels.inCommunity', { communityId: this.communityId() }); // needed for the group options
+    });
+  },
   communityId() {
     return Session.get('activeCommunityId');
   },

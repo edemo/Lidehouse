@@ -134,6 +134,11 @@ export const HouseTranslation = {
         "label": "Type",
         "placeholder": "(eg. Apartment)"
       },
+      "group": {
+        "label": "Group",
+        "help": "Arbitrary tag to identify which group of parcels it belongs to. Can be used in parcel billings.",
+        "placeholder": "(eg. HasWaterMeter)"
+      },
       "lot": {
         "label": "Lot No.",
         "placeholder": "(eg. 293457/A/21)"
@@ -306,6 +311,11 @@ export const HouseTranslation = {
       "type": {
         "label": "Típus",
         "placeholder": "(pl. Lakás)"
+      },
+      "group": {
+        "label": "Csoport",
+        "help": "Tetszőleges szó, ami azonosítja melyik csoportba tartozik az elbetét. Az előrásoknál tud e szerint megkülönbözetni.",
+        "placeholder": "(pl. Vízórás)"
       },
       "lot": {
         "label": "Helyrajzi szám",

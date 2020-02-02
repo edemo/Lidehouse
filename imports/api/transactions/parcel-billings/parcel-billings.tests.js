@@ -24,14 +24,14 @@ chai.assert.equalDate = function equalDate(d1, d2) {
 if (Meteor.isServer) {
   let Fixture;
 
-  describe.only('parcel billings', function () {
+  describe('parcel billings', function () {
     this.timeout(15000);
     let applyParcelBilling;
     let communityId;
     let payer3Id;
     let payer4Id;
 
-    before(function () {        
+    before(function () {
       Fixture = freshFixture();
       communityId = Fixture.demoCommunityId;
       payer3Id = Meteor.users.findOne(Fixture.dummyUsers[3]).partnerId(Fixture.demoCommunityId);

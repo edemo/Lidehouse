@@ -67,7 +67,6 @@ geojson-utils@1.0.10
 google-oauth@1.2.5
 gquemart:meteor-reactive-fullcalendar@1.0.1
 gwendall:autoform-i18n@0.1.9_1
-gwendall:simple-schema-i18n@0.2.3
 helfer:minimongo-index@0.0.1
 hot-code-push@1.0.4
 html-tools@1.0.11
@@ -150,7 +149,7 @@ reactive-dict@1.2.0
 reactive-var@1.0.11
 reload@1.2.0
 retry@1.1.0
-reywood:publish-composite@1.4.2
+reywood:publish-composite@1.7.2
 routepolicy@1.0.12
 rzymek:moment-locale-hu@2.9.0
 sacha:juice@0.1.4
@@ -160,6 +159,7 @@ session@1.1.7
 sha@1.0.9
 shell-server@0.3.1
 shim-common@0.1.0
+shjiaye:simple-schema-i18n@0.3.1
 simple:authenticate-user-by-token@1.0.1
 simple:json-routes@2.1.0
 simple:rest@1.1.1
