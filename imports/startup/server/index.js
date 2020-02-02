@@ -1,6 +1,6 @@
 // This defines a starting set of data to be loaded if the app is loaded with an empty db.
-import './initialization.js';
 import './migrations.js';
+import './initialization.js';
 import './live-fixtures.js';
 
 // This file configures the Accounts package to define the UI of the enrollment / verification / reset password email.
