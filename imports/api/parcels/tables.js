@@ -38,7 +38,7 @@ export function parcelFinancesColumns() {
     { data: 'withFollowers()', title: __('follower parcels') },
     { data: 'outstanding', title: __('schemaBills.outstanding.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      rcreatedCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'finances,meters', size: 'sm' }, cell),
     },
   ];
