@@ -19,6 +19,10 @@ export const EmailTemplateHelpers = {
   displayTime(time) {
     return moment(time).format('L LT');
   },
+  displayMoney(number) {
+    numeral.language(this.community.settings.language);
+    return numeral(number).format('0,0$');
+  },
   _(text, kw) {
     const lang = this.user ? this.user.settings.language : this.community.settings.language;
     return TAPi18n.__(text, kw.hash, lang);

@@ -37,12 +37,12 @@
                                                 {{#if line.localizer}} - {{code2parcelRef line.localizer}}{{/if}}
                                             {{/if}}
                                             </td>
-                                            <td class="alignright">{{line.amount}}</td>
+                                            <td class="alignright">{{displayMoney line.amount}}</td>
                                         </tr>
                                         {{/each}}
                                         <tr class="total">
                                             <td class="alignright" width="80%">{{_ 'schemaBills.amount.label'}}</td>
-                                            <td class="alignright">{{bill.amount}}</td>
+                                            <td class="alignright">{{displayMoney bill.amount}}</td>
                                         </tr>
                                         </tbody>
                                     </table>

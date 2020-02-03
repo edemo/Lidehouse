@@ -17,7 +17,7 @@
                 {{#each tag in tags}}
                     {{#let cellValue=(balance account tag)}}
                     <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                        {{displayCell cellValue}}
+                        {{displayNumber cellValue}}
                     </td>
                     {{/let}}
                 {{/each}} 

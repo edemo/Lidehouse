@@ -54,6 +54,10 @@ Template.registerHelper('displayMoney', function displayMoney(number) {
   return numeral(number).format('0,0$');
 });
 
+Template.registerHelper('displayNumber', function displayMoney(number) {
+  return numeral(number).format('0,0');
+});
+
 Template.registerHelper('currentTime', function currentTime() {
   return moment().format('L LT');
 });
