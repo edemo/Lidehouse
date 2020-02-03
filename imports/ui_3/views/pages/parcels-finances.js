@@ -129,6 +129,7 @@ Template.Parcels_finances.viewmodel({
 });
 
 Template.Parcels_finances.events({
+  ...(actionHandlers(Parcels)),
   'click .parcels .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
     instance.viewmodel.showAllParcels(!oldVal);
