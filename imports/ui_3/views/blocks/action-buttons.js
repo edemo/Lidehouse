@@ -118,13 +118,6 @@ Template.Action_button.viewmodel(buttonHelpers);
 Template.Action_sub_actions_button.viewmodel(buttonHelpers);
 Template.Action_buttons_group.viewmodel(buttonHelpers);
 
-Template.Action_button.events({
-  // This can be used most of the time to handle the click event - except when we are unable to render a proper template (like into a jquery cell).
-  'click .btn'(event, instance) {
-    instance.data.action.run(instance.viewmodel.getOptions(), instance.viewmodel.getDoc(), event, instance);
-  },
-});
-
 //-------------------------------------------------------------
 
 Template.Action_listitem.viewmodel(buttonHelpers);
