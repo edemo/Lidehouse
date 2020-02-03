@@ -15,6 +15,8 @@ import { AccountingLocation } from '/imports/api/behaviours/accounting-location.
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { FreeFields } from '/imports/api/behaviours/free-fields.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
+import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships';
@@ -28,18 +30,17 @@ Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   serial: { type: Number, optional: true },
-  ref: { type: String },  // 1. unique reference within a community (readable, so can be user in letters, etc)
+  ref: { type: String,    // 1. unique reference within a community (readable by the user)
                           // 2. can be used to identify a parcel, which is not a true parcel, just a sub-part of a parcel
-  /* autoValue() {
-        if (this.isInsert) {
-          const letter = this.field('type').value.substring(0,1);
-          const floor = this.field('floor').value;
-          const door = this.field('door').value;
-          return letter + '-' + floor + '/' + door;
-        }
-        return undefined; // means leave whats there alone for Updates, Upserts
-      },
-  */
+    autoValue() {
+      if (!this.isSet) {
+        const community = Meteor.isClient ? getActiveCommunity() : Communities.findOne(this.field('communityId').value);
+        if (!community) return undefined;
+        const doc = { type: this.field('type').value, building: this.field('building').value, floor: this.field('floor').value, door: this.field('door').value };
+        return ParcelRefFormat.createRefFromFields(community.settings.parcelRefFormat, doc);
+      } else return undefined;
+    },
+  },
   leadRef: { type: String, optional: true, autoform: { omit: true } }, // deprecated for leadRef() helper (Parcelships)
   units: { type: Number, optional: true },
   // TODO: move these into the House package

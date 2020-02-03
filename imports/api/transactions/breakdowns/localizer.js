@@ -33,17 +33,17 @@ export const Localizer = {
       return TAPi18n.__(text, {}, community.settings.language);
     };
     if (ParcelRefFormat.isMatching(community.settings.parcelRefFormat, parcel)) {
-      let buildingNode = parcelBreakdown.children.find(c => c.digit === parcel.building || '?');
+      let buildingNode = parcelBreakdown.children.find(c => c.digit === (parcel.building || '?'));
       if (!buildingNode) {
         buildingNode = { digit: parcel.building, name: `${___('schemaParcels.building.label')} ${parcel.building}`, label: ___('schemaParcels.building.label'), children: [] };
         parcelBreakdown.children.push(buildingNode);
       }
-      let floorNode = buildingNode.children.find(c => c.digit === parcel.floor || '?');
+      let floorNode = buildingNode.children.find(c => c.digit === (parcel.floor || '?'));
       if (!floorNode) {
         floorNode = { digit: parcel.floor, name: `${___('schemaParcels.floor.label')} ${parcel.floor}`, label: ___('schemaParcels.floor.label'), children: [] };
         buildingNode.children.push(floorNode);
       }
-      let doorNode = floorNode.children.find(c => c.digit === parcel.door || '?');
+      let doorNode = floorNode.children.find(c => c.digit === (parcel.door || '?'));
       if (!doorNode) {
         doorNode = { digit: parcel.door, name: parcel.ref, label: ___('parcel') };
         floorNode.children.push(doorNode);

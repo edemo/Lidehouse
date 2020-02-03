@@ -143,16 +143,13 @@ export class CommunityBuilder {
     return this.execute(collection.methods.insert, doc);
   }
   createParcel(data) {
-    const ref = 'A' + data.floor + data.door;
-    const volume = 3 * (data.area || 0);
     _.extend(data, {
       serial: this.nextSerial,
-      ref,
+//      ref, autovalue
       lot: '4532/8/A/' + this.nextSerial.toString(),
       building: 'A',
-      volume,
+      volume: 3 * (data.area || 0),
     });
-
     const registeredUnits = this.community().registeredUnits();
     const newUnits = data.units;
     const totalunits = this.community().totalunits;

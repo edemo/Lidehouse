@@ -3,6 +3,7 @@ import { productionAssert } from '/imports/utils/assert.js';
 
 export const ParcelRefFormat = {
   isMatching(format, doc) {
+ //       console.log("isMatching:", format, doc);
     if (!format) return false;
     if (!doc.building || !doc.floor || !doc.door) return false;
     return ParcelRefFormat.createRefFromFields(format, doc) === doc.ref;
@@ -10,6 +11,11 @@ export const ParcelRefFormat = {
   createRefFromFields(format, doc) {
     let ref = '';
     switch (format) {
+      case 'bfdd':
+        ref += doc.building;
+        ref += doc.floor;
+        ref += doc.door;
+        break;
       case '[bPT]fdd':
         switch (doc.type) {
           case 'parking': ref = 'P' + doc.door; break;
@@ -35,6 +41,11 @@ export const ParcelRefFormat = {
     const ref = doc.ref;
     const extract = {};
     switch (format) {
+      case 'bfdd':
+        extract.building = ref[0];
+        extract.floor = ref[1];
+        extract.door = ref[2] + ref[3];
+        break;
       case '[bPT]fdd': // K704 means K building, 7th floor, 04 door -- P235 means parking space no. 235
         switch (ref[0]) {
           case 'P': extract.type = 'parking'; extract.door = ref.substring(1); break;

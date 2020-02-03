@@ -70,7 +70,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     totalunits: 10000,
     settings: {
       language: lang,
-      parcelRefFormat: '[bPT]fdd',
+      parcelRefFormat: 'bfdd',
       accountingMethod: 'accrual',
       topicAgeDays: 365,
     },
