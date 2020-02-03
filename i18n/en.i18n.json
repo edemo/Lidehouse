@@ -145,6 +145,7 @@
   "actionDone_post": "posted",
   "actionDone_notify": "notified",
   "actionDone_remove": "removed",
+  "actionDone_statusUpdate": "status updated",
 
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "Sending outstandings reminder": "To the following email: <strong>'%s'</strong> you are about to send out an outstandings reminder email.",
