@@ -114,9 +114,10 @@ Topics.actions = {
   statusChange: {
     name: 'statusChange',
     label(options) {
-      const newStatus = options.status;
-      const newStatusName = __('schemaTopics.status.' + newStatus.name);
-      return newStatus.label || __('Change status to', newStatusName);
+      const status = options.status;
+      if (!status) return 'statusChange';
+      const statusName = __('schemaTopics.status.' + status.name);
+      return status.label || __('Change status to', statusName);
     },
     icon(options) {
       if (!options || !options.status || !options.status.icon) return 'fa fa-cogs';
@@ -223,6 +224,7 @@ _.each(Topics.entities, (entity, entityName) => {
 
   AutoForm.addHooks(`af.${entityName}.insert`, {
     formToDoc(doc) {
+      debugger;
       _.each(entity.implicitFields, (value, key) => {
         Object.setByString(doc, key, (typeof value === 'function') ? value() : value);
       });

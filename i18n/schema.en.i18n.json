@@ -170,7 +170,8 @@
         },
         "value": {
           "label": "Reading value",
-          "placeholder": "(value on the meter)"
+          "help": "Please enter only the rounded amount, no need to provide the fraction part",
+          "placeholder": "(whole rounded value of the meter)"
         },
         "photo": {
           "label": "Photo (if applicable)",
@@ -225,7 +226,8 @@
       },
       "value": {
         "label": "Reading value",
-        "placeholder": "(value on the meter)"
+        "help": "Please enter only the rounded amount, no need to provide the fraction part",
+        "placeholder": "(whole rounded value of the meter)"
       },
       "photo": {
         "label": "Photo (if applicable)",
