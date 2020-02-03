@@ -261,7 +261,7 @@ Meteor.users.helpers({
     Memberships.findActive({ communityId, approved: true, role: 'owner', userId: this._id }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
-  hasRole(roleName, communityId) {
+  hasRole(roleName, communityId = getActiveCommunityId()) {
     const userHasTheseRoles = this.activeRoles(communityId);
     return _.contains(userHasTheseRoles, roleName);
   },
