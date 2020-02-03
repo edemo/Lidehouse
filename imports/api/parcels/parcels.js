@@ -35,7 +35,7 @@ Parcels.schema = new SimpleSchema({
     autoValue() {
       if (!this.isSet) {
         const community = Meteor.isClient ? getActiveCommunity() : Communities.findOne(this.field('communityId').value);
-        if (!community) return undefined;
+        if (!community || !community.settings.parcelRefFormat) return undefined;
         const doc = { type: this.field('type').value, building: this.field('building').value, floor: this.field('floor').value, door: this.field('door').value };
         return ParcelRefFormat.createRefFromFields(community.settings.parcelRefFormat, doc);
       } else return undefined;

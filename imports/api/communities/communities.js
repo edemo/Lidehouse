@@ -142,6 +142,7 @@ Factory.define('community', Communities, {
   settings: {
     joinable: true,
     language: 'en',
-    accountingMethod: 'cash',
+    parcelRefFormat: 'bfdd',
+    accountingMethod: 'accrual',
   },
 });
