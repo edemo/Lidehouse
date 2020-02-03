@@ -67,7 +67,7 @@ Template.Parcels_finances.viewmodel({
   },
   parcelFinancesTableDataFn() {
     const communityId = Session.get('activeCommunityId');
-    return () => Parcels.find({ communityId }).fetch();
+    return () => Parcels.find({ communityId }).fetch().filter(p => !p.isLed());
   },
   parcelFinancesOptionsFn() {
     return () => ({
