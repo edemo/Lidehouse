@@ -17,6 +17,7 @@ import { Breakdowns, chooseSubAccount } from '/imports/api/transactions/breakdow
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
+import { displayMoney } from '/imports/ui_3/helpers/utils.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
@@ -148,10 +149,10 @@ ParcelBillings.helpers({
     return found ? found.valueDate : undefined;
   },
   toString() {
-    const currency = this.community().settings.currency;
-    const consumptionPart = this.consumption ? `${this.consumption.unitPrice} ${currency}/${__('consumed')} ${this.consumption.uom}` : '';
+    debugAssert(Meteor.isClient, 'Needs the active locale to display');
+    const consumptionPart = this.consumption ? `${displayMoney(this.consumption.unitPrice)}/${__('consumed')} ${this.consumption.uom}` : '';
     const connectionPart = (this.consumption && this.projection) ? ` ${__('or')} ` : '';
-    const projectionPart = this.projection ? `${this.projection.unitPrice} ${currency}/${this.projectionUom()})` : '';
+    const projectionPart = this.projection ? `${displayMoney(this.projection.unitPrice)}/${this.projectionUom()})` : '';
     return `${this.title} (${consumptionPart}${connectionPart}${projectionPart})`;
   },
 });
