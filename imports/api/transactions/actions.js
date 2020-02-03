@@ -206,6 +206,7 @@ Transactions.categoryValues.forEach(category => {
       if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
       } else if (category === 'payment' || category === 'remission') {
+        doc.bills = doc.bills || [];
         if (!doc.bills.length && modalContext.billId) {
           doc.bills = [{ id: modalContext.billId, amount: doc.amount }];
         }
