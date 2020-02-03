@@ -272,7 +272,7 @@ export class CommunityBuilder {
     this.execute(StatementEntries.methods.reconcile, { _id: entryId }, this.getUserWithRole('accountant'));
   }
   payBillsOf(membership) {
-    const unpaidBills = Transactions.find({ communityId: this.communityId, category: 'bill', relation: 'parcel', partnerId: membership._id, outstanding: { $gt: 0 } });
+    const unpaidBills = Transactions.find({ communityId: this.communityId, category: 'bill', relation: 'parcel', partnerId: membership.partnerId, outstanding: { $gt: 0 } });
     unpaidBills.forEach(bill => this.payBill(bill));
   }
   everybodyPaysTheirBills() {
