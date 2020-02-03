@@ -104,10 +104,3 @@ export function checkNeededStatus(status, doc) {
       `No permission to perform this activity in this status: ${doc.status}, needed status: ${status}`);
   }
 }
-
-export function checkNoOutstanding(doc) {
-  if (doc.outstanding) {
-    throw new Meteor.Error('err_unableToRemove',
-      'Partner/parcel cannot be deleted while it has outstanding balance', `Outstanding: {${doc.outstanding}}`);
-  }
-}

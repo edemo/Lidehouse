@@ -77,7 +77,7 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
             return Parcels.find(parcelship.parcelId);
           },
           children: [{
-         // Publish the Meters of the followerParcel
+            // Publish the Meters of the followerParcel
             find(parcel) {
               return Meters.find({ parcelId: parcel._id });
             },

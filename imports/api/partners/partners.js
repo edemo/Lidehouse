@@ -11,6 +11,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Memberships } from '/imports/api/memberships/memberships';
@@ -49,8 +50,6 @@ Partners.schema = new SimpleSchema({
   contact: { type: ContactSchema, optional: true },
   BAN: { type: String, max: 100, optional: true },
   taxNo: { type: String, max: 50, optional: true },
-  // Stores an accounting balance:
-  outstanding: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 
 
@@ -129,6 +128,7 @@ Partners.helpers({
 });
 
 Partners.attachSchema(Partners.schema);
+Partners.attachBehaviour(AccountingLocation);
 Partners.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
