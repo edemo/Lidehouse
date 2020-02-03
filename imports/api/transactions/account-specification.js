@@ -1,14 +1,20 @@
-import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { __ } from '/imports/localization/i18n.js';
 import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer, chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
-export const AccountSchema = new SimpleSchema({
+export const LocationTagsSchema = new SimpleSchema({
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+});
+
+export const AccountSchema = new SimpleSchema([{
   account: { type: String /* account code */, autoform: chooseAccountNode, optional: true },
   localizer: { type: String /* account code */, autoform: chooseLocalizerNode, optional: true },
-});
+}, LocationTagsSchema]);
 
 export class AccountSpecification {
   constructor(communityId, accountCode, localizerCode) {

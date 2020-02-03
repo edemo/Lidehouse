@@ -110,10 +110,13 @@ ParcelBillings.helpers({
   community() {
     return Communities.findOne(this.communityId);
   },
-  parcels(localizer) {
-    const parcelLeafs = Localizer.get(this.communityId).leafsOf(localizer || this.localizer);
-    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: Localizer.code2parcelRef(l.code) }));
-    return parcels;
+  parcels(appliedLocalizer) {
+    const localizer = appliedLocalizer || this.localizer;
+    const ref = Localizer.code2parcelRef(localizer);
+    const selector = { communityId: this.communityId, ref: new RegExp('^' + ref) };
+    if (this.type) selector.type = this.type;
+    if (this.group) selector.group = this.group;
+    return Parcels.find(selector);
   },
   projectionUom() {
     switch (this.projection.base) {

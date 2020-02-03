@@ -5,6 +5,7 @@ import { closeClosableVotings, openScheduledVotings } from '/imports/api/topics/
 import { closeInactiveTopics } from '/imports/api/topics/methods.js';
 import { cleanExpiredEmails } from '/imports/startup/server/accounts-verification.js';
 import { cleanCanceledVoteAttachments } from '/imports/api/shareddocs/methods.js';
+import { emptyOldTrash } from '/imports/api/behaviours/trash.js';
 import { processNotifications, notifyExpiringVotings } from '/imports/email/notifications-send.js';
 
 const bindEnv = func => Meteor.bindEnvironment(func, (err) => { console.error(err); });
@@ -17,6 +18,7 @@ Meteor.startup(() => {
   bindEnv(openScheduledVotings)();
 //  later.setInterval(bindEnv(cleanExpiredEmails), dailySchedule);    - who doesn't accept invite, still gets weekly noti emails
 //  later.setInterval(bindEnv(cleanCanceledVoteAttachments), dailySchedule);    - too dangerous
+  later.setInterval(bindEnv(emptyOldTrash), dailySchedule);
   later.setInterval(bindEnv(notifyExpiringVotings), dailySchedule);
   later.setInterval(bindEnv(closeClosableVotings), dailySchedule);
   later.setInterval(bindEnv(closeInactiveTopics), dailySchedule);

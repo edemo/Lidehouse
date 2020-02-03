@@ -60,15 +60,15 @@ Transactions.categoryHelpers('payment', {
       if (accountingMethod === 'accrual') {
         bill[this.relationSide()].forEach(entry => {
           const partialAmount = Math.round(entry.amount * ratio);
-          this[this.conteerSide()].push({ amount: partialAmount, account: entry.account, localizer: entry.localizer });
-          this[this.relationSide()].push({ amount: partialAmount, account: this.payAccount, localizer: entry.localizer });
+          this[this.conteerSide()].push({ amount: partialAmount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId });
+          this[this.relationSide()].push({ amount: partialAmount, account: this.payAccount, localizer: entry.localizer, parcelId: entry.parcelId });
         });
       } else if (accountingMethod === 'cash') {
         bill.lines.forEach(line => {
           if (!line) return; // can be null, when a line is deleted from the array
           const partialAmount = Math.round(line.amount * ratio);
-          this[this.conteerSide()].push({ amount: partialAmount, account: line.account, localizer: line.localizer });
-          this[this.relationSide()].push({ amount: partialAmount, account: this.payAccount, localizer: line.localizer });
+          this[this.conteerSide()].push({ amount: partialAmount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
+          this[this.relationSide()].push({ amount: partialAmount, account: this.payAccount, localizer: line.localizer, parcelId: line.parcelId });
         });
       }
     });
@@ -97,9 +97,8 @@ Transactions.categoryHelpers('payment', {
         const bill = Transactions.findOne(bp.id);
           bill.lines.forEach(line => {
             if (!line) return; // can be null, when a line is deleted from the array
-            debugAssert(line.localizer, 'Cannot process a parcel payment without bill localizer fields');
-            const ref = Localizer.code2parcelRef(line.localizer);
-            Parcels.update({ communityId: this.communityId, ref }, { $inc: { outstanding: (-1) * sign * line.amount } });
+            debugAssert(line.parcelId, 'Cannot process a parcel payment without parcelId field');
+            Parcels.update(line.parcelId, { $inc: { outstanding: (-1) * sign * line.amount } });
           });
       });
     }

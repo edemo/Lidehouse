@@ -5,6 +5,7 @@ import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
 
 // Helpers form manipulating with the Localizer
 export const Localizer = {
@@ -31,20 +32,25 @@ export const Localizer = {
     const ___ = function translate(text) {
       return TAPi18n.__(text, {}, community.settings.language);
     };
-    let buildingNode = parcelBreakdown.children.find(c => c.digit === parcel.building);
-    if (!buildingNode) {
-      buildingNode = { digit: parcel.building, name: `${___('schemaParcels.building.label')} ${parcel.building}`, label: ___('schemaParcels.building.label'), children: [] };
-      parcelBreakdown.children.push(buildingNode);
-    }
-    let floorNode = buildingNode.children.find(c => c.digit === parcel.floor);
-    if (!floorNode) {
-      floorNode = { digit: parcel.floor, name: `${___('schemaParcels.floor.label')} ${parcel.floor}`, label: ___('schemaParcels.floor.label'), children: [] };
-      buildingNode.children.push(floorNode);
-    }
-    let doorNode = floorNode.children.find(c => c.digit === parcel.door);
-    if (!doorNode) {
-      doorNode = { digit: parcel.door, name: parcel.ref, label: ___('parcel') };
-      floorNode.children.push(doorNode);
+    if (ParcelRefFormat.isMatching(community.settings.parcelRefFormat, parcel)) {
+      let buildingNode = parcelBreakdown.children.find(c => c.digit === (parcel.building || '?'));
+      if (!buildingNode) {
+        buildingNode = { digit: parcel.building, name: `${___('schemaParcels.building.label')} ${parcel.building}`, label: ___('schemaParcels.building.label'), children: [] };
+        parcelBreakdown.children.push(buildingNode);
+      }
+      let floorNode = buildingNode.children.find(c => c.digit === (parcel.floor || '?'));
+      if (!floorNode) {
+        floorNode = { digit: parcel.floor, name: `${___('schemaParcels.floor.label')} ${parcel.floor}`, label: ___('schemaParcels.floor.label'), children: [] };
+        buildingNode.children.push(floorNode);
+      }
+      let doorNode = floorNode.children.find(c => c.digit === (parcel.door || '?'));
+      if (!doorNode) {
+        doorNode = { digit: parcel.door, name: parcel.ref, label: ___('parcel') };
+        floorNode.children.push(doorNode);
+      }
+    } else {
+      const parcelNode = { digit: parcel.ref, name: parcel.ref, label: ___('parcel') };
+      parcelBreakdown.children.push(parcelNode);
     }
   },
   _removeParcel(parcelBreakdown, parcel, community) {

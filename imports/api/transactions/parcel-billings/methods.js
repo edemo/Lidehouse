@@ -64,11 +64,12 @@ export const apply = new ValidatedMethod({
           }
           debugAssert(line.uom && _.isDefined(line.quantity), 'Billing needs consumption or projection.');
           if (line.quantity === 0) return; // Should not create bill for zero amount
+          line.title = parcelBilling.title;
           line.amount = line.quantity * line.unitPrice;
 //          line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.digit;
           line.account = Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.digit;
+          line.parcelId = parcel._id;
           line.localizer = Localizer.parcelRef2code(parcel.ref);
-          line.title = `${parcelBilling.title}`;
           // Creating the bill - adding line to the bill
           const leadParcel = parcel.leadParcel();
           bills[leadParcel._id] = bills[leadParcel._id] || {
@@ -104,7 +105,7 @@ export const apply = new ValidatedMethod({
         ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: { date, period: billingPeriod.label } } });
       });
 
-      _.each(bills, (bill, parcelId) => {
+      _.each(bills, (bill, leadParcelId) => {
         Transactions.methods.insert._execute({ userId: this.userId }, bill);
       });
     });

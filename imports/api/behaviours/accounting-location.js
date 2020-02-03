@@ -21,12 +21,12 @@ export function checkNoOutstanding(doc) {
 
 function hooks(collection) {
   return {
-    before: {
-      remove(userId, doc) {
-        checkNoOutstanding(doc);
-        return true;
-      },
-    },
+//    before: {
+//      remove(userId, doc) {
+//        checkNoOutstanding(doc);
+//        return true;
+//      },
+//    },
   };
 }
 
