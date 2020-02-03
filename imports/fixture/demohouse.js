@@ -7,6 +7,7 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Partners } from '/imports/api/partners/partners.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -1196,9 +1197,9 @@ function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `purgeDemoUserWithParcel parameter not defined ${userId} ${parcelId} ${communityId}`);
   const user = Meteor.users.findOne(userId);
   // Purge user activity
-  Topics.remove({ userId });
+  Topics.remove({ creatorId: userId });
   Topics.remove({ 'participantIds.$': userId });
-  Comments.remove({ userId });
+  Comments.remove({ creatorId: userId });
   Delegations.remove({ sourceId: user.partnerId(communityId) });
   Delegations.remove({ targetId: user.partnerId(communityId) });
   // Purge votes
@@ -1210,20 +1211,17 @@ function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   if (Meteor.isServer) {
     modifiedTopics.forEach(topic => topic.voteEvaluate());
   }
-  // Purge parcel
-  const parcel = Parcels.findOne(parcelId);
+  // Purge finacial records
+  Transactions.remove({ partnerId: user.partnerId(communityId), category: 'payment' }); // needs the bills
+  Transactions.remove({ partnerId: user.partnerId(communityId) });
+  // Purge parcel/membership/partner
   Memberships.remove({ parcelId }); // removing added benefactors as well
   Parcels.remove({ _id: parcelId });
   const currentTotalunits = Communities.findOne({ _id: communityId }).totalunits;
   if (currentTotalunits > 10000) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
-  // Purge finacial records
-  // TODO Transactions.remove({ 'entries.0.account.Localizer': parcel.ref });
-  Breakdowns.update({ communityId, name: 'Parcels' }, {
-    $pull: { children: { name: parcel.ref } },
-  });
-
+  Partners.remove({ userId });
   Meteor.users.remove(userId);
 }
 
@@ -1274,28 +1272,28 @@ Meteor.methods({
         const chatPartnerId = demoBuilder.getUserWithRole('owner');
 
         const demoUserMessageRoom = demoBuilder.create('room', {
-          userId: demoUserId,
+          creatorId: demoUserId,
           participantIds: [demoUserId, demoManagerId],
         });
         demoBuilder.insert(Comments, 'comment', {
-          topicId: demoUserMessageRoom,
           creatorId: demoManagerId,
+          topicId: demoUserMessageRoom,
           text: __('demo.manager.message'),
         });
         const demoUserMessageRoom2 = demoBuilder.create('room', {
-          userId: demoUserId,
+          creatorId: demoUserId,
           participantIds: [demoUserId, chatPartnerId],
         });
         Clock.starts(6, 'hours', 'ago');
         demoBuilder.insert(Comments, 'comment', {
-          topicId: demoUserMessageRoom2,
           creatorId: demoUserId,
+          topicId: demoUserMessageRoom2,
           text: __('demo.messages.0'),
         });
         Clock.starts(3, 'hours', 'ago');
         demoBuilder.insert(Comments, 'comment', {
-          topicId: demoUserMessageRoom2,
           creatorId: chatPartnerId,
+          topicId: demoUserMessageRoom2,
           text: __('demo.messages.1'),
         });
         Clock.clear();
