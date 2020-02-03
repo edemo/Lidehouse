@@ -152,7 +152,7 @@ ParcelBillings.helpers({
     debugAssert(Meteor.isClient, 'Needs the active locale to display');
     const consumptionPart = this.consumption ? `${displayMoney(this.consumption.unitPrice)}/${__('consumed')} ${this.consumption.uom}` : '';
     const connectionPart = (this.consumption && this.projection) ? ` ${__('or')} ` : '';
-    const projectionPart = this.projection ? `${displayMoney(this.projection.unitPrice)}/${this.projectionUom()})` : '';
+    const projectionPart = this.projection ? `${displayMoney(this.projection.unitPrice)}/${__(this.projectionUom())})` : '';
     return `${this.title} (${consumptionPart}${connectionPart}${projectionPart})`;
   },
 });
