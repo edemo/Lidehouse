@@ -139,23 +139,44 @@ if (Meteor.isServer) {
         assertLineDetails(bills[1].lines[0], { uom: 'm2', unitPrice: 25, quantity: 40, localizer: '@A104' });
       });
 
-      xit('can apply billing to a certain parcel type', function() {
+      it('can apply billing to a certain parcel type', function() {
         Fixture.builder.create('parcelBilling', {
-          title: 'Type test area',
+          title: 'Test type',
           projection: {
             base: 'area',
             unitPrice: 100,
           },
           digit: '2',
           // localizer: '@',
-          parcelType: 'storage',
+          type: 'storage',
         });
 
         applyParcelBilling('2018-01-12');
         const bills = Transactions.find({ communityId, category: 'bill' }, { sort: { serial: 1 } }).fetch();
         const payer3 = Partners.findOne(payer3Id);
         chai.assert.equal(bills.length, 1);
-        assertBillDetails(bills[0], { payerId: payer3Id, linesLength: 1, lineTitle: 'Type test area', linePeriod: '2018-01' });
+        assertBillDetails(bills[0], { payerId: payer3Id, linesLength: 1, lineTitle: 'Test type', linePeriod: '2018-01' });
+        assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 100, quantity: 20, localizer: '@AP02' });
+        chai.assert.equal(payer3.outstanding, bills[0].amount);
+      });
+
+      it('can apply billing to a certain parcel group', function() {
+        Fixture.builder.create('parcelBilling', {
+          title: 'Test group',
+          projection: {
+            base: 'area',
+            unitPrice: 100,
+          },
+          digit: '2',
+          // localizer: '@',
+          group: 'small',
+        });
+
+        applyParcelBilling('2018-01-12');
+        const bills = Transactions.find({ communityId, category: 'bill' }, { sort: { serial: 1 } }).fetch();
+        const payer3 = Partners.findOne(payer3Id);
+        chai.assert.equal(bills.length, 1);
+        assertBillDetails(bills[0], { payerId: payer3Id, linesLength: 1, lineTitle: 'Test group', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 100, quantity: 20, localizer: '@AP02' });
         chai.assert.equal(payer3.outstanding, bills[0].amount);
       });

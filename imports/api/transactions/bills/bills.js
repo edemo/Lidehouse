@@ -12,6 +12,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { Localizer, chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
@@ -52,7 +53,7 @@ const lineSchema = {
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
-Bills.lineSchema = new SimpleSchema(lineSchema);
+Bills.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);
 
 Bills.receiptSchema = new SimpleSchema({
   // amount overrides non-optional value of transactions, with optional & calculated value
@@ -128,7 +129,7 @@ Transactions.categoryHelpers('bill', {
     if (this.relation === 'parcel') {
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
-        debugAssert(line.parcelId, 'Cannot process a parcel bill without parcelId field');
+        debugAssert(line.parcelId, `Cannot process a parcel bill without parcelId field: ${JSON.stringify(this)}`);
         Parcels.update(line.parcelId, { $inc: { outstanding: directionSign * line.amount } });
       });
     }

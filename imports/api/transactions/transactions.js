@@ -13,7 +13,7 @@ import { Clock } from '/imports/utils/clock.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { AccountSchema } from '/imports/api/transactions/account-specification.js';
+import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
@@ -31,6 +31,7 @@ Transactions.categoryValues = ['bill', 'payment', 'remission', 'receipt', 'barte
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
+  LocationTagsSchema,
   { amount: { type: Number, optional: true } },
   // A tx leg can be directly associated with a bill, for its full amount (if a tx is associated to multiple bills, use legs for each association, one leg can belong to one bill)
   // { billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true } },
@@ -55,14 +56,11 @@ Transactions.coreSchema = {
   reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 };
 
-Transactions.partnerSchema = {
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
-  // Optional location tags:
-  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // only used on parcel bills
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // only used on parcel bills
-  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
-};
+Transactions.partnerSchema = new SimpleSchema([
+  LocationTagsSchema, {
+    relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
+    partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
+}]);
 
 Transactions.legsSchema = {
   debit: { type: [Transactions.entrySchema], optional: true },

@@ -55,7 +55,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     }
   }
 
-  Clock.AUTO_TICK = 1000; // one second pass after each Clock call
+  Clock.AUTO_TICK = 1000; // one second pass after each Clock call - to avoid same timestamp on two things
   Clock.starts(6, 'month', 'ago');
   console.log('Creating house:', demoHouseName);
   const demoCommunityId = Communities.insert({
@@ -70,6 +70,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     totalunits: 10000,
     settings: {
       language: lang,
+      parcelRefFormat: '[bPT]fdd',
       accountingMethod: 'accrual',
       topicAgeDays: 365,
     },

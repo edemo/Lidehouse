@@ -3,6 +3,7 @@ import { productionAssert } from '/imports/utils/assert.js';
 
 export const ParcelRefFormat = {
   isMatching(format, doc) {
+    if (!format) return false;
     if (!doc.building || !doc.floor || !doc.door) return false;
     return ParcelRefFormat.createRefFromFields(format, doc) === doc.ref;
   },
@@ -30,6 +31,7 @@ export const ParcelRefFormat = {
   },
   extractFieldsFromRef(format, doc) {
     // This should be a regex based, "any format can defined" extractor
+    if (!format) return doc;
     const ref = doc.ref;
     const extract = {};
     switch (format) {

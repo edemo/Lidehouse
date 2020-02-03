@@ -32,7 +32,7 @@ export const Localizer = {
     const ___ = function translate(text) {
       return TAPi18n.__(text, {}, community.settings.language);
     };
-    if (ParcelRefFormat.isMatching(community.parcelRefFormat, parcel)) {
+    if (ParcelRefFormat.isMatching(community.settings.parcelRefFormat, parcel)) {
       let buildingNode = parcelBreakdown.children.find(c => c.digit === parcel.building || '?');
       if (!buildingNode) {
         buildingNode = { digit: parcel.building, name: `${___('schemaParcels.building.label')} ${parcel.building}`, label: ___('schemaParcels.building.label'), children: [] };

@@ -43,12 +43,14 @@ if (Meteor.isServer) {
             quantity: 1,
             unitPrice: 300,
             localizer: '@AP01',
+            parcelId: FixtureA.dummyParcels[1],
           }, {
             title: 'Work 2',
             uom: 'month',
             quantity: 2,
             unitPrice: 500,
             localizer: '@AP02',
+            parcelId: FixtureA.dummyParcels[2],
           }],
         });
       });

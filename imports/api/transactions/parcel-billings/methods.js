@@ -105,7 +105,7 @@ export const apply = new ValidatedMethod({
         ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: { date, period: billingPeriod.label } } });
       });
 
-      _.each(bills, (bill, parcelId) => {
+      _.each(bills, (bill, leadParcelId) => {
         Transactions.methods.insert._execute({ userId: this.userId }, bill);
       });
     });

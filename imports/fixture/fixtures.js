@@ -62,6 +62,7 @@ export function insertUnittestFixture(lang) {
     floor: 'P',
     door: '02',
     type: 'storage',
+    group: 'small',
     area: 20,
   });
   dummyParcels[3] = demoBuilder.createParcel({
