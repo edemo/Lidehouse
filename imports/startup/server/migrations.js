@@ -134,7 +134,7 @@ Migrations.add({
   up() {
     function upgrade() {
       Parcels.find({ leadRef: { $exists: true } }).forEach((doc) => {
-        const leadParcel = Parcels.find({ communityId: doc.communityId, ref: doc.leadRef });
+        const leadParcel = Parcels.findOne({ communityId: doc.communityId, ref: doc.leadRef });
         if (leadParcel) {
           Parcelships.insert({ communityId: doc.communityId, parcelId: doc._id, leadParcelId: leadParcel._id });
           Parcels.update(doc._id, { $unset: { leadRef: 0 } });
