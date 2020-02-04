@@ -29,6 +29,7 @@
 
   "all": "összes",
   "undefined": "nincs megadva",
+  "not public": "nem publikus",
   "true": "igen",
   "false": "nem",
   "votingShare": "Szavazati hányad",
