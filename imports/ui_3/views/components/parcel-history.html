@@ -36,25 +36,25 @@
               <tr style="font-weight: bold">
                   <td>{{_ 'schemaTransactions.valueDate.label'}}</td>
                   <td>{{_ 'Type'}}</td>
-                  <td>{{_ 'schemaTransactions.note.label'}}</td>
-                  <td>{{_ 'schemaTransactions.amount.label'}}</td>
-                  <!--td></td>
-                  <td></td-->
-                  <td>{{_ 'Balance'}}</td>
                   <td></td>
+                  <td>{{_ 'schemaTransactions.serialId.label'}}</td>
+                  <td>{{_ 'schemaTransactions.amount.label'}}</td>
+                  <!--td></td-->
+                  <!--td></td-->
+                  <td>{{_ 'Balance'}}</td>
                   <td></td>
               </tr>
               {{#each tx in transactions}}
               <tr>
                   <td>{{displayDate tx.valueDate}}</td>
-                  <td>{{tx.displayInHistory}}</td>
-                  <td>{{tx.note}}</td>
+                  <td class="text-capitalize"><a href="{{pathFor 'Bill show' _bid=tx._id}}">{{tx.displayInHistory}}</a></td>
+                  <td>{{>Action_buttons_group collection='transactions' actions='view' doc=tx size='sm'}}</td>
+                  <td><button href="">{{tx.serialId}}</button></td>
                   <td class="{{negativeClass tx}}">{{displayMoney tx.subjectiveAmount}}</td>
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
                   <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
                   <td><strong>{{displayMoney tx.total}}</strong></td>
-                  <td><button class="btn btn-white btn-xs js-view" data-id="{{tx._id}}"><i class="fa fa-eye"></i></button></td>
-                  <td>{{{checkmarkBoolean entry.transaction.reconciledId}}}</td>
+                  <td>{{{checkmarkBoolean entry.transaction.isReconciled}}}</td>
               </tr>
               {{/each}}
             </tbody>

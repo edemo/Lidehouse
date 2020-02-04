@@ -27,7 +27,8 @@ Meteor.publishComposite('bills.byId', function billsById(params) {
 
   const user = Meteor.users.findOneOrNull(this.userId);
   const tx = Transactions.findOne(_id);
-  if (!user.hasPermission('transactions.inCommunity', tx)) {
+  if (!user.hasPermission('transactions.inCommunity', tx)
+    && user.partnerId(tx.communityId) !== tx.partnerId) {
     return this.ready();
   }
   return findBillsWithTheirPayments({ _id });

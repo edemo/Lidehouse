@@ -15,7 +15,7 @@ export function statementEntriesColumns() {
       createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'statementEntries', actions: '', size: 'sm' }, cell),
     },
-    { data: 'reconciledId', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
+    { data: 'isReconciled()', /* title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
   ];
 
   return columns;
