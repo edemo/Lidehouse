@@ -8,7 +8,7 @@
                         <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-avatar"><img alt="image" src={{doc.partner.avatar}}></a></td>
                         <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-link">{{doc.partner.displayName}}</a></td>
                         <td><span class="label label-plain">{{_ doc.role}}</span> 
-                            {{#if doc.rank}}<span class="label label-plain">{{_ rank}}</span>{{/if}}
+                            {{#if doc.rank}}<span class="label label-plain">{{_ doc.rank}}</span>{{/if}}
                         </td>
                         <td>
                             {{#if doc.partner.user.profile.publicEmail}}
