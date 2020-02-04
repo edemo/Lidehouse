@@ -17,6 +17,8 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 
+const keepOrderSort = { sort: { updatedAt: 1 } };   // use this to keep updatedAt order intact
+
 Migrations.add({
   version: 1,
   name: 'Add CreatedBy and UpdatedBy fields (and use CreatedBy instead of userId)',
@@ -115,7 +117,7 @@ Migrations.add({
   version: 7,
   name: 'Topics need serial',
   up() {
-    Topics.find({}, { sort: { createdAt: -1 } }).forEach((doc) => {
+    Topics.find({}, { sort: { createdAt: 1 } }).forEach((doc) => {
       const selector = { communityId: doc.communityId, category: doc.category };
       const last = Topics.findOne(selector, { sort: { serial: -1 } });
       const lastSerial = last ? (last.serial || 0) : 0;
