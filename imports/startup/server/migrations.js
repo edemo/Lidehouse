@@ -129,8 +129,9 @@ Migrations.add({
   version: 8,
   name: 'Remove leadRef from parcel, and create parcelships with it',
   up() {
-    Parcels.find({ leadRef: { $exists: true } }).forEach((doc) => {
+    Parcels.find({ leadRef: { $exists: true } }).fetch().forEach((doc) => {
       const leadParcel = Parcels.findOne({ communityId: doc.communityId, ref: doc.leadRef });
+      console.log("Migrating parcel: ", JSON.stringify(doc));
       if (leadParcel) {
         Parcelships.insert({ communityId: doc.communityId, parcelId: doc._id, leadParcelId: leadParcel._id });
       }
