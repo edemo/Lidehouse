@@ -16,7 +16,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 export function parcelColumns() {
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'leadRef()', title: __('schemaParcelships.leadParcelId.label') },
+    { data: 'leadRef', title: __('schemaParcelships.leadParcelId.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'lot', title: __('schemaParcels.lot.label') },
@@ -57,7 +57,7 @@ export function highlightMyRow(row, data, index) {
 /* with aldeed:tabular:
 const parcelColumns = [
   { data: 'ref', title: __('schemaParcels.ref.label') },
-  { data: 'leadRef()', title: __('schemaParcels.leadParcelId.label') },
+  { data: 'leadRef', title: __('schemaParcels.leadParcelId.label') },
   { data: 'location()', title: __('schemaParcels.location.label') },
   { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
   { data: 'lot', title: __('schemaParcels.lot.label') },
