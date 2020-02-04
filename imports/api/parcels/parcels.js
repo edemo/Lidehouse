@@ -197,7 +197,11 @@ if (Meteor.isServer) {
 
   Parcels.after.update(function (userId, doc, fieldNames, modifier, options) {
     updateCommunity(doc, 1);
-    Localizer.updateParcel(doc);
+    const prev = this.previous;
+    if (doc.ref !== prev.ref
+      || doc.building !== prev.building
+      || doc.floor !== prev.floor
+      || doc.door !== prev.door) Localizer.updateParcel(doc);
   });
 
   Parcels.after.remove(function (userId, doc) {
