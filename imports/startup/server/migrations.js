@@ -222,10 +222,13 @@ Migrations.add({
   version: 12,
   name: 'Move Közgyűlési meghívók, határozatok (Marina created folder) uploads to the Agendas folder ',
   up() {
-    const folderId = Sharedfolders.findOne({ name: 'Közgyűlési meghívók, határozatok' })._id;
-    Shareddocs.update({ folderId }, { $set: { folderId: 'agenda' } }, { multi: true });
-    Sharedfolders.remove(folderId);
-    Sharedfolders.remove('decision');
+    const folderToKill = Sharedfolders.findOne({ name: 'Közgyűlési meghívók, határozatok' });
+    if (folderToKill) {
+      const folderId = folderToKill._id;
+      Shareddocs.update({ folderId }, { $set: { folderId: 'agenda' } }, { multi: true });
+      Sharedfolders.remove(folderId);
+      Sharedfolders.remove('decision');
+    }
   },
 });
 
