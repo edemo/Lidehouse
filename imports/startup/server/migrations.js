@@ -10,6 +10,7 @@ import '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -214,6 +215,19 @@ Migrations.add({
     }
   },
 });
+
+Migrations.add({
+  version: 12,
+  name: 'Move Közgyűlési meghívók, határozatok (Marina created folder) uploads to the Agendas folder ',
+  up() {
+    const folderId = Sharedfolders.findOne({ name: 'Közgyűlési meghívók, határozatok' })._id;
+    Shareddocs.update({ folderId }, { $set: { folderId: 'agenda' } }, { multi: true });
+    Sharedfolders.remove(folderId);
+    Sharedfolders.remove('decision');
+  },
+});
+
+
 
 Meteor.startup(() => {
   Migrations.unlock();
