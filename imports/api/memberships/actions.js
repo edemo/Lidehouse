@@ -92,18 +92,21 @@ Memberships.actions = {
   },
   invite: {
     name: 'invite',
+    label: (options, doc) => (doc && doc.userId ? 'link' : 'invite'),
     icon: () => 'fa fa-user-plus',
     color: (options, doc) => (doc && doc.userId ? 'info' : 'warning'),
     visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc) && !doc.accepted,
     run(options, doc, event, instance) {
-      if ((doc.partner().contact && doc.partner().contact.email) || doc.userId) {
-        const email = (doc.partner().contact && doc.partner().contact.email) || __('not public');
-        Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, {
-          action: 'invite user',
-          message: __('Connecting user', email),
-        });
-      } else {
-        displayMessage('warning', 'No contact email set for this membership');
+      if (doc.userId) Memberships.methods.linkUser.call({ _id: doc._id });
+      else {
+        const email = doc.partner().contact && doc.partner().contact.email;
+        if (!email) displayMessage('warning', 'No contact email set for this membership');
+        else {
+          Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, {
+            action: 'invite user',
+            message: __('Connecting user', email),
+          });
+        }
       }
     },
   },

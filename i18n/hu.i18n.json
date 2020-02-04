@@ -224,7 +224,9 @@
   "remindOutstandings": "Hátralék emlékeztető küldés",
   "View my bills": "Számláim megtekintése",
   "View details": "Részletes nyomtatható nézet",
+  "Print bill": "Számla nyomtatása",
 
+  "link": "Kapcsolás",
   "join": "Csatlakozás",
   "create": "Létrehozás",
   "creation": "létrehozása",

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
@@ -10,12 +10,18 @@ import '/imports/api/users/users.js';
 import './balance-widget.html';
 
 Template.Balance_widget.viewmodel({
-  balance() {
+  autorun() {
+    const communityId = getActiveCommunityId();
+    this.templateInstance.subscribe('bills.outstanding', { communityId });
+  },
+  partner() {
     const user = Meteor.user();
-    const communityId = Session.get('activeCommunityId');
+    const communityId = getActiveCommunityId();
     const partnerId = user.partnerId(communityId);
-    const partner = Partners.findOne(partnerId);
-    return (-1) * partner.outstanding;
+    return Partners.findOne(partnerId);
+  },
+  balance() {
+    return (-1) * this.partner().outstanding;
   },
   display(balance) {
     const signPrefix = balance > 0 ? '+' : '';
@@ -27,7 +33,9 @@ Template.Balance_widget.viewmodel({
     return __('Your Parcel Balance');
   },
   colorClass(balance) {
-    if (balance < 0) return 'bg-danger';
+    if (balance < 0) {
+      return 'bg-' + this.partner().mostOverdueDaysColor();
+    }
     return 'navy-bg';
   },
   icon(balance) {
