@@ -72,9 +72,9 @@ Template.Parcel_history.viewmodel({
 });
 
 Template.Parcel_history.events({
-  'click .transactions .js-view'(event, instance) {
-    const id = $(event.target).closest('button').data('id');
-    const doc = Transactions.findOne(id);
-    Transactions.actions.view.run({}, doc);
-  },
+//  'click .transactions .js-view'(event, instance) {
+//    const id = $(event.target).closest('[data-id]').data('id');
+//    const doc = Transactions.findOne(id);
+//    Transactions.actions.view.run({}, doc);
+//  },
 });

@@ -103,8 +103,8 @@ export const linkUser = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    const email = doc.partner().contact.email;
-    if (!email) throw new Meteor.Error('err_sanityCheckFailed', 'No contact email set for this membership', doc);
+    const email = doc.partner().contact && doc.partner().contact.email;
+    if (!email && !doc.userId) throw new Meteor.Error('err_sanityCheckFailed', 'No contact email set for this membership', doc);
     if (this.isSimulation) return;  // Not possible to find and link users on the client side, as no user data available
 
     if (doc.userId) {
@@ -114,7 +114,8 @@ export const linkUser = new ValidatedMethod({
         Accounts.sendEnrollmentEmail(doc.userId);
       } else if (doc.accepted === false) {
         // TODO: This is where we should resend acceptance request email - if there was such a thing
-        doc.accepted = true; // now we auto-accept it for him (if he is already verified user)
+        Memberships.update(doc._id, { $set: { accepted: true } }, { selector: { role: doc.role } });
+       // now we auto-accept it for him (if he is already verified user)
       }
       return;   // thats all, user is already linked
     }
