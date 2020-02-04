@@ -225,7 +225,7 @@ Migrations.add({
     const folderToKill = Sharedfolders.findOne({ name: 'Közgyűlési meghívók, határozatok' });
     if (folderToKill) {
       const folderId = folderToKill._id;
-      Shareddocs.update({ folderId }, { $set: { folderId: 'agenda' } }, { multi: true });
+      Shareddocs.direct.update({ folderId }, { $set: { folderId: 'agenda' } }, { multi: true });
       Sharedfolders.remove(folderId);
       Sharedfolders.remove('decision');
     }
