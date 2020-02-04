@@ -171,7 +171,8 @@
         },
         "value": {
           "label": "Óraállás",
-          "placeholder": "(mérőn olvasható érték)"
+          "help": "Kérjük, hogy csak az egész értéket írja be ide, a tizedes vessző utáni részt már ne",
+          "placeholder": "(mérőn olvasható egész érték)"
         },
         "photo": {
           "label": "Fénykép (ha csatolni szeretne)",
@@ -226,7 +227,8 @@
       },
       "value": {
         "label": "Óraállás",
-        "placeholder": "(mérőn olvasható érték)"
+        "help": "Kérjük, hogy csak az egész értéket írja be ide, a tizedes vessző utáni részt már ne",
+        "placeholder": "(mérőn olvasható egész érték)"
       },
       "photo": {
         "label": "Fénykép (ha csatolni szeretne)",

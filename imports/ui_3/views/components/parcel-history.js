@@ -64,7 +64,7 @@ Template.Parcel_history.viewmodel({
       total += tx.subjectiveAmount();
       return _.extend(tx, { total });
     });
-    return txsWithRunningTotal;
+    return txsWithRunningTotal.reverse();
   },
   negativeClass(tx) {
     return tx.subjectiveAmount() < 0 ? 'negative' : '';

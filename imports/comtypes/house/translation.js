@@ -87,11 +87,6 @@ export const HouseTranslation = {
           "label": "Topic ageing days",
           "help": "Topics get automatically closed after this many days of inactivity."
         },
-        "currency": {
-          "label": "Currency",
-          "placeholder": "Ft",
-          "help": "Symbol of the local currency. This will appear next to money amounts."
-        },
         "accountingMethod": {
           "label": "Accounting method",
           "help": "Depending on this, the accounting transactions are generated differently from bills and payments. Never change this setting during the fiscal year.",
@@ -264,11 +259,6 @@ export const HouseTranslation = {
         "topicAgeDays": {
           "label": "Témák elöregedése napokban",
           "help": "A témák automatikusan lezárulnak ennyi nap inaktivitás után."
-        },
-        "currency": {
-          "label": "Pénznem",
-          "placeholder": "Ft",
-          "help": "A helyi valuta jele. A pénzösszegek mellett ez a szimbólum lesz feltüntetve."
         },
         "accountingMethod": {
           "label": "Könyvelési mód",

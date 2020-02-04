@@ -25,6 +25,10 @@ export const Localizer = {
     if (!code) return undefined;
     return code.substring(1);
   },
+  node(parcel) {
+    const code = Localizer.parcelRef2code(parcel.ref);
+    return Localizer.get(parcel.communityId).nodeByCode(code);
+  },
   leafIsParcel(leaf) {
     return leaf.code && leaf.code.substr(0, 1) === '@';
   },

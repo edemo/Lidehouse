@@ -9,6 +9,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import 'meteor/numeral:languages';
 import { availableLanguages } from '/imports/startup/both/language.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { update as updateUser } from '/imports/api/users/methods.js';
 import { handleError } from '/imports/ui_3/lib/errors.js';
 
@@ -61,7 +62,11 @@ Meteor.startup(function setupLanguage() {
   // moment, numeral package is not reactive, need to localize it reactively
   Tracker.autorun(() => {
     moment.locale(TAPi18n.getLanguage());
-    numeral.language(TAPi18n.getLanguage());
+  });
+  Tracker.autorun(() => {
+    const community = getActiveCommunity();
+    const language = community ? community.settings.language : TAPi18n.getLanguage();
+    numeral.language(language);
   });
 });
 

@@ -17,15 +17,29 @@ function visibleFields(userId, communityId) {
 }
 
 // This publication sends only very basic data about what communities exist on this server
-Meteor.publish('communities.listing', function communitiesListing() {
-  return Communities.find({}, { fields: Communities.publicFields });
+Meteor.publishComposite('communities.listing', function communitiesListing() {
+  return {
+    find() {
+      return Communities.find({}, { fields: Communities.publicFields });
+    },
+    children: [{
+      find(community) {
+        return Memberships.findActive({ communityId: community._id, role: { $in: leaderRoles } });
+      },
+      children: [{
+        find(membership) {
+          return Meteor.users.find({ _id: membership.userId }, { fields: Meteor.users.publicFields });
+        },
+      }],
+    }],
+  };
 });
 
 // This publication gives detailed data about a specific community
 function communityPublication(userId, _id) {
   return {
     find() {
-      return Communities.find({ _id }, { fields: visibleFields(userId, _id) });
+      return Communities.find({ _id: _id || undefined }, { fields: visibleFields(userId, _id) });
     },
     children: [{
       find(community) {

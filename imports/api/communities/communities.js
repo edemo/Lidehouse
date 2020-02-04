@@ -23,7 +23,6 @@ Communities.accountingMethods = ['cash', 'accrual'];
 Communities.settingsSchema = new SimpleSchema({
   joinable: { type: Boolean, defaultValue: true },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
-  currency: { type: String, max: 3, defaultValue: 'Ft' },
   parcelRefFormat: { type: String, optional: true },
   topicAgeDays: { type: Number, decimal: true, defaultValue: 90 },
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: autoformOptions(Communities.accountingMethods, 'schemaCommunities.settings.accountingMethod.'), defaultValue: 'accrual' },
@@ -143,7 +142,7 @@ Factory.define('community', Communities, {
   settings: {
     joinable: true,
     language: 'en',
-    currency: '$',
-    accountingMethod: 'cash',
+    parcelRefFormat: 'bfdd',
+    accountingMethod: 'accrual',
   },
 });

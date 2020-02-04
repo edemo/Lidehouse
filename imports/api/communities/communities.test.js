@@ -13,7 +13,7 @@ import { officerRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/methods.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Trash } from '/imports/api/behaviours/timestamped.js';
+import { Trash } from '/imports/api/behaviours/trash.js';
 
 if (Meteor.isServer) {
 

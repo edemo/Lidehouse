@@ -100,6 +100,10 @@ Transactions.categoryHelpers('bill', {
   paymentCount() {
     return this.getPayments().length;
   },
+  paymentDate() {
+    const payment = _.last(this.getPayments());
+    return Transactions.findOne(payment.id).valueDate;
+  },
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
 //    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });

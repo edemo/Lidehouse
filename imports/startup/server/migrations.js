@@ -102,7 +102,6 @@ Migrations.add({
       { $set: { settings: {
         joinable: true,
         language: 'hu',
-        currency: 'Ft',
         parcelRefFormat: '[bPT]fdd',
         topicAgeDays: 365,
         accountingMethod: 'accrual' } } },

@@ -37,9 +37,6 @@ Template.Balance_report.helpers({
   negativeClass(number) {
     return number < 0 && 'negative';
   },
-  displayCell(number) {
-    return numeral(number).format('0,0');
-  },
   displayPeriod(tag) {
     const node = PeriodBreakdown.nodeByCode(tag);
     return node.label || node.name;

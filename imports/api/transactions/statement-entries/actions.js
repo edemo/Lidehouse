@@ -74,7 +74,8 @@ StatementEntries.actions = {
   reconcile: {
     name: 'reconcile',
     label(options) {
-      return options.txdef.name;
+      if (options.txdef) return options.txdef.name;
+      return __('reconcile');
     },
     icon: () => 'fa fa-external-link',
     color(options, doc) {

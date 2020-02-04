@@ -67,7 +67,7 @@ Template.Parcels_finances.viewmodel({
   },
   parcelFinancesTableDataFn() {
     const communityId = Session.get('activeCommunityId');
-    return () => Parcels.find({ communityId }).fetch();
+    return () => Parcels.find({ communityId }).fetch().filter(p => !p.isLed());
   },
   parcelFinancesOptionsFn() {
     return () => ({
@@ -129,7 +129,6 @@ Template.Parcels_finances.viewmodel({
 });
 
 Template.Parcels_finances.events({
-  ...(actionHandlers(Parcels)),
   'click .parcels .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
     instance.viewmodel.showAllParcels(!oldVal);

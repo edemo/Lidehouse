@@ -19,22 +19,22 @@
                 </td>
                 {{#let cellValue=(balance account tag 'debitSum')}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                    {{displayCell cellValue}}
+                    {{displayNumber cellValue}}
                 </td>
                 {{/let}}
                 {{#let cellValue=(balance account tag 'creditSum')}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                    {{displayCell cellValue}}
+                    {{displayNumber cellValue}}
                 </td>
                 {{/let}}
                 {{#let cellValue=(balance account tag 'debitTotal')}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                    {{displayCell cellValue}}
+                    {{displayNumber cellValue}}
                 </td>
                 {{/let}}
                 {{#let cellValue=(balance account tag 'creditTotal')}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                    {{displayCell cellValue}}
+                    {{displayNumber cellValue}}
                 </td>
                 {{/let}}
             </tr>
