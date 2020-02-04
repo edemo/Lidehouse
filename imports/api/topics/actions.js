@@ -224,7 +224,6 @@ _.each(Topics.entities, (entity, entityName) => {
 
   AutoForm.addHooks(`af.${entityName}.insert`, {
     formToDoc(doc) {
-      debugger;
       _.each(entity.implicitFields, (value, key) => {
         Object.setByString(doc, key, (typeof value === 'function') ? value() : value);
       });

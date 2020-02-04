@@ -22,5 +22,5 @@ Template.Agendas.helpers({
 });
 
 Template.Agendas.events(
-  actionHandlers(Agendas)
+  actionHandlers(Agendas, 'new')
 );

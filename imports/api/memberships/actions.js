@@ -96,10 +96,15 @@ Memberships.actions = {
     color: (options, doc) => (doc && doc.userId ? 'info' : 'warning'),
     visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc) && !doc.accepted,
     run(options, doc, event, instance) {
-      Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, {
-        action: 'invite user',
-        message: __('Connecting user', doc.partner().primaryEmail() || __('undefined')),
-      });
+      if ((doc.partner().contact && doc.partner().contact.email) || doc.userId) {
+        const email = (doc.partner().contact && doc.partner().contact.email) || __('not public');
+        Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, {
+          action: 'invite user',
+          message: __('Connecting user', email),
+        });
+      } else {
+        displayMessage('warning', 'No contact email set for this membership');
+      }
     },
   },
   delete: {
