@@ -100,5 +100,6 @@ AutoForm.addHooks('af.delegation.insert', {
   },
   onSuccess() {
     Modal.hideAll();
+    displayMessage('success', __('delegation') + ' ' + __('actionDone_insert'));
   },
 }, true);
