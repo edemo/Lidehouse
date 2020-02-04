@@ -21,6 +21,8 @@ Template.Agendas.helpers({
   },
 });
 
-Template.Agendas.events(
-  actionHandlers(Agendas)
-);
+Template.Agendas.events({
+  'click .js-new'() {
+    Agendas.actions.new.run();
+  },
+});

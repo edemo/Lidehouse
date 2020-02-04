@@ -45,6 +45,7 @@ Agendas.helpers({
     return Topics.find({ communityId: this.communityId, agendaId: this._id }).fetch();
   },
   closed() {
+    if (!this.topics().length) return 'empty';
     return _.all(this.topics(), topic => topic.closed);
   },
 });

@@ -20,7 +20,7 @@ Agendas.actions = {
         id: 'af.agenda.insert',
         collection: Agendas,
         type: 'method',
-        meteormethod: 'agendas.create',
+        meteormethod: 'agendas.insert',
       });
     },
   },

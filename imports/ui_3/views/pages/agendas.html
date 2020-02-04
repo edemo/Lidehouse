@@ -13,7 +13,9 @@
         <div class="ibox collapsed">
             <div class="ibox-title">
                 <h3>{{title}}</h3>
-                {{#if closed}}
+                {{#if (equals closed 'empty')}}
+                    <span></span>
+                {{else if closed}}
                     <span class="label label-xs label-default">{{_ 'closed'}}</span>
                 {{else}}
                     <span class="label label-xs label-primary">{{_ 'active'}}</span>
