@@ -61,5 +61,24 @@ Meteor.startup(function attach() {
   Parcelships.simpleSchema().i18n('schemaActivePeriod');
 });
 
+if (Meteor.isServer) {
+  Parcelships.after.insert(function (userId, doc) {
+    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } });
+  });
+
+  Parcelships.before.update(function (userId, doc, fieldNames, modifier, options) {
+    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } });
+  });
+
+  Parcelships.after.update(function (userId, doc, fieldNames, modifier, options) {
+    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } });
+  });
+
+  Parcelships.after.remove(function (userId, doc) {
+    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } });
+  });
+}
+
 Factory.define('parcelship', Parcelships, {
 });
+
