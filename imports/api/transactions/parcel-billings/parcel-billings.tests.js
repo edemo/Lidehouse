@@ -244,7 +244,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bills2.length, 2);
         const billMetered = Transactions.findOne({ category: 'bill', partnerId: meteredParcel.payerPartner()._id });
         assertBillDetails(billMetered, { payerId: payer3Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-02' });
-        assertLineDetails(billMetered.lines[0], { uom: 'm3', unitPrice: 600, quantity: 11, localizer: '@A103' });
+        assertLineDetails(billMetered.lines[0], { uom: 'm3', unitPrice: 600, quantity: 14.903, localizer: '@A103' });
         chai.assert.equal(meteredParcel.payerPartner().outstanding, billMetered.amount);
         chai.assert.equal(meteredParcel.outstanding, billMetered.amount);
       });
@@ -384,8 +384,6 @@ if (Meteor.isServer) {
           } else {
             chai.assert.equal(bills.length, 1);
             const bill = bills[0];
-            console.log("Bill on date ", date);
-            console.log(bill);
             chai.assert.equalDate(bill.deliveryDate, new Date(date));
             chai.assert.equalDate(bill.issueDate, Clock.currentDate());
             chai.assert.equal(bill.lines.length, 1);
@@ -413,13 +411,18 @@ if (Meteor.isServer) {
 
       it('Can bill based on reading', function () {
         registerReading('2018-03-01', 10);
-        applyParcelBilling('2018-03-02');
-        assertBilled('2018-03-02', 'consumption', 10);
+        applyParcelBilling('2018-03-01');
+        assertBilled('2018-03-01', 'consumption', 10);
       });
 
       it('Doesnt bill again for what it was already billed for', function () {
         applyParcelBilling('2018-03-01');
         assertBilled('2018-03-01', 'consumption', 0);
+      });
+
+      it('Can bill based on estimating', function () {
+        applyParcelBilling('2018-03-02');
+        assertBilled('2018-03-02', 'consumption', 0.263);
       });
 
       xit('Cannot accidentally bill for same period twice', function () {
@@ -429,14 +432,26 @@ if (Meteor.isServer) {
         assertBilled('2018-03-24', 'consumption', 0);
       });
 
-      it('Can bill based on estimation', function () {
-        applyParcelBilling('2018-03-22');
-        assertBilled('2018-03-22', 'consumption', 10);
+      it('Can bill based on billing and estimation at the same time', function () {
+        registerReading('2018-04-01', 20);
+        applyParcelBilling('2018-04-05');
+        assertBilled('2018-04-05', 'consumption', 11.027);
       });
 
       it('Doesnt bill again for what it was already billed for', function () {
-        applyParcelBilling('2018-04-22');
-        assertBilled('2018-04-22', 'consumption', 0);
+        applyParcelBilling('2018-04-05');
+        assertBilled('2018-04-05', 'consumption', 0);
+      });
+
+      it('Can bill negative amount', function () {
+        registerReading('2018-04-25', 20);  // same reading as before - no consumption
+        applyParcelBilling('2018-04-25');
+        assertBilled('2018-04-25', 'consumption', -1.29);
+      });
+
+      it('Can estimate when no consumption in the flat', function () {
+        applyParcelBilling('2018-05-05');
+        assertBilled('2018-05-05', 'consumption', 0);
       });
     });
 /*

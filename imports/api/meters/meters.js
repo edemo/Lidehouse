@@ -20,22 +20,22 @@ Meters.serviceValues = ['coldWater', 'hotWater', 'electricity', 'gas', 'heating'
 
 Meters.readingSchema = new SimpleSchema({
   date: { type: Date },
-  value: { type: Number },
+  value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: fileUpload },
   approved: { type: Boolean, optional: true, autoform: { omit: true }, defaultValue: true },
 });
 
 Meters.unapprovedReadingSchema = new SimpleSchema({
   date: { type: Date, autoValue: () => new Date(), autoform: { value: new Date(), readonly: true } },
-  value: { type: Number },
+  value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: fileUpload },
 });
 
-Meters.billingTypeValues = ['reading', 'estimate'];
+// Meters.billingTypeValues = ['reading', 'estimate'];
 Meters.billingSchema = new SimpleSchema({
   date: { type: Date },
-  value: { type: Number },
-  type: { type: String, allowedValues: Meters.billingTypeValues, autoform: autoformOptions(Meters.billingTypeValues) },
+  value: { type: Number, decimal: true },
+//  type: { type: String, allowedValues: Meters.billingTypeValues, autoform: autoformOptions(Meters.billingTypeValues) },
 //  readingId: { type: Number },   // pointer // if not present, it is an estimation
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });

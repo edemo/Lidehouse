@@ -170,8 +170,8 @@
         },
         "value": {
           "label": "Reading value",
-          "help": "Please enter only the rounded amount, no need to provide the fraction part",
-          "placeholder": "(whole rounded value of the meter)"
+          "help": "Please put in the decimal separator correctly",
+          "placeholder": "(eg 1234,05)"
         },
         "photo": {
           "label": "Photo (if applicable)",
@@ -226,8 +226,8 @@
       },
       "value": {
         "label": "Reading value",
-        "help": "Please enter only the rounded amount, no need to provide the fraction part",
-        "placeholder": "(whole rounded value of the meter)"
+        "help": "Please put in the decimal separator correctly",
+        "placeholder": "(eg 1234,05)"
       },
       "photo": {
         "label": "Photo (if applicable)",
@@ -928,6 +928,11 @@
       "uom": {
         "label": "Unit of consumption",
         "placeholder": "(eg. kW)"
+      },
+      "decimals": {
+        "label": "Number of decimal places on meter",
+        "help": "A rendszer az itt beállított tizedesjegyszámig fogja engedni a mérőóraállások rögzítését, és a számlákon is ennyi tizedesjegyig fog az érték megjelenni.",
+        "placeholder": "(eg. 3 or 0 if you want to supply only the whole number part)"
       },
       "unitPrice": {
         "label": "Unit price of consumption"

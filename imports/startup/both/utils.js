@@ -42,6 +42,11 @@ String.prototype.capitalize = function capitalize() {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+Number.prototype.round = function round(places) {
+//  return Math.round((this * 100) + Number.EPSILON) / 100;
+  return +(Math.round(this + 'e+' + places) + 'e-' + places);
+};
+
 _.isDefined = function (obj) { // underscore did not have this
   return obj !== undefined;
 };

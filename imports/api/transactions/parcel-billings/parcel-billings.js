@@ -29,6 +29,7 @@ ParcelBillings.projectionBaseValues = ['absolute', 'area', 'volume', 'habitants'
 ParcelBillings.consumptionSchema = new SimpleSchema({
   service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
   uom: { type: String, max: 100 },
+//  decimals: { type: Number, defaultValue: 3, max: 10 }, // how many decimals the readings accept and display
   unitPrice: { type: Number, decimal: true },
 });
 

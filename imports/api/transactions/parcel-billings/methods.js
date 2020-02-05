@@ -25,7 +25,7 @@ export const BILLING_MONTH_OF_THE_YEAR = 3;
 export const BILLING_DUE_DAYS = 8;
 
 function display(reading) {
-  return `${reading.value} (${displayDate(reading.date)})`;
+  return `${reading.value.round(3)} (${displayDate(reading.date)})`; /* parcelBilling.consumption.decimals */
 }
 
 function lineDetails(currentBilling, lastBilling, lastReading) {
@@ -48,7 +48,7 @@ export const apply = new ValidatedMethod({
     if (Meteor.isClient) return;
     checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
     ActiveTimeMachine.runAtTime(date, () => {
-      const bills = {}; // parcelId => his bill
+      const billsToSend = {}; // parcelId => his bill
       const activeParcelBillings = ids
         ? ParcelBillings.findActive({ communityId, _id: { $in: ids } })
         : ParcelBillings.findActive({ communityId });
@@ -80,8 +80,9 @@ export const apply = new ValidatedMethod({
               if (date < lastReading.date) throw new Meteor.Error('Cannot bill a consumption based billing at a time earlier than the last reading');
               // ---- lastBilling -----lastReading ----- date ------ now |
               // ---- lastReading -----lastBilling ----- date ------ now |
-              currentBilling = { date, value: activeMeter.getEstimatedValue(date) };
-              line.quantity = currentBilling.value - lastBilling.value;
+              const value = activeMeter.getEstimatedValue(date);
+              currentBilling = { date, value };
+              line.quantity = (currentBilling.value - lastBilling.value).round(3); /* parcelBilling.consumption.decimals */
               line.details = lineDetails(currentBilling, lastBilling, lastReading);
             }
           }
@@ -99,9 +100,13 @@ export const apply = new ValidatedMethod({
           line.account = Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.digit;
           line.parcelId = parcel._id;
           line.localizer = Localizer.parcelRef2code(parcel.ref);
+          if (currentBilling) { // Will need to update the meter's billings registry, so preparing the update
+            line.meterUpdate = { _id: activeMeter._id, billing: currentBilling };
+          }
+
           // Creating the bill - adding line to the bill
           const leadParcel = parcel.leadParcel();
-          bills[leadParcel._id] = bills[leadParcel._id] || {
+          billsToSend[leadParcel._id] = billsToSend[leadParcel._id] || {
             communityId: parcelBilling.communityId,
             category: 'bill',
             relation: 'parcel',
@@ -115,27 +120,23 @@ export const apply = new ValidatedMethod({
             dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
             lines: [],
           };
-          bills[leadParcel._id].lines.push(line);
-
-          // Updating the meter readings
-          if (activeMeter) {
-            Meters.methods.registerBilling._execute({ userId: this.userId }, {
-              _id: activeMeter._id,
-              billing: {
-                date: new Date(),
-                value: activeMeter.lastReading().value,
-                type: 'reading',
-    //            readingId
-    //            billId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-              },
-            });
-          }
+          billsToSend[leadParcel._id].lines.push(line);
         });
+
         ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: { date, period: billingPeriod.label } } });
       });
 
-      _.each(bills, (bill, leadParcelId) => {
-        Transactions.methods.insert._execute({ userId: this.userId }, bill);
+      _.each(billsToSend, (bill, leadParcelId) => {
+        const meterUpdates = [];
+        bill.lines.forEach((line) => {
+          if (line.meterUpdate) meterUpdates.push(line.meterUpdate);
+          delete line.meterUpdate;
+        });
+        const billId = Transactions.methods.insert._execute({ userId: this.userId }, bill);
+        meterUpdates.forEach((meterUpdate) => {
+          meterUpdate.billing.billId = billId;
+          Meters.methods.registerBilling._execute({ userId: this.userId }, meterUpdate);
+        });
       });
     });
   },

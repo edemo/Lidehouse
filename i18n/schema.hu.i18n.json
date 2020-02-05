@@ -171,8 +171,8 @@
         },
         "value": {
           "label": "Óraállás",
-          "help": "Kérjük, hogy csak az egész értéket írja be ide, a tizedes vessző utáni részt már ne",
-          "placeholder": "(mérőn olvasható egész érték)"
+          "help": "Kérjük figyeljen a tizedesvessző megfelelő helyére, hogy a helyes állást rögzítsük",
+          "placeholder": "(pl. 1234,05)"
         },
         "photo": {
           "label": "Fénykép (ha csatolni szeretne)",
@@ -227,8 +227,8 @@
       },
       "value": {
         "label": "Óraállás",
-        "help": "Kérjük, hogy csak az egész értéket írja be ide, a tizedes vessző utáni részt már ne",
-        "placeholder": "(mérőn olvasható egész érték)"
+        "help": "Kérjük figyeljen a tizedesvessző megfelelő helyére, hogy a helyes állást rögzítsük",
+        "placeholder": "(pl. 1234,05)"
       },
       "photo": {
         "label": "Fénykép (ha csatolni szeretne)",
@@ -935,6 +935,11 @@
       "uom": {
         "label": "Fogyasztási egység",
         "placeholder": "(pl. kW)"
+      },
+      "decimals": {
+        "label": "Tizedesjegyek száma az órán",
+        "help": "A rendszer az itt beállított tizedesjegyszámig fogja engedni a mérőóraállások rögzítését, és a számlákon is ennyi tizedesjegyig fog az érték megjelenni.",
+        "placeholder": "(pl. 3 vagy 0 ha csak egész értéket lehessen megadni)"
       },
       "unitPrice": {
         "label": "Fogyasztási egységár (Ft)"
