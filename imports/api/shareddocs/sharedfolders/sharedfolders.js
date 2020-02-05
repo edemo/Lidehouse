@@ -19,7 +19,7 @@ Sharedfolders.deny({
 });
 
 Sharedfolders.schema = new SimpleSchema({
-  _id: { type: String, /* using the folder name */ autoform: { omit: true } },
+  _id: { type: String, optional: true, /* using the folder name */ autoform: { omit: true } },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String },
 });

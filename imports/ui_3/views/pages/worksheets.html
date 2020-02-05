@@ -76,16 +76,10 @@
           <button type="button" class="btn btn-xs btn-white js-mode {{#if (not calendarView)}}active{{/if}}"><i class="fa fa-list"></i></button>
           <button type="button" class="btn btn-xs btn-white js-mode {{#if calendarView}}active{{/if}}" ><i class="fa fa-calendar"></i></button>
         </div>
-        {{#if currentUserHasPermission 'ticket.insert'}}
-          <div class="dropdown btn-group pull-right">
-              <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
-                  <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheet'}} <b class="caret"></b>
-              </button>
-              {{> New_Ticket }}
-              <button class="btn btn-white btn-xs js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
-          </div>
-          <!--a href="" class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheet'}}</a-->
-        {{/if}}
+        <div class="pull-right btn-group">
+          {{>Action_buttons_group collection='topics' actions='new' size='lg' options=(obj '{ "entity": ["issue","maintenance","upgrade"], "category": "worksheet" }')}}
+          <button class="btn btn-white btn-xs js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>  
+        </div>
       </div>
       <div class="ibox-content">
         {{#if calendarView}}
