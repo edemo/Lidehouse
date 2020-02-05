@@ -58,7 +58,7 @@
                 {{_ 'important'}}! ({{this.likesCount}})
             </a> -
             <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
-            {{>Action_buttons_group doc=this collection='comments' actions='edit,move,delete,mute' size='sm'}}
+            {{>Action_buttons_group doc=this collection='comments' actions='edit,move,delete,mute,like' size='sm'}}
         {{/hideable}}
     {{/if}}
 </template>
