@@ -1,21 +1,26 @@
 {
   // Topics
-  "TIC": "M",
-  "ISS": "H",
-  "MAI": "K",
-  "UPG": "F",
-  // Transactions
-  "BIL": "SZ",
-  "REC": "NY",
+  "TIC": "MKA",
+  "ISS": "HIBA",
+  "MAI": "KARB",
+  "UPG": "FELU",
+  "FOR": "FOR",
+  "NEW": "HIR",
+  "ROO": "CSOP",
+  "VOT": "SZAV",
+ // Transactions
+  "BIL": "SZLA",
+  "REC": "NYTA",
   "PAY": "FIZ",
   "REM": "ELE",
   "TRA": "ÁTV",
   "BAR": "BESZ",
   "OPE": "NYIT",
+  "CLO": "ZÁR",
   "FRE": "VEGY",
   // Txdefs
-  "SUP": "BE",
-  "CUS": "KI",
+  "SUP": "SZÁL",
+  "CUS": "VEV",
   "PAR": "DIJ",
   "DEB": "T",
   "CRE": "K"
