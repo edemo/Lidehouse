@@ -38,7 +38,7 @@ if (Meteor.isServer) {
         };
         assertEstimate = function (date, value) {
           const meteredParcel = Parcels.findOne(meteredParcelId);
-          chai.assert.equal(meteredParcel.getEstimate(new Date(date)), value);
+          chai.assert.equal(meteredParcel.getEstimatedValue(new Date(date)), value);
         };
       });
 
@@ -52,7 +52,7 @@ if (Meteor.isServer) {
 
       it('Will not estimate before any readings', function () {
         const meter = Meters.findOne(meterId);
-        chai.assert.equal(meter.getEstimate(new Date('2018-04-04')), 0);
+        chai.assert.equal(meter.getEstimatedValue(new Date('2018-04-04')), 0);
       });
 
       it('Can register reading', function () {
@@ -64,9 +64,18 @@ if (Meteor.isServer) {
       it('Can estimate after 1 reading', function () {
         const meter = Meters.findOne(meterId);
         const usageDays = moment('2018-05-05').diff(moment('2018-03-03'), 'days');
+        chai.assert.equal(usageDays, 63);
         const elapsedDays = moment('2018-06-15').diff(moment('2018-05-05'), 'days');
-        const estimate = (10 / usageDays) * elapsedDays;
-        chai.assert.equal(meter.getEstimate(new Date('2018-06-15')), estimate);
+        chai.assert.equal(elapsedDays, 41);
+        const estimatedConsumption = (10 / usageDays) * elapsedDays;
+        chai.assert.equal(estimatedConsumption, 6.507936507936508);
+        chai.assert.equal(meter.getEstimatedConsumptionSinceLastReading(new Date('2018-06-15')), estimatedConsumption);
+        chai.assert.equal(meter.getEstimatedValue(new Date('2018-06-15')), 10 + estimatedConsumption);
+      });
+
+      it('Can estimate on the same day, the reading was done', function () {
+        const meter = Meters.findOne(meterId);
+        chai.assert.equal(meter.getEstimatedValue(new Date('2018-05-05')), 10);
       });
 
       it('Can not register earlier than last reading', function () {
@@ -90,9 +99,13 @@ if (Meteor.isServer) {
       it('Can estimate after 2 reading', function () {
         const meter = Meters.findOne(meterId);
         const usageDays = moment('2018-06-06').diff(moment('2018-05-05'), 'days');
+        chai.assert.equal(usageDays, 32);
         const elapsedDays = moment('2018-06-30').diff(moment('2018-06-06'), 'days');
-        const estimate = (5 / usageDays) * elapsedDays;
-        chai.assert.equal(meter.getEstimate(new Date('2018-06-30')), estimate);
+        chai.assert.equal(elapsedDays, 24);
+        const estimatedConsumption = (5 / usageDays) * elapsedDays;
+        chai.assert.equal(estimatedConsumption, 3.75);
+        chai.assert.equal(meter.getEstimatedConsumptionSinceLastReading(new Date('2018-06-30')), estimatedConsumption);
+        chai.assert.equal(meter.getEstimatedValue(new Date('2018-06-30')), 15 + estimatedConsumption);
       });
 
       it('Can create new meter /without activeTime - and it starts with 0 at currentDate', function () {

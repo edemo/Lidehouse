@@ -384,6 +384,8 @@ if (Meteor.isServer) {
           } else {
             chai.assert.equal(bills.length, 1);
             const bill = bills[0];
+            console.log("Bill on date ", date);
+            console.log(bill);
             chai.assert.equalDate(bill.deliveryDate, new Date(date));
             chai.assert.equalDate(bill.issueDate, Clock.currentDate());
             chai.assert.equal(bill.lines.length, 1);
@@ -409,10 +411,15 @@ if (Meteor.isServer) {
         assertBilled('2018-02-22', 'consumption', 0);
       });
 
-      it('Can bill a reading', function () {
+      it('Can bill based on reading', function () {
         registerReading('2018-03-01', 10);
-        applyParcelBilling('2018-03-22');
-        assertBilled('2018-03-22', 'consumption', 10);
+        applyParcelBilling('2018-03-02');
+        assertBilled('2018-03-02', 'consumption', 10);
+      });
+
+      it('Doesnt bill again for what it was already billed for', function () {
+        applyParcelBilling('2018-03-01');
+        assertBilled('2018-03-01', 'consumption', 0);
       });
 
       xit('Cannot accidentally bill for same period twice', function () {
@@ -420,6 +427,16 @@ if (Meteor.isServer) {
           applyParcelBilling('2018-03-24');
         }, 'err_alreadyExists');
         assertBilled('2018-03-24', 'consumption', 0);
+      });
+
+      it('Can bill based on estimation', function () {
+        applyParcelBilling('2018-03-22');
+        assertBilled('2018-03-22', 'consumption', 10);
+      });
+
+      it('Doesnt bill again for what it was already billed for', function () {
+        applyParcelBilling('2018-04-22');
+        assertBilled('2018-04-22', 'consumption', 0);
       });
     });
 /*

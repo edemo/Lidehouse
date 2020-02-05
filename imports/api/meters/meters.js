@@ -80,17 +80,21 @@ Meters.helpers({
     if (elapsedDays > 90) return 'warning';
     return '';
   },
-  getEstimate(date = new Date()) {
+  getEstimatedConsumptionSinceLastReading(date = new Date()) {
     const length = this.readings.length;
     debugAssert(length >= 1, 'Meters should have at least an initial reading');
     const lastReading = this.readings[length - 1];
-    if (length === 1) return lastReading.value;
+    debugAssert(lastReading.date <= date, 'We dont support estimating in between reading values');
+    if (length === 1) return lastReading.value; // With only one initial reading, unable estimate consumption
     const previousReading = this.readings[length - 2];
     const usageDays = moment(lastReading.date).diff(moment(previousReading.date), 'days');
     const usage = lastReading.value - previousReading.value;
     const elapsedDays = moment(date).diff(moment(lastReading.date), 'days');
     const estimate = (usage / usageDays) * elapsedDays;
     return estimate;
+  },
+  getEstimatedValue(date = new Date()) {
+    return this.lastReading().value + this.getEstimatedConsumptionSinceLastReading(date);
   },
 });
 

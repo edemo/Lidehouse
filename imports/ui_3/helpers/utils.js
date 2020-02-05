@@ -10,6 +10,11 @@ export function displayMoney(number) {
   return numeral(number).format('0,0$');
 }
 
+export function displayDate(time) {
+  if (!time) return '---';
+  return moment(time).format('L');
+}
+
 if (Meteor.isClient) {
   Template.registerHelper('Meteor', function meteor() {
     return Meteor;
@@ -74,10 +79,7 @@ if (Meteor.isClient) {
     return moment(time).format('L LT');
   });
 
-  Template.registerHelper('displayDate', function displayDate(time) {
-    if (!time) return '---';
-    return moment(time).format('L');
-  });
+  Template.registerHelper('displayDate', displayDate);
 
   Template.registerHelper('displayTimeFrom', function displayTimeFrom(time) {
     // momentjs is not reactive, but TymeSync call makes this reactive

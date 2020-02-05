@@ -17,11 +17,28 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Bills } from '/imports/api/transactions/bills/bills';
 import { Period } from '/imports/api/transactions/breakdowns/period.js';
-import { ActiveTimeMachine } from '../../behaviours/active-time-machine';
+import { ActiveTimeMachine } from '/imports/api/behaviours/active-time-machine';
+import { displayDate } from '/imports/ui_3/helpers/utils.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
 export const BILLING_DUE_DAYS = 8;
+
+function display(reading) {
+  return `${reading.value} (${displayDate(reading.date)})`;
+}
+
+function lineDetails(currentBilling, lastBilling, lastReading) {
+  let result = '';
+  result += `  Legutóbbi számlázott óraállás: ${display(lastBilling)}`;
+  result += `  Most számlázott óraállás: ${display(currentBilling)}`;
+  if (lastBilling.date < lastReading.date) {
+    result += `  Aktuális leolvasás: ${display(lastReading)}`;
+  } else {
+    result += `  Utolsó leolvasás: ${display(lastReading)}`;
+  }
+  return result;
+}
 
 export const apply = new ValidatedMethod({
   name: 'parcelBillings.apply',
@@ -47,13 +64,25 @@ export const apply = new ValidatedMethod({
             period: billingPeriod.label,
           };
           let activeMeter;
+          let currentBilling;
           if (parcelBilling.consumption) {
             activeMeter = Meters.findOneActive({ parcelId: parcel._id, service: parcelBilling.consumption.service });
             if (activeMeter) {
               line.unitPrice = parcelBilling.consumption.unitPrice;
               line.uom = parcelBilling.consumption.uom;
               // TODO: Estimation if no reading available
-              line.quantity = (activeMeter.lastReading().value - activeMeter.lastBilling().value);
+              line.quantity = 0;
+              const lastBilling = activeMeter.lastBilling();
+              const lastReading = activeMeter.lastReading();
+              // ----- date ------ lastBilling ------ now |
+              if (date < lastBilling.date) throw new Meteor.Error('Cannot bill a consumption based billing at a time earlier than the last billing');
+              // ---- lastBilling -----earlierReading ----- date ------ lastReading ------ now |
+              if (date < lastReading.date) throw new Meteor.Error('Cannot bill a consumption based billing at a time earlier than the last reading');
+              // ---- lastBilling -----lastReading ----- date ------ now |
+              // ---- lastReading -----lastBilling ----- date ------ now |
+              currentBilling = { date, value: activeMeter.getEstimatedValue(date) };
+              line.quantity = currentBilling.value - lastBilling.value;
+              line.details = lineDetails(currentBilling, lastBilling, lastReading);
             }
           }
           if (!activeMeter) {
