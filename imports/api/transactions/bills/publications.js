@@ -25,7 +25,8 @@ Meteor.publishComposite('bills.byId', function billsById(params) {
   }).validate(params);
   const { _id } = params;
 
-  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!this.userId) return this.ready();
+  const user = Meteor.users.findOne(this.userId);
   const tx = Transactions.findOne(_id);
   if (!user.hasPermission('transactions.inCommunity', tx)
     && user.partnerId(tx.communityId) !== tx.partnerId) {
@@ -61,7 +62,8 @@ Meteor.publishComposite('bills.outstanding', function billsIncomplete(params) {
   }).validate(params);
   const { communityId } = params;
 
-  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!this.userId) return this.ready();
+  const user = Meteor.users.findOne(this.userId);
   const partnerId = user.partnerId(communityId);
   const selector = { communityId, outstanding: { $gt: 0 } };
 

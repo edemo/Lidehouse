@@ -41,7 +41,7 @@ Parcels.schema = new SimpleSchema({
       } else return undefined;
     },
   },
-  leadRef: { type: String, optional: true, autoform: { omit: true } }, // deprecated for leadRef() helper (Parcelships)
+  leadRef: { type: String, optional: true, autoform: { omit: true } }, // cached active value, if you need TimeMachine functionality use leadParcel() which reads from Parcelships
   units: { type: Number, optional: true },
   // TODO: move these into the House package
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
@@ -85,11 +85,6 @@ Parcels.helpers({
   },
   leadParcel() {
     return Parcels.findOne(this.leadParcelId());
-  },
-  leadRef() {
-    const leadParcel = this.leadParcel();
-    if (leadParcel && leadParcel.ref !== this.ref) return leadParcel.ref;
-    return '';
   },
   withFollowers() {
     const result = [];
@@ -202,7 +197,11 @@ if (Meteor.isServer) {
 
   Parcels.after.update(function (userId, doc, fieldNames, modifier, options) {
     updateCommunity(doc, 1);
-    Localizer.updateParcel(doc);
+    const prev = this.previous;
+    if (doc.ref !== prev.ref
+      || doc.building !== prev.building
+      || doc.floor !== prev.floor
+      || doc.door !== prev.door) Localizer.updateParcel(doc);
   });
 
   Parcels.after.remove(function (userId, doc) {
