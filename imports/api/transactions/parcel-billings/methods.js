@@ -22,7 +22,7 @@ import { displayDate } from '/imports/ui_3/helpers/utils.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
-export const BILLING_DUE_DAYS = 8;
+export const BILLING_DUE_DAYS = 10;
 
 function display(reading) {
   return `${reading.value.round(3)} (${displayDate(reading.date)})`; /* parcelBilling.consumption.decimals */
@@ -116,10 +116,9 @@ export const apply = new ValidatedMethod({
   //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
             partnerId: leadParcel.payerPartner()._id,
             membershipId: leadParcel.payerMembership()._id,
-            valueDate: Clock.currentDate(),
             issueDate: Clock.currentDate(),
             deliveryDate: date,
-            dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
+            dueDate: moment(date).add(BILLING_DUE_DAYS, 'days').toDate(),
             lines: [],
           };
           billsToSend[leadParcel._id].lines.push(line);
