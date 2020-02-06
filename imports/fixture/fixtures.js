@@ -82,7 +82,7 @@ export function insertUnittestFixture(lang) {
     habitants: 4,
   });
 
-  demoBuilder.create('meter', { parcelId: dummyParcels[3], service: 'coldWater', identifier: 'CW-01010101', activeTime: { begin: new Date('2018-01-01') } });
+  demoBuilder.create('meter', { parcelId: dummyParcels[3], service: 'coldWater', uom: 'm3', identifier: 'CW-01010101', activeTime: { begin: new Date('2018-01-01') } });
 
   demoBuilder.create('parcelship', { parcelId: dummyParcels[1], leadParcelId: dummyParcels[3] });
   demoBuilder.create('parcelship', { parcelId: dummyParcels[2], leadParcelId: dummyParcels[3] });

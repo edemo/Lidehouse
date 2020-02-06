@@ -68,16 +68,18 @@ export const apply = new ValidatedMethod({
           if (parcelBilling.consumption) {
             activeMeter = Meters.findOneActive({ parcelId: parcel._id, service: parcelBilling.consumption.service });
             if (activeMeter) {
-              line.unitPrice = parcelBilling.consumption.unitPrice;
-              line.uom = parcelBilling.consumption.uom;
+              const charge = parcelBilling.consumption.charges.find(c => c.uom === activeMeter.uom);
+              if (!charge) throw new Meteor.Error('err_invalidData', `The meter ${activeMeter.identifier} has to match the same uom, that the billing applies to`);
+              line.uom = charge.uom;
+              line.unitPrice = charge.unitPrice;
               // TODO: Estimation if no reading available
               line.quantity = 0;
               const lastBilling = activeMeter.lastBilling();
               const lastReading = activeMeter.lastReading();
               // ----- date ------ lastBilling ------ now |
-              if (date < lastBilling.date) throw new Meteor.Error('Cannot bill a consumption based billing at a time earlier than the last billing');
+              if (date < lastBilling.date) throw new Meteor.Error('err_notAllowed', `Cannot bill a consumption based billing at a time earlier (${date}) than the last billing (${lastBilling.date})`);
               // ---- lastBilling -----earlierReading ----- date ------ lastReading ------ now |
-              if (date < lastReading.date) throw new Meteor.Error('Cannot bill a consumption based billing at a time earlier than the last reading');
+              if (date < lastReading.date) throw new Meteor.Error('err_notAllowed', `Cannot bill a consumption based billing at a time earlier (${date}) than the last reading (${lastReading.date})`);
               // ---- lastBilling -----lastReading ----- date ------ now |
               // ---- lastReading -----lastBilling ----- date ------ now |
               const value = activeMeter.getEstimatedValue(date);

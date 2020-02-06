@@ -57,7 +57,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   Clock.AUTO_TICK = 1000; // one second pass after each Clock call - to avoid same timestamp on two things
-  Clock.starts(6, 'month', 'ago');
+  Clock.starts(2, 'year', 'ago');
   console.log('Creating house:', demoHouseName);
   const demoCommunityId = Communities.insert({
     name: __(`${demoOrTest}.house`),
@@ -214,19 +214,20 @@ export function insertDemoHouse(lang, demoOrTest) {
     habitants: 1,
   });
 
-
   // Meters
   demoParcels.forEach((parcelId, i) => {
     if (_.contains([0, 2, 3, 5, 6, 8, 9, 10, 11, 12], i)) {
       demoBuilder.create('meter', {
         parcelId,
         service: 'coldWater',
+        uom: 'm3',
       });
     }
     if (i <= 10) {
       demoBuilder.create('meter', {
         parcelId,
         service: 'heating',
+        uom: 'kJ',
       });
     }
   });
@@ -887,8 +888,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: 'Hidegvíz előírás',
     consumption: {
       service: 'coldWater',
-      uom: 'm3',
-      unitPrice: 650,
+      charges: [{
+        uom: 'm3',
+        unitPrice: 650,
+      }],
     },
     projection: {
       base: 'habitants',
@@ -902,8 +905,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: 'Fűtési díj előírás',
     consumption: {
       service: 'heating',
-      uom: 'kJ',
-      unitPrice: 120,
+      charges: [{
+        uom: 'kJ',
+        unitPrice: 120,
+      }],
     },
     projection: {
       base: 'volume',
@@ -1259,8 +1264,8 @@ Meteor.methods({
         const demoMembership = Memberships.findOne(demoMembershipId);
 
         Clock.starts(4, 'months', 'ago');
-        const waterMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'coldWater' });
-        const heatingMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'heating' });
+        const waterMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'coldWater', uom: 'm3' });
+        const heatingMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'heating', uom: 'kJ' });
         Clock.tick(3, 'weeks');
         demoBuilder.execute(Meters.methods.registerReading, { _id: waterMeterId,
           reading: { date: Clock.currentTime(), value: 255 } });

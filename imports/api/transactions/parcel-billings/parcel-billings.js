@@ -26,11 +26,15 @@ export const ParcelBillings = new Mongo.Collection('parcelBillings');
 ParcelBillings.projectionBaseValues = ['absolute', 'area', 'volume', 'habitants'];
 //ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
+ParcelBillings.chargeSchema = new SimpleSchema({
+  uom: { type: String, max: 15 },
+  unitPrice: { type: Number, decimal: true },
+//  decimals: { type: Number, defaultValue: 3, max: 10 }, // how many decimals the readings accept and display
+});
+
 ParcelBillings.consumptionSchema = new SimpleSchema({
   service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
-  uom: { type: String, max: 100 },
-//  decimals: { type: Number, defaultValue: 3, max: 10 }, // how many decimals the readings accept and display
-  unitPrice: { type: Number, decimal: true },
+  charges: { type: [ParcelBillings.chargeSchema] },
 });
 
 ParcelBillings.projectionSchema = new SimpleSchema({

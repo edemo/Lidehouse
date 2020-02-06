@@ -161,6 +161,15 @@
     "identifier": {
       "label": "Serial number"
     },
+    "uom": {
+      "label": "Unit of consumption",
+      "placeholder": "(eg. kW)"
+    },
+    "decimals": {
+      "label": "Number of decimal places on meter",
+      "help": "A rendszer az itt beállított tizedesjegyszámig fogja engedni a mérőóraállások rögzítését.",
+      "placeholder": "(eg. 3 or 0 if you want to supply only the whole number part)"
+    },
     "readings": {
       "label": "Meter readings",
       "$": {
@@ -925,17 +934,23 @@
         "help": "Fill this if you would like to bill according to measured consumption in places where a meter is available.",
         "label": "Measured service"
       },
-      "uom": {
-        "label": "Unit of consumption",
-        "placeholder": "(eg. kW)"
-      },
-      "decimals": {
-        "label": "Number of decimal places on meter",
-        "help": "A rendszer az itt beállított tizedesjegyszámig fogja engedni a mérőóraállások rögzítését, és a számlákon is ennyi tizedesjegyig fog az érték megjelenni.",
-        "placeholder": "(eg. 3 or 0 if you want to supply only the whole number part)"
-      },
-      "unitPrice": {
-        "label": "Unit price of consumption"
+      "charges": {
+        "label": "Charges",
+        "$": {
+          "uom": {
+            "label": "Unit of consumption",
+            "placeholder": "(eg. kW)"
+          },
+          "unitPrice": {
+            "label": "Unit price of consumption",
+            "placeholder": "(eg. 250)"
+          },
+          "decimals": {
+            "label": "Number of decimal places in bills",
+            "help": "A rendszer az itt beállított tizedesjegyszámig fogja a számlákon az értéket megjeleníteni.",
+            "placeholder": "(eg. 3 or 0 if you want to supply only the whole number part)"
+          }
+        }
       }
     },
     "projection": {

@@ -26,7 +26,7 @@ Meters.readingSchema = new SimpleSchema({
 });
 
 Meters.unapprovedReadingSchema = new SimpleSchema({
-  date: { type: Date, autoValue: () => new Date(), autoform: { value: new Date(), readonly: true } },
+  date: { type: Date, autoValue: Clock.currentDate, autoform: { value: new Date(), readonly: true } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: fileUpload },
 });
@@ -43,8 +43,10 @@ Meters.billingSchema = new SimpleSchema({
 Meters.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
   identifier: { type: String },
+  service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
+  uom: { type: String, max: 15 },
+  decimals: { type: Number, defaultValue: 3, max: 10, autoform: { autoValue: 3 } }, // how many decimals the readings accept and display
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   readings: { type: Array, optional: true },
   'readings.$': { type: Meters.readingSchema },
@@ -80,7 +82,7 @@ Meters.helpers({
     if (elapsedDays > 90) return 'warning';
     return '';
   },
-  getEstimatedConsumptionSinceLastReading(date = new Date()) {
+  getEstimatedConsumptionSinceLastReading(date = Clock.currentDate()) {
     const length = this.readings.length;
     debugAssert(length >= 1, 'Meters should have at least an initial reading');
     const lastReading = this.readings[length - 1];
@@ -93,7 +95,7 @@ Meters.helpers({
     const estimate = (usage / usageDays) * elapsedDays;
     return estimate;
   },
-  getEstimatedValue(date = new Date()) {
+  getEstimatedValue(date = Clock.currentDate()) {
     return this.lastReading().value + this.getEstimatedConsumptionSinceLastReading(date);
   },
 });
@@ -134,4 +136,6 @@ if (Meteor.isServer) {
 
 Factory.define('meter', Meters, {
   identifier: () => faker.random.alphaNumeric(),
+  service: 'heating',
+  uom: 'kW',
 });

@@ -29,6 +29,7 @@ if (Meteor.isServer) {
           parcelId: meteredParcelId,
           identifier: 'CW-01010101',
           service: 'coldWater',
+          uom: 'm3',
           activeTime: { begin: new Date('2018-03-03') },
         });
 //        const communityId = Fixture.demoCommunityId;
@@ -112,8 +113,9 @@ if (Meteor.isServer) {
         Clock.setSimulatedTime(new Date());
         const newMeterId = Fixture.builder.create('meter', {
           parcelId: meteredParcelId,
-          identifier: 'CW-02020202',
-          service: 'coldWater',
+          identifier: 'HW-02020202',
+          service: 'hotWater',
+          uom: 'm3',
         });
         const newMeter = Meters.findOne(newMeterId);
         chai.assert.deepEqual(newMeter.lastReading(), { date: Clock.currentTime(), value: 0, approved: true });

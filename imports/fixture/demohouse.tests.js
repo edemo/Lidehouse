@@ -17,7 +17,7 @@ if (Meteor.isServer) {
   let demoPartner;
   let demoParcel;
   let demoUserEmail;
-  describe('demohouse', function () {
+  describe.only('demohouse', function () {
     this.timeout(500000);
     before(function () {
       demoHouseId = insertDemoHouse('en', 'demo');

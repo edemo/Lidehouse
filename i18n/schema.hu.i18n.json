@@ -162,6 +162,15 @@
     "identifier": {
       "label": "Gyári azonosító"
     },
+    "uom": {
+      "label": "Fogyasztási egység",
+      "placeholder": "(pl. kW)"
+    },
+    "decimals": {
+      "label": "Tizedesjegyek száma az órán",
+      "help": "A rendszer az itt beállított tizedesjegyszámig fogja engedni a mérőóraállások rögzítését.",
+      "placeholder": "(pl. 3 vagy 0 ha csak egész értéket lehessen megadni)"
+    },
     "readings": {
       "label": "Leolvasások",
       "$": {
@@ -932,17 +941,23 @@
         "help": "Csak akkor töltse ki, ha az előírást mért fogyasztáshoz szeretné kötni azoknál az albetéteknél, ahol van felszerelve mérőóra.",
         "label": "Mért szolgáltatatás"
       },
-      "uom": {
-        "label": "Fogyasztási egység",
-        "placeholder": "(pl. kW)"
-      },
-      "decimals": {
-        "label": "Tizedesjegyek száma az órán",
-        "help": "A rendszer az itt beállított tizedesjegyszámig fogja engedni a mérőóraállások rögzítését, és a számlákon is ennyi tizedesjegyig fog az érték megjelenni.",
-        "placeholder": "(pl. 3 vagy 0 ha csak egész értéket lehessen megadni)"
-      },
-      "unitPrice": {
-        "label": "Fogyasztási egységár (Ft)"
+      "charges": {
+        "label": "Kivetett díj",
+        "$": {
+          "uom": {
+            "label": "Fogyasztási egység",
+            "placeholder": "(pl. kW)"
+          },
+          "unitPrice": {
+            "label": "Fogyasztási egységár (Ft)",
+            "placeholder": "(pl. 250)"
+          },
+          "decimals": {
+            "label": "Tizedesjegyek száma a számlákban",
+            "help": "A rendszer az itt beállított tizedesjegyszámig fogja a számlákon az értéket megjeleníteni.",
+            "placeholder": "(pl. 3 vagy 0 ha csak egész értéket lehessen megadni)"
+          }
+        }
       }
     },
     "projection": {

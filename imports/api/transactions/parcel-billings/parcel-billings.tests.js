@@ -214,8 +214,10 @@ if (Meteor.isServer) {
           title: 'Test consumption',
           consumption: {
             service: 'coldWater',
-            uom: 'm3',
-            unitPrice: 600,
+            charges: [{
+              uom: 'm3',
+              unitPrice: 600,
+            }],
           },
           projection: {
             base: 'habitants',
@@ -342,9 +344,9 @@ if (Meteor.isServer) {
     });
 
     describe('consumption calculation', function () {
-//      let parcelBillingId;
-//      let meteredParcelId;
-//      let meterId;
+      let parcelBillingId;
+      let meteredParcelId;
+      let meterId;
       let registerReading;
       let assertBilled;
       before(function () {
@@ -352,12 +354,14 @@ if (Meteor.isServer) {
         ParcelBillings.remove({});
         Transactions.remove({});
 
-        const parcelBillingId = Fixture.builder.create('parcelBilling', {
+        parcelBillingId = Fixture.builder.create('parcelBilling', {
           title: 'Test consumption',
           consumption: {
             service: 'coldWater',
-            uom: 'm3',
-            unitPrice: 600,
+            charges: [{
+              uom: 'm3',
+              unitPrice: 600,
+            }],
           },
           projection: {
             base: 'habitants',
@@ -366,12 +370,13 @@ if (Meteor.isServer) {
           digit: '3',
           localizer: '@',
         });
-        const meteredParcelId = Fixture.dummyParcels[3];
+        meteredParcelId = Fixture.dummyParcels[3];
         const meteredParcel = Parcels.findOne(meteredParcelId);
-        const meterId = Fixture.builder.create('meter', {
+        meterId = Fixture.builder.create('meter', {
           parcelId: meteredParcelId,
           identifier: 'CW-01010101',
           service: 'coldWater',
+          uom: 'm3',
           activeTime: { begin: new Date('2018-01-22') },
         });
         registerReading = function (date, value) {
@@ -443,7 +448,7 @@ if (Meteor.isServer) {
         assertBilled('2018-04-05', 'consumption', 0);
       });
 
-      it('Can bill negative amount', function () {
+      it('Can do refund (bill a negative amount)', function () {
         registerReading('2018-04-25', 20);  // same reading as before - no consumption
         applyParcelBilling('2018-04-25');
         assertBilled('2018-04-25', 'consumption', -1.29);
@@ -452,6 +457,62 @@ if (Meteor.isServer) {
       it('Can estimate when no consumption in the flat', function () {
         applyParcelBilling('2018-05-05');
         assertBilled('2018-05-05', 'consumption', 0);
+      });
+
+      it('Cannot register two meters for the same service concurrently. But for another service, its OK to have another meter.', function () {
+        chai.assert.throws(() =>
+          Fixture.builder.create('meter', {
+            parcelId: meteredParcelId,
+            identifier: 'CW-02020202',
+            service: 'coldWater',
+            uom: 'l',
+            activeTime: { begin: new Date('2018-07-01') },
+          })
+        );
+        Fixture.builder.create('meter', {
+          parcelId: meteredParcelId,
+          identifier: 'HW-02020202',
+          service: 'hotWater',
+          uom: 'l',
+          activeTime: { begin: new Date('2018-07-01') },
+        });
+      });
+
+      xit('Cannot remove a meter which has unbilled amount', function () {
+        registerReading('2018-06-30', 30);
+        chai.assert.throws(() =>
+          Fixture.builder.execute(Meters.methods.remove, { _id: meterId })
+        , 'err_notAllowed');
+        applyParcelBilling('2018-06-30');
+      });
+
+      it('Can archive a meter which has no unbilled amount', function () {
+        Fixture.builder.execute(Meters.methods.updateActivePeriod, { _id: meterId, modifier: { $set: { 'activeTime.end': new Date('2018-06-30') } } });
+      });
+
+      it('Can use a new meter that measures in a different uom', function () {
+        meterId = Fixture.builder.create('meter', {
+          parcelId: meteredParcelId,
+          identifier: 'CW-02020202',
+          service: 'coldWater',
+          uom: 'l', // the other one was measuring m3
+          activeTime: { begin: new Date('2018-06-30') },
+        });
+        assertBilled('2018-06-30', 'consumption', 0);
+      });
+
+      it('Cannot bill while some meters are in an unsupported uom', function () {
+        chai.assert.throws(() =>
+          applyParcelBilling('2018-07-30')
+        , 'err_invalidData');
+      });
+
+      it('Can bill in different uom', function () {
+        ParcelBillings.update(parcelBillingId, { $push: { 'consumption.charges': { uom: 'l', unitPrice: 600 } } }); 
+        // TODO: use a different value than 600, so we see that the correct amount is billed!
+        registerReading('2018-07-20', 2);
+        applyParcelBilling('2018-07-30');
+        assertBilled('2018-07-30', 'consumption', 3);
       });
     });
 /*

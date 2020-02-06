@@ -4,8 +4,9 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkModifier, checkPermissions, checkPermissionsWithApprove } from '/imports/api/method-checks.js';
+import { sanityCheckOnlyOneActiveAtAllTimes } from '/imports/api/behaviours/active-period.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Meters } from './meters.js';
-import { crudBatchOps } from '../batch-method.js';
 
 export const insert = new ValidatedMethod({
   name: 'meters.insert',
@@ -13,7 +14,13 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkPermissionsWithApprove(this.userId, 'meters.insert', doc);
-    return Meters.insert(doc);
+
+    const MetersStage = Meters.Stage();
+    const _id = MetersStage.insert(doc);
+    sanityCheckOnlyOneActiveAtAllTimes(MetersStage, { parcelId: doc.parcelId, service: doc.service });
+    MetersStage.commit();
+
+    return _id;
   },
 });
 
@@ -29,7 +36,13 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['identifier', 'billings'], true);
     checkPermissions(this.userId, 'meters.update', doc);
 
-    return Meters.update(_id, modifier);
+    const MetersStage = Meters.Stage();
+    const result = MetersStage.update(_id, modifier);
+    const newDoc = MetersStage.findOne(_id);
+    sanityCheckOnlyOneActiveAtAllTimes(MetersStage, { parcelId: newDoc.parcelId, service: newDoc.service });
+    MetersStage.commit();
+
+    return result;
   },
 });
 
