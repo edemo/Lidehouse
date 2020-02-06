@@ -30,7 +30,7 @@ const helpers = {
     let result;
     this.getFlags().forEach((flaggerId) => {
       if (flaggerId === userId) result = 'you';
-      const flagger = Meteor.users.findOne(flaggerId);
+      const flagger = Meteor.users.findOneOrNull(flaggerId);
       if (flagger.hasPermission('flag.forOthers', { communityId })) result = 'moderator';
     });
     return result;
