@@ -95,6 +95,9 @@ Template.Comment.viewmodel({
 });
 
 Template.Comment.events({
+  'click .js-like'(event, instance) {
+    Comments.actions.like.run({}, this);
+  },
   'click .js-edit'(event, instance) {
     const element = $(event.target).closest('.media-body');
     Meteor.setTimeout(() => element.find('textarea')[0].focus(), 100);

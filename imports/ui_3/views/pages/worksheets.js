@@ -235,6 +235,10 @@ Template.Worksheets.viewmodel({
 
 Template.Worksheets.events({ 
   ...(actionHandlers(Topics, 'new')),
+  'click .js-view'(event, instance) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    FlowRouter.go('Topic show', { _tid: id });
+  },
   'click .js-mode'(event, instance) {
     const oldVal = instance.viewmodel.calendarView();
     instance.viewmodel.calendarView(!oldVal);
