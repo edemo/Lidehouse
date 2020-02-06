@@ -213,7 +213,8 @@ Migrations.add({
     if (!newTransaction) {
       Transactions.direct.remove({});
       Balances.direct.remove({});
-      Txdefs.direct.remove({ communityId: { $ne: null } });
+      Breakdowns.direct.remove({});
+      Txdefs.direct.remove({});
     }
   },
 });
