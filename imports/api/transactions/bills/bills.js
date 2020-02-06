@@ -102,7 +102,8 @@ Transactions.categoryHelpers('bill', {
   },
   paymentDate() {
     const payment = _.last(this.getPayments());
-    return payment && Transactions.findOne(payment.id).valueDate;
+    const paymentTx = payment && Transactions.findOne(payment.id);
+    return paymentTx && paymentTx.valueDate;
   },
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
