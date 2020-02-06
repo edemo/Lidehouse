@@ -1248,6 +1248,7 @@ Meteor.methods({
         const demoBuilder = new DemoCommunityBuilder(demoCommunityId, lang);
         const counter = demoBuilder.nextSerial;
 
+        Clock.starts(2, 'year', 'ago');
         const demoParcelId = demoBuilder.createParcel({
           units: 100,
           floor: '5',
@@ -1263,19 +1264,25 @@ Meteor.methods({
         });
         const demoMembership = Memberships.findOne(demoMembershipId);
 
-        Clock.starts(4, 'months', 'ago');
         const waterMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'coldWater', uom: 'm3' });
         const heatingMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'heating', uom: 'kJ' });
-        Clock.tick(3, 'weeks');
+        Clock.starts(14, 'month', 'ago');
         demoBuilder.execute(Meters.methods.registerReading, { _id: waterMeterId,
-          reading: { date: Clock.currentTime(), value: 255 } });
+          reading: { date: Clock.currentTime(), value: 5 } });
         demoBuilder.execute(Meters.methods.registerReading, { _id: heatingMeterId,
-          reading: { date: Clock.currentTime(), value: 133 } });
+          reading: { date: Clock.currentTime(), value: 3 } });
+        Clock.tick(1, 'month');
+        demoBuilder.execute(Meters.methods.registerReading, { _id: waterMeterId,
+          reading: { date: Clock.currentTime(), value: 25 } });
+        demoBuilder.execute(Meters.methods.registerReading, { _id: heatingMeterId,
+          reading: { date: Clock.currentTime(), value: 33 } });
         Clock.clear();
+        // Billings will be applied startig from a year ago, for each month
 
         const demoManagerId = demoBuilder.getUserWithRole('manager');
         const chatPartnerId = demoBuilder.getUserWithRole('owner');
 
+        Clock.starts(3, 'weeks', 'ago');
         const demoUserMessageRoom = demoBuilder.create('room', {
           creatorId: demoUserId,
           participantIds: [demoUserId, demoManagerId],

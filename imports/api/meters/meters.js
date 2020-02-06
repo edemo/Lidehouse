@@ -48,7 +48,13 @@ Meters.schema = new SimpleSchema({
   uom: { type: String, max: 15 },
   decimals: { type: Number, defaultValue: 3, max: 10, autoform: { autoValue: 3 } }, // how many decimals the readings accept and display
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
-  readings: { type: Array, optional: true },
+  readings: { type: Array, optional: true, autoValue() {
+    if (this.isInsert && !this.isSet) {
+      const date = this.field('activeTime.begin').value || Clock.currentTime();
+      const value = 0;
+      return [{ date, value, approved: this.field('approved').value }];
+    } return undefined;
+  } },
   'readings.$': { type: Meters.readingSchema },
   billings: { type: Array, optional: true, autoform: { omit: true } },
   'billings.$': { type: Meters.billingSchema },
@@ -69,10 +75,14 @@ Meters.helpers({
   entityName() {
     return 'meters';
   },
+  startReading() {
+    return _.first(this.readings);
+  },
   lastReading() {
     return _.last(this.readings);
   },
   lastBilling() {
+    if (!this.billings || !this.billings.length) return this.startReading();
     return _.last(this.billings);
   },
   lastReadingColor() {
@@ -113,24 +123,6 @@ Meteor.startup(function attach() {
   Meters.simpleSchema().i18n('schemaMeters');
   Meters.registerReadingSchema.i18n('schemaReadings');
 });
-
-if (Meteor.isServer) {
-  Meters.before.insert(function (userId, doc) {
-    if (!doc.readings) {
-      doc.readings = [{
-        date: (doc.activeTime && doc.activeTime.begin) || Clock.currentTime(),
-        value: 0,
-        approved: doc.approved,
-      }];
-    }
-    if (!doc.billings) {
-      doc.billings = [{
-        date: (doc.activeTime && doc.activeTime.begin) || Clock.currentTime(),
-        value: 0,
-      }];
-    }
-  });
-}
 
 // --- Factory ---
 
