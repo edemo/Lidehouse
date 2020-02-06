@@ -131,15 +131,6 @@ Template.Parcels_box.viewmodel({
       this.templateInstance.subscribe('parcels.ofSelf', { communityId });
     }
   },
-  parcelTypesWithCount() {
-    const communityId = getActiveCommunity();
-    const result = [];
-    if (!community) return [];
-    Object.keys(community.parcels).forEach(k => {
-      result.push({ type: k, count: community.parcels[k] });
-    });
-    return result;
-  },
   parcelsTableContent() {
     const self = this;
     const communityId = getActiveCommunityId();
@@ -221,6 +212,15 @@ Template.Community_page.viewmodel({
     },*/
   activeTabClass(index) {
     return index === 0 ? 'active' : '';
+  },
+  parcelTypesWithCount() {
+    const community = this.community();
+    const result = [];
+    if (!community) return [];
+    Object.keys(community.parcels).forEach(k => {
+      result.push({ type: k, count: community.parcels[k] });
+    });
+    return result;
   },
 });
 

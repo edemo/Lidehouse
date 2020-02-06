@@ -269,7 +269,7 @@
                                     {{/if}}
                                 {{/unless}}
                             {{/if}}
-                            {{#if currentUserHasPermission 'communities.remove'}}
+                            {{#if currentUserHasPermission 'communities.remove' community}}
                             <br>
                               <button class="btn btn-danger btn-block btn-outline js-delete"><!--i class="fa fa-trash"></i--> {{_ 'Delete community'}}</button>
                             {{/if}}
