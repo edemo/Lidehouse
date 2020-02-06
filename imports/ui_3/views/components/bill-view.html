@@ -68,7 +68,7 @@
                         </strong>
                         </div>
                         <small>{{line.details}}</small>
-                        {{#if currentUserHasPermission 'transactions.post'}}
+                        {{#if currentUserHasPermission 'transactions.post'}}<br>
                             {{{displayAccount line.account activeCommunityId}}}
                             {{{displayLocalizer line.localizer activeCommunityId}}}
                         {{/if}}
@@ -77,7 +77,7 @@
                     <td>{{line.unitPrice}}</td>
                     <td>{{line.quantity}}</td>
                     <td>{{line.taxPct}}</td>
-                    <td>{{line.amount}}</td>
+                    <td class="nowrap">{{displayMoney line.amount}}</td>
                 </tr>
                 {{/if}}
                 {{/each}}
@@ -89,15 +89,15 @@
         <tbody>
         <tr>
             <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
-            <td>{{docVm.amount}}</td>
+            <td class="nowrap">{{displayMoney docVm.amount}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
-            <td>{{docVm.tax}}</td>
+            <td class="nowrap">{{displayMoney docVm.tax}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
-            <td>{{docVm.amount}}</td>
+            <td class="nowrap">{{displayMoney docVm.amount}}</td>
         </tr>
         </tbody>
     </table>
@@ -112,12 +112,12 @@
             {{displayDate payment.valueDate}}
             {{>Action_buttons_group collection='transactions' doc=payment actions='view' size='sm'}}
           </td>
-          <td>{{payment.amount}}</td>
+          <td class="nowrap">{{displayMoney payment.amount}}</td>
       </tr>
       {{/each}}
       <tr>
           <td><strong>{{_ 'schemaBills.outstanding.label'}} :</strong></td>
-          <td>{{docVm.outstanding}}</td>
+          <td class="nowrap">{{displayMoney docVm.outstanding}}</td>
       </tr>
       </tbody>
     </table>

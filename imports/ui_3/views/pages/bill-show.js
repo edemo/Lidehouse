@@ -31,8 +31,8 @@ Template.Bill_show.viewmodel({
   },
   pageCrumbs() {
     return [{
-      title: __('Accounting'),
-      url: FlowRouter.path('Accounting'),
+      title: __('Parcels finances'),
+      url: FlowRouter.path('Parcels finances'),
     }];
   },
 });

@@ -293,8 +293,8 @@ Transactions.helpers({
     let totalTax = 0;
     this.lines.forEach(line => {
       if (!line) return; // can be null, when a line is deleted from the array
-      line.amount = line.unitPrice * line.quantity;
-      line.tax = (line.amount * line.taxPct) / 100;
+      line.amount = Math.round(line.unitPrice * line.quantity);
+      line.tax = Math.round((line.amount * line.taxPct) / 100);
       line.amount += line.tax; // =
       totalAmount += line.amount;
       totalTax += line.tax;

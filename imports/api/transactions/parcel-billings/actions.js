@@ -107,6 +107,15 @@ AutoForm.addHooks('af.parcelBilling.insert', {
   },
 });
 
+AutoForm.addHooks('af.parcelBilling.update', {
+  formToModifier(modifier) {
+    // TODO: nasty hack to trick autoform - AF is trying to $unset these, and then throws error, that these values are mandatory
+    delete modifier.$unset['consumption.service'];
+    delete modifier.$unset['consumption.charges'];
+    return modifier;
+  },
+});
+
 AutoForm.addHooks('af.parcelBilling.apply', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
