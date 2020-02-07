@@ -230,6 +230,11 @@ Template.Occupants_box.events({
     const membership = Memberships.findOne(id);
     Meteor.users.actions.view.run({}, membership.partner().user());
   },
+  'click .js-occupants'(event, instance) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    const leadParcel = Parcels.findOne(id);
+    Parcels.actions.occupants.run({}, leadParcel);
+  },
 });
 
 Template.Meters_box.events({
