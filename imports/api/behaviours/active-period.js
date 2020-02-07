@@ -67,17 +67,17 @@ const hooks = {};
 // remove non-active docs, only with direct.remove, which then doesn't perform other hooks that might be needed
 
 const staticHelpers = {
-  findActive(selector) {
+  findActive(selector, options) {
     if (!selector.active && !selector.activeTime) {
       _.extend(selector, ActiveTimeMachine.selector());
     }
-    return this.find(selector);
+    return this.find(selector, options);
   },
-  findOneActive(selector) {
+  findOneActive(selector, options) {
     if (!selector.active && !selector.activeTime) {
       _.extend(selector, ActiveTimeMachine.selector());
     }
-    return this.findOne(selector);
+    return this.findOne(selector, options);
   },
 };
 
