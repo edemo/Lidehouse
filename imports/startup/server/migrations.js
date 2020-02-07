@@ -157,23 +157,27 @@ Migrations.add({
   version: 10,
   name: 'Membership persons become partners, and partners cast the votes, delegate and pay the bills',
   up() {
+    Memberships.update(
+      { 'person.idCard.name': { $exists: true },
+        'person.contact.email': { $exists: false },
+        'person.userId': { $exists: true } },
+      { $unset: { 'person.userId': 0 } },
+      { multi: true }
+    );
     Memberships.find({}).forEach((doc) => {
       let partnerId;
       if (doc.person && doc.person.idCard && doc.person.idCard.name) {
         const partnerByName = Partners.findOne({ communityId: doc.communityId, 'idCard.name': doc.person.idCard.name });
         if (partnerByName) partnerId = partnerByName._id;
-      }
-      if (doc.personId) {
+      } else if (doc.personId) {
         const partnerById = Partners.findOne({ communityId: doc.communityId, userId: doc.personId });
         if (partnerById) partnerId = partnerById._id;
       }
       const person = _.extend(doc.person, { communityId: doc.communityId, relation: 'parcel' });
       if (!partnerId) partnerId = Partners.insert(person);
       const newFields = { partnerId };
-      if (doc.personId &&
-          (!doc.person || !doc.person.idCard || !doc.person.idCard.identifier ||
-            doc.person.idCard.identifier !== doc.personId)) {
-        newFields.userId = doc.personId;
+      if (doc.person.userId) {
+        newFields.userId = doc.person.userId;
       }
       Memberships.update(doc._id, { $set: newFields, $unset: { person: '', personId: '' } });
     });

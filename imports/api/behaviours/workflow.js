@@ -123,12 +123,13 @@ const statusChange = new ValidatedMethod({
 
     const insertResult = Comments.insert(event);
 
+    const newComment = Comments.findOne(insertResult);
     const newTopic = Topics.findOne(event.topicId);
     const onEnter = workflow[event.status].obj.onEnter;
     if (onEnter) onEnter(event, newTopic);
 
     updateMyLastSeen._execute({ userId: this.userId },
-      { topicId: topic._id, lastSeenInfo: { timestamp: newTopic.createdAt } },
+      { topicId: topic._id, lastSeenInfo: { timestamp: newComment.createdAt } },
     );
 
     return insertResult;
