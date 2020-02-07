@@ -1,7 +1,7 @@
 /* eslint-disable no-extend-native */
 import { _ } from 'meteor/underscore';
 
-// https://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
+// Source: https://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
 Object.getByString = function (object, string) {
   let obj = object;
   let str = string;
@@ -30,6 +30,29 @@ Object.setByString = function (object, string, value) {
       obj = obj[key];
     }
   }
+};
+
+// Source: http://adripofjavascript.com/blog/drips/object-equality-in-javascript.html
+Object.isEquivalent = function isEquivalent(a, b) {
+  if (a === undefined && b === undefined) return true;
+  if (a === undefined || b === undefined) return false;
+
+  // Create arrays of property names
+  const aProps = Object.getOwnPropertyNames(a);
+  const bProps = Object.getOwnPropertyNames(b);
+  // If number of properties is different, objects are not equivalent
+  if (aProps.length != bProps.length) {
+    return false;
+  }
+  for (let i = 0; i < aProps.length; i++) {
+    const propName = aProps[i];
+    // If values of same property are not equal, objects are not equivalent
+    if (a[propName] !== b[propName]) {
+      return false;
+    }
+  }
+  // If we made it this far, objects are considered equivalent
+  return true;
 };
 
 String.prototype.forEachChar = function forEachChar(func) {

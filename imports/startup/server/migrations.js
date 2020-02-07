@@ -237,6 +237,25 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 13,
+  name: 'Remove unnecessary owners, where a lead parcel is specified',
+  up() {
+    Parcels.find({}).fetch().forEach((parcel) => {
+      if (parcel.isLed()) {
+        const leadParcel = parcel.leadParcel();
+        Memberships.findActive({ parcelId: parcel._id, role: 'owner' }).forEach((doc) => {
+          const sameDocOnLead = Memberships.findActive({ parcelId: leadParcel._id, role: 'owner', partnerId: doc.partnerId });
+          if (Object.isEquivalent(doc.ownership, sameDocOnLead.ownership)
+           && Object.isEquivalent(doc.activeTime, sameDocOnLead.activeTime)) {
+            // Since it absolutely matches the doc on the lead, we can safely remove it
+            Memberships.remove(doc._id);
+          }
+        });
+      }
+    });
+  },
+});
 
 
 Meteor.startup(() => {
