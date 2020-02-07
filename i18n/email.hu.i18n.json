@@ -44,7 +44,7 @@
     "OutstandingsContact":  "Amennyiben a fent említett hátralék időközben befizetésre került, úgy kérem, hogy a további intézkedések elkerülése végett, küldje el részünkre a befizetési bizonylat másolatát az alábbi email címre",
     "BillText": "Önnek új elektronikus számlája érkezett, amelyet az <a href=\"__link__\">online felületre belépve</a> részleteiben is megtekinthet vagy kinyomtathat. Ugyanitt a korábbi számláit is átnézheti.",
     "PaymentMethods": "A társasház bankszámlaszáma, amire átutalhatja az összeget",
-    "PaymentInstructions": "A közlemény rovatba kérjük írja be a számla azonosító számát.",
+    "PaymentInstructions": "A közlemény rovatba kérjük írja be a díjbekérő azonosító számát.",
 
     "NotificationSubject": "Értesítések a __name__ társasházból",
     "NotificationsHeader": "A témák melletti Megtekintés gomb elviszi az adott téma oldalára, ahol van lehetősége hozzászólni.",
