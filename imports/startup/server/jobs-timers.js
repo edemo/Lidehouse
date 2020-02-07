@@ -8,23 +8,31 @@ import { cleanCanceledVoteAttachments } from '/imports/api/shareddocs/methods.js
 import { emptyOldTrash } from '/imports/api/behaviours/trash.js';
 import { processNotifications, notifyExpiringVotings } from '/imports/email/notifications-send.js';
 
-const bindEnv = func => Meteor.bindEnvironment(func, (err) => { console.error(err); });
+const job = (func) => {
+  const wrappedFunc = function () {
+    const start = Date.now();
+    func();
+    const finish = Date.now();
+    console.log('Job', func.name, finish - start, 'ms');
+  };
+  return Meteor.bindEnvironment(wrappedFunc, (err) => { console.error(err); });
+};
 
 Meteor.startup(() => {
   const dailySchedule = later.parse.recur().on(0).hour();
 
-  bindEnv(closeClosableVotings)();
-  bindEnv(closeInactiveTopics)();
-  bindEnv(openScheduledVotings)();
-//  later.setInterval(bindEnv(cleanExpiredEmails), dailySchedule);    - who doesn't accept invite, still gets weekly noti emails
-//  later.setInterval(bindEnv(cleanCanceledVoteAttachments), dailySchedule);    - too dangerous
-  later.setInterval(bindEnv(emptyOldTrash), dailySchedule);
-  later.setInterval(bindEnv(notifyExpiringVotings), dailySchedule);
-  later.setInterval(bindEnv(closeClosableVotings), dailySchedule);
-  later.setInterval(bindEnv(closeInactiveTopics), dailySchedule);
-  later.setInterval(bindEnv(() => openScheduledVotings()), later.parse.recur().on(1).hour());
+  job(closeClosableVotings)();
+  job(closeInactiveTopics)();
+  job(openScheduledVotings)();
+//  later.setInterval(job(cleanExpiredEmails), dailySchedule);    - who doesn't accept invite, still gets weekly noti emails
+//  later.setInterval(job(cleanCanceledVoteAttachments), dailySchedule);    - too dangerous
+  later.setInterval(job(emptyOldTrash), dailySchedule);
+  later.setInterval(job(notifyExpiringVotings), dailySchedule);
+  later.setInterval(job(closeClosableVotings), dailySchedule);
+  later.setInterval(job(closeInactiveTopics), dailySchedule);
+  later.setInterval(job(() => openScheduledVotings()), later.parse.recur().on(1).hour());
 
-  later.setInterval(bindEnv(() => processNotifications('frequent')), later.parse.recur().on(8, 12, 16, 20).hour());
-  later.setInterval(bindEnv(() => processNotifications('daily')), later.parse.recur().on(18).hour());
-  later.setInterval(bindEnv(() => processNotifications('weekly')), later.parse.recur().on(6).dayOfWeek().on(14).hour());
+  later.setInterval(job(() => processNotifications('frequent')), later.parse.recur().on(8, 12, 16, 20).hour());
+  later.setInterval(job(() => processNotifications('daily')), later.parse.recur().on(18).hour());
+  later.setInterval(job(() => processNotifications('weekly')), later.parse.recur().on(6).dayOfWeek().on(14).hour());
 });
