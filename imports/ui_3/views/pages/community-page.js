@@ -71,6 +71,10 @@ Template.Occupants_table.viewmodel({
 });
 
 Template.Occupants_box.viewmodel({
+  autorun() {
+    const data = this.templateInstance.data;
+    this.templateInstance.subscribe('parcelships.ofParcel', { parcelId: data.parcelId });
+  },
   membershipsContent() {
     const data = this.templateInstance.data;
     const communityId = getActiveCommunityId();
@@ -124,7 +128,6 @@ Template.Parcels_box.viewmodel({
   autorun() {
     const communityId = getActiveCommunityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
-    this.templateInstance.subscribe('parcelships.inCommunity', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
     } else {

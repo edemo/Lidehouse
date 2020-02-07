@@ -2,6 +2,7 @@
 
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Parcelships } from './parcelships.js';
 
 Meteor.publish('parcelships.inCommunity', function parcelshipsInCommunity(params) {
@@ -10,11 +11,27 @@ Meteor.publish('parcelships.inCommunity', function parcelshipsInCommunity(params
   }).validate(params);
 
   const { communityId } = params;
-  const user = Meteor.users.findOne(this.userId);
+  const user = Meteor.users.findOneOrNull(this.userId);
 
-  if (!user || !user.hasPermission('parcelships.inCommunity', { communityId })) {
+  if (!user.hasPermission('parcelships.inCommunity', { communityId })) {
     return this.ready();
   }
 
   return Parcelships.find({ communityId });
+});
+
+Meteor.publish('parcelships.ofParcel', function parcelshipsofParcel(params) {
+  new SimpleSchema({
+    parcelId: { type: String },
+  }).validate(params);
+
+  const { parcelId } = params;
+  const parcel = Parcels.findOne(parcelId);
+  const user = Meteor.users.findOneOrNull(this.userId);
+
+  if (!user.hasPermission('parcelships.inCommunity', { communityId: parcel.communityId })) {
+    return this.ready();
+  }
+
+  return Parcelships.find({ parcelId });
 });
