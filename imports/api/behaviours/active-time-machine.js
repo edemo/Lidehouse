@@ -29,6 +29,9 @@ export const ActiveTimeMachine = {
   selector() {
     return this._selector(this._destinationTime);
   },
+  isSimulating() {
+    return Meteor.isServer && this._destinationTime;  // The client is not supposed to be simulating
+  },
   runAtTime(time, func) {
     this._restoreTime = this._destinationTime;
     this._destinationTime = time;

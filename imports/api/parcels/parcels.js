@@ -21,6 +21,7 @@ import { Meters } from '/imports/api/meters/meters.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { ActiveTimeMachine } from '../behaviours/active-time-machine';
 
 export const Parcels = new Mongo.Collection('parcels');
 
@@ -73,27 +74,34 @@ Meteor.startup(function indexParcels() {
 });
 
 Parcels.helpers({
-  isLed() {
-    const parcelship = Parcelships.findOneActive({ parcelId: this._id });
-    if (parcelship) return true;
-    return false;
-  },
   leadParcelId() {
-    const parcelship = Parcelships.findOneActive({ parcelId: this._id });
-    const leadParcelId = parcelship ? parcelship.leadParcelId : this._id;
-    return leadParcelId; // if can't find your lead parcel, lead yourself
+    if (ActiveTimeMachine.isSimulating()) {
+      const parcelship = Parcelships.findOneActive({ parcelId: this._id });
+      return parcelship ? parcelship.leadParcelId : this._id; // if can't find your lead parcel, lead yourself
+    } else {
+      if (!this.leadRef) return this._id;
+      return Parcels.findOne({ communityId: this.communityId, ref: this.leadRef })._id;
+    }
   },
   leadParcel() {
     return Parcels.findOne(this.leadParcelId());
   },
-  withFollowers() {
-    const result = [];
-    this.forEachLed(p => result.push(p));
-    return result;
+  leadParcelRef() {
+    if (ActiveTimeMachine.isSimulating()) return this.leadParcel().ref;
+    else return this.leadRef;
+  },
+  isLed() {
+    const leadRef = this.leadParcelRef();
+    return (leadRef && leadRef !== this.ref); // comparing the ref is quicker than the id, because the ref is cached
   },
   followers() {
-    const followerParcelIds = Parcelships.find({ leadParcelId: this._id }).map(p => p.parcelId);
-    return Parcels.find({ _id: { $in: followerParcelIds } });
+    if (ActiveTimeMachine.isSimulating()) {
+      const followerParcelIds = Parcelships.findActive({ leadParcelId: this._id }).map(ps => ps.parcelId);
+      return Parcels.find({ _id: { $in: _.without(followerParcelIds, this._id) } });
+    } else return Parcels.find({ _id: { $ne: this._id }, communityId: this.communityId, leadRef: this.ref });
+  },
+  withFollowers() {
+    return [this].concat(this.followers().fetch());
   },
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')
@@ -101,7 +109,7 @@ Parcels.helpers({
       + (this.door ? this.door : '');
   },
   meters() {
-    return Meters.find({ communityId: this.communityId, parcelId: this._id });
+    return Meters.findActive({ communityId: this.communityId, parcelId: this._id });
   },
   oldestReadMeter() {
     return _.last(this.meters().fetch().sort(m => m.lastReading().date.getTime()));
@@ -131,25 +139,16 @@ Parcels.helpers({
     return this.ref || this.location();
   },
   community() {
-    const community = Communities.findOne(this.communityId);
-    debugAssert(community);
-    return community;
+    return Communities.findOne(this.communityId);
   },
   totalunits() {
     const community = this.community();
-    if (!community) return undefined;
-    return community.totalunits;
-  },
-  forEachLed(callback) {
-    if (this.isLed()) return;
-    const followerParcels = Parcelships.findActive({ leadParcelId: this._id }).map(l => l.followerParcel());
-    followerParcels.push(this);
-    followerParcels.forEach(parcel => callback(parcel));
+    return community && community.totalunits;
   },
   // Voting
   ledUnits() {
     let cumulatedUnits = 0;
-    this.forEachLed(parcel => cumulatedUnits += parcel.units);
+    this.withFollowers().forEach(parcel => cumulatedUnits += parcel.units);
     return cumulatedUnits;
   },
   share() {
@@ -159,10 +158,8 @@ Parcels.helpers({
     return new Fraction(this.ledUnits(), this.totalunits());
   },
   ownedShare() {
-    if (this.isLed()) return this.leadParcel().ownedShare();
     let total = new Fraction(0);
-    Memberships.findActive({ parcelId: this._id, approved: true, role: 'owner' })
-      .forEach(p => total = total.add(p.ownership.share));
+    this.owners().forEach(o => total = total.add(o.ownership.share)); // owners are the lead's owners
     return total;
   },
 });
