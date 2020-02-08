@@ -60,7 +60,7 @@ if (Meteor.isServer) {
           chai.assert.equal(line.uom, expected.uom);
           chai.assert.equal(line.unitPrice, expected.unitPrice);
           chai.assert.equal(line.quantity, expected.quantity);
-          chai.assert.equal(line.amount, expected.unitPrice * expected.quantity);
+          chai.assert.equal(line.amount, Math.round(expected.unitPrice * expected.quantity));
           chai.assert.equal(line.localizer, expected.localizer);
           if (expected.lineTitle) chai.assert.equal(line.title, expected.lineTitle);
           if (expected.linePeriod) chai.assert.equal(line.period, expected.linePeriod);
