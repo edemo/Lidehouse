@@ -89,12 +89,12 @@ export const apply = new ValidatedMethod({
             }
           }
           if (!activeMeter) {
-            productionAssert(parcelBilling.projection, 'Projection base is not set up in your billing');
+            productionAssert(parcelBilling.projection, `Parcel ${parcel.ref} has no meter for billing ${parcelBilling.name}, and no projection is set up for this billing.`);
             line.unitPrice = parcelBilling.projection.unitPrice;
             line.uom = parcelBilling.projectionUom();
             line.quantity = parcelBilling.projectionQuantityOf(parcel);
           }
-          debugAssert(line.uom && _.isDefined(line.quantity), 'Billing needs consumption or projection.');
+          productionAssert(line.uom && _.isDefined(line.quantity), 'A billing needs at least one of consumption or projection.');
           if (line.quantity === 0) return; // Should not create bill for zero amount
           line.title = parcelBilling.title;
           line.amount = line.quantity * line.unitPrice;
