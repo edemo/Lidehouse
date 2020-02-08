@@ -216,21 +216,17 @@ if (Meteor.isClient) {
   choosePartner = {
     relation: 'partner',
     value() {
-      console.log('in partner value', new Date());
       const selfId = AutoForm.getFormId();
       const value = ModalStack.readResult(selfId, 'af.partner.insert');
-      console.log('out partner value', new Date());
       return value;
     },
     options() {
-      console.log('in partner options', new Date());
       const communityId = Session.get('activeCommunityId');
       const relation = Session.get('activePartnerRelation');
       const partners = Partners.find({ communityId, relation });
       const options = partners.map(function option(p) {
         return { label: p.displayName(), value: p._id };
       });
-      console.log('out partner options', new Date());
       return options;
     },
     firstOption: () => __('(Select one)'),
@@ -245,14 +241,11 @@ if (Meteor.isClient) {
   choosePerson = {
     relation: 'partner',
     value() {
-      console.log('in person value', new Date());
       const selfId = AutoForm.getFormId();
       const value = ModalStack.readResult(selfId, 'af.partner.insert');
-      console.log('out person value', new Date());
       return value;
     },
     options() {
-      console.log('in person options', new Date());
       const communityId = Session.get('activeCommunityId');
       Session.set('activePartnerRelation', 'parcel');
       const partners = Partners.find({ communityId, relation: 'parcel' });
@@ -260,7 +253,6 @@ if (Meteor.isClient) {
         return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
       });
       const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
-      console.log('out person options', new Date());
       return sortedOptions;
     },
     firstOption: () => __('(Select one)'),
