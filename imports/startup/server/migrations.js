@@ -247,8 +247,8 @@ Migrations.add({
         Memberships.findActive({ parcelId: parcel._id, role: 'owner' }).forEach((doc) => {
           const sameDocOnLead = Memberships.findOneActive({ parcelId: leadParcel._id, role: 'owner', partnerId: doc.partnerId });
           if (sameDocOnLead) {
-            if (Object.deepEquals(doc.ownership, sameDocOnLead.ownership)
-            && Object.deepEquals(doc.activeTime, sameDocOnLead.activeTime)) {
+            if (_.isEqual(doc.ownership.share, sameDocOnLead.ownership.share)
+            && _.isEqual(doc.activeTime, sameDocOnLead.activeTime)) {
               // Since it absolutely matches the doc on the lead, we can safely remove it
               console.log('Removed membership', doc._id);
               Memberships.remove(doc._id);
