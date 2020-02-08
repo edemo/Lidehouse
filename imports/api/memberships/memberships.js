@@ -73,6 +73,7 @@ Memberships.idSet = ['communityId', 'role', 'parcelId', 'partner.idCard.name', '
 Meteor.startup(function indexMemberships() {
   Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
   Memberships.ensureIndex({ userId: 1 }, { sparse: true });
+  Memberships.ensureIndex({ partnerId: 1 });
   if (Meteor.isServer) {
     Memberships._ensureIndex({ communityId: 1, parcelId: 1, approved: 1, active: 1, role: 1 });
   }
