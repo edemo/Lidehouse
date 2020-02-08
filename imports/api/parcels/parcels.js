@@ -79,8 +79,9 @@ Parcels.helpers({
       const parcelship = Parcelships.findOneActive({ parcelId: this._id });
       return parcelship ? parcelship.leadParcelId : this._id; // if can't find your lead parcel, lead yourself
     } else {
-      if (!this.leadRef) return this._id;
-      return Parcels.findOne({ communityId: this.communityId, ref: this.leadRef })._id;
+      if (!this.leadRef || (this.leadRef === this.ref)) return this._id;
+      const leadParcel = Parcels.findOne({ communityId: this.communityId, ref: this.leadRef });
+      return leadParcel && leadParcel._id;
     }
   },
   leadParcel() {
