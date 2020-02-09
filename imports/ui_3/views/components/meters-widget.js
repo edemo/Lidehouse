@@ -21,10 +21,11 @@ Template.Meters_widget.viewmodel({
   },
   lastReadingDate() {
     const meter = this.oldestReadMeter();
-    return meter ? meter.lastReading().date : undefined;
+    return meter && meter.lastReading().date;
   },
   colorClass() {
-    const color = this.oldestReadMeter().lastReadingColor();
+    const meter = this.oldestReadMeter();
+    const color = meter && meter.lastReadingColor();
     return color ? 'bg-' + color : 'navy-bg';
   },
   icon() {
