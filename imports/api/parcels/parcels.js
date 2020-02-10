@@ -81,7 +81,7 @@ Parcels.helpers({
     } else {
       if (!this.leadRef || (this.leadRef === this.ref)) return this._id;
       const leadParcel = Parcels.findOne({ communityId: this.communityId, ref: this.leadRef });
-      return leadParcel && leadParcel._id;
+      return leadParcel ? leadParcel._id : this._id;  // if can't find your lead parcel, lead yourself
     }
   },
   leadParcel() {
