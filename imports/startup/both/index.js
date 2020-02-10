@@ -6,6 +6,7 @@ import './collection-patches.js';
 import './fractional.js';
 // package configuration
 import './useraccounts-configuration.js';
+import './ufs-config.js';
 
 import './version.js';
 import './debug.js';
