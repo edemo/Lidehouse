@@ -30,7 +30,10 @@ Template.Balance_widget.viewmodel({
   },
   message(balance) {
     if (balance > 0) return __('You have overpayment');
-    else if (balance < 0) return __('You have due payments');
+    else if (balance < 0) {
+      if (this.partner().mostOverdueDays()) return __('You have overdue payments');
+      else return __('You have due payments');
+    }
     return __('Your Parcel Balance');
   },
   colorClass(balance) {
