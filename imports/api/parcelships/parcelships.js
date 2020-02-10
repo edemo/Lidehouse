@@ -17,7 +17,7 @@ export const Parcelships = new Mongo.Collection('parcelships');
 const chooseParcel = {
   options() {
     const communityId = Session.get('activeCommunityId');
-    const options = Parcels.find({ communityId }).map(function option(p) {
+    const options = Parcels.find({ communityId }, { sort: { ref: 1 } }).map(function option(p) {
       return { label: p.ref, value: p._id };
     });
     return options;
