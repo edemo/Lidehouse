@@ -54,8 +54,9 @@ Partners.schema = new SimpleSchema({
 
 
 Meteor.startup(function indexPartners() {
+  Partners.ensureIndex({ 'contact.email': 1 }, { sparse: true });
+  Partners.ensureIndex({ 'idCard.identifier': 1 }, { sparse: true });
   if (Meteor.isServer) {
-    Partners._ensureIndex({ 'idCard.identifier': 1 });
     Partners._ensureIndex({ communityId: 1, 'idCard.name': 1 });
     Partners._ensureIndex({ communityId: 1, relation: 1, outstanding: -1 });
   }

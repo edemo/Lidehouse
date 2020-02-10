@@ -17,6 +17,9 @@ export const insert = new ValidatedMethod({
   run(doc) {
     doc = Partners._transform(doc);
     checkPermissions(this.userId, 'partners.insert', doc);
+    if (doc.contact && doc.contact.email) {
+      checkNotExists(Partners, { 'contact.email': doc.contact.email });
+    }
     const _id = Partners.insert(doc);
     return _id;
   },

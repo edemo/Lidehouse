@@ -260,6 +260,19 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 14,
+  name: 'Remove duplicate partners',
+  up() {
+    Meteor.users.find({}).fetch().forEach((user) => {
+      const partners = Partners.find({ userId: user._id });
+      if (partners.count() > 1) {
+        console.warn(`MERGE CONFLICT: User ${user._id} (${user.emails[0].address}) has multiple partners: ${partners.fetch()})`);
+      }
+    });
+  },
+});
+
 
 Meteor.startup(() => {
   Migrations.unlock();
