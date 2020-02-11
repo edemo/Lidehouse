@@ -673,6 +673,7 @@
   "delete breakdown": "törli a könyvelési bontást",
   "delete txdef": "törli a tranzakció típust",
   "delete transaction": "törli a tranzakciót",
+  "post transaction": "könyvelésbe küldi a tranzakciót",
   "delete meter": "törli a mérőórát",
   "remind outstandings": "elküldi a hátralék emlékeztetőt",
   "delete parcelship": "törli a vezető albetétet",
@@ -699,7 +700,8 @@
   "Connecting user": "A(z) <strong>'%s'</strong> email című felhasználót kapcsolni fogja a tagsághoz. Ha az illetőnek még nincs felhasználói fiókja a rendszerben, akkor most meghívót fog neki küldeni erre az email címre.",
   "Sending outstandings reminder": "A(z) <strong>'%s'</strong> email címre ezzel egy hátralék emlékeztető emailt fog kiküldeni.",
   "This will publish the current account balances": "Ezzel a jelen pillanatban élő számlaegyenlegek lesznek mostantól láthatóak a tulajdonosok felé mutatott kimutatásokban",
-  
+  "This transaction has been already posted before": "Ezt a tranzakciót korábban már könyvelésbe küldte",
+
   "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",
   "deletedUser": "Törölt felhasználó",

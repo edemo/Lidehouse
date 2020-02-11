@@ -133,9 +133,17 @@ Transactions.actions = {
       return currentUserHasPermission('transactions.post', doc);
     },
     run(options, doc) {
-      Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
-        displayMessage('info', 'Szamla konyvelesbe kuldve');
-      }));
+      if (doc.isPosted()) {
+        Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
+          action: 'post transaction',
+          message: 'This transaction has been already posted before',
+        });
+
+      } else {
+        Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
+          displayMessage('info', 'Szamla konyvelesbe kuldve');
+        }));
+      }
     },
   },
   registerPayment: {
