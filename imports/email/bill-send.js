@@ -7,11 +7,14 @@ export function sendBillEmail(bill) {
   debugAssert(Meteor.isServer);
   import { EmailSender } from '/imports/startup/server/email-sender.js';
 
+  const community = bill.community();
   const partner = bill.partner();
   const emailAddress = partner.primaryEmail();
-  if (!emailAddress) return;
+  if (!emailAddress) {
+    console.error(`Missing email address for partner ${partner.displayName(community.settings.language)} ${partner._id}. Unable to send bill.`);
+    return;
+  }
   const user = partner.user();
-  const community = bill.community();
 
   EmailSender.send({
     to: emailAddress,
