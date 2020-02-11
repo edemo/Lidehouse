@@ -57,7 +57,7 @@ export const Notifications_Email = {
     },
     displayStatusChangeDataUpdate(key, value) {
       if (key === 'localizer') return displayLocalizer(value, this.community);
-      if (key === 'partnerId') return Partners.findOne(value) ? Partners.findOne(value).name : '';
+      if (key === 'partnerId') return Partners.findOne(value) ? Partners.findOne(value).getName() : '';
       if (key === 'contractId') return Contracts.findOne(value) ? Contracts.findOne(value).title : '';
       if (key === 'chargeType') return TAPi18n.__('schemaTickets.ticket.chargeType.' + value, {}, this.user.settings.language);
       if (_.isDate(value)) return moment(value).format('L');
