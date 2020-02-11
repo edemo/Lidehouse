@@ -129,17 +129,17 @@ Topics.categoryHelpers('vote', {
     const nonParticipationPercent = 100 * nonParticipationShare.toNumber();
     return nonParticipationPercent;
   },
-  hasVotedDirect(userId) {
-    return !!(this.voteCasts && this.voteCasts[userId] && this.voteCasts[userId].length > 0);
+  hasVotedDirect(partnerId) {
+    return !!(this.voteCasts && this.voteCasts[partnerId] && this.voteCasts[partnerId].length > 0);
   },
-  hasVotedIndirect(userId) {
-    return !!(this.voteCastsIndirect && this.voteCastsIndirect[userId] && this.voteCastsIndirect[userId].length > 0);
+  hasVotedIndirect(partnerId) {
+    return !!(this.voteCastsIndirect && this.voteCastsIndirect[partnerId] && this.voteCastsIndirect[partnerId].length > 0);
   },
-  hasVoted(userId) {
-    return this.hasVotedDirect(userId) || this.hasVotedIndirect(userId);
+  hasVoted(partnerId) {
+    return this.hasVotedDirect(partnerId) || this.hasVotedIndirect(partnerId);
   },
-  voteOf(userId) {
-    return (this.voteCasts && this.voteCasts[userId]) || (this.voteCastsIndirect && this.voteCastsIndirect[userId]);
+  voteOf(partnerId) {
+    return (this.voteCasts && this.voteCasts[partnerId]) || (this.voteCastsIndirect && this.voteCastsIndirect[partnerId]);
   },
   votingClosed() {
     return this.status === 'votingFinished' || this.status === 'closed';

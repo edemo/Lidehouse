@@ -12,6 +12,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
+import { Partners } from '/imports/api/partners/partners.js';
 import { toggle } from '/imports/api/utils.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../components/select-voters.js';
@@ -45,9 +46,11 @@ function castVoteBasedOnPermission(topicId, castedVote, callback) {
 Template.Vote_cast_panel.viewmodel({
   topic: undefined,
   temporaryVote: undefined,
+  partnerId: undefined,
   onCreated(instance) {
     instance.firstRun = true;
     this.topic(instance.data);
+    this.partnerId(Meteor.user().partnerId(Session.get('activeCommunityId')));
   },
   onRendered(instance) {
     const self = this;
@@ -70,7 +73,7 @@ Template.Vote_cast_panel.viewmodel({
     instance.voteEnvelope = createEnvelope(instance.$('.letter-content'));
   },
   registeredVote() {
-    return this.topic().voteOf(Meteor.userId());
+    return this.topic().voteOf(this.partnerId());
   },
   autorun: [
     function maintainLiveData() {
@@ -98,16 +101,15 @@ Template.Vote_cast_panel.viewmodel({
     },
   ],
   voterAvatar() {
-    const userId = Meteor.userId();
-    const user = Meteor.users.findOne(userId);
-    if (this.topic().hasVotedDirect(userId)) {
-      return user.avatar;
+    if (this.topic().hasVotedDirect(this.partnerId())) {
+      const partner = Partners.findOne(this.partnerId());
+      return partner.avatar();
     }
-    if (this.topic().hasVotedIndirect(userId)) {
-      const myVotePath = this.topic().votePaths[Meteor.userId()];
+    if (this.topic().hasVotedIndirect(this.partnerId())) {
+      const myVotePath = this.topic().votePaths[this.partnerId()];
       const myFirstDelegateId = myVotePath[1];
-      const myFirstDelegate = Meteor.users.findOne(myFirstDelegateId);
-      return myFirstDelegate.avatar;
+      const myFirstDelegate = Partners.findOne(myFirstDelegateId);
+      return myFirstDelegate.avatar();
     }
     return undefined;
   },

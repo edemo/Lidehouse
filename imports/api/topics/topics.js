@@ -139,7 +139,9 @@ Topics.helpers({
 //        if (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0) return 1;
 //        break;
       case 'vote':
-        if (!this.closed && !this.hasVotedIndirect(userId)) return 1;
+        const user = Meteor.users.findOne(userId);
+        const partnerId = user.partnerId(this.communityId);
+        if (!this.closed && !this.hasVotedIndirect(partnerId)) return 1;
         break;
       case 'ticket':
         if (!this.closed && Meteor.user().hasPermission(`ticket.statusChange.${this.status}.leave`, this)) return 1;
