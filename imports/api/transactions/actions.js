@@ -128,7 +128,7 @@ Transactions.actions = {
     color: (options, doc) => ((doc && !doc.isPosted()) ? 'warning' : undefined),
     visible(options, doc) {
       if (!doc) return false;
-      if (doc.isPosted()) return false;
+//      if (doc.isPosted()) return false;
       if (doc.category === 'bill' && !doc.hasConteerData()) return false;
       return currentUserHasPermission('transactions.post', doc);
     },

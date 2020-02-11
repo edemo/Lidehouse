@@ -56,21 +56,23 @@ export const post = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
-    if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
-    if (doc.category === 'bill' || doc.category === 'receipt') {
-      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-    } else if (doc.category === 'payment' || doc.category === 'remission') {
-      doc.bills.forEach(bp => checkBillIsPosted(bp.id));
-    } else if (doc.category === 'barter') {
-      checkBillIsPosted(doc.supplierBillId);
-      checkBillIsPosted(doc.customerBillId);
-    }
+    let result;
+    if (!doc.isPosted()) { // throw new Meteor.Error('Transaction already posted');
+      if (doc.category === 'bill' || doc.category === 'receipt') {
+        if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+      } else if (doc.category === 'payment' || doc.category === 'remission') {
+        doc.bills.forEach(bp => checkBillIsPosted(bp.id));
+      } else if (doc.category === 'barter') {
+        checkBillIsPosted(doc.supplierBillId);
+        checkBillIsPosted(doc.customerBillId);
+      }
 
-    const community = Communities.findOne(doc.communityId);
-    const accountingMethod = community.settings.accountingMethod;
-    const updateData = doc.makeJournalEntries(accountingMethod);
-    const result = Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
-    
+      const community = Communities.findOne(doc.communityId);
+      const accountingMethod = community.settings.accountingMethod;
+      const updateData = doc.makeJournalEntries(accountingMethod);
+      result = Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
+    } else console.warn('Transaction already posted');
+
     if (Meteor.isServer && doc.category === 'bill') sendBillEmail(doc);
 
     return result;
