@@ -27,6 +27,7 @@ import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './worksheets.html';
 
 Template.Worksheets.onCreated(function onCreated() {
+  Session.set('activePartnerRelation', 'supplier');
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   const communityId = this.getCommunityId();
   this.autorun(() => {

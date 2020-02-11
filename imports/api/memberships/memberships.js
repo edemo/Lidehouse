@@ -18,7 +18,7 @@ import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Partners, choosePerson } from '/imports/api/partners/partners.js';
+import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -37,7 +37,7 @@ Memberships.baseSchema = new SimpleSchema({
   },
   rank: { type: String, optional: true, allowedValues: ranks, autoform: autoformOptions(ranks) },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePerson },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
   person: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // deprecated for partnerId
   personId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for partnerId
 });

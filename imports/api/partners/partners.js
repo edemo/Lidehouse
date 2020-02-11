@@ -211,6 +211,7 @@ Factory.define('member', Partners, {
 // ------------------------------------
 
 export let choosePartner = {};
+export let chooseDelegate = {};
 if (Meteor.isClient) {
   import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
   
@@ -225,31 +226,6 @@ if (Meteor.isClient) {
       const communityId = Session.get('activeCommunityId');
       const relation = Session.get('activePartnerRelation');
       const partners = Partners.find({ communityId, relation });
-      const options = partners.map(function option(p) {
-        return { label: p.displayName(), value: p._id };
-      });
-      return options;
-    },
-    firstOption: () => __('(Select one)'),
-  };
-}
-
-export let choosePerson = {};
-export let chooseDelegate = {};
-if (Meteor.isClient) {
-  import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-
-  choosePerson = {
-    relation: 'partner',
-    value() {
-      const selfId = AutoForm.getFormId();
-      const value = ModalStack.readResult(selfId, 'af.partner.insert');
-      return value;
-    },
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      Session.set('activePartnerRelation', 'parcel');
-      const partners = Partners.find({ communityId, relation: 'parcel' });
       const options = partners.map(function option(p) {
         return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
       });
@@ -267,6 +243,6 @@ if (Meteor.isClient) {
       if (newDelegateId) return Memberships.findOne(newDelegateId).partnerId;
       return undefined;
     },
-    ...choosePerson,
+    ...choosePartner,
   };
 }

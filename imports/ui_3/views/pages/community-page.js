@@ -173,6 +173,9 @@ Template.Parcels_box.viewmodel({
 });
 
 Template.Community_page.viewmodel({
+  onCreated() {
+    Session.set('activePartnerRelation', 'parcel');
+  },
   onRendered() {
     // Add slimscroll to element
     $('.full-height-scroll').slimscroll({

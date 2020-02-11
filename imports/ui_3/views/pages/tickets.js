@@ -18,6 +18,7 @@ Template.Tickets.viewmodel({
   filterCreatedBy: null,
   searchText: '',
   onCreated(instance) {
+    Session.set('activePartnerRelation', 'supplier');
     instance.autorun(() => {
       const communityId = Session.get('activeCommunityId');
       instance.subscribe('topics.list', { communityId, category: 'ticket' });
