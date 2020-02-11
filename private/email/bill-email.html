@@ -33,7 +33,7 @@
                                         {{#each line in bill.lines}}
                                         <tr>
                                             <td>{{line.title}}
-                                            {{#if (equals bill.relation 'parcel')}}
+                                            {{#if (equals bill.relation 'member')}}
                                                 {{#if line.localizer}} - {{code2parcelRef line.localizer}}{{/if}}
                                             {{/if}}
                                             </td>

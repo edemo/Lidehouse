@@ -31,7 +31,7 @@ if (Meteor.isServer) {
       before(function () {
         const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[1]);
         billId = FixtureA.builder.create('bill', {
-          relation: 'parcel',
+          relation: 'member',
           partnerId,
           membershipId: Memberships.findOne({ partnerId })._id,
           issueDate: new Date('2018-01-05'),

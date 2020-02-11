@@ -36,7 +36,7 @@ const IdCardSchema = new SimpleSchema({
   mothersName: { type: String, optional: true },
 });
 
-Partners.relationValues = ['supplier', 'customer', 'parcel'];
+Partners.relationValues = ['supplier', 'customer', 'member'];
 const chooseRelation = _.extend(
   { value: () => Session.get('activePartnerRelation') },
   autoformOptions(Partners.relationValues, 'schemaPartners.relation.')
@@ -194,7 +194,7 @@ Factory.define('supplier', Partners, {
 });
 
 Factory.define('member', Partners, {
-  relation: 'parcel',
+  relation: 'member',
   idCard: {
     type: 'natural',
     name: () => faker.random.word() + ' inc',

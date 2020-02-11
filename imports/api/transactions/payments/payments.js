@@ -92,7 +92,7 @@ Transactions.categoryHelpers('payment', {
     debugAssert(this.partnerId, 'Cannot process a payment without a partner');
     Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
     Memberships.update(this.membershipId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    if (this.relation === 'parcel') {
+    if (this.relation === 'member') {
       this.bills.forEach(bp => {
         const bill = Transactions.findOne(bp.id);
           bill.lines.forEach(line => {

@@ -18,7 +18,7 @@ Template.Parcel_history.viewmodel({
   parcelSelected: '',
   status: 'Reconciled',
   onCreated(instance) {
-    Session.set('activePartnerRelation', 'parcel');
+    Session.set('activePartnerRelation', 'member');
     instance.autorun(() => {
       if (this.partnerSelected()) {
         instance.subscribe('transactions.byPartner', this.subscribeParams());

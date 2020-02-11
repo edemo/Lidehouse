@@ -222,7 +222,7 @@ export class CommunityBuilder {
     }
     if (!partnerId) {
       person.communityId = this.communityId;
-      person.relation = 'parcel';
+      person.relation = 'member';
       debugAssert(person.idCard);
       partnerId = Partners.insert(person);
     }
@@ -269,11 +269,11 @@ export class CommunityBuilder {
     this.execute(StatementEntries.methods.reconcile, { _id: entryId }, this.getUserWithRole('accountant'));
   }
   payBillsOf(membership) {
-    const unpaidBills = Transactions.find({ communityId: this.communityId, category: 'bill', relation: 'parcel', partnerId: membership.partnerId, outstanding: { $gt: 0 } });
+    const unpaidBills = Transactions.find({ communityId: this.communityId, category: 'bill', relation: 'member', partnerId: membership.partnerId, outstanding: { $gt: 0 } });
     unpaidBills.forEach(bill => this.payBill(bill));
   }
   everybodyPaysTheirBills() {
-    const unpaidBills = Transactions.find({ communityId: this.communityId, category: 'bill', relation: 'parcel', outstanding: { $gt: 0 } });
+    const unpaidBills = Transactions.find({ communityId: this.communityId, category: 'bill', relation: 'member', outstanding: { $gt: 0 } });
     unpaidBills.forEach(bill => this.payBill(bill));
   }
   postAllTransactions() {

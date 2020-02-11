@@ -83,7 +83,7 @@ export function defineTxdefTemplates() {
   Txdefs.define({ communityId: null,
     name: 'Parcel bill', // 'Albetét előírás',
     category: 'bill',
-    data: { relation: 'parcel' },
+    data: { relation: 'member' },
     debit: ['33'],
     credit: ['95'],
   });
@@ -91,7 +91,7 @@ export function defineTxdefTemplates() {
   Txdefs.define({ communityId: null,
     name: 'Parcel payment', // 'Albetét befizetés',
     category: 'payment',
-    data: { relation: 'parcel' },
+    data: { relation: 'member' },
     debit: ['38'],
     credit: ['33'],
   });
@@ -99,7 +99,7 @@ export function defineTxdefTemplates() {
   Txdefs.define({ communityId: null,
     name: 'Parcel bill remission', // 'Albetét előírás elengedés',
     category: 'remission',
-    data: { relation: 'parcel' },
+    data: { relation: 'member' },
     debit: ['95'],
     credit: ['33'],
   });
@@ -166,7 +166,7 @@ export function defineTxdefTemplates() {
   Txdefs.define({ communityId: null,
     name: 'Barter', // 'Albetét előírás elengedés',
     category: 'barter',
-//    data: { relation: 'parcel' },
+//    data: { relation: 'member' },
     debit: ['46'],
     credit: ['31', '33'],
 //    debit: ['9'],

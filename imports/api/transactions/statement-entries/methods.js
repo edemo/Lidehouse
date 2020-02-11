@@ -45,7 +45,7 @@ function moneyFlowSign(relation) {
   switch (relation) {
     case ('supplier'): return -1;
     case ('customer'):
-    case ('parcel'): return +1;
+    case ('member'): return +1;
     default: debugAssert(false, 'No such relation ' + relation); return undefined;
   }
 }

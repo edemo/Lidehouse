@@ -62,7 +62,7 @@ export const Transformers = {
         if (!partner) {
           doc.idCard = doc.idCard || {};
           doc.idCard.type = doc.idCard.type || 'natural';
-          doc.relation = doc.relation || 'parcel';
+          doc.relation = doc.relation || 'member';
           tjsons.push(doc);
         }
       });

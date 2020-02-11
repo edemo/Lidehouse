@@ -69,7 +69,7 @@ Transactions.categoryHelpers('barter', {
     debugAssert(supplierBill.partnerId && customerBill.partnerId, 'Cannot process a barter without partners');
     Partners.update(supplierBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
     Partners.update(customerBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    if (customerBill.relation === 'parcel') {
+    if (customerBill.relation === 'member') {
       customerBill.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
         debugAssert(line.localizer, 'Cannot process a parcel barter without bill localizer fields');

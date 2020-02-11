@@ -733,7 +733,7 @@
       "label": "Partner viszony",
       "supplier": "Szállító",
       "customer": "Vevő",
-      "parcel": "Albetét tulajdonos"      
+      "member": "Tagság"      
     },
     "userId": {
       "label": "Kapcsolt felhasználó (ha már regisztrált)"
@@ -795,7 +795,7 @@
       "label": "Oldal",
       "supplier": "Bejövő számla",
       "customer": "Kimenő számla",
-      "parcel": "Előírás"      
+      "member": "Előírás"      
     },
     "issueDate": {
       "label": "Számla kelte",

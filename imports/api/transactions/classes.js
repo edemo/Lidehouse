@@ -21,7 +21,7 @@ class SupplierBill extends Transaction {
 
 class ParcelBill extends Transaction {
   constructor(data) {
-    super('bills', _.extend(data, { relation: 'parcel' }));
+    super('bills', _.extend(data, { relation: 'member' }));
   }
 }
 
@@ -39,7 +39,7 @@ class SupplierPayment extends Transaction {
 
 class ParcelPayment extends Transaction {
   constructor(data) {
-    super('payments', _.extend(data, { relation: 'parcel' }));
+    super('payments', _.extend(data, { relation: 'member' }));
   }
 }
 

@@ -115,7 +115,7 @@ Transactions.categoryHelpers('bill', {
         if (!line) return; // can be null, when a line is deleted from the array
         this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
         let contraAccount = this.relationAccount();
-        if (this.relation === 'parcel') contraAccount += ParcelBillings.findOne(line.billingId).digit;
+        if (this.relation === 'member') contraAccount += ParcelBillings.findOne(line.billingId).digit;
         this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer, parcelId: line.parcelId });
       });
     } // else if (accountingMethod === 'cash') >> we have no accounting to do
@@ -131,7 +131,7 @@ Transactions.categoryHelpers('bill', {
     debugAssert(this.partnerId, 'Cannot process a bill without a partner');
     Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
     Memberships.update(this.membershipId, { $inc: { outstanding: directionSign * this.amount } });
-    if (this.relation === 'parcel') {
+    if (this.relation === 'member') {
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
         debugAssert(line.parcelId, `Cannot process a parcel bill without parcelId field: ${JSON.stringify(this)}`);

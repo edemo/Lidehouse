@@ -5,7 +5,7 @@
             {{#if currentUserHasPermission 'transactions.update'}}
             <div class="btn-group pull-right {{collectionOf activePartnerRelation}}">
               {{#if currentUserHasPermission 'transactions.insert'}}
-                {{#if equals activePartnerRelation 'parcel'}}
+                {{#if equals activePartnerRelation 'member'}}
                   <button class="btn btn-primary btn-sm js-apply"><i class="fa fa-calendar-plus-o"></i><strong> {{_ 'Apply parcel billings'}}</strong></button>
                   {{#unless showParcelBillings}}
                   <button class="btn btn-white btn-sm js-edit-defs" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i><strong> {{_ 'Edit parcel billings'}}</strong></button>

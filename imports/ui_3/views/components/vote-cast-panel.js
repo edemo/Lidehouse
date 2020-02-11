@@ -20,7 +20,7 @@ import { createEnvelope } from './envelope.js';
 
 
 function castVoteBasedOnPermission(topicId, castedVote, callback) {
-  Session.set('activePartnerRelation', 'parcel');
+  Session.set('activePartnerRelation', 'member');
   const communityId = Session.get('activeCommunityId');
   if (Meteor.user().hasPermission('vote.castForOthers', { communityId })) {
     const modalContext = {

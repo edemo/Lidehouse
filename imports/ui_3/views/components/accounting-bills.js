@@ -67,7 +67,7 @@ Template.Accounting_bills.viewmodel({
     switch (activePartnerRelation) {
       case 'supplier':
       case 'customer': return 'bills';
-      case 'parcel': return 'parcelBillings';
+      case 'member': return 'parcelBillings';
       default: debugAssert(false, 'No such bill relation'); return undefined;
     }
   },

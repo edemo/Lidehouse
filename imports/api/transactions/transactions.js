@@ -142,18 +142,18 @@ Transactions.helpers({
     switch (this.relation) {
       case ('supplier'): return Breakdowns.name2code('Liabilities', 'Suppliers', this.communityId);
       case ('customer'): return Breakdowns.name2code('Assets', 'Customers', this.communityId);
-      case ('parcel'): return Breakdowns.name2code('Assets', 'Owner obligations', this.communityId);
+      case ('member'): return Breakdowns.name2code('Assets', 'Owner obligations', this.communityId);
       default: debugAssert(false, 'No such relation ' + this.relation); return undefined;
     }
   },
   conteerSide() {
     if (this.relation === 'supplier') return 'debit';
-    else if (this.relation === 'customer' || this.relation === 'parcel') return 'credit';
+    else if (this.relation === 'customer' || this.relation === 'member') return 'credit';
     debugAssert(false, 'No such relation ' + this.relation); return undefined;
   },
   relationSide() {
     if (this.relation === 'supplier') return 'credit';
-    else if (this.relation === 'customer' || this.relation === 'parcel') return 'debit';
+    else if (this.relation === 'customer' || this.relation === 'member') return 'debit';
     debugAssert(false, 'No such relation ' + this.relation); return undefined;
   },
   isPosted() {
@@ -267,7 +267,7 @@ Transactions.helpers({
   },
   receiver() {
     if (this.relation === 'customer') return this.partner();
-    if (this.relation === 'parcel') return this.membership();
+    if (this.relation === 'member') return this.membership();
     return this.community().asPartner();
   },
   lineCount() {
@@ -275,7 +275,7 @@ Transactions.helpers({
   },
   matchingTxSide() {
     if (this.relation === 'supplier') return 'debit';
-    else if (this.relation === 'customer' || this.relation === 'parcel') return 'credit';
+    else if (this.relation === 'customer' || this.relation === 'member') return 'credit';
     debugAssert(false, 'unknown relation');
     return undefined;
   },

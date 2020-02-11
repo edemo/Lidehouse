@@ -61,7 +61,7 @@ Txdefs.helpers({
     if (this.data.side) return this.data.side;  // opening, closing txs
     const relation = this.data.relation;        // bill, payment, receipt txs
     if (relation === 'supplier') return 'debit';
-    if (relation === 'customer' || relation === 'parcel') return 'credit';
+    if (relation === 'customer' || relation === 'member') return 'credit';
     return undefined;
   },
   transformToTransaction(doc) {

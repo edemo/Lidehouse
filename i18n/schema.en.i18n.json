@@ -727,7 +727,7 @@
       "label": "Partner relation",
       "supplier": "Supplier",
       "customer": "Customer",
-      "parcel": "Parcel owner"      
+      "member": "Member"      
     },
     "userId": {
       "label": "Linked user account (if already registered)"
@@ -789,7 +789,7 @@
       "label": "Relation",
       "supplier": "Bill",
       "customer": "Invoice",
-      "parcel": "Contribution"      
+      "member": "Contribution"      
     },
     "issueDate": {
       "label": "Issue date",

@@ -173,7 +173,7 @@ Migrations.add({
         const partnerById = Partners.findOne({ communityId: doc.communityId, userId: doc.personId });
         if (partnerById) partnerId = partnerById._id;
       }
-      const person = _.extend(doc.person, { communityId: doc.communityId, relation: 'parcel' });
+      const person = _.extend(doc.person, { communityId: doc.communityId, relation: 'member' });
       if (!partnerId) partnerId = Partners.insert(person);
       const newFields = { partnerId };
       if (doc.person.userId) {
@@ -273,6 +273,24 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 15,
+  name: 'Rename partner relation parcel to member',
+  up() {
+    function upgrade(collection, field, selector = {}) {
+      collection.update(
+        _.extend({ [field]: 'parcel' }, selector),
+        { $set: { [field]: 'member' } },
+        { multi: true }
+      );
+    }
+    upgrade(Partners, 'relation');
+    upgrade(Txdefs, 'data.relation');
+    upgrade(Transactions, 'relation', { category: 'bill' });
+    upgrade(Transactions, 'relation', { category: 'payment' });
+    upgrade(Transactions, 'relation', { category: 'receipt' });
+  },
+});
 
 Meteor.startup(() => {
   Migrations.unlock();

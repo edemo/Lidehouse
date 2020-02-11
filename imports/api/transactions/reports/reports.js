@@ -100,7 +100,7 @@ export const Reports = {
       children: [],
     };
     Memberships.findActive({ communityId, approved: true, role: 'owner', userId: Meteor.userId() })
-      .map(m => myParcels.children.push({ name: m.parcel().ref /* + '. ' + __('parcel')*/ }));
+      .map(m => myParcels.children.push({ name: m.parcel().ref /* + '. ' + __('member')*/ }));
 
     report.addFilter({ communityId });
 

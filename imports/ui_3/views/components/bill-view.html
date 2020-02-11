@@ -61,7 +61,7 @@
                         <div>
                         <strong>
                             {{line.title}}
-                            {{#if (equals docVm.relation 'parcel')}}
+                            {{#if (equals docVm.relation 'member')}}
                                 {{#if line.localizer}}{{code2parcelRef line.localizer}}{{/if}} 
                                 {{#if line.period}}{{line.period}}{{/if}}
                             {{/if}}

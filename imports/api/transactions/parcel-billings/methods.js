@@ -111,8 +111,8 @@ export const apply = new ValidatedMethod({
           billsToSend[leadParcel._id] = billsToSend[leadParcel._id] || {
             communityId: parcelBilling.communityId,
             category: 'bill',
-            relation: 'parcel',
-            defId: Txdefs.findOne({ communityId, category: 'bill', 'data.relation': 'parcel' })._id,
+            relation: 'member',
+            defId: Txdefs.findOne({ communityId, category: 'bill', 'data.relation': 'member' })._id,
   //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
             partnerId: leadParcel.payerPartner()._id,
             membershipId: leadParcel.payerMembership()._id,
