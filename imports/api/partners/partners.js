@@ -211,7 +211,6 @@ Factory.define('member', Partners, {
 // ------------------------------------
 
 export let choosePartner = {};
-export let chooseDelegate = {};
 if (Meteor.isClient) {
   import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
   
@@ -233,16 +232,5 @@ if (Meteor.isClient) {
       return sortedOptions;
     },
     firstOption: () => __('(Select one)'),
-  };
-
-  chooseDelegate = {
-    relation: 'delegate',
-    value() {
-      const selfId = AutoForm.getFormId();
-      const newDelegateId = ModalStack.readResult(selfId, 'af.delegate.insert');
-      if (newDelegateId) return Memberships.findOne(newDelegateId).partnerId;
-      return undefined;
-    },
-    ...choosePartner,
   };
 }
