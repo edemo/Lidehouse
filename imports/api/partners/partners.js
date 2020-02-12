@@ -210,7 +210,6 @@ Factory.define('member', Partners, {
 // ------------------------------------
 
 export let choosePartner = {};
-export let chooseDelegate = {};
 if (Meteor.isClient) {
   import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
   
@@ -232,16 +231,5 @@ if (Meteor.isClient) {
       return sortedOptions;
     },
     firstOption: () => __('(Select one)'),
-  };
-
-  // This is the same as choosePartner, but currently we cannot handle multiple same modal opening, and delagation form needs multiple partners
-  chooseDelegate = {
-    relation: 'delegate',
-    value() {
-      const selfId = AutoForm.getFormId();
-      const value = ModalStack.readResult(selfId, 'af.delegate.insert');
-      return value;
-    },
-    ...choosePartner,
   };
 }
