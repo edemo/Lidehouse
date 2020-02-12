@@ -5,7 +5,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
+import { getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Delegations } from './delegations.js';
@@ -87,8 +87,7 @@ AutoForm.addModalHooks('af.delegation.insert');
 AutoForm.addModalHooks('af.delegation.update');
 AutoForm.addHooks('af.delegation.insert', {
   formToDoc(doc) {
-    const communityId = getActiveCommunityId();
-    if (!doc.sourceId) doc.sourceId = Meteor.user().partnerId(communityId);
+    if (!doc.sourceId) doc.sourceId = getActivePartnerId();
     return doc;
   },
   onError(formType, error) {

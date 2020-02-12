@@ -9,12 +9,10 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { Memberships } from '/imports/api/memberships/memberships';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
@@ -106,6 +104,7 @@ Partners.helpers({
     return this.user() ? this.user().settings.language : this.community().settings.language;
   },
   activeRoles(communityId) {
+    const Memberships = Mongo.Collection.get('memberships');
     return _.uniq(Memberships.findActive({ communityId, approved: true, partnerId: this._id }).map(m => m.role));
   },
   outstandingBills() {
@@ -235,13 +234,13 @@ if (Meteor.isClient) {
     firstOption: () => __('(Select one)'),
   };
 
+  // This is the same as choosePartner, but currently we cannot handle multiple same modal opening, and delagation form needs multiple partners
   chooseDelegate = {
     relation: 'delegate',
     value() {
       const selfId = AutoForm.getFormId();
-      const newDelegateId = ModalStack.readResult(selfId, 'af.delegate.insert');
-      if (newDelegateId) return Memberships.findOne(newDelegateId).partnerId;
-      return undefined;
+      const value = ModalStack.readResult(selfId, 'af.delegate.insert');
+      return value;
     },
     ...choosePartner,
   };

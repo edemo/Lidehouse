@@ -13,6 +13,7 @@ import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
 import { toggle } from '/imports/api/utils.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../components/select-voters.js';
@@ -22,7 +23,7 @@ import { createEnvelope } from './envelope.js';
 
 function castVoteBasedOnPermission(topicId, castedVote, callback) {
   Session.set('activePartnerRelation', 'member');
-  const communityId = Session.get('activeCommunityId');
+  const communityId = getActiveCommunityId();
   if (Meteor.user().hasPermission('vote.castForOthers', { communityId })) {
     const modalContext = {
       title: 'Proxy voting',
@@ -46,11 +47,9 @@ function castVoteBasedOnPermission(topicId, castedVote, callback) {
 Template.Vote_cast_panel.viewmodel({
   topic: undefined,
   temporaryVote: undefined,
-  partnerId: undefined,
   onCreated(instance) {
     instance.firstRun = true;
     this.topic(instance.data);
-    this.partnerId(Meteor.user().partnerId(Session.get('activeCommunityId')));
   },
   onRendered(instance) {
     const self = this;
@@ -73,7 +72,8 @@ Template.Vote_cast_panel.viewmodel({
     instance.voteEnvelope = createEnvelope(instance.$('.letter-content'));
   },
   registeredVote() {
-    return this.topic().voteOf(this.partnerId());
+    const activePartnerId = getActivePartnerId();
+    return this.topic().voteOf(activePartnerId);
   },
   autorun: [
     function maintainLiveData() {
@@ -101,12 +101,13 @@ Template.Vote_cast_panel.viewmodel({
     },
   ],
   voterAvatar() {
-    if (this.topic().hasVotedDirect(this.partnerId())) {
-      const partner = Partners.findOne(this.partnerId());
+    const activePartnerId = getActivePartnerId();
+    if (this.topic().hasVotedDirect(activePartnerId)) {
+      const partner = Partners.findOne(activePartnerId);
       return partner.avatar();
     }
-    if (this.topic().hasVotedIndirect(this.partnerId())) {
-      const myVotePath = this.topic().votePaths[this.partnerId()];
+    if (this.topic().hasVotedIndirect(activePartnerId)) {
+      const myVotePath = this.topic().votePaths[activePartnerId];
       const myFirstDelegateId = myVotePath[1];
       const myFirstDelegate = Partners.findOne(myFirstDelegateId);
       return myFirstDelegate.avatar();

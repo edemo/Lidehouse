@@ -1,8 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Partners } from '/imports/api/partners/partners.js';
 
 export let getActiveCommunityId = function getActiveCommunityId() {
   throw new Meteor.Error('On the server you need to supply the communityId, because there is no "activeCommunity"');
+};
+
+export let getActivePartnerId = function getActivePartnerId() {
+  throw new Meteor.Error('On the server you need to supply the partnerId');
 };
 
 if (Meteor.isClient) {
@@ -24,9 +29,19 @@ if (Meteor.isClient) {
   getActiveCommunityId = function getActiveCommunityId() {
     return FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   };
+
+  getActivePartnerId = function getActivePartnerId() {
+    const communityId = getActiveCommunityId();
+    return Meteor.user().partnerId(communityId);
+  };
 }
 
 export function getActiveCommunity() {
   const id = getActiveCommunityId();
   return Communities.findOne(id);
+}
+
+export function getActivePartner() {
+  const id = getActivePartnerId();
+  return Partners.findOne(id);
 }

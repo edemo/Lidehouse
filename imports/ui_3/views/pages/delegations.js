@@ -5,7 +5,7 @@ import { Template } from 'meteor/templating';
 
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
 import { onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
@@ -26,7 +26,7 @@ const colorOthers = '#dedede';
 
 Template.Delegations.onCreated(function onCreated() {
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = getActiveCommunityId();
     this.subscribe('parcels.ofSelf', { communityId });
     this.subscribe('delegations.inCommunity', { communityId });
   });
@@ -72,14 +72,14 @@ Template.Delegations.helpers({
     return Delegations.find();
   },
   delegationsFromMe() {
-    return Delegations.find({ sourceId: Meteor.user().partnerId(Session.get('activeCommunityId')) });
+    return Delegations.find({ sourceId: getActivePartnerId() });
   },
   delegationsToMe() {
-    return Delegations.find({ targetId: Meteor.user().partnerId(Session.get('activeCommunityId')) });
+    return Delegations.find({ targetId: getActivePartnerId() });
   },
   doughnutData() {
     const user = Meteor.user();
-    const communityId = Session.get('activeCommunityId');
+    const communityId = getActiveCommunityId();
     const community = Communities.findOne(communityId);
     if (!user || !community) return { labels: [], datasets: [] };
     const unitsOwned = user.totalOwnedUnits(communityId);
@@ -103,8 +103,7 @@ Template.Delegations.helpers({
 
 Template.Delegations.events({
   'click .js-new'(event) {
-    const communityId = getActiveCommunityId();
-    Delegations.actions.new.run({}, { sourceId: Meteor.user().partnerId(communityId) });
+    Delegations.actions.new.run({}, { sourceId: getActivePartnerId() });
   },
   'click #allow'(event) {
     event.preventDefault();

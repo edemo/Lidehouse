@@ -48,10 +48,10 @@
             {{#if temporaryVote}}
             <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i> {{_ "If you made your choice"}}, <button class="btn btn-primary btn-xs js-send"> {{_ "send your vote"}}</button> - <a class="js-modify">{{_ 'Cancel'}}</a>
             {{else}}
-              {{#if this.hasVotedDirect partnerId}}
+              {{#if this.hasVotedDirect activePartnerId}}
                 <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-modify">{{_ 'Modify vote'}}</a>
               {{else}}
-                {{#if this.hasVotedIndirect partnerId}}
+                {{#if this.hasVotedIndirect activePartnerId}}
                 <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - <a class="js-modify">{{_ 'Modify vote'}}</a>
                 {{else}}
                   <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
@@ -72,11 +72,11 @@
   <template name="User_vote_status">-->
     <!-- showing if you voted directly or via delegation -->
     <!--<div class="text-left">
-    {{#if this.hasVotedDirect partnerId}}-->
+    {{#if this.hasVotedDirect activePartnerId}}-->
         <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>-->
         <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-modify">{{_ "modify"}}</a>
     {{else}}
-      {{#if this.hasVotedIndirect partnerId}}-->
+      {{#if this.hasVotedIndirect activePartnerId}}-->
       <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}}) - <a class="js-revoke">{{_ "revoke"}}</a>-->
       <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}}) - <a class="js-modify">{{_ "modify"}}</a>
       {{else}}

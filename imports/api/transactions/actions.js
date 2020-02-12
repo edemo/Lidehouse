@@ -7,7 +7,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from './transactions.js';
@@ -74,7 +74,7 @@ Transactions.actions = {
     visible: (options, doc) => {
       const communityId = getActiveCommunityId();
       return currentUserHasPermission('transactions.inCommunity', doc)
-        || (Meteor.user().partnerId(communityId) === doc.partnerId);
+        || getActivePartnerId() === doc.partnerId;
     },
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
