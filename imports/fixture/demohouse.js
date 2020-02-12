@@ -1311,7 +1311,7 @@ Meteor.methods({
         Clock.clear();
         // lastSeens were updated in the comments.insert method,
 
-//        demoBuilder.generateDemoPayments(demoParcel, demoMembership);
+        demoBuilder.generateDemoPayments(demoParcel, demoMembership);
 
         Meteor.setTimeout(function () {
           purgeDemoUserWithParcel(demoUserId, demoParcelId, demoCommunityId);
