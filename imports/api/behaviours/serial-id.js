@@ -18,7 +18,11 @@ export function SerialId(definerFields = []) {
     indexDefinition[field] = 1;
   });
   indexDefinition.serial = -1;
-  const indexes = [indexDefinition];
+  const indexes = function indexSerialId(collection) {
+    if (Meteor.isServer) {
+      collection._ensureIndex(indexDefinition);
+    }
+  };
 
   const helpers = {
     computeSerialId() {

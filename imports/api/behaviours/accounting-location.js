@@ -6,7 +6,11 @@ const schema = new SimpleSchema({
   outstanding: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 
-const indexes = [{ communityId: 1, outstanding: -1 }];
+const indexes = function indexAccountingLocation(collection) {
+  if (Meteor.isServer) {
+    collection._ensureIndex({ communityId: 1, outstanding: -1 }, { sparse: true });
+  }
+};
 
 const helpers = {
   hasOutstanding() {
