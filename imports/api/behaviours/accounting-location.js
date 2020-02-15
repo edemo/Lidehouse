@@ -6,6 +6,8 @@ const schema = new SimpleSchema({
   outstanding: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 
+const indexes = [{ communityId: 1, outstanding: -1 }];
+
 const helpers = {
   hasOutstanding() {
     return this.outstanding > 0;
@@ -31,5 +33,5 @@ function hooks(collection) {
 }
 
 export const AccountingLocation = { name: 'AccountingLocation',
-  schema, helpers, hooks,
+  schema, indexes, helpers, hooks,
 };
