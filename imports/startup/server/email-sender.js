@@ -39,14 +39,6 @@ export const EmailSender = {
 };
 */
 
-const fakeEmailAddresses = [];
-defaultRoles.forEach((role) => {
-  fakeEmailAddresses.push(`${role.name}@demo.hu`);
-  fakeEmailAddresses.push(`${role.name}@demo.com`);
-  fakeEmailAddresses.push(`${role.name}@test.hu`);
-  fakeEmailAddresses.push(`${role.name}@test.com`);
-});
-
 export const EmailSender = {
   config: {
     from: 'Honline <noreply@honline.hu>',
@@ -54,8 +46,7 @@ export const EmailSender = {
     siteName: 'Honline',
   },
   send(options) {
-    if (options.to.includes('demouser@honline.hu') || options.to.includes('dummyuser@honline.hu')
-      || fakeEmailAddresses.includes(options.to)) return;
+    if (options.to.includes('@demo.') || options.to.includes('@test.')) return;
     const sendOptions = {
       from: this.config.from,
       to: options.to,

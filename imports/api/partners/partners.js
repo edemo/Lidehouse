@@ -171,7 +171,7 @@ Factory.define('customer', Partners, {
   contact: {
     address: () => faker.address.streetAddress('###'),
     phone: () => faker.phone.phoneNumberFormat(1),
-    email: () => `${faker.name.firstName()}.demouser@honline.hu`,
+    email: () => `${faker.name.firstName()}.${faker.name.lastName()}@demo.hu`,
   },
   BAN: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
   taxNo: () => faker.finance.account(6) + '-2-42',
@@ -186,7 +186,7 @@ Factory.define('supplier', Partners, {
   contact: {
     address: () => faker.address.streetAddress('###'),
     phone: () => faker.phone.phoneNumberFormat(1),
-    email: () => `${faker.name.firstName()}.demouser@honline.hu`,
+    email: () => `${faker.name.firstName()}.${faker.name.lastName()}@demo.hu`,
   },
   BAN: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
   taxNo: () => faker.finance.account(6) + '-2-42',
@@ -201,7 +201,7 @@ Factory.define('member', Partners, {
   contact: {
     address: () => faker.address.streetAddress('###'),
     phone: () => faker.phone.phoneNumberFormat(1),
-    email: () => `${faker.name.firstName()}.demouser@honline.hu`,
+    email: () => `${faker.name.firstName()}.${faker.name.lastName()}@demo.hu`,
   },
   BAN: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
   taxNo: () => faker.finance.account(6) + '-2-42',

@@ -183,7 +183,7 @@ export class CommunityBuilder {
     const firstName = this.__(`demo.user.${userNo}.firstName`);
     const userId = Meteor.users.insert({
       emails: [{
-        address: `${userNo}.${this.demoOrTest}.${this.lang}.dummyuser@honline.hu`,
+        address: `${userNo}.dummyuser@${this.demoOrTest}.${this.com}`,
         verified: true,
       }],
       profile: { lastName, firstName },
@@ -280,33 +280,27 @@ export class CommunityBuilder {
     const toPost = Transactions.find({ communityId: this.communityId, postedAt: { $exists: false } });
     this.execute(Transactions.methods.batch.post, { args: toPost.map(t => ({ _id: t._id })) }, this.getUserWithRole('accountant'));
   }
-  insertLoadsOfFakeMembers(parcelCount) {
+  insertLoadsOfFakeMembers(parcelCount, postBuildingInsert) {
     if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;
 
-    function randomNumber(min, max) {
-      return Math.floor(Math.random() * (max - min)) + min;
-    }
+    for (let i = 0; i <= parcelCount; i++) {
+      const parcelId = this.createParcel({
+        floor: '9',
+        door: i.toString(),
+        area: faker.random.number({ min: 30, max: 200 }),
+        habitants: faker.random.number({ min: 1, max: 8 }),
+      });
+      const membershipId = this.createMembership(this.createFakePerson(i), 'owner', {
+        parcelId,
+        approved: true, // !!(serial % 2),
+        accepted: !!(i + 1),
+        ownership: { share: new Fraction(1, 1) },
+      });
 
-    let floors = Math.round((parcelCount / 100) * 4);
-    if (floors < 1) floors = 1;
-    const doors = (parcelCount / floors);
-    let serial = '';
-
-    for (let j = 0; j <= floors; j++) {
-      for (let k = 1; k <= doors; k++) {
-        ++serial;
-        const parcelId = this.createParcel({ floor: j.toString(), door: k.toString(), area: randomNumber(40, 120) });
+      if (postBuildingInsert) {
         const parcel = Parcels.findOne(parcelId);
-        const membershipId = this.createMembership(this.createFakePerson(serial), 'owner', {
-          parcelId,
-          approved: !!(serial % 2),
-          accepted: !!(serial + 1),
-          ownership: { share: new Fraction(1, 1) },
-        });
         const membership = Memberships.findOne(membershipId);
-
-        Localizer.addParcel(this.communityId, parcel, this.lang);
-
+        Localizer.addParcel(parcel);
         this.generateDemoPayments(parcel, membership);
       }
     }
@@ -330,14 +324,14 @@ export class DemoCommunityBuilder extends CommunityBuilder {
     super(communityId, 'demo', lang);
   }
   demoUsersList() {
-    return Meteor.users.find({ 'emails.0.address': { $regex: `${this.lang}demouser@honline.hu` } },
+    return Meteor.users.find({ 'emails.0.address': { $regex: `demouser@demo.${this.com}` } },
       { sort: { createdAt: -1 } });
   }
   createDemoUser(parcelId) {
     const lastDemoUser = this.demoUsersList().fetch()[0];
     const lastDemoUserCounter = lastDemoUser ? Number(lastDemoUser.emails[0].address.split('.')[0]) : 0;
     const demoUserId = Accounts.createUser({
-      email: `${lastDemoUserCounter + 1}.${parcelId}.${this.lang}demouser@honline.hu`,
+      email: `${lastDemoUserCounter + 1}.${parcelId}.demouser@demo.${this.com}`,
       password: 'password',
       language: this.lang,
     });

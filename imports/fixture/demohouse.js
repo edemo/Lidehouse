@@ -362,6 +362,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   }
 
+  if (Meteor.settings.public.fakeMembersNr && demoOrTest === 'test' && lang === 'en') {
+    demoBuilder.insertLoadsOfFakeMembers(Meteor.settings.public.fakeMembersNr);
+  }
+
   // ===== Breakdowns =====
   // Create breakdowns (incl Localizer)
   demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
