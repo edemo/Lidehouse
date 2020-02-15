@@ -7,16 +7,9 @@ import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { sendBillEmail } from '/imports/email/bill-send.js';
-import '/imports/api/transactions/breakdowns/methods.js';
 import '/imports/api/transactions/txdefs/methods.js';
-import { MoneyAccounts } from '../money-accounts/money-accounts';
 
 /*
 function runPositingRules(context, doc) {
@@ -162,21 +155,9 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 //    name: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ communityId /*, name*/ }) {
-    checkPermissions(this.userId, 'breakdowns.insert', { communityId });
-    const breakdownsToClone = Breakdowns.find({ communityId: null });
-    breakdownsToClone.forEach((breakdown) => {
-      if (Breakdowns.findOne({ communityId, name: breakdown.name })) return;  // We don't overwrite existing ones
-      Breakdowns.methods.clone._execute({ userId: this.userId }, { communityId, name: breakdown.name });
-      if (breakdown.name === 'Money accounts') {
-        breakdown.children.forEach(account => MoneyAccounts.insert(_.extend({ communityId }, account)));
-      }
-    });
-    const txdefsToClone = Txdefs.find({ communityId: null });
-    txdefsToClone.forEach((txdef) => {
-      if (Txdefs.findOne({ communityId, name: txdef.name })) return;  // We don't overwrite existing ones
-      Txdefs.methods.clone._execute({ userId: this.userId }, { name: txdef.name, communityId });
-    });
-//    Localizer.generateParcels(communityId);
+    checkPermissions(this.userId, 'accounts.insert', { communityId });
+    Templates.clone('Condominium_COA', communityId);
+    Templates.clone('Condominium_Txdefs', communityId);
   },
 });
 

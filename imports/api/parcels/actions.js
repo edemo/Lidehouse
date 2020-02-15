@@ -26,10 +26,12 @@ Parcels.actions = {
     color: () => 'primary',
     label: () => __('new') + ' ' + __('parcel'),
     visible: (options, doc) => currentUserHasPermission('parcels.insert', doc),
-    run() {
+    run(options, doc) {
+      const omitFields = 'category';
       Modal.show('Autoform_modal', {
         id: 'af.parcel.insert',
         collection: Parcels,
+        omitFields,
         type: 'method',
         meteormethod: 'parcels.insert',
       });

@@ -6,7 +6,7 @@ import { _ } from 'meteor/underscore';
 
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
@@ -19,7 +19,7 @@ const receiptSchema = new SimpleSchema({
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
-  payAccount: { type: String, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
+  payAccount: { type: String, autoform: Accounts.chooseSubAccount('`38') },  // the money account paid to/from
 });
 
 Transactions.categoryHelpers('receipt', {

@@ -8,7 +8,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
-import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
@@ -17,7 +17,7 @@ export const StatementEntries = new Mongo.Collection('statementEntries');
 
 StatementEntries.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  account: { type: String, autoform: chooseSubAccount('COA', '38') },
+  account: { type: String, autoform: Accounts.chooseSubAccount('`38') },
   ref: { type: String, max: 50 }, // external (uniq) ref id provided by the bank
   refType: { type: String, max: 50, optional: true }, // type info to the ref
   valueDate: { type: Date },

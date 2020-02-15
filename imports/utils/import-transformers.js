@@ -17,7 +17,7 @@ function flattenBankAccountNumber(BAN) {
 
 export const Import = {
   findAccountByNumber(BAN) {
-    return { account: '382' };
+    return { account: '`382' };
     const flattenedBAN = flattenBankAccountNumber(BAN);
     const community = getActiveCommunity();
     const bankAccounts = community.bankAccounts;
@@ -109,7 +109,7 @@ export const Transformers = {
           amount: parseInt(doc['Számla összege'], 10),
           // debit is one of the '8' accounts
           credit: [{
-            account: '46',
+            account: '`46',
           }],
         };
         tjsons.push(bill);
@@ -125,9 +125,9 @@ export const Transformers = {
             amount: parseInt(doc['Számla összege'], 10),
     //          amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
             debit: [{
-              account: '46',
+              account: '`46',
             }],
-            // credit is one of the '38' accounts
+            // credit is one of the '`38' accounts
           };
           tjsons.push(payment);
     //      }
@@ -145,22 +145,22 @@ export const Transformers = {
         const date = moment.utc(doc["Dátum"]);
         const tag = `C-${date.year()}-${date.month() + 1}`;
         const number = key => (Number(doc[key]) || 0);
-    //  '381' name: 'Pénztár' },
-    //  '382', name: 'Folyószámla' },
-    //  '383', name: 'Megtakarítási számla' },
-    //  '384', name: 'Fundamenta' },
+    //  '`381' name: 'Pénztár' },
+    //  '`382', name: 'Folyószámla' },
+    //  '`383', name: 'Megtakarítási számla' },
+    //  '`384', name: 'Fundamenta' },
         tjsons.push({
-          account: '381',
+          account: '`381',
           tag,
           debit: number("Pénztár"),
         });
         tjsons.push({
-          account: '382',
+          account: '`382',
           tag,
           debit: number("K&H üzemeltetési számla"),
         });
         tjsons.push({
-          account: '383',
+          account: '`383',
           tag,
           debit: number("K&H felújítási számla") + number("K&H megtakarítási számla"),
         });
@@ -168,7 +168,7 @@ export const Transformers = {
         let fundamentaBalance = 0;
         fundamentaAccountNames.forEach(key => fundamentaBalance += number(key));
         tjsons.push({
-          account: '384',
+          account: '`384',
           tag,
           debit: fundamentaBalance,
         });

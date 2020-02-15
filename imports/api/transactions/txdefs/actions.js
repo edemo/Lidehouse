@@ -10,7 +10,7 @@ Txdefs.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('breakdowns.insert', doc),
+    visible: (options, doc) => currentUserHasPermission('accounts.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.txdef.insert',
@@ -23,7 +23,7 @@ Txdefs.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('breakdowns.update', doc),
+    visible: (options, doc) => currentUserHasPermission('accounts.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.txdef.update',
@@ -38,7 +38,7 @@ Txdefs.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('breakdowns.remove', doc),
+    visible: (options, doc) => currentUserHasPermission('accounts.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Txdefs.methods.remove, { _id: doc._id }, {
         action: 'delete txdef',

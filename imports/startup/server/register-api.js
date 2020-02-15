@@ -1,7 +1,5 @@
 import '/imports/api/communities/methods.js';
 import '/imports/api/communities/publications.js';
-import '/imports/api/money-accounts/methods.js';
-import '/imports/api/money-accounts/publications.js';
 import '/imports/api/parcels/methods.js';
 import '/imports/api/parcels/publications.js';
 //import '/imports/api/parcels/tables.js';
@@ -34,8 +32,8 @@ import '/imports/api/topics/feedbacks/publications.js';
 import '/imports/api/comments/methods.js';
 import '/imports/api/transactions/methods.js';
 import '/imports/api/transactions/publications.js';
-import '/imports/api/transactions/breakdowns/methods.js';
-import '/imports/api/transactions/breakdowns/publications.js';
+import '/imports/api/transactions/accounts/methods.js';
+import '/imports/api/transactions/accounts/publications.js';
 import '/imports/api/transactions/txdefs/methods.js';
 import '/imports/api/transactions/txdefs/publications.js';
 import '/imports/api/transactions/balances/methods.js';

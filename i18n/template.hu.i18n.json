@@ -1,6 +1,6 @@
 {
   // accounts
-  "Chart Of Accounts": "Főkönyvi számlák",
+  "Chart of Accounts": "Főkönyvi számlák",
   "Incomes" : "BEVÉTELEK",
   "Expenses" : "RÁFORDÍTÁSOK",
   "Assets": "KÖVETELÉSEK",
@@ -9,7 +9,7 @@
   "Owners": "Tulajdonosok",
   "Owner payin types": "Albetétek előírás típusai",
   "Owner payins": "ALBETÉTEK ELŐÍRÁSAI",
-  "Owner obligations": "KÖVETELÉSEK ALBETÉTEKKEL SZEMBEN",
+  "Members": "KÖVETELÉSEK ALBETÉTEKKEL SZEMBEN",
   "Unidentified items": "NEM AZONOSÍTOTT TÉTELEK",
   "Unidentified incomes": "Nem azonosított bevételek",
   "Unidentified expenses": "Nem azonosított kiadások",

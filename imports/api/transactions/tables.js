@@ -3,6 +3,7 @@ import { Blaze } from 'meteor/blaze';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs';
 import { displayAccountSpecification } from '/imports/ui_3/helpers/api-display.js';
 import { AccountSpecification } from './account-specification';
 import './actions.js';
@@ -15,10 +16,16 @@ Render.journalEntries = function (cellData, renderType, currentRow) {
   return displayAccountSpecification(AccountSpecification.fromDoc(entry));
 };
 
+Render.txdefName = function (cellData, renderType, currentRow) {
+  const def = Txdefs.findOne(cellData);
+  return def && __(def.name);
+};
+
 export function transactionColumns() {
   const columns = [
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
+    { data: 'defId', title: __('schemaTransactions.defId.label'), render: Render.txdefName },
     { data: 'debit', title: __('schemaTransactions.debit.label'), render: Render.journalEntries },
     { data: 'credit', title: __('schemaTransactions.credit.label'), render: Render.journalEntries },
     { data: 'partner()', title: __('Partner') },

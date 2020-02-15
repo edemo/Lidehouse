@@ -118,7 +118,7 @@ if (Meteor.isServer) {
       });
 
       it('Can post - creates tx in accountig', function () {
-        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: { $set: { 'lines.0.account': '85', 'lines.0.localizer': '@' } } });
+        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: { $set: { 'lines.0.account': '`85', 'lines.0.localizer': '@' } } });
         FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.isPosted(), true);
@@ -126,12 +126,12 @@ if (Meteor.isServer) {
         chai.assert.isDefined(tx);
         chai.assert.equal(tx.category, 'bill');
         chai.assert.equal(tx.amount, 300);
-        chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '85', localizer: '@' }]);
-        chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '46', localizer: '@' }]);
+        chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '`85', localizer: '@' }]);
+        chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '`46', localizer: '@' }]);
       });
 
       it('Can register Payments', function () {
-        const bankAccount = '31';
+        const bankAccount = '`381';
         const paymentId1 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
@@ -162,13 +162,13 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId1 });
         tx1 = Transactions.findOne(paymentId1);
         chai.assert.isTrue(tx1.isPosted());
-        chai.assert.deepEqual(tx1.debit, [{ amount: 100, account: '46', localizer: '@' }]);
+        chai.assert.deepEqual(tx1.debit, [{ amount: 100, account: '`46', localizer: '@' }]);
         chai.assert.deepEqual(tx1.credit, [{ amount: 100, account: bankAccount, localizer: '@' }]);
 
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
         tx2 = Transactions.findOne(paymentId2);
         chai.assert.isTrue(tx2.isPosted());
-        chai.assert.deepEqual(tx2.debit, [{ amount: 200, account: '46', localizer: '@' }]);
+        chai.assert.deepEqual(tx2.debit, [{ amount: 200, account: '`46', localizer: '@' }]);
         chai.assert.deepEqual(tx2.credit, [{ amount: 200, account: bankAccount, localizer: '@' }]);
       });
     });
@@ -188,7 +188,7 @@ if (Meteor.isServer) {
             uom: 'piece',
             quantity: 1,
             unitPrice: 300,
-            account: '85',
+            account: '`85',
             localizer: '@',
           }],
         });
@@ -311,13 +311,13 @@ if (Meteor.isServer) {
 
       it('Reconcile and Conteer in one step', function () {
         const billId = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
-        const txId = Fixture.builder.create('transaction', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
+        const txId = Fixture.builder.create('transaction', { amount: 650, debit: [{ account: '`38', localizer: '@' }] });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
 
         const bill = Transactions.findOne(billId);
         const tx = Transactions.findOne(txId);
         chai.assert.equal(bill.outstanding, 0);
-        chai.assert.equal(bill.account, '38');
+        chai.assert.equal(bill.account, '`38');
         chai.assert.equal(bill.localizer, '@');
         chai.assert.isTrue(tx.reconciled);
         chai.assert.isTrue(tx.complete);
@@ -325,15 +325,15 @@ if (Meteor.isServer) {
 
       it('Conteer first, Reconcile later', function () {
         const billId = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
-        const txId = Fixture.builder.create('transaction', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
+        const txId = Fixture.builder.create('transaction', { amount: 650, debit: [{ account: '`38', localizer: '@' }] });
 
-        Fixture.builder.execute(Transactions.methods.post, { _id: billId, modifier: { $set: { account: '38', localizer: '@' } } });
+        Fixture.builder.execute(Transactions.methods.post, { _id: billId, modifier: { $set: { account: '`38', localizer: '@' } } });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
 
         const bill = Transactions.findOne(billId);
         const tx = Transactions.findOne(txId);
         chai.assert.equal(bill.outstanding, 0);
-        chai.assert.equal(bill.account, '38');
+        chai.assert.equal(bill.account, '`38');
         chai.assert.equal(bill.localizer, '@');
         chai.assert.isTrue(tx.reconciled);
         chai.assert.isTrue(tx.complete);

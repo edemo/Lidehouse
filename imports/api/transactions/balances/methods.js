@@ -4,7 +4,6 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { checkExists, checkNotExists, checkPermissions, checkConstraint } from '/imports/api/method-checks.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Balances } from './balances.js';
@@ -45,7 +44,7 @@ export const remove = new ValidatedMethod({
     throw new Meteor.Error('err_notImplemented');
   },
 });
-
+/*
 export const publish = new ValidatedMethod({
   name: 'balances.publish',
   validate: new SimpleSchema({
@@ -54,10 +53,9 @@ export const publish = new ValidatedMethod({
 
   run({ communityId }) {
     checkPermissions(this.userId, 'balances.publish', { communityId });
-    const coa = ChartOfAccounts.get(communityId);
-    coa.leafs().forEach((leaf) => {
+    Accounts.coa(communityId).leafs().forEach((leaf) => {
       // Publish makes a copy of all T-balances, and mark it as a P-balance
-      Balances.find({ communityId, account: leaf.code, tag: /^T.*/ })
+      Balances.find({ communityId, account: leaf.code, tag: /^T. })
         .forEach((tBalance) => {
           Balances.update({
             communityId,
@@ -79,7 +77,8 @@ export const publish = new ValidatedMethod({
     });
   },
 });
+*/
 
 Balances.methods = Balances.methods || {};
-_.extend(Balances.methods, { insert, update, remove, publish });
+_.extend(Balances.methods, { insert, update, remove });
 _.extend(Balances.methods, crudBatchOps(Balances));

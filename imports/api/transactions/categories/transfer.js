@@ -5,12 +5,12 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { Clock } from '/imports/utils/clock.js';
-import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const transferSchema = new SimpleSchema({
-  fromAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
-  toAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
+  fromAccount: { type: String, optional: true, autoform: Accounts.chooseSubAccount('`38') },  // the money account paid to/from
+  toAccount: { type: String, optional: true, autoform: Accounts.chooseSubAccount('`38') },  // the money account paid to/from
 });
 
 Transactions.categoryHelpers('transfer', {

@@ -8,8 +8,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Breakdowns, chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -40,7 +39,7 @@ Payments.billSchema = new SimpleSchema({
 });
 
 const paymentSchema = new SimpleSchema([Transactions.partnerSchema, {
-  payAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
+  payAccount: { type: String, optional: true, autoform: Accounts.chooseSubAccount('`38') },  // the money account paid to/from
   bills: { type: [Payments.billSchema], defaultValue: [] },
   outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value
 }]);
@@ -125,5 +124,5 @@ Factory.define('payment', Transactions, {
   contractId: () => Factory.get('contract'),
   valueDate: Clock.currentDate(),
   amount: () => faker.random.number(1000),
-  payAccount: '85',
+  payAccount: '`381',
 });

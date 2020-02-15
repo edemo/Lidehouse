@@ -5,8 +5,6 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from './transactions.js';
@@ -57,11 +55,7 @@ Meteor.publish('transactions.byAccount', function transactionsInCommunity(params
   const { communityId, account, localizer, begin, end } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
-    // then he can only see his own parcels' transactions
-    const parcelCodes = user.ownedParcels(communityId).map(p => Localizer.parcelRef2code(p.ref));
-    if (!localizer || !_.contains(parcelCodes, localizer)) {
       return this.ready();
-    }
   }
   if ((account && localizer) || (!account && !localizer)) {
     throw new Meteor.Error('invalid subscription');

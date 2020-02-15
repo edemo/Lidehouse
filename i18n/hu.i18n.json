@@ -499,6 +499,7 @@
   "You have overdue payments": "Önnek tartozása van",
   "plan": "terv",
   "done": "tény",
+  "simpleAccount": "főkönyvi számla",
   "moneyAccount": "pénz számla",
   "moneyAccounts": "pénz számlák",
   "bankAccount": "bankszámla",

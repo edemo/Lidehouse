@@ -18,7 +18,7 @@ export function parcelColumns() {
     { data: 'ref', title: __('schemaParcels.ref.label') },
     { data: 'leadRef', title: __('schemaParcelships.leadParcelId.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
-    { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
+    { data: 'type', title: __('schemaParcels.type.label'), render: Render.translateWithScope('schemaParcels.type') },
     { data: 'lot', title: __('schemaParcels.lot.label') },
     { data: 'area', title: 'm2' },
     { data: 'share()', title: __('schemaParcels.units.label') },
@@ -26,6 +26,18 @@ export function parcelColumns() {
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'view,edit,occupants,meters,delete', size: 'sm' }, cell),
+    },
+  ];
+}
+
+export function localizerColumns() {
+  return [
+    { data: 'code', title: __('schemaAccounts.code.label') },
+    { data: 'location()', title: __('schemaParcels.location.label') },
+    { data: 'category', title: __('schemaParcels.category.label'), render: Render.translateWithScope('schemaParcels.category') },
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      { doc: cellData, collection: 'parcels', actions: 'view,edit,delete', size: 'sm' }, cell),
     },
   ];
 }

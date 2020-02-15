@@ -12,13 +12,6 @@ export const HouseTranslation = {
        "If you find your house in the list and are not yet a member of the community, you can submit a request to join on the house page, which can be approved by the house's executives. ",
        "If your house is not already in your system, you can create it and invite your housemates to join."],
 
-    "flat": "Apartment",
-    "parking": "Parking",
-    "storage": "Storage",
-    "cellar": "Cellar",
-    "attic": "Attic",
-    "shop": "Shop",
-    "other": "Other",
     "centralHeating": "Central heating",
     "ownHeating": "Own heating system",
 
@@ -97,6 +90,13 @@ export const HouseTranslation = {
     },
     "schemaParcels": {
       "label": "Parcel",
+      "category": {
+        "label": "Category",
+        "@property": "Property",
+        "@common": "Common area",
+        "@group": "Group",
+        "#tag": "Hashtag"
+      },
       "serial": {
         "label": "Serial no.",
         "placeholder": "(eg. 34)"
@@ -127,7 +127,14 @@ export const HouseTranslation = {
       },
       "type": {
         "label": "Type",
-        "placeholder": "(eg. Apartment)"
+        "placeholder": "(eg. Apartment)",
+        "flat": "Apartment",
+        "parking": "Parking",
+        "storage": "Storage",
+        "cellar": "Cellar",
+        "attic": "Attic",
+        "shop": "Shop",
+        "other": "Other"
       },
       "group": {
         "label": "Group",
@@ -183,13 +190,6 @@ export const HouseTranslation = {
     "Parcels of community": "A házhoz tartozó albetétek",
     "Community page": "Házlap",
 
-    "flat": "Lakás",
-    "parking": "Parkoló",
-    "storage": "Tároló",
-    "cellar": "Pince",
-    "attic": "Padlás",
-    "shop": "Üzlet",
-    "other": "Egyéb",
     "centralHeating": "Központi fűtés",
     "ownHeating": "Saját fűtés",
 
@@ -270,6 +270,13 @@ export const HouseTranslation = {
     },
     "schemaParcels": {
       "label": "Albetét",
+      "category": {
+        "label": "Kategória",
+        "@property": "Albetét",
+        "@common": "Közös tulajdon",
+        "@group": "Gyűjtő",
+        "#tag": "Elszámolási egység"
+      },
       "serial": {
         "label": "Sorszám",
         "placeholder": "(pl. 34)"
@@ -300,7 +307,14 @@ export const HouseTranslation = {
       },
       "type": {
         "label": "Típus",
-        "placeholder": "(pl. Lakás)"
+        "placeholder": "(pl. Lakás)",
+        "flat": "Lakás",
+        "parking": "Parkoló",
+        "storage": "Tároló",
+        "cellar": "Pince",
+        "attic": "Padlás",
+        "shop": "Üzlet",
+        "other": "Egyéb"
       },
       "group": {
         "label": "Csoport",

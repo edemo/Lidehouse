@@ -11,11 +11,11 @@
           </tr>
         </thead>
         <tbody>
-            {{#each account in breakdown.nodes}}
+            {{#each account in accounts}}
             {{#if hasActivity account}}
             <tr class="table-row {{headerLevelClass account}}">
                 <td class="row-header nowrap" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                    {{displayAccount account}}
+                    {{account.displayAccount}}
                 </td>
                 {{#let cellValue=(balance account tag 'debitSum')}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">

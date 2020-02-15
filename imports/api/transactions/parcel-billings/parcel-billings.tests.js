@@ -9,7 +9,6 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Meters } from '/imports/api/meters/meters.js';

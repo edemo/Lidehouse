@@ -7,7 +7,7 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
+import { chooseParcel } from '/imports/api/parcels/parcels.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { choosePartner } from '/imports/api/partners/partners.js';
@@ -26,7 +26,7 @@ Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
 Tickets.extensionRawSchema = {
   type: { type: String, allowedValues: Tickets.typeValues, autoform: autoformOptions(Tickets.typeValues, 'schemaTickets.ticket.type.') },
   urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.'), defaultValue: 'normal' },
-  localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
+  localizer: { type: String, optional: true, autoform: chooseParcel },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract, optional: true },
   chargeType: { type: String, allowedValues: Tickets.chargeTypeValues, autoform: autoformOptions(Tickets.chargeTypeValues, 'schemaTickets.ticket.chargeType.'), optional: true },

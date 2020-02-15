@@ -13,9 +13,8 @@ import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Breakdowns, chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { displayMoney } from '/imports/ui_3/helpers/utils.js';
 
@@ -61,8 +60,8 @@ ParcelBillings.schema = new SimpleSchema({
   title: { type: String, max: 100 },
   consumption: { type: ParcelBillings.consumptionSchema, optional: true }, // if consumption based
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
-  digit: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
-  localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
+  digit: { type: String, autoform: Accounts.choosePayinType },
+  localizer: { type: String, autoform: Accounts.chooseSubAccount('@', false) },
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: _.extend({}, autoformOptions(Parcels.typeValues), { firstOption: () => __('All') }) },
   group: { type: String, optional: true, autoform: selectFromExistingGroups },
   note: { type: String, optional: true },
@@ -84,13 +83,8 @@ const chooseParcelBilling = {
   },
 };
 
-function chooseSubAccountWithDefault(brk, nodeCode) {
-  return {
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const breakdown = Breakdowns.findOneByName(brk, communityId);
-      return breakdown.nodeOptionsOf(nodeCode, false);
-    },
+function chooseSubAccountWithDefault(code) {
+  return _.extend(Accounts.chooseSubAccount(code), {
     value: () => {
       const activeParcelBillingId = Session.get('activeParcelBillingId');
       const originLocalizer = activeParcelBillingId
@@ -98,14 +92,14 @@ function chooseSubAccountWithDefault(brk, nodeCode) {
         : '@';
       return originLocalizer;
     },
-  };
+  });
 }
 
 ParcelBillings.applySchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   date: { type: Date, autoform: { value: new Date() } },
   ids: { type: [String], optional: true, regEx: SimpleSchema.RegEx.Id, autoform: _.extend({ type: 'select-checkbox', checked: true }, chooseParcelBilling) },
-  localizer: { type: String, optional: true, autoform: chooseSubAccountWithDefault('Localizer', '@') },
+  localizer: { type: String, optional: true, autoform: chooseSubAccountWithDefault('@') },
 });
 
 Meteor.startup(function indexParcelBillings() {
@@ -118,8 +112,7 @@ ParcelBillings.helpers({
   },
   parcels(appliedLocalizer) {
     const localizer = appliedLocalizer || this.localizer;
-    const ref = Localizer.code2parcelRef(localizer);
-    const selector = { communityId: this.communityId, ref: new RegExp('^' + ref) };
+    const selector = { communityId: this.communityId, code: new RegExp('^' + localizer) };
     if (this.type) selector.type = this.type;
     if (this.group) selector.group = this.group;
     return Parcels.find(selector);

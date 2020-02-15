@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { Fraction } from 'fractional';
 import { Tracker } from 'meteor/tracker';
 import { Factory } from 'meteor/dburles:factory';
@@ -20,15 +21,18 @@ import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ActiveTimeMachine } from '../behaviours/active-time-machine';
+
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const Parcels = new Mongo.Collection('parcels');
 
+Parcels.categoryValues = ['@property', '@common', '@group', '#tag'];
 Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'other'];
 
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  category: { type: String, defaultValue: '@property', allowedValues: Parcels.categoryValues, autoform: autoformOptions(Parcels.categoryValues, 'schemaParcels.category.') },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   serial: { type: Number, optional: true },
   ref: { type: String,    // 1. unique reference within a community (readable by the user)
@@ -44,8 +48,15 @@ Parcels.schema = new SimpleSchema({
   },
   leadRef: { type: String, optional: true, autoform: { omit: true } }, // cached active value, if you need TimeMachine functionality use leadParcel() which reads from Parcelships
   units: { type: Number, optional: true },
+  code: { type: String, optional: true,
+    autoValue() {
+      if (this.isInsert && !this.isSet) {
+        return this.field('category').value.charAt(0) + this.field('ref').value;
+      } else return undefined;
+    },
+  },
   // TODO: move these into the House package
-  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
+  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues, 'schemaParcels.type.') },
   group: { type: String, max: 25, optional: true },
   building: { type: String, max: 10, optional: true },
   floor: { type: String, max: 10, optional: true },
@@ -136,6 +147,9 @@ Parcels.helpers({
   display() {
     return `${this.ref || '?'} (${this.location()}) ${__(this.type)}`;
   },
+  displayAccount() {
+    return `${this.code || '?'} (${this.location()})`;
+  },
   toString() {
     return this.ref || this.location();
   },
@@ -163,7 +177,14 @@ Parcels.helpers({
     this.owners().forEach(o => total = total.add(o.ownership.share)); // owners are the lead's owners
     return total;
   },
+  isLeaf() {
+    return this.category !== 'group';
+  },
 });
+
+Parcels.all = function allParcels(communityId) {
+  return Parcels.find({ communityId }, { sort: { code: 1 } });
+};
 
 Parcels.attachSchema(Parcels.schema);
 // Parcels.attachBehaviour(FreeFields);
@@ -186,7 +207,6 @@ function updateCommunity(parcel, revertSign = 1) {
 if (Meteor.isServer) {
   Parcels.after.insert(function (userId, doc) {
     updateCommunity(doc, 1);
-    Localizer.addParcel(doc);
   });
 
   Parcels.before.update(function (userId, doc, fieldNames, modifier, options) {
@@ -195,16 +215,10 @@ if (Meteor.isServer) {
 
   Parcels.after.update(function (userId, doc, fieldNames, modifier, options) {
     updateCommunity(doc, 1);
-    const prev = this.previous;
-    if (doc.ref !== prev.ref
-      || doc.building !== prev.building
-      || doc.floor !== prev.floor
-      || doc.door !== prev.door) Localizer.updateParcel(doc);
   });
 
   Parcels.after.remove(function (userId, doc) {
     updateCommunity(doc, -1);
-    Localizer.removeParcel(doc);
   });
 }
 
@@ -222,3 +236,30 @@ Factory.define('parcel', Parcels, {
   lot: '123456/1234/1',
   area: () => faker.random.number(150),
 });
+
+// ------------------------------------
+
+export let chooseParcel = {};
+if (Meteor.isClient) {
+  import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+
+  chooseParcel = {
+    relation: 'parcel',
+    value() {
+      const selfId = AutoForm.getFormId();
+      const value = ModalStack.readResult(selfId, 'af.parcel.insert');
+      return value;
+    },
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const category = Session.get('activeParcelCategory');
+      const parcels = Parcels.find({ communityId, category });
+      const options = parcels.map(function option(p) {
+        return { label: p.displayAccount(), value: p._id };
+      });
+      const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+      return sortedOptions;
+    },
+    firstOption: () => __('(Select one)'),
+  };
+}

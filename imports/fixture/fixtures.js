@@ -11,8 +11,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { CommunityBuilder } from './community-builder.js';
-import { Parcels } from '../api/parcels/parcels.js';
 
 export function insertUnittestFixture(lang) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };

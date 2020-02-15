@@ -7,32 +7,38 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { MoneyAccounts } from './money-accounts.js';
+import { Accounts } from './accounts.js';
 import './entities.js';
 import './methods.js';
 
-MoneyAccounts.actions = {
+Accounts.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('moneyAccounts.insert', doc),
+    visible: (options, doc) => currentUserHasPermission('accounts.insert', doc),
     run(options, doc) {
+      const entityName = doc.entityName();
+      const entity = Accounts.entities[entityName];
       Modal.show('Autoform_modal', {
         id: `af.${options.entity.name}.insert`,
         schema: options.entity.schema,
+        omitFields: entity.omitFields,
         type: 'method',
-        meteormethod: 'moneyAccounts.insert',
+        meteormethod: 'accounts.insert',
       });
     },
   },
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('moneyAccounts.inCommunity', doc),
+    visible: (options, doc) => currentUserHasPermission('accounts.inCommunity', doc),
     run(options, doc) {
+      const entityName = doc.entityName();
+      const entity = Accounts.entities[entityName];
       Modal.show('Autoform_modal', {
-        id: `af.${doc.entityName()}.view`,
-        schema: MoneyAccounts.simpleSchema(doc),
+        id: `af.${entityName}.view`,
+        schema: Accounts.simpleSchema(doc),
+//        omitFields: ['category'],
         doc,
         type: 'readonly',
       });
@@ -41,14 +47,17 @@ MoneyAccounts.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('moneyAccounts.update', doc),
+    visible: (options, doc) => currentUserHasPermission('accounts.update', doc),
     run(options, doc) {
+      const entityName = doc.entityName();
+      const entity = Accounts.entities[entityName];
       Modal.show('Autoform_modal', {
-        id: `af.${doc.entityName()}.update`,
-        schema: MoneyAccounts.simpleSchema(doc),
+        id: `af.${entityName}.update`,
+        schema: Accounts.simpleSchema(doc),
+        omitFields: ['category'],
         doc,
         type: 'method-update',
-        meteormethod: 'moneyAccounts.update',
+        meteormethod: 'accounts.update',
         singleMethodArgument: true,
       });
     },
@@ -56,9 +65,9 @@ MoneyAccounts.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('moneyAccounts.remove', doc),
+    visible: (options, doc) => currentUserHasPermission('accounts.remove', doc),
     run(options, doc) {
-      Modal.confirmAndCall(MoneyAccounts.methods.remove, { _id: doc._id }, {
+      Modal.confirmAndCall(Accounts.methods.remove, { _id: doc._id }, {
         action: 'delete moneyAccount',
         message: 'Some accounting transactions might be connecting to it',
       });

@@ -18,8 +18,6 @@ import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/categories';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -88,7 +86,7 @@ export class CommunityBuilder {
         case 'statements':
         case 'statementEntries':
         case 'parcelBillings':
-        case 'moneyAccounts':
+        case 'accounts':
         case 'breakdowns':
         case 'txdefs': return this.getUserWithRole('accountant');
         case 'transactions': return (params.category === 'bill' || params.category === 'receipt') ? this.getUserWithRole('treasurer') : this.getUserWithRole('accountant');
@@ -229,12 +227,9 @@ export class CommunityBuilder {
     const membershipId = Memberships.insert({ communityId: this.communityId, userId: person.userId, partnerId, accepted: true, role, ...membershipData });
     return membershipId;
   }
-  name2code(breakdownName, nodeName) {
-    return Breakdowns.name2code(breakdownName, nodeName, this.communityId);
-  }
   serial2code(serial) {
     const parcel = Parcels.findOne({ communityId: this.communityId, serial });
-    return Localizer.parcelRef2code(parcel.ref);
+    return parcel.code;
   }
   generateDemoPayments(parcel, membership) {
     Clock.starts(1, 'year', 'ago');
@@ -242,7 +237,7 @@ export class CommunityBuilder {
       this.execute(ParcelBillings.methods.apply, {
         communityId: this.communityId,
         date: Clock.currentDate(),
-        localizer: Localizer.parcelRef2code(parcel.ref),
+        localizer: parcel.code,
       });
       this.payBillsOf(membership);
       Clock.tick(1, 'month');
@@ -260,7 +255,7 @@ export class CommunityBuilder {
       payAccount: '381',
     });*/
     const entryId = this.create('statementEntry', {
-      account: '382',
+      account: this.community().primaryBankAccount().code,
       valueDate: bill.dueDate,
       name: bill.partner().getName(),
       note: bill.serialId,
@@ -304,8 +299,6 @@ export class CommunityBuilder {
           ownership: { share: new Fraction(1, 1) },
         });
         const membership = Memberships.findOne(membershipId);
-
-        Localizer.addParcel(this.communityId, parcel, this.lang);
 
         this.generateDemoPayments(parcel, membership);
       }
