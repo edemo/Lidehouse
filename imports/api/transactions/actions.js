@@ -124,12 +124,13 @@ Transactions.actions = {
   },
   post: {
     name: 'post',
-    icon: () => 'fa fa-check-square-o',
-    color: (options, doc) => ((doc && !doc.isPosted()) ? 'warning' : undefined),
+    icon: (options, doc) => ((doc && doc.isPosted()) ? 'fa fa-envelope' : 'fa fa-check-square-o'),
+    color: (options, doc) => ((doc && doc.isPosted()) ? undefined : 'warning'),
+    label: (options, doc) => ((doc && doc.isPosted()) ? 'repost' : 'post'),
     visible(options, doc) {
       if (!doc) return false;
-//      if (doc.isPosted()) return false;
       if (doc.category === 'bill' && !doc.hasConteerData()) return false;
+      if (doc.isPosted()) return currentUserHasPermission('transactions.repost', doc);
       return currentUserHasPermission('transactions.post', doc);
     },
     run(options, doc) {
