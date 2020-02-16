@@ -32,6 +32,13 @@ function importAccount(communityId, account, includer) {
   }
 }
 
+function importParcel(communityId, parcel) {
+  const imported = _.extend({ communityId }, parcel);
+  imported.ref = imported.name; delete imported.name;
+  const collection = Mongo.Collection.get('parcels');
+  collection.insert(imported);
+}
+
 function importTxdef(communityId, txdef) {
   const imported = _.extend({ communityId }, txdef);
   const collection = Mongo.Collection.get('txdefs');
@@ -42,10 +49,13 @@ Templates.clone = function clone(id, communityId) {
   const template = Templates.findOne(id);
   if (!template) return undefined;
   if (template.accounts) {
-    template.accounts.forEach(acc => importAccount(communityId, acc));
+    template.accounts.forEach(doc => importAccount(communityId, doc));
+  }
+  if (template.parcels) {
+    template.parcels.forEach(doc => importParcel(communityId, doc));
   }
   if (template.txdefs) {
-    template.txdefs.forEach(def => importTxdef(communityId, def));
+    template.txdefs.forEach(doc => importTxdef(communityId, doc));
   }
   return true;
 };

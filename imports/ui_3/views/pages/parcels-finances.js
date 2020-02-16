@@ -49,7 +49,7 @@ Template.Parcels_finances.viewmodel({
   parcelChoices() {
     const communityId = Session.get('activeCommunityId');
     const parcels = Meteor.userOrNull().hasPermission('balances.ofLocalizers', { communityId }) ?
-        Parcels.find({ communityId, approved: true }).fetch().filter(p => !p.isLed()) : this.myLeadParcels();
+        Parcels.find({ communityId, category: '@property', approved: true }).fetch().filter(p => !p.isLed()) : this.myLeadParcels();
     return parcels.map((parcel) => {
       return {
         label: parcel.display(),
@@ -66,7 +66,7 @@ Template.Parcels_finances.viewmodel({
   },
   parcelFinancesTableDataFn() {
     const communityId = Session.get('activeCommunityId');
-    return () => Parcels.find({ communityId }).fetch().filter(p => !p.isLed());
+    return () => Parcels.find({ communityId, category: '@property' }).fetch().filter(p => !p.isLed());
   },
   parcelFinancesOptionsFn() {
     return () => ({
@@ -79,7 +79,7 @@ Template.Parcels_finances.viewmodel({
     const self = this;
     return () => {
       const communityId = self.communityId();
-      let parcels = Tracker.nonreactive(() => Parcels.find({ communityId, approved: true }).fetch());
+      let parcels = Tracker.nonreactive(() => Parcels.find({ communityId, category: '@property', approved: true }).fetch());
       if (!self.showAllParcels()) {
         const myParcelIds = Memberships.find({ communityId, !!!: Meteor.userId() }).map(m => m.parcelId);
         parcels = parcels.filter(p => _.contains(myParcelIds, p._id));

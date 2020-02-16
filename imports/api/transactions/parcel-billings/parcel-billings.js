@@ -61,7 +61,7 @@ ParcelBillings.schema = new SimpleSchema({
   consumption: { type: ParcelBillings.consumptionSchema, optional: true }, // if consumption based
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
   digit: { type: String, autoform: Accounts.choosePayinType },
-  localizer: { type: String, autoform: Accounts.chooseSubAccount('@', false) },
+  localizer: { type: String, autoform: Parcels.choosePhysical },
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: _.extend({}, autoformOptions(Parcels.typeValues), { firstOption: () => __('All') }) },
   group: { type: String, optional: true, autoform: selectFromExistingGroups },
   note: { type: String, optional: true },
@@ -83,14 +83,14 @@ const chooseParcelBilling = {
   },
 };
 
-function chooseSubAccountWithDefault(code) {
-  return _.extend(Accounts.chooseSubAccount(code), {
+function chooseParcelBillingLocalizer() {
+  return _.extend(Parcels.chooseSubNode('@'), {
     value: () => {
       const activeParcelBillingId = Session.get('activeParcelBillingId');
-      const originLocalizer = activeParcelBillingId
+      const localizer = activeParcelBillingId
         ? ParcelBillings.findOne(activeParcelBillingId).localizer
         : '@';
-      return originLocalizer;
+      return localizer;
     },
   });
 }
@@ -99,7 +99,7 @@ ParcelBillings.applySchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   date: { type: Date, autoform: { value: new Date() } },
   ids: { type: [String], optional: true, regEx: SimpleSchema.RegEx.Id, autoform: _.extend({ type: 'select-checkbox', checked: true }, chooseParcelBilling) },
-  localizer: { type: String, optional: true, autoform: chooseSubAccountWithDefault('@') },
+  localizer: { type: String, optional: true, autoform: chooseParcelBillingLocalizer() },
 });
 
 Meteor.startup(function indexParcelBillings() {
@@ -112,7 +112,7 @@ ParcelBillings.helpers({
   },
   parcels(appliedLocalizer) {
     const localizer = appliedLocalizer || this.localizer;
-    const selector = { communityId: this.communityId, code: new RegExp('^' + localizer) };
+    const selector = { communityId: this.communityId, category: '@property', code: new RegExp('^' + localizer) };
     if (this.type) selector.type = this.type;
     if (this.group) selector.group = this.group;
     return Parcels.find(selector);

@@ -894,7 +894,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       unitPrice: 2500,
     },
     digit: Accounts.findPayinDigitByName('Hidegvíz előírás'),
-    localizer: '@A',
+    localizer: '@',
   }));
 
   parcelBillingIds.push(builder.insert(ParcelBillings, '', {
@@ -911,7 +911,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       unitPrice: 75,
     },
     digit: Accounts.findPayinDigitByName('Fűtési díj előírás'),
-    localizer: '@A',
+    localizer: '@',
   }));
 
   // This is a one-time, extraordinary parcel billing

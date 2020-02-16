@@ -33,7 +33,7 @@ export function parcelColumns() {
 export function localizerColumns() {
   return [
     { data: 'code', title: __('schemaAccounts.code.label') },
-    { data: 'location()', title: __('schemaParcels.location.label') },
+    { data: 'displayName()', title: __('schemaParcels.location.label') },
     { data: 'category', title: __('schemaParcels.category.label'), render: Render.translateWithScope('schemaParcels.category') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,

@@ -39,7 +39,7 @@ Payments.billSchema = new SimpleSchema({
 });
 
 const paymentSchema = new SimpleSchema([Transactions.partnerSchema, {
-  payAccount: { type: String, optional: true, autoform: Accounts.chooseSubAccount('`38') },  // the money account paid to/from
+  payAccount: { type: String, optional: true, autoform: Accounts.chooseSubNode('`38') },  // the money account paid to/from
   bills: { type: [Payments.billSchema], defaultValue: [] },
   outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value
 }]);

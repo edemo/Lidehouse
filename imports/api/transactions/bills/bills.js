@@ -49,7 +49,7 @@ const lineSchema = {
   billingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   period: { type: String, optional: true, autoform: { omit: true } },
   account: { type: String, optional: true, autoform: chooseConteerAccount },
-  localizer: { type: String, optional: true, autoform: chooseParcel },
+  localizer: { type: String, optional: true, autoform: chooseParcel() },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
 Bills.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);

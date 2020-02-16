@@ -19,7 +19,7 @@ const receiptSchema = new SimpleSchema({
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
-  payAccount: { type: String, autoform: Accounts.chooseSubAccount('`38') },  // the money account paid to/from
+  payAccount: { type: String, autoform: Accounts.chooseSubNode('`38') },  // the money account paid to/from
 });
 
 Transactions.categoryHelpers('receipt', {

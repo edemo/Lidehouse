@@ -158,6 +158,7 @@ export const cloneAccountingTemplates = new ValidatedMethod({
     checkPermissions(this.userId, 'accounts.insert', { communityId });
     Templates.clone('Condominium_COA', communityId);
     Templates.clone('Condominium_Txdefs', communityId);
+    Templates.clone('Condominium_PhysicalRoot', communityId);
   },
 });
 

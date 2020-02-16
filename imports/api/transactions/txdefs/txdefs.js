@@ -32,16 +32,16 @@ Txdefs.schema = new SimpleSchema({
   name: { type: String, max: 100 },
   category: { type: String, max: 15, optional: true, autoform: { omit: true } }, // Name of the entity
   data: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // Default data values
-  debit: { type: [String], max: 6, autoform: Accounts.chooseAccountNode, optional: true },
-  credit: { type: [String], max: 6, autoform: Accounts.chooseAccountNode, optional: true },
+  debit: { type: [String], max: 6, autoform: Accounts.chooseNode, optional: true },
+  credit: { type: [String], max: 6, autoform: Accounts.chooseNode, optional: true },
 });
 
 Txdefs.helpers({
   schema() {
     const schema = new SimpleSchema([
       _.clone(Transactions.baseSchema), {
-        debit: { type: String, autoform: Accounts.chooseSubAccount(this.debit) },
-        credit: { type: String, autoform: Accounts.chooseSubAccount(this.credit) },
+        debit: { type: String, autoform: Accounts.chooseSubNode(this.debit) },
+        credit: { type: String, autoform: Accounts.chooseSubNode(this.credit) },
       }, _.clone(Transactions.noteSchema),
     ]);
     schema.i18n('schemaTransactions');

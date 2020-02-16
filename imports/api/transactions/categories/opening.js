@@ -13,7 +13,7 @@ import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/t
 const openingSchema = new SimpleSchema({
   side: { type: String, allowedValues: ['debit', 'credit'] },
   account: { type: String, autoform: chooseConteerAccount },
-// autoform: Accounts.chooseSubAccount('COA', '??')
+// autoform: Accounts.chooseSubNode('COA', '??')
 });
 
 Transactions.categoryHelpers('opening', {

@@ -55,7 +55,7 @@ Communities.publicFields = {
 Communities.helpers({
   registeredUnits() {
     let total = 0;
-    Parcels.find({ communityId: this._id }).forEach(p => total += p.units);
+    Parcels.find({ communityId: this._id, category: '@property' }).forEach(p => total += p.units);
     return total;
   },
   displayAddress() {

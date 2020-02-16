@@ -1,5 +1,6 @@
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { __ } from '/imports/localization/i18n.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
@@ -11,8 +12,8 @@ export const LocationTagsSchema = new SimpleSchema({
 });
 
 export const AccountSchema = new SimpleSchema([{
-  account: { type: String /* account code */, autoform: Accounts.chooseAccountNode, optional: true },
-  localizer: { type: String /* account code */, autoform: Accounts.chooseLocalizerNode, optional: true },
+  account: { type: String /* account code */, autoform: Accounts.chooseNode, optional: true },
+  localizer: { type: String /* account code */, autoform: Parcels.chooseNode, optional: true },
 }, LocationTagsSchema]);
 
 export class AccountSpecification {

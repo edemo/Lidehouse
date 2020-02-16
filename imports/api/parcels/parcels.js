@@ -9,7 +9,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
@@ -78,8 +78,10 @@ Parcels.schema = new SimpleSchema({
 Parcels.idSet = ['communityId', 'ref'];
 
 Meteor.startup(function indexParcels() {
-  Parcels.ensureIndex({ communityId: 1, ref: 1 }, { sparse: true });
+  Parcels.ensureIndex({ communityId: 1, ref: 1 });
+  Parcels.ensureIndex({ communityId: 1, leadRef: 1 });
   if (Meteor.isServer) {
+    Parcels._ensureIndex({ communityId: 1, code: 1 });
     Parcels._ensureIndex({ lot: 1 });
   }
 });
@@ -139,7 +141,9 @@ Parcels.helpers({
     return this.representors().fetch()[0];
   },
   payerMembership() {
-    return this.representor() || this.owners().fetch()[0];
+    const payer = this.representor() || this.owners().fetch()[0];
+    productionAssert('err_invalidData', `Unable to pay for parcel ${this.ref} - no payer membership found`);
+    return payer;
   },
   payerPartner() {
     return this.payerMembership().partner();
@@ -147,8 +151,11 @@ Parcels.helpers({
   display() {
     return `${this.ref || '?'} (${this.location()}) ${__(this.type)}`;
   },
+  displayName() {
+    return this.location() || __(this.ref);
+  },
   displayAccount() {
-    return `${this.code || '?'} (${this.location()})`;
+    return `${this.code}: ${this.displayName()}`;
   },
   toString() {
     return this.ref || this.location();
@@ -180,11 +187,63 @@ Parcels.helpers({
   isLeaf() {
     return this.category !== 'group';
   },
+  asOption() {
+    return { label: this.displayAccount(), value: this.code };
+  },
 });
 
-Parcels.all = function allParcels(communityId) {
-  return Parcels.find({ communityId }, { sort: { code: 1 } });
-};
+_.extend(Parcels, {
+  // Almost a duplicate of Accounts functions, to use Parcels as localizer
+  checkExists(communityId, code) {
+    if (!code || !Parcels.findOne({ communityId, code })) {
+      throw new Meteor.Error('err_notExists', `No such parcel: ${code}`);
+    }
+  },
+  all(communityId) {
+    return Parcels.find({ communityId }, { sort: { code: 1 } });
+  },
+  getByCode(code, communityId = getActiveCommunityId()) {
+    return Parcels.findOne({ communityId, code });
+  },
+  getByRef(ref, communityId = getActiveCommunityId()) {
+    return Parcels.findOne({ communityId, ref });
+  },
+  nodesOf(communityId, code, leafsOnly = false) {
+    const regexp = new RegExp('^' + code + (leafsOnly ? '.+' : ''));
+    return Parcels.find({ communityId, code: regexp }, { sort: { code: 1 } });
+  },
+  nodeOptionsOf(communityId, code, leafsOnly) {
+    const codes = (code instanceof Array) ? code : [code];
+    const nodeOptions = codes.map(c => {
+      const nodes = Parcels.nodesOf(communityId, code, leafsOnly);
+      return nodes.map(node => node.asOption());
+    }).flat(1);
+    return nodeOptions;
+  },
+  chooseSubNode(code, leafsOnly) {
+    return {
+      options() {
+        const communityId = Session.get('activeCommunityId');
+        return Parcels.nodeOptionsOf(communityId, code, leafsOnly);
+      },
+      firstOption: false,
+    };
+  },
+  choosePhysical: {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      return Parcels.nodeOptionsOf(communityId, '@', false);
+    },
+    firstOption: () => __('(Select one)'),
+  },
+  chooseNode: {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      return Parcels.nodeOptionsOf(communityId, '', false);
+    },
+    firstOption: () => __('(Select one)'),
+  },
+});
 
 Parcels.attachSchema(Parcels.schema);
 // Parcels.attachBehaviour(FreeFields);
@@ -239,27 +298,28 @@ Factory.define('parcel', Parcels, {
 
 // ------------------------------------
 
-export let chooseParcel = {};
+export let chooseParcel = () => ({});
 if (Meteor.isClient) {
   import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
-  chooseParcel = {
-    relation: 'parcel',
-    value() {
-      const selfId = AutoForm.getFormId();
-      const value = ModalStack.readResult(selfId, 'af.parcel.insert');
-      return value;
-    },
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const category = Session.get('activeParcelCategory');
-      const parcels = Parcels.find({ communityId, category });
-      const options = parcels.map(function option(p) {
-        return { label: p.displayAccount(), value: p._id };
-      });
-      const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
-      return sortedOptions;
-    },
-    firstOption: () => __('(Select one)'),
+  chooseParcel = function (code = '') {
+    return {
+      relation: 'parcel',
+      value() {
+        const selfId = AutoForm.getFormId();
+        const value = ModalStack.readResult(selfId, 'af.parcel.insert');
+        return value;
+      },
+      options() {
+        const communityId = Session.get('activeCommunityId');
+        const parcels = Parcels.nodesOf(communityId, code);
+        const options = parcels.map(function option(p) {
+          return { label: p.displayAccount(), value: p._id };
+        });
+        const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+        return sortedOptions;
+      },
+      firstOption: () => __('Localizers'),
+    };
   };
 }

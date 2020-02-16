@@ -80,78 +80,72 @@ Accounts.helpers({
   },
 });
 
-Accounts.checkExists = function checkExists(communityId, code) {
-  if (!code || !Accounts.findOne({ communityId, code })) {
-    throw new Meteor.Error('err_notExists', `No such account: ${code}`);
-  }
-};
-
-Accounts.coa = function coa(communityId = getActiveCommunityId()) {
-  return Accounts.findOne({ communityId, code: '`' });
-};
-
-Accounts.all = function allAccounts(communityId) {
-  const accounts = Accounts.find({ communityId }, { sort: { code: 1 } });
-  return accounts;
-};
-
-Accounts.getByCode = function getByCode(code, communityId = getActiveCommunityId()) {
-  return Accounts.findOne({ communityId, code });
-};
-
-Accounts.getByName = function getByName(name, communityId = getActiveCommunityId()) {
-  return Accounts.findOne({ communityId, name });
-};
-
-Accounts.findPayinDigitByName = function findPayinDigitByName(name) {
-  const tmpl = Templates.findOne('Condominium_Payins');
-  const node = tmpl.accounts.find(a => a.name === name);
-  return node.code;
-};
-
-Accounts.nodeOptionsOf = function nodeOptionsOf(communityId, code, leafsOnly) {
-  const codes = (code instanceof Array) ? code : [code];
-  const nodeOptions = codes.map(c => {
-    const account = Accounts.findOne({ communityId, code: c });
-    return account.nodes(leafsOnly).map(node => node.asOption());
-  }).flat(1);
-  if (leafsOnly) return nodeOptions;
-  else return [Accounts.coa(communityId).asOption()].concat(nodeOptions);
-};
-
-Accounts.chooseSubAccount = function chooseSubAccount(code, leafsOnly = true) {
-  return {
+_.extend(Accounts, {
+  checkExists(communityId, code) {
+    if (!code || !Accounts.findOne({ communityId, code })) {
+      throw new Meteor.Error('err_notExists', `No such account: ${code}`);
+    }
+  },
+  coa(communityId = getActiveCommunityId()) {
+    return Accounts.findOne({ communityId, code: '`' });
+  },
+  all(communityId) {
+    return Accounts.find({ communityId }, { sort: { code: 1 } });
+  },
+  getByCode(code, communityId = getActiveCommunityId()) {
+    return Accounts.findOne({ communityId, code });
+  },
+  getByName(name, communityId = getActiveCommunityId()) {
+    return Accounts.findOne({ communityId, name });
+  },
+  findPayinDigitByName(name) {
+    const tmpl = Templates.findOne('Condominium_Payins');
+    const node = tmpl.accounts.find(a => a.name === name);
+    return node.code;
+  },
+  nodesOf(communityId, code, leafsOnly = false) {
+    const regexp = new RegExp('^' + code + (leafsOnly ? '.+' : ''));
+    return Accounts.find({ communityId, code: regexp }, { sort: { code: 1 } });
+  },
+  nodeOptionsOf(communityId, code, leafsOnly) {
+    const codes = (code instanceof Array) ? code : [code];
+    const nodeOptions = codes.map(c => {
+      const nodes = Accounts.nodesOf(communityId, code, leafsOnly);
+      return nodes.map(node => node.asOption());
+    }).flat(1);
+    if (leafsOnly) return nodeOptions;
+    else return [Accounts.coa(communityId).asOption()].concat(nodeOptions);
+  },
+  chooseSubNode(code, leafsOnly) {
+    return {
+      options() {
+        const communityId = Session.get('activeCommunityId');
+        return Accounts.nodeOptionsOf(communityId, code, leafsOnly);
+      },
+      firstOption: false,
+    };
+  },
+  chooseNode: {
     options() {
       const communityId = Session.get('activeCommunityId');
-      return Accounts.nodeOptionsOf(communityId, code, leafsOnly);
+      return Accounts.nodeOptionsOf(communityId, '`', false);
     },
-    firstOption: false,
-  };
-};
-
-Accounts.chooseAccountNode = {
-  options() {
-    const communityId = Session.get('activeCommunityId');
-    return Accounts.all(communityId);
+    firstOption: () => __('(Select one)'),
   },
-  firstOption: () => __('(Select one)'),
-};
-
-Accounts.chooseLocalizerNode = {
-  options() {
-    const communityId = Session.get('activeCommunityId');
-    return Accounts.all(communityId);
+  choosePayinType: {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const members = Accounts.getByName('Members', communityId);
+      const options = Accounts.nodeOptionsOf(communityId, members.code, true);
+      options.forEach(o => {
+        o.label = o.label.substring(members.code.length); // keep just the end of it
+        o.value = o.value.substring(members.code.length); // keep just the end of it
+      });
+      return options;
+    },
+    firstOption: () => __('(Select one)'),
   },
-  firstOption: () => __('(Select one)'),
-};
-
-Accounts.choosePayinType = {
-  options() {
-    const tmpl = Templates.findOne('condominiumPayinTypes');
-    return tmpl.accounts.map(a => ({ label: a.name, value: a.digit }));
-  },
-  firstOption: () => __('(Select one)'),
-};
+});
 
 Accounts.attachBaseSchema(Accounts.schema);
 Accounts.attachBehaviour(Timestamped);
