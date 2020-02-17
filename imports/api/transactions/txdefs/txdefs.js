@@ -47,6 +47,9 @@ Txdefs.helpers({
     schema.i18n('schemaTransactions');
     return schema;
   },
+  entityName() {
+    return 'txdef';
+  },
   isAutoPosting() {
     return this.isAccountantTx();
   },

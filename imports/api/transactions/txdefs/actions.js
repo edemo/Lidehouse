@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+
+import { __ } from '/imports/localization/i18n.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Txdefs } from './txdefs.js';
 import './methods.js';
@@ -10,6 +12,8 @@ Txdefs.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
+    color: () => 'primary',
+    label: () => `${__('new')} ${__('txdef')}`,
     visible: (options, doc) => currentUserHasPermission('accounts.insert', doc),
     run() {
       Modal.show('Autoform_modal', {

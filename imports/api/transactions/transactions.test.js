@@ -118,7 +118,7 @@ if (Meteor.isServer) {
       });
 
       it('Can post - creates tx in accountig', function () {
-        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: { $set: { 'lines.0.account': '`85', 'lines.0.localizer': '@' } } });
+        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: { $set: { 'lines.0.account': '`861', 'lines.0.localizer': '@' } } });
         FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.isPosted(), true);
@@ -126,7 +126,7 @@ if (Meteor.isServer) {
         chai.assert.isDefined(tx);
         chai.assert.equal(tx.category, 'bill');
         chai.assert.equal(tx.amount, 300);
-        chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '`85', localizer: '@' }]);
+        chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '`861', localizer: '@' }]);
         chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '`46', localizer: '@' }]);
       });
 
@@ -188,7 +188,7 @@ if (Meteor.isServer) {
             uom: 'piece',
             quantity: 1,
             unitPrice: 300,
-            account: '`85',
+            account: '`861',
             localizer: '@',
           }],
         });

@@ -68,8 +68,8 @@
                         {{#if currentUserHasPermission 'accounts.insert'}}
                         <div class="row">
                             <div class="col-xs-12 text-center">
-                                <button class="btn btn-primary js-new" data-entity="bankAccount"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'bankAccount'}}</button>
-                                <button class="btn btn-primary js-new" data-entity="cashAccount"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'cashAccount'}}</button>
+                                {{>Action_buttons_group collection='accounts' actions='new' size='xl' options=(obj '{ "entity": "bankAccount" }')}}
+                                {{>Action_buttons_group collection='accounts' actions='new' size='xl' options=(obj '{ "entity": "cashAccount" }')}}
                             </div>
                         </div>
                         {{/if}}
@@ -78,10 +78,20 @@
                         <div class="table-responsive">
                             {{> ReactiveDatatable tableData=accountsTableDataFn options=accountsOptionsFn }}
                         </div>
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                {{>Action_buttons_group collection='accounts' actions='new' size='xl' options=(obj '{ "entity": "simpleAccount" }')}}
+                            </div>
+                        </div>
                     </div>
                     <div id="tab-loc" class="tab-pane">
                         <div class="table-responsive">
                             {{> ReactiveDatatable tableData=localizersTableDataFn options=localizersOptionsFn }}
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                {{>Action_buttons_group collection='parcels' actions='new' size='xl' options=(obj '{ "entity": ["@group","#tag"] }')}}
+                            </div>
                         </div>
                     </div>
                     <!--div id="tab-others" class="tab-pane">
@@ -124,7 +134,7 @@
                         {{#if currentUserHasPermission 'accounts.insert'}}
                         <div class="row">
                             <div class="col-xs-12 text-center">
-                                <button class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'txdef'}}</button>
+                                {{>Action_buttons_group collection='txdefs' actions='new' size='xl'}}
                             </div>
                         </div>
                         {{/if}}

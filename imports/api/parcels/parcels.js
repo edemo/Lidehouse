@@ -30,11 +30,10 @@ export const Parcels = new Mongo.Collection('parcels');
 Parcels.categoryValues = ['@property', '@common', '@group', '#tag'];
 Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'other'];
 
-Parcels.schema = new SimpleSchema({
+Parcels.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   category: { type: String, defaultValue: '@property', allowedValues: Parcels.categoryValues, autoform: autoformOptions(Parcels.categoryValues, 'schemaParcels.category.') },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
-  serial: { type: Number, optional: true },
   ref: { type: String,    // 1. unique reference within a community (readable by the user)
                           // 2. can be used to identify a parcel, which is not a true parcel, just a sub-part of a parcel
     autoValue() {
@@ -46,8 +45,6 @@ Parcels.schema = new SimpleSchema({
       } else return undefined;
     },
   },
-  leadRef: { type: String, optional: true, autoform: { omit: true } }, // cached active value, if you need TimeMachine functionality use leadParcel() which reads from Parcelships
-  units: { type: Number, optional: true },
   code: { type: String, optional: true,
     autoValue() {
       if (this.isInsert && !this.isSet) {
@@ -55,20 +52,25 @@ Parcels.schema = new SimpleSchema({
       } else return undefined;
     },
   },
-  // TODO: move these into the House package
+});
+
+Parcels.physicalSchema = new SimpleSchema({
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues, 'schemaParcels.type.') },
-  group: { type: String, max: 25, optional: true },
   building: { type: String, max: 10, optional: true },
   floor: { type: String, max: 10, optional: true },
   door: { type: String, max: 10, optional: true },
   lot: { type: String, max: 100, optional: true },
   /* autoValue() {
-        if (this.isInsert) {
-          return community().lot + '/A/' + serial;
-        }
-        return undefined; // means leave whats there alone for Updates, Upserts
-      },
+        if (this.isInsert) return community().lot + '/A/' + serial;
+        return undefined;
   */
+});
+
+Parcels.propertySchema = new SimpleSchema({
+  serial: { type: Number, optional: true },
+  leadRef: { type: String, optional: true, autoform: { omit: true } }, // cached active value, if you need TimeMachine functionality use leadParcel() which reads from Parcelships
+  units: { type: Number, optional: true },
+  group: { type: String, max: 25, optional: true },
   // cost calculation purposes
   area: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
@@ -87,6 +89,9 @@ Meteor.startup(function indexParcels() {
 });
 
 Parcels.helpers({
+  entityName() {
+    return this.category;
+  },
   leadParcelId() {
     if (ActiveTimeMachine.isSimulating()) {
       const parcelship = Parcelships.findOneActive({ parcelId: this._id });
@@ -245,13 +250,22 @@ _.extend(Parcels, {
   },
 });
 
-Parcels.attachSchema(Parcels.schema);
+Parcels.attachBaseSchema(Parcels.baseSchema);
 // Parcels.attachBehaviour(FreeFields);
 Parcels.attachBehaviour(AccountingLocation);
 Parcels.attachBehaviour(Timestamped);
 
+Parcels.attachVariantSchema(Parcels.physicalSchema, { selector: { category: '@property' } });
+Parcels.attachVariantSchema(Parcels.propertySchema, { selector: { category: '@property' } });
+Parcels.attachVariantSchema(Parcels.physicalSchema, { selector: { category: '@common' } });
+Parcels.attachVariantSchema(undefined, { selector: { category: '@group' } });
+Parcels.attachVariantSchema(undefined, { selector: { category: '#tag' } });
+
 Meteor.startup(function attach() {
-  Parcels.simpleSchema().i18n('schemaParcels');
+  Parcels.simpleSchema({ category: '@property' }).i18n('schemaParcels');
+  Parcels.simpleSchema({ category: '@common' }).i18n('schemaParcels');
+  Parcels.simpleSchema({ category: '@group' }).i18n('schemaParcels');
+  Parcels.simpleSchema({ category: '#tag' }).i18n('schemaParcels');
 });
 
 // --- Before/after actions ---
@@ -284,6 +298,10 @@ if (Meteor.isServer) {
 // --- Factory ---
 
 Factory.define('parcel', Parcels, {
+});
+
+Factory.define('@property', Parcels, {
+  category: '@property',
   // serial
   // ref
   // leadRef

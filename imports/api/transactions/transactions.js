@@ -60,7 +60,9 @@ Transactions.partnerSchema = new SimpleSchema([
   LocationTagsSchema, {
     relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
     partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
-}]);
+    contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract }, // ?? overriding LocationTags
+  },
+]);
 
 Transactions.legsSchema = {
   debit: { type: [Transactions.entrySchema], optional: true },

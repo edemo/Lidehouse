@@ -64,19 +64,19 @@ Meteor.startup(function attach() {
 
 if (Meteor.isServer) {
   Parcelships.after.insert(function (userId, doc) {
-    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } });
+    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } }, { selector: { category: '@property' } });
   });
 
   Parcelships.before.update(function (userId, doc, fieldNames, modifier, options) {
-    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } });
+    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } }, { selector: { category: '@property' } });
   });
 
   Parcelships.after.update(function (userId, doc, fieldNames, modifier, options) {
-    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } });
+    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } }, { selector: { category: '@property' } });
   });
 
   Parcelships.after.remove(function (userId, doc) {
-    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } });
+    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } }, { selector: { category: '@property' } });
   });
 }
 

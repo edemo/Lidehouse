@@ -33,7 +33,7 @@ export class CommunityBuilder {
     this.lang = lang;
     this.com = { en: 'com', hu: 'hu' }[lang];
 
-    const parcels = Parcels.find({ communityId }, { sort: { createdAt: -1 } });
+    const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { createdAt: -1 } });
     const lastCreatedParcel = parcels.fetch()[0];
     this.nextSerial = (lastCreatedParcel ? lastCreatedParcel.serial : 0) + 1;
     this.dummyUsers = [];
@@ -140,8 +140,9 @@ export class CommunityBuilder {
     const doc = this.build(docType, data);
     return this.execute(collection.methods.insert, doc);
   }
-  createParcel(data) {
+  createProperty(data) {
     _.extend(data, {
+      category: '@property',
       serial: this.nextSerial,
 //      ref, autovalue
       lot: '4532/8/A/' + this.nextSerial.toString(),
@@ -156,7 +157,7 @@ export class CommunityBuilder {
     }
 
     this.nextSerial += 1;
-    return this.create('parcel', data);
+    return this.create('@property', data);
   }
   createLoginableUser(role, userData, membershipData) {
     const emailAddress = `${role}@${this.demoOrTest}.${this.com}`;
@@ -290,7 +291,7 @@ export class CommunityBuilder {
     for (let j = 0; j <= floors; j++) {
       for (let k = 1; k <= doors; k++) {
         ++serial;
-        const parcelId = this.createParcel({ floor: j.toString(), door: k.toString(), area: randomNumber(40, 120) });
+        const parcelId = this.createProperty({ floor: j.toString(), door: k.toString(), area: randomNumber(40, 120) });
         const parcel = Parcels.findOne(parcelId);
         const membershipId = this.createMembership(this.createFakePerson(serial), 'owner', {
           parcelId,

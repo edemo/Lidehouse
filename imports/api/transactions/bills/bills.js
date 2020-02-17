@@ -172,7 +172,7 @@ Factory.define('bill', Transactions, {
     uom: 'piece',
     quantity: 1,
     unitPrice: faker.random.number(10000),
-    account: '`85',
+    account: '`861',
     localizer: '@',
   }],
 });

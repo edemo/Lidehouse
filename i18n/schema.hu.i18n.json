@@ -32,7 +32,7 @@
   },
   "schemaAccounts": {
     "category": {
-      "label": "Számla kategória",
+      "label": "Számla típus",
       "asset": "Eszköz",
       "liability": "Forrás",
       "equity": "Saját tőke",

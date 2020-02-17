@@ -16,24 +16,24 @@ if (Meteor.isServer) {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
+      Templates.remove({});
+      Accounts.remove({});
     });
     after(function () {
-//      Templates.remove({});
-//      Accounts.remove({});
     });
 
     describe('api', function () {
       let insertTx;
       let assertBalance;
       before(function () {
-        Templates.define({ templatId: 'Test_COA', accounts: [
-          { code: ':', name: 'COA' },
-          { code: ':1', name: 'Level1' },
-          { code: ':12', name: 'Level2' },
-          { code: ':12A', name: 'LeafA' },
-          { code: ':12B', name: 'LeafB' },
-          { code: ':12C', name: 'LeafC' },
-          { code: ':19', name: 'LeafD' },
+        Templates.define({ _id: 'Test_COA', accounts: [
+          { code: ':', name: 'COA', category: 'technical' },
+          { code: ':1', name: 'Level1', category: 'asset' },
+          { code: ':12', name: 'Level2', category: 'asset' },
+          { code: ':12A', name: 'LeafA', category: 'asset' },
+          { code: ':12B', name: 'LeafB', category: 'asset' },
+          { code: ':12C', name: 'LeafC', category: 'asset' },
+          { code: ':19', name: 'LeafD', category: 'asset' },
         ],
         });
         Templates.clone('Test_COA', Fixture.demoCommunityId);
@@ -71,6 +71,8 @@ if (Meteor.isServer) {
       });
 
       it('updates balances with tx operations', function (done) {
+        console.log("templates", Templates.find({}).fetch());
+        console.log("accounts", Accounts.find({}).fetch());
         insertTx({
           valueDate: new Date('2017-01-01'),
           amount: 1000,

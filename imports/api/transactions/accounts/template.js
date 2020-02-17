@@ -169,13 +169,13 @@ export function defineAccountTemplates() {
   Breakdowns.define({ communityId: null,
     name: 'COA', label: 'Chart Of Accounts',
     children: [
-      { digit: '1', include: 'BEFEKTETETT ESZKÖZÖK' },
-      { digit: '2', include: 'KÉSZLETEK' },
-      { digit: '3', include: 'Assets' }, //KÖVETELÉSEK
-      { digit: '4', include: 'Liabilities' }, // FORRÁSOK
-      { digit: '5', include: 'KÖLTSÉGNEMEK' },
-      { digit: '8', include: 'Expenses' }, // RÁFORDÍTÁSOK
-      { digit: '9', include: 'Incomes' }, //BEVÉTELEK
+      { code: '1', include: 'BEFEKTETETT ESZKÖZÖK' },
+      { code: '2', include: 'KÉSZLETEK' },
+      { code: '3', include: 'Assets' }, //KÖVETELÉSEK
+      { code: '4', include: 'Liabilities' }, // FORRÁSOK
+      { code: '5', include: 'KÖLTSÉGNEMEK' },
+      { code: '8', include: 'Expenses' }, // RÁFORDÍTÁSOK
+      { code: '9', include: 'Incomes' }, //BEVÉTELEK
     ],
   });
 */

@@ -94,8 +94,6 @@ Template.Accounting_setup.viewmodel({
 });
 
 Template.Accounting_setup.events({
-  ...(actionHandlers(Accounts, 'new')),
-  ...(actionHandlers(Txdefs, 'new')),
   'click #coa .js-clone'(event, instance) {
     const communityId = Session.get('activeCommunityId');
     Transactions.methods.cloneAccountingTemplates.call({ communityId }, handleError);

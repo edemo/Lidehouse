@@ -11,7 +11,7 @@ export const insert = new ValidatedMethod({
   validate: doc => Accounts.simpleSchema(doc).validator({ clean: true })(doc),
 
   run(doc) {
-    checkNotExists(Accounts, { communityId: doc.communityId, digit: doc.digit });
+    checkNotExists(Accounts, { communityId: doc.communityId, code: doc.code });
     checkPermissions(this.userId, 'accounts.insert', doc);
 
     return Accounts.insert(doc);
@@ -27,7 +27,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Accounts, _id);
-    checkModifier(doc, modifier, ['digit'], true);
+    checkModifier(doc, modifier, ['code'], true);
     checkPermissions(this.userId, 'accounts.update', doc);
 
     Accounts.update({ _id }, modifier, { selector: { category: doc.category } });

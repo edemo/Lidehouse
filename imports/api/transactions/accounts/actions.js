@@ -15,12 +15,16 @@ Accounts.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
+    color: () => 'primary',
+    label: (options, doc) => `${__('new')}  ${__(options.entity.name)}`,
+//    label: options => (Array.isArray(options.entity) ? `${__('new')}  ${__('simpleAccount')}` : `${__('new')} ${__(/*'schemaAccounts.category.' + */options.entity.name)}`),
     visible: (options, doc) => currentUserHasPermission('accounts.insert', doc),
+//    subActions: options => Array.isArray(options.entity) && options.entity.length,
+//    subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),
     run(options, doc) {
-      const entityName = doc.entityName();
-      const entity = Accounts.entities[entityName];
+      const entity = options.entity;
       Modal.show('Autoform_modal', {
-        id: `af.${options.entity.name}.insert`,
+        id: `af.${entity.name}.insert`,
         schema: options.entity.schema,
         omitFields: entity.omitFields,
         type: 'method',
@@ -77,12 +81,23 @@ Accounts.actions = {
 
 //-----------------------------------------------
 
+AutoForm.addModalHooks('af.simpleAccount.insert');
+AutoForm.addModalHooks('af.simpleAccount.update');
+AutoForm.addHooks('af.simpleAccount.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
+    doc.code = '`' + doc.code;
+    return doc;
+  },
+});
+
 AutoForm.addModalHooks('af.cashAccount.insert');
 AutoForm.addModalHooks('af.cashAccount.update');
 AutoForm.addHooks('af.cashAccount.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.category = 'cash';
+    doc.code = '`' + doc.code;
     return doc;
   },
 });
@@ -93,6 +108,7 @@ AutoForm.addHooks('af.bankAccount.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.category = 'bank';
+    doc.code = '`' + doc.code;
     return doc;
   },
 });

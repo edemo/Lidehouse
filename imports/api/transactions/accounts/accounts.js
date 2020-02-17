@@ -23,7 +23,7 @@ Accounts.syncValues = ['none', 'manual', 'auto'];
 
 Accounts.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  category: { type: String, allowedValues: Accounts.categoryValues },
+  category: { type: String, allowedValues: Accounts.categoryValues, autoform: autoformOptions(Accounts.categoryValues, 'schemaAccounts.category.') },
   name: { type: String, max: 100 },
   code: { type: String, max: 25, optional: true },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },

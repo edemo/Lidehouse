@@ -87,7 +87,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 // ===== Parcels =====
 
   const demoParcels = [];
-  demoParcels[0] = builder.createParcel({
+  demoParcels[0] = builder.createProperty({
     units: 489,
     floor: __('demo.groundCode'),
     door: '01',
@@ -96,7 +96,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 176,
     habitants: 2,
   });
-  demoParcels[1] = builder.createParcel({
+  demoParcels[1] = builder.createProperty({
     units: 427,
     floor: __('demo.groundCode'),
     door: '02',
@@ -105,7 +105,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 153.6,
     habitants: 2,
   });
-  demoParcels[2] = builder.createParcel({
+  demoParcels[2] = builder.createProperty({
     units: 587,
     floor: '1',
     door: '03',
@@ -114,7 +114,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 184.8,
     habitants: 3,
   });
-  demoParcels[3] = builder.createParcel({
+  demoParcels[3] = builder.createProperty({
     units: 622,
     floor: '1',
     door: '04',
@@ -123,7 +123,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 196,
     habitants: 1,
   });
-  demoParcels[4] = builder.createParcel({
+  demoParcels[4] = builder.createProperty({
     units: 587,
     floor: '2',
     door: '05',
@@ -132,7 +132,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 184.8,
     habitants: 3,
   });
-  demoParcels[5] = builder.createParcel({
+  demoParcels[5] = builder.createProperty({
     units: 622,
     floor: '2',
     door: '06',
@@ -141,7 +141,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 196,
     habitants: 4,
   });
-  demoParcels[6] = builder.createParcel({
+  demoParcels[6] = builder.createProperty({
     units: 587,
     floor: '3',
     door: '07',
@@ -150,7 +150,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 184.8,
     habitants: 2,
   });
-  demoParcels[7] = builder.createParcel({
+  demoParcels[7] = builder.createProperty({
     units: 622,
     floor: '3',
     door: '08',
@@ -159,7 +159,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 196,
     habitants: 2,
   });
-  demoParcels[8] = builder.createParcel({
+  demoParcels[8] = builder.createProperty({
     units: 587,
     floor: '4',
     door: '09',
@@ -168,7 +168,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 184.8,
     habitants: 2,
   });
-  demoParcels[9] = builder.createParcel({
+  demoParcels[9] = builder.createProperty({
     units: 622,
     floor: '4',
     door: '10',
@@ -177,7 +177,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 196,
     habitants: 3,
   });
-  demoParcels[10] = builder.createParcel({
+  demoParcels[10] = builder.createProperty({
     units: 996,
     floor: __('demo.atticCode'),
     door: '11',
@@ -185,7 +185,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 112,
     habitants: 5,
   });
-  demoParcels[11] = builder.createParcel({
+  demoParcels[11] = builder.createProperty({
     units: 444,
     floor: __('demo.cellarCode'),
     door: '01',
@@ -193,7 +193,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 50,
     habitants: 1,
   });
-  demoParcels[12] = builder.createParcel({
+  demoParcels[12] = builder.createProperty({
     units: 613,
     floor: __('demo.cellarCode'),
     door: '02',
@@ -201,7 +201,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 69,
     habitants: 1,
   });
-  demoParcels[13] = builder.createParcel({
+  demoParcels[13] = builder.createProperty({
     units: 196,
     floor: __('demo.groundCode'),
     door: '00',
@@ -1243,7 +1243,7 @@ Meteor.methods({
         const counter = builder.nextSerial;
 
         Clock.starts(2, 'year', 'ago');
-        const demoParcelId = builder.createParcel({
+        const demoParcelId = builder.createProperty({
           units: 100,
           floor: '5',
           door: counter.toString(),

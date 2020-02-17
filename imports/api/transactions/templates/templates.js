@@ -47,7 +47,10 @@ function importTxdef(communityId, txdef) {
 
 Templates.clone = function clone(id, communityId) {
   const template = Templates.findOne(id);
-  if (!template) return undefined;
+  if (!template) {
+    console.log('Templates:', Templates.find({}).fetch());
+    throw new Meteor.Error(`No such template ${id}`);
+  }
   if (template.accounts) {
     template.accounts.forEach(doc => importAccount(communityId, doc));
   }
