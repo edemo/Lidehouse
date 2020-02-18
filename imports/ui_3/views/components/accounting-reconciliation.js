@@ -13,8 +13,7 @@ import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/
 import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Statements } from '/imports/api/transactions/statements/statements.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { statementEntriesColumns } from '/imports/api/transactions/statement-entries/tables.js';
@@ -44,11 +43,9 @@ Template.Accounting_reconciliation.viewmodel({
   autorun: [
     function defaultOptionSelect() {
       const communityId = getActiveCommunityId();
-      const assets = Breakdowns.findOneByName('Assets', communityId);
-      if (assets) {
-        const maCode = Breakdowns.name2code('Assets', 'Money accounts', communityId);
-        this.accountOptions(assets.nodeOptionsOf(maCode, true));
-      }
+      const moneyAccount = Accounts.findOne({ communityId, name: 'Money accounts' });
+      if (!moneyAccount) return;
+      this.accountOptions(moneyAccount.nodeOptions(true));
       if (this.accountOptions().length && !this.accountSelected()) {
         this.accountSelected(this.accountOptions()[1].value);
       }

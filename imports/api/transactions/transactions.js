@@ -15,8 +15,8 @@ import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -60,7 +60,9 @@ Transactions.partnerSchema = new SimpleSchema([
   LocationTagsSchema, {
     relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
     partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
-}]);
+    contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract }, // ?? overriding LocationTags
+  },
+]);
 
 Transactions.legsSchema = {
   debit: { type: [Transactions.entrySchema], optional: true },
@@ -139,12 +141,9 @@ Transactions.helpers({
     return this[side] || [];
   },
   relationAccount() {
-    switch (this.relation) {
-      case ('supplier'): return Breakdowns.name2code('Liabilities', 'Suppliers', this.communityId);
-      case ('customer'): return Breakdowns.name2code('Assets', 'Customers', this.communityId);
-      case ('member'): return Breakdowns.name2code('Assets', 'Owner obligations', this.communityId);
-      default: debugAssert(false, 'No such relation ' + this.relation); return undefined;
-    }
+    const communityId = this.communityId;
+    const name = (this.relation + 's').capitalize();
+    return Accounts.findOne({ communityId, name });
   },
   conteerSide() {
     if (this.relation === 'supplier') return 'debit';
@@ -180,6 +179,10 @@ Transactions.helpers({
     this.debit.forEach((entry) => { if (entry.account) total += entry.amount || this.amount; });
     this.credit.forEach((entry) => { if (entry.account) total -= entry.amount || this.amount; });
     return total === 0;
+  },
+  checkAccountsExist() {
+    if (this.debit) this.debit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
+    if (this.credit) this.credit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
   },
   journalEntries() {
     const entries = [];
@@ -234,8 +237,7 @@ Transactions.helpers({
     const communityId = this.communityId;
     this.journalEntries().forEach((entry) => {
       const leafTag = 'T-' + moment(entry.valueDate).format('YYYY-MM');
-  //      const coa = ChartOfAccounts.get(communityId);
-  //      coa.parentsOf(entry.account).forEach(account => {
+  //      entry.account.parents().forEach(account => {
       const account = entry.account;
       const localizer = entry.localizer;
       PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
@@ -343,6 +345,7 @@ function autoValueUpdate(doc, modifier, fieldName, autoValue) {
 if (Meteor.isServer) {
   Transactions.before.insert(function (userId, doc) {
     const tdoc = this.transform();
+    tdoc.checkAccountsExist();
     tdoc.complete = tdoc.calculateComplete();
     tdoc.autofillLines();
     if (tdoc.category === 'bill') tdoc.autofillOutstanding();
@@ -358,8 +361,8 @@ if (Meteor.isServer) {
 
   Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
     const tdoc = this.transform();
-    tdoc.updateBalances(-1);
     autoValueUpdate(tdoc, modifier, 'complete', d => d.calculateComplete());
+    tdoc.updateBalances(-1);
     if (tdoc.category === 'bill' || tdoc.category === 'receipt') {
       const newDoc = Transactions._transform(_.extend({ category: tdoc.category }, modifier.$set));
       if (newDoc.lines) newDoc.autofillLines();
@@ -370,11 +373,12 @@ if (Meteor.isServer) {
 
   Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {
     const tdoc = this.transform();
-    tdoc.updateBalances(1);
+    tdoc.checkAccountsExist();
+    tdoc.updateBalances(+1);
     const oldDoc = Transactions._transform(this.previous);
     const newDoc = Transactions._transform(doc);
     oldDoc.updateOutstandings(-1);
-    newDoc.updateOutstandings(1);
+    newDoc.updateOutstandings(+1);
   });
 
   Transactions.after.remove(function (userId, doc) {

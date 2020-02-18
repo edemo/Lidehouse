@@ -30,9 +30,17 @@
       }
     }
   },
-  "schemaMoneyAccounts": {
+  "schemaAccounts": {
     "category": {
-      "label": "Account type",
+      "label": "Account category",
+      "asset": "Asset",
+      "liability": "Liability",
+      "equity": "Equity",
+      "income": "Income",
+      "expense": "Expense",
+      "technical": "Technical",
+      "payable": "Payable",
+      "receivable": "Receivable",
       "bank": "Bank",
       "cash": "Cash"
     },
@@ -40,8 +48,8 @@
       "label": "Name",
       "placeholder": "(eg. Savings account)"
     },
-    "digit": {
-      "label": "Accounting code",
+    "code": {
+      "label": "Code",
       "placeholder": "(pl. 2)"
     },
     "bank": {
@@ -579,6 +587,9 @@
     }
   },
   "schemaTransactions": {
+    "defId": {
+      "label": "Type"
+    },
     "valueDate": {
       "label": "Accounting date",
       "placeholder": "(eg. 2017-05-06)"

@@ -2,13 +2,13 @@ import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
 export function label(value, color, icon) {
   if (value === undefined) return undefined;
@@ -40,35 +40,36 @@ export function displayOutstanding(value) {
   return value == 0 ? value : label(value, 'info');
 }
 
-export function displayAccountText(account, communityId) {
-  if (!account) return '';
-  return ChartOfAccounts.get({ communityId }).display(account);
+export function displayAccountText(code) {
+  if (!code) return '';
+  const account = Accounts.getByCode(code);
+  return account && account.displayAccount();
 }
 
-export function displayAccount(account, communityId) {
-  if (!account) return '';
-  return label(displayAccountText(account, communityId), 'success', 'tag');
+export function displayAccount(code) {
+  if (!code) return '';
+  const text = displayAccountText(code);
+  if (!text) return '';
+  let icon;
+  switch (text.charAt(0)) {
+    case '`': icon = 'tag'; break;
+    case '@': icon = 'map-marker'; break;
+    case '#': icon = 'flag'; break;
+    default: debugAssert(false);
+  }
+  return label(text.substring(1), 'success', icon);
 }
 
-export function displayAccountSet(accounts, communityId) {
-  if (!accounts) return '';
-  return accounts.map(account => displayAccount(account, communityId)).join('/');
+export function displayAccountSet(codes) {
+  if (!codes) return '';
+  return codes.map(code => displayAccount(code)).join(' ');
 }
 
-export function displayLocalizer(localizer, communityId) {
-  const loc = Localizer.get(communityId);
-  if (!localizer || !loc) return '';
-  const displayText = loc.display(localizer);
-  const parcelSuffix = Localizer.leafIsParcel(localizer) ? ('. ' + __('parcel')) : '';
-  return label(displayText.substring(1) + parcelSuffix, 'success', 'map-marker');
+export function displayLocalizer(localizer) {
+  return displayAccount(localizer);
 }
 
 export function displayAccountSpecification(aspec) {
-  if (!aspec.accountName) {
-    const coa = ChartOfAccounts.get(aspec.communityId);
-    if (coa) aspec.accountName = coa.nodeByCode(aspec.account).name;
-    // not using this cached name any more
-  }
   let html = '';
   html += displayAccount(aspec.account, aspec.communityId);
   if (aspec.localizer) {

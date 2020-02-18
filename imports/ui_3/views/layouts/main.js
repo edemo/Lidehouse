@@ -40,7 +40,7 @@ Template.Main_layout.onCreated(function() {
     if (communityId) {
       this.subscribe('memberships.inCommunity', { communityId });
       this.subscribe('partners.inCommunity', { communityId });
-      this.subscribe('breakdowns.inCommunity', { communityId });
+      this.subscribe('accounts.inCommunity', { communityId });
     }
   });
   this.autorun(() => {

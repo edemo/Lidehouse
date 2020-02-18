@@ -2,7 +2,8 @@
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -15,67 +16,27 @@ if (Meteor.isServer) {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
+      Templates.remove({});
+      Accounts.remove({});
     });
     after(function () {
-      Breakdowns.remove({});
     });
 
     describe('api', function () {
       let insertTx;
       let assertBalance;
       before(function () {
-        Breakdowns.define({ communityId: Fixture.demoCommunityId,
-          digit: ':', name: 'COA',
-          children: [
-            { digit: '1', name: 'Level1',
-              children: [
-                { digit: '2', name: 'Level2',
-                  children: [
-                  { digit: 'A', name: 'LeafA' },
-                  { digit: 'B', name: 'LeafB' },
-                  { digit: 'C', name: 'LeafC' },
-                  ],
-                },
-                { name: '',
-                  children: [
-                  { digit: '9', name: 'LeafD' },
-                  ],
-                },
-              ],
-            },
-            { name: '',
-              children: [
-                { name: '',
-                  children: [
-                  { digit: 'E', name: 'LeafE' },
-                  ],
-                },
-                { digit: '3', name: 'Level3',
-                  children: [
-                  { digit: 'F', name: 'LeafF' },
-                  ],
-                },
-              ],
-            },
-          ],
+        Templates.define({ _id: 'Test_COA', accounts: [
+          { code: ':', name: 'COA', category: 'technical' },
+          { code: ':1', name: 'Level1', category: 'asset' },
+          { code: ':12', name: 'Level2', category: 'asset' },
+          { code: ':12A', name: 'LeafA', category: 'asset' },
+          { code: ':12B', name: 'LeafB', category: 'asset' },
+          { code: ':12C', name: 'LeafC', category: 'asset' },
+          { code: ':19', name: 'LeafD', category: 'asset' },
+        ],
         });
-        Breakdowns.define({
-          digit: '@', name: 'Localizer', communityId: Fixture.demoCommunityId,
-          children: [
-            { digit: 'A', name: 'Building A',
-              children: [
-                { digit: '101', name: 'A101' },
-                { digit: '202', name: 'A202' },
-                { digit: '303', name: 'A303' },
-              ],
-            },
-            { digit: 'B', name: 'Building B',
-              children: [
-                { digit: '101', name: 'B101' },
-              ],
-            },
-          ],
-        });
+        Templates.clone('Test_COA', Fixture.demoCommunityId);
         insertTx = function (params) {
           const communityId = Fixture.demoCommunityId;
           return Transactions.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
@@ -110,6 +71,8 @@ if (Meteor.isServer) {
       });
 
       it('updates balances with tx operations', function (done) {
+        console.log("templates", Templates.find({}).fetch());
+        console.log("accounts", Accounts.find({}).fetch());
         insertTx({
           valueDate: new Date('2017-01-01'),
           amount: 1000,
@@ -158,30 +121,30 @@ if (Meteor.isServer) {
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 500,
-          credit: [':12B', '@A101'],
+          credit: [':12B', '@A103'],
           debit: [':12C'],
         });
-        assertBalance(':12B', '@A101', 'T', -500);
-        assertBalance(':12B', '@A101', 'T-2017-03', -500);
+        assertBalance(':12B', '@A103', 'T', -500);
+        assertBalance(':12B', '@A103', 'T-2017-03', -500);
         chai.assert.throws(() =>
           assertBalance(':12B', '@A', 'T', -500) // todo? upward cascading localizer 
         );
         assertBalance(':12B', undefined, 'T', -500); // non-localized main account is also updated
-        assertBalance(':12C', '@A101', 'T', 0);      // non-existing localized account answers with 0
+        assertBalance(':12C', '@A103', 'T', 0);      // non-existing localized account answers with 0
         assertBalance(':12C', undefined, 'T', 500);
         assertBalance(':12', undefined, 'T', 0);
-        assertBalance(':12', '@A101', 'T', -500);  // localized parent account not allowed (for now)
+        assertBalance(':12', '@A103', 'T', -500);  // localized parent account not allowed (for now)
         assertBalance(':1', undefined, 'T', 0);
-        assertBalance(':1', '@A101', 'T', -500);
+        assertBalance(':1', '@A103', 'T', -500);
 
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 500,
-          credit: [':12C', '@A101'],
+          credit: [':12C', '@A103'],
           debit: [':12B'],
         });
         assertBalance(':12C', undefined, 'T', 0);
-        assertBalance(':12C', '@A101', 'T', -500);
+        assertBalance(':12C', '@A103', 'T', -500);
         done();
       });
 
@@ -189,11 +152,11 @@ if (Meteor.isServer) {
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 600,
-          credit: [':12A', '@A101'],
-          debit: [':12B', '@B101'],
+          credit: [':12A', '@A103'],
+          debit: [':12B', '@A104'],
         });
-        assertBalance(':12A', '@A101', 'T', -600);
-        assertBalance(':12B', '@B101', 'T', 600);
+        assertBalance(':12A', '@A103', 'T', -600);
+        assertBalance(':12B', '@A104', 'T', 600);
 //        assertBalance(undefined, '@A', 'T', -600);
 //        assertBalance(undefined, '@B', 'T', 600);
 //        assertBalance(undefined, '@', 'T', 0);

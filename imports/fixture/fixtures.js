@@ -11,8 +11,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { CommunityBuilder } from './community-builder.js';
-import { Parcels } from '../api/parcels/parcels.js';
 
 export function insertUnittestFixture(lang) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
@@ -42,7 +42,7 @@ export function insertUnittestFixture(lang) {
 // ===== Parcels =====
 
   const dummyParcels = [];
-  dummyParcels[0] = demoBuilder.createParcel({
+  dummyParcels[0] = demoBuilder.createProperty({
     units: 0,
     floor: 'G',
     door: '00',
@@ -50,14 +50,14 @@ export function insertUnittestFixture(lang) {
     area: 0,
     habitants: 0,
   });
-  dummyParcels[1] = demoBuilder.createParcel({
+  dummyParcels[1] = demoBuilder.createProperty({
     units: 10,
     floor: 'P',
     door: '01',
     type: 'parking',
     area: 10,
   });
-  dummyParcels[2] = demoBuilder.createParcel({
+  dummyParcels[2] = demoBuilder.createProperty({
     units: 20,
     floor: 'P',
     door: '02',
@@ -65,7 +65,7 @@ export function insertUnittestFixture(lang) {
     group: 'small',
     area: 20,
   });
-  dummyParcels[3] = demoBuilder.createParcel({
+  dummyParcels[3] = demoBuilder.createProperty({
     units: 30,
     floor: '1',
     door: '03',
@@ -73,7 +73,7 @@ export function insertUnittestFixture(lang) {
     area: 30,
     habitants: 3,
   });
-  dummyParcels[4] = demoBuilder.createParcel({
+  dummyParcels[4] = demoBuilder.createProperty({
     units: 40,
     floor: '1',
     door: '04',

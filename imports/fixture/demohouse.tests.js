@@ -8,7 +8,6 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import '/i18n/demo.en.i18n.json';
 import { Clock } from '/imports/utils/clock.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { insertDemoHouse, schedulePurgeExpiringDemoUsers } from '/imports/fixture/demohouse.js';
 
 if (Meteor.isServer) {
@@ -34,8 +33,6 @@ if (Meteor.isServer) {
         const ownedParcels = demoUser.ownedParcels(demoHouseId);  // Should be without houseId param, because want to see in all communities, to see if this is the only one
         chai.assert.equal(ownedParcels.length, 1);
         demoParcel = ownedParcels[0];
-        const parcelNode = Localizer.node(demoParcel);
-        chai.assert.isDefined(parcelNode);
         done();
       });
 
@@ -43,7 +40,6 @@ if (Meteor.isServer) {
         schedulePurgeExpiringDemoUsers('en', 'demo', 0);
         Meteor.setTimeout(function () {
           chai.assert.isUndefined(Meteor.users.findOne({ 'emails.0.address': demoUserEmail }));
-          chai.assert.throws(() => Localizer.node(demoParcel));
           Mongo.Collection.getAll().forEach((collection) => {
             if (collection.name === 'trash') return;
             const _collection = collection.instance;

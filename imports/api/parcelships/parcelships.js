@@ -14,10 +14,11 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 
 export const Parcelships = new Mongo.Collection('parcelships');
 
-const chooseParcel = {
+const chooseProperty = {
   options() {
     const communityId = Session.get('activeCommunityId');
-    const options = Parcels.find({ communityId }, { sort: { ref: 1 } }).map(function option(p) {
+    const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { ref: 1 } });
+    const options = parcels.map(function option(p) {
       return { label: p.ref, value: p._id };
     });
     return options;
@@ -28,7 +29,7 @@ const chooseParcel = {
 Parcelships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: false },
-  leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseParcel },
+  leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseProperty },
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
 
@@ -63,19 +64,19 @@ Meteor.startup(function attach() {
 
 if (Meteor.isServer) {
   Parcelships.after.insert(function (userId, doc) {
-    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } });
+    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } }, { selector: { category: '@property' } });
   });
 
   Parcelships.before.update(function (userId, doc, fieldNames, modifier, options) {
-    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } });
+    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } }, { selector: { category: '@property' } });
   });
 
   Parcelships.after.update(function (userId, doc, fieldNames, modifier, options) {
-    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } });
+    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } }, { selector: { category: '@property' } });
   });
 
   Parcelships.after.remove(function (userId, doc) {
-    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } });
+    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } }, { selector: { category: '@property' } });
   });
 }
 

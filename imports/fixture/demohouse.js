@@ -19,19 +19,15 @@ import '/imports/api/contracts/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/comments/methods.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/balances/methods.js';
-import '/imports/api/transactions/breakdowns/methods.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import '/imports/api/transactions/parcel-billings/methods.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import '/imports/api/transactions/statement-entries/methods.js';
-import { MoneyAccounts } from '/imports/api/money-accounts/money-accounts.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -59,7 +55,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.AUTO_TICK = 1000; // one second pass after each Clock call - to avoid same timestamp on two things
   Clock.starts(2, 'year', 'ago');
   console.log('Creating house:', demoHouseName);
-  const demoCommunityId = Communities.insert({
+  const communityId = Communities.insert({
     name: __(`${demoOrTest}.house`),
     zip: '1144',
     city: __('demo.city'),
@@ -77,13 +73,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  const demoBuilder = new CommunityBuilder(demoCommunityId, demoOrTest, lang);
+  const builder = new CommunityBuilder(communityId, demoOrTest, lang);
 
-  const demoAdminId = demoBuilder.createLoginableUser('admin', {
+  const demoAdminId = builder.createLoginableUser('admin', {
     avatar: '/images/avatars/avatar21.jpg',
     'profile.phone': '06 60 762 7288',
   });
-  const demoManagerId = demoBuilder.createLoginableUser('manager', {
+  const demoManagerId = builder.createLoginableUser('manager', {
     avatar: '/images/avatars/avatar20.jpg',
     'profile.phone': '06 60 555 4321',
   });
@@ -91,7 +87,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 // ===== Parcels =====
 
   const demoParcels = [];
-  demoParcels[0] = demoBuilder.createParcel({
+  demoParcels[0] = builder.createProperty({
     units: 489,
     floor: __('demo.groundCode'),
     door: '01',
@@ -100,7 +96,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 176,
     habitants: 2,
   });
-  demoParcels[1] = demoBuilder.createParcel({
+  demoParcels[1] = builder.createProperty({
     units: 427,
     floor: __('demo.groundCode'),
     door: '02',
@@ -109,7 +105,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 153.6,
     habitants: 2,
   });
-  demoParcels[2] = demoBuilder.createParcel({
+  demoParcels[2] = builder.createProperty({
     units: 587,
     floor: '1',
     door: '03',
@@ -118,7 +114,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 184.8,
     habitants: 3,
   });
-  demoParcels[3] = demoBuilder.createParcel({
+  demoParcels[3] = builder.createProperty({
     units: 622,
     floor: '1',
     door: '04',
@@ -127,7 +123,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 196,
     habitants: 1,
   });
-  demoParcels[4] = demoBuilder.createParcel({
+  demoParcels[4] = builder.createProperty({
     units: 587,
     floor: '2',
     door: '05',
@@ -136,7 +132,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 184.8,
     habitants: 3,
   });
-  demoParcels[5] = demoBuilder.createParcel({
+  demoParcels[5] = builder.createProperty({
     units: 622,
     floor: '2',
     door: '06',
@@ -145,7 +141,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 196,
     habitants: 4,
   });
-  demoParcels[6] = demoBuilder.createParcel({
+  demoParcels[6] = builder.createProperty({
     units: 587,
     floor: '3',
     door: '07',
@@ -154,7 +150,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 184.8,
     habitants: 2,
   });
-  demoParcels[7] = demoBuilder.createParcel({
+  demoParcels[7] = builder.createProperty({
     units: 622,
     floor: '3',
     door: '08',
@@ -163,7 +159,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 196,
     habitants: 2,
   });
-  demoParcels[8] = demoBuilder.createParcel({
+  demoParcels[8] = builder.createProperty({
     units: 587,
     floor: '4',
     door: '09',
@@ -172,7 +168,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 184.8,
     habitants: 2,
   });
-  demoParcels[9] = demoBuilder.createParcel({
+  demoParcels[9] = builder.createProperty({
     units: 622,
     floor: '4',
     door: '10',
@@ -181,7 +177,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     volume: 196,
     habitants: 3,
   });
-  demoParcels[10] = demoBuilder.createParcel({
+  demoParcels[10] = builder.createProperty({
     units: 996,
     floor: __('demo.atticCode'),
     door: '11',
@@ -189,7 +185,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 112,
     habitants: 5,
   });
-  demoParcels[11] = demoBuilder.createParcel({
+  demoParcels[11] = builder.createProperty({
     units: 444,
     floor: __('demo.cellarCode'),
     door: '01',
@@ -197,7 +193,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 50,
     habitants: 1,
   });
-  demoParcels[12] = demoBuilder.createParcel({
+  demoParcels[12] = builder.createProperty({
     units: 613,
     floor: __('demo.cellarCode'),
     door: '02',
@@ -205,7 +201,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 69,
     habitants: 1,
   });
-  demoParcels[13] = demoBuilder.createParcel({
+  demoParcels[13] = builder.createProperty({
     units: 196,
     floor: __('demo.groundCode'),
     door: '00',
@@ -217,14 +213,14 @@ export function insertDemoHouse(lang, demoOrTest) {
   // Meters
   demoParcels.forEach((parcelId, i) => {
     if (_.contains([0, 2, 3, 5, 6, 8, 9, 10, 11, 12], i)) {
-      demoBuilder.create('meter', {
+      builder.create('meter', {
         parcelId,
         service: 'coldWater',
         uom: 'm3',
       });
     }
     if (i <= 10) {
-      demoBuilder.create('meter', {
+      builder.create('meter', {
         parcelId,
         service: 'heating',
         uom: 'kJ',
@@ -235,41 +231,41 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Non-loginable Dummy Users =====
 
   for (let userNo = 0; userNo < 18; userNo++) {
-    const dummyUserId = demoBuilder.createDummyUser();
+    const dummyUserId = builder.createDummyUser();
     switch (userNo) {
-      case 2: demoBuilder.createMembership(dummyUserId, 'maintainer'); break;
-      case 3: demoBuilder.createMembership(dummyUserId, 'accountant'); break;
-      case 5: demoBuilder.createMembership(dummyUserId, 'treasurer'); break;
+      case 2: builder.createMembership(dummyUserId, 'maintainer'); break;
+      case 3: builder.createMembership(dummyUserId, 'accountant'); break;
+      case 5: builder.createMembership(dummyUserId, 'treasurer'); break;
       case 4:
       case 10:
-      case 16: demoBuilder.createMembership(dummyUserId, 'overseer'); break;
+      case 16: builder.createMembership(dummyUserId, 'overseer'); break;
       default: break;
     }
   }
-  const demoMaintainerId = demoBuilder.dummyUsers[2];
-  const demoAccountantId = demoBuilder.dummyUsers[3];
-  const dummyUserId = demoBuilder.dummyUsers[5];
+  const demoMaintainerId = builder.dummyUsers[2];
+  const demoAccountantId = builder.dummyUsers[3];
+  const dummyUserId = builder.dummyUsers[5];
 
   // ===== Ownerships =====
 
   [0, 1, 4, 5, 6, 7, 8, 9, 10, 12].forEach((parcelNo) => {
-    demoBuilder.createMembership(parcelNo, 'owner', {
+    builder.createMembership(parcelNo, 'owner', {
       parcelId: demoParcels[parcelNo],
       ownership: { share: new Fraction(1, 1) },
     });
   });
-  demoBuilder.createMembership(5, 'owner', {
+  builder.createMembership(5, 'owner', {
     parcelId: demoParcels[11],
     ownership: { share: new Fraction(1, 1) },
   });
-  demoBuilder.createMembership(2, 'owner', {
+  builder.createMembership(2, 'owner', {
     parcelId: demoParcels[2],
     ownership: {
       share: new Fraction(1, 2),
       representor: true,
     },
   });
-  demoBuilder.createMembership(14, 'owner', {
+  builder.createMembership(14, 'owner', {
     parcelId: demoParcels[2],
     ownership: {
       share: new Fraction(1, 2),
@@ -286,13 +282,13 @@ export function insertDemoHouse(lang, demoOrTest) {
         identifier: __(`demo.user.${parcelNo}.company.regno`),
       },
     };
-    demoBuilder.createMembership(legalPerson, 'owner', {
+    builder.createMembership(legalPerson, 'owner', {
       parcelId: demoParcels[parcelNo],
       ownership: {
         share: new Fraction(1, 1),
       },
     });
-    demoBuilder.createMembership(parcelNo, 'owner', {
+    builder.createMembership(parcelNo, 'owner', {
       parcelId: demoParcels[parcelNo],
       ownership: {
         share: new Fraction(0),
@@ -312,29 +308,29 @@ export function insertDemoHouse(lang, demoOrTest) {
         mothersName: __(`demo.user.${parcelNo}.benefactor.mothersName`),
       },
     };
-    demoBuilder.createMembership(nonUserPerson, 'benefactor', {
+    builder.createMembership(nonUserPerson, 'benefactor', {
       parcelId: demoParcels[parcelNo],
       benefactorship: { type: 'rental' },
     });
   });
-  demoBuilder.createMembership(11, 'benefactor', {
+  builder.createMembership(11, 'benefactor', {
     parcelId: demoParcels[4],
     benefactorship: { type: 'rental' },
   });
-  demoBuilder.createMembership(15, 'benefactor', {
+  builder.createMembership(15, 'benefactor', {
     parcelId: demoParcels[5],
     benefactorship: { type: 'favor' },
   });
-  demoBuilder.createMembership(16, 'benefactor', {
+  builder.createMembership(16, 'benefactor', {
     parcelId: demoParcels[8],
     benefactorship: { type: 'favor' },
   });
-  demoBuilder.createMembership(17, 'benefactor', {
+  builder.createMembership(17, 'benefactor', {
     parcelId: demoParcels[9],
     benefactorship: { type: 'rental' },
   });
 
-  demoBuilder.create('parcelship', {
+  builder.create('parcelship', {
     parcelId: demoParcels[11],
     leadParcelId: demoParcels[5],
   });
@@ -345,7 +341,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     defaultRoles.forEach((role) => {
       if (role.name === 'manager' || role.name === 'admin') return;
 
-      const parcelId = Parcels.findOne({ communityId: demoCommunityId, serial: 7 })._id;
+      const parcelId = Parcels.findOne({ communityId, serial: 7 })._id;
       let ownershipData;
       if (role.name === 'owner') {
         Memberships.update({ parcelId }, { $set: { role: 'owner', ownership: { share: new Fraction(1, 2), representor: false } } });
@@ -355,7 +351,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }
 
       const firstNames = __('demo.user.firstNames').split('\n');
-      demoBuilder.createLoginableUser(role.name, {
+      builder.createLoginableUser(role.name, {
         avatar: '/images/avatars/avatarTestUser.png',
         profile: { lastName: __(role.name).capitalize(), firstName: _.sample(firstNames) },
       }, ownershipData);
@@ -368,31 +364,31 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Breakdowns =====
   // Create breakdowns (incl Localizer)
-  demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
+  builder.execute(Transactions.methods.cloneAccountingTemplates, { communityId }, demoAccountantId);
 /*
-  demoBuilder.create('cashAccount', {
+  builder.create('cashAccount', {
     digit: '1',
     name: __('Cash register'),
     primary: true,
   });
-  demoBuilder.create('bankAccount', {
+  builder.create('bankAccount', {
     digit: '2',
     name: __('demo.bank.primaryAccount.name'),
     BAN: __('demo.bank.primaryAccount.number'),
     sync: 'manual',
     primary: true,
   });
-  demoBuilder.create('bankAccount', {
+  builder.create('bankAccount', {
     digit: '3',
     name: __('demo.bank.savingsAccount.name'),
     BAN: __('demo.bank.savingsAccount.number'),
     sync: 'manual',
   });
 */
-  MoneyAccounts.update({ communityId: demoCommunityId, category: 'bank', primary: true }, { $set: {
+  Accounts.update({ communityId, category: 'bank', primary: true }, { $set: {
     BAN: __('17937621-00000000-51002312'),
   } });
-  MoneyAccounts.update({ communityId: demoCommunityId, category: 'bank', primary: false }, { $set: {
+  Accounts.update({ communityId, category: 'bank', primary: false }, { $set: {
     BAN: __('17937621-00000000-51002313'),
   } });
 
@@ -409,7 +405,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['0', '1', '2'].forEach((topicNo) => {
     Clock.setSimulatedTime(demoTopicDates[topicNo]);
-    const topicId = demoBuilder.insert(Topics, 'forum', {
+    const topicId = builder.insert(Topics, 'forum', {
       title: __(`demo.topic.${topicNo}.title`),
       text: __(`demo.topic.${topicNo}.text`),
       status: 'opened',
@@ -421,7 +417,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       const path = `demo.topic.${topicNo}.comment.${commentNo}`;
       const commentText = __(path);
       if (commentText !== path) {
-        demoBuilder.insert(Comments, 'comment', {
+        builder.insert(Comments, 'comment', {
           topicId,
           text: commentText,
           creatorId: (topicNo == 2 && commentNo == 2) ? null : undefined,
@@ -436,7 +432,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.starts(2, 'weeks', 'ago');
   ['0', '1'].forEach((newsNo) => {
     Clock.tickSome('days');
-    const newsId = demoBuilder.create('news', {
+    const newsId = builder.create('news', {
       title: __(`demo.news.${newsNo}.title`),
       text: __(`demo.news.${newsNo}.text`),
       status: 'opened',
@@ -459,17 +455,17 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Votes =====
 
-  const agenda0 = demoBuilder.create('agenda', {
+  const agenda0 = builder.create('agenda', {
     title: `${__('demo.agenda.0.title')} ${lastYear}-III.`,
 //    topicIds: [voteTopicLoan, voteTopicParking],
   });
-  const agenda1 = demoBuilder.create('agenda', {
+  const agenda1 = builder.create('agenda', {
     title: `${__('demo.agenda.1.title')} ${thisYear}-I.`,
 //    topicIds: [voteTopicBike, voteTopicWallColor, voteTopicManager],
   });
 
-  const demoCommunity = Communities.findOne(demoCommunityId);
-  const voterships = _.sortBy(demoCommunity.voterships(), v => v.createdAt);
+  const community = Communities.findOne(communityId);
+  const voterships = _.sortBy(community.voterships(), v => v.createdAt);
   function castDemoVotes(topicId, votes) {
     votes.forEach((v, index) => {
       if (v) castVote._execute({ userId: voterships[index].userId }, { topicId, castedVote: v });
@@ -477,7 +473,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   Clock.setSimulatedTime(moment(demoTopicDates[0]).subtract(2, 'months').toDate());
-  const voteTopicManager = demoBuilder.insert(Topics, 'vote', {
+  const voteTopicManager = builder.insert(Topics, 'vote', {
     title: __('demo.vote.manager.title'),
     text: __('demo.vote.manager.text'),
     status: 'opened',
@@ -490,12 +486,12 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   castDemoVotes(voteTopicManager, [[0], null, [0], [0], [0], [0], [0]]);
   Clock.setSimulatedTime(moment(demoTopicDates[0]).subtract(1, 'months').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopicManager, status: 'votingFinished' });
-  demoBuilder.execute(statusChange, { topicId: voteTopicManager, status: 'closed' });
+  builder.execute(statusChange, { topicId: voteTopicManager, status: 'votingFinished' });
+  builder.execute(statusChange, { topicId: voteTopicManager, status: 'closed' });
   Clock.clear();
 
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(2, 'weeks').toDate());
-  const voteTopicLoan = demoBuilder.insert(Topics, 'vote', {
+  const voteTopicLoan = builder.insert(Topics, 'vote', {
     title: __('demo.vote.loan.title'),
     text: __('demo.vote.loan.text'),
     agendaId: agenda0,
@@ -510,12 +506,12 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopicLoan, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1]]);
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(6, 'weeks').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopicLoan, status: 'votingFinished' });
-  demoBuilder.execute(statusChange, { topicId: voteTopicLoan, status: 'closed' });
+  builder.execute(statusChange, { topicId: voteTopicLoan, status: 'votingFinished' });
+  builder.execute(statusChange, { topicId: voteTopicLoan, status: 'closed' });
   Clock.clear();
 
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(142, 'hours').toDate());
-  const voteTopicParking = demoBuilder.insert(Topics, 'vote', {
+  const voteTopicParking = builder.insert(Topics, 'vote', {
     title: __('demo.vote.parking.title'),
     text: __('demo.vote.parking.text'),
     agendaId: agenda0,
@@ -530,12 +526,12 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopicParking, [[0], [0], [0], [0], [0], [0], [0], [0], [1], [0], [0]]);
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(6, 'weeks').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopicParking, status: 'votingFinished' });
-  demoBuilder.execute(statusChange, { topicId: voteTopicParking, status: 'closed' });
+  builder.execute(statusChange, { topicId: voteTopicParking, status: 'votingFinished' });
+  builder.execute(statusChange, { topicId: voteTopicParking, status: 'closed' });
   Clock.clear();
 
   Clock.starts(3, 'weeks', 'ago');
-  const voteTopicWallColor = demoBuilder.insert(Topics, 'vote', {
+  const voteTopicWallColor = builder.insert(Topics, 'vote', {
     title: __('demo.vote.wallColor.title'),
     text: __('demo.vote.wallColor.text'),
     agendaId: agenda1,
@@ -557,7 +553,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   castDemoVotes(voteTopicWallColor, [null, [0, 1, 2, 3], null, [1, 2, 3, 0], null, [2, 3, 0, 1], null, [1, 0, 2, 3], null, [1, 2, 3, 0], null, [1, 2, 0, 3]]);
   ['0', '1'].forEach((commentNo) => {
     Clock.setSimulatedTime(moment().subtract(3, 'days').add(commentNo + 2, 'minutes').toDate());
-    demoBuilder.insert(Comments, 'comment', {
+    builder.insert(Comments, 'comment', {
       topicId: voteTopicWallColor,
       text: __(`demo.vote.wallColor.comment.${commentNo}`),
     });
@@ -565,7 +561,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.clear();
   
   Clock.starts(10, 'days', 'ago');
-  const voteTopicCleaning = demoBuilder.insert(Topics, 'vote', {
+  const voteTopicCleaning = builder.insert(Topics, 'vote', {
     title: __('demo.vote.cleaning.title'),
     text: __('demo.vote.cleaning.text'),
     status: 'opened',
@@ -583,7 +579,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // No one voted on this yet
 
   Clock.starts(1, 'weeks', 'ago');
-  const voteTopicBike = demoBuilder.insert(Topics, 'vote', {
+  const voteTopicBike = builder.insert(Topics, 'vote', {
     title: __('demo.vote.bicycleStorage.title'),
     text: __('demo.vote.bicycleStorage.text'),
     agendaId: agenda1,
@@ -603,7 +599,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const serverFilePath = 'assets/app/demohouseDocs/';
 
-  demoBuilder.uploadShareddoc({
+  builder.uploadShareddoc({
     file: serverFilePath + 'alaprajz.jpg',
     name: {
       en: 'Floorplan.jpg',
@@ -612,7 +608,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: 'image/jpg',
     folder: 'main',
   });
-  demoBuilder.uploadShareddoc({
+  builder.uploadShareddoc({
     file: {
       en: serverFilePath + 'phone.xls',
       hu: serverFilePath + 'telefon.xls',
@@ -624,7 +620,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: 'application/vnd.ms-excel',
     folder: 'main',
   });
-  demoBuilder.uploadShareddoc({
+  builder.uploadShareddoc({
     file: {
       en: serverFilePath + 'act.pdf',
       hu: serverFilePath + 'tv.pdf',
@@ -636,7 +632,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: 'application/pdf',
     folder: 'main',
   });
-  demoBuilder.uploadShareddoc({
+  builder.uploadShareddoc({
     file: {
       en: serverFilePath + 'bylaws.pdf',
       hu: serverFilePath + 'szmsz.pdf',
@@ -648,7 +644,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: 'application/pdf',
     folder: 'community',
   });
-  demoBuilder.uploadShareddoc({
+  builder.uploadShareddoc({
     file: serverFilePath + 'kerekpartarolo.jpg',
     name: {
       en: 'bikestorage.jpg',
@@ -661,47 +657,47 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Tickets =====
 
   Clock.starts(3, 'month', 'ago');
-  const supplier0 = demoBuilder.create('supplier', {
+  const supplier0 = builder.create('supplier', {
     idCard: {
       type: 'legal',
       name: __('demo.contract.0.partner'),
     },
   });
-  const supplier1 = demoBuilder.create('supplier', {
+  const supplier1 = builder.create('supplier', {
     idCard: {
       type: 'legal',
       name: __('demo.contract.1.partner'),
     },
   });
-  const supplier2 = demoBuilder.create('supplier', {
+  const supplier2 = builder.create('supplier', {
     idCard: {
       type: 'legal',
       name: __('demo.contract.2.partner'),
     },
   });
-  const customer0 = demoBuilder.create('customer', {
+  const customer0 = builder.create('customer', {
     idCard: {
       type: 'legal',
       name: __('demo.contract.10.partner'),
     },
   });
 
-  const contract0 = demoBuilder.create('contract', {
+  const contract0 = builder.create('contract', {
     title: __('demo.contract.0.title'),
     text: __('demo.contract.0.text'),
     partnerId: supplier0,
   });
-  const contract1 = demoBuilder.create('contract', {
+  const contract1 = builder.create('contract', {
     title: __('demo.contract.1.title'),
     text: __('demo.contract.1.text'),
     partnerId: supplier1,
   });
-  const contract2 = demoBuilder.create('contract', {
+  const contract2 = builder.create('contract', {
     title: __('demo.contract.2.title'),
     text: __('demo.contract.2.text'),
     partnerId: supplier2,
   });
-  const contract10 = demoBuilder.create('contract', {
+  const contract10 = builder.create('contract', {
     title: __('demo.contract.10.title'),
     text: __('demo.contract.10.text'),
     partnerId: customer0,
@@ -710,14 +706,14 @@ export function insertDemoHouse(lang, demoOrTest) {
   [1, 2, 3, 4].forEach(m => {
     Clock.tick(1, 'month');
     const maintainanceDate = moment(Clock.currentDate());
-    const ticket = demoBuilder.create('ticket', {
+    const ticket = builder.create('ticket', {
       title: __('demo.contract.1.ticketTitle') + ' ' + maintainanceDate.format('YYYY MMM'),
       text: __('demo.contract.1.ticketText'),
       status: 'scheduled',
       ticket: {
         type: 'maintenance',
         urgency: 'normal',
-        localizer: demoBuilder.name2code('Localizer', 'Lift'),
+        localizer: Accounts.findOne({ communityId, category: 'location', name: 'Lift' }),
         chargeType: 'lumpsum',
         contractId: contract1,
         expectedStart: maintainanceDate.toDate(),
@@ -725,8 +721,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       },
     });
     if (m <= 2) {
-      demoBuilder.execute(statusChange, { topicId: ticket, status: 'progressing', dataUpdate: {} });
-      demoBuilder.execute(statusChange, { topicId: ticket, status: 'finished',
+      builder.execute(statusChange, { topicId: ticket, status: 'progressing', dataUpdate: {} });
+      builder.execute(statusChange, { topicId: ticket, status: 'finished',
         dataUpdate: {
           actualStart: maintainanceDate.toDate(),
           actualFinish: maintainanceDate.toDate(),
@@ -736,8 +732,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   Clock.starts(1, 'week', 'ago');
-//  demoBuilder.nextUser(); // just to skip the maintainer
-  const ticket0 = demoBuilder.insert(Topics, 'ticket', {
+//  builder.nextUser(); // just to skip the maintainer
+  const ticket0 = builder.insert(Topics, 'ticket', {
     title: __('demo.ticket.0.title'),
     text: __('demo.ticket.0.text'),
     status: 'reported',
@@ -747,10 +743,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('minutes');
-  demoBuilder.execute(statusChange, { topicId: ticket0, status: 'confirmed',
+  builder.execute(statusChange, { topicId: ticket0, status: 'confirmed',
     text: __('demo.ticket.0.comment.0'),
     dataUpdate: {
-      localizer: demoBuilder.name2code('Localizer', 'Lift'),
+      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Lift' }),
       chargeType: 'lumpsum',
       contractId: contract1,
       expectedStart: Clock.date(1, 'days', 'ahead'),
@@ -758,13 +754,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tick(6, 'days');
-  demoBuilder.execute(statusChange, { topicId: ticket0, status: 'progressing',
+  builder.execute(statusChange, { topicId: ticket0, status: 'progressing',
     text: __('demo.ticket.0.comment.1'),
     dataUpdate: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
 
   Clock.starts(3, 'weeks', 'ago');
-  const ticket1 = demoBuilder.insert(Topics, 'ticket', {
+  const ticket1 = builder.insert(Topics, 'ticket', {
     title: __('demo.ticket.1.title'),
     text: __('demo.ticket.1.text'),
     status: 'reported',
@@ -774,7 +770,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('minutes');
-  demoBuilder.execute(statusChange, { topicId: ticket1, status: 'confirmed',
+  builder.execute(statusChange, { topicId: ticket1, status: 'confirmed',
     text: __('demo.ticket.1.comment.0'),
     dataUpdate: {
       localizer: '@A409',
@@ -784,13 +780,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   const actualStart1 = Clock.tick(2, 'days');
-  demoBuilder.execute(statusChange, { topicId: ticket1, status: 'progressing',
+  builder.execute(statusChange, { topicId: ticket1, status: 'progressing',
     text: __('demo.ticket.1.comment.1'),
     dataUpdate: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
   Clock.tickSome('minutes');
   const actualFinish1 = Clock.tick(2, 'days');
-  demoBuilder.execute(statusChange, { topicId: ticket1, status: 'finished',
+  builder.execute(statusChange, { topicId: ticket1, status: 'finished',
     text: __('demo.ticket.1.comment.2'),
     dataUpdate: {
       actualStart: actualStart1,
@@ -798,13 +794,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tick(2, 'days');
-  demoBuilder.execute(statusChange, { topicId: ticket1, status: 'closed',
+  builder.execute(statusChange, { topicId: ticket1, status: 'closed',
     text: __('demo.ticket.1.comment.3'),
     dataUpdate: {},
   });
 
   Clock.starts(2, 'weeks', 'ago');
-  const ticket2 = demoBuilder.insert(Topics, 'ticket', {
+  const ticket2 = builder.insert(Topics, 'ticket', {
     title: __('demo.ticket.2.title'),
     text: __('demo.ticket.2.text'),
     status: 'reported',
@@ -814,13 +810,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('minutes');
-  demoBuilder.insert(Comments, 'comment', {
+  builder.insert(Comments, 'comment', {
     topicId: ticket2,
     text: __('demo.ticket.2.comment.0'),
   });
 
   Clock.starts(3, 'months', 'ago');
-  const ticket3 = demoBuilder.insert(Topics, 'ticket', {
+  const ticket3 = builder.insert(Topics, 'ticket', {
     title: __('demo.ticket.3.title'),
     text: __('demo.ticket.3.text'),
     status: 'reported',
@@ -830,10 +826,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('hours');
-  demoBuilder.execute(statusChange, { topicId: ticket3, status: 'confirmed',
+  builder.execute(statusChange, { topicId: ticket3, status: 'confirmed',
     text: __('demo.ticket.3.comment.0'),
     dataUpdate: {
-      localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'),
+      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Lépcsőház' }),
       chargeType: 'oneoff',
       contractId: contract0,
       expectedCost: 10000,
@@ -842,7 +838,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   const actualStart3 = Clock.tick(1, 'week');
-  demoBuilder.execute(statusChange, { topicId: ticket3, status: 'progressing',
+  builder.execute(statusChange, { topicId: ticket3, status: 'progressing',
     text: __('demo.ticket.3.comment.1'),
     dataUpdate: {
       expectedFinish: Clock.date(10, 'day', 'ahead'),
@@ -850,7 +846,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.tickSome('minutes');
   const actualFinish3 = Clock.tick(8, 'day');
-  demoBuilder.execute(statusChange, { topicId: ticket3, status: 'finished',
+  builder.execute(statusChange, { topicId: ticket3, status: 'finished',
     text: __('demo.ticket.3.comment.2'),
     dataUpdate: {
       actualCost: 8500,
@@ -859,12 +855,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('hours');
-  demoBuilder.insert(Comments, 'comment', {
+  builder.insert(Comments, 'comment', {
     topicId: ticket3,
     text: __('demo.ticket.3.comment.3'),
   });
   Clock.tickSome('minutes');
-  demoBuilder.execute(statusChange, { topicId: ticket3, status: 'closed',
+  builder.execute(statusChange, { topicId: ticket3, status: 'closed',
     text: __('demo.ticket.3.comment.4'),
     dataUpdate: {},
   });
@@ -878,17 +874,17 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const parcelBillingIds = [];
 
-  parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+  parcelBillingIds.push(builder.insert(ParcelBillings, '', {
     title: 'Közös költség előírás',
     projection: {
       base: 'area',
       unitPrice: 275,
     },
-    digit: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
+    digit: Accounts.findPayinDigitByName('Közös költség előírás'),
     localizer: '@',
   }));
 
-  parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+  parcelBillingIds.push(builder.insert(ParcelBillings, '', {
     title: 'Hidegvíz előírás',
     consumption: {
       service: 'coldWater',
@@ -901,11 +897,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       base: 'habitants',
       unitPrice: 2500,
     },
-    digit: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
-    localizer: '@A',
+    digit: Accounts.findPayinDigitByName('Hidegvíz előírás'),
+    localizer: '@',
   }));
 
-  parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+  parcelBillingIds.push(builder.insert(ParcelBillings, '', {
     title: 'Fűtési díj előírás',
     consumption: {
       service: 'heating',
@@ -918,18 +914,18 @@ export function insertDemoHouse(lang, demoOrTest) {
       base: 'volume',
       unitPrice: 75,
     },
-    digit: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
-    localizer: '@A',
+    digit: Accounts.findPayinDigitByName('Fűtési díj előírás'),
+    localizer: '@',
   }));
 
   // This is a one-time, extraordinary parcel billing
-  demoBuilder.insert(ParcelBillings, '', {
+  builder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
     projection: {
       base: 'absolute',
       unitPrice: 75000,
     },
-    digit: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
+    digit: Accounts.findPayinDigitByName('Rendkivüli befizetés előírás'),
     localizer: '@',
     note: __('demo.transactions.note.0'),
     activeTime: {
@@ -940,32 +936,32 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
     Clock.setSimulatedTime(new Date(`${lastYear}-${mm}-12`));
-    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, date: Clock.currentDate() });
+    builder.execute(ParcelBillings.methods.apply, { communityId, date: Clock.currentDate() });
   });
 
   // === Owner Payins ===
-  demoBuilder.everybodyPaysTheirBills();
+  builder.everybodyPaysTheirBills();
 
   // Some unpaid bills (so we can show the parcels that are in debt)
   Clock.setSimulatedTime(new Date(`${lastYear}-12-20`));
-  const extraBillingId = demoBuilder.insert(ParcelBillings, '', {
+  const extraBillingId = builder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
     projection: {
       base: 'area',
       unitPrice: 200,
     },
-    digit: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
+    digit: Accounts.findPayinDigitByName('Rendkivüli befizetés előírás'),
     localizer: '@',
     activeTime: {
       begin: new Date(`${lastYear}-12-01`),
       end: new Date(`${lastYear}-12-31`),
     },
   });
-  demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, ids: [extraBillingId], date: new Date(`${lastYear}-12-20`) });
+  builder.execute(ParcelBillings.methods.apply, { communityId, ids: [extraBillingId], date: new Date(`${lastYear}-12-20`) });
 
   // Unidentified payin
-  demoBuilder.create('statementEntry', {
-    account: demoBuilder.name2code('Assets', 'Checking account'),
+  builder.create('statementEntry', {
+    account: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
     valueDate: new Date(`${lastYear}-12-30`),
     amount: 24500,
     name: 'Gipsz Jakab',
@@ -979,23 +975,23 @@ export function insertDemoHouse(lang, demoOrTest) {
 // === Opening ===
 
   const openings = [
-    ['Assets', 'Cash register', 1000000],
-    ['Assets', 'Checking account', 1100000],
-    ['Assets', 'Savings account', 1200000],
+    ['cash', 'Cash register', 1000000],
+    ['bank', 'Checking account', 1100000],
+    ['bank', 'Savings account', 1200000],
   ];
   openings.forEach((opening) => {
-    demoBuilder.create('opening', {
+    builder.create('opening', {
       valueDate: new Date(`${lastYear}-01-01`),
       side: 'debit',
       amount: opening[2],
-      account: demoBuilder.name2code(opening[0], opening[1]),
+      account: Accounts.findOne({ communityId, category: opening[0], name: opening[1] }).code,
     });
   });
 
   // == Bills
 
   ['03', '06', '09', '12'].forEach(mm => {
-    const billId = demoBuilder.create('bill', {
+    const billId = builder.create('bill', {
       relation: 'supplier',
       issueDate: new Date(`${lastYear}-${mm}-15`),
       deliveryDate: new Date(`${lastYear}-${mm}-05`),
@@ -1008,26 +1004,26 @@ export function insertDemoHouse(lang, demoOrTest) {
         uom: 'hónap',
         quantity: 3,
         unitPrice: 94200,
-        account: demoBuilder.name2code('Expenses', 'Takarítás'),
+        account: Accounts.findOne({ communityId, category: 'expense', name: 'Takarítás' }).code,
         localizer: '@',
       }],
     });
 
     if (mm !== '12') {  // Last bill is not yet paid, and not yet sent to accounting
-      demoBuilder.execute(Transactions.methods.post, { _id: billId });
-      demoBuilder.create('payment', {
+      builder.execute(Transactions.methods.post, { _id: billId });
+      builder.create('payment', {
         relation: 'supplier',
         bills: [{ id: billId, amount: 282600 }],
         amount: 282600,
         valueDate: new Date(`${lastYear}-${mm}-25`),
         partnerId: supplier2,
-        payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+        payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
       });
     }
   });
 
   // An Invoice, half paid
-  const invoiceId = demoBuilder.create('bill', {
+  const invoiceId = builder.create('bill', {
     relation: 'customer',
     valueDate: new Date(`${lastYear}-03-15`),
     partnerId: customer0,
@@ -1037,166 +1033,164 @@ export function insertDemoHouse(lang, demoOrTest) {
       uom: 'year',
       quantity: 1,
       unitPrice: 50200,
-      account: demoBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
+      account: Accounts.findOne({ communityId, category: 'income', name: 'Különféle egyéb bevételek' }).code,
       localizer: '@',
     }],
   });
-  demoBuilder.execute(Transactions.methods.post, { _id: invoiceId });
-  demoBuilder.create('payment', {
+  builder.execute(Transactions.methods.post, { _id: invoiceId });
+  builder.create('payment', {
     relation: 'customer',
     bills: [{ id: invoiceId, amount: 25000 }],
     amount: 25000,
     valueDate: new Date(`${lastYear}-03-25`),
     partnerId: customer0,
-    payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
   });
 
   // === Incomes ===
 
-  demoBuilder.create('income', {
+  builder.create('income', {
     valueDate: new Date(`${lastYear}-06-01`),
     lines: [{
       title: 'Forgatási bérleti díj',
       uom: 'db',
       quantity: 1,
       unitPrice: 35000,
-      account: demoBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
-      localizer: demoBuilder.name2code('Localizer', 'Central'),
+      account: Accounts.findOne({ communityId, category: 'income', name: 'Különféle egyéb bevételek' }).code,
+//      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
     }],
-    payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
   });
 
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
-    demoBuilder.create('income', {
+    builder.create('income', {
       valueDate: new Date(`${lastYear}-${mm}-01`),
       lines: [{
         title: 'Banki kamat',
         uom: 'hó',
         quantity: 1,
         unitPrice: 400,
-        account: demoBuilder.name2code('Incomes', 'Hitelintézettől kapott kamatok'),
-        localizer: demoBuilder.name2code('Localizer', 'Central'),
+        account: Accounts.findOne({ communityId, category: 'income', name: 'Hitelintézettől kapott kamatok' }).code,
+//        localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
       }],
-      payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+      payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
     });
   });
 
-  demoBuilder.create('income', {
+  builder.create('income', {
     valueDate: new Date(`${lastYear}-09-15`),
     lines: [{
       title: 'Állami támogatás tetőfelújításra',
       uom: 'db',
       quantity: 1,
       unitPrice: 500000,
-      account: demoBuilder.name2code('Incomes', 'Támogatások'),
-      localizer: demoBuilder.name2code('Localizer', 'Central'),
+      account: Accounts.findOne({ communityId, category: 'income', name: 'Támogatások' }).code,
+//      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
     }],
-    payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
     note: __('demo.transactions.note.1'),
   });
 
-  demoBuilder.create('income', {
+  builder.create('income', {
     valueDate: new Date(`${lastYear}-05-10`),
     lines: [{
       title: 'Antenna hely bérleti díj',
       uom: 'év',
       quantity: 1,
       unitPrice: 55000,
-      account: demoBuilder.name2code('Incomes', 'Bérleti díj bevételek'),
-      localizer: demoBuilder.name2code('Localizer', 'Central'),
+      account: Accounts.findOne({ communityId, category: 'income', name: 'Bérleti díj bevételek' }).code,
+//      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
     }],
-    payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
     note: __('demo.transactions.note.2'),
   });
 
-  demoBuilder.create('income', {
+  builder.create('income', {
     valueDate: new Date(`${lastYear}-10-15`),
     lines: [{
       title: '???',
       uom: '?',
       quantity: 1,
       unitPrice: 500000,
-      account: demoBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
-      localizer: demoBuilder.name2code('Localizer', 'Central'),
+      account: Accounts.findOne({ communityId, category: 'income', name: 'Különféle egyéb bevételek' }).code,
+//      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
     }],
-    payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
     note: __('demo.transactions.note.3'),
   });
 
-  demoBuilder.create('income', {
+  builder.create('income', {
     valueDate: new Date(`${lastYear}-07-21`),
     lines: [{
       title: 'Banki hitel',
       uom: 'db',
       quantity: 1,
       unitPrice: 2300000,
-      account: demoBuilder.name2code('Liabilities', 'Hosszú lejáratú bank hitel'),
+      account: Accounts.findOne({ communityId, category: 'liability', name: 'Hosszú lejáratú bank hitel' }).code,
     }],
-    payAccount: demoBuilder.name2code('Assets', 'Savings account'),
+    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Savings account' }).code,
     note: __('demo.transactions.note.4'),
   });
 
   // == Expenses
-  demoBuilder.create('expense', {
+  builder.create('expense', {
     valueDate: new Date(`${lastYear}-01-10`),
     lines: [{
       title: 'Kazán',
       uom: 'db',
       quantity: 2,
       unitPrice: 495000,
-      account: demoBuilder.name2code('BEFEKTETETT ESZKÖZÖK', 'MŰSZAKI BERENDEZÉSEK'),
-      localizer: demoBuilder.name2code('Localizer', 'Heating system'),
+      account: Accounts.findOne({ communityId, category: 'asset', name: 'MŰSZAKI BERENDEZÉSEK' }).code,
+//      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Heating system' }).code,
     }],
-    payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
   });
 
   for (let mm = 1; mm < 13; mm++) {
-    demoBuilder.create('expense', {
+    builder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       lines: [{
         title: 'Víz fogyasztás',
         uom: 'm3',
         quantity: 100 + Math.floor(Math.random() * 70),
         unitPrice: 800,
-        account: demoBuilder.name2code('Expenses', 'Víz díj'),
-        localizer: demoBuilder.name2code('Localizer', 'Central'),
+        account: Accounts.findOne({ communityId, category: 'expense', name: 'Víz díj' }).code,
+//        localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
       }],
-      payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+      payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
     });
 
-    demoBuilder.create('expense', {
+    builder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       lines: [{
         title: 'Csatorna díj',
         uom: 'hó',
         quantity: 1,
         unitPrice: 98500,
-        account: demoBuilder.name2code('Expenses', 'Csatorna díjak'),
-        localizer: demoBuilder.name2code('Localizer', 'Central'),
+        account: Accounts.findOne({ communityId, category: 'expense', name: 'Csatorna díjak' }).code,
+//        localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
       }],
-      payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+      payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
     });
 
-    demoBuilder.create('expense', {
+    builder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '07', '08', '10'])}`),
       lines: [{
         title: 'Áram fogyasztás',
         uom: 'mért',
         quantity: 1,
         unitPrice: 150000 + Math.floor(Math.random() * 50000),
-        account: demoBuilder.name2code('Expenses', 'Áram díj'),
-        localizer: demoBuilder.name2code('Localizer', 'Central'),
+        account: Accounts.findOne({ communityId, category: 'expense', name: 'Áram díj' }).code,
+//        localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
       }],
-      payAccount: demoBuilder.name2code('Assets', 'Checking account'),
+      payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
     });
   }
 
-  demoBuilder.postAllTransactions();
+  builder.postAllTransactions();
 
-  Balances.methods.publish._execute({ userId: demoAccountantId }, { communityId: demoCommunityId });
   Clock.clear();
-
-  return demoCommunityId;
+  return communityId;
 }
 
 // ----------------------------------------------------------------
@@ -1248,66 +1242,66 @@ Meteor.methods({
 
         const demoHouse = Communities.findOne({ name: __('demo.house') });
         if (!demoHouse) throw new Meteor.Error('err_notImplemented', 'Demo house not available on this server');
-        const demoCommunityId = demoHouse._id;
-        const demoBuilder = new DemoCommunityBuilder(demoCommunityId, lang);
-        const counter = demoBuilder.nextSerial;
+        const communityId = demoHouse._id;
+        const builder = new DemoCommunityBuilder(communityId, lang);
+        const counter = builder.nextSerial;
 
         Clock.starts(2, 'year', 'ago');
-        const demoParcelId = demoBuilder.createParcel({
+        const demoParcelId = builder.createProperty({
           units: 100,
           floor: '5',
           door: counter.toString(),
           type: 'flat',
           area: 25,
         });
-        const demoUserId = demoBuilder.createDemoUser(demoParcelId);
+        const demoUserId = builder.createDemoUser(demoParcelId);
         const demoParcel = Parcels.findOne(demoParcelId);
-        const demoMembershipId = demoBuilder.createMembership(demoUserId, 'owner', {
+        const demoMembershipId = builder.createMembership(demoUserId, 'owner', {
           parcelId: demoParcelId,
           ownership: { share: new Fraction(1, 1) },
         });
         const demoMembership = Memberships.findOne(demoMembershipId);
 
-        const waterMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'coldWater', uom: 'm3' });
-        const heatingMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'heating', uom: 'kJ' });
+        const waterMeterId = builder.create('meter', { parcelId: demoParcelId, service: 'coldWater', uom: 'm3' });
+        const heatingMeterId = builder.create('meter', { parcelId: demoParcelId, service: 'heating', uom: 'kJ' });
         Clock.starts(14, 'month', 'ago');
-        demoBuilder.execute(Meters.methods.registerReading, { _id: waterMeterId,
+        builder.execute(Meters.methods.registerReading, { _id: waterMeterId,
           reading: { date: Clock.currentTime(), value: 5 } });
-        demoBuilder.execute(Meters.methods.registerReading, { _id: heatingMeterId,
+        builder.execute(Meters.methods.registerReading, { _id: heatingMeterId,
           reading: { date: Clock.currentTime(), value: 3 } });
         Clock.tick(1, 'month');
-        demoBuilder.execute(Meters.methods.registerReading, { _id: waterMeterId,
+        builder.execute(Meters.methods.registerReading, { _id: waterMeterId,
           reading: { date: Clock.currentTime(), value: 25 } });
-        demoBuilder.execute(Meters.methods.registerReading, { _id: heatingMeterId,
+        builder.execute(Meters.methods.registerReading, { _id: heatingMeterId,
           reading: { date: Clock.currentTime(), value: 33 } });
         Clock.clear();
         // Billings will be applied startig from a year ago, for each month
 
-        const demoManagerId = demoBuilder.getUserWithRole('manager');
-        const chatPartnerId = demoBuilder.getUserWithRole('owner');
+        const demoManagerId = builder.getUserWithRole('manager');
+        const chatPartnerId = builder.getUserWithRole('owner');
 
         Clock.starts(3, 'weeks', 'ago');
-        const demoUserMessageRoom = demoBuilder.create('room', {
+        const demoUserMessageRoom = builder.create('room', {
           creatorId: demoUserId,
           participantIds: [demoUserId, demoManagerId],
         });
-        demoBuilder.insert(Comments, 'comment', {
+        builder.insert(Comments, 'comment', {
           creatorId: demoManagerId,
           topicId: demoUserMessageRoom,
           text: __('demo.manager.message'),
         });
-        const demoUserMessageRoom2 = demoBuilder.create('room', {
+        const demoUserMessageRoom2 = builder.create('room', {
           creatorId: demoUserId,
           participantIds: [demoUserId, chatPartnerId],
         });
         Clock.starts(6, 'hours', 'ago');
-        demoBuilder.insert(Comments, 'comment', {
+        builder.insert(Comments, 'comment', {
           creatorId: demoUserId,
           topicId: demoUserMessageRoom2,
           text: __('demo.messages.0'),
         });
         Clock.starts(3, 'hours', 'ago');
-        demoBuilder.insert(Comments, 'comment', {
+        builder.insert(Comments, 'comment', {
           creatorId: chatPartnerId,
           topicId: demoUserMessageRoom2,
           text: __('demo.messages.1'),
@@ -1315,10 +1309,10 @@ Meteor.methods({
         Clock.clear();
         // lastSeens were updated in the comments.insert method,
 
-        demoBuilder.generateDemoPayments(demoParcel, demoMembership);
+        builder.generateDemoPayments(demoParcel, demoMembership);
 
         Meteor.setTimeout(function () {
-          purgeDemoUserWithParcel(demoUserId, demoParcelId, demoCommunityId);
+          purgeDemoUserWithParcel(demoUserId, demoParcelId, communityId);
         }, DEMO_LIFETIME);
 
         const email = Meteor.users.findOne({ _id: demoUserId }).getPrimaryEmail();
@@ -1338,9 +1332,9 @@ export function schedulePurgeExpiringDemoUsers(lang, demoOrTest = 'demo', demoLi
   if (!community) return;
 
   const communityId = community._id;
-  const demoBuilder = new DemoCommunityBuilder(communityId, lang);
-  demoBuilder.demoUsersList().forEach((user) => {
-    const parcelId = demoBuilder.parcelIdOfDemoUser(user);
+  const builder = new DemoCommunityBuilder(communityId, lang);
+  builder.demoUsersList().forEach((user) => {
+    const parcelId = builder.parcelIdOfDemoUser(user);
     const currentTime = moment().valueOf();
     let timeUntilDelete = moment(user.createdAt).add(demoLifetime).subtract(currentTime).valueOf();
     if (timeUntilDelete < 0) timeUntilDelete = 0;

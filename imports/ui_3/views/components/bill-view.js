@@ -6,9 +6,9 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
+import { Parcels } from '/imports/api/parcels/parcels';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 
 import './bill-view.html';
 
@@ -40,8 +40,8 @@ Template.Bill_view.viewmodel({
   actions() {
     return Transactions.actions;
   },
-  code2parcelRef(code) {
-    return Localizer.code2parcelRef(code);
+  parcelRef(parcelId) {
+    return Parcels.findOne(parcelId).ref;
   },
   partnerRelation() {
     return this.docVm() && this.docVm().relation;

@@ -13,23 +13,29 @@ import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from './parcels.js';
 import './methods.js';
-import { Partners } from '../partners/partners.js';
+import './entities.js';
 
 Parcels.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
     color: () => 'primary',
-    label: () => __('new') + ' ' + __('parcel'),
+    label: options => (Array.isArray(options.entity) ? `${__('new') + ' ' + __('parcel')}` : `${__('new')} ${__('schemaParcels.category.' + options.entity.name)}`),
     visible: (options, doc) => currentUserHasPermission('parcels.insert', doc),
-    run() {
+    subActions: options => Array.isArray(options.entity) && options.entity.length,
+    subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),
+    run(options, doc) {
+      const entity = options.entity;
+      const omitFields = 'category';
       Modal.show('Autoform_modal', {
         id: 'af.parcel.insert',
-        collection: Parcels,
+        schema: entity.schema,
+        omitFields,
         type: 'method',
         meteormethod: 'parcels.insert',
       });
@@ -46,9 +52,10 @@ Parcels.actions = {
     icon: () => 'fa fa-eye',
     visible: (options, doc) => currentUserHasPermission('parcels.inCommunity', doc),
     run(options, doc) {
+      const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: 'af.parcel.view',
-        collection: Parcels,
+        schema: entity.schema,
         doc,
         type: 'readonly',
       });
@@ -123,9 +130,10 @@ Parcels.actions = {
     icon: () => 'fa fa-pencil',
     visible: (options, doc) => currentUserHasPermission('parcels.update', doc),
     run(options, doc) {
+      const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: 'af.parcel.update',
-        collection: Parcels,
+        schema: entity.schema,
         doc,
         type: 'method-update',
         meteormethod: 'parcels.update',
@@ -140,8 +148,7 @@ Parcels.actions = {
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.parcel.update',
-        collection: Parcels,
-        fields: ['activeTime'],
+        schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
         meteormethod: 'parcels.updateActivePeriod',

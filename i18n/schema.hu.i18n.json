@@ -30,9 +30,17 @@
       }
     }
   },
-  "schemaMoneyAccounts": {
+  "schemaAccounts": {
     "category": {
-      "label": "Típus",
+      "label": "Számla típus",
+      "asset": "Eszköz",
+      "liability": "Forrás",
+      "equity": "Saját tőke",
+      "income": "Bevétel",
+      "expense": "Kiadás",
+      "technical": "Technikai",
+      "payable": "Tartozás",
+      "receivable": "Követelés",
       "bank": "Bank",
       "cash": "Pénztár"
     },
@@ -40,10 +48,10 @@
       "label": "Elnevezése",
       "placeholder": "(pl. Megtakarítási számla)"
     },
-    "digit": {
-      "label": "Sorszám",
-      "placeholder": "(pl. 2)",
-      "help": "Egyedinek kell lennie. Ezzel a sorszámmal jelenik meg a főkönyvi számlák között. (Például ha a Pénz számlák a 38-as főkönyvi számlaszámon vannak, és ön 2-es sorszámot ad ennek a pénzszámlának, akkor e pénzszámla a 382-es főkönyvi számon lesz könyvelve.)"
+    "code": {
+      "label": "Kód",
+      "placeholder": "(pl. 245)",
+      "help": "Egyedinek kell lennie. Ha már lett tranzakció ezen a főkönyvi számon könyvelve, utána már nem módosítható."
     },
     "bank": {
       "label": "Bank neve",
@@ -584,6 +592,9 @@
     }
   },
   "schemaTransactions": {
+    "defId": {
+      "label": "Típus"
+    },
     "valueDate": {
       "label": "Értéknap",
       "placeholder": "(pl. 2017-05-06)"

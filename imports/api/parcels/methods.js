@@ -25,8 +25,7 @@ function checkCommunityParcelsSanity(communityId, parcels) {
 
 export const insert = new ValidatedMethod({
   name: 'parcels.insert',
-  validate: Parcels.simpleSchema().validator({ clean: true }),
-
+  validate: doc => Parcels.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
     const community = Communities.findOne(doc.communityId);
     if (doc.ref) {
@@ -62,7 +61,7 @@ export const update = new ValidatedMethod({
     checkPermissions(this.userId, 'parcels.update', doc);
 
     const ParcelsStage = Parcels.Stage();
-    const result = ParcelsStage.update({ _id }, modifier);
+    const result = ParcelsStage.update({ _id }, modifier, { selector: doc });
     checkCommunityParcelsSanity(doc.communityId, ParcelsStage);
     ParcelsStage.commit();
 

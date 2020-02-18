@@ -12,7 +12,7 @@ export class BatchAction {
     return this.action.name;
   }
   icon() {
-    return this.action.icon(this.options, {});
+    return this.action.icon(this.options, undefined);
   }
   visible(docs) {
     const self = this;

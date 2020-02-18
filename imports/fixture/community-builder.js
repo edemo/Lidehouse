@@ -18,8 +18,6 @@ import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/categories';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -35,7 +33,7 @@ export class CommunityBuilder {
     this.lang = lang;
     this.com = { en: 'com', hu: 'hu' }[lang];
 
-    const parcels = Parcels.find({ communityId }, { sort: { createdAt: -1 } });
+    const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { createdAt: -1 } });
     const lastCreatedParcel = parcels.fetch()[0];
     this.nextSerial = (lastCreatedParcel ? lastCreatedParcel.serial : 0) + 1;
     this.dummyUsers = [];
@@ -88,7 +86,7 @@ export class CommunityBuilder {
         case 'statements':
         case 'statementEntries':
         case 'parcelBillings':
-        case 'moneyAccounts':
+        case 'accounts':
         case 'breakdowns':
         case 'txdefs': return this.getUserWithRole('accountant');
         case 'transactions': return (params.category === 'bill' || params.category === 'receipt') ? this.getUserWithRole('treasurer') : this.getUserWithRole('accountant');
@@ -142,8 +140,9 @@ export class CommunityBuilder {
     const doc = this.build(docType, data);
     return this.execute(collection.methods.insert, doc);
   }
-  createParcel(data) {
+  createProperty(data) {
     _.extend(data, {
+      category: '@property',
       serial: this.nextSerial,
 //      ref, autovalue
       lot: '4532/8/A/' + this.nextSerial.toString(),
@@ -158,7 +157,7 @@ export class CommunityBuilder {
     }
 
     this.nextSerial += 1;
-    return this.create('parcel', data);
+    return this.create('@property', data);
   }
   createLoginableUser(role, userData, membershipData) {
     const emailAddress = `${role}@${this.demoOrTest}.${this.com}`;
@@ -229,12 +228,9 @@ export class CommunityBuilder {
     const membershipId = Memberships.insert({ communityId: this.communityId, userId: person.userId, partnerId, accepted: true, role, ...membershipData });
     return membershipId;
   }
-  name2code(breakdownName, nodeName) {
-    return Breakdowns.name2code(breakdownName, nodeName, this.communityId);
-  }
   serial2code(serial) {
     const parcel = Parcels.findOne({ communityId: this.communityId, serial });
-    return Localizer.parcelRef2code(parcel.ref);
+    return parcel.code;
   }
   generateDemoPayments(parcel, membership) {
     Clock.starts(1, 'year', 'ago');
@@ -242,7 +238,7 @@ export class CommunityBuilder {
       this.execute(ParcelBillings.methods.apply, {
         communityId: this.communityId,
         date: Clock.currentDate(),
-        localizer: Localizer.parcelRef2code(parcel.ref),
+        localizer: parcel.code,
       });
       this.payBillsOf(membership);
       Clock.tick(1, 'month');
@@ -260,7 +256,7 @@ export class CommunityBuilder {
       payAccount: '381',
     });*/
     const entryId = this.create('statementEntry', {
-      account: '382',
+      account: this.community().primaryBankAccount().code,
       valueDate: bill.dueDate,
       name: bill.partner().getName(),
       note: bill.serialId,
@@ -300,7 +296,6 @@ export class CommunityBuilder {
       if (postBuildingInsert) {
         const parcel = Parcels.findOne(parcelId);
         const membership = Memberships.findOne(membershipId);
-        Localizer.addParcel(parcel);
         this.generateDemoPayments(parcel, membership);
       }
     }

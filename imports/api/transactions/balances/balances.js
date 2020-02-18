@@ -6,9 +6,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 
 export const Balances = new Mongo.Collection('balances');
 
@@ -78,12 +76,9 @@ Balances.get = function get(def) {
 
 //  This version is slower in gathering sub-accounts first,
 //  but minimongo indexing does not handle sorting, so in fact might be faster after all
-//  const coa = ChartOfAccounts.get(def.communityId);
-//  const leafs = coa.leafsOf(def.account);
   if (def.localizer) {
-    const loc = Localizer.get(def.communityId);
-    const locNode = loc.nodeByCode(def.localizer);
-    debugAssert(locNode.isLeaf); // Currently not prepared for upward cascading localizer
+    const parcel = Parcels.findOne({ communityId: def.communityId, code: def.localizer });
+    debugAssert(parcel.isLeaf()); // Currently not prepared for upward cascading localizer
     // If you want to know the balance of a whole floor or building, the transaction update has to trace the localizer's parents too
   }
 /*  leafs.forEach(leaf => {

@@ -9,25 +9,28 @@ import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import '/imports/ui_3/views/components/ledger-report.js';
 import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/journals-table.js';
 import './accounting-ledger.html';
+import { Accounts } from '../../../api/transactions/accounts/accounts';
 
 Template.Accounting_ledger.viewmodel({
   periodSelected: PeriodBreakdown.lastYearTag(),
   onCreated(instance) {
     instance.autorun(() => {
-      instance.subscribe('breakdowns.inCommunity', { communityId: this.communityId() });
+      instance.subscribe('accounts.inCommunity', { communityId: this.communityId() });
       instance.subscribe('balances.ofAccounts', { communityId: this.communityId() });
     });
   },
   communityId() {
     return getActiveCommunityId();
   },
-  breakdown(name) {
-    return Breakdowns.findOneByName(name, this.communityId());
+  accounts() {
+    return Accounts.all(this.communityId());
+  },
+  accountOptions() {
+    return Accounts.coa(this.communityId()).nodeOptions();
   },
   totalTag() {
     return ['T'];
@@ -38,11 +41,6 @@ Template.Accounting_ledger.viewmodel({
   yearMonthTags() {
 //    return PeriodBreakdown.currentYearMonths().concat('T');
     return PeriodBreakdown.nodesOf(this.periodSelected()).map(l => l.code);
-  },
-  accountOptions() {
-    const brk = ChartOfAccounts.get();
-    if (brk) return brk.nodeOptions(false);
-    return [];
   },
   periodOptions() {
     return PeriodBreakdown.nodeOptions(false);

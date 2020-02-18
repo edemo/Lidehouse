@@ -212,7 +212,7 @@ Factory.define('member', Partners, {
 export let choosePartner = {};
 if (Meteor.isClient) {
   import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-  
+
   choosePartner = {
     relation: 'partner',
     value() {

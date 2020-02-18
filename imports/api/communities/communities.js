@@ -13,7 +13,7 @@ import { availableLanguages } from '/imports/startup/both/language.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { MoneyAccounts } from '/imports/api/money-accounts/money-accounts.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
 export const Communities = new Mongo.Collection('communities');
 
@@ -55,7 +55,7 @@ Communities.publicFields = {
 Communities.helpers({
   registeredUnits() {
     let total = 0;
-    Parcels.find({ communityId: this._id }).forEach(p => total += p.units);
+    Parcels.find({ communityId: this._id, category: '@property' }).forEach(p => total += p.units);
     return total;
   },
   displayAddress() {
@@ -68,16 +68,16 @@ Communities.helpers({
     partner.BAN = bankAccount && bankAccount.BAN;
     return partner;
   },
-  moneyAccounts() {
-    return MoneyAccounts.find({ communityId: this._id });
+  accounts() {
+    return Accounts.find({ communityId: this._id });
   },
   primaryBankAccount() {
-    const bankAccount = MoneyAccounts.findOne({ communityId: this._id, category: 'bank', primary: true });
+    const bankAccount = Accounts.findOne({ communityId: this._id, category: 'bank', primary: true });
 //    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
     return bankAccount;
   },
   primaryCashAccount() {
-    const cashAccount = MoneyAccounts.findOne({ communityId: this._id, category: 'cash', primary: true });
+    const cashAccount = Accounts.findOne({ communityId: this._id, category: 'cash', primary: true });
 //    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
     return cashAccount;
   },
