@@ -28,9 +28,9 @@ Template.Account_history.viewmodel({
       if (this.accountOptions().length && !this.accountSelected()) {
         this.accountSelected(this.accountOptions()[0].value);
       }
-      if (this.localizerOptions().length && !this.localizerSelected()) {
-        this.localizerSelected(this.localizerOptions()[0].value);
-      }
+//      if (this.localizerOptions().length && !this.localizerSelected()) {
+//        this.localizerSelected(this.localizerOptions()[0].value);
+//      }
     },
   ],
   subscribeParams() {

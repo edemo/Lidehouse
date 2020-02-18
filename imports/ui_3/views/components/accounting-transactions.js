@@ -97,15 +97,16 @@ Template.Accounting_transactions.viewmodel({
     return Accounts.nodeOptionsOf(this.communityId(), accountCode, true);
   },
   subscribeParams() {
-    return {
+    const selector = {
       communityId: this.communityId(),
       defId: this.txdefSelected(),
       debitAccount: '\\^' + this.debitAccountSelected() + '\\',
       creditAccount: '\\^' + this.creditAccountSelected() + '\\',
-      localizer: this.localizerSelected(),
       begin: new Date(this.beginDate()),
       end: new Date(this.endDate()),
     };
+    if (this.localizerSelected()) selector.localizer = '\\^' + this.localizerSelected() + '\\';
+    return selector;
   },
   transactionsTableDataFn() {
     const templateInstance = Template.instance();

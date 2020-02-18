@@ -9,11 +9,12 @@ import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period';
+import { Parcels } from '/imports/api/parcels/parcels';
+import { Accounts } from '/imports/api/transactions/accounts/accounts';
 import '/imports/ui_3/views/components/ledger-report.js';
 import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/journals-table.js';
 import './accounting-ledger.html';
-import { Accounts } from '../../../api/transactions/accounts/accounts';
 
 Template.Accounting_ledger.viewmodel({
   periodSelected: PeriodBreakdown.lastYearTag(),
@@ -31,6 +32,9 @@ Template.Accounting_ledger.viewmodel({
   },
   accountOptions() {
     return Accounts.coa(this.communityId()).nodeOptions();
+  },
+  localizerOptions() {
+    return Parcels.nodeOptionsOf(this.communityId(), '');
   },
   totalTag() {
     return ['T'];
@@ -62,6 +66,8 @@ Template.Accounting_ledger.events({
         endDate: period.end(),
         accountOptions: instance.viewmodel.accountOptions(),
         accountSelected: '' + accountCode,
+        localizerOptions: instance.viewmodel.localizerOptions(),
+//        localizerSelected: '',
       },
       size: 'lg',
     });

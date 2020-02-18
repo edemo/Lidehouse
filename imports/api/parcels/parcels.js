@@ -223,6 +223,7 @@ _.extend(Parcels, {
       const nodes = Parcels.nodesOf(communityId, code, leafsOnly);
       return nodes.map(node => node.asOption());
     }).flat(1);
+    if (code === '') return [{ value: '', label: '' }].concat(nodeOptions);
     return nodeOptions;
   },
   chooseSubNode(code, leafsOnly) {
