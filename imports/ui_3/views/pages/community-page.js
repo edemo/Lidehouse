@@ -134,12 +134,15 @@ Template.Parcels_box.viewmodel({
       this.templateInstance.subscribe('parcels.ofSelf', { communityId });
     }
   },
+  parcels() {
+    const communityId = getActiveCommunityId();
+    return Parcels.find({ communityId, category: '@property' });
+  },
   parcelsTableContent() {
-    const self = this;
     const communityId = getActiveCommunityId();
     return {
       collection: 'parcels',
-      selector: { communityId },
+      selector: { communityId, category: '@property' },
       options() {
         return () => {
           return {
@@ -153,21 +156,6 @@ Template.Parcels_box.viewmodel({
           };
         };
       },
-    };
-  },
-  parcels() {
-    const communityId = getActiveCommunityId();
-    return Parcels.find({ communityId, category: '@property', approved: true });
-  },
-  unapprovedParcels() {
-    const communityId = getActiveCommunityId();
-    return Parcels.find({ communityId, category: '@property', approved: false });
-  },
-  unapprovedParcelsTableDataFn() {
-    const self = this;
-    return () => {
-      const communityId = getActiveCommunityId();
-      return Parcels.find({ communityId, category: '@property', approved: false }).fetch();
     };
   },
 });
