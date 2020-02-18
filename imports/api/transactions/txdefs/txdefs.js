@@ -37,6 +37,10 @@ Txdefs.schema = new SimpleSchema({
   credit: { type: [String], max: 6, autoform: chooseAccountNode, optional: true },
 });
 
+Meteor.startup(function indexTxdefs() {
+  Txdefs.ensureIndex({ communityId: 1, category: 1 });
+});
+
 Txdefs.helpers({
   schema() {
     const schema = new SimpleSchema([

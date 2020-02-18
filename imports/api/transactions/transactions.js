@@ -332,6 +332,19 @@ function checkBalances(docs) {
 
 // --- Before/after actions ---
 
+function modifierChangesField(modifier, fields) {
+  let result = false;
+  function checkOperator(operator) {
+    _.each(operator, (value, key) => {
+      if (_.contains(fields, key)) result = true;
+    });
+  }
+  checkOperator(modifier.$set);
+  checkOperator(modifier.$sunset);
+  checkOperator(modifier.$inc);
+  return result;
+}
+
 function autoValueUpdate(doc, modifier, fieldName, autoValue) {
   let newDoc = rusdiff.clone(doc);
   if (modifier) rusdiff.apply(newDoc, modifier);
@@ -345,7 +358,7 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     tdoc.complete = tdoc.calculateComplete();
     tdoc.autofillLines();
-    if (tdoc.category === 'bill') tdoc.autofillOutstanding();
+    if (tdoc.category === 'bill') tdoc.outstanding = tdoc.calculateOutstanding();
     _.extend(doc, tdoc);
   });
 
@@ -357,24 +370,27 @@ if (Meteor.isServer) {
   });
 
   Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
-    const tdoc = this.transform();
-    tdoc.updateBalances(-1);
-    autoValueUpdate(tdoc, modifier, 'complete', d => d.calculateComplete());
-    if (tdoc.category === 'bill' || tdoc.category === 'receipt') {
-      const newDoc = Transactions._transform(_.extend({ category: tdoc.category }, modifier.$set));
+    autoValueUpdate(doc, modifier, 'complete', d => d.calculateComplete());
+    if (doc.category === 'bill' || doc.category === 'receipt') {
+      const newDoc = Transactions._transform(_.extend({ category: doc.category }, modifier.$set));
       if (newDoc.lines) newDoc.autofillLines();
-      if ((newDoc.lines || newDoc.payments) && tdoc.category === 'bill') newDoc.autofillOutstanding();
       _.extend(modifier, { $set: newDoc });
+      
+      if ((newDoc.lines || newDoc.payments) && doc.category === 'bill') {
+        autoValueUpdate(doc, modifier, 'outstanding', d => d.calculateOutstanding());
+      }
     }
   });
 
   Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {
-    const tdoc = this.transform();
-    tdoc.updateBalances(1);
-    const oldDoc = Transactions._transform(this.previous);
-    const newDoc = Transactions._transform(doc);
-    oldDoc.updateOutstandings(-1);
-    newDoc.updateOutstandings(1);
+    if (modifierChangesField(modifier, ['debit', 'credit', 'amount', 'valueDate'])) {
+      const oldDoc = Transactions._transform(this.previous);
+      const newDoc = Transactions._transform(doc);
+      oldDoc.updateBalances(-1);
+      newDoc.updateBalances(+1);
+      oldDoc.updateOutstandings(-1);
+      newDoc.updateOutstandings(+1);
+    }
   });
 
   Transactions.after.remove(function (userId, doc) {

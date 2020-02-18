@@ -121,10 +121,10 @@ Transactions.categoryHelpers('bill', {
     } // else if (accountingMethod === 'cash') >> we have no accounting to do
     return { debit: this.debit, credit: this.credit };
   },
-  autofillOutstanding() {
+  calculateOutstanding() {
     let paid = 0;
     this.getPayments().forEach(p => paid += p.amount);
-    this.outstanding = this.amount - paid;
+    return this.amount - paid;
   },
   updateOutstandings(directionSign) {
     if (Meteor.isClient) return;

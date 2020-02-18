@@ -81,7 +81,7 @@ Transactions.categoryHelpers('payment', {
       const pb = _.extend({}, bp);
       pb.id = this._id; // replacing the bill._id with the payment._id
       result.push(Transactions.update(bill._id,
-        { $set: { amount: bill.amount /* triggers outstanding calc */, payments: bill.getPayments().concat([pb]) } },
+        { $set: { payments: bill.getPayments().concat([pb]) } },
         { selector: { category: 'bill' } },
       ));
     });
