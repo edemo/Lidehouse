@@ -7,13 +7,10 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import '/imports/api/users/users.js';
 
 function displayLocalizer(localizer, community) {
-  const loc = Localizer.get(community._id);
-  if (!localizer || !loc) return '';
-  return loc.display(localizer).substring(1);
+  return localizer.substring(1);
 }
 
 export const Notifications_Email = {

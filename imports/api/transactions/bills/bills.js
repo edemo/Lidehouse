@@ -13,8 +13,7 @@ import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
-import { Localizer, chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Parcels, chooseParcel } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -50,7 +49,7 @@ const lineSchema = {
   billingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   period: { type: String, optional: true, autoform: { omit: true } },
   account: { type: String, optional: true, autoform: chooseConteerAccount },
-  localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
+  localizer: { type: String, optional: true, autoform: chooseParcel() },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
 Bills.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);
@@ -114,7 +113,7 @@ Transactions.categoryHelpers('bill', {
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
         this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
-        let contraAccount = this.relationAccount();
+        let contraAccount = this.relationAccount().code;
         if (this.relation === 'member') contraAccount += ParcelBillings.findOne(line.billingId).digit;
         this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer, parcelId: line.parcelId });
       });
@@ -173,7 +172,7 @@ Factory.define('bill', Transactions, {
     uom: 'piece',
     quantity: 1,
     unitPrice: faker.random.number(10000),
-    account: '85',
+    account: '`861',
     localizer: '@',
   }],
 });

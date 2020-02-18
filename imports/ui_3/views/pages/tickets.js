@@ -10,7 +10,6 @@ import '/imports/api/topics/actions.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import '/imports/ui_3/views/components/ticket-list.js';
-import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './tickets.html';
 
 Template.Tickets.viewmodel({
@@ -24,6 +23,7 @@ Template.Tickets.viewmodel({
       instance.subscribe('topics.list', { communityId, category: 'ticket' });
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
+      instance.subscribe('parcels.inCommunity', { communityId });
     });
   },
   statusColor(value) {
@@ -61,7 +61,6 @@ Template.Tickets.viewmodel({
 });
 
 Template.Tickets.events({
-  ...(actionHandlers(Topics)),
   'click .js-filter-actives'(event, instance) {
     $(event.target).blur();
     const oldValue = instance.viewmodel.activesOnly();

@@ -108,7 +108,7 @@ Topics.categoryHelpers('vote', {
   },
   eligibleVoterCount() {
 //    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
-    return Parcels.find({ communityId: this.communityId }).count();
+    return Parcels.find({ communityId: this.communityId, category: '@property' }).count();
   },
   votedCount() {
     return this.voteParticipation.count;

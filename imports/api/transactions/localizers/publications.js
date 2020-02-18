@@ -1,19 +1,18 @@
 /* eslint-disable prefer-arrow-callback */
-
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Breakdowns } from './breakdowns.js';
+import { Localizers } from './localizers.js';
 
-Meteor.publish('breakdowns.inCommunity', function breakdownsInCommunity(params) {
+Meteor.publish('localizers.inCommunity', function localizersInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('breakdowns.inCommunity', { communityId })) {
+  if (!user.hasPermission('localizers.inCommunity', { communityId })) {
     return this.ready();
   }
 
-  return Breakdowns.find({ communityId: { $in: [communityId, null] } });
+  return Localizers.find({ communityId });
 });

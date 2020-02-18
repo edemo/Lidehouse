@@ -106,10 +106,6 @@ Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour,
   });
 
   if (behaviour.indexes) {
-    Meteor.startup(function ensureIndexes() {
-      behaviour.indexes.forEach((indexDef) => {
-        collection.ensureIndex(indexDef, { sparse: true });
-      });
-    });
+    Meteor.startup(() => behaviour.indexes(collection));
   }
 };

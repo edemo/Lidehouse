@@ -10,13 +10,8 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { monthTags, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
-import { Reports } from '/imports/api/transactions/reports/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { AccountSpecification } from '/imports/api/transactions/account-specification';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Balances } from '/imports/api/transactions/balances/balances';
 import '/imports/ui_3/views/blocks/chart.js';
 import '/imports/ui_3/views/components/custom-table.js';
@@ -122,7 +117,7 @@ Template.Community_finances.viewmodel({
 
   onCreated(instance) {
     instance.autorun(() => {
-      instance.subscribe('breakdowns.inCommunity', { communityId: this.communityId() });
+      instance.subscribe('accounts.inCommunity', { communityId: this.communityId() });
       instance.subscribe('balances.ofAccounts', { communityId: this.communityId() });
     });
   },
@@ -159,7 +154,7 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("Money accounts"),
-          data: this.monthlyDataFromCbalances('38'),
+          data: this.monthlyDataFromCbalances('`38'),
         }, plusColors[0]),
         _.extend({
           label: __("Commitments"),
@@ -190,9 +185,8 @@ Template.Community_finances.viewmodel({
       };
     } else {
       const datasets = [];
-      const coa = ChartOfAccounts.get();
-      const moneyAccounts = coa ? coa.findNodeByName('Money accounts') : [];
-      moneyAccounts.leafs().reverse().forEach((account, index) => {
+      const moneyAccount = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
+      moneyAccount.leafs().reverse().forEach((account, index) => {
         datasets.push(_.extend({
           label: account.name,
           data: this.monthlyDataFromCbalances(account.code),
@@ -276,8 +270,7 @@ Template.Community_finances.viewmodel({
   },
   getBalance(account) {
     const communityId = Session.get('activeCommunityId');
-    const coa = ChartOfAccounts.get(); if (!coa) return 0;
-    const accountCode = parseInt(account, 10) ? account : coa.findNodeByName(account).code;
+    const accountCode = parseInt(account, 10) ? account : Accounts.findOne({ communityId, name: account }).code;
     return Balances.get({ communityId, account: accountCode, tag: 'P' }).displayTotal()
       || Balances.get({ communityId, account: accountCode, tag: 'C' }).displayTotal();
   },
@@ -286,14 +279,13 @@ Template.Community_finances.viewmodel({
   },
   statusAccounts() {
     return [
-      { name: 'Money accounts', code: '38' },
+      { name: 'Money accounts', code: '`38' },
       { name: 'Commitments', code: '46' },
     ];
   },
   leafsOf(account) {
-    const coa = ChartOfAccounts.get(); if (!coa) return [];
-    const moneyAccounts = coa.findNodeByName(account);
-    return moneyAccounts.leafs();
+    const accounts = Accounts.findOne({ communityId: this.communityId(), name: account });
+    return accounts.leafs();
   },
   commitmentAccounts() {
     return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK', 'Suppliers'];
@@ -308,15 +300,8 @@ Template.Community_finances.viewmodel({
     return ['T-2017-1', 'T-2017-2', 'T-2017-3', 'T-2017-4', 'T-2017-5', 'T-2017-6',
           'T-2017-7', 'T-2017-8', 'T-2017-9', 'T-2017-10', 'T-2017-11', 'T-2017-12'];
   },
-  report(name, year) {
-    if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
-    return Reports[name](year);
-  },
   subAccountOptionsOf(accountCode) {
-//    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
-    const brk = ChartOfAccounts.get();
-    if (brk) return brk.nodeOptionsOf(accountCode, true);
-    return [];
+    return Accounts.nodeOptionsOf(getActiveCommunityId(), accountCode, true);
   },
 });
 

@@ -157,17 +157,17 @@ Template.Parcels_box.viewmodel({
   },
   parcels() {
     const communityId = getActiveCommunityId();
-    return Parcels.find({ communityId, approved: true });
+    return Parcels.find({ communityId, category: '@property', approved: true });
   },
   unapprovedParcels() {
     const communityId = getActiveCommunityId();
-    return Parcels.find({ communityId, approved: false });
+    return Parcels.find({ communityId, category: '@property', approved: false });
   },
   unapprovedParcelsTableDataFn() {
     const self = this;
     return () => {
       const communityId = getActiveCommunityId();
-      return Parcels.find({ communityId, approved: false }).fetch();
+      return Parcels.find({ communityId, category: '@property', approved: false }).fetch();
     };
   },
 });

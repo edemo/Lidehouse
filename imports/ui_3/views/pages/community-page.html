@@ -174,7 +174,7 @@
             {{#unless showAllParcels}}
             <button class="btn btn-primary btn-sm js-show-all"><strong> {{_ 'Show all parcels'}}</strong></button>
             {{/unless}}
-            {{>Action_buttons_group collection='parcels' actions='new,import' size='md'}}
+            {{>Action_buttons_group collection='parcels' actions='new,import' options=(obj '{"entity": "@property"}') size='md'}}
         </div>
         <p>
             {{#if showAllParcels}}

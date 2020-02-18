@@ -6,15 +6,14 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Clock } from '/imports/utils/clock.js';
-//import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
-//import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 
 const openingSchema = new SimpleSchema({
   side: { type: String, allowedValues: ['debit', 'credit'] },
   account: { type: String, autoform: chooseConteerAccount },
-// autoform: chooseSubAccount('COA', '??')
+// autoform: Accounts.chooseSubNode('COA', '??')
 });
 
 Transactions.categoryHelpers('opening', {

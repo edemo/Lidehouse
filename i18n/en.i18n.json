@@ -119,7 +119,7 @@
 
   // tickets
   "Please dont report twice": "To help our maintanance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
-  "New issue": "Report a new problem",
+  "Report issue": "Report a new issue",
 
   // account
   "Localizer": "Accounting location",

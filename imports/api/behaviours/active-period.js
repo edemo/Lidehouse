@@ -81,11 +81,13 @@ const staticHelpers = {
   },
 };
 
-const indexes = [
-  { active: 1 },
-  { 'activeTime.begin': 1 },
-  { 'activeTime.end': 1 },
-];
+const indexes = function indexActivePeriod(collection) {
+  collection.ensureIndex({ active: 1 });
+  if (Meteor.isServer) {
+    collection._ensureIndex({ 'activeTime.begin': 1 }, { sparse: true });
+    collection._ensureIndex({ 'activeTime.end': 1 }, { sparse: true });
+  }
+};
 
 export const ActivePeriod = { name: 'ActivePeriod',
   schema, helpers, staticHelpers, methods, hooks, indexes,

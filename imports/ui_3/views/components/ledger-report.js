@@ -30,10 +30,10 @@ Template.Ledger_report.helpers({
     });
   },
   headerLevelClass(account) {
-    return 'header-level' + account.code.length.toString();
+    return 'header-level' + (account.code.length - 1).toString();
   },
   displayAccount(account) {
-    return Breakdowns.display(account);
+    return account.displayAccount();
   },
   negativeClass(number) {
     return number < 0 && 'negative';

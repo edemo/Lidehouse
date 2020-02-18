@@ -13,10 +13,8 @@ import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import '/imports/api/transactions/breakdowns/methods.js';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
@@ -48,7 +46,7 @@ Template.Accounting_transactions.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
-      instance.subscribe('breakdowns.inCommunity', { communityId });
+      instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
       instance.subscribe('transactions.incomplete', { communityId });
       instance.subscribe('bills.outstanding', { communityId });
@@ -70,24 +68,21 @@ Template.Accounting_transactions.viewmodel({
       }
     },
     function setFilterAccountOptions() {
-      const coa = ChartOfAccounts.get();
-      if (coa) {
-        const txdef = Txdefs.findOne(this.txdefSelected());
-        const debitAccountOptions = txdef ? [{ label: __('Chart Of Accounts'), value: '' }].concat(coa.nodeOptionsOf(txdef.debit)) : coa.nodeOptions();
-        this.debitAccountOptions(debitAccountOptions);
-        const creaditAccountOptions = txdef ? [{ label: __('Chart Of Accounts'), value: '' }].concat(coa.nodeOptionsOf(txdef.credit)) : coa.nodeOptions();
-        this.creditAccountOptions(creaditAccountOptions);
-        if (!this.debitAccountSelected() && this.debitAccountOptions() && this.debitAccountOptions().length > 0) {
-          this.debitAccountSelected(this.debitAccountOptions()[0].value);
-        }
-        if (!this.creditAccountSelected() && this.creditAccountOptions() && this.creditAccountOptions().length > 0) {
-          this.creditAccountSelected(this.creditAccountOptions()[0].value);
-        }
+      const communityId = this.communityId(); if (!communityId) return;
+      const coa = Accounts.coa(communityId); if (!coa) return;
+      const txdef = Txdefs.findOne(this.txdefSelected());
+      const debitAccountOptions = txdef ? Accounts.nodeOptionsOf(communityId, txdef.debit) : coa.nodeOptions();
+      this.debitAccountOptions(debitAccountOptions);
+      const creaditAccountOptions = txdef ? Accounts.nodeOptionsOf(communityId, txdef.credit) : coa.nodeOptions();
+      this.creditAccountOptions(creaditAccountOptions);
+      if (!this.debitAccountSelected() && this.debitAccountOptions() && this.debitAccountOptions().length > 0) {
+        this.debitAccountSelected(this.debitAccountOptions()[0].value);
       }
-      const loc = Localizer.get();
-      if (loc) {
-        this.localizerOptions(loc.nodeOptions());
+      if (!this.creditAccountSelected() && this.creditAccountOptions() && this.creditAccountOptions().length > 0) {
+        this.creditAccountSelected(this.creditAccountOptions()[0].value);
       }
+
+      this.localizerOptions(Parcels.all(communityId));
     },
     function txSubscription() {
       this.templateInstance.subscribe('transactions.betweenAccounts', this.subscribeParams());
@@ -99,10 +94,7 @@ Template.Accounting_transactions.viewmodel({
     return txdefs;
   },
   optionsOf(accountCode) {
-//    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
-    const brk = Breakdowns.findOneByName('ChartOfAccounts', this.communityId());
-    if (brk) return brk.nodeOptionsOf(accountCode, true);
-    return [];
+    return Accounts.nodeOptionsOf(this.communityId(), accountCode, true);
   },
   subscribeParams() {
     return {

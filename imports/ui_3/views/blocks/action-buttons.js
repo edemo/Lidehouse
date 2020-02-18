@@ -63,11 +63,15 @@ const buttonHelpers = {
     if (!instanceData.options) return {};
     if (typeof instanceData.options.status === 'string') {
       const collection = Mongo.Collection.get(instanceData.collection);
-      instanceData.options.status = collection.statuses[instanceData.options.status];
+      const status = collection.statuses[instanceData.options.status];
+      debugAssert(status, `No such status "${instanceData.options.status}" for collection ${instanceData.collection}`);
+      instanceData.options.status = status;
     }
     if (typeof instanceData.options.entity === 'string') {
       const collection = Mongo.Collection.get(instanceData.collection);
-      instanceData.options.entity = collection.entities[instanceData.options.entity];
+      const entity = collection.entities[instanceData.options.entity];
+      debugAssert(entity, `No such entity "${instanceData.options.entity}" for collection ${instanceData.collection}`);
+      instanceData.options.entity = entity;
     }
     if (typeof instanceData.options.txdef === 'string') {
       instanceData.options.txdef = Txdefs.findOne(instanceData.options.txdef);

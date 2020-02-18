@@ -7,10 +7,9 @@ import { Factory } from 'meteor/dburles:factory';
 import { __ } from '/imports/localization/i18n.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
-import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
@@ -33,8 +32,8 @@ Txdefs.schema = new SimpleSchema({
   name: { type: String, max: 100 },
   category: { type: String, max: 15, optional: true, autoform: { omit: true } }, // Name of the entity
   data: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // Default data values
-  debit: { type: [String], max: 6, autoform: chooseAccountNode, optional: true },
-  credit: { type: [String], max: 6, autoform: chooseAccountNode, optional: true },
+  debit: { type: [String], max: 6, autoform: Accounts.chooseNode, optional: true },
+  credit: { type: [String], max: 6, autoform: Accounts.chooseNode, optional: true },
 });
 
 Meteor.startup(function indexTxdefs() {
@@ -45,12 +44,15 @@ Txdefs.helpers({
   schema() {
     const schema = new SimpleSchema([
       _.clone(Transactions.baseSchema), {
-        debit: { type: String, autoform: chooseSubAccount('COA', this.debit) },
-        credit: { type: String, autoform: chooseSubAccount('COA', this.credit) },
+        debit: { type: String, autoform: Accounts.chooseSubNode(this.debit) },
+        credit: { type: String, autoform: Accounts.chooseSubNode(this.credit) },
       }, _.clone(Transactions.noteSchema),
     ]);
     schema.i18n('schemaTransactions');
     return schema;
+  },
+  entityName() {
+    return 'txdef';
   },
   isAutoPosting() {
     return this.isAccountantTx();
@@ -100,12 +102,12 @@ Factory.define('txdef', Txdefs, {
 
 export const chooseConteerAccount = {
   options() {
+    const communityId = Session.get('activeCommunityId');
     const txdefId = Session.get('modalContext').txdef._id;
     const txdef = Txdefs.findOne(txdefId);
-    const coa = ChartOfAccounts.get();
-    if (!coa || !txdef) return [];
-    const nodeCodes = txdef[txdef.conteerSide()];
-    return coa.nodeOptionsOf(nodeCodes, /*leafsOnly*/ false);
+    if (!txdef) return [];
+    const codes = txdef[txdef.conteerSide()];
+    return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false);
   },
   firstOption: () => __('Chart Of Accounts'),
 };

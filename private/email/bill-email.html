@@ -34,7 +34,7 @@
                                         <tr>
                                             <td>{{line.title}}
                                             {{#if (equals bill.relation 'member')}}
-                                                {{#if line.localizer}} - {{code2parcelRef line.localizer}}{{/if}}
+                                                {{#if line.parcelId}} - {{parcelRef line.parcelId}}{{/if}}
                                             {{/if}}
                                             </td>
                                             <td class="alignright nowrap">{{displayMoney line.amount}}</td>

@@ -292,6 +292,18 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 16,
+  name: 'Parcels can have different categories',
+  up() {
+    Parcels.update(
+      { category: { $exists: false } },
+      { $set: { category: '@property' } },
+      { multi: true }
+    );
+  },
+});
+
 Meteor.startup(() => {
   Migrations.unlock();
   Migrations.migrateTo('latest');

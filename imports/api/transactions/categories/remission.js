@@ -7,8 +7,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Breakdowns, chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
@@ -34,7 +33,7 @@ Transactions.categoryHelpers('remission', {
       });
     }
     if (accountingMethod === 'accrual') {
-      this[bill.conteerSide()] = [{ account: bill.relationAccount() }];
+      this[bill.conteerSide()] = [{ account: bill.relationAccount().code }];
       this[bill.relationSide()] = [{ account: this.payAccount }];
     } else if (accountingMethod === 'cash') {
       this[bill.conteerSide()] = []; copyLinesInto(this.bill.conteerSide());
@@ -64,9 +63,8 @@ Transactions.categoryHelpers('remission', {
         const bill = Transactions.findOne(bp.id);
           bill.lines.forEach(line => {
             if (!line) return; // can be null, when a line is deleted from the array
-            debugAssert(line.localizer, 'Cannot process a parcel payment without bill localizer fields');
-            const ref = Localizer.code2parcelRef(line.localizer);
-            Parcels.update({ communityId: this.communityId, ref }, { $inc: { outstanding: (-1) * sign * line.amount } });
+            debugAssert(line.parcelId, 'Cannot process a parcel remission without parcelId field');
+            Parcels.update(line.parcelId, { $inc: { outstanding: (-1) * sign * line.amount } });
           });
       });
     }

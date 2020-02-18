@@ -7,8 +7,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Breakdowns, chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
@@ -40,8 +39,8 @@ Transactions.categoryHelpers('barter', {
     }
     // TODO: this does not work for parcel bills, needs payin digit
     if (accountingMethod === 'accrual') {
-      this.debit = [{ account: supplierBill.relationAccount() }];
-      this.credit = [{ account: customerBill.relationAccount() }];
+      this.debit = [{ account: supplierBill.relationAccount().code }];
+      this.credit = [{ account: customerBill.relationAccount().code }];
     } else if (accountingMethod === 'cash') {
       copyLinesInto(this.debit, supplierBill);
       copyLinesInto(this.credit, customerBill);
@@ -72,9 +71,8 @@ Transactions.categoryHelpers('barter', {
     if (customerBill.relation === 'member') {
       customerBill.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
-        debugAssert(line.localizer, 'Cannot process a parcel barter without bill localizer fields');
-        const ref = Localizer.code2parcelRef(line.localizer);
-        Parcels.update({ communityId: this.communityId, ref }, { $inc: { outstanding: (-1) * sign * line.amount } });
+        debugAssert(line.parcelId, 'Cannot process a parcel barter without parcelId field');
+        Parcels.update(line.parcelId, { $inc: { outstanding: (-1) * sign * line.amount } });
       });
     }
   },

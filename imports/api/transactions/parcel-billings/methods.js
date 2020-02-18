@@ -8,11 +8,10 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Bills } from '/imports/api/transactions/bills/bills';
@@ -98,10 +97,9 @@ export const apply = new ValidatedMethod({
           if (line.quantity === 0) return; // Should not create bill for zero amount
           line.title = parcelBilling.title;
           line.amount = line.quantity * line.unitPrice;
-//          line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.digit;
-          line.account = Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.digit;
+          line.account = Accounts.findOne({ communityId, category: 'income', name: 'Owner payins' }).code + parcelBilling.digit;
           line.parcelId = parcel._id;
-          line.localizer = Localizer.parcelRef2code(parcel.ref);
+          line.localizer = parcel.code;
           if (currentBilling) { // Will need to update the meter's billings registry, so preparing the update
             line.meterUpdate = { _id: activeMeter._id, billing: currentBilling };
           }

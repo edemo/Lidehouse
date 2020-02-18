@@ -4,7 +4,6 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Balances } from './balances.js';
 
 Meteor.publish('balances.ofAccounts', function balancesOfAccounts(params) {
@@ -22,7 +21,7 @@ Meteor.publish('balances.ofAccounts', function balancesOfAccounts(params) {
   const periodCodes = PeriodBreakdown.nodeCodes(true); // TODO filter for last year
   return Balances.find({ communityId, localizer: { $exists: false } });
 });
-
+/*
 // Publishing the balances of all individual Parcels -- Current only
 Meteor.publishComposite('balances.ofLocalizers', function balancesOfLocalizers(params) {
   new SimpleSchema({
@@ -70,3 +69,4 @@ Meteor.publishComposite('balances.ofSelf', function balancesOfSelf(params) {
     }],
   };
 });
+*/

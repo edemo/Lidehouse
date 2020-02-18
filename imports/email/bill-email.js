@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { __ } from '/imports/localization/i18n.js';
 import '/imports/api/users/users.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Parcels } from '../api/parcels/parcels';
 
 export const Bill_Email = {
   path: 'email/bill-email.html',    // Relative to the 'private' dir.
@@ -14,8 +14,8 @@ export const Bill_Email = {
   },
 
   helpers: {
-    code2parcelRef(code) {
-      return Localizer.code2parcelRef(code);
+    parcelRef(parcelId) {
+      return Parcels.findOne(parcelId).ref;
     },
   },
 

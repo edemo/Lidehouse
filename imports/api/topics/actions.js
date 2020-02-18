@@ -46,7 +46,8 @@ Topics.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     color: () => 'primary',
-    label: options => (Array.isArray(options.entity) ? `${__('new')}  ${__(options.category)}` : `${__('new')} ${__(options.entity.name)}`),
+    label: options => (Array.isArray(options.entity) ? `${__('new')}  ${__(options.category)}` :
+      (options.entity.name === 'issue' ? __('Report issue') : `${__('new')} ${__(options.entity.name)}`)),
     visible: (options, doc) => currentUserHasPermission(`${options.entity.name}.insert`, doc),
     subActions: options => Array.isArray(options.entity) && options.entity.length,
     subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),

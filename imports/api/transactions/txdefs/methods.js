@@ -11,7 +11,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkNotExists(Txdefs, { communityId: doc.communityId, name: doc.name });
-    checkPermissions(this.userId, 'breakdowns.insert', doc);
+    checkPermissions(this.userId, 'accounts.insert', doc);
 
     return Txdefs.insert(doc);
   },
@@ -26,9 +26,9 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Txdefs, _id);
-    // checkModifier(doc, modifier, ['name'], true); - can you change the name? it is referenced by that by other breakdowns
+    // checkModifier(doc, modifier, ['name'], true); - can you change the name? it is referenced by that by other accounts
     checkNotExists(Txdefs, { _id: { $ne: doc._id }, communityId: doc.communityId, name: modifier.$set.name });
-    checkPermissions(this.userId, 'breakdowns.update', doc);
+    checkPermissions(this.userId, 'accounts.update', doc);
 
     Txdefs.update({ _id }, modifier);
   },
@@ -44,7 +44,7 @@ export const clone = new ValidatedMethod({
   run({ name, communityId }) {
     const doc = checkExists(Txdefs, { communityId: null, name });
     checkNotExists(Txdefs, { communityId, name });
-    checkPermissions(this.userId, 'breakdowns.update', { communityId });
+    checkPermissions(this.userId, 'accounts.update', { communityId });
 
     return Txdefs.clone(name, communityId);
   },
@@ -58,7 +58,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Txdefs, _id);
-    checkPermissions(this.userId, 'breakdowns.remove', doc);
+    checkPermissions(this.userId, 'accounts.remove', doc);
 
     Txdefs.remove(_id);
   },

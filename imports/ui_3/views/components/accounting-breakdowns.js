@@ -10,71 +10,78 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
-import { breakdownColumns } from '/imports/api/transactions/breakdowns/tables.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import '/imports/api/transactions/breakdowns/methods.js';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import '/imports/api/transactions/methods.js';
+import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import '/imports/api/transactions/breakdowns/actions.js';
 import '/imports/api/transactions/txdefs/actions.js';
-import { MoneyAccounts } from '/imports/api/money-accounts/money-accounts.js';
-import '/imports/api/money-accounts/actions.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { accountColumns } from '/imports/api/transactions/accounts/tables.js';
+import { localizerColumns } from '/imports/api/parcels/tables.js';
+import '/imports/api/transactions/accounts/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/api/transactions/txdefs/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-breakdowns.html';
+import { Parcels } from '../../../api/parcels/parcels';
 
-Template.Accounting_breakdowns.viewmodel({
+Template.Accounting_setup.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
-      instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('moneyAccounts.inCommunity', { communityId });
+      instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
+      instance.subscribe('parcels.inCommunity', { communityId });
     });
   },
   communityId() {
     return Session.get('activeCommunityId');
   },
-  noBreakdownsDefined() {
-    const communityId = Session.get('activeCommunityId');
-    return !Breakdowns.findOne({ communityId, name: 'COA' });
+  noAccountsDefined() {
+    return !Accounts.findOne({ communityId: this.communityId() });
   },
   txdefs() {
-    const communityId = Session.get('activeCommunityId');
-    const txdefs = Txdefs.find({ communityId });
+    const txdefs = Txdefs.find({ communityId: this.communityId() });
     return txdefs;
   },
-  moneyAccounts() {
-    const communityId = Session.get('activeCommunityId');
-    const moneyAccounts = MoneyAccounts.find({ communityId }, { sort: { digit: 1 } });
-    return moneyAccounts;
+  accounts() {
+    const accounts = Accounts.find({ communityId: this.communityId() }, { sort: { code: 1 } });
+    return accounts;
   },
-  breakdownsTableDataFn(tab) {
+  moneyAccounts() {
+    const accounts = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
+    return accounts && accounts.nodes(true);
+  },
+  accountsTableDataFn(tab) {
     const templateInstance = Template.instance();
+    const communityId = this.communityId();
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
-      const communityId = Session.get('activeCommunityId');
-      if (tab === 'coa') return Breakdowns.find({ communityId, sign: { $exists: true } }).fetch();
-      if (tab === 'loc') return Breakdowns.find({ communityId, name: { $in: ['Parcels', 'Places'] } }).fetch();
-      if (tab === 'others') return Breakdowns.find({ communityId, sign: { $exists: false }, name: { $not: { $in: ['COA', 'Parcels', 'Places', 'Localizer'] } } }).fetch();
-      return [];
+      return Accounts.find({ communityId }).fetch();
     }
     return getTableData;
   },
-  // Unfortunately since Blaze calls a function if possible, its difficult to hand back a function itself *without being called)
-  // That is why we need different helpers - and not good to have one helper with a parameter
-  coaBreakdownsTableDataFn() { return this.breakdownsTableDataFn('coa'); },
-  locBreakdownsTableDataFn() { return this.breakdownsTableDataFn('loc'); },
-  othersBreakdownsTableDataFn() { return this.breakdownsTableDataFn('others'); },
-  //
-  breakdownsOptionsFn() {
+  accountsOptionsFn() {
     return () => Object.create({
-      columns: breakdownColumns(),
+      columns: accountColumns(),
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+      paging: false,
+      info: false,
+    });
+  },
+  localizersTableDataFn(tab) {
+    const templateInstance = Template.instance();
+    const communityId = this.communityId();
+    function getTableData() {
+      if (!templateInstance.subscriptionsReady()) return [];
+      return Parcels.find({ communityId }).fetch();
+    }
+    return getTableData;
+  },
+  localizersOptionsFn() {
+    return () => Object.create({
+      columns: localizerColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       paging: false,
@@ -82,17 +89,11 @@ Template.Accounting_breakdowns.viewmodel({
     });
   },
   optionsOf(accountCode) {
-//    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
-    const brk = Breakdowns.findOneByName('ChartOfAccounts', this.communityId());
-    if (brk) return brk.nodeOptionsOf(accountCode, true);
-    return [];
+    return Accounts.nodeOptionsOf(this.communityId(), accountCode, true);
   },
 });
 
-Template.Accounting_breakdowns.events({
-  ...(actionHandlers(Breakdowns, 'new')),
-  ...(actionHandlers(Txdefs, 'new')),
-  ...(actionHandlers(MoneyAccounts, 'new')),
+Template.Accounting_setup.events({
   'click #coa .js-clone'(event, instance) {
     const communityId = Session.get('activeCommunityId');
     Transactions.methods.cloneAccountingTemplates.call({ communityId }, handleError);
