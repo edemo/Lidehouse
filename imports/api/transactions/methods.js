@@ -157,8 +157,8 @@ export const cloneAccountingTemplates = new ValidatedMethod({
   run({ communityId /*, name*/ }) {
     checkPermissions(this.userId, 'accounts.insert', { communityId });
     Templates.clone('Condominium_COA', communityId);
+    Templates.clone('Condominium_Localizer', communityId);
     Templates.clone('Condominium_Txdefs', communityId);
-    Templates.clone('Condominium_PhysicalRoot', communityId);
   },
 });
 

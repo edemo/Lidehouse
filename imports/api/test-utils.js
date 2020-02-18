@@ -10,6 +10,7 @@ import '/imports/startup/server/validated-method.js'; // only this one needed fr
 import { initializePermissions } from '/imports/api/permissions/config.js';
 import { insertUnittestFixture } from '/imports/fixture/fixtures.js';
 import { defineAccountTemplates } from '/imports/api/transactions/accounts/template.js';
+import { defineLocalizerTemplates } from '/imports/api/parcels/template.js';
 import { defineTxdefTemplates } from '/imports/api/transactions/txdefs/template.js';
 import { initializeBuiltinFolders } from '/imports/api/shareddocs/sharedfolders/builtin.js';
 
@@ -25,6 +26,7 @@ export function logDB() {
 function initializeDatabase() {
   initializePermissions();
   defineAccountTemplates();
+  defineLocalizerTemplates();
   defineTxdefTemplates();
   initializeBuiltinFolders();
 }

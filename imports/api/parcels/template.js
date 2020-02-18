@@ -2,26 +2,26 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 
-export function definelocalizerTemplates() {
-  Templates.define({ _id: 'Condominium_PhysicalRoot', localizers: [
+export function defineLocalizerTemplates() {
+  Templates.define({ _id: 'Condominium_PhysicalRoot', parcels: [
     { code: '@', name: 'Parcels', category: '@group' }, // Albetétek
   ],
   });
 
-  Templates.define({ _id: 'Condominium_Localizer', localizers: [
+  Templates.define({ _id: 'Condominium_Localizer', parcels: [
 //    { code: '', name: 'Locations', category: 'location', locked: true },
     { code: '@', name: 'Parcels', category: '@group' }, // Albetétek
 //    { code: '@A', name: 'Main building', category: '@group' },
 
     { code: '&', name: 'Common areas', category: '@group' },  // Közös tulajdonú helyiségek
-    { code: '&1', name: 'Padlás', category: 'common' },
-    { code: '&2', name: 'Pince', category: 'common' },
-    { code: '&3', name: 'Kert', category: 'common' },
-    { code: '&4', name: 'Tárolók', category: 'common' },
-    { code: '&5', name: 'Garázs', category: 'common' },
-    { code: '&6', name: 'Lépcsőház', category: 'common' },
-    { code: '&7', name: 'Folyosók', category: 'common' },
-    { code: '&9', name: 'Egyeb helyiségek', category: 'common' },
+    { code: '&1', name: 'Padlás', category: '@common' },
+    { code: '&2', name: 'Pince', category: '@common' },
+    { code: '&3', name: 'Kert', category: '@common' },
+    { code: '&4', name: 'Tárolók', category: '@common' },
+    { code: '&5', name: 'Garázs', category: '@common' },
+    { code: '&6', name: 'Lépcsőház', category: '@common' },
+    { code: '&7', name: 'Folyosók', category: '@common' },
+    { code: '&9', name: 'Egyeb helyiségek', category: '@common' },
 
     { code: '#', name: 'Places', category: '#tag' }, // Elszámolási egységek
     { code: '#1', name: 'Central', category: '#tag' },   // Központ
