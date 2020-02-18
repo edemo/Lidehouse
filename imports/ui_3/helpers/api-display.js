@@ -9,6 +9,7 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Parcels } from '../../api/parcels/parcels';
 
 export function label(value, color, icon) {
   if (value === undefined) return undefined;
@@ -42,7 +43,8 @@ export function displayOutstanding(value) {
 
 export function displayAccountText(code) {
   if (!code) return '';
-  const account = Accounts.getByCode(code);
+  const collection = code.charAt(0) === '`' ? Accounts : Parcels;
+  const account = collection.getByCode(code);
   return account && account.displayAccount();
 }
 

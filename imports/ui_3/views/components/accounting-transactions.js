@@ -82,7 +82,7 @@ Template.Accounting_transactions.viewmodel({
         this.creditAccountSelected(this.creditAccountOptions()[0].value);
       }
 
-      this.localizerOptions(Parcels.all(communityId));
+      this.localizerOptions(Parcels.nodeOptionsOf(communityId, ''));
     },
     function txSubscription() {
       this.templateInstance.subscribe('transactions.betweenAccounts', this.subscribeParams());

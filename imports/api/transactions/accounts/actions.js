@@ -86,7 +86,7 @@ AutoForm.addModalHooks('af.simpleAccount.update');
 AutoForm.addHooks('af.simpleAccount.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.code = '`' + doc.code;
+    if (doc.code.charAt(0) !== '`') doc.code = '`' + doc.code;
     return doc;
   },
 });
@@ -97,7 +97,7 @@ AutoForm.addHooks('af.cashAccount.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.category = 'cash';
-    doc.code = '`' + doc.code;
+    if (doc.code.charAt(0) !== '`') doc.code = '`' + doc.code;
     return doc;
   },
 });
@@ -108,7 +108,7 @@ AutoForm.addHooks('af.bankAccount.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.category = 'bank';
-    doc.code = '`' + doc.code;
+    if (doc.code.charAt(0) !== '`') doc.code = '`' + doc.code;
     return doc;
   },
 });
