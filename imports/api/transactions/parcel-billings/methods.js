@@ -126,6 +126,7 @@ export const apply = new ValidatedMethod({
       });
 
       _.each(billsToSend, (bill, leadParcelId) => {
+        bill.lines = _.sortBy(bill.lines, line => (line.parcelId === leadParcelId ? '' : line.localizer));
         const meterUpdates = [];
         bill.lines.forEach((line) => {
           if (line.meterUpdate) meterUpdates.push(line.meterUpdate);

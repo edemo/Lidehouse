@@ -67,3 +67,15 @@ Number.prototype.round = function round(places) {
 _.isDefined = function (obj) { // underscore did not have this
   return obj !== undefined;
 };
+
+let lastTimeCheck;
+
+console.startElapsedTime = function () {
+  lastTimeCheck = Date.now();
+};
+
+console.logElapsedTime = function (text) {
+  const elapsedTime = Date.now() - lastTimeCheck;
+  console.log(text, elapsedTime, 'ms');
+  lastTimeCheck = Date.now();
+};
