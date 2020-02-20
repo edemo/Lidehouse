@@ -12,7 +12,7 @@ import './balance-widget.html';
 Template.Balance_widget.viewmodel({
   autorun() {
     const communityId = getActiveCommunityId();
-    this.templateInstance.subscribe('bills.outstanding', { communityId });
+    this.templateInstance.subscribe('transactions.outstanding', { communityId });
     this.templateInstance.subscribe('memberships.ofUser', { userId: Meteor.userId() });
   },
   partner() {

@@ -40,9 +40,10 @@ Template.Accounting_bills.viewmodel({
       //initializeDatatablesSelectButtons('Bills');
       instance.subscribe('parcelBillings.inCommunity', { communityId: this.communityId() });
       if (this.unreconciledOnly()) {
-        instance.subscribe('bills.outstanding', { communityId: this.communityId() });
+        instance.subscribe('transactions.unreconciled', { communityId: this.communityId() });
+        instance.subscribe('transactions.outstanding', { communityId: this.communityId() });
       } else {
-        instance.subscribe('bills.filtered', { communityId: this.communityId() });
+        instance.subscribe('transactions.inCommunity', { communityId: this.communityId() });
       }
     });
   },

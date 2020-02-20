@@ -44,7 +44,7 @@ Meteor.publishComposite('parcels.outstanding', function parcelsOutstanding(param
   const { communityId, limit } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('bills.outstanding', { communityId })) {
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     return this.ready();
   }
 

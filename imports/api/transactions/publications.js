@@ -85,51 +85,12 @@ Meteor.publish('transactions.betweenAccounts', function transactionsInCommunity(
   return Transactions.find(selector);
 });
 
-Meteor.publish('transactions.incomplete', function transactionsInCommunity(params) {
-  new SimpleSchema({
-    communityId: { type: String },
-  }).validate(params);
-  const { communityId } = params;
-
-  const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
-    return this.ready();
-  }
-  return Transactions.find({ communityId, complete: false }, { limit: 100 });
-});
-
-Meteor.publish('transactions.unreconciled', function transactionsUnreconciled(params) {
-  new SimpleSchema({
-    communityId: { type: String },
-  }).validate(params);
-  const { communityId } = params;
-
-  const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
-    return this.ready();
-  }
-  return Transactions.find({ communityId, reconciledId: { $exists: false } });
-});
-
-Meteor.publish('transactions.outstanding', function transactionsOutstanding(params) {
-  new SimpleSchema({
-    communityId: { type: String },
-  }).validate(params);
-  const { communityId } = params;
-
-  const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
-    return this.ready();
-  }
-  return Transactions.find({ communityId, outstanding: { $gt: 0 } });
-});
-
 //---------------------------
 
-function findTxWithRelatedStuff(selector) {
+function findTxsWithRelatedStuff(selector, options) {
   return {
     find() {
-      return Transactions.find(_.extend(selector));
+      return Transactions.find(selector, options);
     },
     children: [{
       find(tx) {
@@ -158,5 +119,49 @@ Meteor.publishComposite('transactions.byId', function transactionsById(params) {
     && user.partnerId(tx.communityId) !== tx.partnerId) {
     return this.ready();
   }
-  return findTxWithRelatedStuff({ _id });
+  return findTxsWithRelatedStuff({ _id });
 });
+
+Meteor.publishComposite('transactions.unreconciled', function transactionsUnreconciled(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+    category: { type: String, optional: true },
+  }).validate(params);
+  const { communityId } = params;
+
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
+    return this.ready();
+  }
+  return findTxsWithRelatedStuff(_.extend({}, params, { reconciledId: { $exists: false } }));
+});
+
+Meteor.publishComposite('transactions.outstanding', function transactionsOutstanding(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+    category: { type: String, optional: true },
+  }).validate(params);
+  const { communityId } = params;
+
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
+    return this.ready();
+  }
+  return findTxsWithRelatedStuff(_.extend({}, params, { outstanding: { $gt: 0 } }));
+});
+
+/*
+Meteor.publishComposite('transactions.incomplete', function transactionsInCommunity(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+    category: { type: String, optional: true },
+  }).validate(params);
+  const { communityId } = params;
+
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
+    return this.ready();
+  }
+  return findTxsWithRelatedStuff(_.extend({}, params, { complete: false }), { limit: 100 });
+});
+*/

@@ -48,8 +48,6 @@ Template.Accounting_transactions.viewmodel({
       const communityId = this.communityId();
       instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
-      instance.subscribe('transactions.incomplete', { communityId });
-      instance.subscribe('bills.outstanding', { communityId });
     });
   },
   communityId() {

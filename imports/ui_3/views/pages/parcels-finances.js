@@ -29,7 +29,7 @@ Template.Parcels_finances.viewmodel({
       const communityId = Session.get('activeCommunityId');
       instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('parcelships.inCommunity', { communityId });
-      if (Meteor.userOrNull().hasPermission('bills.outstanding', { communityId })) {
+      if (Meteor.userOrNull().hasPermission('transactions.inCommunity', { communityId })) {
         if (self.showAllParcels()) {
           instance.subscribe('parcels.outstanding', { communityId });
         } else {
