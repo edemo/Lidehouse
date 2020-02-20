@@ -1,0 +1,65 @@
+<template name="Payment_view">
+    <div class="row">
+        <div class="col-sm-12 col-md-8 pull-right text-right">
+            <h4>{{_ (or docVm.txdef.name 'schemaTransactions.serialId.label')}}:
+            <span class="text-navy">{{docVm.serialId}}</span></h4>
+            <h5>{{_ 'partner'}}:</h5>
+            <address>
+                {{docVm.partner}}
+            </address>
+            <p>
+                <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate docVm.valueDate}}</span><br/>
+                <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount docVm.payAccount}}}</span><br/>
+            </p>
+        </div>
+    </div>
+
+    <div class="table-responsive m-t">
+        <table class="table invoice-table">
+            <thead>
+                <tr>
+                    <th>{{_ 'schemaPayments.bills.label'}}</th>
+                    <th>{{_ 'schemaTransactions.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each bp in docVm.bills}}
+                {{#if bp}}
+                <tr>
+                    <td><strong>{{displayBill bp}}</strong></td>
+                    <td class="nowrap">{{displayMoney bp.amount}}</td>
+                </tr>
+                {{/if}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div><!-- /table-responsive -->
+
+    <table class="table invoice-total">
+        <tbody>
+        <tr>
+            <td><strong>{{_ 'Reconciled'}} :</strong></td>
+            <td class="nowrap">{{displayMoney docVm.reconciled}}</td>
+        </tr>
+        <tr>
+            <td><strong>{{_ 'Unreconciled'}} :</strong></td>
+            <td class="nowrap">{{displayMoney docVm.outstanding}}</td>
+        </tr>
+        <tr>
+            <td><strong>{{_ 'schemaTransactions.amount.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney docVm.amount}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="text-right" data-id="{{docVm._id}}">
+      {{>Action_button doc=docVm action=actions.edit size='xl'}}
+      {{>Action_button doc=docVm action=actions.post size='xl'}}
+    </div>
+
+    {{#if docVm.note}}
+    <div class="well m-t"><strong>{{_ 'schemaBills.note.label'}}</strong>
+        {{docVm.note}}
+    </div>
+    {{/if}}
+</template>

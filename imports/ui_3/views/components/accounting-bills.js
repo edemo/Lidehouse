@@ -21,8 +21,10 @@ import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel
 import '/imports/api/transactions/parcel-billings/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
-import '/imports/ui_3/views/components/bill-edit.js';
 import '/imports/ui_3/views/components/bill-view.js';
+import '/imports/ui_3/views/components/bill-edit.js';
+import '/imports/ui_3/views/components/payment-view.js';
+import '/imports/ui_3/views/components/payment-edit.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
 import '/imports/ui_3/views/modals/confirmation.js';

@@ -15,10 +15,12 @@ import { Payments } from '/imports/api/transactions/payments/payments.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
-const remissionSchema = new SimpleSchema([Transactions.partnerSchema, {
-  bills: { type: [Payments.billSchema], defaultValue: [] },
-  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value
-}]);
+const remissionSchema = new SimpleSchema([
+  Transactions.partnerSchema, {
+    bills: { type: [Payments.billPaidSchema], defaultValue: [] },
+    outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value
+  },
+]);
 
 Transactions.categoryHelpers('remission', {
   makeJournalEntries(accountingMethod) {

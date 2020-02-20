@@ -361,7 +361,9 @@ if (Meteor.isServer) {
     tdoc.checkAccountsExist();
     tdoc.complete = tdoc.calculateComplete();
     tdoc.autofillLines();
-    if (tdoc.category === 'bill') tdoc.outstanding = tdoc.calculateOutstanding();
+    if (tdoc.category === 'bill' || tdoc.category === 'payment') {
+      tdoc.outstanding = tdoc.calculateOutstanding();
+    }
     _.extend(doc, tdoc);
   });
 
@@ -378,7 +380,8 @@ if (Meteor.isServer) {
       const newDoc = Transactions._transform(_.extend({ category: doc.category }, modifier.$set));
       if (newDoc.lines) newDoc.autofillLines();
       _.extend(modifier, { $set: newDoc });
-      if ((newDoc.lines || newDoc.payments) && doc.category === 'bill') {
+      if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
+        || (doc.category === 'payment' && newDoc.bills)) {
         autoValueUpdate(doc, modifier, 'outstanding', d => d.calculateOutstanding());
       }
     }

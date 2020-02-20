@@ -22,10 +22,11 @@ export const chooseBillByProximity = {
   options() {
     const communityId = Session.get('activeCommunityId');
     const relation = Session.get('modalContext').txdef.data.relation;
-    const amount = AutoForm.getFieldValue('amount');
-    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
-    const billByProximity = _.sortBy(bills.fetch(), b => (b.oustanding - amount));
-    const options = billByProximity.map(function option(bill) {
+//    const amount = AutoForm.getFieldValue('amount');
+//    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
+//    const billByProximity = _.sortBy(bills.fetch(), b => (b.oustanding - amount));
+    const bills = Transactions.find({ communityId, category: 'bill', relation });
+    const options = bills.map(function option(bill) {
       return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
     });
     return options;
@@ -33,20 +34,46 @@ export const chooseBillByProximity = {
   firstOption: () => __('(Select one)'),
 };
 
-Payments.billSchema = new SimpleSchema({
+const billPaidSchema = {
   id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBillByProximity },
   amount: { type: Number, decimal: true },
-});
+};
+_.each(billPaidSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
+Payments.billPaidSchema = new SimpleSchema(billPaidSchema);
 
-const paymentSchema = new SimpleSchema([Transactions.partnerSchema, {
+const extensionSchema = {
+  valueDate: { type: Date },  // same as Tx, but we need the readonly added
+  amount: { type: Number, decimal: true },  // same as Tx, but we need the readonly added
   payAccount: { type: String, optional: true, autoform: Accounts.chooseSubNode('`38') },  // the money account paid to/from
-  bills: { type: [Payments.billSchema], defaultValue: [] },
-  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value
-}]);
+};
+_.each(extensionSchema, val => val.autoform = _.extend({}, val.autoform, { readonly() { return !!Session.get('modalContext').statementEntry; } }));
+Payments.extensionSchema = new SimpleSchema(extensionSchema);
+
+const paymentSchema = new SimpleSchema([
+  Transactions.partnerSchema,
+  Payments.extensionSchema, {
+    bills: { type: [Payments.billPaidSchema], defaultValue: [] },
+    outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value
+  },
+]);
 
 Transactions.categoryHelpers('payment', {
+  getBills() {
+    return (this.bills || []);
+  },
+  getBillTransactions() {
+    return this.getBills().map(bill => Transactions.findOne(bill.id));
+  },
   billCount() {
-    return this.bills.length;
+    return this.getBills().length;
+  },
+  calculateOutstanding() {
+    let reconciled = 0;
+    this.getBills().forEach(bill => reconciled += bill.amount);
+    return this.amount - reconciled;
+  },
+  reconciled() {
+    return this.amount - this.outstanding;
   },
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
