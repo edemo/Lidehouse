@@ -54,8 +54,8 @@ export const EmailTemplateHelpers = {
     }
     return FlowRouterHelpers.urlFor('Topic show', { _tid: topic._id });
   },
-  billUrlFor(bill) {
-    return FlowRouterHelpers.urlFor('Bill show', { _bid: bill._id });
+  transactionUrlFor(tx) {
+    return FlowRouterHelpers.urlFor('Transaction show', { _txid: tx._id });
   },
   curb(text, chars) {
     const lang = this.user ? this.user.settings.language : this.community.settings.language;

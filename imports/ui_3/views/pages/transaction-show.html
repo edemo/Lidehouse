@@ -1,10 +1,10 @@
-<template name="Bill_show">
+<template name="Transaction_show">
     <!-- Page heading -->
     {{> Page_heading title=pageTitle smallTitle=smallTitle crumbs=pageCrumbs }}
 
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="ibox-content p-xl">
-           {{>Bill_view doc=doc}}
+           {{>Template.dynamic template=viewForm data=doc}}
         </div>
     </div>
 </template>

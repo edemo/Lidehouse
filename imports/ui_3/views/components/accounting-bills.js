@@ -35,7 +35,6 @@ Template.Accounting_bills.viewmodel({
   activePartnerRelation: 'supplier',
   unreconciledOnly: true,
   unpostedOnly: false,
-  collectionName: 'Bills',
   onCreated(instance) {
     instance.autorun(() => {
       //initializeDatatablesSelectButtons('Bills');

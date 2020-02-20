@@ -23,7 +23,6 @@ Template.Tickets.viewmodel({
       instance.subscribe('topics.list', { communityId, category: 'ticket' });
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
-      instance.subscribe('parcels.inCommunity', { communityId });
     });
   },
   statusColor(value) {
