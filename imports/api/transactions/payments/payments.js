@@ -53,7 +53,7 @@ const paymentSchema = new SimpleSchema([
   Transactions.partnerSchema,
   Payments.extensionSchema, {
     bills: { type: [Payments.billPaidSchema], defaultValue: [] },
-    outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value
+    outstanding: { type: Number, decimal: true, min: 0, optional: true },
   },
 ]);
 

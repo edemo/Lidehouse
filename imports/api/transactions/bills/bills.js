@@ -70,12 +70,12 @@ Bills.paymentSchema = new SimpleSchema({
 Bills.extensionSchema = new SimpleSchema([
   Transactions.partnerSchema,
   Bills.receiptSchema, {
-    valueDate: { type: Date, autoValue() { return this.field('deliveryDate').value; }, autoform: { omit: true } },
+    valueDate: { type: Date, autoValue() { return this.field('deliveryDate').value; } },
     issueDate: { type: Date },
     deliveryDate: { type: Date },
     dueDate: { type: Date },
     payments: { type: [Bills.paymentSchema], defaultValue: [] },
-    outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value
+    outstanding: { type: Number, decimal: true, min: 0, optional: true },
   //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
   },
 ]);
