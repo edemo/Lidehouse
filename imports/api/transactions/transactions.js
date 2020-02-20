@@ -162,6 +162,9 @@ Transactions.helpers({
   isReconciled() {
     return (!!this.reconciledId);
   },
+  hasOutstanding() {
+    return (!!this.outstanding);
+  },
   reconciledEntry() {
     if (!this.reconciledId) return undefined;
     return StatementEntries.findOne(this.reconciledId);

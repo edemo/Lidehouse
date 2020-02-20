@@ -332,6 +332,16 @@
     }
   },
   "schemaTopics": {
+    "category": {
+      "label": "Kategória",
+      "general": "téma",
+      "forum": "fórum téma",
+      "vote": "szavazás",
+      "news": "hirdetmény",
+      "ticket": "hibajegy",
+      "room": "szoba",
+      "feedback": "visszajelzés"
+    },
     "title": {
       "label": "Cím",
       "placeholder": "Rövid összefoglalás"

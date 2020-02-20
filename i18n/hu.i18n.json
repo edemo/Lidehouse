@@ -173,13 +173,6 @@
   "settings": "beállítások",
 
   "topic": "bejegyzés",
-  "topic_general": "téma",
-  "topic_forum": "fórum téma",
-  "topic_vote": "szavazás",
-  "topic_news": "hirdetmény",
-  "topic_ticket": "hibajegy",
-  "topic_room": "szoba",
-  "topic_feedback": "visszajelzés",
   "forum": "fórum téma",
 
   // commands

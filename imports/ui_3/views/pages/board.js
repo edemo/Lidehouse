@@ -10,7 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/methods.js';
 import '/imports/api/topics/actions.js';
-import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
+import '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/collapse-section.js';
 import '/imports/ui_3/views/components/new-forum-topic.js';
 import '../components/topic-box.js';
@@ -44,7 +44,3 @@ Template.News.helpers({
     return Topics.find({ communityId, category, closed: false, sticky: stickyVal }, { sort: { createdAt: -1 } });
   },
 });
-
-Template.News.events(
-  actionHandlers(Topics)
-);

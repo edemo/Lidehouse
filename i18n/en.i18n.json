@@ -1,12 +1,4 @@
-{
-  "topic_general": "topic",
-  "topic_forum": "forum topic",
-  "topic_vote": "voting",
-  "topic_news": "news post",
-  "topic_ticket": "error ticket",
-  "topic_room": "room",
-  "topic_feedback": "feedback",
-  
+{  
   // buttons etc.
   "confirm": "Are you sure?",
   "inviteSend": "Send invitation",

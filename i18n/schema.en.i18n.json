@@ -331,6 +331,16 @@
     }
   },
   "schemaTopics": {
+    "category": {
+      "label": "Category",
+      "general": "topic",
+      "forum": "forum topic",
+      "vote": "voting",
+      "news": "news post",
+      "ticket": "error ticket",
+      "room": "room",
+      "feedback": "feedback"
+    },
     "title": {
       "label": "Title",
       "placeholder": "Short summary"
