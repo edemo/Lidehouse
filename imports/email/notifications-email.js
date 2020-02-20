@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
+import { numeral } from 'meteor/numeral:numeral';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -53,6 +54,10 @@ export const Notifications_Email = {
       return t.isUnseen ? '' : 'oldTopic';
     },
     displayStatusChangeDataUpdate(key, value) {
+      if (key.includes('Cost')) {
+        numeral.language(this.community.settings.language);
+        return numeral(value).format('0,0$');
+      }
       if (key === 'localizer') return displayLocalizer(value, this.community);
       if (key === 'partnerId') return Partners.findOne(value) ? Partners.findOne(value).getName() : '';
       if (key === 'contractId') return Contracts.findOne(value) ? Contracts.findOne(value).title : '';
