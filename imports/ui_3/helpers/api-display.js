@@ -10,7 +10,6 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Parcels } from '../../api/parcels/parcels';
 
 export function label(value, color, icon) {
@@ -140,11 +139,7 @@ Template.registerHelper('displayKey', function displayKey(key) {
 });
 
 Template.registerHelper('displayValue', function displayValue(key, value) {
-  if (key.includes('Cost')) {
-    const community = getActiveCommunity();
-    numeral.language(community.settings.language);
-    return numeral(value).format('0,0$');
-  }
+  if (key.includes('Cost')) return numeral(value).format('0,0$');
   if (Renderers[key]) return Renderers[key](value);
   if (_.isDate(value)) return moment(value).format('L');
   if (_.isString(value)) return __(value);
