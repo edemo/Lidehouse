@@ -54,10 +54,8 @@ export const Notifications_Email = {
       return t.isUnseen ? '' : 'oldTopic';
     },
     displayStatusChangeDataUpdate(key, value) {
-      if (key.includes('Cost')) {
-        numeral.language(this.community.settings.language);
-        return numeral(value).format('0,0$');
-      }
+      numeral.language(this.community.settings.language);
+      if (key.includes('Cost')) return numeral(value).format('0,0$');
       if (key === 'localizer') return displayLocalizer(value, this.community);
       if (key === 'partnerId') return Partners.findOne(value) ? Partners.findOne(value).getName() : '';
       if (key === 'contractId') return Contracts.findOne(value) ? Contracts.findOne(value).title : '';
