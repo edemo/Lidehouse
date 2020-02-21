@@ -239,6 +239,7 @@
   "Import template": "Sablon importálása",
   "Publish": "Publikálás",
   "reconcile": "Egyeztetés",
+  "autoReconcile": "Automatikus egyeztetés",
 
   "editing data": "adatok szerkesztése",
   "viewing data": "adatok megtekintése",

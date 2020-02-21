@@ -113,18 +113,18 @@ StatementEntries.actions = {
       });
     },
   },
-/*  reconcile: {
-    name: 'reconcile',
-    icon: () => 'fa fa-check-square-o',
-    color: () => 'warning',
+  autoReconcile: {
+    name: 'autoReconcile',
+    icon: () => 'fa fa-external-link',
+    color: () => 'info',
     visible(options, doc) {
-      if (!doc || !doc.match) return false;
+      if (!doc || doc.isReconciled()) return false;
       return currentUserHasPermission('statements.reconcile', doc);
     },
     run(options, doc) {
-      StatementEntries.methods.reconsile.call({ _id: doc._id });
+      StatementEntries.methods.reconcile.call({ _id: doc._id });
     },
-  },*/
+  },
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
@@ -138,6 +138,7 @@ StatementEntries.actions = {
 };
 
 StatementEntries.batchActions = {
+  autoReconcile: new BatchAction(StatementEntries.actions.autoReconcile, StatementEntries.methods.batch.reconcile),
   delete: new BatchAction(StatementEntries.actions.delete, StatementEntries.methods.batch.remove),
 };
 

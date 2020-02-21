@@ -124,13 +124,6 @@ export const update = new ValidatedMethod({
   },
 });
 
-function checkMatches(tx, txLeg, bill) {
-  const txAmount = txLeg.amount || tx.amount;
-  if (tx.communityId !== bill.communityId || txAmount !== bill.amount) {
-    throw new Meteor.Error('err_sanityCheckFailed', 'Tx does not match Bill');
-  }
-}
-
 export const remove = new ValidatedMethod({
   name: 'transactions.remove',
   validate: new SimpleSchema({

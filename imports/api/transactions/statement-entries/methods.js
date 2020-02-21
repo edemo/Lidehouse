@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { crudBatchOps } from '/imports/api/batch-method.js';
+import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
@@ -100,14 +100,15 @@ export const reconcile = new ValidatedMethod({
         txId = Transactions.methods.insert._execute({ userId: this.userId }, tx);
       }
     }
+    if (!txId) return undefined;
     const reconciledTx = Transactions.findOne(txId);
     checkMatch(entry, reconciledTx);
-    Transactions.update(reconciledTx._id, { $set: { seId: _id } });
-    StatementEntries.update(entry._id, { $set: { txId } });
+    Transactions.update(txId, { $set: { seId: _id } });
+    StatementEntries.update(_id, { $set: { txId } });
     return txId;
   },
 });
-
+/*
 export const autoReconciliation = new ValidatedMethod({
   name: 'statementEntries.autoReconciliation',
   validate: new SimpleSchema({
@@ -120,7 +121,7 @@ export const autoReconciliation = new ValidatedMethod({
     });
   },
 });
-/*
+
 export const reconcile = new ValidatedMethod({
   name: 'statementEntries.reconcile',
   validate: new SimpleSchema({
@@ -158,6 +159,7 @@ export const remove = new ValidatedMethod({
 });
 
 StatementEntries.methods = StatementEntries.methods || {};
-_.extend(StatementEntries.methods, { insert, update, reconcile, autoReconciliation, remove });
+_.extend(StatementEntries.methods, { insert, update, reconcile, remove });
 _.extend(StatementEntries.methods, crudBatchOps(StatementEntries));
+StatementEntries.methods.batch.reconcile = new BatchMethod(StatementEntries.methods.reconcile);
 

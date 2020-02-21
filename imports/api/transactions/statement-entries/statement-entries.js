@@ -26,7 +26,7 @@ StatementEntries.schema = new SimpleSchema({
   note: { type: String, max: 200, optional: true },
   statementId: { type: String, /* regEx: SimpleSchema.RegEx.Id, */ optional: true, autoform: { omit: true } },
   original: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
-  match: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
+//  match: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
