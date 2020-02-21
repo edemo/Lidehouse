@@ -11,8 +11,9 @@ Transactions.entities = {
   },
   payment: {
     name: 'payment',
-    fields: ['amount', 'valueDate', 'payAccount', 'bills'],
-    omitFields: () => (Session.get('modalContext').billId ? ['bills'] : undefined),
+    viewForm: 'Payment_view',
+    editForm: 'Payment_edit',
+    size: 'md',
   },
   remission: {
     name: 'remission',

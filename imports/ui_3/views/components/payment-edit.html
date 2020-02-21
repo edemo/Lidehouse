@@ -1,0 +1,69 @@
+<template name="Payment_edit">
+    <div class="row">
+        <div class="col-sm-12 col-md-6 pull-right">
+            {{#if doc}}
+                <h4>{{_ doc.txdef.name}}:
+                <span class="text-navy">{{doc.serialId}}</span></h4>
+            {{/if}}
+            <h5>{{_ 'partner'}}:</h5>
+            <address>
+                {{> afQuickField name="partnerId"}}
+                {{> afQuickField name="contractId"}}
+            </address>
+            <p>
+                <span>{{> afQuickField name="valueDate"}}</span>
+                <span>{{> afQuickField name="payAccount"}}</span>
+                <span>{{> afQuickField name="amount"}}</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="table-responsive m-t">
+        <table class="table invoice-table">
+            <thead>
+                <tr >
+                    <th>{{_ 'schemaPayments.bills.label'}}</th>
+                    <th>{{_ 'schemaTransactions.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#afEachArrayItem name="bills"}}
+                <!--{{#if notNullLine this}}-->
+                <tr class='js-autofill'>
+                    <td>{{> afFormGroup name=this.current.id}}</td>
+                    <td>{{> afFormGroup name=this.current.amount}}</td>
+                    <td class="text-left">
+                      <button type="button" class="btn btn-info autoform-remove-item">
+                          <i class="fa fa-trash"></i>
+                      </button>
+                    </td>                       
+                </tr>
+                {{/afEachArrayItem}}
+                <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="bills">
+                    <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
+                </button>                  
+            </tbody>
+        </table>
+    </div>
+
+    <table class="table invoice-total">
+        <tbody>
+        <tr>
+            <td><strong>{{_ 'Reconciled'}} :</strong></td>
+            <td class="nowrap">{{displayMoney reconciledAmount}}</td>
+        </tr>
+        <tr>
+            <td><strong>{{_ 'Unreconciled'}} :</strong></td>
+            <td class="nowrap">{{displayMoney unreconciledAmount}}</td>
+        </tr>
+        <!--tr>
+            <td><strong>{{_ 'schemaTransactions.amount.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney doc.amount}}</td>
+        </tr-->
+        </tbody>
+    </table>
+
+    <div class="well m-t">
+        {{> afQuickField name="note"}}
+    </div>
+</template>

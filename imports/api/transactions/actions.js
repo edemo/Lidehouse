@@ -32,24 +32,8 @@ Transactions.actions = {
       fillMissingOptionParams(options, doc);
       Session.update('modalContext', 'txdef', options.txdef);
       const entity = options.entity;
-      // When called from reconciliation, prefill the values in the form
-      const reconciledStatementEntry = Session.get('modalContext').statementEntry;
-      if (reconciledStatementEntry) {
-        _.extend(doc, {
-          amount: reconciledStatementEntry.amount,  // receipt
-          lines: [{ quantity: 1, unitPrice: reconciledStatementEntry.amount }],  // payment
-          partnerName: reconciledStatementEntry.name, // receipt
-          valueDate: reconciledStatementEntry.valueDate,
-          payAccount: reconciledStatementEntry.account,  // receipt, payment
-          fromAccount: reconciledStatementEntry.account,  // transfer
-          toAccount: reconciledStatementEntry.account,  // transfer
-        });
-      } else {
-        if (!doc) doc = {};
-        _.extend(doc, {
-          valueDate: new Date(),
-        });
-      }
+      const insertTx = Session.get('modalContext').insertTx;
+      doc = _.extend({}, insertTx, doc);
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -62,8 +46,8 @@ Transactions.actions = {
         type: 'method',
         meteormethod: 'transactions.insert',
         // --- --- --- ---
-        size: entity.editForm ? 'lg' : 'md',
-        validation: entity.editForm ? 'blur' : undefined,
+        size: entity.size || 'md',
+//        validation: entity.editForm ? 'blur' : undefined,
 //        btnOK: `Insert ${entity.name}`,
       });
     },
@@ -90,7 +74,7 @@ Transactions.actions = {
         doc,
         type: 'readonly',
         // --- --- --- ---
-        size: entity.viewForm ? 'lg' : 'md',
+        size: entity.size || 'md',
       });
     },
   },
@@ -117,8 +101,8 @@ Transactions.actions = {
         meteormethod: 'transactions.update',
         singleMethodArgument: true,
         // --- --- --- ---
-        size: entity.editForm ? 'lg' : 'md',
-        validation: entity.editForm ? 'blur' : undefined,
+        size: entity.size || 'md',
+//        validation: entity.editForm ? 'blur' : undefined,
       });
     },
   },
@@ -160,8 +144,12 @@ Transactions.actions = {
       Session.update('modalContext', 'billId', doc._id);
       const txdef = Txdefs.findOne({ communityId: doc.communityId, category: 'payment', 'data.relation': doc.relation });
       Session.update('modalContext', 'txdef', txdef);
-      const paymentOptions = _.extend({}, options, { entity: Transactions.entities.payment });
-      Transactions.actions.new.run(paymentOptions, doc);
+      const insertOptions = _.extend({}, options, { entity: Transactions.entities.payment });
+      const insertTx = _.extend({}, doc, { txdef, valueDate: new Date() });
+      delete insertTx.lines; delete insertTx.debit; delete insertTx.credit;
+      delete insertTx.serial; delete insertTx.serialId;
+      insertTx.bills = [{ id: doc._id, amount: doc.amount }];
+      Transactions.actions.new.run(insertOptions, insertTx);
     },
   },
   registerRemission: {

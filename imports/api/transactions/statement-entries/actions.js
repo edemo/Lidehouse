@@ -92,8 +92,18 @@ StatementEntries.actions = {
       return txdefs.map(txdef => ({ txdef }));
     },
     run(options, doc) {
-      Session.update('modalContext', 'statementEntry', doc);
+      const insertTx = {
+        amount: Math.abs(doc.amount),  // payment
+        lines: [{ quantity: 1, unitPrice: Math.abs(doc.amount) }],  // receipt
+        partnerName: doc.name, // receipt
+        valueDate: doc.valueDate,
+        payAccount: doc.account,  // receipt, payment
+        fromAccount: doc.account,  // transfer
+        toAccount: doc.account,  // transfer
+      };
       Session.update('modalContext', 'txdef', options.txdef);
+      Session.update('modalContext', 'statementEntry', doc);
+      Session.update('modalContext', 'insertTx', insertTx);
       Modal.show('Autoform_modal', {
         title: `${__('Reconciliation')} >> ${__(options.txdef.name)}`,
         id: 'af.statementEntry.reconcile',

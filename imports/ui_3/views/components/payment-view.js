@@ -10,14 +10,11 @@ import { Parcels } from '/imports/api/parcels/parcels';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 
-import './bill-view.html';
+import './payment-view.html';
 
-Template.Bill_view.viewmodel({
+Template.Payment_view.viewmodel({
   docVm: undefined,
   onCreated(instance) {
-  //  const billId = FlowRouter.getParam('_bid');
-    instance.subscribe('bills.byId', { _id: this.templateInstance.data.doc._id });
-  //  this.docVm(instance.data.doc);
   },
   autorun() {
     this.docVm(Transactions.findOne(this.templateInstance.data.doc._id));
@@ -31,7 +28,11 @@ Template.Bill_view.viewmodel({
   partnerRelation() {
     return this.docVm() && this.docVm().relation;
   },
-  isBill() {
-    return this.docVm() && this.docVm().category === 'bill';
+  isPayment() {
+    return this.docVm() && this.docVm().category === 'payment';
+  },
+  displayBill(bp) {
+    const bill = Transactions.findOne(bp.id);
+    return bill.serialId;
   },
 });
