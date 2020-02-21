@@ -733,6 +733,10 @@
     },
     "match": {
       "label": "Ajánlott társított tranzakció"
+    },
+    "txId": {
+      "label": "Kapcsolandó tranzakció",
+      "help": "Amennyiben a kivonat tételhez tartozó tranzakció már létre lett hozva, válassza ki a listából, ha még nem létezik, akkor hozza létre most új tranzakcióként, és utána kapcsolja."
     }
   },
   "schemaTxdefs": {
@@ -927,12 +931,6 @@
     "outstanding": {
       "label": "Fennmaradó összeg",
       "placeholder": "(pl. 14560)"
-    }
-  },
-  "schemaReconiliation": {
-    "txId": {
-      "label": "Kapcsolandó tranzakció",
-      "help": "Válasszon egy létező tranzakciót, vagy hozzon létre újat, amit ehhez a kivonati tételhez kíván kapcsolni."
     }
   },
   "schemaParcelBillings": {

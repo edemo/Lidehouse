@@ -105,7 +105,7 @@ Template.Accounting_bills.viewmodel({
   paymentsFilterSelector() {
     const selector = { communityId: this.communityId(), category: 'payment' };
     selector.relation = this.activePartnerRelation();
-    if (this.unreconciledOnly()) selector.reconciledId = { $exists: false };
+    if (this.unreconciledOnly()) selector.seId = { $exists: false };
     if (this.unpostedOnly()) selector.complete = false;
     return selector;
   },

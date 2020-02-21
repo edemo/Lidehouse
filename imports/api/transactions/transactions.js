@@ -53,7 +53,7 @@ Transactions.coreSchema = {
 //    autoValue() { return this.field('valueDate').value.getMonth() + 1; },
 //  },
   postedAt: { type: Date, optional: true, autoform: { omit: true } },
-  reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  seId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 };
 
 Transactions.partnerSchema = new SimpleSchema([
@@ -86,7 +86,7 @@ Transactions.idSet = ['communityId', 'ref'];
 
 Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, complete: 1, valueDate: -1 });
-  Transactions.ensureIndex({ reconciledId: 1 });
+  Transactions.ensureIndex({ seId: 1 });
   Transactions.ensureIndex({ partnerId: 1 }, { sparse: true });
   Transactions.ensureIndex({ membershipId: 1 }, { sparse: true });
   if (Meteor.isClient && MinimongoIndexing) {
@@ -160,14 +160,13 @@ Transactions.helpers({
     return !!(this.postedAt);
   },
   isReconciled() {
-    return (!!this.reconciledId);
+    return (!!this.seId);
   },
   hasOutstanding() {
     return (!!this.outstanding);
   },
   reconciledEntry() {
-    if (!this.reconciledId) return undefined;
-    return StatementEntries.findOne(this.reconciledId);
+    return this.seId && StatementEntries.findOne(this.seId);
   },
   isSolidified() {
     const now = moment(new Date());

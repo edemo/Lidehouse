@@ -79,7 +79,7 @@ export const reconcile = new ValidatedMethod({
       const matchingBill = Transactions.findOne({ category: 'bill', partnerId: partner._id, outstanding: moneyFlowSign(partner.relation) * entry.amount });
       if (!matchingBill) return;
 //      console.log("Looking for payment");
-      const matchingPayment = matchingBill.getPaymentTransactions().find(payment => !payment.reconciledId && payment.amount === matchingBill.outstanding);
+      const matchingPayment = matchingBill.getPaymentTransactions().find(payment => !payment.txId && payment.amount === matchingBill.outstanding);
       if (matchingPayment) {
 //        console.log("matchingPayment", matchingPayment);
 
@@ -102,8 +102,8 @@ export const reconcile = new ValidatedMethod({
     }
     const reconciledTx = Transactions.findOne(txId);
     checkMatch(entry, reconciledTx);
-    Transactions.update(reconciledTx._id, { $set: { reconciledId: _id } });
-    StatementEntries.update(entry._id, { $set: { reconciledId: txId } });
+    Transactions.update(reconciledTx._id, { $set: { seId: _id } });
+    StatementEntries.update(entry._id, { $set: { txId } });
     return txId;
   },
 });
@@ -137,8 +137,8 @@ export const reconcile = new ValidatedMethod({
       reconciledTx._id = Transactions.methods.insert._execute({ userId: this.userId }, reconciledTx);
       Transactions.methods.post._execute({ userId: this.userId }, { _id: reconciledTx._id });
     }
-    Transactions.update(reconciledTx._id, { $set: { reconciledId: _id } });
-    const result = StatementEntries.update(_id, { $set: { reconciledId: reconciledTx._id } });
+    Transactions.update(reconciledTx._id, { $set: { txId: _id } });
+    const result = StatementEntries.update(_id, { $set: { txId: reconciledTx._id } });
     return result;
   },
 });

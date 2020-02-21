@@ -727,6 +727,10 @@
     },
     "match": {
       "label": "Suggested matched transaction"
+    },
+    "txId": {
+      "label": "Match to this transaction",
+      "help": "Select an existing (unreconciled) transaction, or create a new one now, that you will reconcile with."
     }
   },
   "schemaTxdefs": {
@@ -920,12 +924,6 @@
     "outstanding": {
       "label": "Outstanding amount",
       "placeholder": "(eg. 14560)"
-    }
-  },
-  "schemaReconiliation": {
-    "txId": {
-      "label": "Match to this transaction",
-      "help": "Select an existing (unreconciled) transaction, or create a new one now, that you will reconcile with."
     }
   },
   "schemaParcelBillings": {

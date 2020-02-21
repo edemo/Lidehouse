@@ -32,7 +32,7 @@ Template.Accounting_page.viewmodel({
   },
   countUnreconciledTxs() {
     const communityId = this.communityId();
-    return Transactions.find({ communityId, category: { $in: ['payment', 'receipt'] }, reconciledId: { $exists: false } }).count();
+    return Transactions.find({ communityId, category: { $in: ['payment', 'receipt'] }, seId: { $exists: false } }).count();
   },
   countOutstandingBills() {
     const communityId = this.communityId();
@@ -40,6 +40,6 @@ Template.Accounting_page.viewmodel({
   },
   countUnreconciledEntries() {
     const communityId = this.communityId();
-    return StatementEntries.find({ communityId, reconciledId: { $exists: false } }).count();
+    return StatementEntries.find({ communityId, txId: { $exists: false } }).count();
   },
 });

@@ -133,7 +133,7 @@ Meteor.publishComposite('transactions.unreconciled', function transactionsUnreco
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     return this.ready();
   }
-  return findTxsWithRelatedStuff(_.extend({}, params, { reconciledId: { $exists: false } }));
+  return findTxsWithRelatedStuff(_.extend({}, params, { seId: { $exists: false } }));
 });
 
 Meteor.publishComposite('transactions.outstanding', function transactionsOutstanding(params) {

@@ -190,7 +190,7 @@ export const Transformers = {
           partner: Import.findPartner(json['Partner elnevezése']),
           note: json['Közlemény'],
           statementId: options.source,
-  //        reconciledId
+  //        txId
         };
         if (options.keepOriginals) tjson.original = json;
         tjsons.push(tjson);

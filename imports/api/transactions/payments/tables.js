@@ -22,7 +22,7 @@ export function paymentsColumns() {
       createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.payment }, actions: '', size: 'sm' }, cell),
     },
-    { data: 'reconciledId', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
+    { data: 'seId', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
   ];
 
   return columns;
