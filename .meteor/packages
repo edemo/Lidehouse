@@ -31,6 +31,7 @@ mizzao:timesync
 mrt:jquery-ui@1.9.2
 mrt:jquery-ui-sortable@=1.10.3
 ephemer:reactive-datatables
+aldeed:tabular
 flawless:meteor-toastr
 perak:markdown
 q42:autoform-markdown

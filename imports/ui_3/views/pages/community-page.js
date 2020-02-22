@@ -138,6 +138,11 @@ Template.Parcels_box.viewmodel({
     const communityId = getActiveCommunityId();
     return Parcels.find({ communityId, category: '@property' });
   },
+  parcelsTableSelector() {
+    const communityId = getActiveCommunityId();
+    const selector = { communityId, category: '@property' };
+    return selector;
+  },
   parcelsTableContent() {
     const communityId = getActiveCommunityId();
     return {
