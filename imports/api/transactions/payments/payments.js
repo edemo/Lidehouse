@@ -26,9 +26,9 @@ export const chooseBillOfPartner = {
 //    const amount = AutoForm.getFieldValue('amount');
 //    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
 //    const billByProximity = _.sortBy(bills.fetch(), b => (b.oustanding - amount));
-    const bills = Transactions.find({ communityId, category: 'bill', relation, partnerId, outstanding: { $gt: 0 } }, { sort: { createdAt: 1 } });
+    const bills = Transactions.find({ communityId, category: 'bill', relation, partnerId }, { sort: { createdAt: -1 } });
     const options = bills.map(function option(bill) {
-      return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
+      return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}/${bill.amount}`, value: bill._id };
     });
     return options;
   },

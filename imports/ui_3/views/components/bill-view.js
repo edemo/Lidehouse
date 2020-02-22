@@ -26,6 +26,9 @@ Template.Bill_view.viewmodel({
     const parcel = Parcels.findOne(parcelId);
     return parcel && parcel.ref;
   },
+  findTx(id) {
+    return Transactions.findOne(id);
+  },
   partnerRelation() {
     return this.docVm() && this.docVm().relation;
   },

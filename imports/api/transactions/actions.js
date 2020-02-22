@@ -134,6 +134,7 @@ Transactions.actions = {
   registerPayment: {
     name: 'registerPayment',
     icon: () => 'fa fa-credit-card',
+    color: () => 'info',
     visible(options, doc) {
       if (!doc) return false;
       if (!doc.isPosted()) return false;

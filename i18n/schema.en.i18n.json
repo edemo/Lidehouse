@@ -922,7 +922,7 @@
       }
     },
     "outstanding": {
-      "label": "Outstanding amount",
+      "label": "Unallocated amount",
       "placeholder": "(eg. 14560)"
     }
   },

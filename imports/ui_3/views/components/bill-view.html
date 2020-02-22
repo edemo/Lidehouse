@@ -105,15 +105,17 @@
     {{#if isBill}}
     <table class="table invoice-total"> 
       <tbody>
-      {{#each payment in docVm.getPaymentTransactions}}
+      {{#each billPayment in docVm.getPayments}}
+      {{#let paymentTx=(findTx billPayment.id)}}
       <tr>
           <td class="text-capitalize">
-            {{_ payment.entityName}}: 
-            {{displayDate payment.valueDate}}
-            {{>Action_buttons_group collection='transactions' doc=payment actions='view' size='sm'}}
+            {{_ paymentTx.entityName}}: 
+            {{displayDate paymentTx.valueDate}}
+            {{>Action_buttons_group collection='transactions' doc=paymentTx actions='view' size='sm'}}
           </td>
-          <td class="nowrap">{{displayMoney payment.amount}}</td>
+          <td class="nowrap">{{displayMoney billPayment.amount}}</td>
       </tr>
+      {{/let}}
       {{/each}}
       <tr>
           <td><strong>{{_ 'schemaBills.outstanding.label'}} :</strong></td>

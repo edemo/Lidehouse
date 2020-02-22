@@ -929,7 +929,7 @@
       }
     },
     "outstanding": {
-      "label": "Fennmaradó összeg",
+      "label": "Allokálatlan összeg",
       "placeholder": "(pl. 14560)"
     }
   },
