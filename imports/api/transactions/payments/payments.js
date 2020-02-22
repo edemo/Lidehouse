@@ -18,14 +18,15 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 
 export const Payments = {};
 
-export const chooseBillByProximity = {
+export const chooseBillOfPartner = {
   options() {
     const communityId = Session.get('activeCommunityId');
     const relation = Session.get('modalContext').txdef.data.relation;
+    const partnerId = AutoForm.getFieldValue('partnerId');
 //    const amount = AutoForm.getFieldValue('amount');
 //    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
 //    const billByProximity = _.sortBy(bills.fetch(), b => (b.oustanding - amount));
-    const bills = Transactions.find({ communityId, category: 'bill', relation });
+    const bills = Transactions.find({ communityId, category: 'bill', relation, partnerId, outstanding: { $gt: 0 } }, { sort: { createdAt: 1 } });
     const options = bills.map(function option(bill) {
       return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
     });
@@ -35,7 +36,7 @@ export const chooseBillByProximity = {
 };
 
 const billPaidSchema = {
-  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBillByProximity },
+  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBillOfPartner },
   amount: { type: Number, decimal: true },
 };
 _.each(billPaidSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
