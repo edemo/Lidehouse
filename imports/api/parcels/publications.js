@@ -22,6 +22,20 @@ Parcels.findWithRelatedDocs = function (...args) {
   };
 };
 
+Meteor.publish('parcels.codes', function parcelsCodes(params) {
+  new SimpleSchema({
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validate(params);
+  const { communityId } = params;
+
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('parcels.codes', { communityId })) {
+    return this.ready();
+  }
+
+  return Parcels.find({ communityId }, { fields: { communityId: 1, ref: 1, leadRef: 1, code: 1, name: 1 } });
+});
+
 Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(params) {
   new SimpleSchema({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
