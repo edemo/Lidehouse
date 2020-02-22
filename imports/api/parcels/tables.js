@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
+import { Tracker } from 'meteor/tracker';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
@@ -131,3 +132,13 @@ const parcelsTable = new Tabular.Table({
   ...DatatablesExportButtons,
 });
 
+// TODO: This does not seem to work to translate it
+if (Meteor.isClient) {
+  Meteor.startup(function() {
+    Tracker.autorun(function() {
+      $.extend(true, $.fn.dataTable.defaults, {
+        language: datatables_i18n[TAPi18n.getLanguage()],
+      });
+    });
+  });
+}
