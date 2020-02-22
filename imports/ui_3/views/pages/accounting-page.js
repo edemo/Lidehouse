@@ -28,18 +28,22 @@ Template.Accounting_page.viewmodel({
   },
   countUnpostedTxs() {
     const communityId = this.communityId();
-    return Transactions.find({ communityId, postedAt: { $exists: false } }).count();
+    const txs = Transactions.find({ communityId, postedAt: { $exists: false } });
+    return txs.count();
   },
   countUnreconciledTxs() {
     const communityId = this.communityId();
-    return Transactions.find({ communityId, category: { $in: ['payment', 'receipt'] }, seId: { $exists: false } }).count();
+    const txs = Transactions.find({ communityId, category: { $in: ['payment', 'receipt'] }, seId: { $exists: false } });
+    return txs.count();
   },
   countOutstandingBills() {
     const communityId = this.communityId();
-    return Transactions.find({ communityId, outstanding: { $gt: 0 } }).count();
+    const txs = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
+    return txs.count();
   },
   countUnreconciledEntries() {
     const communityId = this.communityId();
-    return StatementEntries.find({ communityId, txId: { $exists: false } }).count();
+    const ses = StatementEntries.find({ communityId, txId: { $exists: false } });
+    return ses.count();
   },
 });

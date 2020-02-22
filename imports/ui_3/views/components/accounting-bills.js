@@ -81,11 +81,24 @@ Template.Accounting_bills.viewmodel({
     });
     return txdef || {};
   },
+  count(category, kind) {
+    const selector = { communityId: this.communityId(), category, relation: this.activePartnerRelation() };
+    if (kind === 'outstanding') selector.outstanding = { $gt: 0 };
+    else if (kind === 'unposted') selector.postedAt = { $exists: false };
+    else if (kind === 'unreconciled') selector.seId = { $exists: false };
+    const txs = Transactions.find(selector);
+    return txs.count();
+  },
+  countOverduePartners(color) {
+    const partners = Partners.find({ communityId: this.communityId(), relation: this.activePartnerRelation(), outstanding: { $gt: 0 } });
+    const overdues = partners.fetch().filter(partner => partner.mostOverdueDaysColor() === color);
+    return overdues.length;
+  },
   billsFilterSelector() {
     const selector = { communityId: this.communityId(), category: 'bill' };
     selector.relation = this.activePartnerRelation();
     if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
-    if (this.unpostedOnly()) selector.complete = false;
+    if (this.unpostedOnly()) selector.postedAt = { $exists: false };
     return selector;
   },
   billsTableDataFn() {
