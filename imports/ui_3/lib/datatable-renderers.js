@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
@@ -5,7 +6,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { $ } from 'meteor/jquery';
 import { checkmarkBoolean } from '/imports/ui_3/helpers/api-display.js';
 
-export const Render = {
+export const Render = Meteor.isServer ? {} : {
   translate(cellData, renderType, currentRow) {
     return __(cellData);
   },
