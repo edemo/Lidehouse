@@ -103,11 +103,11 @@ Factory.define('txdef', Txdefs, {
 export const chooseConteerAccount = {
   options() {
     const communityId = Session.get('activeCommunityId');
-    const txdefId = Session.get('modalContext').txdef._id;
-    const txdef = Txdefs.findOne(txdefId);
+    let txdef = Session.get('modalContext').txdef;
     if (!txdef) return [];
+    txdef = Txdefs._transform(txdef); // in the Session they loose their functions
     const codes = txdef[txdef.conteerSide()];
     return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false);
   },
-  firstOption: () => __('Chart Of Accounts'),
+  firstOption: () => __('Chart of Accounts'),
 };

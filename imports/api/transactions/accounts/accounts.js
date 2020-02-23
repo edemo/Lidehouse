@@ -107,9 +107,9 @@ _.extend(Accounts, {
     const regexp = new RegExp('^' + code + (leafsOnly ? '.+' : ''));
     return Accounts.find({ communityId, code: regexp }, { sort: { code: 1 } });
   },
-  nodeOptionsOf(communityId, code, leafsOnly) {
-    const codes = (code instanceof Array) ? code : [code];
-    const nodeOptions = codes.map(c => {
+  nodeOptionsOf(communityId, codeS, leafsOnly) {
+    const codes = (codeS instanceof Array) ? codeS : [codeS];
+    const nodeOptions = codes.map(code => {
       const nodes = Accounts.nodesOf(communityId, code, leafsOnly);
       return nodes.map(node => node.asOption());
     }).flat(1);
