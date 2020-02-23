@@ -107,11 +107,11 @@ Meteor.startup(function indexTransactions() {
 // Note: in addition the Sign of the breakdown itself (in the schema) will control how we display it, 
 // and in the BIG EQUATION constraint (Assets + Expenses = Equity + Sources + Incomes + Liabilities)
 
-export function oppositeSide(side) {
+Transactions.oppositeSide = function oppositeSide(side) {
   if (side === 'debit') return 'credit';
   if (side === 'credit') return 'debit';
   return undefined;
-}
+};
 
 Transactions.helpers({
   community() {
@@ -282,7 +282,7 @@ Transactions.helpers({
     return undefined;
   },
   otherTxSide() {
-    return oppositeSide(this.matchingTxSide());
+    return Transactions.oppositeSide(this.matchingTxSide());
   },
   hasConteerData() {
     let result = true;

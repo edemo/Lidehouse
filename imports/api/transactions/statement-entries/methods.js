@@ -8,7 +8,7 @@ import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/i
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
 

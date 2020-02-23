@@ -6,7 +6,7 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -100,14 +100,18 @@ Meteor.startup(function attach() {
 Factory.define('txdef', Txdefs, {
 });
 
-export const chooseConteerAccount = {
-  options() {
-    const communityId = Session.get('activeCommunityId');
-    let txdef = Session.get('modalContext').txdef;
-    if (!txdef) return [];
-    txdef = Txdefs._transform(txdef); // in the Session they loose their functions
-    const codes = txdef[txdef.conteerSide()];
-    return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false);
-  },
-  firstOption: () => __('Chart of Accounts'),
-};
+export function chooseConteerAccount(flipSide = false) {
+  return {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      let txdef = Session.get('modalContext').txdef;
+      if (!txdef) return [];
+      txdef = Txdefs._transform(txdef); // in the Session they loose their functions
+      let side = txdef.conteerSide();
+      if (flipSide) side = Transactions.oppositeSide(side);
+      const codes = txdef[side];
+      return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false);
+    },
+    firstOption: () => __('Chart of Accounts'),
+  };
+}

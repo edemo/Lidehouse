@@ -7,18 +7,18 @@ import { _ } from 'meteor/underscore';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 
 const openingSchema = new SimpleSchema({
   side: { type: String, allowedValues: ['debit', 'credit'] },
-  account: { type: String, autoform: chooseConteerAccount },
+  account: { type: String, autoform: chooseConteerAccount() },
 // autoform: Accounts.chooseSubNode('COA', '??')
 });
 
 Transactions.categoryHelpers('opening', {
   makeJournalEntries() {
-    const otherSide = oppositeSide(this.side);
+    const otherSide = Transactions.oppositeSide(this.side);
     const txdef = Txdefs.findOne(this.defId);
     productionAssert(txdef[otherSide].length === 1, 'Opening tx has cannot have multiple choices for the opposite account');
     const otherAccount = txdef[otherSide][0];

@@ -9,10 +9,11 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
@@ -45,7 +46,7 @@ Payments.billPaidSchema = new SimpleSchema(billPaidSchema);
 const extensionSchema = {
   valueDate: { type: Date },  // same as Tx, but we need the readonly added
   amount: { type: Number, decimal: true },  // same as Tx, but we need the readonly added
-  payAccount: { type: String, optional: true, autoform: Accounts.chooseSubNode('`38') },  // the money account paid to/from
+  payAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
 };
 _.each(extensionSchema, val => val.autoform = _.extend({}, val.autoform, { readonly() { return !!Session.get('modalContext').statementEntry; } }));
 Payments.extensionSchema = new SimpleSchema(extensionSchema);
