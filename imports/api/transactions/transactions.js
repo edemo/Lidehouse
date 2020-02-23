@@ -59,6 +59,7 @@ Transactions.coreSchema = {
 Transactions.partnerSchema = new SimpleSchema({
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
+  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract }, // ?? overriding LocationTags
 });
 
