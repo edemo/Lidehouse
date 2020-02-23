@@ -33,7 +33,7 @@ export function defineTxdefTemplates() {
     credit: ['`38'],
   }, {
     name: 'Supplier bill remission', // 'Bejövő számla elengedés',
-    category: 'remission',
+    category: 'payment',
     data: { relation: 'supplier' },
     debit: ['`46'],
     credit: ['`969'],
@@ -51,9 +51,9 @@ export function defineTxdefTemplates() {
     credit: ['`31'],
   }, {
     name: 'Customer bill remission', // 'Kimenő számla elengedés',
-    category: 'remission',
+    category: 'payment',
     data: { relation: 'customer' },
-    debit: ['`9'],
+    debit: ['`969'],
     credit: ['`31'],
   }, {
     name: 'Parcel bill', // 'Albetét előírás',
@@ -69,7 +69,7 @@ export function defineTxdefTemplates() {
     credit: ['`33'],
   }, {
     name: 'Parcel bill remission', // 'Albetét előírás elengedés',
-    category: 'remission',
+    category: 'payment',
     data: { relation: 'member' },
     debit: ['`95'],
     credit: ['`33'],

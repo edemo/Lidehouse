@@ -53,7 +53,7 @@ export const post = new ValidatedMethod({
     if (!doc.isPosted()) { // throw new Meteor.Error('Transaction already posted');
       if (doc.category === 'bill' || doc.category === 'receipt') {
         if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-      } else if (doc.category === 'payment' || doc.category === 'remission') {
+      } else if (doc.category === 'payment') {
         doc.bills.forEach(bp => checkBillIsPosted(bp.id));
       } else if (doc.category === 'barter') {
         checkBillIsPosted(doc.supplierBillId);
@@ -78,7 +78,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     doc = Transactions._transform(doc);
     checkPermissions(this.userId, 'transactions.insert', doc);
-    if (doc.category === 'payment' || doc.category === 'remission') {
+    if (doc.category === 'payment') {
       doc.bills.forEach((bp, i) => {
         const bill = Transactions.findOne(bp.id);
 //      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');

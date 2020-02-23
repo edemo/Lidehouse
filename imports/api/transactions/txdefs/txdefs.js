@@ -58,7 +58,7 @@ Txdefs.helpers({
     return this.isAccountantTx();
   },
   isAccountantTx() {
-    return !_.contains(['bill', 'payment', 'remission', 'receipt'], this.category);
+    return !_.contains(['bill', 'payment', 'receipt'], this.category);
   },
   isReconciledTx() {
     return _.contains(['payment', 'receipt', 'transfer', 'freeTx'], this.category);

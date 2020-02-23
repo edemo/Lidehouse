@@ -27,7 +27,7 @@ import { StatementEntries } from '/imports/api/transactions/statements/statement
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'remission', 'receipt', 'barter', 'transfer', 'opening', 'freeTx'];
+Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'transfer', 'opening', 'freeTx'];
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
@@ -211,8 +211,7 @@ Transactions.helpers({
     switch (this.category) {
       case 'bill':
       case 'receipt': sign = -1; break;
-      case 'payment':
-      case 'remission': sign = +1; break;
+      case 'payment': sign = +1; break;
       default: debugAssert(false);
     }
     return sign * this.amount;
@@ -370,7 +369,7 @@ if (Meteor.isServer) {
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
     tdoc.updateBalances(+1);
-    if (tdoc.category === 'payment' || tdoc.category === 'remission') tdoc.registerOnBill();
+    if (tdoc.category === 'payment') tdoc.registerOnBill();
     tdoc.updateOutstandings(+1);
   });
 
