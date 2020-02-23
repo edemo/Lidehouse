@@ -107,14 +107,14 @@ _.extend(Accounts, {
     const regexp = new RegExp('^' + code + (leafsOnly ? '.+' : ''));
     return Accounts.find({ communityId, code: regexp }, { sort: { code: 1 } });
   },
-  nodeOptionsOf(communityId, codeS, leafsOnly) {
+  nodeOptionsOf(communityId, codeS, leafsOnly, addRootNode = false) {
     const codes = (codeS instanceof Array) ? codeS : [codeS];
-    const nodeOptions = codes.map(code => {
+    let nodeOptions = codes.map(code => {
       const nodes = Accounts.nodesOf(communityId, code, leafsOnly);
       return nodes.map(node => node.asOption());
     }).flat(1);
-    if (leafsOnly) return nodeOptions;
-    else return [Accounts.coa(communityId).asOption()].concat(nodeOptions);
+    if (codes.length > 1 && addRootNode) nodeOptions = [Accounts.coa(communityId).asOption()].concat(nodeOptions);
+    return nodeOptions;
   },
   chooseSubNode(code, leafsOnly) {
     return {

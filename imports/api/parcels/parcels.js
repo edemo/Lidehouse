@@ -217,7 +217,7 @@ _.extend(Parcels, {
     const regexp = new RegExp('^' + code + (leafsOnly ? '.+' : ''));
     return Parcels.find({ communityId, code: regexp }, { sort: { code: 1 } });
   },
-  nodeOptionsOf(communityId, codeS, leafsOnly) {
+  nodeOptionsOf(communityId, codeS, leafsOnly, addRootNode = false) {
     const codes = (codeS instanceof Array) ? codeS : [codeS];
     const nodeOptions = codes.map(code => {
       const nodes = Parcels.nodesOf(communityId, code, leafsOnly);
