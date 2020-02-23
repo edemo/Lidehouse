@@ -174,7 +174,6 @@ Transactions.batchActions = {
 //-------------------------------------------------
 
 Transactions.categoryValues.forEach(category => {
-  AutoForm.addModalHooks(`af.${category}.view`);
   AutoForm.addModalHooks(`af.${category}.insert`);
   AutoForm.addModalHooks(`af.${category}.update`);
 

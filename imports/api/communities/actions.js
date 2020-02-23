@@ -77,7 +77,7 @@ Communities.actions = {
       AccountsTemplates.forceLogin(() => {
         Modal.show('Autoform_modal', {
           title: 'pleaseSupplyParcelData',
-          id: 'af.parcel.insert.unapproved',
+          id: 'af.@property.insert.unapproved',
           collection: Parcels,
           //        omitFields: ['serial'],
           type: 'method',

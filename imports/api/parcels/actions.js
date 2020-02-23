@@ -30,12 +30,11 @@ Parcels.actions = {
     subActions: options => Array.isArray(options.entity) && options.entity.length,
     subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),
     run(options, doc) {
-      const entity = options.entity;
-      const omitFields = 'category';
+      let entity = options.entity;
+      if (typeof entity === 'string') entity = Parcels.entities[entity];
       Modal.show('Autoform_modal', {
-        id: 'af.parcel.insert',
+        id: `af.${entity.name}.insert`,
         schema: entity.schema,
-        omitFields,
         type: 'method',
         meteormethod: 'parcels.insert',
       });
@@ -54,7 +53,7 @@ Parcels.actions = {
     run(options, doc) {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
-        id: 'af.parcel.view',
+        id: `af.${entity.name}.view`,
         schema: entity.schema,
         doc,
         type: 'readonly',
@@ -132,7 +131,7 @@ Parcels.actions = {
     run(options, doc) {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
-        id: 'af.parcel.update',
+        id: `af.${entity.name}.update`,
         schema: entity.schema,
         doc,
         type: 'method-update',
@@ -146,8 +145,9 @@ Parcels.actions = {
     icon: () => 'fa fa-history',
     visible: (options, doc) => currentUserHasPermission('parcels.update', doc),
     run(options, doc) {
+      const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
-        id: 'af.parcel.update',
+        id: `af.${entity.name}.update`,
         schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
@@ -197,23 +197,27 @@ function onJoinParcelInsertSuccess(parcelId) {
   });
 }
 
-AutoForm.addModalHooks('af.parcel.insert');
-AutoForm.addModalHooks('af.parcel.update');
-AutoForm.addHooks('af.parcel.insert', {
-  formToDoc(doc) {
-    doc.communityId = getActiveCommunityId();
-    return doc;
-  },
-});
-AutoForm.addHooks('af.parcel.update', {
-  formToModifier(modifier) {
-    modifier.$set.approved = true;
-    return modifier;
-  },
+Parcels.categoryValues.forEach(category => {
+  AutoForm.addModalHooks(`af.${category}.insert`);
+  AutoForm.addModalHooks(`af.${category}.update`);
+
+  AutoForm.addHooks(`af.${category}.insert`, {
+    formToDoc(doc) {
+      doc.communityId = Session.get('activeCommunityId');
+      doc.category = category;
+      return doc;
+    },
+  });
+  AutoForm.addHooks(`af.${category}.update`, {
+    formToModifier(modifier) {
+      modifier.$set.approved = true;
+      return modifier;
+    },
+  });
 });
 
-AutoForm.addModalHooks('af.parcel.insert.unapproved');
-AutoForm.addHooks('af.parcel.insert.unapproved', {
+AutoForm.addModalHooks('af.@property.insert.unapproved');
+AutoForm.addHooks('af.@property.insert.unapproved', {
   formToDoc(doc) {
     doc.communityId = getActiveCommunityId();
     doc.approved = false;
