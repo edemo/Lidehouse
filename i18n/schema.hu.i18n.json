@@ -646,6 +646,9 @@
     "reconciled": {
       "label": "Egyeztetve"
     },
+    "allocated": {
+      "label": "Allokálva"
+    },
     "debit": {
       "label": "Tartozik",
       "$": {

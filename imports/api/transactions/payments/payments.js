@@ -70,11 +70,11 @@ Transactions.categoryHelpers('payment', {
     return this.getBills().length;
   },
   calculateOutstanding() {
-    let reconciled = 0;
-    this.getBills().forEach(bill => reconciled += bill.amount);
-    return this.amount - reconciled;
+    let allocated = 0;
+    this.getBills().forEach(bill => allocated += bill.amount);
+    return this.amount - allocated;
   },
-  reconciled() {
+  allocated() {
     return this.amount - this.outstanding;
   },
   makeJournalEntries(accountingMethod) {

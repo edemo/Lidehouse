@@ -67,11 +67,9 @@ Transactions.legsSchema = {
   debit: { type: [Transactions.entrySchema], optional: true },
   credit: { type: [Transactions.entrySchema], optional: true },
   complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
-//  reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
 };
 
 Transactions.noteSchema = {
-//  ref: { type: String, optional: true },
   note: { type: String, optional: true, autoform: { rows: 3 } },
 };
 

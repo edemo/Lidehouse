@@ -641,6 +641,9 @@
     "reconciled": {
       "label": "Reconciled"
     },
+    "allocated": {
+      "label": "Allocated"
+    },
     "debit": {
       "label": "Debit",
       "$": {
