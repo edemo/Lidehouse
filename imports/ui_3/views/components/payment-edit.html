@@ -1,7 +1,7 @@
 <template name="Payment_edit">
     <div class="row">
         <div class="col-sm-12 col-md-6 pull-right">
-            {{#if doc}}
+            {{#if doc.serialId}}
                 <h4>{{_ doc.txdef.name}}:
                 <span class="text-navy">{{doc.serialId}}</span></h4>
             {{/if}}
