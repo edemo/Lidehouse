@@ -672,7 +672,7 @@
       }
     },
     "note": {
-      "label": "Note"
+      "label": "Notes"
     },
     // Following lines are for the different txdefs
     "supplierBillId": {
@@ -845,9 +845,6 @@
     "outstanding": {
       "label": "Outstanding",
       "placeholder": "(eg. 14560)"
-    },
-    "note": {
-      "label": "Notes"
     },
     "lines" : {
       "label": "Line items",

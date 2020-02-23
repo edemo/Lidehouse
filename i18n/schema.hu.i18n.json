@@ -677,8 +677,7 @@
       }
     },
     "note": {
-      "label": "Megjegyzés",
-      "placeholder": "(pl. közlemény vagy partner azonosító)"
+      "label": "Megjegyzések"
     },
     // Following lines are for the different txdefs
     "supplierBillId": {
@@ -851,9 +850,6 @@
     "outstanding": {
       "label": "Kifizetetlen",
       "placeholder": "(pl. 14560)"
-    },
-    "note": {
-      "label": "Megjegyzések"
     },
     "lines" : {
       "label": "Tételek",
