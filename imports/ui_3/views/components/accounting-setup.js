@@ -15,6 +15,7 @@ import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import '/imports/api/transactions/txdefs/actions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { accountColumns } from '/imports/api/transactions/accounts/tables.js';
 import { localizerColumns } from '/imports/api/parcels/tables.js';
 import '/imports/api/transactions/accounts/actions.js';
@@ -22,8 +23,7 @@ import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/api/transactions/txdefs/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import './accounting-breakdowns.html';
-import { Parcels } from '../../../api/parcels/parcels';
+import './accounting-setup.html';
 
 Template.Accounting_setup.viewmodel({
   onCreated(instance) {
@@ -49,8 +49,10 @@ Template.Accounting_setup.viewmodel({
     return accounts;
   },
   moneyAccounts() {
-    const accounts = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
-    return accounts && accounts.nodes(true);
+//    const accounts = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
+//    return accounts && accounts.nodes(true);
+    const accounts = Accounts.find({ communityId: this.communityId(), category: { $in: ['bank', 'cash'] } });
+    return accounts.fetch();
   },
   accountsTableDataFn(tab) {
     const templateInstance = Template.instance();

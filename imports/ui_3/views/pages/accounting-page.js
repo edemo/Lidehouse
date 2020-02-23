@@ -8,7 +8,7 @@ import { StatementEntries } from '/imports/api/transactions/statement-entries/st
 import '/imports/ui_3/views/components/accounting-bills.js';
 import '/imports/ui_3/views/components/accounting-ledger.js';
 import '/imports/ui_3/views/components/accounting-transactions.js';
-import '/imports/ui_3/views/components/accounting-breakdowns.js';
+import '/imports/ui_3/views/components/accounting-setup.js';
 import '/imports/ui_3/views/components/accounting-reconciliation.js';
 import './accounting-page.html';
 
