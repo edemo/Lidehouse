@@ -12,7 +12,7 @@ export function billColumns() {
   const columns = [
 //    { data: 'serial', title: __('schemaTransactions.serial.label') },
     { data: 'serialId', title: __('schemaGeneral.serialId.label') },
-    { data: 'partner().displayName()', title: 'Partner' },
+    { data: 'partner()', title: 'Partner' },
 //    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'issueDate', title: __('schemaBills.issueDate.label'), render: Render.formatDate },
     { data: 'deliveryDate', title: __('schemaBills.deliveryDate.label'), render: Render.formatDate },
@@ -42,7 +42,7 @@ export function receiptColumns() {
       createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.receipt }, actions: '', size: 'sm' }, cell),
     },
-    { data: 'reconciledId', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
+    { data: 'seId', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
   ];
 
   return columns;

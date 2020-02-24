@@ -331,6 +331,16 @@
     }
   },
   "schemaTopics": {
+    "category": {
+      "label": "Category",
+      "general": "topic",
+      "forum": "forum topic",
+      "vote": "voting",
+      "news": "news post",
+      "ticket": "error ticket",
+      "room": "room",
+      "feedback": "feedback"
+    },
     "title": {
       "label": "Title",
       "placeholder": "Short summary"
@@ -631,6 +641,9 @@
     "reconciled": {
       "label": "Reconciled"
     },
+    "allocated": {
+      "label": "Allocated"
+    },
     "debit": {
       "label": "Debit",
       "$": {
@@ -662,7 +675,7 @@
       }
     },
     "note": {
-      "label": "Note"
+      "label": "Notes"
     },
     // Following lines are for the different txdefs
     "supplierBillId": {
@@ -717,6 +730,10 @@
     },
     "match": {
       "label": "Suggested matched transaction"
+    },
+    "txId": {
+      "label": "Match to this transaction",
+      "help": "Select an existing (unreconciled) transaction, or create a new one now, that you will reconcile with."
     }
   },
   "schemaTxdefs": {
@@ -832,9 +849,6 @@
       "label": "Outstanding",
       "placeholder": "(eg. 14560)"
     },
-    "note": {
-      "label": "Notes"
-    },
     "lines" : {
       "label": "Line items",
       "$" : {
@@ -908,14 +922,8 @@
       }
     },
     "outstanding": {
-      "label": "Outstanding amount",
+      "label": "Unallocated amount",
       "placeholder": "(eg. 14560)"
-    }
-  },
-  "schemaReconiliation": {
-    "txId": {
-      "label": "Match to this transaction",
-      "help": "Select an existing (unreconciled) transaction, or create a new one now, that you will reconcile with."
     }
   },
   "schemaParcelBillings": {

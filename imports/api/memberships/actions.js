@@ -20,7 +20,7 @@ Memberships.actions = {
     icon: () => 'fa fa-plus',
     color: () => 'primary',
     label: options => (Array.isArray(options.entity) ? `${__('new')}  ${__('occupant')}` : `${__('new')} ${__(options.entity.name)}`),
-    visible: (options, doc) => currentUserHasPermission(`${options.entity.name}.insert`, doc),
+    visible: (options, doc) => Array.isArray(options.entity) ? true : currentUserHasPermission(`${options.entity.name}.insert`, doc),
     subActions: options => Array.isArray(options.entity) && options.entity.length,
     subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),
     run(options) {

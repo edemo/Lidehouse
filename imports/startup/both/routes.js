@@ -36,7 +36,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/accounting-page.js';
   import '/imports/ui_3/views/pages/shareddoc-store.js';
   import '/imports/ui_3/views/pages/topic-show.js';
-  import '/imports/ui_3/views/pages/bill-show.js';
+  import '/imports/ui_3/views/pages/transaction-show.js';
 
   import '/imports/ui_3/views/layouts/main.js';
   import '/imports/ui_3/views/layouts/blank.js';
@@ -301,17 +301,17 @@ FlowRouter.route('/accounting', {
 });
 CommunityRelatedRoutes.push('Accounting');
 
-FlowRouter.route('/bill/:_bid', {
-  name: 'Bill show',
+FlowRouter.route('/transaction/:_txid', {
+  name: 'Transaction show',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Bill_show' });
+    BlazeLayout.render('Main_layout', { content: 'Transaction_show' });
   },
   title(params) {
-    const bill = Transactions.findOne(params._bid);
-    return bill && `${bill.serialId}`;
+    const tx = Transactions.findOne(params._txid);
+    return tx && `${tx.serialId}`;
   },
 });
-CommunityRelatedRoutes.push('Bill show');
+CommunityRelatedRoutes.push('Transaction show');
 
 FlowRouter.route('/community', {
   name: 'Community page default',

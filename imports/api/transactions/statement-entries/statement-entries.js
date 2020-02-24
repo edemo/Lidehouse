@@ -26,15 +26,15 @@ StatementEntries.schema = new SimpleSchema({
   note: { type: String, max: 200, optional: true },
   statementId: { type: String, /* regEx: SimpleSchema.RegEx.Id, */ optional: true, autoform: { omit: true } },
   original: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
-  match: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
-  reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+//  match: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
 StatementEntries.idSet = ['communityId', 'ref', 'refType'];
 
 Meteor.startup(function indexStatementEntries() {
   StatementEntries.ensureIndex({ ref: 1 });
-  StatementEntries.ensureIndex({ reconciledId: 1 });
+  StatementEntries.ensureIndex({ txId: 1 });
 //  if (Meteor.isClient && MinimongoIndexing) {
   if (Meteor.isServer) {
     StatementEntries._ensureIndex({ communityId: 1, valueDate: 1 });
@@ -43,7 +43,7 @@ Meteor.startup(function indexStatementEntries() {
 
 StatementEntries.helpers({
   isReconciled() {
-    return !!this.reconciledId;
+    return !!this.txId;
   },
 });
 
@@ -82,7 +82,7 @@ if (Meteor.isClient) {
     options() {
       const communityId = Session.get('activeCommunityId');
       const txdef = Session.get('modalContext').txdef;
-      const txs = Transactions.find({ communityId, defId: txdef._id, reconciledId: { $exists: false } });
+      const txs = Transactions.find({ communityId, defId: txdef._id, seId: { $exists: false } });
       const options = txs.map(tx => ({ label: tx.serialId, value: tx._id }));
       return options;
     },
@@ -95,5 +95,5 @@ StatementEntries.reconcileSchema = new SimpleSchema({
 });
 
 Meteor.startup(function attach() {
-  StatementEntries.reconcileSchema.i18n('schemaReconiliation');
+  StatementEntries.reconcileSchema.i18n('schemaStatementEntries');
 });

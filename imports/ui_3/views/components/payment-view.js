@@ -33,6 +33,6 @@ Template.Payment_view.viewmodel({
   },
   displayBill(bp) {
     const bill = Transactions.findOne(bp.id);
-    return bill.serialId;
+    return bill && bill.serialId;
   },
 });

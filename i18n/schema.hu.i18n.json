@@ -332,6 +332,16 @@
     }
   },
   "schemaTopics": {
+    "category": {
+      "label": "Kategória",
+      "general": "téma",
+      "forum": "fórum téma",
+      "vote": "szavazás",
+      "news": "hirdetmény",
+      "ticket": "hibajegy",
+      "room": "szoba",
+      "feedback": "visszajelzés"
+    },
     "title": {
       "label": "Cím",
       "placeholder": "Rövid összefoglalás"
@@ -636,6 +646,9 @@
     "reconciled": {
       "label": "Egyeztetve"
     },
+    "allocated": {
+      "label": "Allokálva"
+    },
     "debit": {
       "label": "Tartozik",
       "$": {
@@ -667,8 +680,7 @@
       }
     },
     "note": {
-      "label": "Megjegyzés",
-      "placeholder": "(pl. közlemény vagy partner azonosító)"
+      "label": "Megjegyzések"
     },
     // Following lines are for the different txdefs
     "supplierBillId": {
@@ -723,6 +735,10 @@
     },
     "match": {
       "label": "Ajánlott társított tranzakció"
+    },
+    "txId": {
+      "label": "Kapcsolandó tranzakció",
+      "help": "Amennyiben a kivonat tételhez tartozó tranzakció már létre lett hozva, válassza ki a listából, ha még nem létezik, akkor hozza létre most új tranzakcióként, és utána kapcsolja."
     }
   },
   "schemaTxdefs": {
@@ -838,9 +854,6 @@
       "label": "Kifizetetlen",
       "placeholder": "(pl. 14560)"
     },
-    "note": {
-      "label": "Megjegyzések"
-    },
     "lines" : {
       "label": "Tételek",
       "$" : {
@@ -915,14 +928,8 @@
       }
     },
     "outstanding": {
-      "label": "Fennmaradó összeg",
+      "label": "Allokálatlan összeg",
       "placeholder": "(pl. 14560)"
-    }
-  },
-  "schemaReconiliation": {
-    "txId": {
-      "label": "Kapcsolandó tranzakció",
-      "help": "Válasszon egy létező tranzakciót, vagy hozzon létre újat, amit ehhez a kivonati tételhez kíván kapcsolni."
     }
   },
   "schemaParcelBillings": {

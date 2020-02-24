@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
@@ -10,7 +11,6 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Parcels } from '../../api/parcels/parcels';
 
 export function label(value, color, icon) {
@@ -108,20 +108,6 @@ export function displayChargeType(name) {
   return label(__('schemaTickets.ticket.chargeType.' + name), 'default');
 }
 
-Template.registerHelper('checkBoolean', checkBoolean);
-Template.registerHelper('checkmarkBoolean', checkmarkBoolean);
-Template.registerHelper('displayMeterService', displayMeterService);
-Template.registerHelper('displayReading', displayReading);
-Template.registerHelper('displayAccountText', displayAccountText);
-Template.registerHelper('displayAccount', displayAccount);
-Template.registerHelper('displayAccountSet', displayAccountSet);
-Template.registerHelper('displayLocalizer', displayLocalizer);
-Template.registerHelper('displayAccountSpecification', displayAccountSpecification);
-Template.registerHelper('displayStatus', displayStatus);
-Template.registerHelper('displayTicketType', displayTicketType);
-Template.registerHelper('displayUrgency', displayUrgency);
-Template.registerHelper('displayChargeType', displayChargeType);
-
 const Renderers = {
   'Topics.status': displayStatus,
   'Tickets.ticket.type': displayTicketType,
@@ -134,19 +120,32 @@ const Renderers = {
   'Votings.agendaId': id => (Agendas.findOne(id) ? Agendas.findOne(id).title : undefined),
 };
 
-// This aims to be a generic display -- works for Tickets only for now
-Template.registerHelper('displayKey', function displayKey(key) {
+export function displayKey(key) {
   return __(`schema${key}.label`);
-});
-
-Template.registerHelper('displayValue', function displayValue(key, value) {
-  if (key.includes('Cost')) {
-    const community = getActiveCommunity();
-    numeral.language(community.settings.language);
-    return numeral(value).format('0,0$');
-  }
+}
+// This aims to be a generic display -- works for Tickets only for now
+export function displayValue(key, value) {
+  if (key.includes('Cost')) return numeral(value).format('0,0$');
   if (Renderers[key]) return Renderers[key](value);
   if (_.isDate(value)) return moment(value).format('L');
   if (_.isString(value)) return __(value);
   return value;
-});
+}
+
+if (Meteor.isClient) {
+  Template.registerHelper('checkBoolean', checkBoolean);
+  Template.registerHelper('checkmarkBoolean', checkmarkBoolean);
+  Template.registerHelper('displayMeterService', displayMeterService);
+  Template.registerHelper('displayReading', displayReading);
+  Template.registerHelper('displayAccountText', displayAccountText);
+  Template.registerHelper('displayAccount', displayAccount);
+  Template.registerHelper('displayAccountSet', displayAccountSet);
+  Template.registerHelper('displayLocalizer', displayLocalizer);
+  Template.registerHelper('displayAccountSpecification', displayAccountSpecification);
+  Template.registerHelper('displayStatus', displayStatus);
+  Template.registerHelper('displayTicketType', displayTicketType);
+  Template.registerHelper('displayUrgency', displayUrgency);
+  Template.registerHelper('displayChargeType', displayChargeType);
+  Template.registerHelper('displayKey', displayKey);
+  Template.registerHelper('displayValue', displayValue);
+}

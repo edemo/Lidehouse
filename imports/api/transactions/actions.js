@@ -134,6 +134,7 @@ Transactions.actions = {
   registerPayment: {
     name: 'registerPayment',
     icon: () => 'fa fa-credit-card',
+    color: () => 'info',
     visible(options, doc) {
       if (!doc) return false;
       if (!doc.isPosted()) return false;
@@ -150,23 +151,6 @@ Transactions.actions = {
       delete insertTx.serial; delete insertTx.serialId;
       insertTx.bills = [{ id: doc._id, amount: doc.amount }];
       Transactions.actions.new.run(insertOptions, insertTx);
-    },
-  },
-  registerRemission: {
-    name: 'registerRemission',
-    icon: () => 'fa fa-minus',
-    visible(options, doc) {
-      if (!doc) return false;
-      if (!doc.isPosted()) return false;
-      if (doc.category !== 'bill' || !doc.outstanding) return false;
-      return currentUserHasPermission('transactions.insert', doc);
-    },
-    run(options, doc, event, instance) {
-      Session.update('modalContext', 'billId', doc._id);
-      const txdef = Txdefs.findOne({ communityId: doc.communityId, category: 'remission', 'data.relation': doc.relation });
-      Session.update('modalContext', 'txdef', txdef);
-      const remissionOptions = _.extend({}, options, { entity: Transactions.entities.remission });
-      Transactions.actions.new.run(remissionOptions, doc);
     },
   },
   delete: {
@@ -190,7 +174,6 @@ Transactions.batchActions = {
 //-------------------------------------------------
 
 Transactions.categoryValues.forEach(category => {
-  AutoForm.addModalHooks(`af.${category}.view`);
   AutoForm.addModalHooks(`af.${category}.insert`);
   AutoForm.addModalHooks(`af.${category}.update`);
 
@@ -207,7 +190,7 @@ Transactions.categoryValues.forEach(category => {
       _.each(txdef.data, (value, key) => doc[key] = value);
       if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
-      } else if (category === 'payment' || category === 'remission') {
+      } else if (category === 'payment') {
         doc.bills = doc.bills || [];
         if (!doc.bills.length && modalContext.billId) {
           doc.bills = [{ id: modalContext.billId, amount: doc.amount }];

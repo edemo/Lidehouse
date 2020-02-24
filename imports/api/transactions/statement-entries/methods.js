@@ -5,10 +5,10 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { crudBatchOps } from '/imports/api/batch-method.js';
+import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
 
@@ -79,7 +79,7 @@ export const reconcile = new ValidatedMethod({
       const matchingBill = Transactions.findOne({ category: 'bill', partnerId: partner._id, outstanding: moneyFlowSign(partner.relation) * entry.amount });
       if (!matchingBill) return;
 //      console.log("Looking for payment");
-      const matchingPayment = matchingBill.getPaymentTransactions().find(payment => !payment.reconciledId && payment.amount === matchingBill.outstanding);
+      const matchingPayment = matchingBill.getPaymentTransactions().find(payment => !payment.txId && payment.amount === matchingBill.outstanding);
       if (matchingPayment) {
 //        console.log("matchingPayment", matchingPayment);
 
@@ -100,14 +100,15 @@ export const reconcile = new ValidatedMethod({
         txId = Transactions.methods.insert._execute({ userId: this.userId }, tx);
       }
     }
+    if (!txId) return undefined;
     const reconciledTx = Transactions.findOne(txId);
     checkMatch(entry, reconciledTx);
-    Transactions.update(reconciledTx._id, { $set: { reconciledId: _id } });
-    StatementEntries.update(entry._id, { $set: { reconciledId: txId } });
+    Transactions.update(txId, { $set: { seId: _id } });
+    StatementEntries.update(_id, { $set: { txId } });
     return txId;
   },
 });
-
+/*
 export const autoReconciliation = new ValidatedMethod({
   name: 'statementEntries.autoReconciliation',
   validate: new SimpleSchema({
@@ -120,7 +121,7 @@ export const autoReconciliation = new ValidatedMethod({
     });
   },
 });
-/*
+
 export const reconcile = new ValidatedMethod({
   name: 'statementEntries.reconcile',
   validate: new SimpleSchema({
@@ -137,8 +138,8 @@ export const reconcile = new ValidatedMethod({
       reconciledTx._id = Transactions.methods.insert._execute({ userId: this.userId }, reconciledTx);
       Transactions.methods.post._execute({ userId: this.userId }, { _id: reconciledTx._id });
     }
-    Transactions.update(reconciledTx._id, { $set: { reconciledId: _id } });
-    const result = StatementEntries.update(_id, { $set: { reconciledId: reconciledTx._id } });
+    Transactions.update(reconciledTx._id, { $set: { txId: _id } });
+    const result = StatementEntries.update(_id, { $set: { txId: reconciledTx._id } });
     return result;
   },
 });
@@ -158,6 +159,7 @@ export const remove = new ValidatedMethod({
 });
 
 StatementEntries.methods = StatementEntries.methods || {};
-_.extend(StatementEntries.methods, { insert, update, reconcile, autoReconciliation, remove });
+_.extend(StatementEntries.methods, { insert, update, reconcile, remove });
 _.extend(StatementEntries.methods, crudBatchOps(StatementEntries));
+StatementEntries.methods.batch.reconcile = new BatchMethod(StatementEntries.methods.reconcile);
 

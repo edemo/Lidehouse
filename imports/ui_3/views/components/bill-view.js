@@ -15,9 +15,6 @@ import './bill-view.html';
 Template.Bill_view.viewmodel({
   docVm: undefined,
   onCreated(instance) {
-  //  const billId = FlowRouter.getParam('_bid');
-    instance.subscribe('bills.byId', { _id: this.templateInstance.data.doc._id });
-  //  this.docVm(instance.data.doc);
   },
   autorun() {
     this.docVm(Transactions.findOne(this.templateInstance.data.doc._id));
@@ -26,7 +23,11 @@ Template.Bill_view.viewmodel({
     return Transactions.actions;
   },
   parcelRef(parcelId) {
-    return Parcels.findOne(parcelId).ref;
+    const parcel = Parcels.findOne(parcelId);
+    return parcel && parcel.ref;
+  },
+  findTx(id) {
+    return Transactions.findOne(id);
   },
   partnerRelation() {
     return this.docVm() && this.docVm().relation;

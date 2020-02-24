@@ -32,7 +32,7 @@ Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', '
 
 Parcels.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  category: { type: String, defaultValue: '@property', allowedValues: Parcels.categoryValues, autoform: autoformOptions(Parcels.categoryValues, 'schemaParcels.category.') },
+  category: { type: String, allowedValues: Parcels.categoryValues, autoform: { omit: true } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   ref: { type: String,    // 1. unique reference within a community (readable by the user)
                           // 2. can be used to identify a parcel, which is not a true parcel, just a sub-part of a parcel
@@ -217,13 +217,13 @@ _.extend(Parcels, {
     const regexp = new RegExp('^' + code + (leafsOnly ? '.+' : ''));
     return Parcels.find({ communityId, code: regexp }, { sort: { code: 1 } });
   },
-  nodeOptionsOf(communityId, code, leafsOnly) {
-    const codes = (code instanceof Array) ? code : [code];
-    const nodeOptions = codes.map(c => {
+  nodeOptionsOf(communityId, codeS, leafsOnly, addRootNode = false) {
+    const codes = (codeS instanceof Array) ? codeS : [codeS];
+    const nodeOptions = codes.map(code => {
       const nodes = Parcels.nodesOf(communityId, code, leafsOnly);
       return nodes.map(node => node.asOption());
     }).flat(1);
-    if (code === '') return [{ value: '', label: '' }].concat(nodeOptions);
+    if (codeS === '') return [{ value: '', label: '' }].concat(nodeOptions);
     return nodeOptions;
   },
   chooseSubNode(code, leafsOnly) {
@@ -315,6 +315,18 @@ Factory.define('@property', Parcels, {
   area: () => faker.random.number(150),
 });
 
+Factory.define('@common', Parcels, {
+  category: '@common',
+});
+
+Factory.define('@group', Parcels, {
+  category: '@group',
+});
+
+Factory.define('#tag', Parcels, {
+  category: '#tag',
+});
+
 // ------------------------------------
 
 export let chooseParcel = () => ({});
@@ -323,17 +335,17 @@ if (Meteor.isClient) {
 
   chooseParcel = function (code = '') {
     return {
-      relation: 'parcel',
+      relation: '#tag',
       value() {
         const selfId = AutoForm.getFormId();
-        const value = ModalStack.readResult(selfId, 'af.parcel.insert');
+        const value = ModalStack.readResult(selfId, 'af.#tag.insert');
         return value;
       },
       options() {
         const communityId = Session.get('activeCommunityId');
         const parcels = Parcels.nodesOf(communityId, code);
         const options = parcels.map(function option(p) {
-          return { label: p.displayAccount(), value: p._id };
+          return { label: p.displayAccount(), value: p.code };
         });
         const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
         return sortedOptions;

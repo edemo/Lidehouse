@@ -73,7 +73,7 @@ Template.Accounting_reconciliation.viewmodel({
       account: this.accountSelected(),
 //      valueDate: { $gte: this.beginDate(), $lte: this.endDate() },
     };
-    if (this.unreconciledOnly()) selector.reconciledId = { $exists: false };
+    if (this.unreconciledOnly()) selector.txId = { $exists: false };
     return selector;
   },
   statementEntriesTableDataFn() {

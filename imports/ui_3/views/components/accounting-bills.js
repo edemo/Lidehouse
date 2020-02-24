@@ -35,15 +35,15 @@ Template.Accounting_bills.viewmodel({
   activePartnerRelation: 'supplier',
   unreconciledOnly: true,
   unpostedOnly: false,
-  collectionName: 'Bills',
   onCreated(instance) {
     instance.autorun(() => {
       //initializeDatatablesSelectButtons('Bills');
       instance.subscribe('parcelBillings.inCommunity', { communityId: this.communityId() });
       if (this.unreconciledOnly()) {
-        instance.subscribe('bills.outstanding', { communityId: this.communityId() });
+        instance.subscribe('transactions.unreconciled', { communityId: this.communityId() });
+        instance.subscribe('transactions.outstanding', { communityId: this.communityId() });
       } else {
-        instance.subscribe('bills.filtered', { communityId: this.communityId() });
+        instance.subscribe('transactions.inCommunity', { communityId: this.communityId() });
       }
     });
   },
@@ -81,11 +81,24 @@ Template.Accounting_bills.viewmodel({
     });
     return txdef || {};
   },
+  count(category, kind) {
+    const selector = { communityId: this.communityId(), category, relation: this.activePartnerRelation() };
+    if (kind === 'outstanding') selector.outstanding = { $gt: 0 };
+    else if (kind === 'unposted') selector.postedAt = { $exists: false };
+    else if (kind === 'unreconciled') selector.seId = { $exists: false };
+    const txs = Transactions.find(selector);
+    return txs.count();
+  },
+  countOverduePartners(color) {
+    const partners = Partners.find({ communityId: this.communityId(), relation: this.activePartnerRelation(), outstanding: { $gt: 0 } });
+    const overdues = partners.fetch().filter(partner => partner.mostOverdueDaysColor() === color);
+    return overdues.length;
+  },
   billsFilterSelector() {
     const selector = { communityId: this.communityId(), category: 'bill' };
     selector.relation = this.activePartnerRelation();
     if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
-    if (this.unpostedOnly()) selector.complete = false;
+    if (this.unpostedOnly()) selector.postedAt = { $exists: false };
     return selector;
   },
   billsTableDataFn() {
@@ -105,7 +118,7 @@ Template.Accounting_bills.viewmodel({
   paymentsFilterSelector() {
     const selector = { communityId: this.communityId(), category: 'payment' };
     selector.relation = this.activePartnerRelation();
-    if (this.unreconciledOnly()) selector.reconciledId = { $exists: false };
+    if (this.unreconciledOnly()) selector.seId = { $exists: false };
     if (this.unpostedOnly()) selector.complete = false;
     return selector;
   },

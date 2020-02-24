@@ -64,10 +64,23 @@
             <div>
             {{#if Template.subscriptionsReady}}
             <ul class="nav nav-tabs m-b-md">
-                <li class="active"><a data-toggle="tab" href="#tab-bill"><h3>{{_ 'bills'}}</h3></a></li>
-                <li class=""><a data-toggle="tab" href="#tab-payment"><h3>{{_ 'payments'}}</h3></a></li>
-                <li class=""><a data-toggle="tab" href="#tab-partner"><h3>{{_ 'partners'}}</h3></a></li>
-                <li class=""><a data-toggle="tab" href="#tab-receipt"><h3>{{_ 'receipts'}}</h3></a></li>
+                <li class="active"><a data-toggle="tab" href="#tab-bill"><h3>{{_ 'bills'}}&nbsp;
+                {{> Badge value=(count 'bill' 'unposted') color='warning' title=(_ 'Unposted') align='right'}}
+                {{> Badge value=(count 'bill' 'outstanding') color='info' title=(_ 'Unpaid') align='right'}}
+                </h3></a></li>
+                <li class=""><a data-toggle="tab" href="#tab-payment"><h3>{{_ 'payments'}}&nbsp;
+                {{> Badge value=(count 'payment' 'unreconciled') color='danger' title=(_ 'Unreconciled') align='right'}}
+                {{> Badge value=(count 'payment' 'unposted') color='warning' title=(_ 'Unposted') align='right'}}
+                {{> Badge value=(count 'payment' 'outstanding') color='info' title=(_ 'Unallocated') align='right'}}
+                </h3></a></li>
+                <li class=""><a data-toggle="tab" href="#tab-partner"><h3>{{_ 'partners'}}&nbsp;
+                {{> Badge value=(countOverduePartners 'warning') color='warning' title=(_ 'Overdue') align='right'}}
+                {{> Badge value=(countOverduePartners 'info') color='info' title=(_ 'Overdue') align='right'}}
+                </h3></a></li>
+                <li class=""><a data-toggle="tab" href="#tab-receipt"><h3>{{_ 'receipts'}}&nbsp;
+                {{> Badge value=(count 'receipt' 'unreconciled') color='danger' title=(_ 'Unreconciled') align='right'}}
+                {{> Badge value=(count 'receipt' 'unposted') color='warning' title=(_ 'Unposted') align='right'}}
+                </h3></a></li>
             </ul>
             <div class="tab-content">
                 <div id="tab-bill" class="tab-pane active">

@@ -358,10 +358,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   }
 
-  if (Meteor.settings.public.fakeMembersNr && demoOrTest === 'test' && lang === 'en') {
-    demoBuilder.insertLoadsOfFakeMembers(Meteor.settings.public.fakeMembersNr);
-  }
-
   // ===== Breakdowns =====
   // Create breakdowns (incl Localizer)
   builder.execute(Transactions.methods.cloneAccountingTemplates, { communityId }, demoAccountantId);
@@ -1188,8 +1184,13 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   builder.postAllTransactions();
-
   Clock.clear();
+
+  if (Meteor.settings.public.fakeMembersNr && demoOrTest === 'test' && lang === 'en') {
+    builder.insertLoadsOfFakeMembers(Meteor.settings.public.fakeMembersNr);
+    builder.postAllTransactions();
+  }
+
   return communityId;
 }
 

@@ -276,11 +276,11 @@ export class CommunityBuilder {
     const toPost = Transactions.find({ communityId: this.communityId, postedAt: { $exists: false } });
     this.execute(Transactions.methods.batch.post, { args: toPost.map(t => ({ _id: t._id })) }, this.getUserWithRole('accountant'));
   }
-  insertLoadsOfFakeMembers(parcelCount, postBuildingInsert) {
+  insertLoadsOfFakeMembers(parcelCount, insertDemoPayments) {
     if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;
 
     for (let i = 0; i <= parcelCount; i++) {
-      const parcelId = this.createParcel({
+      const parcelId = this.createProperty({
         floor: '9',
         door: i.toString(),
         area: faker.random.number({ min: 30, max: 200 }),
@@ -293,7 +293,7 @@ export class CommunityBuilder {
         ownership: { share: new Fraction(1, 1) },
       });
 
-      if (postBuildingInsert) {
+      if (insertDemoPayments) {
         const parcel = Parcels.findOne(parcelId);
         const membership = Memberships.findOne(membershipId);
         this.generateDemoPayments(parcel, membership);

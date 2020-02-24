@@ -50,5 +50,5 @@ Meteor.publish('statementEntries.unreconciled', function statementsUnreconciled(
   if (!user.hasPermission('statements.inCommunity', { communityId })) {
     return this.ready();
   }
-  return StatementEntries.find({ communityId, reconciledId: { $exists: false } });
+  return StatementEntries.find({ communityId, txId: { $exists: false } });
 });

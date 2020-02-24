@@ -10,7 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
-import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { Parcels, chooseParcel } from '/imports/api/parcels/parcels.js';
@@ -25,7 +25,7 @@ export const Bills = {};
 export const choosePayment = {
   options() {
     const communityId = Session.get('activeCommunityId');
-    const payments = Transactions.find({ communityId, category: 'payment', reconciledId: { $exists: false } });
+    const payments = Transactions.find({ communityId, category: 'payment', seId: { $exists: false } });
     const options = payments.map(function option(payment) {
       return { label: `${payment.partner()} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note || ''}`, value: payment._id };
     });
@@ -48,7 +48,7 @@ const lineSchema = {
   //} },
   billingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   period: { type: String, optional: true, autoform: { omit: true } },
-  account: { type: String, optional: true, autoform: chooseConteerAccount },
+  account: { type: String, optional: true, autoform: chooseConteerAccount() },
   localizer: { type: String, optional: true, autoform: chooseParcel() },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));

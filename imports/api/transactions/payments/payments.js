@@ -9,25 +9,27 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const Payments = {};
 
-export const chooseBillByProximity = {
+export const chooseBillOfPartner = {
   options() {
     const communityId = Session.get('activeCommunityId');
     const relation = Session.get('modalContext').txdef.data.relation;
+    const partnerId = AutoForm.getFieldValue('partnerId');
 //    const amount = AutoForm.getFieldValue('amount');
 //    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
 //    const billByProximity = _.sortBy(bills.fetch(), b => (b.oustanding - amount));
-    const bills = Transactions.find({ communityId, category: 'bill', relation });
+    const bills = Transactions.find({ communityId, category: 'bill', relation, partnerId }, { sort: { createdAt: -1 } });
     const options = bills.map(function option(bill) {
-      return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
+      return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}/${bill.amount}`, value: bill._id };
     });
     return options;
   },
@@ -35,7 +37,7 @@ export const chooseBillByProximity = {
 };
 
 const billPaidSchema = {
-  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBillByProximity },
+  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBillOfPartner },
   amount: { type: Number, decimal: true },
 };
 _.each(billPaidSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
@@ -44,7 +46,7 @@ Payments.billPaidSchema = new SimpleSchema(billPaidSchema);
 const extensionSchema = {
   valueDate: { type: Date },  // same as Tx, but we need the readonly added
   amount: { type: Number, decimal: true },  // same as Tx, but we need the readonly added
-  payAccount: { type: String, optional: true, autoform: Accounts.chooseSubNode('`38') },  // the money account paid to/from
+  payAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
 };
 _.each(extensionSchema, val => val.autoform = _.extend({}, val.autoform, { readonly() { return !!Session.get('modalContext').statementEntry; } }));
 Payments.extensionSchema = new SimpleSchema(extensionSchema);
@@ -68,11 +70,11 @@ Transactions.categoryHelpers('payment', {
     return this.getBills().length;
   },
   calculateOutstanding() {
-    let reconciled = 0;
-    this.getBills().forEach(bill => reconciled += bill.amount);
-    return this.amount - reconciled;
+    let allocated = 0;
+    this.getBills().forEach(bill => allocated += bill.amount);
+    return this.amount - allocated;
   },
-  reconciled() {
+  allocated() {
     return this.amount - this.outstanding;
   },
   makeJournalEntries(accountingMethod) {
