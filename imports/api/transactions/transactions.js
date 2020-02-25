@@ -23,7 +23,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { StatementEntries } from '/imports/api/transactions/statements/statements.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 
 export const Transactions = new Mongo.Collection('transactions');
 
@@ -52,6 +52,7 @@ Transactions.coreSchema = {
 //  month: { type: String, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getMonth() + 1; },
 //  },
+  status: { type: String, defaultValue: 'draft', allowedValues: ['draft', 'posted', 'void'], autoform: { omit: true } },
   postedAt: { type: Date, optional: true, autoform: { omit: true } },
   seId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 };
@@ -216,9 +217,12 @@ Transactions.helpers({
     return sign * this.amount;
   },
   negator() {
-    const tx = _.clone(this);
+    const tx = JSON.parse(JSON.stringify(this));
     delete tx._id;
+    tx.note = 'STORNO ' + tx.serialId;
     tx.amount *= -1;
+    if (tx.lines) tx.lines.forEach(l => l.quantity *= -1);  // 'bill' have lines
+    if (tx.bills) tx.bills.forEach(l => l.amount *= -1);  // 'payment' have bills
     tx.debit.forEach(l => l.amount *= -1);
     tx.credit.forEach(l => l.amount *= -1);
     return tx;
@@ -402,6 +406,7 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     tdoc.updateBalances(-1);
     tdoc.updateOutstandings(-1);
+    if (tdoc.seId) StatementEntries.update(tdoc.seId, { $unset: { txId: 0 } });
   });
 }
 

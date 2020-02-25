@@ -63,7 +63,7 @@ export const post = new ValidatedMethod({
       const community = Communities.findOne(doc.communityId);
       const accountingMethod = community.settings.accountingMethod;
       const updateData = doc.makeJournalEntries(accountingMethod);
-      result = Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
+      result = Transactions.update(_id, { $set: { status: 'posted', postedAt: new Date(), ...updateData } });
     } else console.warn('Transaction already posted');
 
     if (Meteor.isServer && doc.category === 'bill') sendBillEmail(doc);
@@ -134,7 +134,8 @@ export const remove = new ValidatedMethod({
     checkPermissions(this.userId, 'transactions.remove', doc);
     if (doc.isSolidified() && doc.complete) {
       // Not possible to delete tx after 24 hours, but possible to negate it with another tx
-      Transactions.insert(doc.negator());
+      Transactions.update(doc._id, { $set: { status: 'void' } });
+      Transactions.insert(_.extend(doc.negator(), { status: 'void' }));
     } else {
       Transactions.remove(_id);
     }
