@@ -13,9 +13,11 @@ import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
 const keepOrderSort = { sort: { updatedAt: 1 } };   // use this to keep updatedAt order intact
 
@@ -301,6 +303,39 @@ Migrations.add({
       { $set: { category: '@property' } },
       { multi: true }
     );
+  },
+});
+
+Migrations.add({
+  version: 17,
+  name: 'Setup Accounts',
+  up() {
+    Communities.forEach(community => {
+      if (!Accounts.findOne({ communityId: community._id })) {
+        Templates.clone('Condominium_COA', community._id);
+      }
+    });
+  },
+});
+
+Migrations.add({
+  version: 18,
+  name: 'Remissions are just payments',
+  up() {
+    Txdefs.find({ category: 'remission' }).forEach(def => {
+      Txdefs.update(def._id, { $set: { category: 'payment', 'data.remission': true } });
+    });
+  },
+});
+
+Migrations.add({
+  version: 19,
+  name: 'Transactions have a status',
+  up() {
+    Transactions.find({}).forEach(tx => {
+      const status = tx.postedAt ? 'posted' : 'draft';
+      Transactions.update(tx._id, { $set: { status } });
+    });
   },
 });
 
