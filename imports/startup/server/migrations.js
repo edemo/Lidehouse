@@ -310,7 +310,7 @@ Migrations.add({
   version: 17,
   name: 'Setup Accounts',
   up() {
-    Communities.forEach(community => {
+    Communities.find({}).forEach(community => {
       if (!Accounts.findOne({ communityId: community._id })) {
         Templates.clone('Condominium_COA', community._id);
       }
