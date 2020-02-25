@@ -18,6 +18,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import '/imports/api/transactions/accounts/template.js';
 
 const keepOrderSort = { sort: { updatedAt: 1 } };   // use this to keep updatedAt order intact
 
