@@ -316,6 +316,17 @@ Migrations.add({
         Templates.clone('Condominium_COA', community._id);
       }
     });
+    Transactions.find({}).forEach(tx => {
+      ['debit', 'credit'].forEach(side => {
+        const modifiedJournalEntries = [];
+        tx[side].forEach(je => {
+          const modifiedJE = _.clone(je);
+          modifiedJE.account = '`' + modifiedJE.account;
+          modifiedJournalEntries.push(modifiedJE);
+        });
+        Transactions.update(tx._id, { $set: { [side]: modifiedJournalEntries } });
+      });
+    });
   },
 });
 
