@@ -299,11 +299,9 @@ Migrations.add({
   version: 16,
   name: 'Parcels can have different categories',
   up() {
-    Parcels.update(
-      { category: { $exists: false } },
-      { $set: { category: '@property' } },
-      { multi: true }
-    );
+    Parcels.find({ category: { $exists: false } }).forEach(parcel => {
+      Parcels.update(parcel._id, { $set: { category: '@property', code: '@' + parcel.ref } });
+    });
   },
 });
 
@@ -325,6 +323,15 @@ Migrations.add({
           modifiedJournalEntries.push(modifiedJE);
         });
         Transactions.update(tx._id, { $set: { [side]: modifiedJournalEntries } });
+      });
+    });
+    Balances.find({}).forEach(bal => {
+      Balances.update(bal._id, { $set: { account: '`' + bal.account } });
+    });
+    Txdefs.find({}).forEach(def => {
+      ['debit', 'credit'].forEach(side => {
+        const modifiedSide = def[side].map(account => '`' + account);
+        Txdefs.update(def._id, { $set: { [side]: modifiedSide } });
       });
     });
   },
