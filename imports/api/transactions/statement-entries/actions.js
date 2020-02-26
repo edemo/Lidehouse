@@ -39,7 +39,6 @@ StatementEntries.actions = {
     visible: (options, doc) => currentUserHasPermission('statements.upsert', doc),
     run: () => {
       importCollectionFromFile(StatementEntries, { keepOriginals: true });
-      StatementEntries.methods.autoReconciliation.call({ communityId: getActiveCommunityId() });
     },
   },
   view: {
