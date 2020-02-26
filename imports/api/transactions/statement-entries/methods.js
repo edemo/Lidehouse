@@ -2,12 +2,13 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import { TAPi18n } from 'meteor/tap:i18n';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
-import { Partners } from '/imports/api/partners/partners.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
@@ -68,8 +69,13 @@ export const reconcile = new ValidatedMethod({
   run({ _id, txId }) {
     const entry = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.reconcile', entry);
+    const communityId = entry.communityId;
+    const community = Communities.findOne(communityId);
     if (!txId) { // not present means auto match requested
-      const matchingBill = Transactions.findOne({ communityId: entry.communityId, serialId: entry.note });
+      const noteSplit = entry.note.split(' ');
+      const regex = TAPi18n.__('BIL', {}, community.settings.language) + '/';
+      const serialId = noteSplit.find(s => s.startsWith(regex));
+      const matchingBill = serialId ? Transactions.findOne({ communityId: entry.communityId, serialId }) : 'undefined';
       if (matchingBill && matchingBill.outstanding === moneyFlowSign(matchingBill.relation) * entry.amount) {
 /*
 //      console.log("Looking for partner", entry.name, entry.communityId);
@@ -86,7 +92,7 @@ export const reconcile = new ValidatedMethod({
         txId = matchingPayment._id;
       } else {*/
         const tx = {
-          communityId: entry.communityId,
+          communityId,
           category: 'payment',
           relation: matchingBill.relation,
           partnerId: matchingBill.partnerId,
