@@ -187,7 +187,7 @@ export const Transformers = {
           account: Import.findAccountByNumber(json['Könyvelési számla']).account,
           valueDate: json['Könyvelés dátuma'],
           amount: json['Összeg'],
-          partner: Import.findPartner(json['Partner elnevezése']),
+          name: Import.findPartner(json['Partner elnevezése']),
           note: json['Közlemény'],
           statementId: options.source,
   //        txId
