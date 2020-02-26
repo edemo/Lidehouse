@@ -68,6 +68,17 @@ Benefactorships.schema = new SimpleSchema({
   benefactorship: { type: BenefactorshipSchema } },
 );
 
+Memberships.modifiableFields = [
+  // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
+  'ownership.share',
+  'ownership.representor',
+  'benefactorship.type',
+];
+
+Memberships.publicFields = {
+  // fields come from behaviours
+};
+
 Memberships.idSet = ['communityId', 'role', 'parcelId', 'partner.idCard.name', 'partner.contact.email'];
 
 Meteor.startup(function indexMemberships() {
@@ -209,13 +220,6 @@ if (Meteor.isServer) {
   Memberships.after.remove(function (userId, doc) {
   });
 }
-
-Memberships.modifiableFields = [
-  // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
-  'ownership.share',
-  'ownership.representor',
-  'benefactorship.type',
-];
 
 Factory.define('membership', Memberships, {
   userId: () => Factory.get('user'),

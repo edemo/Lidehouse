@@ -37,9 +37,13 @@ Communities.schema = new SimpleSchema([{
   taxNo: { type: String, max: 50, optional: true },
   totalunits: { type: Number },
   settings: { type: Communities.settingsSchema },
-  // redundant fields:
+  // cached fields:
   parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
 }]);
+
+Communities.publicFields = {
+  totalunits: 0,
+};
 
 Meteor.startup(function indexCommunities() {
   if (Meteor.isServer) {
@@ -47,10 +51,6 @@ Meteor.startup(function indexCommunities() {
     Communities._ensureIndex({ lot: 1 });
   }
 });
-
-Communities.publicFields = {
-  totalunits: 0,
-};
 
 Communities.helpers({
   registeredUnits() {
