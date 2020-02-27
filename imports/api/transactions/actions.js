@@ -160,7 +160,7 @@ Transactions.actions = {
     run(options, doc) {
       Modal.confirmAndCall(Transactions.methods.remove, { _id: doc._id }, {
         action: 'delete transaction',
-        message: doc.isSolidified() ? 'Remove not possible after 24 hours' : 'It will disappear forever',
+        message: doc.isPosted() ? 'Remove not possible after posting' : 'It will disappear forever',
       });
     },
   },
