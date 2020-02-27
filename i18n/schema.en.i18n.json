@@ -597,8 +597,17 @@
     }
   },
   "schemaTransactions": {
+    "category": {
+      "label": "Category"
+    },
     "defId": {
       "label": "Type"
+    },
+    "status": {
+      "label": "Status",
+      "draft": "Draft",
+      "posted": "Posted",
+      "void": "Void"
     },
     "valueDate": {
       "label": "Accounting date",

@@ -3,6 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -135,13 +136,14 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.remove', doc);
-    if (doc.isPosted()) {
-      // Not possible to delete tx after 24 hours, but possible to negate it with another tx
+    if (doc.status === 'draft') {
+      Transactions.remove(_id);
+    } else if (doc.status === 'posted') {
       Transactions.update(doc._id, { $set: { status: 'void' } });
       Transactions.insert(_.extend(doc.negator(), { status: 'void' }));
-    } else {
-      Transactions.remove(_id);
-    }
+    } else if (doc.status === 'void') {
+      throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');
+    } else debugAssert(false, `No such tx status: ${doc.status}`);
   },
 });
 

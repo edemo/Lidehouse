@@ -602,8 +602,17 @@
     }
   },
   "schemaTransactions": {
+    "category": {
+      "label": "Kategória"
+    },
     "defId": {
       "label": "Típus"
+    },
+    "status": {
+      "label": "Státusz",
+      "draft": "Könyveletlen",
+      "posted": "Könyvelt",
+      "void": "Sztornózott"
     },
     "valueDate": {
       "label": "Értéknap",

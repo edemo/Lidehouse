@@ -137,7 +137,7 @@ Transactions.actions = {
     color: () => 'info',
     visible(options, doc) {
       if (!doc) return false;
-      if (!doc.isPosted()) return false;
+      if (doc.status !== 'posted') return false;
       if (doc.category !== 'bill' || !doc.outstanding) return false;
       return currentUserHasPermission('transactions.insert', doc);
     },

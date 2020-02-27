@@ -1,8 +1,11 @@
 <template name="Payment_view">
     <div class="row">
         <div class="col-sm-12 col-md-8 pull-right text-right">
-            <h4>{{_ (or docVm.txdef.name 'schemaTransactions.serialId.label')}}:
-            <span class="text-navy">{{docVm.serialId}}</span></h4>
+            <h4>
+              {{{displayTxStatus docVm.status}}} 
+              {{_ (or docVm.txdef.name 'schemaTransactions.serialId.label')}}:
+              <span class="text-navy">{{docVm.serialId}}</span>
+            </h4>
             <h5>{{_ 'partner'}}:</h5>
             <address>
                 {{docVm.partner}}
