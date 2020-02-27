@@ -37,6 +37,7 @@ import '/imports/ui_3/views/components/action-buttons.html';
 import '/imports/ui_3/views/components/contact-long.js';
 import '/imports/ui_3/views/blocks/active-period.js';
 import '/imports/ui_3/views/blocks/menu-overflow-guard.js';
+import '/imports/ui_3/views/components/partners-table.js';
 import './community-page.html';
 
 Template.Roleships_box.viewmodel({
@@ -239,5 +240,17 @@ Template.Parcels_box.events({
   'click .parcels .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
     instance.viewmodel.showAllParcels(!oldVal);
+  },
+});
+
+Template.Community_page.events({
+  'click .js-partners'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    Modal.show('Modal', {
+      title: 'Teljes partner lista',
+      body: 'Partners_table',
+      bodyContext: { communityId },
+      size: 'lg',
+    });
   },
 });

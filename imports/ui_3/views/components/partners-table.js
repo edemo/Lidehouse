@@ -5,24 +5,24 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
-import { journalEntriesColumns } from '/imports/api/transactions/journal-entries/tables.js';
-import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { partnersColumns } from '/imports/api/partners/tables.js';
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 
-import './journals-table.html';
+import './partners-table.html';
 
-Template.Journals_table.viewmodel({
+Template.Partners_table.viewmodel({
   onCreated(instance) {
     const communityId = this.templateInstance.data.communityId;
-    instance.subscribe('transactions.inCommunity', { communityId });
+    instance.subscribe('partners.inCommunity', { communityId });
   },
   tableDataFn() {
     const communityId = this.templateInstance.data.communityId;
-    return () => JournalEntries.find({ communityId }).fetch();
+    return () => Partners.find({ communityId }).fetch();
   },
   optionsFn() {
     return () => ({
-      columns: journalEntriesColumns(),
+      columns: partnersColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],

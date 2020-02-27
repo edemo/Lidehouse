@@ -292,5 +292,13 @@
         </div>
         {{/if}}
         {{/if}}
+        
+        {{#if currentUserHasPermission 'partners.inCommunity'}}
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                <button class="btn btn-default js-partners"><i class="fa fa-list"></i> {{_ 'Teljes partner lista'}}</button>
+            </div>
+        </div>
+        {{/if}}
     </div>
 </template>
