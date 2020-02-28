@@ -579,7 +579,7 @@
   "Agenda cannot be deleted while it contains topics": "A közgyűlés nem törölhető, ha vannak benne szavazások. Először törölnie kell ezeket a szavazásokat vagy ki kell vennie őket a közgyűlésből",
   "No active": "Nincs aktív",
   "errorInFormFieldValidation": "Az adatok megadása hiányos vagy nem megfelelő. A pirossal jelölt mezők kitöltése kötelező ezen az adatlapon",
-  "Remove not possible after 24 hours": "MEGJEGYZÉS: Mivel a tranzakció 24 óránál régebbi, a törlése nem lehetséges. Így egy ellentétes előjelű tranzakció bevitelére kerül sor",
+  "Remove not possible after posting": "MEGJEGYZÉS: A tranzakció törlése nem lehetséges, mivel már a könyvelésben van. Ha az OK gombot nyomja meg, egy sztornó tranzakciót fog a rendszer létrehozni, ami ellentételezi az eredetit.",
   "err_sanityCheckFailed": "Adat beviteli hiba",
   "User and contact email doesnt match": "A meghívott felhasználó és az email cím különbözik",
   "Ownership share cannot exceed 1": "Tulajdonrészek összesen nem haladhatják meg az 1-et",

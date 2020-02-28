@@ -223,15 +223,9 @@ Transactions.helpers({
     tx.amount *= -1;
     if (tx.lines) tx.lines.forEach(l => l.quantity *= -1);  // 'bill' have lines
     if (tx.bills) tx.bills.forEach(l => l.amount *= -1);  // 'payment' have bills
-    tx.debit.forEach(l => l.amount *= -1);
-    tx.credit.forEach(l => l.amount *= -1);
-    return tx;
-  },
-  oppositor() {
-    const tx = _.clone(this);
-    delete tx._id;
-    tx.debit = this.credit;
-    tx.credit = this.debit;
+//    tx.debit.forEach(l => l.amount *= -1);
+//    tx.credit.forEach(l => l.amount *= -1);
+    const temp = tx.credit; tx.credit = tx.debit; tx.debit = temp;
     return tx;
   },
   updateBalances(directionSign = 1) {

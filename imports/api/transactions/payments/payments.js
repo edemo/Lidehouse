@@ -82,21 +82,25 @@ Transactions.categoryHelpers('payment', {
 //    const cat = Txdefs.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
     this.debit = [];
     this.credit = [];
-    this.bills.forEach(pb => {
-      const bill = Transactions.findOne(pb.id);
-      const ratio = pb.amount / bill.amount;
+    this.bills.forEach(billPaid => {
+      const bill = Transactions.findOne(billPaid.id);
+      let unbookedAmount = billPaid.amount;
       if (accountingMethod === 'accrual') {
         bill[this.relationSide()].forEach(entry => {
-          const partialAmount = Math.round(entry.amount * ratio);
-          this[this.conteerSide()].push({ amount: partialAmount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId });
-          this[this.relationSide()].push({ amount: partialAmount, account: this.payAccount, localizer: entry.localizer, parcelId: entry.parcelId });
+          const amount = Math.min(entry.amount, unbookedAmount);
+          this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId });
+          this[this.relationSide()].push({ amount, account: this.payAccount, localizer: entry.localizer, parcelId: entry.parcelId });
+          unbookedAmount -= amount;
+          if (!unbookedAmount) return;
         });
       } else if (accountingMethod === 'cash') {
         bill.lines.forEach(line => {
           if (!line) return; // can be null, when a line is deleted from the array
-          const partialAmount = Math.round(line.amount * ratio);
-          this[this.conteerSide()].push({ amount: partialAmount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
-          this[this.relationSide()].push({ amount: partialAmount, account: this.payAccount, localizer: line.localizer, parcelId: line.parcelId });
+          const amount = Math.min(line.amount, unbookedAmount);
+          this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
+          this[this.relationSide()].push({ amount, account: this.payAccount, localizer: line.localizer, parcelId: line.parcelId });
+          unbookedAmount -= amount;
+          if (!unbookedAmount) return;
         });
       }
     });
@@ -104,9 +108,9 @@ Transactions.categoryHelpers('payment', {
   },
   registerOnBill() {
     const result = [];
-    this.bills.forEach(bp => {
-      const bill = Transactions.findOne(bp.id);
-      const pb = _.extend({}, bp);
+    this.bills.forEach(billPaid => {
+      const bill = Transactions.findOne(billPaid.id);
+      const pb = _.extend({}, billPaid);
       pb.id = this._id; // replacing the bill._id with the payment._id
       result.push(Transactions.update(bill._id,
         { $set: { payments: bill.getPayments().concat([pb]) } },

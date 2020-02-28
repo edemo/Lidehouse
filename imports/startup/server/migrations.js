@@ -13,9 +13,12 @@ import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import '/imports/api/transactions/accounts/template.js';
 
 const keepOrderSort = { sort: { updatedAt: 1 } };   // use this to keep updatedAt order intact
 
@@ -296,11 +299,62 @@ Migrations.add({
   version: 16,
   name: 'Parcels can have different categories',
   up() {
-    Parcels.update(
-      { category: { $exists: false } },
-      { $set: { category: '@property' } },
-      { multi: true }
-    );
+    Parcels.find({ category: { $exists: false } }).forEach(parcel => {
+      Parcels.update(parcel._id, { $set: { category: '@property', code: '@' + parcel.ref } });
+    });
+  },
+});
+
+Migrations.add({
+  version: 17,
+  name: 'Setup Accounts',
+  up() {
+    Communities.find({}).forEach(community => {
+      if (!Accounts.findOne({ communityId: community._id })) {
+        Templates.clone('Condominium_COA', community._id);
+      }
+    });
+    Transactions.find({}).forEach(tx => {
+      ['debit', 'credit'].forEach(side => {
+        const modifiedJournalEntries = [];
+        tx[side].forEach(je => {
+          const modifiedJE = _.clone(je);
+          modifiedJE.account = '`' + modifiedJE.account;
+          modifiedJournalEntries.push(modifiedJE);
+        });
+        Transactions.update(tx._id, { $set: { [side]: modifiedJournalEntries } });
+      });
+    });
+    Balances.find({}).forEach(bal => {
+      Balances.update(bal._id, { $set: { account: '`' + bal.account } });
+    });
+    Txdefs.find({}).forEach(def => {
+      ['debit', 'credit'].forEach(side => {
+        const modifiedSide = def[side].map(account => '`' + account);
+        Txdefs.update(def._id, { $set: { [side]: modifiedSide } });
+      });
+    });
+  },
+});
+
+Migrations.add({
+  version: 18,
+  name: 'Remissions are just payments',
+  up() {
+    Txdefs.find({ category: 'remission' }).forEach(def => {
+      Txdefs.update(def._id, { $set: { category: 'payment', 'data.remission': true } });
+    });
+  },
+});
+
+Migrations.add({
+  version: 19,
+  name: 'Transactions have a status',
+  up() {
+    Transactions.find({}).forEach(tx => {
+      const status = tx.postedAt ? 'posted' : 'draft';
+      Transactions.update(tx._id, { $set: { status } });
+    });
   },
 });
 
