@@ -76,6 +76,11 @@ export const HouseTranslation = {
           "label": "Language",
           "help": "The official language of the community. (Users receive their notifications translated to their own language.)"
         },
+        "parcelRefFormat": {
+          "label": "Parcel reference format",
+          "placeholder": "(eg. bfdd)",
+          "help": "If a format is supplied, then the building, floor, door data can be calculated from the parcel reference. For example bfdd means the first character is the building, the second is the floor, and the 3rd-4th is the door number, so B108 is used for building B, first floor, door 8."
+        },
         "topicAgeDays": {
           "label": "Topic ageing days",
           "help": "Topics get automatically closed after this many days of inactivity."
@@ -262,6 +267,11 @@ export const HouseTranslation = {
         "language": {
           "label": "Nyelv",
           "help": "A közösség hivatalos nyelve. (A felhasználók a számukra küldött értesítőket a saját nyelvükre lefordítva kapják meg.)"
+        },
+        "parcelRefFormat": {
+          "label": "Albetét azonosító formátuma",
+          "placeholder": "(pl bfdd)",
+          "help": "Ha van megadva formátum, akkor az albetét azonosítóból automatikusan kinyerhetők az épület, emelet, ajtó adatok. A bfdd például at jelenti, az elso karakter az épület, a második az emelet, a harmadik-negyedik pedig az ajtó, azaz B108 jelölli a B épület első emelet 8-as lakást."
         },
         "topicAgeDays": {
           "label": "Témák elöregedése napokban",
