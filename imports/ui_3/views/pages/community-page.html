@@ -247,7 +247,7 @@
                             <tr>
                                 {{#each parcelTypesWithCount}}
                                 <td>
-                                    <h5><strong>{{this.count}}</strong> {{_ this.type}}</h5>
+                                    <h5><strong>{{this.count}}</strong> {{_ (concat 'schemaParcels.type.' this.type)}}</h5>
                                 </td>
                                 {{/each}}
                             </tr>

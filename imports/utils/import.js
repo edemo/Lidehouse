@@ -9,10 +9,12 @@ import { UploadFS } from 'meteor/jalik:ufs';
 import { XLSX } from 'meteor/huaming:js-xlsx';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { displayError } from '/imports/ui_3/lib/errors.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/readmore.js';
 import { __ } from '/imports/localization/i18n.js';
-import { Transformers } from './import-transformers.js';
+import { Translator, Transformers } from './import-transformers.js';
 
 const rABS = true;
 
@@ -27,9 +29,12 @@ export function importCollectionFromFile(collection, options) {
       const worksheet = workbook.Sheets[sheetName];
       let jsons = XLSX.utils.sheet_to_json(worksheet).map(flatten.unflatten);
 
-      const communityId = Session.get('activeCommunityId');
+      const user = Meteor.user();
+      const communityId = getActiveCommunityId();
       // ---- custom transformation ----
-      const transformer = Transformers[collection._name][options.transformer || 'default'];
+      const translator = new Translator(collection, user.settings.language);
+      if (translator) jsons = translator.reverse(jsons);
+      const transformer = Transformers[collection._name][(options && options.transformer) || 'default'];
       if (transformer) jsons = transformer(jsons, options);
       // ------------------------------
       jsons.forEach(json => json.communityId = communityId);
