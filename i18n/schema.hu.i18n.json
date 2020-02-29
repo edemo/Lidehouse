@@ -281,7 +281,10 @@
     "benefactorship": {
       "label": "Használat",
       "type": {
-        "label": "Típus"
+        "label": "Típus",
+        "rental": "Bérlet",
+        "favor": "Szívességi használat",
+        "right": "Haszonélvezeti jog"
       }
     }
   },
@@ -775,7 +778,7 @@
       "label": "Kapcsolt felhasználó (ha már regisztrált)"
     },
     "idCard": {
-      "label" : "Személy hivatalos adatai",
+      "label" : "Személyi adatok",
       "type": {
         "label": "Személy típusa",
         "natural": "magánszemély",

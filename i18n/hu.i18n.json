@@ -62,10 +62,6 @@
   "Leaders": "Vezetők",
   "Other roles": "Egyéb tisztségek",
 
-  "rental": "Bérlet",
-  "favor": "Szívességi használat",
-  "right": "Haszonélvezeti jog",
-
   // routes
   "App intro": "Bemutatkozó oldal",
   "Privacy": "Adatkezelési tájékoztató",
@@ -691,7 +687,7 @@
   "delete sharedfolder": "törli a mappát",
   "close vote": "lezárja a szavazást",
   "publish balances": "publikálja az aktuális egyenlegeket",
-  "import data": "importálja az adatokat",
+  "import data": "importálja a(z) __collection__ adatokat",
 
   "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",

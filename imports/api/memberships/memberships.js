@@ -53,7 +53,7 @@ const OwnershipSchema = new SimpleSchema({
 
 const benefactorTypeValues = ['rental', 'favor', 'right'];
 const BenefactorshipSchema = new SimpleSchema({
-  type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues) },
+  type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues, 'schemaMemberships.benefactorship.type.') },
 });
 
 const Ownerships = {};
@@ -68,7 +68,7 @@ Benefactorships.schema = new SimpleSchema({
   benefactorship: { type: BenefactorshipSchema } },
 );
 
-Memberships.idSet = ['communityId', 'role', 'parcelId', 'partner.idCard.name', 'partner.contact.email'];
+Memberships.idSet = ['communityId', 'role', 'parcelId', 'partnerId'];
 
 Meteor.startup(function indexMemberships() {
   Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });

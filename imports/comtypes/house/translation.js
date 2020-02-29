@@ -169,9 +169,8 @@ export const HouseTranslation = {
         "label": "Volume (m3)",
         "placeholder": "(eg. 142)"
       },
-      "habitants": {
-        "label": "Number of habitants",
-        "placeholder": "(eg. 3)"
+      "occupants": {
+        "label": "Occupants"
       },
       "freeFields": {
         "label": "Free fields",
@@ -301,7 +300,7 @@ export const HouseTranslation = {
         "help": "Egyedi sorszám, mely segít sorba rendezni a helyeinket. A helyrajzi szám utolsó száma például kíválóan alkalmas erre."
       },
       "ref": {
-        "label": "Elnevezés",
+        "label": "Albetét",
         "placeholder": "(pl. B405)",
         "help": "Egyedi név, mellyel hivatkozni lehet erre a helyre"
       },
@@ -362,9 +361,8 @@ export const HouseTranslation = {
         "label": "Légköbméter (m3)",
         "placeholder": "(pl. 142)"
       },
-      "habitants": {
-        "label": "Lakók száma",
-        "placeholder": "(pl. 3)"
+      "occupants": {
+        "label": "Birtokosok"
       },
       "freeFields": {
         "label": "Kötetlen mezők",

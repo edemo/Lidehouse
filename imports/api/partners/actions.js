@@ -5,6 +5,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
+import { importCollectionFromFile } from '/imports/utils/import.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Partners } from './partners.js';
 import './methods.js';
@@ -13,6 +14,7 @@ Partners.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
+    color: () => 'primary',
     visible: (options, doc) => currentUserHasPermission('partners.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
@@ -22,6 +24,12 @@ Partners.actions = {
         meteormethod: 'partners.insert',
       });
     },
+  },
+  import: {
+    name: 'import',
+    icon: () => 'fa fa-upload',
+    visible: (options, doc) => currentUserHasPermission('partners.upsert', doc),
+    run: () => importCollectionFromFile(Partners),
   },
   view: {
     name: 'view',

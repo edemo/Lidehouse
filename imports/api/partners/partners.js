@@ -50,6 +50,7 @@ Partners.schema = new SimpleSchema({
   taxNo: { type: String, max: 50, optional: true },
 });
 
+Partners.idSet = ['communityId', 'userId', 'idCard.name'];
 
 Meteor.startup(function indexPartners() {
   if (Meteor.isServer) {

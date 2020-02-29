@@ -70,11 +70,12 @@ export class BatchTester extends ValidatedMethod {
           collection.simpleSchema(doc).clean(doc);
           collection.simpleSchema(doc).validate(doc);
           const selector = {};
-          collection.idSet.forEach((field) => {
-            if (doc[field]) selector[field] = doc[field];
-            else selector[field] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
+          collection.idSet.forEach((fieldName) => {
+            const fieldValue = Object.getByString(doc, fieldName);
+            if (fieldValue) selector[fieldName] = fieldValue;
+            else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
           });
-          // console.log("selector", selector);
+//          console.log("selector", selector);
           const existingDoc = collection.findOne(selector);
           if (!existingDoc) neededOperations.insert.push(i);
           else if (hasChanges(doc, existingDoc)) {
@@ -104,9 +105,10 @@ export class UpsertMethod extends ValidatedMethod {
         if (Meteor.isClient) return null; // Upsert methods are not simulated on the client, just executed on the server
 
         const selector = {};
-        collection.idSet.forEach((field) => {
-          if (doc[field]) selector[field] = doc[field];
-          else selector[field] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
+        collection.idSet.forEach((fieldName) => {
+          const fieldValue = Object.getByString(doc, fieldName);
+          if (fieldValue) selector[fieldName] = fieldValue;
+          else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
         });
 //        console.log("selector", selector);
         const existingDoc = collection.findOne(selector);

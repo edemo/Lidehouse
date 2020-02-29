@@ -280,7 +280,10 @@
     "benefactorship": {
       "label": "Benefactor",
       "type": {
-        "label": "Type"
+        "label": "Type",
+        "rental": "Rental",
+        "favor": "Favor",
+        "right": "Right"
       }
     }
   },

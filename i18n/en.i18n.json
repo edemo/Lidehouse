@@ -142,6 +142,7 @@
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "Sending outstandings reminder": "To the following email: <strong>'%s'</strong> you are about to send out an outstandings reminder email.",
 
+  "import data": "import __collection__ data",
   "delete user": "delete your account permanently",
   "deletedUser": "Deleted user",
   "unknownUser": "Unknown user",
