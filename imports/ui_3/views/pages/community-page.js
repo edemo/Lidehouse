@@ -14,7 +14,7 @@ import { Fraction } from 'fractional';
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { __ } from '/imports/localization/i18n.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { leaderRoles, nonLeaderRoles, officerRoles } from '/imports/api/permissions/roles.js';
+import { leaderRoles, nonLeaderRoles, officerRoles, rolesPriorities } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/actions.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
@@ -45,18 +45,10 @@ Template.Roleships_box.viewmodel({
     const communityId = getActiveCommunityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
   },
-  leaders() {
-    const communityId = getActiveCommunityId();
-    return Memberships.findActive({ communityId, role: { $in: leaderRoles } }, { sort: { createdAt: 1 } }).fetch();
-  },
-  nonLeaders() {
-    const communityId = getActiveCommunityId();
-    return Memberships.findActive({ communityId, role: { $in: nonLeaderRoles } }, { sort: { createdAt: 1 } }).fetch();
-  },
   officers() {
-    const officers = this.leaders().concat(this.nonLeaders());
-    officers.push(officers.shift());  // put admin from front to the end
-    return officers;
+    const communityId = getActiveCommunityId();
+    const list = Memberships.findActive({ communityId, role: { $in: officerRoles } }, { sort: { createdAt: 1 } }).fetch();
+    return _.sortBy(list, m => rolesPriorities[m.role]);
   },
 });
 

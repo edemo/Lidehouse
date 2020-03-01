@@ -264,6 +264,10 @@
     "role": {
       "label": "Role"
     },
+    "rank": {
+      "label": "Rank extension",
+      "help": "Usually not necessary. It has no effect on the permissions, but it may help to slightly differentiate between the roles on the officers page."
+    },
     "partnerId": {
       "label": "Person"
     },

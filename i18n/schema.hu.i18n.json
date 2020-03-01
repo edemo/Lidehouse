@@ -265,6 +265,10 @@
     "role": {
       "label": "Tisztség"
     },
+    "rank": {
+      "label": "Kiegészítő titulus",
+      "help": "Általában nincs rá szükség. A jogosultságokat nem befolyásolja, csak segíthet árnyalni a személy szerepkörét a tisztség listában."
+    },
     "partnerId": {
       "label": "Személy"
     },
