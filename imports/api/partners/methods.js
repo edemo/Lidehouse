@@ -20,7 +20,8 @@ export const insert = new ValidatedMethod({
     doc = Partners._transform(doc);
     checkPermissions(this.userId, 'partners.insert', doc);
     if (doc.contact && doc.contact.email) {
-      checkNotExists(Partners, { 'contact.email': doc.contact.email });
+      const partner = Partners.findOne({ communityId: doc.communityId, 'contact.email': doc.contact.email });
+      if (partner) throw new Meteor.Error('err_alreadyExists', `Partner with this email address already exists, you can select this person from the dropdown: ${partner.displayName()}`);
     }
     const _id = Partners.insert(doc);
     return _id;
