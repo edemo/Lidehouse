@@ -129,7 +129,8 @@ Topics.actions = {
       return options.status.icon;
     },
     visible(options, doc) {
-      return Array.isArray(options.entity) ? true : currentUserHasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc);
+      if (!options || !options.status) return true;
+      return Array.isArray(options.status) ? true : currentUserHasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc);
     },
     subActions: () => true,
     subActionsOptions(options, doc) {

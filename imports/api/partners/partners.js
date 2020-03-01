@@ -52,6 +52,17 @@ Partners.schema = new SimpleSchema({
 
 Partners.idSet = ['communityId', 'userId', 'idCard.name'];
 
+Partners.publicFields = {
+  'idCard.address': 0,
+  'idCard.identifier': 0,
+  'idCard.mothersName': 0,
+  'idCard.dob': 0,
+  'contact': 0,
+};
+
+Partners.nonModifiableFields = ['communityId', 'relation', 'userId', 'outstanding'];
+
+
 Meteor.startup(function indexPartners() {
   if (Meteor.isServer) {
     Partners._ensureIndex({ 'contact.email': 1 }, { sparse: true });
@@ -135,16 +146,6 @@ Partners.attachBehaviour(Timestamped);
 Meteor.startup(function attach() {
   Partners.simpleSchema().i18n('schemaPartners');
 });
-
-Partners.publicFields = {
-  'idCard.address': 0,
-  'idCard.identifier': 0,
-  'idCard.mothersName': 0,
-  'idCard.dob': 0,
-  'contact': 0,
-};
-
-Partners.nonModifiableFields = ['communityId', 'relation', 'userId', 'outstanding'];
 
 // --- Before/after actions ---
 

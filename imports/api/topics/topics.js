@@ -44,6 +44,29 @@ Topics.baseSchema = new SimpleSchema({
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 
+Topics.publicFields = {
+  communityId: 1,
+  category: 1,
+  title: 1,
+  text: 1,
+  agendaId: 1,
+  photo: 1,
+  createdAt: 1,
+  updatedAt: 1,
+  creatorId: 1,
+  updaterId: 1,
+  opensAt: 1,
+  closesAt: 1,
+  closed: 1,
+  sticky: 1,
+  likes: 1,
+  flags: 1,
+  commentCounter: 1,
+  revision: 1,
+  status: 1,
+  serial: 1,
+};
+
 Topics.idSet = ['communityId', 'category', 'serial'];
 
 Meteor.startup(function indexTopics() {
@@ -202,29 +225,6 @@ Meteor.startup(function attach() {
 
 Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'photo'];
 Topics.modifiableFields.push('closed'); // comes from Workflow behaviour
-
-Topics.publicFields = {
-  communityId: 1,
-  category: 1,
-  title: 1,
-  text: 1,
-  agendaId: 1,
-  photo: 1,
-  createdAt: 1,
-  updatedAt: 1,
-  creatorId: 1,
-  updaterId: 1,
-  opensAt: 1,
-  closesAt: 1,
-  closed: 1,
-  sticky: 1,
-  likes: 1,
-  flags: 1,
-  commentCounter: 1,
-  revision: 1,
-  status: 1,
-  serial: 1,
-};
 
 Topics.categoryValues.forEach((category) => {
   Factory.define(category, Topics, {

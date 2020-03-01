@@ -70,6 +70,17 @@ Benefactorships.schema = new SimpleSchema({
 
 Memberships.idSet = ['communityId', 'role', 'parcelId', 'partnerId'];
 
+Memberships.modifiableFields = [
+  // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
+  'ownership.share',
+  'ownership.representor',
+  'benefactorship.type',
+];
+
+Memberships.publicFields = {
+  // fields come from behaviours
+};
+
 Meteor.startup(function indexMemberships() {
   Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
   Memberships.ensureIndex({ userId: 1 }, { sparse: true });
@@ -140,12 +151,14 @@ Memberships.helpers({
   votingUnits() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
+    if (this.parcel().isLed()) return 0;
     const votingUnits = this.isRepresentor() ? this.parcel().ledUnits() : this.parcel().ledUnits() * this.ownership.share.toNumber();
     return votingUnits;
   },
   votingShare() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
+    if (this.parcel().isLed()) return 0;
     const votingShare = this.isRepresentor() ? this.parcel().ledShare() : this.parcel().ledShare().multiply(this.ownership.share);
     return votingShare;
   },
@@ -210,13 +223,6 @@ if (Meteor.isServer) {
   Memberships.after.remove(function (userId, doc) {
   });
 }
-
-Memberships.modifiableFields = [
-  // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
-  'ownership.share',
-  'ownership.representor',
-  'benefactorship.type',
-];
 
 Factory.define('membership', Memberships, {
   userId: () => Factory.get('user'),

@@ -141,6 +141,15 @@ Meteor.users.schema = new SimpleSchema({
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
+Meteor.users.publicFields = {
+  username: 1,
+  profile: 1,
+  avatar: 1,
+  status: 1,
+  settings: 1,
+  flags: 1,
+};
+
 Meteor.startup(function indexMeteorUsers() {
   if (Meteor.isServer) {
     Meteor.users._ensureIndex({ 'emails.0.address': 1 });
@@ -330,11 +339,3 @@ Meteor.users.deny({
   remove() { return true; },
 });
 
-Meteor.users.publicFields = {
-  username: 1,
-  profile: 1,
-  avatar: 1,
-  status: 1,
-  settings: 1,
-  flags: 1,
-};
