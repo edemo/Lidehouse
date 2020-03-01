@@ -27,7 +27,7 @@ if (Meteor.isClient) {
   }
 
   getActiveCommunityId = function getActiveCommunityId() {
-    return FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
+    return Session.get('activeCommunityId');
   };
 
   getActivePartnerId = function getActivePartnerId() {

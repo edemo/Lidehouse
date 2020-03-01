@@ -17,7 +17,7 @@ import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { leaderRoles, nonLeaderRoles, officerRoles, rolesPriorities } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/actions.js';
-import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import '/imports/api/parcels/actions.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
@@ -42,11 +42,11 @@ import './community-page.html';
 
 Template.Roleships_box.viewmodel({
   autorun() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.templateInstance.data.community._id;
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
   },
   officers() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.templateInstance.data.community._id;
     const list = Memberships.findActive({ communityId, role: { $in: officerRoles } }, { sort: { createdAt: 1 } }).fetch();
     return _.sortBy(list, m => rolesPriorities[m.role]);
   },
@@ -65,22 +65,20 @@ Template.Occupants_table.viewmodel({
 
 Template.Occupants_box.viewmodel({
   autorun() {
-    const data = this.templateInstance.data;
-    this.templateInstance.subscribe('parcelships.ofParcel', { parcelId: data.parcelId });
+    const parcelId = this.templateInstance.data.parcel._id;
+    this.templateInstance.subscribe('parcelships.ofParcel', { parcelId });
   },
   membershipsContent() {
-    const data = this.templateInstance.data;
-    const communityId = getActiveCommunityId();
-    const selector = { communityId, parcelId: data.parcelId };
+    const parcelId = this.templateInstance.data.parcel._id;
+    const selector = { parcelId };
     return { collection: 'memberships', selector };
   },
   parcelDisplay() {
-    const parcelId = this.templateInstance.data.parcelId;
-    const parcel = Parcels.findOne(parcelId);
+    const parcel = this.templateInstance.data.parcel;
     return parcel ? parcel.display() : __('unknown');
   },
   parcelshipTitle() {
-    const parcelId = this.templateInstance.data.parcelId;
+    const parcelId = this.templateInstance.data.parcel._id;
     const parcelship = Parcelships.findOne({ parcelId });
     return parcelship ? ` - ${__('parcelship')}` : '';
   },
@@ -95,13 +93,12 @@ Template.Meters_table.viewmodel({
 
 Template.Meters_box.viewmodel({
   parcelDisplay() {
-    const parcelId = this.templateInstance.data.parcelId;
-    const parcel = Parcels.findOne(parcelId);
+    const parcel = this.templateInstance.data.parcel;
     return parcel ? parcel.display() : __('unknown');
   },
   metersContent() {
-    const communityId = getActiveCommunityId();
-    const parcelId = this.templateInstance.data.parcelId;
+    const communityId = this.templateInstance.data.community._id;
+    const parcelId = this.templateInstance.data.parcel._id;
     const selector = { communityId, parcelId };
     return { collection: 'meters', selector };
   },
@@ -111,7 +108,7 @@ Template.Parcels_box.viewmodel({
   showAllParcels: false,
   onCreated() {
     const user = Meteor.user();
-    const community = getActiveCommunity();
+    const community = this.templateInstance.data.community;
     const showAllParcelsDefault = (
       (user && user.hasPermission('parcels.insert', { communityId: community._id }))
       || (community && community.parcels.flat <= 25)
@@ -119,7 +116,7 @@ Template.Parcels_box.viewmodel({
     this.showAllParcels(!!showAllParcelsDefault);
   },
   autorun() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.templateInstance.data.community._id;
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
@@ -128,11 +125,11 @@ Template.Parcels_box.viewmodel({
     }
   },
   parcels() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.templateInstance.data.community._id;
     return Parcels.find({ communityId, category: '@property' });
   },
   parcelsTableContent() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.templateInstance.data.community._id;
     return {
       collection: 'parcels',
       selector: { communityId, category: '@property' },
@@ -165,22 +162,22 @@ Template.Community_page.viewmodel({
   },
   autorun: [
     function subscription() {
-      const communityId = getActiveCommunityId();
+      const communityId = this.communityId();
       this.templateInstance.subscribe('communities.byId', { _id: communityId });
     },
   ],
   communityId() {
-    return getActiveCommunityId();
+    return FlowRouter.getParam('_cid') || getActiveCommunityId();
   },
   community() {
-    return getActiveCommunity();
+    return Communities.findOne(this.communityId());
   },
   communities() {
     return Communities;
   },
   title() {
-    const community = getActiveCommunity();
-    return `${__('Community page')} - ${community ? community.name : ''}`;
+    const community = this.community();
+    return `${__('Community page')} - ${community && community.name}`;
   },
   /*  thingsToDisplayWithCounter() {
       const result = [];
