@@ -74,6 +74,7 @@ Memberships.idSet = ['communityId', 'role', 'parcelId', 'partnerId'];
 
 Memberships.modifiableFields = [
   // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
+  'rank',
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',
