@@ -105,7 +105,7 @@ export const linkUser = new ValidatedMethod({
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     const partner = doc.partner();
     const email = partner && partner.contact && partner.contact.email;
-    if (!email && !doc.userId) throw new Meteor.Error('err_sanityCheckFailed', 'No contact email set for this membership', doc);
+    if (!email && !doc.userId) throw new Meteor.Error('err_sanityCheckFailed', 'No contact email set for this partner', doc);
     if (this.isSimulation) return;  // Not possible to find and link users on the client side, as no user data available
 
     if (doc.userId) {

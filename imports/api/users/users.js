@@ -157,6 +157,10 @@ export function initialUsername(user) {
 }
 
 Meteor.users.helpers({
+  isVerified() {
+    debugAssert(Meteor.isServer, 'Email addresses of users are not sent to the clients');
+    return this.emails[0].verified;
+  },
   language() {
     return this.settings.language || 'en';
   },
