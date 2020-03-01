@@ -151,12 +151,14 @@ Memberships.helpers({
   votingUnits() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
+    if (this.parcel().isLed()) return 0;
     const votingUnits = this.isRepresentor() ? this.parcel().ledUnits() : this.parcel().ledUnits() * this.ownership.share.toNumber();
     return votingUnits;
   },
   votingShare() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
+    if (this.parcel().isLed()) return 0;
     const votingShare = this.isRepresentor() ? this.parcel().ledShare() : this.parcel().ledShare().multiply(this.ownership.share);
     return votingShare;
   },
