@@ -47,7 +47,7 @@ Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(param
     return this.ready();
   }
 
-  return Parcels.findWithRelatedDocs({ communityId }, { fields: { outstanding: 0 } });
+  return Parcels.findWithRelatedDocs({ communityId }, { fields: Parcels.publicFields });
 });
 
 Meteor.publishComposite('parcels.outstanding', function parcelsOutstanding(params) {
