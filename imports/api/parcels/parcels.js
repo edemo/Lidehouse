@@ -76,6 +76,10 @@ Parcels.propertySchema = new SimpleSchema({
   volume: { type: Number, decimal: true, optional: true },
 });
 
+Parcels.publicFields = {
+  // fields come from behaviours
+};
+
 Parcels.idSet = ['communityId', 'ref'];
 
 Meteor.startup(function indexParcels() {
