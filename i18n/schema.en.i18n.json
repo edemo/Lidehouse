@@ -266,7 +266,11 @@
     },
     "rank": {
       "label": "Rank extension",
-      "help": "Usually not necessary. It has no effect on the permissions, but it may help to slightly differentiate between the roles on the officers page."
+      "help": "Usually not necessary. It has no effect on the permissions, but it may help to slightly differentiate between the roles on the officers page.",
+      "chairman": "chairman",
+      "lead": "lead",
+      "assistant": "assistant",
+      "substitute": "substitute"
     },
     "partnerId": {
       "label": "Person"

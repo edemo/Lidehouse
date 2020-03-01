@@ -55,9 +55,6 @@
   "delegate": "meghatalmazott",
   "maintainer": "gondnok",
   "guest": "vendég",
-  // ranks
-  "assistant": "asszisztens",
-  "chairman": "elnök",
   
   "Leaders": "Vezetők",
   "Other roles": "Egyéb tisztségek",

@@ -267,7 +267,11 @@
     },
     "rank": {
       "label": "Kiegészítő titulus",
-      "help": "Általában nincs rá szükség. A jogosultságokat nem befolyásolja, csak segíthet árnyalni a személy szerepkörét a tisztség listában."
+      "help": "Általában nincs rá szükség. A jogosultságokat nem befolyásolja, csak segíthet árnyalni a személy szerepkörét a tisztség listában.",
+      "chairman": "elnök",
+      "lead": "vezető",
+      "assistant": "asszisztens",
+      "substitute": "helyettes"
     },
     "partnerId": {
       "label": "Személy"

@@ -10,7 +10,7 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { officerRoles, everyRole, nonOccupantRoles, Roles, ranks } from '/imports/api/permissions/roles.js';
+import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -21,6 +21,8 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
 export const Memberships = new Mongo.Collection('memberships');
+
+const rankValues = ['chairman', 'lead', 'assistant', 'substitute'];
 
 // Memberships are the Ownerships, Benefactorships and Roleships in a single collection
 Memberships.baseSchema = new SimpleSchema({
@@ -35,7 +37,7 @@ Memberships.baseSchema = new SimpleSchema({
       firstOption: () => __('(Select one)'),
     },
   },
-  rank: { type: String, optional: true, allowedValues: ranks, autoform: autoformOptions(ranks) },
+  rank: { type: String, optional: true, allowedValues: rankValues, autoform: autoformOptions(rankValues, 'schemaMemberships.rank.') },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
   person: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // deprecated for partnerId

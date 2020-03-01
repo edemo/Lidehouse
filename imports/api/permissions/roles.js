@@ -17,10 +17,6 @@ export const defaultRoles = [
   { name: 'guest' },        // Just looking around. Somone invited him/her to take a look.
 ];
 
-export const ranks = [
-  'chairman', 'assistant',
-];
-
 export const rolesPriorities = {};
 _.each(defaultRoles, (r, i) => rolesPriorities[r.name] = i);
 rolesPriorities.admin = rolesPriorities.moderator; // Needs to move to end of the officer list
