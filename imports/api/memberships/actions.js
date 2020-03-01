@@ -99,7 +99,8 @@ Memberships.actions = {
     run(options, doc, event, instance) {
       if (doc.userId) Memberships.methods.linkUser.call({ _id: doc._id });
       else {
-        const email = doc.partner().contact && doc.partner().contact.email;
+        const partner = doc.partner();
+        const email = partner && partner.contact && partner.contact.email;
         if (!email) displayMessage('warning', 'No contact email set for this membership');
         else {
           Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, {

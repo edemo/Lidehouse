@@ -156,7 +156,8 @@ Memberships.helpers({
     return result;
   },
   toString() {
-    const display = `${this.partner().displayName('hu')}, ${this.displayRole()}`;
+    const partner = this.partner();
+    const display = `${partner && partner.displayName('hu')}, ${this.displayRole()}`;
     return display;
   },
 });

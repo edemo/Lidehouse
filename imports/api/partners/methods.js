@@ -7,6 +7,8 @@ import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/i
 import { checkNoOutstanding } from '/imports/api/behaviours/accounting-location.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { sendOutstandingsEmail } from '/imports/email/outstandings-send.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Partners } from './partners.js';
 
 
@@ -52,6 +54,10 @@ export const remove = new ValidatedMethod({
     const doc = checkExists(Partners, _id);
     checkPermissions(this.userId, 'partners.remove', doc);
     checkNoOutstanding(doc);
+    const membership = Memberships.findOne({ partnerId: _id });
+    if (membership) throw new Meteor.Error('err_unableToRemove', `Partner ${_id} may not be removed, until membership ${membership._id} is using it.`);
+    const transaction = Transactions.findOne({ partnerId: _id });
+    if (transaction) throw new Meteor.Error('err_unableToRemove', `Partner ${_id} may not be removed, until transaction ${transaction._id} is using it.`);
     return Partners.remove(_id);
   },
 });
