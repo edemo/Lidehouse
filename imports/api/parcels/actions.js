@@ -21,15 +21,16 @@ import './methods.js';
 import './entities.js';
 
 Parcels.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    color: () => 'primary',
-    label: options => (Array.isArray(options.entity) ? `${__('new') + ' ' + __('parcel')}` : `${__('new')} ${__('schemaParcels.category.' + options.entity.name)}`),
-    visible: (options, doc) => currentUserHasPermission('parcels.insert', doc),
-    subActions: options => Array.isArray(options.entity) && options.entity.length,
-    subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),
-    run(options, doc) {
+    icon: 'fa fa-plus',
+    color: 'primary',
+    label: (Array.isArray(options.entity) ? `${__('new') + ' ' + __('parcel')}`
+      : `${__('new')} ${__('schemaParcels.category.' + options.entity.name)}`),
+    visible: user.hasPermission('parcels.insert', doc),
+    subActions: options && options.entity && options.entity.length &&
+      options.entity.map(entity => Parcels.actions.new({ entity }), doc, user),
+    run() {
       let entity = options.entity;
       if (typeof entity === 'string') entity = Parcels.entities[entity];
       Modal.show('Autoform_modal', {
@@ -39,18 +40,18 @@ Parcels.actions = {
         meteormethod: 'parcels.insert',
       });
     },
-  },
-  import: {
+  }),
+  import: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'import',
-    icon: () => 'fa fa-upload',
-    visible: (options, doc) => currentUserHasPermission('parcels.upsert', doc),
+    icon: 'fa fa-upload',
+    visible: user.hasPermission('parcels.upsert', doc),
     run: () => importCollectionFromFile(Parcels),
-  },
-  view: {
+  }),
+  view: (options, doc, user) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('parcels.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('parcels.inCommunity', doc),
+    run() {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.view`,
@@ -59,11 +60,11 @@ Parcels.actions = {
         type: 'readonly',
       });
     },
-  },
-  occupants: {
+  }),
+  occupants: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'occupants',
-    icon: (options, doc) => (doc && doc.isLed() ? 'fa fa-user-o' : 'fa fa-user'),
-    color: (options, doc) => {
+    icon: (doc && doc.isLed() ? 'fa fa-user-o' : 'fa fa-user'),
+    color: (() => {
       let colorClass = '';
       if (Memberships.findOneActive({ parcelId: doc._id, approved: false })) colorClass = 'danger';
       else {
@@ -81,9 +82,9 @@ Parcels.actions = {
         }
       }
       return colorClass;
-    },
-    visible: (options, doc) => currentUserHasPermission('memberships.inCommunity', doc),
-    run(options, doc, event, instance) {
+    })(),
+    visible: user.hasPermission('memberships.inCommunity', doc),
+    run() {
       Session.update('modalContext', 'parcelId', doc._id);
       Modal.show('Modal', {
         title: `${doc ? doc.display() : __('unknown')} - ${__('occupants')}`,
@@ -92,17 +93,16 @@ Parcels.actions = {
           community: doc.community(),
           parcel: doc,
         },
-        size: currentUserHasPermission('partners.details', doc) ? 'lg' : 'md',
+        size: user.hasPermission('partners.details', doc) ? 'lg' : 'md',
       });
     },
-  },
-  meters: {
+  }),
+  meters: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'meters',
-    icon: () => 'fa fa-tachometer',
-    color: (options, doc) => doc && doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
-    visible: (options, doc) =>
-      currentUserHasPermission('meters.insert', doc) || currentUserHasPermission('parcels.details', doc),
-    run(options, doc, event, instance) {
+    icon: 'fa fa-tachometer',
+    color: doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
+    visible: user.hasPermission('meters.insert', doc) || user.hasPermission('parcels.details', doc),
+    run(event, instance) {
       Session.update('modalContext', 'parcelId', doc._id);
       Modal.show('Modal', {
         title: `${doc ? doc.display() : __('unknown')} - ${__('meters')}`,
@@ -111,24 +111,24 @@ Parcels.actions = {
           community: doc.community(),
           parcel: doc,
         },
-        size: currentUserHasPermission('meters.update', doc) ? 'lg' : 'md',
+        size: user.hasPermission('meters.update', doc) ? 'lg' : 'md',
       });
     },
-  },
-  finances: {
+  }),
+  finances: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'finances',
-    icon: () => 'fa fa-money',
-    visible: (options, doc) => currentUserHasPermission('parcels.inCommunity', doc),
-    href: () => '#view-target',
-    run(options, doc, event, instance) {
+    icon: 'fa fa-money',
+    visible: user.hasPermission('parcels.inCommunity', doc),
+    href: '#view-target',
+    run(event, instance) {
       instance.viewmodel.parcelToView(doc._id);
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('parcels.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('parcels.update', doc),
+    run() {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.update`,
@@ -139,12 +139,12 @@ Parcels.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  period: {
+  }),
+  period: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'period',
-    icon: () => 'fa fa-history',
-    visible: (options, doc) => currentUserHasPermission('parcels.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-history',
+    visible: user.hasPermission('parcels.update', doc),
+    run() {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.update`,
@@ -155,18 +155,18 @@ Parcels.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('parcels.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('parcels.remove', doc),
+    run() {
       Modal.confirmAndCall(Parcels.methods.remove, { _id: doc._id }, {
         action: 'delete parcel',
         message: 'You should rather archive it',
       });
     },
-  },
+  }),
 };
 
 //-----------------------------------------------

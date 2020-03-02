@@ -185,7 +185,7 @@ Template.Accounting_bills.events({
     instance.viewmodel.activePartnerRelation(partnerRelation);
   },
   'click .js-apply'(event, instance) {
-    ParcelBillings.actions.apply.run();
+    ParcelBillings.actions.apply().run();
   },
   'click .js-edit-defs'(event, instance) {
     const modalContext = {

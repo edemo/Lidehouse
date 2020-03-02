@@ -11,10 +11,10 @@ import { Agendas } from './agendas.js';
 import './methods.js';
 
 Agendas.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('agendas.insert', doc),
+    icon: 'fa fa-plus',
+    visible: user.hasPermission('agendas.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.agenda.insert',
@@ -23,12 +23,12 @@ Agendas.actions = {
         meteormethod: 'agendas.insert',
       });
     },
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('agendas.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('agendas.inCommunity', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.agenda.view',
         collection: Agendas,
@@ -36,12 +36,12 @@ Agendas.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('agendas.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('agendas.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.agenda.update',
         collection: Agendas,
@@ -51,18 +51,18 @@ Agendas.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('agendas.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('agendas.remove', doc),
+    run() {
       Modal.confirmAndCall(Agendas.methods.remove, { _id: doc._id }, {
         action: 'delete agenda',
         message: 'This will not delete topics',
       });
     },
-  },
+  }),
 };
 
 //-----------------------------------------------

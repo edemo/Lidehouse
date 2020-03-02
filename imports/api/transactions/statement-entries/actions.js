@@ -14,11 +14,11 @@ import { StatementEntries } from './statement-entries.js';
 import './methods.js';
 
 StatementEntries.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('statements.insert', doc),
-    run(options, doc, event, instance) {
+    icon: 'fa fa-plus',
+    visible: user.hasPermission('statements.insert', doc),
+    run(event, instance) {
 //      Session.update('modalContext', 'account', instance.viewmodel.accountSelected());
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.insert',
@@ -32,20 +32,18 @@ StatementEntries.actions = {
         meteormethod: 'statementEntries.insert',
       });
     },
-  },
-  import: {
+  }),
+  import: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'import',
-    icon: () => 'fa fa-upload',
-    visible: (options, doc) => currentUserHasPermission('statements.upsert', doc),
-    run: () => {
-      importCollectionFromFile(StatementEntries, { keepOriginals: true });
-    },
-  },
-  view: {
+    icon: 'fa fa-upload',
+    visible: user.hasPermission('statements.upsert', doc),
+    run: () => importCollectionFromFile(StatementEntries, { keepOriginals: true }),
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('statements.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('statements.inCommunity', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.view',
         collection: StatementEntries,
@@ -53,12 +51,12 @@ StatementEntries.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('statements.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('statements.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.update',
         collection: StatementEntries,
@@ -69,28 +67,16 @@ StatementEntries.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  reconcile: {
+  }),
+  reconcile: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'reconcile',
-    label(options) {
-      if (options.txdef) return options.txdef.name;
-      return __('reconcile');
-    },
-    icon: () => 'fa fa-external-link',
-    color(options, doc) {
-      if (doc.match) return 'info';
-      else return 'danger';
-    },
-    visible(options, doc) {
-      if (!doc || doc.isReconciled()) return false;
-      return currentUserHasPermission('statements.reconcile', doc);
-    },
-    subActions: () => true,
-    subActionsOptions(options, doc) {
-      const txdefs = Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx());
-      return txdefs.map(txdef => ({ txdef }));
-    },
-    run(options, doc) {
+    label: (options.txdef && options.txdef.name) || __('reconcile'),
+    icon: 'fa fa-external-link',
+    color: (doc.match) ? 'info' : 'danger',
+    visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
+    subActions: Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
+      .map(txdef => StatementEntries.actions.reconcile({ txdef }, doc, user)),
+    run() {
       const insertTx = {
         amount: Math.abs(doc.amount),  // payment
         lines: [{ quantity: 1, unitPrice: Math.abs(doc.amount) }],  // receipt
@@ -111,29 +97,26 @@ StatementEntries.actions = {
         meteormethod: 'statementEntries.reconcile',
       });
     },
-  },
-  autoReconcile: {
+  }),
+  autoReconcile: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'autoReconcile',
-    icon: () => 'fa fa-external-link',
-    color: () => 'info',
-    visible(options, doc) {
-      if (!doc || doc.isReconciled()) return false;
-      return currentUserHasPermission('statements.reconcile', doc);
-    },
-    run(options, doc) {
+    icon: 'fa fa-external-link',
+    color: 'info',
+    visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
+    run() {
       StatementEntries.methods.reconcile.call({ _id: doc._id });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('transactions.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('transactions.remove', doc),
+    run() {
       Modal.confirmAndCall(StatementEntries.methods.remove, { _id: doc._id }, {
         action: 'delete statementEntry',
       });
     },
-  },
+  }),
 };
 
 StatementEntries.batchActions = {

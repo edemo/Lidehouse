@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
@@ -29,7 +30,7 @@ export function actionHandlers(collection, actionNames) {
         txdef: txdef && Txdefs.findOne(txdef),
         status: doc && status && doc.statusObject(status),
       };
-      action.run(options, doc, event, instance);
+      action(options, doc).run(event, instance);
     };
   });
   return eventHandlers;
@@ -40,7 +41,7 @@ export function actionHandlers(collection, actionNames) {
 const buttonHelpers = {
   title() {
     const action = this.templateInstance.data.action;
-    const btnText = (action.label) ? action.label(this.getOptions(), this.getDoc()) : action.name;
+    const btnText = (action.label) ? action.label : action.name;
     return __(btnText).capitalize();
   },
   large() {
@@ -86,12 +87,13 @@ const buttonHelpers = {
     }
     return instanceData.doc;
   },
-  getActions() {
+  getActions(options, doc) {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);
+    console.log("data.actions", this.templateInstance.data.actions);
     const actions = this.templateInstance.data.actions
-      ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
+      ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a](options, doc, Meteor.user()))
 //      : _.map(collection.actions, (action, name) => action);
-      : _.values(_.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block'));
+      : _.map(_.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block'), a => a(options, doc, Meteor.user()));
     return actions;
   },
   needsDividerAfter(action) {
@@ -125,7 +127,7 @@ Template.Action_buttons_group.viewmodel(buttonHelpers);
 Template.Action_button.events({
   // This can be used most of the time to handle the click event - except when we are unable to render a proper template (like into a jquery cell).
   'click .btn'(event, instance) {
-    instance.data.action.run(instance.viewmodel.getOptions(), instance.viewmodel.getDoc(), event, instance);
+    instance.data.action.run(event, instance);
   },
 });
 
@@ -138,7 +140,7 @@ Template.Action_buttons_dropdown.viewmodel(buttonHelpers);
 
 Template.Action_listitem.events({
   'click li.enabled'(event, instance) {
-    instance.data.action.run(instance.viewmodel.getOptions(), instance.viewmodel.getDoc(), event, instance);
+    instance.data.action.run(event, instance);
   },
   'click li:not(.enabled)'(event, instance) {
     event.stopPropagation();

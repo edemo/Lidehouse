@@ -1,7 +1,7 @@
 <template name="Action_button">
-    {{#if action.visible getOptions getDoc}}
-    <a {{dataObject}} href="{{action.href getOptions getDoc}}" class="btn btn-{{btnSize}} btn-{{or (action.color getOptions getDoc) 'white'}} js-{{action.name}}" title="{{#unless long}}{{title}}{{/unless}}">
-      <i class="{{action.icon getOptions getDoc}}"></i>
+    {{#if action.visible}}
+    <a {{dataObject}} href="{{action.href}}" class="btn btn-{{btnSize}} btn-{{or (action.color) 'white'}} js-{{action.name}}" title="{{#unless long}}{{title}}{{/unless}}">
+      <i class="{{action.icon}}"></i>
       {{#if long}}
           {{#if equals size 'md'}}<strong>{{title}}</strong>{{else}}{{title}}{{/if}}
       {{/if}}
@@ -10,10 +10,10 @@
 </template>
 
 <template name="Action_sub_actions_button">
-    {{#if action.visible getOptions getDoc}}
+    {{#if action.visible}}
     {{>Menu_overflow_guard}}
     <div class="dropdown pull-left">
-        <a href="{{action.href getOptions getDoc}}" data-toggle="dropdown" class="dropdown-toggle btn btn-{{btnSize}} btn-{{or (action.color getOptions getDoc) 'white'}} js-{{action.name}}" title="{{#unless long}}{{title}}{{/unless}}">
+        <a href="{{action.href}}" data-toggle="dropdown" class="dropdown-toggle btn btn-{{btnSize}} btn-{{or (action.color) 'white'}} js-{{action.name}}" title="{{#unless long}}{{title}}{{/unless}}">
           <i class="{{action.icon getOptions getDoc}}"></i> 
           {{#if long}}
               {{#if equals size 'md'}}<strong>{{title}}</strong>{{else}}{{title}}{{/if}}
@@ -21,8 +21,8 @@
           <b class="caret"></b>
         </a>
         <ul class="{{#unless large}}slim-menu{{/unless}} dropdown-menu pull-right animated fadeInDown m-t-xs">
-        {{#each subOptions in (action.subActionsOptions getOptions getDoc)}}
-            {{>Action_listitem options=subOptions doc=doc collection=collection action=action}}
+        {{#each action in (action.subActions)}}
+            {{>Action_listitem action=action}}
         {{/each}}
         </ul>
     </div>
@@ -31,11 +31,11 @@
 
 <template name="Action_buttons_group">
   <div class="btn-group">
-    {{#each action in getActions}}
-        {{#if action.subActions getOptions getDoc}}
-            {{>Action_sub_actions_button options=options doc=doc collection=collection action=action size=size}}
+    {{#each action in (getActions getOptions getDoc)}}
+        {{#if action.subActions}}
+            {{>Action_sub_actions_button action=action size=size}}
         {{else}}
-            {{>Action_button options=options doc=doc collection=collection action=action size=size}}
+            {{>Action_button action=action size=size}}
         {{/if}}
     {{/each}}
   </div>
@@ -44,11 +44,11 @@
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 
 <template name="Action_listitem">
-  {{#let enabled=(and (action.visible getOptions getDoc) 'enabled')}}
+  {{#let enabled=(and action.visible 'enabled')}}
     <li class={{enabled}}>
-        <a {{dataObject}} href="{{action.href getOptions getDoc}}" class="js-{{action.name}}">
+        <a {{dataObject}} href="{{action.href}}" class="js-{{action.name}}">
         <span class="{{#unless enabled}}text-disabled{{/unless}}">
-            <i class="{{action.icon getOptions getDoc}}"></i> {{title}}
+            <i class="{{action.icon}}"></i> {{title}}
         </span>
         </a>
     </li>
@@ -56,18 +56,18 @@
 </template>
 
 <template name="Action_sub_actions_listitems">
-    {{#each subOptions in (action.subActionsOptions getOptions getDoc)}}
-        {{>Action_listitem options=subOptions doc=doc collection=collection action=action}}
+    {{#each action in action.subActions}}
+        {{>Action_listitem action=action}}
     {{/each}}
 </template>
 
 <template name="Action_buttons_dropdown_list">
-  <ul class="{{#unless large}}slim-menu{{/unless}} dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{getDoc._id}}">
-    {{#each action in getActions}}
+  <ul class="{{#unless large}}slim-menu{{/unless}} dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{doc._id}}">
+    {{#each action in (getActions getOptions getDoc)}}
         {{#if action.subActions}}
-            {{>Action_sub_actions_listitems options=options doc=doc collection=collection action=action}}
+            {{>Action_sub_actions_listitems action=action}}
         {{else}}
-            {{>Action_listitem options=options doc=doc collection=collection action=action}}
+            {{>Action_listitem action=action}}
         {{/if}}
         {{#if needsDividerAfter action}}
           <li role="separator" class="divider"></li>
@@ -81,7 +81,7 @@
 <template name="Action_buttons_dropdown">
     {{>Menu_overflow_guard}}
     <div class="dropdown js-menu {{getDoc.entitiyName}}"> 
-        <button class="btn btn-xs btn-white dropdown-toggle drop-unfoll" type="button" id="drop_{{getDoc._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-xs btn-white dropdown-toggle drop-unfoll" type="button" id="drop_{{doc._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {{#if long}}{{_ 'Action buttons'}} {{/if}}<i class="glyphicon glyphicon-option-horizontal"></i>
         </button>
         {{>Action_buttons_dropdown_list}}
