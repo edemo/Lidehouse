@@ -6,6 +6,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { getActiveCommunity } from '/imports/ui_3/lib/active-community';
 
 // Import UI pages only on the client!
 // But the route defs need to be available on the server as well, for calculating link paths in emails
@@ -108,14 +109,25 @@ FlowRouter.route('/terms', {
 
 // --------------------------------------------
 
-FlowRouter.route('/community/:_cid', {
+FlowRouter.route('/community', {
   name: 'Community page',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_page' });
   },
+  title() {
+    const community = getActiveCommunity();
+    return community && `${community.name}`;
+  },
+});
+
+FlowRouter.route('/community/:_cid', {
+  name: 'Community show',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_page' });
+  },
   title(params) {
-    const Community = Communities.findOne({ _id: params._cid });
-    return Community && `${Community.name}`;
+    const community = Communities.findOne({ _id: params._cid });
+    return community && `${community.name}`;
   },
 });
 
@@ -168,8 +180,8 @@ FlowRouter.route('/room/:_rid', {
     BlazeLayout.render('Main_layout', { content: 'Room_show' });
   },
   title(params) {
-    const Room = Topics.findOne(params._rid);
-    return Room && `${Room.title}`;
+    const room = Topics.findOne(params._rid);
+    return room && `${room.title}`;
   },
 });
 CommunityRelatedRoutes.push('Room show');
@@ -341,8 +353,8 @@ FlowRouter.route('/user/:_id', {
     BlazeLayout.render('Main_layout', { content: 'User_show' });
   },
   title(params) {
-    const User = Meteor.users.findOne(params._id);
-    return User && `${User.displayOfficialName()}`;
+    const user = Meteor.users.findOne(params._id);
+    return user && `${user.displayOfficialName()}`;
   },
 });
 CommunityRelatedRoutes.push('User show');

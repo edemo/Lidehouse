@@ -3,13 +3,15 @@ import { $ } from 'meteor/jquery';
 import { Fraction } from 'fractional';
 import { flatten } from 'flat';
 import { moment } from 'meteor/momentjs:moment';
+import { TAPi18n } from 'meteor/tap:i18n';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
-import { Partners } from '../api/partners/partners';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 
 function flattenBankAccountNumber(BAN) {
   return BAN.trim().split('-').join();
@@ -28,16 +30,297 @@ export const Import = {
   },
 };
 
+// TODO: get this out from TAPI
+const schemaParcels = {
+  "label": "Albetét",
+  "category": {
+    "label": "Kategória",
+    "@property": "Albetét",
+    "@common": "Közös tulajdon",
+    "@group": "Gyűjtő",
+    "#tag": "Elszámolási egység"
+  },
+  "serial": {
+    "label": "Sorszám",
+    "placeholder": "(pl. 34)",
+    "help": "Egyedi sorszám, mely segít sorba rendezni a helyeinket. A helyrajzi szám utolsó száma például kíválóan alkalmas erre."
+  },
+  "code": {
+    "label": "Könyvelési kód",
+    "placeholder": "(pl. @B a B épülethez)",
+    "help": "A könyvelési kód tetszőleges karakter sorozat lehet. Amikor azonos karakterekkel kezdődik egy másik kód, akkor az az al-kódja a másik helynek, ezzel lehet hierarchiába rendezni a helyeinket. Érdemes konvenciót használni, mint pl @ jelöli a fizikai helyeket, és ezt követheti az épület, az emelet majd az ajtó kódja. Ha nem ad meg kódot, akkor a 'Megjejölést' fogja használni a rendszer könyvelési kódnak."
+  },
+  "ref": {
+    "label": "Albetét",
+    "placeholder": "(pl. B405)",
+    "help": "Egyedi azonosító, mellyel hivatkozni lehet erre a helyre"
+  },
+  "leadRef": {
+    "label": "Vezető albetét",
+    "placeholder": "(pl. K108)"
+  },
+  "units": {
+    "label": "Tulajdoni hányad",
+    "placeholder": "(pl. 135)"
+  },
+  "building": {
+    "label": "Épület",
+    "placeholder": "(pl. K)"
+  },
+  "floor": {
+    "label": "Emelet",
+    "placeholder": "(pl. 4 vagy IV)"
+  },
+  "door": {
+    "label": "Ajtó",
+    "placeholder": "(pl. 24)"
+  },
+  "type": {
+    "label": "Típus",
+    "placeholder": "(pl. Lakás)",
+    "flat": "Lakás",
+    "parking": "Parkoló",
+    "storage": "Tároló",
+    "cellar": "Pince",
+    "attic": "Padlás",
+    "shop": "Üzlet",
+    "office": "Iroda",
+    "other": "Egyéb"
+  },
+  "group": {
+    "label": "Csoport",
+    "help": "Tetszőleges szó, ami azonosítja melyik csoportba tartozik ez az albetét. Az előrásoknál lehet a csoport szerint szűrni.",
+    "placeholder": "(pl. Vízórás)"
+  },
+  "lot": {
+    "label": "Helyrajzi szám",
+    "placeholder": "(pl. 293456/A/24)"
+  },
+  "location": {
+    "label": "Elhelyezkedés"
+  },
+  "area": {
+    "label": "Alapterület (m2)",
+    "placeholder": "(pl. 45)"
+  },
+  "volume": {
+    "label": "Légköbméter (m3)",
+    "placeholder": "(pl. 142)"
+  },
+  "occupants": {
+    "label": "Birtokosok"
+  },
+  "freeFields": {
+    "label": "Kötetlen mezők",
+    "$": {
+      "key": {
+        "label": "Megnevezés",
+        "placeholder": "(pl. Belmagasság)"
+      },
+      "value": {
+        "label": "Érték",
+        "placeholder": "(pl. 3,5m)"
+      }
+    }
+  }
+};
+const schemaParcelships = {
+  "leadParcelId": {
+    "label": "Vezető albetét az"
+  },
+  "leadParcelRef": {
+    "label": "Vezető albetét"
+  },
+  "parcelId": {
+    "label": "Albetét"
+  },
+};
+const schemaPartners = {
+  "relation": {
+    "label": "Partner viszony",
+    "supplier": "Szállító",
+    "customer": "Vevő",
+    "member": "Tagság"      
+  },
+  "userId": {
+    "label": "Kapcsolt felhasználó (ha már regisztrált)"
+  },
+  "idCard": {
+    "label" : "Személyi adatok",
+    "type": {
+      "label": "Személy típusa",
+      "natural": "magánszemély",
+      "legal": "jogi személyiség"
+    },
+    "name": {
+      "label": "Név",
+      "placeholder": "(pl. Kovács János vagy Kulcslyuk Kft.)"
+    },
+    "address": {
+      "label": "Bejelentett cím",
+      "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
+    },
+    "identifier": {
+      "label": "Szig. szám ill. cégjegyzékszám",
+      "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
+    },
+    "dob": {
+      "label": "Születési ill. alapítási idő"
+    },
+    "mothersName": {
+      "label": "Anyja leánykori neve",
+      "placeholder": "(csak magánszemély esetén)"
+    }
+  },
+  "contact": {
+    "label" : "Kapcsolattartási adatok",
+    "address": {
+      "label": "Levelezési cím",
+      "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
+    },
+    "phone": {
+      "label": "Telefonszám",
+      "placeholder": "(pl. +36 30 123 4567)"
+    },
+    "email": {
+      "label": "Email cím",
+      "placeholder": "(pl. tibi45@dmail.com)"
+    }
+  },
+  "BAN": { 
+    "label": "Bankszámlaszám",
+    "placeholder": "(pl 12345678-00000000-00000078)"
+  },
+  "taxNo": { 
+    "label": "Adószám",
+    "placeholder": "(pl 123456-2-42)",
+    "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
+  }
+};
+const schemaMemberships = {
+  "role": {
+    "label": "Tisztség"
+  },
+  "parcelId": {
+    "label": "Albetét"
+  },
+  "partnerId": {
+    "label": "Személy"
+  },
+  "ownership": {
+    "label": "Tulajdon",
+    "share": {
+      "label": "Tulajdonrész",
+      "placeholder": "(pl. 1/1 vagy 1/2)"
+    },
+    "representor": {
+      "label": "Képviselője?"
+    }
+  },
+  "benefactorship": {
+    "label": "Használat",
+    "type": {
+      "label": "Típus",
+      "rental": "Bérlet",
+      "favor": "Szívességi használat",
+      "right": "Haszonélvezeti jog"
+    }
+  }
+};
+
+export function touchedCollections(collection) {
+  return (collection._name === 'parcels')
+    ? [Parcels, Parcelships, Partners, Memberships]
+    : [collection];
+}
+
+// It is only available in undescore 1.8.1, and we are forced use 1.0.10
+_.findKey = function findKey(obj, predicate) {
+  let result;
+  _.each(obj, (value, key) => {
+    if (predicate(key)) {
+      result = key;
+      return false;
+    }
+  });
+  return result;
+}
+
+export class Translator {
+  constructor(collection, lang) {
+    this.collection = collection;
+    this.lang = lang;
+    if (lang === 'hu') {
+      if (collection._name === 'parcels') this.dictionary = schemaParcels;
+      else if (collection._name === 'parcelships') this.dictionary = schemaParcelships;
+      else if (collection._name === 'partners') this.dictionary = schemaPartners;
+      else if (collection._name === 'memberships') this.dictionary = schemaMemberships;
+      else this.dictionary = {};
+    }
+  }
+  reverse(docs) {
+/*    let categorySelector;
+    if (this.collection._name === 'parcels') categorySelector = { category: '@property' };
+    if (this.collection._name === 'memberships') categorySelector = { role: 'owner' };
+    const schema = this.collection.simpleSchema(categorySelector);
+    const tapi = TAPi18n;
+    debugger;
+    _.each(schema._schemaKeys, key => {
+      this.dictionary[key] = `schema${this.collection._name.capitalize()}.${key}`;
+    });
+*/
+    const self = this;
+    const sameString = (str1, str2) => (str1.localeCompare(str2, this.lang, { sensitivity: 'base' }) === 0);
+    return docs.map(doc => {
+      const tdoc = {};
+      const path = [];
+      function reverseObject(obj) {
+        _.each(obj, (fieldValue, fieldName) => {
+          const trimFieldName = fieldName.trim();
+          const dictionary = !path.length ? self.dictionary : Object.getByString(self.dictionary, path.join('.'));
+          const enFieldName =
+            (dictionary && _.findKey(dictionary, k => sameString(trimFieldName, dictionary[k].label)))
+            || trimFieldName;
+          if (typeof fieldValue === 'object') {
+            path.push(enFieldName);
+            reverseObject(fieldValue);
+            path.pop();
+          } else { // (typeof fieldValue === 'string')
+            const trimFieldValue = fieldValue.trim();
+            const enFieldValue =
+              (dictionary && _.findKey(dictionary[enFieldName], k => sameString(trimFieldValue, dictionary[enFieldName][k])))
+              || trimFieldValue;
+            Object.setByString(tdoc, path.concat([enFieldName]).join('.'), enFieldValue);
+          }
+        });
+      }
+      reverseObject(doc);
+      return tdoc;
+    });
+  }
+}
+
 // Problem of dealing with dates as js Date objects:
 // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
 // https://stackoverflow.com/questions/15130735/how-can-i-remove-time-from-date-with-moment-js
 
 export const Transformers = {
+  parcels: {
+    default: (docs, options) => {
+      const tdocs = [];
+      docs.forEach((doc) => {
+        const tdoc = {}; $.extend(true, tdoc, doc);
+        tdoc.category = tdoc.category || '@property';
+        tdocs.push(tdoc);
+      });
+      return tdocs;
+    },
+  },
   parcelships: {
-    default: (jsons, options) => {
-      const tjsons = [];
+    default: (docs, options) => {
+      const tdocs = [];
       const communityId = getActiveCommunityId();
-      jsons.forEach((doc) => {
+      docs.forEach((doc) => {
         if (doc.leadRef && doc.leadRef !== doc.ref) {
           const parcel = Parcels.findOne({ communityId, ref: doc.ref });
           productionAssert(parcel, `No parcel with this ref ${doc.ref}`);
@@ -46,57 +329,53 @@ export const Transformers = {
           const tdoc = {}; $.extend(true, tdoc, doc);
           tdoc.parcelId = parcel._id;
           tdoc.leadParcelId = leadParcel._id;
-          tjsons.push(tdoc);
+          tdocs.push(tdoc);
         }
       });
-      return tjsons;
+      return tdocs;
     },
   },
   partners: {
-    default: (jsons, options) => {
-      const tjsons = [];
+    default: (docs, options) => {
+      const tdocs = [];
       const communityId = getActiveCommunityId();
       debugAssert(communityId);
-      jsons.forEach((doc) => {
-        const partner = Partners.findOne({ 'idCard.name': doc.idCard.name });
-        if (!partner) {
-          doc.idCard = doc.idCard || {};
-          doc.idCard.type = doc.idCard.type || 'natural';
-          doc.relation = doc.relation || 'member';
-          tjsons.push(doc);
-        }
+      docs.forEach((doc) => {
+        if (!doc.idCard || !doc.idCard.name) return;
+        const tdoc = {}; $.extend(true, tdoc, doc);
+        tdoc.idCard.type = tdoc.idCard.type || 'natural';
+        tdoc.relation = tdoc.relation || 'member';
+        tdocs.push(tdoc);
       });
-      return tjsons;
+      return tdocs;
     },
   },
   memberships: {
-    default: (jsons, options) => {
-      const tjsons = [];
+    default: (docs, options) => {
+      const tdocs = [];
       const communityId = getActiveCommunityId();
       debugAssert(communityId);
-      jsons.forEach((doc) => {
-        const parcel = Parcels.findOne({ communityId, ref: doc.ref.trim() });
-        doc.parcelId = parcel._id;
-        doc.role = 'owner';
-        const names = doc.owners ? doc.owners.split(/,|;|\n/) : [];
-        const emails = doc.emails ? doc.emails.split(/,|;| |\n/) : [];
-        names.forEach((name) => {
-          const partner = Partners.findOne({ 'idCard.name': name });
-          productionAssert(partner, `No partner with this name ${name}`);
-          const tdoc = {}; $.extend(true, tdoc, doc);
-          tdoc.partnerId = partner._id;
-          tdoc.ownership = { share: new Fraction(1, names.length) };
-          tjsons.push(tdoc);
-        });
+      docs.forEach((doc) => {
+        if (!doc.idCard || !doc.idCard.name) return;
+        const parcel = Parcels.findOne({ communityId, ref: doc.ref });
+        productionAssert(parcel, `No parcel with this ref ${doc.ref}`);
+        const partner = Partners.findOne({ communityId, 'idCard.name': doc.idCard.name });
+        productionAssert(partner, `No partner with this name ${doc.idCard.name}`);
+        const tdoc = {}; $.extend(true, tdoc, doc);
+        tdoc.parcelId = parcel._id;
+        tdoc.partnerId = partner._id;
+        if (!tdoc.role) tdoc.role = 'owner';
+        if (!tdoc.ownership) tdoc.ownership = { share: new Fraction(1) };
+        tdocs.push(tdoc);
       });
-      return tjsons;
+      return tdocs;
     },
   },
   transactions: {
     // Before upload: convert two money columns to number
-    default: (jsons, options) => {
-      const tjsons = [];
-      jsons.forEach((doc, i) => {
+    default: (docs, options) => {
+      const tdocs = [];
+      docs.forEach((doc, i) => {
         const docRef = '' + (i+2) + '-' + doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
     //    const cutoffDate = moment(moment.utc('2019-06-01'));
         const incomingDate = moment(moment.utc(doc['A számla fizetési határideje'] || doc['Számla kelte']));
@@ -112,7 +391,7 @@ export const Transformers = {
             account: '`46',
           }],
         };
-        tjsons.push(bill);
+        tdocs.push(bill);
     //    }
         if (doc['A számla kiegyenlítésének időpontja']) {
           const paymentDate = moment(moment.utc(doc['A számla kiegyenlítésének időpontja']));
@@ -129,19 +408,19 @@ export const Transformers = {
             }],
             // credit is one of the '`38' accounts
           };
-          tjsons.push(payment);
+          tdocs.push(payment);
     //      }
         }
       });
-      return tjsons;
+      return tdocs;
     },
   },
 
   // Before upload: convert all money columns to number
   balances: {
-    default: (jsons, options) => {
-      const tjsons = [];
-      jsons.forEach((doc) => {
+    default: (docs, options) => {
+      const tdocs = [];
+      docs.forEach((doc) => {
         const date = moment.utc(doc["Dátum"]);
         const tag = `C-${date.year()}-${date.month() + 1}`;
         const number = key => (Number(doc[key]) || 0);
@@ -149,17 +428,17 @@ export const Transformers = {
     //  '`382', name: 'Folyószámla' },
     //  '`383', name: 'Megtakarítási számla' },
     //  '`384', name: 'Fundamenta' },
-        tjsons.push({
+        tdocs.push({
           account: '`381',
           tag,
           debit: number("Pénztár"),
         });
-        tjsons.push({
+        tdocs.push({
           account: '`382',
           tag,
           debit: number("K&H üzemeltetési számla"),
         });
-        tjsons.push({
+        tdocs.push({
           account: '`383',
           tag,
           debit: number("K&H felújítási számla") + number("K&H megtakarítási számla"),
@@ -167,35 +446,35 @@ export const Transformers = {
         const fundamentaAccountNames = Object.keys(doc).filter(key => key.startsWith('Fundamenta'));
         let fundamentaBalance = 0;
         fundamentaAccountNames.forEach(key => fundamentaBalance += number(key));
-        tjsons.push({
+        tdocs.push({
           account: '`384',
           tag,
           debit: fundamentaBalance,
         });
       });
-      return tjsons;
+      return tdocs;
     },
   },
 
   statementEntries: {
-    default: (jsons, options) => {
-      const tjsons = [];
-      jsons.forEach((json) => {
-        const tjson = {
-          ref: json['Tranzakció azonosító '],
-          refType: json['Típus'],
-          account: Import.findAccountByNumber(json['Könyvelési számla']).account,
-          valueDate: json['Könyvelés dátuma'],
-          amount: json['Összeg'],
-          name: Import.findPartner(json['Partner elnevezése']),
-          note: json['Közlemény'],
+    default: (docs, options) => {
+      const tdocs = [];
+      docs.forEach((doc) => {
+        const tdoc = {
+          ref: doc['Tranzakció azonosító '],
+          refType: doc['Típus'],
+          account: Import.findAccountByNumber(doc['Könyvelési számla']).account,
+          valueDate: doc['Könyvelés dátuma'],
+          amount: doc['Összeg'],
+          name: Import.findPartner(doc['Partner elnevezése']),
+          note: doc['Közlemény'],
           statementId: options.source,
   //        txId
         };
-        if (options.keepOriginals) tjson.original = json;
-        tjsons.push(tjson);
+        if (options.keepOriginals) tdoc.original = doc;
+        tdocs.push(tdoc);
       });
-      return tjsons;
+      return tdocs;
     },
   },
 };

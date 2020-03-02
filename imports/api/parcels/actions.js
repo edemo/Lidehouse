@@ -89,8 +89,8 @@ Parcels.actions = {
         title: `${doc ? doc.display() : __('unknown')} - ${__('occupants')}`,
         body: 'Occupants_box',
         bodyContext: {
-          communityId: doc.communityId,
-          parcelId: doc._id,
+          community: doc.community(),
+          parcel: doc,
         },
         size: currentUserHasPermission('partners.details', doc) ? 'lg' : 'md',
       });
@@ -108,8 +108,8 @@ Parcels.actions = {
         title: `${doc ? doc.display() : __('unknown')} - ${__('meters')}`,
         body: 'Meters_box',
         bodyContext: {
-          communityId: doc.communityId,
-          parcelId: doc._id,
+          community: doc.community(),
+          parcel: doc,
         },
         size: currentUserHasPermission('meters.update', doc) ? 'lg' : 'md',
       });

@@ -124,12 +124,14 @@
                         <!--span class="fa arrow"> </span-->
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='finances|inventory|accounting' className='submenu-open'}}">
+                        {{#if currentUserHasPermission 'parcels.finances'}}
                         <li class="{{isActivePath regex='parcels-finances'}}">
                             <a href="{{pathFor 'Parcels finances'}}">
                                 <i class="fa fa-pie-chart" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Parcels finances'}}</span>
                             </a>
                         </li>
+                        {{/if}}
                         <li class="{{isActivePath regex='community-finances'}}">
                             <a href="{{pathFor 'Community finances'}}">
                                 <i class="fa fa-bar-chart" aria-hidden="true"></i>
@@ -155,7 +157,7 @@
                     </ul>
                 </li>
                 <li class="{{isActivePath regex='community/'}} {{isActivePath path='/community'}}">
-                    <a href="{{pathFor 'Community page' _cid=(fromSession 'activeCommunityId')}}">
+                    <a href="{{pathFor 'Community page'}}">
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community page'}}</span>
                         {{#if currentUserHasPermission 'parcels.update'}}

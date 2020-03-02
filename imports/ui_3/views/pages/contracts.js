@@ -38,7 +38,7 @@ Template.Contracts.viewmodel({
   contracts() {
     const communityId = Session.get('activeCommunityId');
     const relation = Session.get('activePartnerRelation');
-    return Contracts.find({ communityId }).fetch().filter(c => c.partner().relation === relation);
+    return Contracts.find({ communityId }).fetch().filter(c => c.partner() && (c.partner().relation === relation));
   },
   ticketStatuses() {
     return Object.values(Tickets.statuses);

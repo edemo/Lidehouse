@@ -11,7 +11,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Session } from 'meteor/session';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
-import { partnersColumns } from '/imports/api/partners/tables.js';
+import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -148,7 +148,7 @@ Template.Accounting_bills.viewmodel({
   },
   partnersOptionsFn() {
     return () => Object.create({
-      columns: partnersColumns(),
+      columns: partnersFinancesColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
     });

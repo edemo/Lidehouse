@@ -6,7 +6,7 @@ import { Communities } from './communities.js';
 function linkToCommunityPage(cellData, renderType, currentRow) {
   const communityId = cellData;
   const community = Communities.findOne(communityId);
-  const html = `<a href="${FlowRouter.path('Community page', { _cid: communityId })}">${community.name}</a>`;
+  const html = `<a href="${FlowRouter.path('Community show', { _cid: communityId })}">${community.name}</a>`;
   return html;
 }
 

@@ -22,23 +22,26 @@ Template.Balance_widget.viewmodel({
     return Partners.findOne(partnerId);
   },
   balance() {
-    return (-1) * this.partner().outstanding;
+    const partner = this.partner();
+    return partner && (-1) * partner.outstanding;
   },
   display(balance) {
     const signPrefix = balance > 0 ? '+' : '';
     return signPrefix + numeral(balance).format();
   },
   message(balance) {
+    const partner = this.partner();
     if (balance > 0) return __('You have overpayment');
     else if (balance < 0) {
-      if (this.partner().mostOverdueDays()) return __('You have overdue payments');
+      if (partner && partner.mostOverdueDays()) return __('You have overdue payments');
       else return __('You have due payments');
     }
     return __('Your Parcel Balance');
   },
   colorClass(balance) {
+    const partner = this.partner();
     if (balance < 0) {
-      return 'bg-' + this.partner().mostOverdueDaysColor();
+      return 'bg-' + (partner && partner.mostOverdueDaysColor());
     }
     return 'navy-bg';
   },

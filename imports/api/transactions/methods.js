@@ -3,6 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -50,7 +51,10 @@ export const post = new ValidatedMethod({
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
     let result;
-    if (!doc.isPosted()) { // throw new Meteor.Error('Transaction already posted');
+    if (doc.isPosted()) { 
+      // throw new Meteor.Error('Transaction already posted');
+      console.warn('Transaction already posted'); // allow re-post for email resend
+    } else {
       if (doc.category === 'bill' || doc.category === 'receipt') {
         if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
       } else if (doc.category === 'payment') {
@@ -64,7 +68,7 @@ export const post = new ValidatedMethod({
       const accountingMethod = community.settings.accountingMethod;
       const updateData = doc.makeJournalEntries(accountingMethod);
       result = Transactions.update(_id, { $set: { status: 'posted', postedAt: new Date(), ...updateData } });
-    } else console.warn('Transaction already posted');
+    }
 
     if (Meteor.isServer && doc.category === 'bill') sendBillEmail(doc);
 
@@ -117,8 +121,8 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Transactions, _id);
     checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'transactions.update', doc);
-    if (doc.isSolidified() && doc.complete) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after 24 hours');
+    if (doc.isPosted()) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting');
     }
     Transactions.update({ _id }, modifier, { selector: { category: doc.category } });
   },
@@ -132,13 +136,14 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.remove', doc);
-    if (doc.isSolidified() && doc.complete) {
-      // Not possible to delete tx after 24 hours, but possible to negate it with another tx
+    if (doc.status === 'draft') {
+      Transactions.remove(_id);
+    } else if (doc.status === 'posted') {
       Transactions.update(doc._id, { $set: { status: 'void' } });
       Transactions.insert(_.extend(doc.negator(), { status: 'void' }));
-    } else {
-      Transactions.remove(_id);
-    }
+    } else if (doc.status === 'void') {
+      throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');
+    } else debugAssert(false, `No such tx status: ${doc.status}`);
   },
 });
 

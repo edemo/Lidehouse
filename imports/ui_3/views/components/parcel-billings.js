@@ -28,7 +28,7 @@ Template.Parcel_billings.viewmodel({
     return {
       collection: 'parcelBillings',
       options() {
-        return () => Object.create({
+        return () => ({
           columns: parcelBillingColumns(),
           tableClasses: 'display',
           language: datatables_i18n[TAPi18n.getLanguage()],

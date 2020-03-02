@@ -265,6 +265,14 @@
     "role": {
       "label": "Tisztség"
     },
+    "rank": {
+      "label": "Kiegészítő titulus",
+      "help": "Általában nincs rá szükség. A jogosultságokat nem befolyásolja, csak segíthet árnyalni a személy szerepkörét a tisztség listában.",
+      "chairman": "elnök",
+      "lead": "vezető",
+      "assistant": "asszisztens",
+      "substitute": "helyettes"
+    },
     "partnerId": {
       "label": "Személy"
     },
@@ -281,7 +289,10 @@
     "benefactorship": {
       "label": "Használat",
       "type": {
-        "label": "Típus"
+        "label": "Típus",
+        "rental": "Bérlet",
+        "favor": "Szívességi használat",
+        "right": "Haszonélvezeti jog"
       }
     }
   },
@@ -602,8 +613,17 @@
     }
   },
   "schemaTransactions": {
+    "category": {
+      "label": "Kategória"
+    },
     "defId": {
       "label": "Típus"
+    },
+    "status": {
+      "label": "Státusz",
+      "draft": "Könyveletlen",
+      "posted": "Könyvelt",
+      "void": "Sztornózott"
     },
     "valueDate": {
       "label": "Értéknap",
@@ -766,7 +786,7 @@
       "label": "Kapcsolt felhasználó (ha már regisztrált)"
     },
     "idCard": {
-      "label" : "Személy hivatalos adatai",
+      "label" : "Személyi adatok",
       "type": {
         "label": "Személy típusa",
         "natural": "magánszemély",

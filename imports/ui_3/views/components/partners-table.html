@@ -1,0 +1,12 @@
+<template name="Partners_table">
+    <div class="row">
+    <div class="pull-right">
+        {{>Action_buttons_group collection='partners' actions='new,import' size='md'}}
+    </div>
+    </div>
+    <div class="row">
+    <div>
+        {{> ReactiveDatatable tableData=tableDataFn options=optionsFn }}
+    </div>
+    </div>
+ </template>

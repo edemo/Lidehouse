@@ -264,6 +264,14 @@
     "role": {
       "label": "Role"
     },
+    "rank": {
+      "label": "Rank extension",
+      "help": "Usually not necessary. It has no effect on the permissions, but it may help to slightly differentiate between the roles on the officers page.",
+      "chairman": "chairman",
+      "lead": "lead",
+      "assistant": "assistant",
+      "substitute": "substitute"
+    },
     "partnerId": {
       "label": "Person"
     },
@@ -280,7 +288,10 @@
     "benefactorship": {
       "label": "Benefactor",
       "type": {
-        "label": "Type"
+        "label": "Type",
+        "rental": "Rental",
+        "favor": "Favor",
+        "right": "Right"
       }
     }
   },
@@ -597,8 +608,17 @@
     }
   },
   "schemaTransactions": {
+    "category": {
+      "label": "Category"
+    },
     "defId": {
       "label": "Type"
+    },
+    "status": {
+      "label": "Status",
+      "draft": "Draft",
+      "posted": "Posted",
+      "void": "Void"
     },
     "valueDate": {
       "label": "Accounting date",

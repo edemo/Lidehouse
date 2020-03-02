@@ -8,8 +8,8 @@ Memberships.entities = {
   roleship: {
     name: 'roleship',
     schema: Memberships.simpleSchema({ role: 'manager' }),
-    inputFields: ['role', 'partnerId'],
-    modifiableFields: ['role', 'partnerId'],
+    inputFields: ['role', 'rank', 'partnerId'],
+    modifiableFields: ['role', 'rank', 'partnerId'],
     implicitFields: {
       communityId: getActiveCommunityId,
       approved: true,

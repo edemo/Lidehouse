@@ -28,7 +28,7 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 export const Parcels = new Mongo.Collection('parcels');
 
 Parcels.categoryValues = ['@property', '@common', '@group', '#tag'];
-Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'other'];
+Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'office', 'other'];
 
 Parcels.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
@@ -74,8 +74,11 @@ Parcels.propertySchema = new SimpleSchema({
   // cost calculation purposes
   area: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
-  habitants: { type: Number, optional: true },
 });
+
+Parcels.publicFields = {
+  // fields come from behaviours
+};
 
 Parcels.idSet = ['communityId', 'ref'];
 

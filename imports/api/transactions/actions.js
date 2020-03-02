@@ -137,7 +137,7 @@ Transactions.actions = {
     color: () => 'info',
     visible(options, doc) {
       if (!doc) return false;
-      if (!doc.isPosted()) return false;
+      if (doc.status !== 'posted') return false;
       if (doc.category !== 'bill' || !doc.outstanding) return false;
       return currentUserHasPermission('transactions.insert', doc);
     },
@@ -160,7 +160,7 @@ Transactions.actions = {
     run(options, doc) {
       Modal.confirmAndCall(Transactions.methods.remove, { _id: doc._id }, {
         action: 'delete transaction',
-        message: doc.isSolidified() ? 'Remove not possible after 24 hours' : 'It will disappear forever',
+        message: doc.isPosted() ? 'Remove not possible after posting' : 'It will disappear forever',
       });
     },
   },

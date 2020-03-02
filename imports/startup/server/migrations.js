@@ -316,6 +316,7 @@ Migrations.add({
     });
     Transactions.find({}).forEach(tx => {
       ['debit', 'credit'].forEach(side => {
+        if (!tx[side]) return;
         const modifiedJournalEntries = [];
         tx[side].forEach(je => {
           const modifiedJE = _.clone(je);
