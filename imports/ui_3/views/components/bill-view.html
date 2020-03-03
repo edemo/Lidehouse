@@ -66,7 +66,7 @@
                             {{line.title}}
                             {{#if (equals docVm.relation 'member')}}
                                 {{#if line.parcelId}}{{parcelRef line.parcelId}}{{/if}} 
-                                {{#if line.period}}{{line.period}}{{/if}}
+                                {{#if line.billing}}{{line.billing.period}}{{/if}}
                             {{/if}}
                         </strong>
                         </div>

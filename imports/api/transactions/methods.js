@@ -8,6 +8,7 @@ import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Meters } from '/imports/api/meters/meters.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { sendBillEmail } from '/imports/email/bill-send.js';
 import '/imports/api/transactions/txdefs/methods.js';
@@ -50,29 +51,52 @@ export const post = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
-    let result;
-    if (doc.isPosted()) { 
-      // throw new Meteor.Error('Transaction already posted');
-      console.warn('Transaction already posted'); // allow re-post for email resend
-    } else {
-      if (doc.category === 'bill' || doc.category === 'receipt') {
-        if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-      } else if (doc.category === 'payment') {
-        doc.bills.forEach(bp => checkBillIsPosted(bp.id));
-      } else if (doc.category === 'barter') {
-        checkBillIsPosted(doc.supplierBillId);
-        checkBillIsPosted(doc.customerBillId);
-      }
+    if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
 
+    if (doc.category === 'bill' || doc.category === 'receipt') {
+      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+    } else if (doc.category === 'payment') {
+      doc.bills.forEach(bp => checkBillIsPosted(bp.id));
+    } else if (doc.category === 'barter') {
+      checkBillIsPosted(doc.supplierBillId);
+      checkBillIsPosted(doc.customerBillId);
+    }
+
+    const modifier = { $set: { postedAt: new Date() } };
+    if (doc.status === 'draft') { // voided already has the accounting data on it
       const community = Communities.findOne(doc.communityId);
       const accountingMethod = community.settings.accountingMethod;
       const updateData = doc.makeJournalEntries(accountingMethod);
-      result = Transactions.update(_id, { $set: { status: 'posted', postedAt: new Date(), ...updateData } });
+      _.extend(modifier.$set, { status: 'posted', ...updateData });
+    }
+    const result = Transactions.update(_id, modifier);
+
+    if (Meteor.isServer && doc.category === 'bill') {
+      doc.lines.forEach((line) => {
+        if (line.metering) {
+          Meters.methods.registerBilling._execute({ userId: this.userId }, { _id: line.metering.id,
+            billing: { date: line.metering.end.date, value: line.metering.end.value, billId: doc._id },
+          });
+        }
+      });
+      sendBillEmail(doc);
     }
 
-    if (Meteor.isServer && doc.category === 'bill') sendBillEmail(doc);
-
     return result;
+  },
+});
+
+export const resend = new ValidatedMethod({
+  name: 'transactions.resend',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id }) {
+    const doc = checkExists(Transactions, _id);
+    checkPermissions(this.userId, 'transactions.post', doc);
+    if (Meteor.isServer && doc.category === 'bill') {
+      sendBillEmail(doc);
+    }
   },
 });
 
@@ -105,7 +129,7 @@ export const insert = new ValidatedMethod({
     }
 
     const _id = Transactions.insert(doc);
-    if (doc.txdef().isAutoPosting()) post._execute({ userId: this.userId }, { _id });
+    if (doc.isAutoPosting()) post._execute({ userId: this.userId }, { _id });
 //    runPositingRules(this, doc);
     return _id;
   },
@@ -162,6 +186,6 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 });
 
 Transactions.methods = Transactions.methods || {};
-_.extend(Transactions.methods, { insert, update, post, remove, cloneAccountingTemplates });
+_.extend(Transactions.methods, { insert, update, post, resend, remove, cloneAccountingTemplates });
 _.extend(Transactions.methods, crudBatchOps(Transactions));
 Transactions.methods.batch.post = new BatchMethod(Transactions.methods.post);

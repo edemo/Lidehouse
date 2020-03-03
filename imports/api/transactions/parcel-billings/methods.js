@@ -59,11 +59,9 @@ export const apply = new ValidatedMethod({
         parcels.forEach((parcel) => {
           productionAssert(parcel, 'Could not find parcel - Please check if parcel ref matches the building+floor+door exactly');
           const line = {
-            billingId: parcelBilling._id,
-            period: billingPeriod.label,
+            billing: { id: parcelBilling._id, period: billingPeriod.label },
           };
           let activeMeter;
-          let currentBilling;
           if (parcelBilling.consumption) {
             activeMeter = Meters.findOneActive({ parcelId: parcel._id, service: parcelBilling.consumption.service });
             if (activeMeter) {
@@ -73,7 +71,7 @@ export const apply = new ValidatedMethod({
               line.unitPrice = charge.unitPrice;
               // TODO: Estimation if no reading available
               line.quantity = 0;
-              const lastBilling = activeMeter.lastBilling();
+              const lastBilling = activeMeter.lastBilling(); delete lastBilling.billId;
               const lastReading = activeMeter.lastReading();
               // ----- date ------ lastBilling ------ now |
               if (date < lastBilling.date) throw new Meteor.Error('err_notAllowed', `Cannot bill a consumption based billing at a time earlier (${date}) than the last billing (${lastBilling.date})`);
@@ -82,7 +80,8 @@ export const apply = new ValidatedMethod({
               // ---- lastBilling -----lastReading ----- date ------ now |
               // ---- lastReading -----lastBilling ----- date ------ now |
               const value = activeMeter.getEstimatedValue(date);
-              currentBilling = { date, value };
+              const currentBilling = { date, value };
+              line.metering = { id: activeMeter._id, start: lastBilling, end: currentBilling };
               line.quantity = (currentBilling.value - lastBilling.value).round(3); /* parcelBilling.consumption.decimals */
               line.details = lineDetails(currentBilling, lastBilling, lastReading);
             }
@@ -100,9 +99,6 @@ export const apply = new ValidatedMethod({
           line.account = Accounts.findOne({ communityId, category: 'income', name: 'Owner payins' }).code + parcelBilling.digit;
           line.parcelId = parcel._id;
           line.localizer = parcel.code;
-          if (currentBilling) { // Will need to update the meter's billings registry, so preparing the update
-            line.meterUpdate = { _id: activeMeter._id, billing: currentBilling };
-          }
 
           // Creating the bill - adding line to the bill
           const leadParcel = parcel.leadParcel();
@@ -127,16 +123,7 @@ export const apply = new ValidatedMethod({
 
       _.each(billsToSend, (bill, leadParcelId) => {
         bill.lines = _.sortBy(bill.lines, line => (line.parcelId === leadParcelId ? '' : line.localizer));
-        const meterUpdates = [];
-        bill.lines.forEach((line) => {
-          if (line.meterUpdate) meterUpdates.push(line.meterUpdate);
-          delete line.meterUpdate;
-        });
         const billId = Transactions.methods.insert._execute({ userId: this.userId }, bill);
-        meterUpdates.forEach((meterUpdate) => {
-          meterUpdate.billing.billId = billId;
-          Meters.methods.registerBilling._execute({ userId: this.userId }, meterUpdate);
-        });
       });
     });
   },
@@ -145,12 +132,20 @@ export const apply = new ValidatedMethod({
 export const revert = new ValidatedMethod({
   name: 'parcelBillings.revert',
   validate: new SimpleSchema({
-    id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    valueDate: { type: Date },
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    date: { type: Date },
   }).validator(),
 
-  run({ id, valueDate }) {
-    throw new Meteor.Error('err_NotImplemented', 'TODO');
+  run({ _id, date }) {
+    if (Meteor.isClient) return;
+    const doc = checkExists(ParcelBillings, _id);
+    const communityId = doc.communityId;
+    checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
+    const txs = Transactions.find({ deliveryDate: date, 'lines.billing.id': _id }).fetch();
+    txs.forEach(tx => {
+      Transactions.methods.remove._execute({ userId: this.userId }, { _id: tx._id });
+                    // This will result in a STORNO tx, when the tx is already posted
+    });
   },
 });
 
