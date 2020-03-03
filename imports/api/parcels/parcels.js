@@ -74,6 +74,7 @@ Parcels.propertySchema = new SimpleSchema({
   // cost calculation purposes
   area: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
+  habitants: { type: Number, optional: true },  // TODO : need to move to parcelships, because it changes with time
 });
 
 Parcels.publicFields = {
