@@ -8,6 +8,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { equalWithinRounding } from '/imports/api/utils.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -82,28 +83,35 @@ Transactions.categoryHelpers('payment', {
 //    const cat = Txdefs.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
     this.debit = [];
     this.credit = [];
+    let unallocatedAmount = this.amount;
+    this[this.relationSide()].push({ amount: this.amount, account: this.payAccount });
     this.bills.forEach(billPaid => {
       const bill = Transactions.findOne(billPaid.id);
-      let unbookedAmount = billPaid.amount;
       if (accountingMethod === 'accrual') {
         bill[this.relationSide()].forEach(entry => {
-          const amount = Math.min(entry.amount, unbookedAmount);
+          const amount = equalWithinRounding(entry.amount, unallocatedAmount) ? entry.amount : Math.min(entry.amount, unallocatedAmount);
           this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId });
-          this[this.relationSide()].push({ amount, account: this.payAccount, localizer: entry.localizer, parcelId: entry.parcelId });
-          unbookedAmount -= amount;
-          if (!unbookedAmount) return;
+          unallocatedAmount -= amount;
+          if (unallocatedAmount <= 0) return;
         });
       } else if (accountingMethod === 'cash') {
         bill.lines.forEach(line => {
           if (!line) return; // can be null, when a line is deleted from the array
-          const amount = Math.min(line.amount, unbookedAmount);
+          const amount = Math.min(line.amount, unallocatedAmount);
           this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
-          this[this.relationSide()].push({ amount, account: this.payAccount, localizer: line.localizer, parcelId: line.parcelId });
-          unbookedAmount -= amount;
-          if (!unbookedAmount) return;
+          unallocatedAmount -= amount;
+          if (unallocatedAmount <= 0) return;
         });
       }
     });
+    // Handling the remainder
+    if (unallocatedAmount) { // still has remainder
+      if (equalWithinRounding(unallocatedAmount, 0)) {
+        this[this.conteerSide()].push({ amount: unallocatedAmount, account: '`99' });
+      } else {
+        this[this.conteerSide()].push({ amount: unallocatedAmount, account: '`431' });
+      }
+    }
     return { debit: this.debit, credit: this.credit };
   },
   registerOnBill() {

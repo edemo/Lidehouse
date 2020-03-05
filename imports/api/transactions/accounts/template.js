@@ -147,6 +147,7 @@ export function defineAccountTemplates() {
     { code: '`973', name: 'Hitelintézettől kapott kamatok', category: 'income' },
     { code: '`974', name: 'Egyéb pénzügyi bevételek', category: 'income' },
     { code: '`98', name: 'RENDKIVÜLI BEVÉTELEK', category: 'income' },
+    { code: '`99', name: 'KEREKÍTÉSI NYERESÉG-VESZTESÉG', category: 'income' },
   ],
   });
 
@@ -167,7 +168,7 @@ export function defineAccountTemplates() {
 
 /*
   Breakdowns.define({ communityId: null,
-    name: 'COA', label: 'Chart Of Accounts',
+    name: 'COA', label: 'Chart of Accounts',
     children: [
       { code: '1', include: 'BEFEKTETETT ESZKÖZÖK' },
       { code: '2', include: 'KÉSZLETEK' },

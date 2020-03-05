@@ -8,6 +8,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
+import { equalWithinRounding } from '/imports/api/utils.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -57,7 +58,7 @@ function checkMatch(entry, transaction) {
 //    console.log(JSON.stringify(transaction));
     throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`);
   }
-  if (transaction.amount !== moneyFlowSign(transaction.relation) * entry.amount) throwMatchError('amount');
+  if (!equalWithinRounding(transaction.amount, moneyFlowSign(transaction.relation) * entry.amount)) throwMatchError('amount');
   if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate');
   if (!_.contains([transaction.payAccount, transaction.toAccount, transaction.fromAccount], entry.account)) throwMatchError('account');
 //  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
@@ -76,7 +77,8 @@ export const reconcile = new ValidatedMethod({
       const regex = TAPi18n.__('BIL', {}, community.settings.language) + '/';
       const serialId = noteSplit.find(s => s.startsWith(regex));
       const matchingBill = serialId ? Transactions.findOne({ communityId: entry.communityId, serialId }) : 'undefined';
-      if (matchingBill && matchingBill.outstanding === moneyFlowSign(matchingBill.relation) * entry.amount) {
+      const adjustedEntryAmount = moneyFlowSign(matchingBill.relation) * entry.amount;
+      if (matchingBill && equalWithinRounding(matchingBill.outstanding, adjustedEntryAmount)) {
 /*
 //      console.log("Looking for partner", entry.name, entry.communityId);
       const partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': entry.name });
@@ -99,7 +101,7 @@ export const reconcile = new ValidatedMethod({
           defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBill.relation })._id,
           valueDate: entry.valueDate,
           payAccount: entry.account,
-          amount: matchingBill.outstanding,
+          amount: adjustedEntryAmount,
           bills: [{ amount: matchingBill.outstanding, id: matchingBill._id }],
         };
 //      console.log("Creating matchingPayment", tx);

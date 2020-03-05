@@ -27,3 +27,7 @@ export function momentWithoutTZ(time) {
   dateObj.setMinutes(mins);
   return dateObj;
 }
+
+export function equalWithinRounding(amount1, amount2) {
+  return Math.abs(amount1 - amount2) < 5;
+}
