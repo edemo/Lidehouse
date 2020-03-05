@@ -73,7 +73,7 @@ export const reconcile = new ValidatedMethod({
     const communityId = entry.communityId;
     const community = Communities.findOne(communityId);
     if (!txId) { // not present means auto match requested
-      const noteSplit = entry.note.split(' ');
+      const noteSplit = entry.note.uppercase().split(' ');
       const regex = TAPi18n.__('BIL', {}, community.settings.language) + '/';
       const serialId = noteSplit.find(s => s.startsWith(regex));
       const matchingBill = serialId ? Transactions.findOne({ communityId: entry.communityId, serialId }) : 'undefined';
