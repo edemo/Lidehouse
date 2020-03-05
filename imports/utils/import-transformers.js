@@ -475,10 +475,6 @@ export const Transformers = {
             };
             break;
           }
-          case 'OTP': {
-            tdoc = {};
-            break;
-          }
           case undefined: {
             productionAssert(account.category === 'cash');
             const amount = doc['Bevétel'] || (doc['Kiadás'] * -1);
