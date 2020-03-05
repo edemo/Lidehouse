@@ -12,6 +12,7 @@ import { Parcels } from '/imports/api/parcels/parcels';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
 function flattenBankAccountNumber(BAN) {
   return BAN.trim().split('-').join();
@@ -19,11 +20,7 @@ function flattenBankAccountNumber(BAN) {
 
 export const Import = {
   findAccountByNumber(BAN) {
-    return { account: '`382' };
-    const flattenedBAN = flattenBankAccountNumber(BAN);
-    const community = getActiveCommunity();
-    const bankAccounts = community.bankAccounts;
-    return bankAccounts.find(ba => flattenBankAccountNumber(ba.accountNumber) === flattenedBAN);
+    return Accounts.findOne({ BAN });
   },
   findPartner(partnerText) {
     return partnerText;
@@ -285,12 +282,15 @@ export class Translator {
             path.push(enFieldName);
             reverseObject(fieldValue);
             path.pop();
-          } else { // (typeof fieldValue === 'string')
-            const trimFieldValue = fieldValue.trim();
-            const enFieldValue =
-              (dictionary && _.findKey(dictionary[enFieldName], k => sameString(trimFieldValue, dictionary[enFieldName][k])))
-              || trimFieldValue;
-            Object.setByString(tdoc, path.concat([enFieldName]).join('.'), enFieldValue);
+          } else {
+            let enFieldValue;
+            if (typeof fieldValue === 'string') {
+              const trimFieldValue = fieldValue.trim();
+              enFieldValue =
+                (dictionary && _.findKey(dictionary[enFieldName], k => sameString(trimFieldValue, dictionary[enFieldName][k])))
+                || trimFieldValue;
+            }
+            Object.setByString(tdoc, path.concat([enFieldName]).join('.'), enFieldValue || fieldValue);
           }
         });
       }
@@ -458,19 +458,44 @@ export const Transformers = {
 
   statementEntries: {
     default: (docs, options) => {
+      const account = Accounts.findOne({ communityId: options.communityId, code: options.account });
       const tdocs = [];
       docs.forEach((doc) => {
-        const tdoc = {
-          ref: doc['Tranzakció azonosító '],
-          refType: doc['Típus'],
-          account: Import.findAccountByNumber(doc['Könyvelési számla']).account,
-          valueDate: doc['Könyvelés dátuma'],
-          amount: doc['Összeg'],
-          name: Import.findPartner(doc['Partner elnevezése']),
-          note: doc['Közlemény'],
-          statementId: options.source,
-  //        txId
-        };
+        let tdoc;
+        switch (account.bank) {
+          case 'K&H': {
+//            productionAssert(options.account.code === Import.findAccountByNumber(doc['Könyvelési számla']).code, 'Bank account mismatch on bank statement');
+            tdoc = {
+              ref: doc['Tranzakció azonosító '],
+              refType: doc['Típus'],
+              valueDate: doc['Könyvelés dátuma'],
+              amount: doc['Összeg'],
+              name: doc['Partner elnevezése'],
+              note: doc['Közlemény'],
+            };
+            break;
+          }
+          case 'OTP': {
+            tdoc = {};
+            break;
+          }
+          case undefined: {
+            productionAssert(account.category === 'cash');
+            const amount = doc['Bevétel'] || (doc['Kiadás'] * -1);
+            tdoc = {
+              ref: doc['Sorszám'],
+              refType: (doc['Bevétel'] && 'Bevétel') || (doc['Kiadás'] && 'Kiadás'),
+              valueDate: doc['Dátum'],
+              amount,
+              name: doc['Név'],
+              note: doc['Bizonylatszám (1)'],
+            };
+            break;
+          }
+          default: productionAssert(false, `No protocol for bank ${account.bank}`);
+        }
+        tdoc.account = options.account;
+        tdoc.statementId = options.source;
         if (options.keepOriginals) tdoc.original = doc;
         tdocs.push(tdoc);
       });

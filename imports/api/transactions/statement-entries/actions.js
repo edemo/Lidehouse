@@ -9,6 +9,7 @@ import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
 import './methods.js';
@@ -37,8 +38,8 @@ StatementEntries.actions = {
     name: 'import',
     icon: () => 'fa fa-upload',
     visible: (options, doc) => currentUserHasPermission('statements.upsert', doc),
-    run: () => {
-      importCollectionFromFile(StatementEntries, { keepOriginals: true });
+    run: (options, doc, event, instance) => {
+      importCollectionFromFile(StatementEntries, { keepOriginals: true, communityId: getActiveCommunityId(), account: instance.viewmodel.accountSelected() });
     },
   },
   view: {
