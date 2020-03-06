@@ -466,7 +466,7 @@ export const Transformers = {
           case 'K&H': {
 //            productionAssert(options.account.code === Import.findAccountByNumber(doc['Könyvelési számla']).code, 'Bank account mismatch on bank statement');
             tdoc = {
-              ref: doc['Tranzakció azonosító '],
+              ref: doc['Tranzakció azonosító'],
               refType: doc['Típus'],
               valueDate: doc['Könyvelés dátuma'],
               amount: doc['Összeg'],
