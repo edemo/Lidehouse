@@ -72,13 +72,16 @@ export const reconcile = new ValidatedMethod({
     checkPermissions(this.userId, 'statements.reconcile', entry);
     const communityId = entry.communityId;
     const community = Communities.findOne(communityId);
-    if (!txId) { // not present means auto match requested
+    if (!txId) {
+      //console.log('Statement auto match requested');
       if (!entry.note) return;
       const noteSplit = entry.note.deaccent().toUpperCase().split(' ');
       const regex = TAPi18n.__('BIL', {}, community.settings.language) + '/';
       const serialId = noteSplit.find(s => s.startsWith(regex));
+      //console.log('Serial id:', serialId);
       if (!serialId) return;
       const matchingBill = Transactions.findOne({ communityId: entry.communityId, serialId });
+      //console.log('Matching bill:', matchingBill);
       if (!matchingBill) return;
       const adjustedEntryAmount = moneyFlowSign(matchingBill.relation) * entry.amount;
       if (equalWithinRounding(matchingBill.outstanding, adjustedEntryAmount)) {
@@ -107,7 +110,7 @@ export const reconcile = new ValidatedMethod({
           amount: adjustedEntryAmount,
           bills: [{ amount: matchingBill.outstanding, id: matchingBill._id }],
         };
-//      console.log("Creating matchingPayment", tx);
+        //console.log("Creating matchingPayment", tx);
         txId = Transactions.methods.insert._execute({ userId: this.userId }, tx);
       }
     }
