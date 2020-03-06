@@ -4,6 +4,7 @@ import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
+import { equalWithinRounding } from '/imports/api/utils.js';
 
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/users/users.js';
@@ -31,6 +32,7 @@ Template.Balance_widget.viewmodel({
   },
   message(balance) {
     const partner = this.partner();
+    if (equalWithinRounding(balance, 0)) return __('Your Parcel Balance');
     if (balance > 0) return __('You have overpayment');
     else if (balance < 0) {
       if (partner && partner.mostOverdueDays()) return __('You have overdue payments');
@@ -40,12 +42,14 @@ Template.Balance_widget.viewmodel({
   },
   colorClass(balance) {
     const partner = this.partner();
+    if (equalWithinRounding(balance, 0)) return 'navy-bg';
     if (balance < 0) {
       return 'bg-' + (partner && partner.mostOverdueDaysColor());
     }
     return 'navy-bg';
   },
   icon(balance) {
+    if (equalWithinRounding(balance, 0)) return 'fa fa-thumbs-up';
     if (balance < 0) return 'glyphicon glyphicon-exclamation-sign';
     return 'fa fa-thumbs-up';
   },
