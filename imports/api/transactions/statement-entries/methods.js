@@ -73,12 +73,15 @@ export const reconcile = new ValidatedMethod({
     const communityId = entry.communityId;
     const community = Communities.findOne(communityId);
     if (!txId) { // not present means auto match requested
-      const noteSplit = entry.note.uppercase().split(' ');
+      if (!entry.note) return;
+      const noteSplit = entry.note.toUpperCase().split(' ');
       const regex = TAPi18n.__('BIL', {}, community.settings.language) + '/';
       const serialId = noteSplit.find(s => s.startsWith(regex));
-      const matchingBill = serialId ? Transactions.findOne({ communityId: entry.communityId, serialId }) : 'undefined';
+      if (!serialId) return;
+      const matchingBill = Transactions.findOne({ communityId: entry.communityId, serialId });
+      if (!matchingBill) return;
       const adjustedEntryAmount = moneyFlowSign(matchingBill.relation) * entry.amount;
-      if (matchingBill && equalWithinRounding(matchingBill.outstanding, adjustedEntryAmount)) {
+      if (equalWithinRounding(matchingBill.outstanding, adjustedEntryAmount)) {
 /*
 //      console.log("Looking for partner", entry.name, entry.communityId);
       const partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': entry.name });
