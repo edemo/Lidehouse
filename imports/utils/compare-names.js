@@ -1,12 +1,15 @@
 import { debugAssert } from '/imports/utils/assert.js';
-import { deaccentLowerCase } from '/imports/api/utils.js';
+
+function deaccentLowerCase(text) {
+  return text.deaccent().toLowerCase();
+}
 
 export function compareNames(param1, param2) {
   debugAssert((typeof param1 === 'object'), 'compareNames param1 must be an object (firstName && lastName or name).');
   debugAssert(((param1.firstName && param1.lastName) || param1.name), 'firstName and lastName or name is required at compareNames.');
 
   function latinOneWayIncludes(string1, string2) {
-    const compare = deaccentLowerCase(string1).includes(deaccentLowerCase(string2)); 
+    const compare = deaccentLowerCase(string1).includes(deaccentLowerCase(string2));
     const reverse = deaccentLowerCase(string2).includes(deaccentLowerCase(string1));
     if (compare || reverse) return true;
     else return false;

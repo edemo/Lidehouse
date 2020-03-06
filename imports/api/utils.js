@@ -15,10 +15,6 @@ export function toggle(element, array) {
   return array.concat([element]);
 }
 
-export function deaccentLowerCase (text) { 
-  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
-}
-
 export function momentWithoutTZ(time) {
   const hours = time.hours();
   const mins = time.minutes();

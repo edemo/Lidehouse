@@ -74,7 +74,7 @@ export const reconcile = new ValidatedMethod({
     const community = Communities.findOne(communityId);
     if (!txId) { // not present means auto match requested
       if (!entry.note) return;
-      const noteSplit = entry.note.toUpperCase().split(' ');
+      const noteSplit = entry.note.deaccent().toUpperCase().split(' ');
       const regex = TAPi18n.__('BIL', {}, community.settings.language) + '/';
       const serialId = noteSplit.find(s => s.startsWith(regex));
       if (!serialId) return;
