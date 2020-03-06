@@ -102,7 +102,8 @@ Partners.helpers({
     if (this.idCard && this.idCard.name) return this.idCard.name;
     if (this.userId) {
       const user = this.user();
-      if (user) return user.displayProfileName(lang || user.settings.language);
+      const preText = (Meteor.isClient && Meteor.user().hasPermission('partners.update', this)) ? `[${__('Waiting for approval')}] ` : '';
+      if (user) return preText + user.displayProfileName(lang || user.settings.language);
     }
     if (this.contact && this.contact.email) {
       const emailSplit = this.contact.email.split('@');
@@ -154,8 +155,12 @@ if (Meteor.isServer) {
   });
 
   Partners.after.update(function (userId, doc, fieldNames, modifier, options) {
-    // TODO: if partner.userId changes for any reason, the membership userId has to be changed accordingly!
-    //    Memberships.update(doc._id, { $set: { userId: doc.userId } }, { selector: { role: doc.role } });
+    const Memberships = Mongo.Collection.get('memberships');
+    if (modifier.$set && modifier.$set.userId && modifier.$set.userId !== this.previous.userId) {
+      Memberships.update({ partnerId: doc._id }, { $set: { userId: modifier.$set.userId } }, { selector: { role: doc.role }, multi: true });
+    } else if (this.previous.userId && modifier.$unset && 'userId' in modifier.$unset) {
+      Memberships.update({ partnerId: doc._id }, { $unset: { userId: '' } }, { selector: { role: doc.role }, multi: true });
+    }
   });
 }
 
@@ -224,13 +229,14 @@ if (Meteor.isClient) {
     },
     options() {
       const communityId = Session.get('activeCommunityId');
+      const community = Communities.findOne(communityId);
       const txdef = Session.get('modalContext').txdef;
       const relation = (txdef && txdef.data.relation) || Session.get('activePartnerRelation');
       const partners = Partners.find({ communityId, relation });
       const options = partners.map(function option(p) {
         return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
       });
-      const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+      const sortedOptions = options.sort((a, b) => a.label.localeCompare(b.label, community.settings.language, { sensitivity: 'accent' }));
       return sortedOptions;
     },
     firstOption: () => __('(Select one)'),
