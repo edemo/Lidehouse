@@ -14,5 +14,5 @@ Meteor.publish('accounts.inCommunity', function moneyAccountsInCommunity(params)
     return this.ready();
   }
 
-  return Accounts.find({ communityId });
+  return Accounts.find({ communityId }, { sort: { code: 1 } });
 });

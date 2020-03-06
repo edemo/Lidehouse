@@ -57,7 +57,7 @@ Accounts.helpers({
   },
   nodes(leafsOnly = false) {
     const regexp = new RegExp('^' + this.code + (leafsOnly ? '.+' : ''));
-    return Accounts.find({ communityId: this.communityId, code: regexp });
+    return Accounts.find({ communityId: this.communityId, code: regexp }, { sort: { code: 1 } });
   },
   leafs() {
     return this.nodes(true);
