@@ -21,6 +21,11 @@
       "\n__url__\n\nIf you didn't request this email, please ignore it.",
       "\nThanks,\nThe Honline team"],
 
+    "AddedToRole": ["You have been added as a member of community __name__ with role: __role__. ",
+    "You can visit the community at this link: __link__",
+    "\nIf you think you have been added by accident, or in fact not want to be part of the community, please contact the community administrator at __email__.",
+    "\nThanks,\nThe Honline team"],
+
     "Notifications": "Updates",
     "Confirmation": "Confirmation",
     "New bill": "New bill",
@@ -29,8 +34,9 @@
     "fromTheCommunity": "from __name__ community",
     "DontReplyToThis": "Please don't reply to this email, as it is sent by an automated system.<br>",
     "GenericFooter": ["If you believe this email was sent to you by mistake or you don't agree with its contents.",
-      "Please contact the community via the provided email, or contact the adminsitrator."],
-    "Dear": "Dear", "glyphAfterDear": ",",
+      "Please contact the community via the provided email, or contact the administrator."],
+    "Dear": "Dear",
+    "glyphAfterDear": ",",
     "OutstandingsPretext": "According to our accounting, you have some unpaid bills towrds the community.",
     "OutstandingsTotal": "Total amount outstanding",
     "OutstandingsDetails": "which comes from __quantity__ unsettled bills.",

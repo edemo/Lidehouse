@@ -56,7 +56,8 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
     children: [{
       // Publish the Partners of the Membership
       find(membership) {
-        return Partners.find({ _id: membership.partnerId }, { fields: Partners.publicFields });
+        const fields = user.hasPermission('partners.details', { communityId }) ? {} : Partners.publicFields;
+        return Partners.find({ _id: membership.partnerId }, { fields });
       },
     }, {
       // Publish the User of the Membership

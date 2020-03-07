@@ -39,7 +39,21 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Partners, _id);
     checkModifier(doc, modifier, Partners.nonModifiableFields, true);
     checkPermissions(this.userId, 'partners.update', doc);
-
+    const newContactEmail = modifier.$set['contact.email'];
+    const contactEmail = doc.contact && doc.contact.email;
+    if (newContactEmail && newContactEmail !== contactEmail) {
+      const partner = Partners.findOne({ _id: { $ne: doc._id }, communityId: doc.communityId, 'contact.email': newContactEmail });
+      if (partner) throw new Meteor.Error('err_alreadyExists', `Partner with this email address already exists: ${partner.displayName()}`);
+      if (doc.userId && Meteor.isServer) {
+        if (doc.user().isVerified()) {
+          throw new Meteor.Error('err_permissionDenied', 'The contact email address is not modifiable, it is connected to a user.');
+        } else {
+          if (!modifier.$unset) modifier.$unset = {};
+          modifier.$unset.userId = '';
+          delete modifier.$set.userId;
+        }
+      }
+    }
     const result = Partners.update({ _id }, modifier);
     return result;
   },
@@ -72,7 +86,7 @@ export const remindOutstandings = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Partners, _id);
     checkPermissions(this.userId, 'partners.remindOutstandings', doc);
-    return sendOutstandingsEmail(_id);
+    if (Meteor.isServer) return sendOutstandingsEmail(_id);
   },
 });
 
