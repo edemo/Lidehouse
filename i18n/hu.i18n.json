@@ -635,6 +635,8 @@
   "actionDone_enable": "engedélyezve",
   "actionDone_disable": "elutasítva",
   "actionDone_revoke": "visszavonva",
+  "actionDone_reconcile": "egyeztetve",
+  "actionDone_autoReconcile": "automatikusan egyeztetve",
   "actionDone_refuse": "visszautasítva",
   "actionDone_move": "áthelyezve",
   "actionDone_import": "importálva",
