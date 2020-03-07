@@ -14,6 +14,7 @@ Mongo.Collection.stripAdministrativeFields = function(doc) {
   delete doc.creatorId;
   delete doc.updatedAt;
   delete doc.updaterId;
+  delete doc.postedAt;
 };
 
 // With this function you can create the same logical index on the client and server sides

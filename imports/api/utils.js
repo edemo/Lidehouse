@@ -15,10 +15,6 @@ export function toggle(element, array) {
   return array.concat([element]);
 }
 
-export function deaccentLowerCase (text) { 
-  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
-}
-
 export function momentWithoutTZ(time) {
   const hours = time.hours();
   const mins = time.minutes();
@@ -26,4 +22,8 @@ export function momentWithoutTZ(time) {
   dateObj.setHours(hours);
   dateObj.setMinutes(mins);
   return dateObj;
+}
+
+export function equalWithinRounding(amount1, amount2) {
+  return Math.abs(amount1 - amount2) < 5;
 }

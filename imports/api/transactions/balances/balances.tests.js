@@ -71,8 +71,6 @@ if (Meteor.isServer) {
       });
 
       it('updates balances with tx operations', function (done) {
-        console.log("templates", Templates.find({}).fetch());
-        console.log("accounts", Accounts.find({}).fetch());
         insertTx({
           valueDate: new Date('2017-01-01'),
           amount: 1000,

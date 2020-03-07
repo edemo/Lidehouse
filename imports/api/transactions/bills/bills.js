@@ -34,6 +34,22 @@ export const choosePayment = {
   firstOption: () => __('(Select one)'),
 };
 
+const readingSchema = new SimpleSchema({
+  date: { type: Date },
+  value: { type: Number, decimal: true },
+});
+
+const meteringSchema = new SimpleSchema({
+  id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  start: { type: readingSchema },
+  end: { type: readingSchema },
+});
+
+const billingSchema = new SimpleSchema({
+  id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  period: { type: String, optional: true },
+});
+
 const lineSchema = {
   title: { type: String },
   details: { type: String, optional: true },
@@ -46,8 +62,8 @@ const lineSchema = {
   // autoValue() {
   //  return this.siblingField('quantity').value * this.siblingField('unitPrice').value;
   //} },
-  billingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  period: { type: String, optional: true, autoform: { omit: true } },
+  billing: { type: billingSchema, optional: true, autoform: { omit: true } },
+  metering: { type: meteringSchema, optional: true, autoform: { omit: true } },
   account: { type: String, optional: true, autoform: chooseConteerAccount() },
   localizer: { type: String, optional: true, autoform: chooseParcel() },
 };
@@ -114,7 +130,7 @@ Transactions.categoryHelpers('bill', {
         if (!line) return; // can be null, when a line is deleted from the array
         this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
         let contraAccount = this.relationAccount().code;
-        if (this.relation === 'member') contraAccount += ParcelBillings.findOne(line.billingId).digit;
+        if (this.relation === 'member') contraAccount += ParcelBillings.findOne(line.billing.id).digit;
         this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer, parcelId: line.parcelId });
       });
     } // else if (accountingMethod === 'cash') >> we have no accounting to do

@@ -59,6 +59,10 @@ String.prototype.capitalize = function capitalize() {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+String.prototype.deaccent = function deaccent() { 
+  return this.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
+
 Number.prototype.round = function round(places) {
 //  return Math.round((this * 100) + Number.EPSILON) / 100;
   return +(Math.round(this + 'e+' + places) + 'e-' + places);

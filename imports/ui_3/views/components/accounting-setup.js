@@ -51,7 +51,7 @@ Template.Accounting_setup.viewmodel({
   moneyAccounts() {
 //    const accounts = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
 //    return accounts && accounts.nodes(true);
-    const accounts = Accounts.find({ communityId: this.communityId(), category: { $in: ['bank', 'cash'] } });
+    const accounts = Accounts.find({ communityId: this.communityId(), category: { $in: ['bank', 'cash'] } }, { sort: { code: 1 } });
     return accounts.fetch();
   },
   accountsTableDataFn(tab) {
@@ -59,7 +59,7 @@ Template.Accounting_setup.viewmodel({
     const communityId = this.communityId();
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
-      return Accounts.find({ communityId }).fetch();
+      return Accounts.find({ communityId }, { sort: { code: 1 } }).fetch();
     }
     return getTableData;
   },

@@ -437,8 +437,8 @@ if (Meteor.isServer) {
           chai.assert.equal(membership.partner().id(), alreadyUserId);
           chai.assert.equal(membership.partner().primaryEmail(), alreadyUser.getPrimaryEmail());
 
-          Partners.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Partners.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
           done();
         });
 

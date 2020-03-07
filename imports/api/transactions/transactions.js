@@ -83,7 +83,7 @@ Transactions.baseSchema = new SimpleSchema([
 Transactions.idSet = ['communityId', 'ref'];
 
 Meteor.startup(function indexTransactions() {
-  Transactions.ensureIndex({ communityId: 1, complete: 1, valueDate: -1 });
+  Transactions.ensureIndex({ communityId: 1, valueDate: -1 });
   Transactions.ensureIndex({ seId: 1 });
   Transactions.ensureIndex({ partnerId: 1 }, { sparse: true });
   Transactions.ensureIndex({ membershipId: 1 }, { sparse: true });
@@ -92,6 +92,7 @@ Meteor.startup(function indexTransactions() {
   } else if (Meteor.isServer) {
     Transactions._ensureIndex({ communityId: 1, category: 1, relation: 1, serial: 1 });
     Transactions._ensureIndex({ communityId: 1, serialId: 1 });
+    Transactions._ensureIndex({ communityId: 1, deliveryDate: 1 }, { sparse: true });
     Transactions._ensureIndex({ 'bills.id': 1 }, { sparse: true });
     Transactions._ensureIndex({ 'debit.account': 1 }, { sparse: true });
     Transactions._ensureIndex({ 'credit.account': 1 }, { sparse: true });
@@ -172,6 +173,9 @@ Transactions.helpers({
     const elapsedHours = now.diff(creationTime, 'hours');
     return (elapsedHours > 24);
   },
+  isAutoPosting() {
+    return this.status === 'void' || this.txdef().isAutoPosting();
+  },
   calculateComplete() {
     let total = 0;
     if (!this.debit || !this.credit) return false;
@@ -218,10 +222,18 @@ Transactions.helpers({
   },
   negator() {
     const tx = JSON.parse(JSON.stringify(this));
-    delete tx._id;
+//    const tx = {}; $.extend(true, tx, this);
+    Mongo.Collection.stripAdministrativeFields(tx);
     tx.note = 'STORNO ' + tx.serialId;
     tx.amount *= -1;
-    if (tx.lines) tx.lines.forEach(l => l.quantity *= -1);  // 'bill' have lines
+    if (tx.lines) {   // 'bill' have lines
+      tx.lines.forEach(l => {
+        l.quantity *= -1;
+        if (l.metering) {
+          const temp = l.metering.end; l.metering.end = l.metering.start; l.metering.start = temp;
+        }
+      });
+    }
     if (tx.bills) tx.bills.forEach(l => l.amount *= -1);  // 'payment' have bills
 //    tx.debit.forEach(l => l.amount *= -1);
 //    tx.credit.forEach(l => l.amount *= -1);

@@ -24,8 +24,10 @@ if (Meteor.isServer) {
   let Fixture;
 
   describe('parcel billings', function () {
-    this.timeout(15000);
-    let applyParcelBilling;
+    this.timeout(25000);
+    let applyParcelBillings;
+    let postParcelBillings;
+    let revertParcelBillings;
     let communityId;
     let payerPartner3Id;
     let payerPartner4Id;
@@ -35,8 +37,22 @@ if (Meteor.isServer) {
       communityId = Fixture.demoCommunityId;
       payerPartner3Id = Meteor.users.findOne(Fixture.dummyUsers[3]).partnerId(Fixture.demoCommunityId);
       payerPartner4Id = Meteor.users.findOne(Fixture.dummyUsers[4]).partnerId(Fixture.demoCommunityId);
-      applyParcelBilling = function (date) {
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date(date) }, Fixture.builder.getUserWithRole('accountant'));
+      const accountant = Fixture.builder.getUserWithRole('accountant');
+      applyParcelBillings = function (date) {
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date(date) }, accountant);
+      };
+      postParcelBillings = function (date) {
+        const txs = Transactions.find({ communityId, category: 'bill', deliveryDate: new Date(date) });
+        txs.forEach(tx => {
+          if (!tx.isPosted())
+            Fixture.builder.execute(Transactions.methods.post, { _id: tx._id }, accountant);
+        });
+      };
+      revertParcelBillings = function (date) {
+        const parcelBillings = ParcelBillings.find({ communityId });
+        parcelBillings.forEach(billing => {
+          Fixture.builder.execute(ParcelBillings.methods.revert, { _id: billing._id, date: new Date(date) }, accountant);
+        });
       };
     });
     after(function () {
@@ -52,7 +68,7 @@ if (Meteor.isServer) {
           chai.assert.equal(bill.lines.length, expected.linesLength);
           bill.lines.forEach((line) => {
             if (expected.lineTitle) chai.assert.equal(line.title, expected.lineTitle);
-            if (expected.linePeriod) chai.assert.equal(line.period, expected.linePeriod);
+            if (expected.linePeriod) chai.assert.equal(line.billing.period, expected.linePeriod);
           });
         };
         assertLineDetails = function(line, expected) {
@@ -62,7 +78,7 @@ if (Meteor.isServer) {
           chai.assert.equal(line.amount, Math.round(expected.unitPrice * expected.quantity));
           chai.assert.equal(line.localizer, expected.localizer);
           if (expected.lineTitle) chai.assert.equal(line.title, expected.lineTitle);
-          if (expected.linePeriod) chai.assert.equal(line.period, expected.linePeriod);
+          if (expected.linePeriod) chai.assert.equal(line.billing.period, expected.linePeriod);
         };
       });
 
@@ -89,7 +105,7 @@ if (Meteor.isServer) {
         chai.assert.isDefined(testParcelBilling);
         chai.assert.isFalse(testParcelBilling.active);
 
-        applyParcelBilling(moment());
+        applyParcelBillings(moment());
         const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills.length, 0);
       });
@@ -105,7 +121,7 @@ if (Meteor.isServer) {
           localizer: '@',
         });
 
-        applyParcelBilling('2018-01-12');
+        applyParcelBillings('2018-01-12');
         const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills.length, 2);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 3, lineTitle: 'Test area', linePeriod: '2018-01' });
@@ -127,7 +143,7 @@ if (Meteor.isServer) {
           localizer: '@A1',
         });
 
-        applyParcelBilling('2018-01-12');
+        applyParcelBillings('2018-01-12');
         const bills = Transactions.find({ communityId, category: 'bill' }, { sort: { serial: 1 } }).fetch();
         const payer3 = Partners.findOne(payerPartner3Id);
         chai.assert.equal(bills.length, 2);
@@ -150,7 +166,7 @@ if (Meteor.isServer) {
           type: 'storage',
         });
 
-        applyParcelBilling('2018-01-12');
+        applyParcelBillings('2018-01-12');
         const bills = Transactions.find({ communityId, category: 'bill' }, { sort: { serial: 1 } }).fetch();
         const payer3 = Partners.findOne(payerPartner3Id);
         chai.assert.equal(bills.length, 1);
@@ -171,7 +187,7 @@ if (Meteor.isServer) {
           group: 'small',
         });
 
-        applyParcelBilling('2018-01-12');
+        applyParcelBillings('2018-01-12');
         const bills = Transactions.find({ communityId, category: 'bill' }, { sort: { serial: 1 } }).fetch();
         const payer3 = Partners.findOne(payerPartner3Id);
         chai.assert.equal(bills.length, 1);
@@ -200,7 +216,7 @@ if (Meteor.isServer) {
           localizer: '@A104',
         });
 
-        applyParcelBilling('2018-01-12');
+        applyParcelBillings('2018-01-12');
         const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner4Id, linesLength: 2, linePeriod: '2018-01' });
@@ -226,7 +242,7 @@ if (Meteor.isServer) {
           localizer: '@',
         });
 
-        applyParcelBilling('2018-01-12');
+        applyParcelBillings('2018-01-12');
         const parcel4 = Parcels.findOne(Fixture.dummyParcels[4]);
         const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills.length, 1);
@@ -239,7 +255,7 @@ if (Meteor.isServer) {
         const meteredParcelId = Fixture.dummyParcels[3];
         let meteredParcel = Parcels.findOne(meteredParcelId);
         Fixture.builder.execute(Meters.methods.registerReading, { _id: meteredParcel.meters().fetch()[0]._id, reading: { date: new Date('2018-02-01'), value: 11 } });
-        applyParcelBilling('2018-02-12');
+        applyParcelBillings('2018-02-12');
         meteredParcel = Parcels.findOne(meteredParcelId);
         const bills2 = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills2.length, 2);
@@ -261,7 +277,7 @@ if (Meteor.isServer) {
           localizer: '@AP01',
         });
 
-        applyParcelBilling('2018-01-12');
+        applyParcelBillings('2018-01-12');
         const followerParcel = Parcels.findOne(Fixture.dummyParcels[1]);
         const leadParcel = Parcels.findOne(Fixture.dummyParcels[3]);
         const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
@@ -298,7 +314,7 @@ if (Meteor.isServer) {
         });
         const laterpayerPartnerId = Meteor.users.findOne(Fixture.dummyUsers[2]).partnerId(Fixture.demoCommunityId);
 
-        applyParcelBilling('2018-01-12');
+        applyParcelBillings('2018-01-12');
         const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
         let parcel = Parcels.findOne(Fixture.dummyParcels[3]);
         let formerPayer = Partners.findOne(payerPartner3Id);
@@ -311,7 +327,7 @@ if (Meteor.isServer) {
         chai.assert.equal(laterPayer.outstanding, 0);
 
         Transactions.remove({});
-        applyParcelBilling('2018-03-12');
+        applyParcelBillings('2018-03-12');
         const bills2 = Transactions.find({ communityId, category: 'bill' }).fetch();
         parcel = Parcels.findOne(Fixture.dummyParcels[3]);
         formerPayer = Partners.findOne(payerPartner3Id);
@@ -335,10 +351,10 @@ if (Meteor.isServer) {
           localizer: '@',
         });
 
-        applyParcelBilling('2018-01-12');
-        chai.assert.throws(() => applyParcelBilling('2018-01-15'), 'err_alreadyExists');
+        applyParcelBillings('2018-01-12');
+        chai.assert.throws(() => applyParcelBillings('2018-01-15'), 'err_alreadyExists');
         // but can apply for a different period
-        applyParcelBilling('2018-02-10');
+        applyParcelBillings('2018-02-10');
       });
     });
 
@@ -381,8 +397,10 @@ if (Meteor.isServer) {
         registerReading = function (date, value) {
           Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date(date), value } });
         };
+        const assertedBill = {};
         assertBilled = function (date, projOrCons, quantity) {
-          const bills = Transactions.find({ communityId, category: 'bill', 'lines.localizer': '@'+meteredParcel.ref }).fetch();
+          const bills = Transactions.find({ communityId, category: 'bill', 'lines.localizer': '@'+meteredParcel.ref })
+            .fetch().filter(b => !assertedBill[b._id]);
           if (!quantity) {
             chai.assert.equal(bills.length, 0);
           } else {
@@ -395,66 +413,74 @@ if (Meteor.isServer) {
             if (projOrCons === 'consumption') chai.assert.equal(line.unitPrice, 600);
             else if (projOrCons === 'projection') chai.assert.equal(line.unitPrice, 5000);
             chai.assert.equal(line.quantity, quantity);
+            assertedBill[bill._id] = true;
+            return bill;
           }
         };
       });
 
       afterEach(function () {
-        Transactions.remove({});
       });
 
       it('Can bill for before the meter was installed -> charged by projection', function () {
-        applyParcelBilling('2018-01-12');
+        applyParcelBillings('2018-01-12'); postParcelBillings('2018-01-12');
         assertBilled('2018-01-12', 'projection', 3);
       });
 
       it('Can bill a fresh meter -> no charge', function () {
-        applyParcelBilling('2018-02-12');
+        applyParcelBillings('2018-02-12'); postParcelBillings('2018-02-12');
         assertBilled('2018-02-22', 'consumption', 0);
       });
 
       it('Can bill based on reading', function () {
         registerReading('2018-03-01', 10);
-        applyParcelBilling('2018-03-01');
+        applyParcelBillings('2018-03-01'); postParcelBillings('2018-03-01');
         assertBilled('2018-03-01', 'consumption', 10);
       });
 
       it('Doesnt bill again for what it was already billed for', function () {
-        applyParcelBilling('2018-03-01');
+        applyParcelBillings('2018-03-01'); postParcelBillings('2018-03-01');
         assertBilled('2018-03-01', 'consumption', 0);
       });
 
+      it('When the bill is voided, it will bill for it again', function () {
+        revertParcelBillings('2018-03-01'); postParcelBillings('2018-03-01');
+        assertBilled('2018-03-01', 'consumption', -10);
+        applyParcelBillings('2018-03-01'); postParcelBillings('2018-03-01');
+        assertBilled('2018-03-01', 'consumption', 10);
+      });
+
       it('Can bill based on estimating', function () {
-        applyParcelBilling('2018-03-02');
+        applyParcelBillings('2018-03-02'); postParcelBillings('2018-03-02');
         assertBilled('2018-03-02', 'consumption', 0.263);
       });
 
       xit('Cannot accidentally bill for same period twice', function () {
         chai.assert.throws(() => {
-          applyParcelBilling('2018-03-24');
+          applyParcelBillings('2018-03-24');
         }, 'err_alreadyExists');
         assertBilled('2018-03-24', 'consumption', 0);
       });
 
       it('Can bill based on billing and estimation at the same time', function () {
         registerReading('2018-04-01', 20);
-        applyParcelBilling('2018-04-05');
+        applyParcelBillings('2018-04-05'); postParcelBillings('2018-04-05');
         assertBilled('2018-04-05', 'consumption', 11.027);
       });
 
       it('Doesnt bill again for what it was already billed for', function () {
-        applyParcelBilling('2018-04-05');
+        applyParcelBillings('2018-04-05'); postParcelBillings('2018-04-05');
         assertBilled('2018-04-05', 'consumption', 0);
       });
 
       it('Can do refund (bill a negative amount)', function () {
         registerReading('2018-04-25', 20);  // same reading as before - no consumption
-        applyParcelBilling('2018-04-25');
+        applyParcelBillings('2018-04-25'); postParcelBillings('2018-04-25');
         assertBilled('2018-04-25', 'consumption', -1.29);
       });
 
       it('Can estimate when no consumption in the flat', function () {
-        applyParcelBilling('2018-05-05');
+        applyParcelBillings('2018-05-05'); postParcelBillings('2018-05-05');
         assertBilled('2018-05-05', 'consumption', 0);
       });
 
@@ -482,7 +508,7 @@ if (Meteor.isServer) {
         chai.assert.throws(() =>
           Fixture.builder.execute(Meters.methods.remove, { _id: meterId })
         , 'err_notAllowed');
-        applyParcelBilling('2018-06-30');
+        applyParcelBillings('2018-06-30'); postParcelBillings('2018-06-30');
       });
 
       it('Can archive a meter which has no unbilled amount', function () {
@@ -502,7 +528,7 @@ if (Meteor.isServer) {
 
       it('Cannot bill while some meters are in an unsupported uom', function () {
         chai.assert.throws(() =>
-          applyParcelBilling('2018-07-30')
+          applyParcelBillings('2018-07-30')
         , 'err_invalidData');
       });
 
@@ -510,7 +536,7 @@ if (Meteor.isServer) {
         ParcelBillings.update(parcelBillingId, { $push: { 'consumption.charges': { uom: 'l', unitPrice: 600 } } }); 
         // TODO: use a different value than 600, so we see that the correct amount is billed!
         registerReading('2018-07-20', 2);
-        applyParcelBilling('2018-07-30');
+        applyParcelBillings('2018-07-30'); postParcelBillings('2018-07-30');
         assertBilled('2018-07-30', 'consumption', 3);
       });
     });

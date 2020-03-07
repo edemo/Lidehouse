@@ -10,7 +10,8 @@ import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { Transactions } from './transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import '/imports/ui_3/views/components/transaction-view.js';
 import './entities.js';
 import './methods.js';
 
@@ -101,26 +102,53 @@ Transactions.actions = {
   }),
   post: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'post',
-    icon: doc.isPosted() ? 'fa fa-envelope' : 'fa fa-check-square-o',
+    icon: doc.isPosted() ? 'fa fa-list' : 'fa fa-check-square-o',
     color: doc.isPosted() ? undefined : 'warning',
-    label: doc.isPosted() ? 'repost' : 'post',
+    label: doc.isPosted() ? 'Accounting view' : 'post',
     visible: (() => {
       if (!doc) return false;
       if (doc.category === 'bill' && !doc.hasConteerData()) return false;
-      if (doc.isPosted()) return user.hasPermission('transactions.repost', doc);
       return user.hasPermission('transactions.post', doc);
     })(),
     run() {
       if (doc.isPosted()) {
-        Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
-          action: 'post transaction',
-          message: 'This transaction has been already posted before',
+        Modal.show('Modal', {
+          title: 'Accounting view',
+          body: 'Transaction_view',
+          bodyContext: { doc },
+          size: 'lg',
         });
       } else {
-        Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
-          displayMessage('info', 'Szamla konyvelesbe kuldve');
-        }));
+//        if (options.batch) {
+//          Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
+//            displayMessage('info', 'actionDone_post');
+//          })
+//          );
+//        } else {
+        doc.makeJournalEntries(doc.community().settings.accountingMethod);
+        Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
+          action: 'post transaction',
+//            message: 'This will create the following journal entries',
+          body: 'Transaction_view',
+          bodyContext: { doc },
+          size: 'lg',
+        });
+//      } else {
+//        Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
+//          displayMessage('info', 'Szamla konyvelesbe kuldve');
+//        }));
       }
+    },
+  }),
+  resend: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'resend',
+    icon: 'fa fa-envelope',
+    visible: doc.isPosted() && currentUserHasPermission('transactions.resend', doc),
+    run() {
+      Modal.confirmAndCall(Transactions.methods.resend, { _id: doc._id }, {
+        action: 'resend email',
+        message: 'This will send the bill again',
+      });
     },
   }),
   registerPayment: (options, doc, user = Meteor.userOrNull()) => ({

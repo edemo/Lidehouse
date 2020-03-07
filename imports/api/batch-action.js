@@ -6,7 +6,7 @@ export class BatchAction {
   constructor(action, method, options) {
     this.action = action;
     this.method = method;
-    this.options = options;
+    this.options = options; // _.extend({ batch: true }, options);
   }
   name() {
     return this.action.name;
@@ -15,8 +15,7 @@ export class BatchAction {
     return this.action.icon(this.options, undefined);
   }
   visible(docs) {
-    const self = this;
-    return _.every(docs, doc => self.action.visible(self.options, doc));
+    return _.every(docs, doc => this.action.visible(this.options, doc));
   }
   run(docs) {
     Modal.confirmAndCall(this.method, { args: _.map(docs, doc => ({ _id: doc._id, ...this.options })) }, {

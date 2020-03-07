@@ -69,7 +69,7 @@ Communities.helpers({
     return partner;
   },
   accounts() {
-    return Accounts.find({ communityId: this._id });
+    return Accounts.find({ communityId: this._id }, { sort: { code: 1 } });
   },
   primaryBankAccount() {
     const bankAccount = Accounts.findOne({ communityId: this._id, category: 'bank', primary: true });

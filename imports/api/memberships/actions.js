@@ -101,14 +101,12 @@ Memberships.actions = {
       const partner = doc.partner();
       const email = partner && partner.contact && partner.contact.email;
       const action = 'invite user';
-      let message;
-      if (!doc.userId) {
-        if (!email) displayMessage('warning', 'No contact email set for this partner');
-        message = __('Connecting user', email);
+      if (!doc.userId && !email) {
+        displayMessage('warning', 'No contact email set for this partner');
       } else {
-        message = __('Connecting user', email);
+        const message = doc.userId ? __('Reconnecting user') : __('Connecting user', email);
+        Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, { action, message });
       }
-      Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, { action, message });
     },
   }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({

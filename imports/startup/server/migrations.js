@@ -359,6 +359,19 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 20,
+  name: 'Billing becomes a separate sub-schema in bills',
+  up() {
+    Transactions.find({ category: 'bill' }).forEach(bill => {
+      const modifier = { $set: {} };
+      bill.lines.forEach((line, i) => {
+        modifier.$set[`line.${i}.billing`] = { id: line.billingId, period: line.period };
+      });
+    });
+  },
+});
+
 Meteor.startup(() => {
   Migrations.unlock();
   Migrations.migrateTo('latest');

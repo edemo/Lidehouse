@@ -46,8 +46,9 @@ Template.Worksheets.viewmodel({
   calendarView: false,
   showNeedToSaveWarning: true,
   searchText: '',
-  ticketStatusArray: [],
-  ticketTypeArray: [],
+  ticketStatusSelected: [],
+  ticketTypeSelected: [],
+  ticketUrgencySelected: [],
   startDate: '',
   endDate: '',
   reportedByCurrentUser: false,
@@ -59,8 +60,9 @@ Template.Worksheets.viewmodel({
   },
   setDefaultFilter() {
     this.searchText('');
-    this.ticketStatusArray([]);
-    this.ticketTypeArray([]);
+    this.ticketStatusSelected([]);
+    this.ticketTypeSelected([]);
+    this.ticketUrgencySelected([]);
     this.startDate(moment().subtract(30, 'days').format('YYYY-MM-DD'));
     this.endDate('');
     this.reportedByCurrentUser(false);
@@ -153,24 +155,25 @@ Template.Worksheets.viewmodel({
   ticketTypes() {
     return Tickets.typeValues;
   },
+  ticketUrgencies() {
+    return Tickets.urgencyValues;
+  },
+  ticketsUrgencyColor(name) {
+    return Tickets.urgencyColors[name];
+  },
   hasFilters() {
     if (this.searchText() ||
-        this.ticketStatusArray().length ||
-        this.ticketTypeArray().length ||
+        this.ticketStatusSelected().length ||
+        this.ticketTypeSelected().length ||
+        this.ticketUrgencySelected().length ||
         this.startDate() !== moment().subtract(30, 'days').format('YYYY-MM-DD') ||
         this.endDate() ||
         this.reportedByCurrentUser()) return true;
     return false;
   },
-  activeStatusButton(data) {
-    const ticketStatusArray = this.ticketStatusArray();
-    if ((ticketStatusArray.includes(data))) return 'active';
-    return '';
-  },
-  activeTypeButton(data) {
-    const ticketTypeArray = this.ticketTypeArray();
-    if ((ticketTypeArray.includes(data))) return 'active';
-    return '';
+  activeButton(type, elem) {
+    const selected = this[`${type}Selected`]();
+    return selected.includes(elem) && 'active';
   },
   recentTickets() {
     const communityId = Session.get('activeCommunityId');
@@ -185,14 +188,16 @@ Template.Worksheets.viewmodel({
   },
   filterSelector() {
     const communityId = Session.get('activeCommunityId');
-    const ticketStatusArray = this.ticketStatusArray();
-    const ticketTypeArray = this.ticketTypeArray();
+    const ticketStatusSelected = this.ticketStatusSelected();
+    const ticketTypeSelected = this.ticketTypeSelected();
+    const ticketUrgencySelected = this.ticketUrgencySelected();
     const startDate = this.startDate();
     const endDate = this.endDate();
     const reportedByCurrentUser = this.reportedByCurrentUser();
     const selector = { communityId, category: 'ticket' };
-    if (ticketTypeArray.length > 0) selector['ticket.type'] = { $in: ticketTypeArray };
-    if (ticketStatusArray.length > 0) selector.status = { $in: ticketStatusArray };
+    if (ticketStatusSelected.length > 0) selector.status = { $in: ticketStatusSelected };
+    if (ticketTypeSelected.length > 0) selector['ticket.type'] = { $in: ticketTypeSelected };
+    if (ticketUrgencySelected.length > 0) selector['ticket.urgency'] = { $in: ticketUrgencySelected };
     selector.createdAt = {};
     if (startDate) selector.createdAt.$gte = new Date(startDate);
     if (endDate) selector.createdAt.$lte = new Date(endDate);
@@ -250,26 +255,17 @@ Template.Worksheets.events({
   'click .js-clear-filter'(event, instance) {
     instance.viewmodel.setDefaultFilter();
   },
-  'click .js-status-filter'(event, instance) {
-    const ticketStatus = $(event.target).data('value');
-    const ticketStatusArray = instance.viewmodel.ticketStatusArray();
-    if (ticketStatusArray.includes(ticketStatus)) {
-      instance.viewmodel.ticketStatusArray(_.without(ticketStatusArray, ticketStatus));
+  'click .js-filter'(event, instance) {
+    const key = $(event.target).data('key');
+    const value = $(event.target).data('value');
+    const vmFunc = instance.viewmodel[`${key}Selected`];
+    const selected = vmFunc();
+    if (selected.includes(value)) {
+      vmFunc(_.without(selected, value));
       $(event.target).blur();
     } else {
-      ticketStatusArray.push(ticketStatus);
-      instance.viewmodel.ticketStatusArray(ticketStatusArray);
-    }
-  },
-  'click .js-type-filter'(event, instance) {
-    const ticketType = $(event.target).closest('[data-value]').data('value');
-    const ticketTypeArray = instance.viewmodel.ticketTypeArray();
-    if (ticketTypeArray.includes(ticketType)) {
-      instance.viewmodel.ticketTypeArray(_.without(ticketTypeArray, ticketType));
-      $(event.target).blur();
-    } else {
-      ticketTypeArray.push(ticketType);
-      instance.viewmodel.ticketTypeArray(ticketTypeArray);
+      selected.push(value);
+      vmFunc(selected);
     }
   },
   'click .js-save-calendar'(event, instance) {
