@@ -10,7 +10,8 @@ import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { Transactions } from './transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import '/imports/ui_3/views/components/transaction-view.js';
 import './entities.js';
 import './methods.js';
 
@@ -108,27 +109,52 @@ Transactions.actions = {
   },
   post: {
     name: 'post',
-    icon: (options, doc) => ((doc && doc.isPosted()) ? 'fa fa-envelope' : 'fa fa-check-square-o'),
+    icon: (options, doc) => ((doc && doc.isPosted()) ? 'fa fa-list' : 'fa fa-check-square-o'),
     color: (options, doc) => ((doc && doc.isPosted()) ? undefined : 'warning'),
-    label: (options, doc) => ((doc && doc.isPosted()) ? 'repost' : 'post'),
+    label: (options, doc) => ((doc && doc.isPosted()) ? 'Accounting view' : 'post'),
     visible(options, doc) {
       if (!doc) return false;
       if (doc.category === 'bill' && !doc.hasConteerData()) return false;
-      if (doc.isPosted()) return currentUserHasPermission('transactions.repost', doc);
       return currentUserHasPermission('transactions.post', doc);
     },
     run(options, doc) {
       if (doc.isPosted()) {
+        Modal.show('Modal', {
+          title: 'Accounting view',
+          body: 'Transaction_view',
+          bodyContext: { doc },
+          size: 'lg',
+        });
+      } else {
+//        if (options.batch) {
+//          Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
+//            displayMessage('info', 'actionDone_post');
+//          })
+//          );
+//        } else {
+        doc.makeJournalEntries(doc.community().settings.accountingMethod);
         Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
           action: 'post transaction',
-          message: 'This transaction has been already posted before',
+//            message: 'This will create the following journal entries',
+          body: 'Transaction_view',
+          bodyContext: { doc },
+          size: 'lg',
         });
-
-      } else {
-        Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
-          displayMessage('info', 'Szamla konyvelesbe kuldve');
-        }));
+//        }
       }
+    },
+  },
+  resend: {
+    name: 'resend',
+    icon: () => 'fa fa-envelope',
+    visible(options, doc) {
+      return doc.isPosted() && currentUserHasPermission('transactions.resend', doc);
+    },
+    run(options, doc) {
+      Modal.confirmAndCall(Transactions.methods.resend, { _id: doc._id }, {
+        action: 'resend email',
+        message: 'This will send the bill again',
+      });
     },
   },
   registerPayment: {
