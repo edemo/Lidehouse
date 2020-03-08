@@ -9,7 +9,6 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';

@@ -143,7 +143,7 @@ Transactions.actions = {
   resend: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'resend',
     icon: 'fa fa-envelope',
-    visible: doc.isPosted() && currentUserHasPermission('transactions.resend', doc),
+    visible: doc.isPosted() && user.hasPermission('transactions.resend', doc),
     run() {
       Modal.confirmAndCall(Transactions.methods.resend, { _id: doc._id }, {
         action: 'resend email',
@@ -186,8 +186,14 @@ Transactions.actions = {
   }),
 };
 
+Transactions.dummyDoc = {
+  communityId: getActiveCommunityId(),
+  isPosted() { return false; },
+  isReconciled() { return false; },
+};
+
 Transactions.batchActions = {
-  post: new BatchAction(Transactions.actions.post, Transactions.methods.batch.post, {}, { isPosted() { return false; } }),
+  post: new BatchAction(Transactions.actions.post, Transactions.methods.batch.post, {}, Transactions.dummyDoc),
   delete: new BatchAction(Transactions.actions.delete, Transactions.methods.batch.remove),
 };
 

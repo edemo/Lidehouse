@@ -7,7 +7,6 @@ import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -77,7 +76,7 @@ StatementEntries.actions = {
     icon: 'fa fa-external-link',
     color: (doc.match) ? 'info' : 'danger',
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
-    subActions: Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
+    subActions: !options.txdef && Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
       .map(txdef => StatementEntries.actions.reconcile({ txdef }, doc, user)),
     run() {
       const insertTx = {
@@ -122,8 +121,13 @@ StatementEntries.actions = {
   }),
 };
 
+StatementEntries.dummyDoc = {
+  communityId: getActiveCommunityId(),
+  isReconciled() { return false; },
+};
+
 StatementEntries.batchActions = {
-  autoReconcile: new BatchAction(StatementEntries.actions.autoReconcile, StatementEntries.methods.batch.reconcile, {}, { isReconciled() { return false; } }),
+  autoReconcile: new BatchAction(StatementEntries.actions.autoReconcile, StatementEntries.methods.batch.reconcile, {}, StatementEntries.dummyDoc),
   delete: new BatchAction(StatementEntries.actions.delete, StatementEntries.methods.batch.remove),
 };
 
