@@ -46,11 +46,10 @@ Topics.actions = {
     name: 'new',
     icon: 'fa fa-plus',
     color: 'primary',
-    label: Array.isArray(options.entity) ? `${__('new')}  ${__(options.category)}` :
-      (options.entity.name === 'issue' ? __('Report issue') : `${__('new')} ${__(options.entity.name)}`),
-    visible: Array.isArray(options.entity) ? true : user.hasPermission(`${options.entity.name}.insert`, doc),
-    subActions: options && options.entity && options.entity.length
-      && options.entity.map(entity => Topics.actions.new({ entity }, doc)),
+    label: (options.splitable() ? `${__('new')}  ${__(options.category)}` :
+      (options.entity.name === 'issue' ? __('Report issue') : `${__('new')} ${__(options.entity.name)}`)),
+    visible: options.splitable() ? true : user.hasPermission(`${options.entity.name}.insert`, doc),
+    subActions: options.splitable() && options.split().map(opts => Topics.actions.new(opts.fetch(), doc, user)),
     run() {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
@@ -118,13 +117,13 @@ Topics.actions = {
   }),
   statusChange: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'statusChange',
-    label: (!options && 'statusChange')
-      || (options.status && options.status.label)
-      || (options.status && __('Change status to', __('schemaTopics.status.' + options.status.name))),
-    icon: (options && options.status && options.status.icon) || 'fa fa-cogs',
-    visible: (!options || !options.status) ||
-      Array.isArray(options.status) ? true : user.hasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc),
-    subActions: doc && doc.possibleNextStatuses().map(status => Topics.actions.statusChange({ status }, doc)),
+    label: (!options.status && 'statusChange') || (options.status.label)
+      || (__('Change status to', __('schemaTopics.status.' + options.status.name))),
+    icon: (options.status && options.status.icon) || 'fa fa-cogs',
+    visible: !options.status
+      || user.hasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc),
+    subActions: !options.status // if there is a status specified in options, that is a specific action w/o subActions
+      && doc && doc.possibleNextStatuses().map(status => Topics.actions.statusChange({ status }, doc, user)),
     run() {
       const newStatus = options.status;
       Session.update('modalContext', 'topicId', doc._id);

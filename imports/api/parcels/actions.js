@@ -25,11 +25,10 @@ Parcels.actions = {
     name: 'new',
     icon: 'fa fa-plus',
     color: 'primary',
-    label: (Array.isArray(options.entity) ? `${__('new') + ' ' + __('parcel')}`
+    label: (options.splitable() ? `${__('new') + ' ' + __('parcel')}`
       : `${__('new')} ${__('schemaParcels.category.' + options.entity.name)}`),
     visible: user.hasPermission('parcels.insert', doc),
-    subActions: options && options.entity && options.entity.length &&
-      options.entity.map(entity => Parcels.actions.new({ entity }), doc, user),
+    subActions: options.splitable() && options.split().map(opts => Parcels.actions.new(opts.fetch(), doc, user)),
     run() {
       let entity = options.entity;
       if (typeof entity === 'string') entity = Parcels.entities[entity];

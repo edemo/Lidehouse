@@ -38,6 +38,57 @@ export function actionHandlers(collection, actionNames) {
 
 //---------------------------------------------------------------------------
 
+class ActionOptions {
+  constructor(collection) {
+    this.collection = collection;
+  }
+  fields() {
+    const keys = _.toArray(Object.keys(this));
+    return _.without(keys.filter(k => (typeof k !== 'function')), 'collection');
+  }
+  splitable() {
+    return _.some(this.fields(), field => Array.isArray(this[field]));
+  }
+  split() { // It will split up the options to several options sets, in case array values are found in the parameters
+    //console.log("splitting", this);
+    const arrayFields = [];
+    const nonArrayfields = [];
+    this.fields().forEach(field => (Array.isArray(this[field]) ? arrayFields.push(field) : nonArrayfields.push(field)));
+    const fixedOptions = _.pick(this.fields(), nonArrayfields);
+    let results = [fixedOptions];
+    arrayFields.forEach(key => {
+      const values = this[key];
+      const descartedResults = [];
+      values.forEach(value => {
+        results.forEach(obj => descartedResults.push(_.extend({}, obj, { [key]: value })));
+      });
+      results = descartedResults;
+    });
+    //console.log("result", results);
+    return results.map(r => Object.setPrototypeOf(r, Object.getPrototypeOf(this)));
+  }
+  fetch() { // Wherever a string is used as parameter, it will fetch the appropriate object, named by the string
+    //console.log("fetching", this);
+    if (typeof this.status === 'string') {
+      const status = this.collection.statuses[this.status];
+      debugAssert(status, `No such status "${this.status}" for collection ${this.collection._name}`);
+      this.status = status;
+    }
+    if (typeof this.entity === 'string') {
+      const entity = this.collection.entities[this.entity];
+      debugAssert(entity, `No such entity "${this.entity}" for collection ${this.collection._name}`);
+      this.entity = entity;
+    }
+    if (typeof this.txdef === 'string') {
+      this.txdef = Txdefs.findOne(this.txdef);
+    }
+    //console.log("result", this);
+    return this;
+  }
+}
+
+//---------------------------------------------------------------------------
+
 const buttonHelpers = {
   title() {
     const action = this.templateInstance.data.action;
@@ -61,23 +112,10 @@ const buttonHelpers = {
   },
   getOptions() {
     const instanceData = this.templateInstance.data;
-    if (!instanceData.options) return {};
-    if (typeof instanceData.options.status === 'string') {
-      const collection = Mongo.Collection.get(instanceData.collection);
-      const status = collection.statuses[instanceData.options.status];
-      debugAssert(status, `No such status "${instanceData.options.status}" for collection ${instanceData.collection}`);
-      instanceData.options.status = status;
-    }
-    if (typeof instanceData.options.entity === 'string') {
-      const collection = Mongo.Collection.get(instanceData.collection);
-      const entity = collection.entities[instanceData.options.entity];
-      debugAssert(entity, `No such entity "${instanceData.options.entity}" for collection ${instanceData.collection}`);
-      instanceData.options.entity = entity;
-    }
-    if (typeof instanceData.options.txdef === 'string') {
-      instanceData.options.txdef = Txdefs.findOne(instanceData.options.txdef);
-    }
-    return instanceData.options;
+    const collection = Mongo.Collection.get(instanceData.collection);
+    instanceData.options = instanceData.options || {};
+    Object.setPrototypeOf(instanceData.options, new ActionOptions(collection));
+    return instanceData.options.fetch();
   },
   getDoc() {
     const instanceData = this.templateInstance.data;
@@ -87,13 +125,12 @@ const buttonHelpers = {
     }
     return instanceData.doc;
   },
-  getActions(options, doc) {
+  getActions() {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);
-    console.log("data.actions", this.templateInstance.data.actions);
-    const actions = this.templateInstance.data.actions
-      ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a](options, doc, Meteor.user()))
-//      : _.map(collection.actions, (action, name) => action);
-      : _.map(_.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block'), a => a(options, doc, Meteor.user()));
+    const actionFuncs = this.templateInstance.data.actions
+      ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
+      : _.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block');
+    const actions = _.map(actionFuncs, a => a(this.getOptions(), this.getDoc(), Meteor.user()));
     return actions;
   },
   needsDividerAfter(action) {

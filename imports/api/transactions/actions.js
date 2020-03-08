@@ -187,7 +187,7 @@ Transactions.actions = {
 };
 
 Transactions.batchActions = {
-  post: new BatchAction(Transactions.actions.post, Transactions.methods.batch.post),
+  post: new BatchAction(Transactions.actions.post, Transactions.methods.batch.post, {}, { isPosted() { return false; } }),
   delete: new BatchAction(Transactions.actions.delete, Transactions.methods.batch.remove),
 };
 

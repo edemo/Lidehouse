@@ -123,7 +123,7 @@ StatementEntries.actions = {
 };
 
 StatementEntries.batchActions = {
-  autoReconcile: new BatchAction(StatementEntries.actions.autoReconcile, StatementEntries.methods.batch.reconcile),
+  autoReconcile: new BatchAction(StatementEntries.actions.autoReconcile, StatementEntries.methods.batch.reconcile, {}, { isReconciled() { return false; } }),
   delete: new BatchAction(StatementEntries.actions.delete, StatementEntries.methods.batch.remove),
 };
 

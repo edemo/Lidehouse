@@ -20,10 +20,9 @@ Memberships.actions = {
 //    icon: options => (Array.isArray(options.entity) ? 'fa fa-plus' : ''),
     icon: 'fa fa-plus',
     color: 'primary',
-    label: Array.isArray(options.entity) ? `${__('new')}  ${__('occupant')}` : `${__('new')} ${__(options.entity.name)}`,
-    visible: Array.isArray(options.entity) ? true : user.hasPermission(`${options.entity.name}.insert`, doc),
-    subActions: options && options.entity && options.entity.length
-      && options.entity.map(entity => Memberships.actions({ entity }, doc, user)),
+    label: options.splitable() ? `${__('new')}  ${__('occupant')}` : `${__('new')} ${__(options.entity.name)}`,
+    visible: options.splitable() ? true : user.hasPermission(`${options.entity.name}.insert`, doc),
+    subActions: options.splitable() && options.split().map(opts => Memberships.actions.new(opts.fetch(), doc, user)),
     run() {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
