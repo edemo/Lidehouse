@@ -59,7 +59,7 @@ Template.Contracts.events({
     Session.update('modalContext', 'contractId', contractId);
     Session.update('modalContext', 'partnerId', partnerId);
     Session.update('modalContext', 'omitFields', ['ticket.contractId', 'ticket.partnerId']);
-    Topics.actions.new.run({ entity });
+    Topics.actions.new({ entity }).run();
   },
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');

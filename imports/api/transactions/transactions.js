@@ -221,7 +221,7 @@ Transactions.helpers({
     return sign * this.amount;
   },
   negator() {
-    const tx = JSON.parse(JSON.stringify(this));
+    const tx = _.extendOwn({}, this);
 //    const tx = {}; $.extend(true, tx, this);
     Mongo.Collection.stripAdministrativeFields(tx);
     tx.note = 'STORNO ' + tx.serialId;

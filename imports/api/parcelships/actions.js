@@ -12,11 +12,11 @@ import { Parcelships } from './parcelships.js';
 import './methods.js';
 
 Parcelships.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    label: () => __('new') + ' ' + __('parcelship'),
-    visible: (options, doc) => currentUserHasPermission('parcelships.insert', doc),
+    icon: 'fa fa-plus',
+    label: __('new') + ' ' + __('parcelship'),
+    visible: user.hasPermission('parcelships.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.parcelship.insert',
@@ -26,12 +26,12 @@ Parcelships.actions = {
         meteormethod: 'parcelships.insert',
       });
     },
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('parcelships.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('parcelships.inCommunity', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.parcelship.view',
         collection: Parcelships,
@@ -39,12 +39,12 @@ Parcelships.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('parcelships.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('parcelships.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.parcelship.update',
         collection: Parcelships,
@@ -55,12 +55,12 @@ Parcelships.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  period: {
+  }),
+  period: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'period',
-    icon: () => 'fa fa-history',
-    visible: (options, doc) => currentUserHasPermission('parcelships.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-history',
+    visible: user.hasPermission('parcelships.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.parcelship.update',
         collection: Parcelships,
@@ -71,18 +71,18 @@ Parcelships.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('parcelships.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('parcelships.remove', doc),
+    run() {
       Modal.confirmAndCall(Parcelships.methods.remove, { _id: doc._id }, {
         action: 'delete parcelship',
         message: 'You should rather archive it',
       });
     },
-  },
+  }),
 };
 
 //-----------------------------------------------

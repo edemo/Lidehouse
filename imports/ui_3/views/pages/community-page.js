@@ -213,12 +213,12 @@ Template.Occupants_box.events({
     const id = $(event.target).closest('[data-id]').data('id');
     const membership = Memberships.findOne(id);
     const partner = membership.partner();
-    Meteor.users.actions.view.run({}, partner.user());
+    Meteor.users.actions.view({}, partner.user()).run();
   },
   'click .js-occupants'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
-    const leadParcel = Parcels.findOne(id);
-    Parcels.actions.occupants.run({}, leadParcel);
+    const parcel = Parcels.findOne(id);
+    Parcels.actions.occupants({}, parcel).run();
   },
 });
 

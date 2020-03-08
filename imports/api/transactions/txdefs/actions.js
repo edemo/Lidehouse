@@ -9,12 +9,12 @@ import { Txdefs } from './txdefs.js';
 import './methods.js';
 
 Txdefs.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    color: () => 'primary',
-    label: () => `${__('new')} ${__('txdef')}`,
-    visible: (options, doc) => currentUserHasPermission('accounts.insert', doc),
+    icon: 'fa fa-plus',
+    color: 'primary',
+    label: `${__('new')} ${__('txdef')}`,
+    visible: user.hasPermission('accounts.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.txdef.insert',
@@ -23,12 +23,12 @@ Txdefs.actions = {
         meteormethod: 'txdefs.insert',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('accounts.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('accounts.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.txdef.update',
         collection: Txdefs,
@@ -38,17 +38,17 @@ Txdefs.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('accounts.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('accounts.remove', doc),
+    run() {
       Modal.confirmAndCall(Txdefs.methods.remove, { _id: doc._id }, {
         action: 'delete txdef',
       });
     },
-  },
+  }),
 };
 
 //------------------------------------------------------
