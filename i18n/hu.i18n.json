@@ -641,6 +641,7 @@
   "actionDone_move": "áthelyezve",
   "actionDone_import": "importálva",
   "actionDone_post": "könyvelésbe küldve",
+  "actionDone_apply": "kivetve",
   "actionDone_notify": "továbbítva",
   "actionDone_remove": "eltávolítva",
   "actionDone_statusUpdate": "státusz frissítve",
