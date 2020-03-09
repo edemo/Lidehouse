@@ -51,7 +51,11 @@ export function defineAccountTemplates() {
     { code: '`45', name: 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK', category: 'liability' },
     { code: '`451', name: 'Rövid lejáratú bank Hitel', category: 'liability' },
     { code: '`452', name: 'Egyéb rövid lejáratú kötelezettségek', category: 'liability' },
-    { code: '`46', name: 'Suppliers', category: 'payable' },
+    { code: '`454', name: 'Suppliers', category: 'payable' },  // Szállítók
+    { code: '`455', name: 'Capital goods suppliers', category: 'payable' },  //  Beruházási szállítók
+    { code: '`466', name: 'VAT paid', category: 'expense' },  // Előzetesen felszámított általános forgalmi adó
+    { code: '`467', name: 'VAT payable', category: 'payable' },  // Fizetendő általános forgalmi adó
+    { code: '`468', name: 'VAT clearing', category: 'clearing' },  // Általános forgalmi adó elszámolási számla
     { code: '`48', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK', category: 'liability' },
     { code: '`49', name: 'ÉVI MÉRLEGSZÁMLÁK', category: 'liability' },
     { code: '`491', name: 'Opening account', category: 'liability' },
@@ -187,7 +191,7 @@ if (Meteor.isServer) {
 }
 
 /*
-export const ACCOUNTS_PAYABLE = '46';
+export const ACCOUNTS_PAYABLE = '454';
 export const ACCOUNTS_RECEIVABLE = '31';
 export const ACCOUNTS_RECEIVABLE_FROM_PARCELS = '33';
 */

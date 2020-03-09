@@ -388,7 +388,7 @@ export const Transformers = {
           amount: parseInt(doc['Számla összege'], 10),
           // debit is one of the '8' accounts
           credit: [{
-            account: '`46',
+            account: '`454',
           }],
         };
         tdocs.push(bill);
@@ -404,7 +404,7 @@ export const Transformers = {
             amount: parseInt(doc['Számla összege'], 10),
     //          amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
             debit: [{
-              account: '`46',
+              account: '`454',
             }],
             // credit is one of the '`38' accounts
           };

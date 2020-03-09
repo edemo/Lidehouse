@@ -158,7 +158,7 @@ Template.Community_finances.viewmodel({
         }, plusColors[0]),
         _.extend({
           label: __("Commitments"),
-          data: this.monthlyDataFromTbalances('46'),
+          data: this.monthlyDataFromTbalances('454'),
         }, minusColors[0]),
       ],
     };
@@ -215,7 +215,7 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("Suppliers"),
-          data: this.monthlyDataFromTbalances('46'),
+          data: this.monthlyDataFromTbalances('454'),
         }, minusColors[0]),
       ],
     };
@@ -280,7 +280,7 @@ Template.Community_finances.viewmodel({
   statusAccounts() {
     return [
       { name: 'Money accounts', code: '`38' },
-      { name: 'Commitments', code: '46' },
+      { name: 'Commitments', code: '454' },
     ];
   },
   leafsOf(account) {
