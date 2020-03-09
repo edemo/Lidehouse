@@ -9,10 +9,10 @@ import { ParcelBillings } from './parcel-billings.js';
 import './methods.js';
 
 ParcelBillings.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('parcelBillings.insert', doc),
+    icon: 'fa fa-plus',
+    visible: currentUserHasPermission('parcelBillings.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.insert',
@@ -21,12 +21,12 @@ ParcelBillings.actions = {
         meteormethod: 'parcelBillings.insert',
       });
     },
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('parcelBillings.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: currentUserHasPermission('parcelBillings.inCommunity', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.view',
         collection: ParcelBillings,
@@ -34,12 +34,12 @@ ParcelBillings.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('parcelBillings.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: currentUserHasPermission('parcelBillings.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.update',
         collection: ParcelBillings,
@@ -49,12 +49,12 @@ ParcelBillings.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  apply: {
+  }),
+  apply: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'apply',
-    icon: () => 'fa fa-calendar-plus-o',
-    visible: (options, doc) => currentUserHasPermission('parcelBillings.apply', doc),
-    run(options, doc) {
+    icon: 'fa fa-calendar-plus-o',
+    visible: currentUserHasPermission('parcelBillings.apply', doc),
+    run() {
       const communityId = Session.get('activeCommunityId');
       const billing = doc || ParcelBillings.findOne({ communityId, active: true });
       Session.set('activeParcelBillingId', doc && doc._id);
@@ -66,12 +66,12 @@ ParcelBillings.actions = {
         meteormethod: 'parcelBillings.apply',
       });
     },
-  }, /*
-  revert: {
+  }), /*
+  revert: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'revert',
-    icon: () => 'fa fa-calendar-times-o',
-    visible: (options, doc) => currentUserHasPermission('parcelBillings.revert', doc),
-    run(options) {
+    icon: 'fa fa-calendar-times-o',
+    visible: currentUserHasPermission('parcelBillings.revert', doc),
+    run() {
       Session.set('activeParcelBillingId', doc && doc._id);
       Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.apply',
@@ -80,18 +80,18 @@ ParcelBillings.actions = {
         meteormethod: 'parcelBillings.revert',
       });
     },
-  },*/
-  delete: {
+  }),*/
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('parcelBillings.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: currentUserHasPermission('parcelBillings.remove', doc),
+    run() {
       Modal.confirmAndCall(ParcelBillings.methods.remove, { _id: doc._id }, {
         action: 'delete parcelBilling',
         message: 'It will disappear forever',
       });
     },
-  },
+  }),
 };
 
 //--------------------------------------------------
