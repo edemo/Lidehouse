@@ -222,7 +222,7 @@ Meteor.users.helpers({
   // Memberships
   partnerId(communityId) {
     const partnerIds = Partners.find({ communityId, userId: this._id }).map(p => p._id);
-    debugAssert(partnerIds.length > 0, 'A user cannot have more partners in one community');
+    debugAssert(partnerIds.length <= 1, 'A user cannot have more partners in one community');
     return partnerIds[0] || undefined;
   },
   partnerIds() {
