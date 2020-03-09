@@ -61,6 +61,7 @@ Template.Accounting_reconciliation.viewmodel({
   },
   transactionsOptionsFn() {
     return () => Object.create({
+      id: 'transactions',
       columns: transactionColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
@@ -87,6 +88,7 @@ Template.Accounting_reconciliation.viewmodel({
   },
   statementEntriesOptionsFn() {
     return () => Object.create({
+      id: 'statementEntries',
       columns: statementEntriesColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],

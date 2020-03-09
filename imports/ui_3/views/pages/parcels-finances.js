@@ -70,6 +70,7 @@ Template.Parcels_finances.viewmodel({
   },
   parcelFinancesOptionsFn() {
     return () => ({
+      id: 'parcelFinances',
       columns: parcelFinancesColumns(),
       order: [[4, 'desc']],
       language: datatables_i18n[TAPi18n.getLanguage()],
@@ -98,6 +99,7 @@ Template.Parcels_finances.viewmodel({
         assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', { communityId }),
       };
       return {
+        id: 'parcels',
         columns: parcelColumns(permissions),
         createdRow: highlightMyRow,
         tableClasses: 'display',

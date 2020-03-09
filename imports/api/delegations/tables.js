@@ -12,7 +12,7 @@ export function delegationColumns() {
     { data: 'scope', title: __('schemaDelegations.scope.label'), render: Render.translateWithScope('schemaDelegations.scope') },
     { data: 'scopeObject()', title: __('schemaDelegations.scopeObjectId.label'), render: Delegations.renderScopeObject },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('delegations', Template.Action_buttons_group,
         { doc: cellData, collection: 'delegations', actions: 'edit,delete', size: 'sm' }, cell),
     },
   ];

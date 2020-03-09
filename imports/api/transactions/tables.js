@@ -32,7 +32,7 @@ export function transactionColumns() {
 //    { data: 'ref', title: __('schemaTransactions.ref.label') },
     { data: 'note', title: __('schemaTransactions.note.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('transactions', Template.Action_buttons_group,
         { doc: cellData, collection: 'transactions', actions: '', size: 'sm' }, cell),
     },
   ];

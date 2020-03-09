@@ -228,6 +228,7 @@ Template.Worksheets.viewmodel({
         delete: Meteor.userOrNull().hasPermission('ticket.remove', { communityId }),
       };
       return {
+        id: 'tickets',
         columns: ticketColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],

@@ -18,7 +18,7 @@ export function ticketColumns() {
     { data: 'ticket.urgency', title: __('schemaTickets.ticket.urgency.label'), render: displayUrgency },
     { data: 'ticket.type', title: __('schemaTickets.ticket.type.label'), render: displayTicketType },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('tickets', Template.Action_buttons_group,
         { doc: cellData, collection: 'topics', actions: '', size: 'sm' }, cell),
     },
   ];

@@ -11,7 +11,7 @@ export function accountColumns() {
     { data: 'name', title: __('schemaAccounts.name.label'), render: Render.translate },
     { data: 'category', title: __('schemaAccounts.category.label'), render: Render.translateWithScope('schemaAccounts.category') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('accounts', Template.Action_buttons_group,
         { doc: cellData, collection: 'accounts', actions: '', size: 'sm' }, cell),
     },
   ];

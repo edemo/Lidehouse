@@ -20,7 +20,7 @@ export function parcelBillingColumns() {
 //    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'lastAppliedAt().date', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('parcelBillings', Template.Action_buttons_group,
         { doc: cellData, collection: 'parcelBillings', actions: '', size: 'sm' }, cell),
     },
   ];

@@ -12,7 +12,7 @@ export function statementEntriesColumns() {
     { data: 'amount', title: __('schemaStatementEntries.amount.label'), render: Render.formatNumber },
     { data: 'note', title: __('schemaStatementEntries.note.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('statementEntries', Template.Action_buttons_group,
         { doc: cellData, collection: 'statementEntries', actions: 'view,reconcile', size: 'sm' }, cell),
     },
     { data: 'isReconciled()', /* title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },

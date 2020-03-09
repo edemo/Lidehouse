@@ -1,3 +1,23 @@
+// droka changes --- memory cleanup
+class Store {
+  constructor() { 
+    this.store = {};
+  }
+  get(id) {
+    console.log("Getting", id, "from store");
+    this.store[id] = this.store[id] || [];
+    return this.store[id];
+  }
+};
+const BlazeRenderedViews = new Store();
+
+Blaze.cleanRenderWithData = function cleanRenderWithData(id, ...params) {
+  const view = Blaze.renderWithData(...params);
+  BlazeRenderedViews.get(id).push(view);
+  console.log('BlazeRenderedViews', 'id', BlazeRenderedViews.get(id).length);
+};
+// ---
+
 Template.ReactiveDatatable.rendered = function() {
   var data = this.data;
   var options = data.options();
@@ -15,6 +35,10 @@ Template.ReactiveDatatable.rendered = function() {
 //  this.autorun(function() {
 
     var reactiveDataTable = new ReactiveDatatable(options);
+    // droka changes --- memory cleanup
+    console.log("options", options);
+    reactiveDataTable.viewsToClean = BlazeRenderedViews.get(options.id);
+    // ---
 
     // Help Blaze cleanly remove entire datatable when changing template / route by
     // wrapping table in existing element (.datatable_wrapper) defined in the template.
@@ -41,4 +65,14 @@ Template.ReactiveDatatable.rendered = function() {
   this.autorun(function() {
     reactiveDataTable.update(data.tableData());
   });
+};
+
+Template.ReactiveDatatable.destroyed = function() {
+  // droka changes --- memory cleanup
+  const id = this.data.options().id;
+  const viewsToClean = BlazeRenderedViews.get(id);
+  console.log(`Destroying ${viewsToClean.length} views`);
+  viewsToClean.forEach(v => Blaze.remove(v));
+  viewsToClean.splice(0, viewsToClean.length);
+  // ---
 };

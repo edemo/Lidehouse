@@ -10,7 +10,7 @@ export function voteColumns() {
     { data: 'creator()', title: __('creatorId') },
     { data: 'createdAt', title: __('createdAt'), render: Render.formatTime },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('votes', Template.Action_buttons_group,
         { doc: cellData, collection: 'topics', actions: 'view,edit,delete', size: 'sm' }, cell),
     },
   ];

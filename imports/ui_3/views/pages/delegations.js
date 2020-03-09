@@ -57,6 +57,7 @@ Template.Delegations_for_others.helpers({
   delegationsOptionsFn() {
     return () => {
       return {
+        id: 'delegations',
         columns: delegationColumns(),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],

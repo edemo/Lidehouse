@@ -15,7 +15,7 @@ export function journalEntriesColumns() {
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
     { data: 'transaction().serialId', title: __('transaction') + ' ' + __('schemaTransactions.serialId.label') },
   //  { data: '_id', title: __('Action buttons'), render: Render.actionButtons,,
-  //    createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+  //    createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('journalEntries', Template.Action_buttons_group,
   //      { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.bill }, actions: '', size: 'sm' }, cell),
   //  },
   ];

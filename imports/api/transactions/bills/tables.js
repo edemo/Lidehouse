@@ -22,7 +22,7 @@ export function billColumns() {
     { data: 'paymentDate()', title: __('schemaBills.paymentDate.label'), render: Render.formatDate },
     { data: 'note', title: __('schemaTransactions.note.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('bills', Template.Action_buttons_group,
         { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.bill }, actions: '', size: 'sm' }, cell),
     },
   ];
@@ -39,7 +39,7 @@ export function receiptColumns() {
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
     { data: 'note', title: __('schemaTransactions.note.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('receipts', Template.Action_buttons_group,
         { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.receipt }, actions: '', size: 'sm' }, cell),
     },
     { data: 'seId', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },

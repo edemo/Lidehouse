@@ -107,6 +107,7 @@ Template.Accounting_bills.viewmodel({
   },
   billsOptionsFn() {
     return () => Object.create({
+      id: 'bills',
       columns: billColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
@@ -128,6 +129,7 @@ Template.Accounting_bills.viewmodel({
   },
   paymentsOptionsFn() {
     return () => Object.create({
+      id: 'payments',
       columns: paymentsColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
@@ -148,6 +150,7 @@ Template.Accounting_bills.viewmodel({
   },
   partnersOptionsFn() {
     return () => Object.create({
+      id: 'partnersFinances',
       columns: partnersFinancesColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
@@ -165,6 +168,7 @@ Template.Accounting_bills.viewmodel({
   },
   receiptsOptionsFn() {
     return () => Object.create({
+      id: 'receipts',
       columns: receiptColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],

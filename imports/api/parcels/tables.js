@@ -24,7 +24,7 @@ export function parcelColumns() {
     { data: 'units', title: __('schemaParcels.units.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('parcels', Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'view,edit,occupants,meters,delete', size: 'sm' }, cell),
     },
   ];
@@ -36,7 +36,7 @@ export function localizerColumns() {
     { data: 'displayName()', title: __('schemaParcels.location.label') },
     { data: 'category', title: __('schemaParcels.category.label'), render: Render.translateWithScope('schemaParcels.category') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('localizers', Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'view,edit,delete', size: 'sm' }, cell),
     },
   ];
@@ -50,7 +50,7 @@ export function parcelFinancesColumns() {
     { data: 'withFollowers()', title: __('follower parcels') },
     { data: 'payerMembership().outstanding', title: __('schemaBills.outstanding.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('parcelFinances', Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'finances,meters', size: 'sm' }, cell),
     },
   ];

@@ -12,7 +12,7 @@ export function partnersColumns() {
     { data: 'relation', title: __('schemaPartners.relation.label'), render: Render.translateWithScope('schemaPartners.relation') },
     { data: 'contact.email', title: __('schemaPartners.contact.email.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('partners', Template.Action_buttons_group,
       { doc: cellData, collection: 'partners', actions: 'view,edit,delete', size: 'sm' }, cell),
     },
   ];
@@ -25,7 +25,7 @@ export function partnersFinancesColumns() {
     { data: 'toString()', title: __('schemaTransactions.partnerId.label') },
     { data: 'outstanding', title: __('schemaBills.outstanding.label'), render: Render.formatNumber },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('partnersFinances', Template.Action_buttons_group,
       { doc: cellData, collection: 'partners', actions: '', size: 'sm' }, cell),
     },
   ];

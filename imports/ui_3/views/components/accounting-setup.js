@@ -65,6 +65,7 @@ Template.Accounting_setup.viewmodel({
   },
   accountsOptionsFn() {
     return () => Object.create({
+      id: 'accounts',
       columns: accountColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
@@ -83,6 +84,7 @@ Template.Accounting_setup.viewmodel({
   },
   localizersOptionsFn() {
     return () => Object.create({
+      id: 'localizers',
       columns: localizerColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],

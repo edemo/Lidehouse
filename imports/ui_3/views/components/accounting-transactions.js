@@ -116,6 +116,7 @@ Template.Accounting_transactions.viewmodel({
   },
   transactionsOptionsFn() {
     return () => Object.create({
+      id: 'transactions',
       columns: transactionColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],

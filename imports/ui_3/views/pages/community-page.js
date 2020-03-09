@@ -136,6 +136,7 @@ Template.Parcels_box.viewmodel({
       options() {
         return () => {
           return {
+            id: 'parcels',
             columns: parcelColumns(),
             createdRow: highlightMyRow,
             tableClasses: 'display',

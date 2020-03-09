@@ -11,7 +11,7 @@ export function contractColumns() {
     { data: 'title', title: __('schemaAgendas.title.label') },
     { data: 'topics()', title: __('schemaAgendas.topicIds.label'), render: cellData => _.pluck(cellData, 'title') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => Blaze.cleanRenderWithData('contracts', Template.Action_buttons_group,
         { doc: cellData, collection: 'contracts', actions: '', size: 'sm' }, cell),
     },
   ];

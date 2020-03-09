@@ -22,7 +22,13 @@ ReactiveDatatable = function(options) {
 ReactiveDatatable.prototype.update = function(data) {
 	if (!data) return;
 	var self = this;
-
+  // droka changes --- memory cleanup
+  const viewsToClean = self.viewsToClean;
+  console.log(`Cleaning up ${viewsToClean.length} views`);
+  viewsToClean.forEach(v => Blaze.remove(v));
+  viewsToClean.splice(0, viewsToClean.length);
+  console.log(`Drawing...`);
+  // ---
 	self.datatable
 		.clear()
 		.rows.add(data)
