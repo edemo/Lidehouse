@@ -243,4 +243,5 @@ Template.Community_page.events({
       size: 'lg',
     });
   },
+  ...(actionHandlers(Communities, 'join')),
 });

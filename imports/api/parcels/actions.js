@@ -221,6 +221,7 @@ AutoForm.addHooks('af.@property.insert.unapproved', {
   formToDoc(doc) {
     doc.communityId = getActiveCommunityId();
     doc.approved = false;
+    doc.category = '@property';
     return doc;
   },
   onSuccess(formType, result) {
