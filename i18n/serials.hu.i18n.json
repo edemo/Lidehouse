@@ -9,8 +9,8 @@
   "ROO": "CSOP",
   "VOT": "SZAV",
  // Transactions
-  "BIL": "SZLA",
-  "REC": "NYTA",
+  "BIL": "SZ",
+  "REC": "NY",
   "PAY": "FIZ",
   "REM": "ELE",
   "TRA": "ATV",
@@ -19,9 +19,9 @@
   "CLO": "ZAR",
   "FRE": "VEGY",
   // Txdefs
-  "SUP": "SZ",
-  "CUS": "V",
-  "MEM": "E",
+  "SUP": "SZAL",
+  "CUS": "VEV",
+  "MEM": "DIJ",
   "DEB": "T",
   "CRE": "K"
 }
