@@ -1,13 +1,24 @@
 import { Meteor } from 'meteor/meteor';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Memberships } from './memberships';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
+function transformSchemaForUI(schema) {
+  const transformedSchema = new SimpleSchema(schema);
+  transformedSchema._schema.partnerId.optional = false;
+  Meteor.startup(() => {
+    transformedSchema.i18n('schemaMemberships');
+    transformedSchema.i18n('schemaActivePeriod');
+  });
+  return transformedSchema;
+}
+
 Memberships.entities = {
   roleship: {
     name: 'roleship',
-    schema: Memberships.simpleSchema({ role: 'manager' }),
+    schema: transformSchemaForUI(Memberships.simpleSchema({ role: 'manager' })),
     inputFields: ['role', 'rank', 'partnerId'],
     modifiableFields: ['role', 'rank', 'partnerId'],
     implicitFields: {
@@ -17,7 +28,7 @@ Memberships.entities = {
   },
   ownership: {
     name: 'ownership',
-    schema: Memberships.simpleSchema({ role: 'owner' }),
+    schema: transformSchemaForUI(Memberships.simpleSchema({ role: 'owner' })),
     inputFields: ['partnerId', 'ownership'],
     modifiableFields: ['partnerId', 'ownership'],
     implicitFields: {
@@ -29,7 +40,7 @@ Memberships.entities = {
   },
   benefactorship: {
     name: 'benefactorship',
-    schema: Memberships.simpleSchema({ role: 'benefactor' }),
+    schema: transformSchemaForUI(Memberships.simpleSchema({ role: 'benefactor' })),
     inputFields: ['partnerId', 'benefactorship'],
     modifiableFields: ['partnerId', 'benefactorship'],
     implicitFields: {
@@ -41,7 +52,7 @@ Memberships.entities = {
   },
   delegate: {
     name: 'delegate',
-    schema: Memberships.simpleSchema({ role: 'delegate' }),
+    schema: transformSchemaForUI(Memberships.simpleSchema({ role: 'delegate' })),
     inputFields: ['partnerId'],
     implicitFields: {
       communityId: getActiveCommunityId,
