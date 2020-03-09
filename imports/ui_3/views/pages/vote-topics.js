@@ -43,7 +43,7 @@ Template.Vote_topics.viewmodel({
 
 Template.Vote_topics.events({
   'click .js-new'(event) {
-    Topics.actions.new.run({ entity: Topics.entities.vote });
+    Topics.actions.new({ entity: Topics.entities.vote }).run();
   },
   'click .js-filter'(event, instance) {
     $(event.target).blur();

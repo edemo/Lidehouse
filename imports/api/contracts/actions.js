@@ -10,10 +10,10 @@ import { Contracts } from './contracts.js';
 import './methods.js';
 
 Contracts.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('contracts.insert', doc),
+    icon: 'fa fa-plus',
+    visible: user.hasPermission('contracts.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.contract.insert',
@@ -22,12 +22,12 @@ Contracts.actions = {
         meteormethod: 'contracts.insert',
       });
     },
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('contracts.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('contracts.inCommunity', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.contract.view',
         collection: Contracts,
@@ -35,12 +35,12 @@ Contracts.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('contracts.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('contracts.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.contract.update',
         collection: Contracts,
@@ -50,18 +50,18 @@ Contracts.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('contracts.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('contracts.remove', doc),
+    run() {
       Modal.confirmAndCall(Contracts.methods.remove, { _id: doc._id }, {
         action: 'delete contract',
         message: 'It will disappear forever',
       });
     },
-  },
+  }),
 };
 
 //-------------------------------------------------------

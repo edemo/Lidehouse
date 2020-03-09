@@ -12,13 +12,13 @@ import { Delegations } from './delegations.js';
 import './methods.js';
 
 Delegations.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('delegations.insert', doc),
-    run(options, doc) {
+    icon: 'fa fa-plus',
+    visible: user.hasPermission('delegations.insert', doc),
+    run() {
       const communityId = Session.get('activeCommunityId');
-      const omitFields = Meteor.user().hasPermission('delegations.forOthers', { communityId }) ? [] : ['sourceId'];
+      const omitFields = user.hasPermission('delegations.forOthers', { communityId }) ? [] : ['sourceId'];
       Modal.show('Autoform_modal', {
         id: 'af.delegation.insert',
         collection: Delegations,
@@ -28,12 +28,12 @@ Delegations.actions = {
         meteormethod: 'delegations.insert',
       });
     },
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('delegations.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('delegations.inCommunity', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.delegation.view',
         collection: Delegations,
@@ -41,17 +41,15 @@ Delegations.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => {
-      if (Meteor.userId() === doc.sourceUser()._id || Meteor.userId() === doc.targetUser()._id) return true;
-      return currentUserHasPermission('delegations.remove', doc);
-    },
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user._id === doc.sourceUser()._id || user._id === doc.targetUser()._id
+      || user.hasPermission('delegations.remove', doc),
+    run() {
       const communityId = Session.get('activeCommunityId');
-      const omitFields = Meteor.user().hasPermission('delegations.forOthers', { communityId }) ? [] : ['sourceId'];
+      const omitFields = user.hasPermission('delegations.forOthers', { communityId }) ? [] : ['sourceId'];
       Modal.show('Autoform_modal', {
         id: 'af.delegation.update',
         collection: Delegations,
@@ -62,23 +60,21 @@ Delegations.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => {
-      if (Meteor.userId() === doc.sourceUser()._id || Meteor.userId() === doc.targetUser()._id) return true;
-      return currentUserHasPermission('delegations.remove', doc);
-    },
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user._id === doc.sourceUser()._id || user._id === doc.targetUser()._id
+      || user.hasPermission('delegations.remove', doc),
+    run() {
       let action = 'delete delegation';
-      if (doc.targetUser()._id === Meteor.userId()) action = 'refuse delegation';
-      if (doc.sourceUser()._id === Meteor.userId()) action = 'revoke delegation';
+      if (doc.targetUser()._id === user._id) action = 'refuse delegation';
+      if (doc.sourceUser()._id === user._id) action = 'revoke delegation';
       Modal.confirmAndCall(Delegations.methods.remove, { _id: doc._id }, {
         action,
       });
     },
-  },
+  }),
 };
 
 //-----------------------------------------------

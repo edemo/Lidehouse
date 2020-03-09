@@ -1,10 +1,10 @@
+import { Meteor } from 'meteor/meteor';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
@@ -14,16 +14,15 @@ import './entities.js';
 import './methods.js';
 
 Memberships.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
 //    icon: options => (Array.isArray(options.entity) ? 'fa fa-plus' : ''),
-    icon: () => 'fa fa-plus',
-    color: () => 'primary',
-    label: options => (Array.isArray(options.entity) ? `${__('new')}  ${__('occupant')}` : `${__('new')} ${__(options.entity.name)}`),
-    visible: (options, doc) => Array.isArray(options.entity) ? true : currentUserHasPermission(`${options.entity.name}.insert`, doc),
-    subActions: options => Array.isArray(options.entity) && options.entity.length,
-    subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),
-    run(options) {
+    icon: 'fa fa-plus',
+    color: 'primary',
+    label: options.splitable() ? `${__('new')}  ${__('occupant')}` : `${__('new')} ${__(options.entity.name)}`,
+    visible: options.splitable() ? true : user.hasPermission(`${options.entity.name}.insert`, doc),
+    subActions: options.splitable() && options.split().map(opts => Memberships.actions.new(opts.fetch(), doc, user)),
+    run() {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.insert`,
@@ -34,18 +33,18 @@ Memberships.actions = {
         meteormethod: 'memberships.insert',
       });
     },
-  },
-  import: {
+  }),
+  import: (options, doc, user) => ({
     name: 'import',
-    icon: () => 'fa fa-upload',
-    visible: (options, doc) => currentUserHasPermission('memberships.upsert', doc),
+    icon: 'fa fa-upload',
+    visible: user.hasPermission('memberships.upsert', doc),
     run: () => importCollectionFromFile(Memberships),
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('memberships.inCommunity', doc),
-    run(options, doc, event, instance) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('memberships.inCommunity', doc),
+    run() {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.view`,
@@ -56,12 +55,12 @@ Memberships.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc),
-    run(options, doc, event, instance) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission(`${doc.entityName()}.update`, doc),
+    run() {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.update`,
@@ -74,12 +73,12 @@ Memberships.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  period: {
+  }),
+  period: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'period',
-    icon: () => 'fa fa-history',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc),
-    run(options, doc, event, instance) {
+    icon: 'fa fa-history',
+    visible: user.hasPermission(`${doc.entityName()}.update`, doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.membership.period',
         schema: ActivePeriod.schema,
@@ -89,14 +88,14 @@ Memberships.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  invite: {
+  }),
+  invite: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'invite',
-    label: (options, doc) => (doc && doc.userId ? 'link' : 'invite'),
-    icon: () => 'fa fa-user-plus',
-    color: (options, doc) => (doc && doc.userId ? 'info' : 'warning'),
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc) && !doc.accepted,
-    run(options, doc, event, instance) {
+    label: doc.userId ? 'link' : 'invite',
+    icon: 'fa fa-user-plus',
+    color: doc.userId ? 'info' : 'warning',
+    visible: user.hasPermission(`${doc.entityName()}.update`, doc) && !doc.accepted,
+    run() {
       const partner = doc.partner();
       const email = partner && partner.contact && partner.contact.email;
       const action = 'invite user';
@@ -107,18 +106,18 @@ Memberships.actions = {
         Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, { action, message });
       }
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`, doc),
-    run(options, doc, event, instance) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission(`${doc.entityName()}.remove`, doc),
+    run() {
       Modal.confirmAndCall(Memberships.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,
         message: 'You should rather archive it',
       });
     },
-  },
+  }),
 };
 
 //-------------------------------------------------------

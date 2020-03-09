@@ -12,16 +12,16 @@ import './entities.js';
 import './methods.js';
 
 Accounts.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    color: () => 'primary',
-    label: (options, doc) => `${__('new')}  ${__(options.entity.name)}`,
-//    label: options => (Array.isArray(options.entity) ? `${__('new')}  ${__('simpleAccount')}` : `${__('new')} ${__(/*'schemaAccounts.category.' + */options.entity.name)}`),
-    visible: (options, doc) => currentUserHasPermission('accounts.insert', doc),
+    icon: 'fa fa-plus',
+    color: 'primary',
+    label: `${__('new')}  ${__(options.entity.name)}`,
+//    label: (Array.isArray(options.entity) ? `${__('new')}  ${__('simpleAccount')}` : `${__('new')} ${__(/*'schemaAccounts.category.' + */options.entity.name)}`),
+    visible: user.hasPermission('accounts.insert', doc),
 //    subActions: options => Array.isArray(options.entity) && options.entity.length,
 //    subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),
-    run(options, doc) {
+    run() {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.insert`,
@@ -31,12 +31,12 @@ Accounts.actions = {
         meteormethod: 'accounts.insert',
       });
     },
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('accounts.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('accounts.inCommunity', doc),
+    run() {
       const entityName = doc.entityName();
       const entity = Accounts.entities[entityName];
       Modal.show('Autoform_modal', {
@@ -47,12 +47,12 @@ Accounts.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('accounts.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('accounts.update', doc),
+    run() {
       const entityName = doc.entityName();
       const entity = Accounts.entities[entityName];
       Modal.show('Autoform_modal', {
@@ -65,18 +65,18 @@ Accounts.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('accounts.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('accounts.remove', doc),
+    run() {
       Modal.confirmAndCall(Accounts.methods.remove, { _id: doc._id }, {
         action: 'delete moneyAccount',
         message: 'Some accounting transactions might be connecting to it',
       });
     },
-  },
+  }),
 };
 
 //-----------------------------------------------

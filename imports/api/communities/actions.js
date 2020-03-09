@@ -12,10 +12,10 @@ import { Communities } from './communities.js';
 import './methods.js';
 
 Communities.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('communities.insert', doc),
+    icon: 'fa fa-plus',
+    visible: user.hasPermission('communities.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.community.insert',
@@ -24,12 +24,12 @@ Communities.actions = {
         meteormethod: 'communities.insert',
       });
     },
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('communities.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('communities.inCommunity', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.community.view',
         collection: Communities,
@@ -37,12 +37,12 @@ Communities.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('communities.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('communities.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.community.update',
         collection: Communities,
@@ -52,12 +52,12 @@ Communities.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  period: {
+  }),
+  period: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'period',
-    icon: () => 'fa fa-history',
-    visible: (options, doc) => currentUserHasPermission('communities.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-history',
+    visible: user.hasPermission('communities.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.community.update',
         collection: Communities,
@@ -68,11 +68,11 @@ Communities.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  join: {
+  }),
+  join: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'join',
-    icon: () => 'fa fa-suitcase',
-    visible: (options, doc) => doc.settings.joinable,
+    icon: 'fa fa-suitcase',
+    visible: doc.settings.joinable,
     run() {
       AccountsTemplates.forceLogin(() => {
         Modal.show('Autoform_modal', {
@@ -94,18 +94,18 @@ Communities.actions = {
         */
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('communities.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('communities.remove', doc),
+    run() {
       Modal.confirmAndCall(Communities.methods.remove, { _id: doc._id }, {
         action: 'delete community',
         message: 'You should rather archive it',
       });
     },
-  },
+  }),
 };
 
 //-----------------------------------------------

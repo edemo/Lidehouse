@@ -279,8 +279,7 @@ Meteor.users.helpers({
     const userHasTheseRoles = this.activeRoles(communityId);
     return _.contains(userHasTheseRoles, roleName);
   },
-  hasPermission(permissionName, doc) {
-    debugAssert(doc, 'Need to provide a doc for permission check');
+  hasPermission(permissionName, doc = { communityId: getActiveCommunityId() }) {
     const permission = Permissions.find(p => p.name === permissionName);
     debugAssert(permission, `No such permission "${permissionName}"`);
     const rolesWithThePermission = permission.roles;

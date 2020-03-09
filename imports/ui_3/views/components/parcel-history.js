@@ -75,6 +75,6 @@ Template.Parcel_history.events({
 //  'click .transactions .js-view'(event, instance) {
 //    const id = $(event.target).closest('[data-id]').data('id');
 //    const doc = Transactions.findOne(id);
-//    Transactions.actions.view.run({}, doc);
+//    Transactions.actions.view({}, doc).run();
 //  },
 });

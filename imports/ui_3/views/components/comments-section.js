@@ -96,7 +96,7 @@ Template.Comment.viewmodel({
 
 Template.Comment.events({
   'click .js-like'(event, instance) {
-    Comments.actions.like.run({}, this);
+    Comments.actions.like({}, this).run();
   },
   'click .js-edit'(event, instance) {
     const element = $(event.target).closest('.media-body');

@@ -236,8 +236,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       case 2: builder.createMembership(dummyUserId, 'maintainer'); break;
       case 3: builder.createMembership(dummyUserId, 'accountant'); break;
       case 5: builder.createMembership(dummyUserId, 'treasurer'); break;
-      case 4:
-      case 10:
+      case 4: builder.createMembership(dummyUserId, 'overseer', { rank: 'chairman' }); break;
+      case 10: builder.createMembership(dummyUserId, 'overseer'); break;
       case 16: builder.createMembership(dummyUserId, 'overseer'); break;
       default: break;
     }
