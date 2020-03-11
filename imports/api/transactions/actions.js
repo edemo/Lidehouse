@@ -56,7 +56,7 @@ Transactions.actions = {
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: user.hasPermission('transactions.inCommunity', doc) || getActivePartnerId() === doc.partnerId,
+    visible: doc && (user.hasPermission('transactions.inCommunity', doc) || getActivePartnerId() === doc.partnerId),
     run() {
       const entity = Transactions.entities[doc.entityName()];
       Session.update('modalContext', 'txdef', doc.txdef());
@@ -78,7 +78,7 @@ Transactions.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: !doc.isPosted() && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
+    visible: doc && !doc.isPosted() && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
       && user.hasPermission('transactions.update', doc),
     run() {
       const entity = Transactions.entities[doc.entityName()];
@@ -103,14 +103,11 @@ Transactions.actions = {
   }),
   post: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'post',
-    icon: doc.isPosted() ? 'fa fa-list' : 'fa fa-check-square-o',
-    color: doc.isPosted() ? undefined : 'warning',
-    label: doc.isPosted() ? 'Accounting view' : 'post',
-    visible: (() => {
-      if (!doc) return false;
-      if (doc.category === 'bill' && !doc.hasConteerData()) return false;
-      return user.hasPermission('transactions.post', doc);
-    })(),
+    icon: doc && doc.isPosted() ? 'fa fa-list' : 'fa fa-check-square-o',
+    color: doc && doc.isPosted() ? undefined : 'warning',
+    label: doc && doc.isPosted() ? 'Accounting view' : 'post',
+    visible: doc && !(doc.category === 'bill' && !doc.hasConteerData())
+      && user.hasPermission('transactions.post', doc),
     run() {
       if (doc.isPosted()) {
         Modal.show('Modal', {
@@ -144,7 +141,7 @@ Transactions.actions = {
   resend: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'resend',
     icon: 'fa fa-envelope',
-    visible: doc.isPosted() && user.hasPermission('transactions.resend', doc),
+    visible: doc && doc.isPosted() && user.hasPermission('transactions.resend', doc),
     run() {
       Modal.confirmAndCall(Transactions.methods.resend, { _id: doc._id }, {
         action: 'resend email',
@@ -156,12 +153,8 @@ Transactions.actions = {
     name: 'registerPayment',
     icon: 'fa fa-credit-card',
     color: 'info',
-    visible: (() => {
-      if (!doc) return false;
-      if (doc.status !== 'posted') return false;
-      if (doc.category !== 'bill' || !doc.outstanding) return false;
-      return user.hasPermission('transactions.insert', doc);
-    })(),
+    visible: doc && (doc.status === 'posted') && (doc.category === 'bill') && doc.outstanding
+      && user.hasPermission('transactions.insert', doc),
     run() {
       Session.update('modalContext', 'billId', doc._id);
       const txdef = Txdefs.findOne({ communityId: doc.communityId, category: 'payment', 'data.relation': doc.relation });
