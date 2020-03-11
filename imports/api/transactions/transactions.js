@@ -463,7 +463,7 @@ function dateFilter(begin, end) {
 
 Transactions.makeFilterSelector = function makeFilterSelector(params) {
   const selector = _.clone(params);
-  selector.valueDate = dateFilter(params.begin, params.end);
+  if (params.begin || params.end) selector.valueDate = dateFilter(params.begin, params.end);
   delete selector.begin; delete selector.end;
   if (params.defId) {
   } else delete selector.defId;
