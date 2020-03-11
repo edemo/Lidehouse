@@ -455,10 +455,10 @@ function withSubs(code) {
 }
 
 function dateFilter(begin, end) {
-  return {
-    $gte: moment(begin).toDate(),
-    $lt: moment(end).add(1, 'day').toDate(),
-  };
+  const valueDate = {};
+  if (begin) valueDate.$gte = moment(begin).toDate();
+  valueDate.$lt = moment(end).add(1, 'day').toDate();
+  return valueDate;
 }
 
 Transactions.makeFilterSelector = function makeFilterSelector(params) {
