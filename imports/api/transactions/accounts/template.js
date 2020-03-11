@@ -55,7 +55,7 @@ export function defineAccountTemplates() {
     { code: '`455', name: 'Capital goods suppliers', category: 'payable' },  //  Beruházási szállítók
     { code: '`466', name: 'VAT paid', category: 'expense' },  // Előzetesen felszámított általános forgalmi adó
     { code: '`467', name: 'VAT payable', category: 'payable' },  // Fizetendő általános forgalmi adó
-    { code: '`468', name: 'VAT clearing', category: 'clearing' },  // Általános forgalmi adó elszámolási számla
+    { code: '`468', name: 'VAT clearing', category: 'receivable' },  // Általános forgalmi adó elszámolási számla
     { code: '`48', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK', category: 'liability' },
     { code: '`49', name: 'ÉVI MÉRLEGSZÁMLÁK', category: 'liability' },
     { code: '`491', name: 'Opening account', category: 'liability' },
