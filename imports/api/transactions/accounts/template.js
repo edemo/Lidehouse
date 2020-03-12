@@ -52,10 +52,10 @@ export function defineAccountTemplates() {
     { code: '`451', name: 'Rövid lejáratú bank Hitel', category: 'liability' },
     { code: '`452', name: 'Egyéb rövid lejáratú kötelezettségek', category: 'liability' },
     { code: '`454', name: 'Suppliers', category: 'payable' },  // Szállítók
-    { code: '`455', name: 'Capital goods suppliers', category: 'payable' },  //  Beruházási szállítók
-    { code: '`466', name: 'VAT paid', category: 'expense' },  // Előzetesen felszámított általános forgalmi adó
-    { code: '`467', name: 'VAT payable', category: 'payable' },  // Fizetendő általános forgalmi adó
-    { code: '`468', name: 'VAT clearing', category: 'receivable' },  // Általános forgalmi adó elszámolási számla
+    { code: '`455', name: 'Beruházási szállítók', category: 'payable' },  //  Capital goods suppliers
+    { code: '`466', name: 'Előzetesen felszámított ÁFA', category: 'expense' },  // VAT paid
+    { code: '`467', name: 'Fizetendő ÁFA', category: 'payable' },  //  forgalmi adó
+    { code: '`468', name: 'ÁFA elszámolási számla ', category: 'receivable' },  // VAT clearing
     { code: '`48', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK', category: 'liability' },
     { code: '`49', name: 'ÉVI MÉRLEGSZÁMLÁK', category: 'liability' },
     { code: '`491', name: 'Opening account', category: 'liability' },
