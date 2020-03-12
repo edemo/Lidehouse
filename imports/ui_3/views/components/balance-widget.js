@@ -17,9 +17,7 @@ Template.Balance_widget.viewmodel({
     this.templateInstance.subscribe('memberships.ofUser', { userId: Meteor.userId() });
     const communityId = getActiveCommunityId();
     const partnerId = user && user.partnerId(communityId);
-    const membership = Memberships.findOne({ partnerId, communityId });
-    const membershipId = membership && membership._id;
-    this.templateInstance.subscribe('transactions.byPartner', { communityId, partnerId, membershipId });
+    this.templateInstance.subscribe('transactions.byPartner', { communityId, partnerId });
   },
   partner() {
     const user = Meteor.user();
