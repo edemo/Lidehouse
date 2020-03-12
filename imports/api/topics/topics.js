@@ -119,6 +119,11 @@ Topics.helpers({
   unseenCommentListBy(userId, seenType) {
     return this.unseenCommentsBy(userId, seenType).fetch();
   },
+  // This goes into the UI badges
+  unseenCommentCount() {
+    debugAssert(Meteor.isClient);
+    return this.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
+  },
   // This goes into the user's event feed
   unseenEventsBy(userId, seenType) {
     return {
