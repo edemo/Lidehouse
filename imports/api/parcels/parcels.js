@@ -31,7 +31,7 @@ Parcels.categoryValues = ['@property', '@common', '@group', '#tag'];
 Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'office', 'other'];
 
 Parcels.baseSchema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   category: { type: String, allowedValues: Parcels.categoryValues, autoform: { omit: true } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   ref: { type: String,    // 1. unique reference within a community (readable by the user)
