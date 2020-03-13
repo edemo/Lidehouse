@@ -79,6 +79,7 @@ Communities.actions = {
           title: 'pleaseSupplyParcelData',
           id: 'af.@property.insert.unapproved',
           schema: Parcels.simpleSchema({ category: '@property' }),
+          doc: { communityId: doc._id },
           //        omitFields: ['serial'],
           type: 'method',
           meteormethod: 'parcels.insert',

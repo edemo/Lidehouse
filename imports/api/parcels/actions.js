@@ -218,7 +218,6 @@ Parcels.categoryValues.forEach(category => {
 AutoForm.addModalHooks('af.@property.insert.unapproved');
 AutoForm.addHooks('af.@property.insert.unapproved', {
   formToDoc(doc) {
-    doc.communityId = getActiveCommunityId();
     doc.approved = false;
     doc.category = '@property';
     return doc;
