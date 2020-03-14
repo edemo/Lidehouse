@@ -2,6 +2,8 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import { Topics } from '/imports/api/topics/topics.js';
+import { ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import '/imports/api/topics/entities.js';
 import '/imports/api/topics/actions.js';
 
@@ -43,7 +45,10 @@ Template.Vote_topics.viewmodel({
 
 Template.Vote_topics.events({
   'click .js-new'(event) {
-    Topics.actions.new({ entity: Topics.entities.vote }).run();
+    const doc = { communityId: getActiveCommunityId() };
+    const options = { entity: Topics.entities.vote };
+    Object.setPrototypeOf(options, new ActionOptions(Topics));
+    Topics.actions.new(options, doc).run();
   },
   'click .js-filter'(event, instance) {
     $(event.target).blur();
