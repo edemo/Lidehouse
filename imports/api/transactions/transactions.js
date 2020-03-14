@@ -455,15 +455,15 @@ function withSubs(code) {
 }
 
 function dateFilter(begin, end) {
-  return {
-    $gte: moment(begin).toDate(),
-    $lt: moment(end).add(1, 'day').toDate(),
-  };
+  const valueDate = {};
+  if (begin) valueDate.$gte = moment(begin).toDate();
+  valueDate.$lt = moment(end).add(1, 'day').toDate();
+  return valueDate;
 }
 
 Transactions.makeFilterSelector = function makeFilterSelector(params) {
   const selector = _.clone(params);
-  selector.valueDate = dateFilter(params.begin, params.end);
+  if (params.begin || params.end) selector.valueDate = dateFilter(params.begin, params.end);
   delete selector.begin; delete selector.end;
   if (params.defId) {
   } else delete selector.defId;
