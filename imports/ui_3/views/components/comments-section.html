@@ -71,7 +71,6 @@
     {{#if this.text}}
     <span><!--{{_ 'schemaTickets.text.label'}}:--> {{this.text}}</span><br>
     {{/if}}
-    <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
     {{#if entriesOf this.dataUpdate}}
     <div class="well">
         {{#each dataEntry in entriesOf this.dataUpdate}}
@@ -83,6 +82,8 @@
         {{/each}}
     </div>
     {{/if}}
+    {{#if photo}}<div><img src="{{photo}}" class="img-embed"></div>{{/if}}
+    <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
     {{/let}}
 </template>
 
