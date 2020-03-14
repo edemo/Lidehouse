@@ -20,8 +20,16 @@ Comments.actions = {
   new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
-    visible: user.hasPermission(`${options.entity.name}.insert`, doc),
-    run() { /* NOP -- 'comments.insert is not used as command');*/ },
+    visible: user.hasPermission(`comment.insert`, doc),
+    run() {
+      Modal.show('Autoform_modal', {
+        id: 'af.comment.insert',
+        schema: Comments.simpleSchema({ category: 'comment' }),
+        doc,
+        type: 'method',
+        meteormethod: 'comments.insert',
+      });
+    },
   }),
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
@@ -95,6 +103,6 @@ Comments.actions = {
 
 //-------------------------------------------------------
 
-//  AutoForm.addModalHooks(`af.comment.insert`);
-//  AutoForm.addModalHooks(`af.comment.update`);
+AutoForm.addModalHooks(`af.comment.insert`);
+AutoForm.addModalHooks(`af.comment.update`);
 AutoForm.addModalHooks('af.comment.move');
