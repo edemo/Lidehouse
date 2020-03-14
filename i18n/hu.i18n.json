@@ -12,8 +12,13 @@
   "reportedBy": "Bejelentette",
   "Last activity": "Utolsó aktivitás",
   "text": "Leírás",
+  "name": "név",
+  "date": "dátum",
+  "size": "méret",
   "type": "típus",
   "never": "soha",
+  "increasing": "növekvő",
+  "decreasing": "csökkenő",
 
   "role": "jogkör",
   "roles": "jogkörök",
@@ -94,7 +99,6 @@
   "your question": "kérdés, észrevétel",
 
   // api
-  "name": "név",
   "user": "felhasználó",
   "username": "felhasználónév",
   "Profile settings": "Profil beállítások",
@@ -230,6 +234,8 @@
   "new": "Új",
   "menuDown": "Lenyit",
   "menuUp": "Összecsuk",
+  "file": "fájl",
+  "files": "fájlok",
   "Upload file": "Fájl feltöltés",
   "Upload statement": "Kivonat feltöltés",
   "Upload balances": "Egyenleg feltöltés",
@@ -620,6 +626,7 @@
   },
   "documentStoreSubtitle": "Mindenki számára elérhető dokumentumok helye.",
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
+  "Sort by": "Rendezés %s szerint",
 
   // Notifications
   "Join request submitted": "Csatlakozási kérelem beadva a(z) %s közösséghez",
