@@ -13,14 +13,14 @@
 
 <template name="Bill_view">
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-xs-6">
             <h5>{{_ 'issuer'}}:</h5>
             <address>
                 {{>Bill_partner partner=docVm.issuer}}
             </address>
         </div>
 
-        <div class="col-sm-6 text-right">
+        <div class="col-xs-6 text-right">
             <h4>
               {{{displayTxStatus docVm.status}}} 
               {{_ (or docVm.txdef.name 'schemaTransactions.serialId.label')}}:

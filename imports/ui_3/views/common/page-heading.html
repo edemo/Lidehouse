@@ -19,12 +19,12 @@
             </ol>
             {{/unless}}
         </div>
-        {{#if (equals title (_ 'bill'))}}
+        {{#if (equals printable 'bill')}}
         <div class="col-lg-4">
             <div class="title-action">
                 <!--a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a-->
                 <!--a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a-->
-                <a href="/invoicePrint" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i> {{_ 'Print bill'}} </a>
+                <a class="btn btn-primary print"><i class="fa fa-print"></i> {{_ 'Print bill'}} </a>
             </div>
         </div>
         {{/if}}

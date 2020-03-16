@@ -236,3 +236,16 @@
     cursor: pointer;
     user-select: none;
 }
+
+@media print {
+    .page-heading, .footer, .border-bottom {
+        display: none;
+    }
+}
+
+//While we using bs3, we need an additional breakpoint
+@media screen and (max-width: 576px) {
+    [class*="col-xs"] {
+        width: 100%;
+    }
+}
