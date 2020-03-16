@@ -19,6 +19,12 @@
   "never": "soha",
   "increasing": "növekvő",
   "decreasing": "csökkenő",
+  // for package
+  "header": "címsor",
+  "Preview": "Előnézet",
+  "bold": "vastag betű",
+  "italic": "dőlt betű",
+  "markdownHelp": "A szerkesztő ablakban van lehetősége formázni a szövegen ún. markdown direktívákkal. Ezeket a direktívákat begépelheti, vagy ha kijelöl egy szövegrészt, a lenti formázó gombokkal is ráteheti a kijelölt szövegrészre. Az előnézet gombbal megtekintheti hogyan fog kinézni a szöveg a weboldalon. Az összes markdown direktíva listájához, kattintson erre a kérdőjelre.",
 
   "role": "jogkör",
   "roles": "jogkörök",

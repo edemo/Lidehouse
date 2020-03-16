@@ -37,7 +37,7 @@ Topics.baseSchema = new SimpleSchema({
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { omit: true } },
   title: { type: String, max: 100, optional: true },
-  text: { type: String, max: 5000, autoform: { rows: 8 } },
+  text: { type: String, max: 5000, autoform: { type: 'markdown' } },
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   photo: { type: String, optional: true, autoform: fileUpload },
   sticky: { type: Boolean, optional: true, defaultValue: false },

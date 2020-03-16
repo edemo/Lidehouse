@@ -1,21 +1,6 @@
-.flexcontainer,
-.flexcontainer .markdownContent,
-.flexcontainer .markdownPreview   {
-  display: flex;
-}
-
-.flexcontainer .markdownPreview {
-  flex-direction: column;
-}
-
-.flexcontainer .markdownPreview .preview,
-.flexcontainer .markdownContent textarea {
-  flex: 1;
-}
-
 .markdownControls {
-  margin-bottom: 10px;
-  text-align: left;
+  text-align: right;
+  margin-top: 3px;
 }
 
 .markdownControls a {
@@ -32,18 +17,13 @@
   font-weight: bold;
 }
 .markdownControls button.markdownItalic {
-    font-style: italic;
+  font-style: italic;
 }
 
 .markdownContent, .markdownPreview {
-  width: 50%;
+  width: 100%;
   min-height: 150px;
-  display: inline-block;
-}
-
-
-.markdownContent {
-  float: left;
+  position: relative;
 }
 .markdownContent .markdownInput {
   min-height: 150px;
@@ -51,18 +31,16 @@
   overflow: auto;
 }
 
-.panel .markdownContent.translatable img {
-  right: -100%;
-}
-
-.markdownPreview {
-  padding-left: 10px;
-  text-align: left;
-}
 .markdownPreview  span.preview {
     background-color: #eee;
     display: block;
     min-height: 150px;
     height: 100%;
     padding-right: 35px;
+}
+
+.switch-mode {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }

@@ -26,7 +26,6 @@ mongo@1.1.0
 observe-sequence@1.0.6
 ordered-dict@1.0.3
 perak:markdown@1.0.5
-q42:autoform-markdown@0.2.5
 random@1.0.3
 reactive-dict@1.1.0
 reactive-var@1.0.5

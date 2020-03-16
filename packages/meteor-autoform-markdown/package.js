@@ -1,6 +1,6 @@
 Package.describe({
   name: 'q42:autoform-markdown',
-  version: '1.0.0',
+  version: '2.0.0',
   summary: 'A simple autoform markdown with preview using perak:markdown',
   git: 'https://github.com/Q42/meteor-autoform-markdown',
   documentation: 'README.md'

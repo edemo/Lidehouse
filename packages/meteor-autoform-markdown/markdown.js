@@ -50,6 +50,9 @@ Template.afMarkdown.events({
         });
         textArea.selection('replace', {text: markdownList + "\n "});
         break;
+      case 'markdownLink':
+        textArea.selection('replace', { text: `[${selectedText}](${selectedText})` });
+        break;
       default:
         break;
     }
