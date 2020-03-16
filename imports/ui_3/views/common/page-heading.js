@@ -12,7 +12,7 @@ Template.Page_heading.helpers({
       if (routeName === 'Transaction show') {
         const _txid = FlowRouter.getParam('_txid');
         const tx = Transactions.findOne(_txid);
-        return tx && tx.category;
+        return tx && tx.category === 'bill';
       }
       return false;
     },
