@@ -38,6 +38,40 @@
   </div>
 </template>
 
+<template name="News_topic">
+    <div class="feed-element">
+        <div class="news-elem" data-id="{{_id}}">
+            <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
+            <strong>{{title}}</strong>
+            <div>{{#markdown}}{{text}}{{/markdown}}</div>
+            {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
+            {{#if currentUserHasPermission 'news.update'}}
+            <div class="pull-right m-t-sm">
+              {{>Action_buttons_group collection='topics' doc=this actions='edit,delete' size='lg'}}
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</template>
+
+<template name="News_topic_sticky">
+    <div class="feed-element">
+    <div class="news-elem" data-id="{{_id}}">
+        <div class="full-width">
+            <strong>{{title}}</strong>
+            <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
+            {{#markdown}}{{text}}{{/markdown}}  
+            {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
+            {{#if currentUserHasPermission 'news.update'}}
+            <div class="pull-right m-t-sm">
+                {{>Action_buttons_group collection='topics' doc=this actions='edit,delete' size='lg'}}
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    </div>
+</template>
+
 <template name="News">
     {{#Collapse_section id='news' title='News board' }}
     <div class="ibox float-e-margins">
@@ -52,43 +86,18 @@
                   {{>Action_buttons_group collection='topics' actions='new' options=(obj '{ "entity": "news" }') size='md'}}
               </div>
               {{#each topics 'news' false}}
-              <div class="feed-element">
-                  <div class="news-elem" data-id="{{_id}}">
-                      <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
-                      <strong>{{title}}</strong>
-                      <div>{{#markdown}}{{text}}{{/markdown}}</div>
-                      {{#if currentUserHasPermission 'news.update'}}
-                      <div class="pull-right m-t-sm">
-                        {{>Action_buttons_group collection='topics' doc=this actions='edit,delete' size='lg'}}
-                      </div>
-                      {{/if}}
-                  </div>
-              </div>
+                  {{>News_topic this}}
               {{/each}}
           </div>
       </div>
     </div>
     {{/Collapse_section}}
 
-  {{#each topics 'news' true}}
-  <div class="ibox infos">
-  <div class="ibox-content">
-  <div class="feed-element">
-  <div class="news-elem" data-id="{{_id}}">
-    <div class="full-width">
-      <strong>{{title}}</strong>
-      <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
-      {{#markdown}}{{text}}{{/markdown}}  
-      {{#if currentUserHasPermission 'news.update'}}
-      <div class="pull-right m-t-sm">
-        {{>Action_buttons_group collection='topics' doc=this actions='edit,delete' size='lg'}}
-      </div>
-      {{/if}}
+    {{#each topics 'news' true}}
+    <div class="ibox infos">
+    <div class="ibox-content">
+        {{>News_topic_sticky this}}
     </div>
-  </div>
-  </div>
-  </div>
-  </div>
-  {{/each}}
-  
+    </div>
+    {{/each}}
 </template>

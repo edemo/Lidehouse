@@ -540,13 +540,21 @@
   },
   "schemaComments": {
     "text": {
-//      "label": "Text",
-//      "placeholder": "My comment here..."
-      "label": "Notes",
-      "placeholder": "The reason for changing the state is..."
+      "label": "Text",
+      "placeholder": "My comment here..."
+    },
+    "photo": {
+      "label": "Photo (if applicable)",
+      "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
     },
     "destinationId": {
       "label": "Move this over to:"
+    }
+  },
+  "schemaStatusChanges": {
+    "text": {
+      "label": "Notes",
+      "placeholder": "The reason for changing the state is..."
     }
   },
   "schemaBreakdowns": {

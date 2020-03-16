@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { Clock } from '/imports/utils/clock.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
@@ -14,18 +15,19 @@ import '../common/page-heading.html';
 import '../components/shareddoc-display.js';
 import './shareddoc-store.html';
 
-Template.Shareddoc_store.onCreated(function () {
-  this.activeFolderId = new ReactiveVar('main');
-  this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
-    if (communityId) {
-      this.subscribe('sharedfolders.ofCommunity', { communityId });
-      this.subscribe('shareddocs.ofCommunity', { communityId });
-    }
-  });
-});
-
-Template.Shareddoc_store.helpers({
+Template.Shareddoc_store.viewmodel({
+  sortBy: 'name',
+  sortDirection: 1,
+  activeFolderId: 'main',
+  onCreated(instance) {
+    instance.autorun(() => {
+      const communityId = Session.get('activeCommunityId');
+      if (communityId) {
+        instance.subscribe('sharedfolders.ofCommunity', { communityId });
+        instance.subscribe('shareddocs.ofCommunity', { communityId });
+      }
+    });
+  },
   storeHasDocuments() {
     const activeCommunityId = Session.get('activeCommunityId');
     if (!activeCommunityId) return false;
@@ -39,20 +41,19 @@ Template.Shareddoc_store.helpers({
     return Sharedfolders.find({ communityId });
   },
   isActive(folderId) {
-    return Template.instance().activeFolderId.get() === folderId;
-  },
-  activeFolderId() {
-    return Template.instance().activeFolderId.get();
+    return this.activeFolderId() === folderId;
   },
   activeFolder() {
-    const id = Template.instance().activeFolderId.get();
+    const id = this.activeFolderId();
     return Sharedfolders.findOne(id);
   },
   shareddocs() {
     const communityId = Session.get('activeCommunityId');
-    const folderId = Template.instance().activeFolderId.get();
+    const folderId = this.activeFolderId();
     if (!communityId || !folderId) return [];
-    let containedFiles = Shareddocs.find({ communityId, folderId }, { sort: { createdAt: -1 } });
+    const sortBy = this.sortBy();
+    const sortDirection = this.sortDirection();
+    const containedFiles = Shareddocs.find({ communityId, folderId }, { sort: { [sortBy]: sortDirection } });
     return containedFiles;
   },
   extensions() {
@@ -66,13 +67,13 @@ Template.Shareddoc_store.events({
     if (button.hasClass('disabled')) return;
     Shareddocs.upload({
       communityId: Session.get('activeCommunityId'),
-      folderId: Template.instance().activeFolderId.get(),
+      folderId: Template.instance().viewmodel.activeFolderId(),
     });
   },
   'click .js-select'(event) {
     const a = event.target.closest('a');
     const _id = $(a).data('id');
-    Template.instance().activeFolderId.set(_id);
+    Template.instance().viewmodel.activeFolderId(_id);
   },
   'click .js-new'(event) {
     Modal.show('Autoform_modal', {

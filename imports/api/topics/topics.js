@@ -6,7 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
+import { fileUpload } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Revisioned } from '/imports/api/behaviours/revisioned.js';
@@ -37,7 +37,7 @@ Topics.baseSchema = new SimpleSchema({
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { omit: true } },
   title: { type: String, max: 100, optional: true },
-  text: { type: String, max: 5000, autoform: { rows: 8 } },
+  text: { type: String, max: 5000, autoform: { type: 'markdown' } },
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   photo: { type: String, optional: true, autoform: fileUpload },
   sticky: { type: Boolean, optional: true, defaultValue: false },
@@ -118,6 +118,11 @@ Topics.helpers({
   },
   unseenCommentListBy(userId, seenType) {
     return this.unseenCommentsBy(userId, seenType).fetch();
+  },
+  // This goes into the UI badges
+  unseenCommentCount() {
+    debugAssert(Meteor.isClient);
+    return this.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
   },
   // This goes into the user's event feed
   unseenEventsBy(userId, seenType) {

@@ -57,8 +57,6 @@
                             <a href="{{pathFor 'Votings'}}">
                                 <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Votings'}}</span>
-                                {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'vote') align='right'}}
-                                {{> Badge color='danger' title=(_ 'Todo') value=(needsAttentionCount 'vote') align='right'}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='agendas'}}">
@@ -100,14 +98,12 @@
                             <a href="{{pathFor 'Tickets'}}">
                                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Tickets report'}}</span>
-                                {{> Badge color='info' value=(unseenEventsCount 'ticket') align='right'}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='worksheets'}}">
                             <a href="{{pathFor 'Worksheets'}}">
                                 <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Worksheets'}}</span>
-                                {{> Badge color='danger' title=(_ 'Todo') value=(needsAttentionCount 'ticket') align='right'}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='contracts'}}">

@@ -9,7 +9,8 @@ import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import '/imports/api/contracts/actions.js';
-import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
+import { actionHandlers, ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/actions.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
@@ -56,10 +57,13 @@ Template.Contracts.events({
     const entity = Topics.entities[entityName];
     const contractId = $(event.target).closest('[data-id]').data('id');
     const partnerId = Contracts.findOne(contractId).partnerId;
+    const options = { entity };
+    const doc = { communityId: getActiveCommunityId() };
     Session.update('modalContext', 'contractId', contractId);
     Session.update('modalContext', 'partnerId', partnerId);
     Session.update('modalContext', 'omitFields', ['ticket.contractId', 'ticket.partnerId']);
-    Topics.actions.new({ entity }).run();
+    Object.setPrototypeOf(options, new ActionOptions(Topics));
+    Topics.actions.new(options, doc).run();
   },
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');

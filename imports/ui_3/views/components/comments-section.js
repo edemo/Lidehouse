@@ -4,6 +4,7 @@ import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
+import { ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { __ } from '/imports/localization/i18n.js';
 import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -61,30 +62,24 @@ Template.Comments_section.viewmodel({
 });
 
 Template.Comments_section.events({
- /* 'keydown .js-send-enter'(event) {
-    const topicId = this._id;
-    const userId = Meteor.userId();
-    if (event.keyCode === 13 && !event.shiftKey) {
-      const textarea = event.target;
-      insertComment.call({ topicId, userId, text: textarea.value },
-        onSuccess((res) => {
-          textarea.value = '';
-        })
-      );
-    }
-  },*/
+  'click .social-comment .js-attach'(event, instance) {
+    const vm = instance.viewmodel;
+    const doc = {
+      topicId: this._id,
+      text: instance.viewmodel.commentText(),
+    };
+    const options = {};
+    Object.setPrototypeOf(options, new ActionOptions(Comments));
+    Comments.actions.new(options, doc).run(event, instance);
+    vm.commentText('');
+  },
   'click .social-comment .js-send'(event, instance) {
-    // if ($(event.target).hasClass('disabled')) return;
-    const textarea = $(event.target).closest('.media-body').find('textarea')[0];
+    const vm = instance.viewmodel;
     Comments.methods.insert.call({
       topicId: this._id,
-      text: textarea.value,
-    },
-    onSuccess((res) => {
-      textarea.value = '';
-      instance.viewmodel.commentText('');
-      // $(event.target).addClass('disabled');
-    }));
+      text: instance.viewmodel.commentText(),
+    }, onSuccess(res => vm.commentText(''))
+    );
   },
 });
 

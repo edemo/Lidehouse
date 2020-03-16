@@ -78,7 +78,8 @@ Communities.actions = {
         Modal.show('Autoform_modal', {
           title: 'pleaseSupplyParcelData',
           id: 'af.@property.insert.unapproved',
-          collection: Parcels,
+          schema: Parcels.simpleSchema({ category: '@property' }),
+          doc: { communityId: doc._id },
           //        omitFields: ['serial'],
           type: 'method',
           meteormethod: 'parcels.insert',

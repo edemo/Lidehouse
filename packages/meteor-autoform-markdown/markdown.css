@@ -1,0 +1,46 @@
+.markdownControls {
+  text-align: right;
+  margin-top: 3px;
+}
+
+.markdownControls a {
+  margin-left: 10px;
+}
+.markdownControls  select.form-control {
+  width: auto;
+  display: inline-block;
+}
+.markdownControls select, button {
+  margin-right: 10px;
+}
+.markdownControls button.markdownBold {
+  font-weight: bold;
+}
+.markdownControls button.markdownItalic {
+  font-style: italic;
+}
+
+.markdownContent, .markdownPreview {
+  width: 100%;
+  min-height: 150px;
+  position: relative;
+}
+.markdownContent .markdownInput {
+  min-height: 150px;
+  resize: vertical;
+  overflow: auto;
+}
+
+.markdownPreview  span.preview {
+    background-color: #eee;
+    display: block;
+    min-height: 150px;
+    height: 100%;
+    padding-right: 35px;
+}
+
+.switch-mode {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}

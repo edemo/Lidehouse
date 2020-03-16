@@ -545,13 +545,21 @@
   },
   "schemaComments": {
     "text": {
-//      "label": "Szöveg",
-//      "placeholder": "Arra gondoltam hogy..."
-      "label": "Megjegyzések",
-      "placeholder": "Azért váltok állapotot mert..."
+      "label": "Szöveg",
+      "placeholder": "Arra gondoltam hogy..."
+    },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "destinationId": {
       "label": "Áthelyezés ehhez a témához:"
+    }
+  },
+  "schemaStatusChanges": {
+    "text": {
+      "label": "Megjegyzések",
+      "placeholder": "Azért váltok állapotot mert..."
     }
   },
   "schemaBreakdowns": {

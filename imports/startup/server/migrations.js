@@ -372,6 +372,21 @@ Migrations.add({
   },
 });
 
+/* Migrations.add({
+  version: 21,
+  name: 'Connect partner userId with membership userId',
+  up() {
+    Memberships.find({ userId: { $exists: false } }).forEach((m) => {
+      const partner = Partners.findOne(m.partnerId);
+      if (partner && partner.userId) Memberships.update({ _id: m._id }, { $set: { userId: partner.userId } });
+    });
+    Partners.find({ userId: { $exists: false } }).forEach((p) => {
+      const membership = Memberships.findOne({ partnerId: p._id, userId: { $exists: true } });
+      if (membership && membership.userId) Partners.update({ _id: p._id }, { $set: { userId: membership.userId } });
+    });
+  },
+});
+ */
 Meteor.startup(() => {
   Migrations.unlock();
   Migrations.migrateTo('latest');

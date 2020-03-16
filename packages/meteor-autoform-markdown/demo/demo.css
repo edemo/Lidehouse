@@ -1,0 +1,13 @@
+body {
+  margin: 10px;
+}
+
+form, h1, .loading {
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 80%;
+}
+
+img {
+  width: 100%;
+}

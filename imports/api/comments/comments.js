@@ -6,6 +6,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
 import { __ } from '/imports/localization/i18n.js';
+import { fileUpload } from '/imports/utils/autoform.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -19,10 +20,11 @@ export const Comments = new Mongo.Collection('comments');
 Comments.categoryValues = ['comment', 'statusChange', 'pointAt'];
 
 Comments.schema = new SimpleSchema({
-  topicId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  topicId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   category: { type: String, defaultValue: 'comment', allowedValues: Comments.categoryValues, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
+  photo: { type: String, optional: true, autoform: fileUpload },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true },
     autoValue() {
@@ -106,7 +108,7 @@ Comments.moveSchema = new SimpleSchema({
 
 Meteor.startup(function attach() {
   Comments.simpleSchema({ category: 'comment' }).i18n('schemaComments');
-  Comments.simpleSchema({ category: 'statusChange' }).i18n('schemaComments');
+  Comments.simpleSchema({ category: 'statusChange' }).i18n('schemaStatusChanges');
   Comments.moveSchema.i18n('schemaComments');
 });
 
