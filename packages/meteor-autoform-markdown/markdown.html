@@ -1,0 +1,26 @@
+<template name="afMarkdown">
+
+  <section class="markdownControls">
+    <select class="markdownHeader form-control">
+      <option value="">headers</option>
+      <option value="#"># header 1</option>
+      <option value="##">## header 2</option>
+      <option value="##">### header 3</option>
+    </select>
+    <button class="markdownBold select btn">**bold**</button>
+    <button class="markdownItalic select btn">*italic*</button>
+    <button class="markdownList select btn">- list</button>
+    <a href="https://help.github.com/articles/markdown-basics/" target="_blank">help</a>
+  </section>
+
+  <div class="flexcontainer">
+    <section class="markdownContent">
+      <textarea class="form-control markdownInput" {{atts}}>{{value}}</textarea>
+    </section>
+    <section class="markdownPreview">
+      <span class="form-control preview">
+          {{{markdownText}}}
+      </span>
+    </section>
+  </div>
+</template>
