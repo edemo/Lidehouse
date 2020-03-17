@@ -58,7 +58,7 @@ Template.afMarkdown.events({
         textArea.selection('replace', {text: markdownList + "\n "});
         break;
       case 'markdownLink':
-        const link = selectedText.startsWith('http') ? selectedText : 'http://...';
+        const link = selectedText.startsWith('http') ? selectedText : 'http://' + selectedText;
         textArea.selection('replace', { text: `[${selectedText || 'Text'}](${link})` });
         break;
       default:
