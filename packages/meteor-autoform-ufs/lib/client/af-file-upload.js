@@ -23,8 +23,8 @@ Template.afFileUpload.viewmodel({
   value: null,  // viewmodel Value!
   currentUpload: null,
   currentProgress: 0,
-  onCreated(template) {
-    this.value(template.data.value || null);
+  onCreated(instance) {
+    this.value(instance.data.value || null);
     return;
   },
   textOrHidden() {
@@ -38,23 +38,27 @@ Template.afFileUpload.viewmodel({
 });
 
 Template.afFileUpload.events({
-  'click [data-reset-file]'(e, template) {
-    e.preventDefault();
-    template.viewmodel.value(null);
+  'click [data-reset-file]'(event, instance) {
+    event.preventDefault();
+    instance.viewmodel.value(null);
     return false;
   },
-  'click [data-remove-file]'(e, template) {
-    e.preventDefault();
-    const vmValue = template.viewmodel.value();
-    template.viewmodel.value(null);
-    const upload = link2doc(vmValue, template.collection);
+  'click [data-remove-file]'(event, instance) {
+    event.preventDefault();
+    const vmValue = instance.viewmodel.value();
+    instance.viewmodel.value(null);
+    const upload = link2doc(vmValue, instance.collection);
     if (upload) upload.remove();
   },
-  'click button[name=upload]'(e, template) {
-    e.preventDefault();
+  'blur input'(event, instance) {
+    const value = event.target.value;
+    instance.viewmodel.value(value);
+  },
+  'click button[name=upload]'(event, instance) {
+    event.preventDefault();
     let ctx;
     try {
-      ctx = AutoForm.getValidationContext(template.formId);
+      ctx = AutoForm.getValidationContext(instance.formId);
     } catch (exception) {
       ctx = AutoForm.getValidationContext();  // Fix: "TypeError: Cannot read property '_resolvedSchema' of undefined"
     }
@@ -70,7 +74,7 @@ Template.afFileUpload.events({
 
       // Create a new Uploader for this file
       const uploader = new UploadFS.Uploader({
-        store: template.collection,
+        store: instance.collection,
         data: file, // The File/Blob object containing the data
         file: doc,  // The document to save in the collection
 
@@ -85,32 +89,32 @@ Template.afFileUpload.events({
           console.error('Error during uploading ' + file.name);
           console.error(err);
           ctx.resetValidation();
-          ctx.addInvalidKeys([{ name: template.inputFieldName, type: 'uploadError', value: err.reason }]);
-          template.viewmodel.value('');
-          template.viewmodel.currentUpload(null);
+          ctx.addInvalidKeys([{ name: instance.inputFieldName, type: 'uploadError', value: err.reason }]);
+          instance.viewmodel.value('');
+          instance.viewmodel.currentUpload(null);
         },
         onAbort(file) {
           console.log(file.name + ' upload has been aborted');
-          template.viewmodel.currentUpload(null);
+          instance.viewmodel.currentUpload(null);
         },
         onComplete(file) {
           console.log(file.name + ' has been uploaded');
-          template.viewmodel.value(file.path);
-          template.viewmodel.currentUpload(null);
-          template.viewmodel.currentProgress(0);
+          instance.viewmodel.value(file.path);
+          instance.viewmodel.currentUpload(null);
+          instance.viewmodel.currentProgress(0);
         },
         onCreate(file) {
           console.log(file.name + ' has been created with ID ' + file._id);
         },
         onProgress(file, progress) {
           //console.log(file.name + ' ' + (progress*100) + '% uploaded');
-          template.viewmodel.currentProgress(Math.round(progress*100));
+          instance.viewmodel.currentProgress(Math.round(progress*100));
         },
         onStart(file) {
           //console.log(file.name + ' started');
           ctx.resetValidation();
-          template.viewmodel.currentProgress(0);
-          template.viewmodel.currentUpload(this);
+          instance.viewmodel.currentProgress(0);
+          instance.viewmodel.currentUpload(this);
         },
         onStop(file) {
           console.log(file.name + ' stopped');
