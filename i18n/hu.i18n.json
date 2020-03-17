@@ -600,7 +600,7 @@
   "login": "belépés",
   "register": "új fiók",
 
-  "youNeedToSaveYourChanges": "A változtatás a lenti Mentés gomb megnyomásával válik aktívvá",
+  "youNeedToSaveYourChanges": "Az eszközölt változtatások csak a lenti Mentés gomb megnyomásával lépnek életbe",
   "needToRemoveCurrentToAddNew" : "Új fájl megadásához először a régit el kell távolítania",
   "tryingToConnect": "Kapcsolódás folyamatban…",
   "connectionIssue": "Valami hiba van a hálózattal",
