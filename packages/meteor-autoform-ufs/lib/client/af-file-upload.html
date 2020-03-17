@@ -1,0 +1,34 @@
+<template name="afFileUpload">
+  {{#if currentProgress}}
+    Uploading <b>{{currentUpload.getFile.name}}</b>:
+    <progress value="{{currentProgress}}" max="100"></progress>
+    &nbsp;
+    <span class="progress">{{currentProgress}}%</span>
+  {{else}}
+    {{#if value}}
+      <div class= "img-uploaded">
+        <img class="img-thumbnail img-af" src="{{value}}"/>
+        <button type="button" data-remove-file class="btn btn-xs btn-default">
+          <i class="glyphicon glyphicon-remove"></i> {{_ 'change'}}
+        </button>
+      </div>
+      <a data-reset-file href="#" style="display:none">Reset</a>
+      <!--span class="text-muted">{{_ 'needToRemoveCurrentToAddNew'}}</span-->
+    {{/if}}
+  {{/if}}
+  <div class="row">
+    <div class="col-sm-9">
+      <input class="form-control" type="{{textOrHidden}}" value="{{value}}" {{this.atts}}/>
+    </div>
+    {{#unless value}}
+    <div class="col-sm-2">
+      <button type="button" name="upload" class="btn btn-info">
+          <i class="fa fa-upload"></i> {{_ 'Upload file'}}
+      </button>
+    </div>
+    {{/unless}}
+  </div>
+  {{#if valueHasChanged}}
+  <span class="text-warning">{{_ 'youNeedToSaveYourChanges'}}</span>
+  {{/if}}
+</template>
