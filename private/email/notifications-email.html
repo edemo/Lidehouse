@@ -22,7 +22,7 @@
                     {{else}}
                         <h3 class = "topicTitle">{{te.topic.title}}</h3>
                         {{#if te.isUnseen}}
-                          <p>{{curb te.topic.text 1000}}</p>
+                          <p>{{{renderMarkdown (curb te.topic.text 1000)}}}</p>
                         {{/if}}
                     {{/if}}
                     <div class='btn-container'>

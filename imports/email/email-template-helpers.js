@@ -71,6 +71,9 @@ export const EmailTemplateHelpers = {
   entriesOf(obj) {
     return Object.entries(obj);
   },
+  renderMarkdown(value) {
+    return marked(value);
+  },
 };
 
 // ------------- Sample ----------------
