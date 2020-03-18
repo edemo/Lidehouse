@@ -9,6 +9,7 @@ import { Clock } from '/imports/utils/clock.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { remove as removeSharedfolders } from '/imports/api/shareddocs/sharedfolders/methods.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '../common/page-heading.html';
@@ -51,9 +52,17 @@ Template.Shareddoc_store.viewmodel({
     const communityId = Session.get('activeCommunityId');
     const folderId = this.activeFolderId();
     if (!communityId || !folderId) return [];
+    let containedFiles;
     const sortBy = this.sortBy();
     const sortDirection = this.sortDirection();
-    const containedFiles = Shareddocs.find({ communityId, folderId }, { sort: { [sortBy]: sortDirection } });
+    if (sortBy === 'name') {
+      const community = Communities.findOne(communityId);
+      const sharedDocs = Shareddocs.find({ communityId, folderId }).fetch();
+      containedFiles = sharedDocs.fetch().sort((a, b) => a.name.localeCompare(b.name, community.settings.language, { sensitivity: 'accent' }));
+      if (sortDirection === '-1') containedFiles = containedFiles.reverse();
+    } else {
+      containedFiles = Shareddocs.find({ communityId, folderId }, { sort: { [sortBy]: sortDirection } });
+    }
     return containedFiles;
   },
   extensions() {
