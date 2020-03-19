@@ -55,7 +55,7 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- voting text -->
-          <div class="text-dark">{{#markdown}}{{text}}{{/markdown}}</div>
+          <div class="text-dark">{{>Chopped text=text chars=600 markdown=true}}</div>
           {{#if attachments.count}}
           <button class="btn btn-white btn-xs dropdown-toggle drop-unfoll" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
              <i class="glyphicon glyphicon-paperclip"></i> 

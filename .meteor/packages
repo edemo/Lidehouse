@@ -116,3 +116,4 @@ lookback:emails
 droka:autoform-ufs
 ostrio:flow-router-title
 djedi:sanitize-html
+djedi:sanitize-html-client

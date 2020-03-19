@@ -43,7 +43,7 @@
         <div class="news-elem" data-id="{{_id}}">
             <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
             <strong>{{title}}</strong>
-            <div>{{#markdown}}{{text}}{{/markdown}}</div>
+            <div>{{>Chopped text=text chars=600 markdown=true}}</div>
             {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
             {{#if currentUserHasPermission 'news.update'}}
             <div class="pull-right m-t-sm">
@@ -60,7 +60,7 @@
         <div class="full-width">
             <strong>{{title}}</strong>
             <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
-            {{#markdown}}{{text}}{{/markdown}}  
+            {{>Chopped text=text chars=600 markdown=true}}
             {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
             {{#if currentUserHasPermission 'news.update'}}
             <div class="pull-right m-t-sm">
