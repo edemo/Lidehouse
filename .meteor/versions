@@ -48,6 +48,7 @@ deps@1.0.12
 diff-sequence@1.1.0
 dispatch:mocha-phantomjs@0.1.7
 dispatch:phantomjs-tests@0.0.7
+djedi:sanitize-html@1.11.3
 droka:autoform-ufs@0.2.1
 dynamic-import@0.3.0
 ecmascript@0.10.6
