@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
+import { sanitizeHtml } from 'meteor/djedi:sanitize-html';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { numeral } from 'meteor/numeral:numeral';
@@ -72,7 +73,7 @@ export const EmailTemplateHelpers = {
     return Object.entries(obj);
   },
   renderMarkdown(value) {
-    return marked(value);
+    return sanitizeHtml(marked(value));
   },
 };
 
