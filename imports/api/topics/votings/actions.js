@@ -7,7 +7,7 @@ import { Clock } from '/imports/utils/clock';
 import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { votingEditInstance } from '/imports/ui_3/views/modals/voting-edit.js';
-import './entities.js';
+import '/imports/api/topics/entities.js';
 
 AutoForm.addHooks('af.vote.insert', {
   formToDoc(doc) {

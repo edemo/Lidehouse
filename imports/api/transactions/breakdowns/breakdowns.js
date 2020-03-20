@@ -67,7 +67,7 @@ export function chooseSubAccount(brk, nodeCode, leafsOnly = true) {
 /*
 Breakdowns.schema = new SimpleSchema({
   name: { type: String },
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
 
   // An account is either a root (then it has a type)...
   type: { type: String, allowedValues: Breakdowns.typeValues, optional: true },

@@ -42,11 +42,11 @@ import './community-page.html';
 
 Template.Roleships_box.viewmodel({
   autorun() {
-    const communityId = this.templateInstance.data.community._id;
+    const communityId = this.templateInstance.data.community && this.templateInstance.data.community._id;
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
   },
   officers() {
-    const communityId = this.templateInstance.data.community._id;
+    const communityId = this.templateInstance.data.community && this.templateInstance.data.community._id;
     const list = Memberships.findActive({ communityId, role: { $in: officerRoles } }, { sort: { createdAt: 1 } }).fetch();
     return _.sortBy(list, m => rolesPriorities[m.role]);
   },
@@ -109,8 +109,9 @@ Template.Parcels_box.viewmodel({
   onCreated() {
     const user = Meteor.user();
     const community = this.templateInstance.data.community;
+    const communityId = community && community._id;
     const showAllParcelsDefault = (
-      (user && user.hasPermission('parcels.insert', { communityId: community._id }))
+      (user && user.hasPermission('parcels.insert', { communityId }))
       || (community && community.parcels.flat <= 25)
     );
     this.showAllParcels(!!showAllParcelsDefault);
@@ -168,6 +169,9 @@ Template.Community_page.viewmodel({
   ],
   communityId() {
     return FlowRouter.getParam('_cid') || getActiveCommunityId();
+  },
+  communityIdObject() {
+    return { communityId: this.communityId() };
   },
   community() {
     return Communities.findOne(this.communityId());

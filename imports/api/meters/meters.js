@@ -41,7 +41,7 @@ Meters.billingSchema = new SimpleSchema({
 });
 
 Meters.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   identifier: { type: String },
   service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },

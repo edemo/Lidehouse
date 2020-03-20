@@ -1,17 +1,15 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Agendas } from './agendas.js';
 import './methods.js';
 
 Agendas.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     visible: user.hasPermission('agendas.insert', doc),
@@ -19,6 +17,7 @@ Agendas.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.agenda.insert',
         collection: Agendas,
+        doc,
         type: 'method',
         meteormethod: 'agendas.insert',
       });
@@ -69,9 +68,3 @@ Agendas.actions = {
 
 AutoForm.addModalHooks('af.agenda.insert');
 AutoForm.addModalHooks('af.agenda.update');
-AutoForm.addHooks('af.agenda.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});
