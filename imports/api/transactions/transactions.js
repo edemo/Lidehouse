@@ -39,7 +39,7 @@ Transactions.entrySchema = new SimpleSchema([
 ]);
 
 Transactions.coreSchema = {
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   category: { type: String, allowedValues: Transactions.categoryValues, autoform: { omit: true } },
   valueDate: { type: Date },
   amount: { type: Number, decimal: true },

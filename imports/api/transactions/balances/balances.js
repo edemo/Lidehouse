@@ -12,7 +12,7 @@ export const Balances = new Mongo.Collection('balances');
 
 // Definition of a balance
 Balances.defSchema = new SimpleSchema([{
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   // phase: { type: String, defaultValue: 'done', allowedValues: ['real', 'plan'] },
   account: { type: String },
   localizer: { type: String, optional: true },

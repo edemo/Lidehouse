@@ -29,7 +29,6 @@ Template.Footer.helpers({
 
 AutoForm.addHooks('af.feedback', {
   formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
     doc.category = 'feedback';
     doc.title = doc.text ? doc.text.substring(0, 100) : '';
 //    if (!doc.feedback) doc.feedback = {};

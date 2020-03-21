@@ -1,19 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Meters } from './meters.js';
 import './methods.js';
 
 Meters.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     visible: user.hasPermission('meters.insert', doc),
@@ -21,6 +17,7 @@ Meters.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.meter.insert',
         collection: Meters,
+        doc,
         omitFields: ['readings'],
         type: 'method',
         meteormethod: 'meters.insert',
@@ -123,7 +120,6 @@ AutoForm.addModalHooks('af.meter.update');
 AutoForm.addModalHooks('af.meter.registerReading');
 AutoForm.addHooks('af.meter.insert', {
   formToDoc(doc) {
-    doc.communityId = getActiveCommunityId();
     doc.parcelId = Session.get('modalContext').parcelId;
     //    doc.approved = true;
     return doc;

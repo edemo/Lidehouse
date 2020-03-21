@@ -151,7 +151,7 @@ Parcels.helpers({
   },
   payerMembership() {
     const payer = this.representor() || this.owners().fetch()[0];
-    productionAssert('err_invalidData', `Unable to pay for parcel ${this.ref} - no payer membership found`);
+    productionAssert(payer, 'err_invalidData', `Unable to pay for parcel ${this.ref} - no payer membership found`);
     return payer;
   },
   payerPartner() {

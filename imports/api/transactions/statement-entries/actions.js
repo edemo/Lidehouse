@@ -4,7 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -14,7 +14,7 @@ import { StatementEntries } from './statement-entries.js';
 import './methods.js';
 
 StatementEntries.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     visible: user.hasPermission('statements.insert', doc),
@@ -25,6 +25,7 @@ StatementEntries.actions = {
         collection: StatementEntries,
         omitFields: ['original', 'match'],
         doc: {
+          communityId: getActiveCommunityId(),
           account: instance.viewmodel.accountSelected(),
           valueDate: new Date(),
         },
@@ -140,10 +141,6 @@ AutoForm.addModalHooks('af.statementEntry.reconcile');
 AutoForm.addHooks('af.statementEntry.insert', {
   docToForm(doc) {
 //    doc.account = Session.get('modalContext').account;
-    return doc;
-  },
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
     return doc;
   },
 });

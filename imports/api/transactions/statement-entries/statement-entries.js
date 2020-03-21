@@ -16,7 +16,7 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 export const StatementEntries = new Mongo.Collection('statementEntries');
 
 StatementEntries.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   account: { type: String, autoform: Accounts.chooseSubNode('`38') },
   ref: { type: String, max: 50 }, // external (uniq) ref id provided by the bank
   refType: { type: String, max: 50, optional: true }, // type info to the ref

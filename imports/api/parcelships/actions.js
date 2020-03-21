@@ -5,14 +5,12 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Parcelships } from './parcelships.js';
 import './methods.js';
 
 Parcelships.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     label: __('new') + ' ' + __('parcelship'),
@@ -21,6 +19,7 @@ Parcelships.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.parcelship.insert',
         collection: Parcelships,
+        doc,
         omitFields: ['parcelId'],
         type: 'method',
         meteormethod: 'parcelships.insert',
@@ -91,7 +90,6 @@ AutoForm.addModalHooks('af.parcelship.insert');
 AutoForm.addModalHooks('af.parcelship.update');
 AutoForm.addHooks('af.parcelship.insert', {
   formToDoc(doc) {
-    doc.communityId = getActiveCommunityId();
     doc.parcelId = Session.get('modalContext').parcelId;
     //    doc.approved = true;
     return doc;
@@ -100,7 +98,6 @@ AutoForm.addHooks('af.parcelship.insert', {
 AutoForm.addHooks('af.parcelship.update', {
   formToModifier(modifier) {
     delete modifier.$set.leadParcelId; // not working
-    modifier.$set.communityId = getActiveCommunityId();
     return modifier;
   },
 });

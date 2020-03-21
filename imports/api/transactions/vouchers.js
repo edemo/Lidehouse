@@ -9,7 +9,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 export const Vouchers = new Mongo.Collection('vouchers');
 
 Vouchers.schema = {
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   archive: { type: String, optional: true, autoform: imageUpload },
 };
 

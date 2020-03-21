@@ -1,16 +1,14 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Contracts } from './contracts.js';
 import './methods.js';
 
 Contracts.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     visible: user.hasPermission('contracts.insert', doc),
@@ -18,6 +16,7 @@ Contracts.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.contract.insert',
         collection: Contracts,
+        doc,
         type: 'method',
         meteormethod: 'contracts.insert',
       });
@@ -69,9 +68,3 @@ Contracts.actions = {
 AutoForm.addModalHooks('af.contract.insert');
 AutoForm.addModalHooks('af.contract.update');
 
-AutoForm.addHooks('af.contract.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});

@@ -7,10 +7,11 @@
     <div class="row">
     <form>
         <div class="col-xs-12 col-md-6 col-lg-6">
+            {{> afQuickField name="communityId" type="hidden"}} <!-- hidden, needed for autoform doc data -->
+            {{> afQuickField name="category" type="hidden"}} <!-- hidden, needed for autoform doc data -->
             {{> afQuickField name="title"}}
             {{> afQuickField name="text"}}
             {{> afQuickField name="agendaId" options=agendaOptions firstOption=(_ '(Select one)') }}
-            {{> afQuickField name="attachments"}}
             <div class="left-padded">
                 <label>{{_ "Attachments"}}</label>
             </div>
