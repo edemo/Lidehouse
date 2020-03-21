@@ -1,3 +1,18 @@
+<template name="Attached_shareddocs">
+    {{#if shareddocs.count}}
+    <button class="btn btn-white btn-xs dropdown-toggle drop-unfoll" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="glyphicon glyphicon-paperclip"></i> 
+      {{_ 'Attachments'}} ({{shareddocs.count}})
+      <b class="caret"></b>
+    </button>
+    <ul class="slim-menu dropdown-menu dropdown-menu-left" aria-labelledby="attachments_{{_id}}">
+      {{#each doc in shareddocs}}
+      <li><a class="filename" target="_blank" href="{{doc.url}}">{{doc.name}}</a></li>
+      {{/each}}
+    </ul>
+    {{/if}}
+</template>
+
 <template name="Topic_reactions">
     <div class="btn-group">
         <button class="btn btn-white btn-xs js-like">
@@ -42,6 +57,7 @@
         <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
     </a>
     <div class="text-dark">{{>Chopped text=text chars=600 markdown=true}}</div>
+    {{>Attached_shareddocs shareddocs=this.getShareddocs}}
     {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
 </template>
 

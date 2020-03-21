@@ -6,12 +6,7 @@
     <span class="progress">{{currentProgress}}%</span>
   {{else}}
     {{#if value}}
-      <div class= "img-uploaded">
-        <img class="img-thumbnail img-af" src="{{value}}"/>
-        <button type="button" data-remove-file class="btn btn-xs btn-default">
-          <i class="glyphicon glyphicon-remove"></i> {{_ 'change'}}
-        </button>
-      </div>
+      {{>Template.dynamic template=template data=context}}
       <a data-reset-file href="#" style="display:none">Reset</a>
       <!--span class="text-muted">{{_ 'needToRemoveCurrentToAddNew'}}</span-->
     {{/if}}

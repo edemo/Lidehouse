@@ -26,7 +26,7 @@ export const HouseTranslation = {
       },
       "avatar": {
         "label": "Image",
-        "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
       },
       "zip": {
         "label": "Zip code",

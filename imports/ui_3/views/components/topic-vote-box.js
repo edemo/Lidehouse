@@ -2,25 +2,15 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 
-import { moment } from 'meteor/momentjs:moment';
-import { TimeSync } from 'meteor/mizzao:timesync';
-import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
-
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/actions.js';
 import { Votings } from '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/votings/methods.js';
 import '/imports/api/topics/votings/actions.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { remove as removeTopic } from '/imports/api/topics/methods.js';
-import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { afVoteStatusChangeModal } from '/imports/ui_3/views/modals/voting-edit.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/vote-results.js';
 import '/imports/ui_3/views/components/select-voters.js';
@@ -42,9 +32,6 @@ Template.Topic_vote_body.onCreated(function voteboxOnCreated() {
 Template.Topic_vote_body.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
-  },
-  attachments() {
-    return Shareddocs.find({ topicId: this._id });
   },
   chartType() {
     const vote = this.vote;

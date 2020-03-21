@@ -1,3 +1,8 @@
-<template name="displayImage">
-  <img style="width:50%;max-width:250px;max-height:250px;" src="{{link}}"/>
+<template name="Display_image">
+  <div class= "img-uploaded">
+    <img class="img-thumbnail img-af" src="{{value}}"/>
+    <button type="button" data-remove-file class="btn btn-xs btn-default">
+      <i class="glyphicon glyphicon-remove"></i> {{_ 'change'}}
+    </button>
+  </div>
 </template>

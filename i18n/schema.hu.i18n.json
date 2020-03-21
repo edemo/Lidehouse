@@ -365,6 +365,12 @@
       "label": "Fénykép (ha csatolni szeretne)",
       "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
+    "shareddocs": {
+      "label": "Dokumentumok (ha csatolni szeretne)",
+      "$": {
+        "placeholder": "Link megadása (pl. /uploads/document.pdf)"
+      }
+    },
     "sticky" : {
       "label": "Rögzített"
     },

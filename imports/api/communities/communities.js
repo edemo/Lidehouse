@@ -7,7 +7,7 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
-import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
+import { autoformOptions, imageUpload } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -31,7 +31,7 @@ Communities.settingsSchema = new SimpleSchema({
 Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
   description: { type: String, max: 1200, optional: true },
-  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload },
 }, comtype.profileSchema, {
   management: { type: String, optional: true, autoform: { type: 'textarea' } },
   taxNo: { type: String, max: 50, optional: true },

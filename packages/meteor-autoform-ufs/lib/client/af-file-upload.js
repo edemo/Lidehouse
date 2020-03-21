@@ -5,6 +5,9 @@ import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 
 import { isHostedByUs, link2doc } from './link-format.js';
+import './display-image.html';
+import './display-document.html';
+import './display-file.html';
 import './af-file-upload.js';
 
 import Compress from 'compress.js';
@@ -34,6 +37,14 @@ Template.afFileUpload.viewmodel({
   },
   valueHasChanged() {
     return this.value() !== this.templateInstance.dbValue;
+  },
+  template() {
+    const template = `Display_${this.templateInstance.data.atts.fileType}`;
+    console.log("template", template);
+    return template;
+  },
+  context() {
+    return { value: this.value() };
   },
 });
 

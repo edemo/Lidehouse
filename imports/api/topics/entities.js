@@ -33,7 +33,7 @@ Topics.entities = {
   forum: {
     name: 'forum',
     schema: Topics.simpleSchema({ category: 'forum' }),
-    inputFields: ['title', 'text', 'photo'],
+    inputFields: ['title', 'text', 'photo', 'shareddocs'],
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
       category: 'forum',

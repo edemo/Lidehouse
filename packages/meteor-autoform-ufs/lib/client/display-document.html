@@ -1,0 +1,15 @@
+<template name="Display_document">
+    <div class="file">
+        <span data-remove-file class="js-delete nav-item trash">
+        <i class="fa fa-trash" title={{_ 'delete'}}></i>
+        </span>
+        <a target="_blank" data-id={{_id}} href="{{value}}">
+            <div class="icon">
+                <i class="fa fa-file"></i>               
+            </div>
+            <div class="file-name">
+                {{value.split}}
+            </div>
+        </a>
+    </div>
+</template>

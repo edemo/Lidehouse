@@ -6,7 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { fileUpload } from '/imports/utils/autoform.js';
+import { imageUpload, documentUpload } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Revisioned } from '/imports/api/behaviours/revisioned.js';
@@ -18,6 +18,7 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 
 import './category-helpers.js';
 
@@ -39,7 +40,9 @@ Topics.baseSchema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { type: 'markdown' } },
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  photo: { type: String, optional: true, autoform: fileUpload },
+  photo: { type: String, optional: true, autoform: imageUpload },
+//  shareddocs: { type: Array, optional: true },
+//  'shareddocs.$': { type: String, optional: true, autoform: documentUpload },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
@@ -94,6 +97,9 @@ Topics.helpers({
   },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
+  },
+  getShareddocs() {
+    return Shareddocs.find({ topicId: this._id });
   },
   hiddenBy(userId) {
     const author = this.creator();

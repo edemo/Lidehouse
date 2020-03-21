@@ -8,7 +8,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
+import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 

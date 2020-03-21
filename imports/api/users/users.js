@@ -9,7 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
+import { autoformOptions, imageUpload } from '/imports/utils/autoform.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -123,7 +123,7 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$.address': SimpleSchema.Types.Email,
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
-  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload },
   profile: { type: PersonProfileSchema, optional: true },
   settings: { type: UserSettingsSchema },
 

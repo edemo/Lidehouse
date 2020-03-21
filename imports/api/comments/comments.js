@@ -6,7 +6,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
 import { __ } from '/imports/localization/i18n.js';
-import { fileUpload } from '/imports/utils/autoform.js';
+import { imageUpload } from '/imports/utils/autoform.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -24,7 +24,7 @@ Comments.schema = new SimpleSchema({
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   category: { type: String, defaultValue: 'comment', allowedValues: Comments.categoryValues, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
-  photo: { type: String, optional: true, autoform: fileUpload },
+  photo: { type: String, optional: true, autoform: imageUpload },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true },
     autoValue() {
