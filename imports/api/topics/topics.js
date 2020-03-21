@@ -31,17 +31,24 @@ Topics.categoryValues.forEach(cat => Topics.categories[cat] = {}); // Specific c
 Topics.extensionSchemas = {};
 
 Topics.baseSchema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
-  category: { type: String, allowedValues: Topics.categoryValues, autoform: { omit: true } },
+  category: { type: String, allowedValues: Topics.categoryValues, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { type: 'markdown' } },
-  agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   photo: { type: String, optional: true, autoform: fileUpload },
-  sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
+});
+
+Topics.extensionSchemas.news = new SimpleSchema({
+  category: { type: String, defaultValue: 'news', autoform: { type: 'hidden', defaultValue: 'news' } },
+  sticky: { type: Boolean, optional: true, defaultValue: false },
+});
+
+Topics.extensionSchemas.forum = new SimpleSchema({
+  category: { type: String, defaultValue: 'forum', autoform: { type: 'hidden', defaultValue: 'forum' } },
 });
 
 Topics.publicFields = {
@@ -218,8 +225,8 @@ Topics.attachBehaviour(Workflow());
 Topics.attachBehaviour(SerialId(['category', 'ticket.type']));
 
 Topics.attachVariantSchema(undefined, { selector: { category: 'room' } });
-Topics.attachVariantSchema(undefined, { selector: { category: 'forum' } });
-Topics.attachVariantSchema(undefined, { selector: { category: 'news' } });
+Topics.attachVariantSchema(Topics.extensionSchemas.forum, { selector: { category: 'forum' } });
+Topics.attachVariantSchema(Topics.extensionSchemas.news, { selector: { category: 'news' } });
 
 Meteor.startup(function attach() {
   Topics.categoryValues.forEach(category =>

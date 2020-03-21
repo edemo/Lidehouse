@@ -11,6 +11,7 @@ import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -41,7 +42,7 @@ function statusChangeSchema(doc, statusName) {
 }
 
 Topics.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     color: 'primary',

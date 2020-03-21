@@ -81,6 +81,8 @@ function defaultsTo(val) {
 }
 
 Votings.extensionSchema = new SimpleSchema({
+  category: { type: String, defaultValue: 'vote', autoform: { type: 'hidden', defaultValue: 'vote' } },
+  agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   vote: { type: Votings.voteSchema, optional: true },
   voteCasts: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
   voteCastsIndirect: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },

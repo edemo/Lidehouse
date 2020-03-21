@@ -8,13 +8,14 @@ import '/imports/ui_3/views/modals/autoform-modal.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Memberships } from './memberships';
 import './entities.js';
 import './methods.js';
 
 Memberships.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
 //    icon: options => (Array.isArray(options.entity) ? 'fa fa-plus' : ''),
     icon: 'fa fa-plus',
@@ -27,8 +28,7 @@ Memberships.actions = {
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.insert`,
         schema: entity.schema,
-        fields: entity.inputFields.concat('activeTime'),
-        omitFields: entity.omitFields,
+        doc,
         type: 'method',
         meteormethod: 'memberships.insert',
       });
@@ -49,8 +49,6 @@ Memberships.actions = {
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.view`,
         schema: entity.schema,
-        fields: entity.inputFields.concat('activeTime'),
-        omitFields: entity.omitFields,
         doc,
         type: 'readonly',
       });
@@ -66,7 +64,6 @@ Memberships.actions = {
         id: `af.${doc.entityName()}.update`,
         schema: entity.schema,
         fields: entity.modifiableFields,
-        omitFields: entity.omitFields,
         doc,
         type: 'method-update',
         meteormethod: 'memberships.update',

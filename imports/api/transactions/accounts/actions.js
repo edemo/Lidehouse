@@ -1,18 +1,18 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { _ } from 'meteor/underscore';
+
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Accounts } from './accounts.js';
 import './entities.js';
 import './methods.js';
 
 Accounts.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     color: 'primary',
@@ -26,7 +26,7 @@ Accounts.actions = {
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.insert`,
         schema: options.entity.schema,
-        omitFields: entity.omitFields,
+        doc,
         type: 'method',
         meteormethod: 'accounts.insert',
       });
@@ -81,34 +81,13 @@ Accounts.actions = {
 
 //-----------------------------------------------
 
-AutoForm.addModalHooks('af.simpleAccount.insert');
-AutoForm.addModalHooks('af.simpleAccount.update');
-AutoForm.addHooks('af.simpleAccount.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    if (doc.code.charAt(0) !== '`') doc.code = '`' + doc.code;
-    return doc;
-  },
-});
-
-AutoForm.addModalHooks('af.cashAccount.insert');
-AutoForm.addModalHooks('af.cashAccount.update');
-AutoForm.addHooks('af.cashAccount.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.category = 'cash';
-    if (doc.code.charAt(0) !== '`') doc.code = '`' + doc.code;
-    return doc;
-  },
-});
-
-AutoForm.addModalHooks('af.bankAccount.insert');
-AutoForm.addModalHooks('af.bankAccount.update');
-AutoForm.addHooks('af.bankAccount.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.category = 'bank';
-    if (doc.code.charAt(0) !== '`') doc.code = '`' + doc.code;
-    return doc;
-  },
+_.each(Accounts.entities, (entity, entityName) => {
+  AutoForm.addModalHooks(`af.${entityName}.insert`);
+  AutoForm.addModalHooks(`af.${entityName}.update`);
+  AutoForm.addHooks(`af.${entityName}.insert`, {
+    formToDoc(doc) {
+      if (doc.code && doc.code.charAt(0) !== '`') doc.code = '`' + doc.code;
+      return doc;
+    },
+  });
 });

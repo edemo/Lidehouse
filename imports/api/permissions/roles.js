@@ -40,7 +40,7 @@ export const votingRoles = ['owner', 'delegate'];
 export const Roles = new Mongo.Collection('roles');
 
 Roles.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
               // If not exist, that is a built-in role for all communities
   name: { type: String, max: 100 },
   permissions: { type: Array },

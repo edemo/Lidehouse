@@ -17,7 +17,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 
-import './entities.js';
+import '/imports/api/topics/entities.js';
 
 AutoForm.addHooks('af.maintenance.insert', {
   onSubmit(doc) {

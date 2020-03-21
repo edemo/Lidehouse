@@ -1,11 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
-import { Clock } from '/imports/utils/clock.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { remove as removeSharedfolders } from '/imports/api/shareddocs/sharedfolders/methods.js';
@@ -88,6 +87,7 @@ Template.Shareddoc_store.events({
     Modal.show('Autoform_modal', {
       id: 'af.sharedfolder.insert',
       collection: Sharedfolders,
+      doc: defaultNewDoc(),
       type: 'method',
       meteormethod: 'sharedfolders.insert',
     });
@@ -116,9 +116,3 @@ Template.Shareddoc_store.events({
 
 AutoForm.addModalHooks('af.sharedfolder.insert');
 AutoForm.addModalHooks('af.sharedfolder.update');
-AutoForm.addHooks('af.sharedfolder.insert', {
-    formToDoc(doc) {
-        doc.communityId = Session.get('activeCommunityId');
-        return doc;
-    },
-});

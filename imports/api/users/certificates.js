@@ -45,7 +45,7 @@ Certificates.schema = new SimpleSchema([
   IdentifierSchema,
   {
     witnessId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-    communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
     userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   },
 ]);

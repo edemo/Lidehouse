@@ -149,7 +149,7 @@
     <div class="meters">
         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
         <h2>{{_ 'meters'}}</h2>
-        {{#if or (currentUserHasPermission 'meters.insert') (currentUserHasPermission 'parcels.details')}}
+        {{#if or (currentUserHasPermission 'meters.insert' communityIdObject) (currentUserHasPermission 'parcels.details' communityIdObject)}}
         <div class="btn-group pull-right">
             <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'meter'}}</strong></button>
             <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
@@ -279,8 +279,8 @@
             </div>
         </div>
         
-        {{#if currentUserHasPermission 'parcels.inCommunity'}}
-        {{#if currentUserHasPermission 'memberships.inCommunity'}}
+        {{#if currentUserHasPermission 'parcels.inCommunity' communityIdObject}}
+        {{#if currentUserHasPermission 'memberships.inCommunity' communityIdObject}}
         <div class="row">
         <div class="col-lg-12">
             <div class="ibox parcels">
@@ -293,7 +293,7 @@
         {{/if}}
         {{/if}}
         
-        {{#if currentUserHasPermission 'partners.inCommunity'}}
+        {{#if currentUserHasPermission 'partners.inCommunity' communityIdObject}}
         <div class="row">
             <div class="col-xs-12 text-center">
                 <button class="btn btn-default js-partners"><i class="fa fa-list"></i> {{_ 'Teljes partner lista'}}</button>

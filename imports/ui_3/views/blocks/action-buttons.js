@@ -3,18 +3,13 @@ import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';  // TODO get rid of
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import './menu-overflow-guard.js';
 import './action-buttons.html';
 
-
-export function defaultDoc() {
-  return { communityId: FlowRouter.getParam('_cid') || getActiveCommunityId() };
-}
 export class ActionOptions {
   constructor(collection) {
     this.collection = collection;
@@ -77,7 +72,7 @@ export function actionHandlers(collection, actionNames) {
     eventHandlers[`click .js-${action.name}.${collection._name},.${collection._name} .js-${action.name}`] = function (event, instance) {
       // TODO should copy all data-* atts over in one generic call
       const id = $(event.target).closest('[data-id]').data('id');
-      const doc = id ? collection.findOne(id) : defaultDoc();
+      const doc = id ? collection.findOne(id) : defaultNewDoc();
       const entity = $(event.target).closest('[data-entity]').data('entity');
       const txdef = $(event.target).closest('[data-txdef]').data('txdef');
       const status = $(event.target).closest('[data-status]').data('status');
@@ -129,7 +124,7 @@ const buttonHelpers = {
       const collection = Mongo.Collection.get(instanceData.collection);
       instanceData.doc = collection.findOne(instanceData.doc);
     }
-    return instanceData.doc || defaultDoc();
+    return instanceData.doc || defaultNewDoc();
   },
   getActions() {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);

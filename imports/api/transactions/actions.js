@@ -5,9 +5,7 @@ import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActivePartnerId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -34,7 +32,7 @@ Transactions.actions = {
       Session.update('modalContext', 'txdef', options.txdef);
       const entity = options.entity;
       const insertTx = Session.get('modalContext').insertTx;
-      doc = _.extend({}, insertTx, doc);
+      doc = _.extend(defaultNewDoc(), insertTx, doc);
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -203,7 +201,6 @@ Transactions.categoryValues.forEach(category => {
     },
     formToDoc(doc) {
       const modalContext = Session.get('modalContext');
-      doc.communityId = Session.get('activeCommunityId');
       doc.category = category;
       const txdef = modalContext.txdef;
       doc.defId = txdef._id;
