@@ -2,17 +2,17 @@
     <div class="row">
         <div class="col-sm-12 col-md-8 pull-right text-right">
             <h4>
-              {{{displayTxStatus docVm.status}}} 
-              {{_ (or docVm.txdef.name 'schemaTransactions.serialId.label')}}:
-              <span class="text-navy">{{docVm.serialId}}</span>
+              {{{displayTxStatus doc.status}}} 
+              {{_ (or doc.txdef.name 'schemaTransactions.serialId.label')}}:
+              <span class="text-navy">{{doc.serialId}}</span>
             </h4>
             <h5>{{_ 'partner'}}:</h5>
             <address>
-                {{docVm.partner}}
+                {{doc.partner}}
             </address>
             <p>
-                <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate docVm.valueDate}}</span><br/>
-                <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount docVm.payAccount}}}</span><br/>
+                <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>
+                <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount doc.payAccount}}}</span><br/>
             </p>
         </div>
     </div>
@@ -26,7 +26,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{#each bp in docVm.bills}}
+                {{#each bp in doc.bills}}
                 {{#if bp}}
                 <tr>
                     <td><strong>{{displayBill bp}}</strong></td>
@@ -42,27 +42,26 @@
         <tbody>
         <tr>
             <td><strong>{{_ 'Allocated'}} :</strong></td>
-            <td class="nowrap">{{displayMoney docVm.allocated}}</td>
+            <td class="nowrap">{{displayMoney doc.allocated}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'Unallocated'}} :</strong></td>
-            <td class="nowrap">{{displayMoney docVm.outstanding}}</td>
+            <td class="nowrap">{{displayMoney doc.outstanding}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'schemaTransactions.amount.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney docVm.amount}}</td>
+            <td class="nowrap">{{displayMoney doc.amount}}</td>
         </tr>
         </tbody>
     </table>
 
-    <div class="text-right" data-id="{{docVm._id}}">
-      {{>Action_button doc=docVm action=actions.edit size='xl'}}
-      {{>Action_button doc=docVm action=actions.post size='xl'}}
+    <div class="text-right" data-id="{{doc._id}}">
+      {{>Action_buttons_group collection='transactions' doc=doc actions='edit,post' size='xl'}}
     </div>
 
-    {{#if docVm.note}}
+    {{#if doc.note}}
     <div class="well m-t"><strong>{{_ 'schemaTransactions.note.label'}}:</strong><br>
-        {{docVm.note}}
+        {{doc.note}}
     </div>
     {{/if}}
 </template>

@@ -16,28 +16,28 @@
         <div class="col-xs-6">
             <h5>{{_ 'issuer'}}:</h5>
             <address>
-                {{>Bill_partner partner=docVm.issuer}}
+                {{>Bill_partner partner=doc.issuer}}
             </address>
         </div>
 
         <div class="col-xs-6 text-right">
             <h4>
-              {{{displayTxStatus docVm.status}}} 
-              {{_ (or docVm.txdef.name 'schemaTransactions.serialId.label')}}:
-              <span class="text-navy">{{docVm.serialId}}</span>
+              {{{displayTxStatus doc.status}}} 
+              {{_ (or doc.txdef.name 'schemaTransactions.serialId.label')}}:
+              <span class="text-navy">{{doc.serialId}}</span>
             </h4>
             <h5>{{_ 'receiver'}}:</h5>
             <address>
-                {{>Bill_partner partner=docVm.receiver}}
+                {{>Bill_partner partner=doc.receiver}}
             </address>
             <p>
                 {{#if isBill}}
-                    <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate docVm.issueDate}}</span><br/>
-                    <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate docVm.deliveryDate}}</span><br/>
-                    <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate docVm.dueDate}}</span>
+                    <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate doc.issueDate}}</span><br/>
+                    <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate doc.deliveryDate}}</span><br/>
+                    <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate doc.dueDate}}</span>
                 {{else}}
-                    <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate docVm.valueDate}}</span><br/>
-                    <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount docVm.payAccount}}}</span><br/>
+                    <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>
+                    <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount doc.payAccount}}}</span><br/>
                 {{/if}}
             </p>
         </div>
@@ -57,14 +57,14 @@
                 </tr>
             </thead>
             <tbody>
-                {{#each line in docVm.lines}}
+                {{#each line in doc.lines}}
                 {{#if line}}
                 <tr>
                     <td>
                         <div>
                         <strong>
                             {{line.title}}
-                            {{#if (equals docVm.relation 'member')}}
+                            {{#if (equals doc.relation 'member')}}
                                 {{#if line.parcelId}}{{parcelRef line.parcelId}}{{/if}} 
                                 {{#if line.billing}}{{line.billing.period}}{{/if}}
                             {{/if}}
@@ -92,15 +92,15 @@
         <tbody>
         <tr>
             <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney docVm.amount}}</td>
+            <td class="nowrap">{{displayMoney doc.amount}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney docVm.tax}}</td>
+            <td class="nowrap">{{displayMoney doc.tax}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney docVm.amount}}</td>
+            <td class="nowrap">{{displayMoney doc.amount}}</td>
         </tr>
         </tbody>
     </table>
@@ -108,7 +108,7 @@
     {{#if isBill}}
     <table class="table invoice-total"> 
       <tbody>
-      {{#each billPayment in docVm.getPayments}}
+      {{#each billPayment in doc.getPayments}}
       {{#let paymentTx=(findTx billPayment.id)}}
       <tr>
           <td class="text-capitalize">
@@ -122,22 +122,19 @@
       {{/each}}
       <tr>
           <td><strong>{{_ 'schemaBills.outstanding.label'}} :</strong></td>
-          <td class="nowrap">{{displayMoney docVm.outstanding}}</td>
+          <td class="nowrap">{{displayMoney doc.outstanding}}</td>
       </tr>
       </tbody>
     </table>
     {{/if}}
 
-    <div class="text-right" data-id="{{docVm._id}}">
-      {{>Action_button doc=docVm action=actions.edit size='xl'}}
-      {{>Action_button doc=docVm action=actions.post size='xl'}}
-      {{>Action_button doc=docVm action=actions.registerPayment size='xl'}}
-      {{>Action_button doc=docVm action=actions.registerRemission size='xl'}}
+    <div class="text-right" data-id="{{doc._id}}">
+      {{>Action_buttons_group collection='transactions' doc=doc actions='edit,post,registerPayment' size='xl'}}
     </div>
 
-    {{#if docVm.note}}
+    {{#if doc.note}}
     <div class="well m-t"><strong>{{_ 'schemaTransactions.note.label'}}:</strong><br>
-        {{docVm.note}}
+        {{doc.note}}
     </div>
     {{/if}}
 </template>

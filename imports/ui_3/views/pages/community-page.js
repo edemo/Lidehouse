@@ -33,7 +33,6 @@ import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/active-archive-tabs.js';
 import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';
 import '/imports/ui_3/views/common/page-heading.js';
-import '/imports/ui_3/views/components/action-buttons.html';
 import '/imports/ui_3/views/components/contact-long.js';
 import '/imports/ui_3/views/blocks/active-period.js';
 import '/imports/ui_3/views/blocks/menu-overflow-guard.js';
