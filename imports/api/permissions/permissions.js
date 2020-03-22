@@ -4,7 +4,7 @@ import { exceptGuest, everyRole, everyBody, nobody } from './roles.js';
 
 export const Permissions = [
   { name: 'communities.details',    roles: exceptGuest },
-//  { name: 'communities.insert',     roles: everyRole },
+  { name: 'communities.insert',     roles: everyRole },
   { name: 'communities.update',     roles: ['admin'] },
   { name: 'communities.remove',     roles: ['admin'] },
   { name: 'memberships.inCommunity', roles: everyRole },
