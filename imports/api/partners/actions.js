@@ -62,7 +62,7 @@ Partners.actions = {
     name: 'remindOutstandings',
     color: doc.mostOverdueDaysColor(),
     icon: 'fa fa-exclamation',
-    visible: user.hasPermission('partners.remindOutstandings', doc) && doc.mostOverdueDays(),
+    visible: user.hasPermission('partners.remindOutstandings', doc) && (doc.relation !== 'supplier') && doc.mostOverdueDays(),
     run() {
       Modal.confirmAndCall(Partners.methods.remindOutstandings, { _id: doc._id }, {
         action: 'remind outstandings',
