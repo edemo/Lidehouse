@@ -41,11 +41,11 @@ import './community-page.html';
 
 Template.Roleships_box.viewmodel({
   autorun() {
-    const communityId = this.templateInstance.data.community && this.templateInstance.data.community._id;
+    const communityId = this.templateInstance.data.communityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
   },
   officers() {
-    const communityId = this.templateInstance.data.community && this.templateInstance.data.community._id;
+    const communityId = this.templateInstance.data.communityId();
     const list = Memberships.findActive({ communityId, role: { $in: officerRoles } }, { sort: { createdAt: 1 } }).fetch();
     return _.sortBy(list, m => rolesPriorities[m.role]);
   },
@@ -107,8 +107,8 @@ Template.Parcels_box.viewmodel({
   showAllParcels: false,
   onCreated() {
     const user = Meteor.user();
-    const community = this.templateInstance.data.community;
-    const communityId = community && community._id;
+    const communityId = this.templateInstance.data.communityId();
+    const community = this.templateInstance.data.community();
     const showAllParcelsDefault = (
       (user && user.hasPermission('parcels.insert', { communityId }))
       || (community && community.parcels.flat <= 25)
@@ -116,7 +116,7 @@ Template.Parcels_box.viewmodel({
     this.showAllParcels(!!showAllParcelsDefault);
   },
   autorun() {
-    const communityId = this.templateInstance.data.community._id;
+    const communityId = this.templateInstance.data.communityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
@@ -125,11 +125,11 @@ Template.Parcels_box.viewmodel({
     }
   },
   parcels() {
-    const communityId = this.templateInstance.data.community._id;
+    const communityId = this.templateInstance.data.communityId();
     return Parcels.find({ communityId, category: '@property' });
   },
   parcelsTableContent() {
-    const communityId = this.templateInstance.data.community._id;
+    const communityId = this.templateInstance.data.communityId();
     return {
       collection: 'parcels',
       selector: { communityId, category: '@property' },
@@ -174,6 +174,14 @@ Template.Community_page.viewmodel({
   },
   community() {
     return Communities.findOne(this.communityId());
+  },
+  reactiveContext() {
+    const self = this;
+    return {
+      communityId: () => self.communityId(),
+      communityIdObject: () => self.communityIdObject(),
+      community: () => self.community(),
+    };
   },
   communities() {
     return Communities;
