@@ -109,7 +109,7 @@ Transactions.categoryHelpers('payment', {
       if (equalWithinRounding(unallocatedAmount, 0)) {
         this[this.conteerSide()].push({ amount: unallocatedAmount, account: '`99' });
       } else {
-        this[this.conteerSide()].push({ amount: unallocatedAmount, account: '`431' });
+        this[this.conteerSide()].push({ amount: unallocatedAmount, account: this.txdef()[this.conteerSide()][0] });
       }
     }
     return { debit: this.debit, credit: this.credit };
