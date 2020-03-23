@@ -55,9 +55,6 @@ Topics.entities = {
       communityId: () => Session.get('activeCommunityId'),
       category: 'ticket',
       'ticket.type': 'maintenance',
-      'ticket.contractId': () => Session.get('modalContext').contractId,
-      'ticket.partnerId': () => Session.get('modalContext').partnerId,
-      'ticket.expectedStart': () => Session.get('modalContext').expectedStart,
     },
   },
   upgrade: {
