@@ -59,9 +59,7 @@ Template.Contracts.events({
     const partnerId = Contracts.findOne(contractId).partnerId;
     const options = { entity };
     const doc = { communityId: getActiveCommunityId() };
-    Session.update('modalContext', 'contractId', contractId);
-    Session.update('modalContext', 'partnerId', partnerId);
-    Session.update('modalContext', 'omitFields', ['ticket.contractId', 'ticket.partnerId']);
+    doc.ticket = { contractId, partnerId };
     Object.setPrototypeOf(options, new ActionOptions(Topics));
     Topics.actions.new(options, doc).run();
   },

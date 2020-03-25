@@ -33,7 +33,7 @@ export class CommunityBuilder {
     this.lang = lang;
     this.com = { en: 'com', hu: 'hu' }[lang];
 
-    const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { createdAt: -1 } });
+    const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { serial: -1 } });
     const lastCreatedParcel = parcels.fetch()[0];
     this.nextSerial = (lastCreatedParcel ? lastCreatedParcel.serial : 0) + 1;
     this.dummyUsers = [];
