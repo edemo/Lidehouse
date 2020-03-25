@@ -2,7 +2,7 @@
   // TODO use this, instead of fixed title, so its configurable
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
-
+  "Demo under construction": "Egy pillanat türelmet kérünk, <br>a Demo társasházban munkatársaink <br>már építik az Ön demo lakását...",
   // Shared
   "createdAt": "Létrehozva",
   "creatorId": "Létrehozta",
