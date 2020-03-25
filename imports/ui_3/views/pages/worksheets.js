@@ -32,6 +32,7 @@ Template.Worksheets.onCreated(function onCreated() {
   const communityId = this.getCommunityId();
   this.autorun(() => {
     this.subscribe('communities.byId', { _id: communityId });
+    this.subscribe('topics.list', { communityId, category: 'ticket' });
     this.subscribe('contracts.inCommunity', { communityId });
     this.subscribe('partners.inCommunity', { communityId });
   });
