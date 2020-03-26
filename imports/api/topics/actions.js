@@ -80,12 +80,15 @@ Topics.actions = {
     visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
     run() {
       const entity = Topics.entities[doc.entityName()];
+      const fields = doc.category === 'ticket' ?
+        (_.intersection(entity.inputFields, doc.modifiableFields())).concat('ticket.type') :
+        undefined;
       Modal.show('Autoform_modal', {
         body: entity.form,
         // --- autoform ---
         id: `af.${doc.entityName()}.update`,
         schema: entity.schema,
-        fields: _.intersection(entity.inputFields, doc.modifiableFields()),
+        fields,
         omitFields: entity.omitFields,
         doc,
         type: 'method-update',

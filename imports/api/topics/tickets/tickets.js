@@ -24,7 +24,7 @@ Tickets.urgencyColors = { high: 'danger', normal: 'warning', low: 'primary' };
 Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
 
 Tickets.extensionRawSchema = {
-  type: { type: String, allowedValues: Tickets.typeValues, autoform: autoformOptions(Tickets.typeValues, 'schemaTickets.ticket.type.') },
+  type: { type: String, allowedValues: Tickets.typeValues, autoform: { type: 'hidden' } },
   urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.'), defaultValue: 'normal' },
   localizer: { type: String, optional: true, autoform: chooseParcel() },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
