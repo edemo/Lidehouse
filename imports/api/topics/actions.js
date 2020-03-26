@@ -58,7 +58,6 @@ Topics.actions = {
         id: `af.${entity.name}.insert`,
         schema: entity.schema,
         fields: entity.inputFields,
-        omitFields: (entity.omitFields || []).concat(Session.get('modalContext').omitFields),
         doc,
         type: entity.formType || 'method',
         meteormethod: 'topics.insert',
