@@ -81,8 +81,8 @@ Topics.actions = {
     run() {
       const entity = Topics.entities[doc.entityName()];
       const fields = doc.category === 'ticket' ?
-      (_.intersection(entity.inputFields, doc.modifiableFields())).concat('ticket.type') :
-      undefined;
+        (_.intersection(entity.inputFields, doc.modifiableFields())).concat('ticket.type') :
+        undefined;
       Modal.show('Autoform_modal', {
         body: entity.form,
         // --- autoform ---
