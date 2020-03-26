@@ -158,7 +158,7 @@ Parcels.helpers({
     return this.payerMembership().partner();
   },
   display() {
-    return `${this.ref || '?'} (${this.location()}) ${__(this.type)}`;
+    return `${this.ref || '?'} (${this.location()}) ${__('schemaParcels.type.' + this.type)}`;
   },
   displayName() {
     return this.location() || __(this.ref);
