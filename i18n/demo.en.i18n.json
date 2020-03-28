@@ -293,5 +293,40 @@
   },
   "test": {
     "house": "Test house"
+  },
+
+  "promo": {
+    "OneClickToLaunch": "One click and your demo house is ready",
+    "InstructionsToLaunch": "We create a house for you, and you can invite your neighbors into it",
+    "InstructionsToJoin": "Your community has been craeted, and is waiting for you to cast your first vote",    
+    "admin": {
+      "name": {
+        "label": "Your name"
+      },
+      "email": {
+        "label": "Your email address",
+        "placeholder": "... we are sending the shareable invite link here."
+      }
+    },
+    "community": {
+      "name": {
+        "label": "Name of the community",
+        "placeholder": "(eg. Main street 5)"
+      }
+    },
+    "parcelCount" : {
+      "label": "How many flats are in this community? (approx)",
+      "placeholder": "... this many users can be invited to join."
+    },
+    "voting": {
+      "label": "Your first voting",
+      "help": "Vote choices: Yes - No - Abstain",
+      "title": {
+        "label": "Title"
+      },
+      "text": {
+        "label": "Text"
+      }
+    }
   }
 }

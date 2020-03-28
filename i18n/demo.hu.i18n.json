@@ -294,5 +294,44 @@
   },
   "test": {
     "house": "Teszt ház"
+  },
+
+  "promo": {
+    "OneClickToLaunch": "Egy kattintás és kész a saját háza",
+    "InstructionsToLaunch": "Elkészítjük saját demo házát, amibe meghívhatja lakótársait. Egy első szavazást már most kiíírhat, további témákat is természetesen tud majd indítani, még mielőtt meghívja a többieket.",
+    "InstructionsToJoin": [
+      "Lakótársa már elkészítette a saját házukat, és ki is írt benne egy próba szavazást. A zöld gomb megnyomásával ön beléphet ebbe a házba, és szavazhat is.<br><br>",
+      "Belépéshez egy fiókot kell létrehozzunk önnek, ezért meg kell majd adnia egy email címet és egy jelszót. Erre azért van szükség, hogy minden személy csak egyszer tudjon szavazni."
+    ],
+    "admin": {
+      "name": {
+        "label": "Az ön neve",
+        "placeholder": "... öntől fogják kapni a meghívót."
+      },
+      "email": {
+        "label": "Az ön email címe",
+        "placeholder": "(pl. cili@domain.hu) ... ide fogjuk kiküldeni az elkészült ház linkjét."
+      }
+    },
+    "community": {
+      "name" : {
+        "label": "A társasház neve",
+        "placeholder": "(pl. Kankalin utca 4)"
+      }
+    },
+    "parcelCount" : {
+      "label": "Hány darab lakás van ebben a házban? (körülbelül)",
+      "placeholder": "(pl. 35) ... ennyien tudnak majd csatlakozni meghívóval."
+    },
+    "voting": {
+      "label": "Az első szavazás a házban",
+      "help": "Szavazati lehetőségek: Igen - Nem - Tartózkodom",
+      "title": {
+        "label": "Címe"
+      },
+      "text": {
+        "label": "Kiírás szövege"
+      }
+    }
   }
 }

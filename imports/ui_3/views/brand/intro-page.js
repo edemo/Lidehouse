@@ -69,9 +69,9 @@ Template.Intro_page.helpers({
     return (new Date()).getFullYear();
   },
   demoUrl() {
-    const _lang = 'hu';
-    if (Meteor.settings.public.enableDemo) return FlowRouter.path('Demo login', { _lang });
-    else return 'https://demo.honline.hu/demo/' + _lang;
+    const lang = 'hu';
+    if (Meteor.settings.public.enableDemo) return FlowRouter.path('Demo login', {}, { lang });
+    else return `https://demo.honline.hu/demo?lang=${lang}`;
   },
 });
 

@@ -15,6 +15,7 @@ if (Meteor.isClient) {
   import '/imports/ui/pages/app-not-found.js';
 
   import '/imports/ui_3/views/brand/intro-page.js';
+  import '/imports/ui_3/views/brand/landing-page-covid.js';
   import '/imports/ui_3/views/brand/privacy.js';
   import '/imports/ui_3/views/brand/terms.js';
   import '/imports/ui_3/views/pages/demo-login.js';
@@ -50,6 +51,8 @@ if (Meteor.isClient) {
   new FlowRouterTitle(FlowRouter);
 }
 
+export const CommunityRelatedRoutes = [];
+
 //-------------------
 // Route definitions
 //-------------------
@@ -77,7 +80,17 @@ FlowRouter.route('/intro', {
   },
 });
 
-FlowRouter.route('/demo/:_lang', {
+FlowRouter.route('/covid', {
+  name: 'Covid 19 charity offer',
+  action() {
+    BlazeLayout.render('Blank_layout', { content: 'Landing_page_covid_19' });
+  },
+  title() {
+    return __(FlowRouter.current().route.name);
+  },
+});
+
+FlowRouter.route('/demo', {
   name: 'Demo login',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Demo_login' });
@@ -117,6 +130,18 @@ FlowRouter.route('/community', {
   title() {
     const community = getActiveCommunity();
     return community && `${community.name}`;
+  },
+});
+CommunityRelatedRoutes.push('Community page');
+
+FlowRouter.route('/join/:_cid', {
+  name: 'Community join',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_join' });
+  },
+  title(params) {
+    const community = Communities.findOne({ _id: params._cid });
+    return __('join') + ' ' + community.name;
   },
 });
 
@@ -160,8 +185,6 @@ FlowRouter.route('/feedbacks', {
 */
 // --------------------------------------------
 // CommunityRelatedRoutes
-
-export const CommunityRelatedRoutes = [];
 
 FlowRouter.route('/board', {
   name: 'Board',

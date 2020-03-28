@@ -17,6 +17,7 @@ import '../common/footer.js';
 import '../common/tech-chat.js';
 import '../common/right-sidebar.js';
 import '../common/connection-issue.js';
+import '../common/promotion.js';
 import './main.html';
 
 Template.Main_layout.onCreated(function() {

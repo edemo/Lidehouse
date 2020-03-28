@@ -2,7 +2,10 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import { Random } from 'meteor/random';
+import { Accounts as UserAccounts } from 'meteor/accounts-base';
 
+import { Log } from '/imports/utils/log.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
 import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 import { Meters } from '/imports/api/meters/meters.js';
@@ -39,6 +42,30 @@ export const create = new ValidatedMethod({
     
     // The user creating the community, becomes the first 'admin' of it.
     Memberships.insert({ communityId, userId: this.userId, role: 'admin', approved: true, accepted: true });
+    return communityId;
+  },
+});
+
+const launch = new ValidatedMethod({
+  name: 'communities.launch',
+  validate: new SimpleSchema({
+    community: { type: Communities.simpleSchema() },
+    admin: { type: Object },
+    'admin.email': { type: String },
+    'admin.language': { type: String },
+    voting: { type: Object, blackbox: true },
+//    voting: { type: Topics.simpleSchema({ category: 'vote' }) },
+  }).validator({ clean: true }),
+
+  run({ community, admin, voting }) {
+    const communityId = Communities.insert(community);
+    Log.info(`Promo community ${community.name}(${communityId}) created by ${admin.email}}`);
+    const userId = UserAccounts.createUser({ email: admin.email, password: Random.id(8), language: admin.language });
+    Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });
+    Topics.insert(_.extend(voting, { communityId }));
+    // sendInviteLink
+    // https://demo.honline.hu/demo?lang=hu&promo=YRZhLNTzs3kAYaqyf
+    // promo param is the id of the community
     return communityId;
   },
 });
@@ -100,4 +127,4 @@ export const remove = new ValidatedMethod({
 });
 
 Communities.methods = Communities.methods || {};
-_.extend(Communities.methods, { create, update, remove });
+_.extend(Communities.methods, { create, launch, update, remove });

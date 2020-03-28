@@ -3,7 +3,6 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 
-import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
@@ -72,7 +71,7 @@ Communities.actions = {
   join: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'join',
     icon: 'fa fa-suitcase',
-    visible: doc.settings.joinable,
+    visible: doc.settings && doc.settings.joinable,
     run() {
       AccountsTemplates.forceLogin(() => {
         Modal.show('Autoform_modal', {
