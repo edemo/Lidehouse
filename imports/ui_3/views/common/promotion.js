@@ -9,7 +9,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-import { displayError } from '/imports/ui_3/lib/errors.js';
+import { displayError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/actions.js';
@@ -48,12 +48,12 @@ Template.Promotion.viewmodel({
 });
 
 const schemaQuickCommunityLaunch = new SimpleSchema({
-  admin: { type: Object, blackbox: true },
+  admin: { type: Object },
   'admin.email': SimpleSchema.Types.Email,
-  community: { type: Object, blackbox: true },
+  community: { type: Object },
   'community.name': { type: String, max: 100 },
   parcelCount: { type: Number, max: 1000 },
-  voting: { type: Object, blackbox: true },
+  voting: { type: Object },
   'voting.title': { type: String, max: 100 },
   'voting.text': { type: String, max: 5000, autoform: { rows: 5 } },
 });
@@ -81,8 +81,7 @@ Template.Promotion.events({
             text: 'Valaki majd kitalálja mi lesz a teszt szavazás szövege, és az lesz itt.',
           },
         },
-        type: 'method',
-        meteormethod: 'communities.launch',
+        type: 'normal',
         size: 'md',
         btnOK: 'Ház elkészítése',
         btnClose: 'Maybe later',
@@ -107,7 +106,8 @@ Template.Promotion.events({
 
 
 AutoForm.addHooks('af.community.launch', {
-  formToDoc(doc) {
+  onSubmit(doc) {
+    AutoForm.validateForm('af.community.launch');
     doc.community = _.extend({}, doc.community, {
       totalunits: 100 * doc.parcelCount,  // new joiners will get 100 voting units
       city: '?város',
@@ -133,21 +133,22 @@ AutoForm.addHooks('af.community.launch', {
         type: 'yesno',
       },
     });
-    return doc;
-  },
-  onError(formType, error) {
-    displayError(error);
-  },
-  onSuccess(formType, result) {
-    Modal.hide(this.template.parent());
-    Session.set('promo'); // turn it off
-    Meteor.setTimeout(() => {
-      Modal.show('Modal', {
-        title: 'GRATULÁLUNK',
-        text: `Az ön háza elkészült! (azonosítója:${result}) <br><br>A megadott email címre elküldtük a linket, amivel a meghívottak csatlakozhatnak. <br>Ossza meg a linket lakótársaival.`,
-        btnOK: 'OK',
-      });
-    }, 1000);
+    Meteor.call('communities.launch', doc,
+      onSuccess((res) => {
+        Modal.hide(this.template.parent());
+        Session.set('promo'); // turn it off
+        Meteor.setTimeout(() => {
+          Modal.show('Modal', {
+            title: 'GRATULÁLUNK',
+            text: `Az ön háza elkészült! (azonosítója:${res}) <br><br>
+              A megadott email címre elküldtük a linket, amivel a meghívottak csatlakozhatnak. <br>
+              Ossza meg a linket lakótársaival.`,
+            btnOK: 'OK',
+          });
+        }, 1000);
+      })
+    );
+    return false; // otherwise calls AJAX
   },
 });
 

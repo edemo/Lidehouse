@@ -60,12 +60,13 @@ const launch = new ValidatedMethod({
   run({ community, admin, voting }) {
     const communityId = Communities.insert(community);
     Log.info(`Promo community ${community.name}(${communityId}) created by ${admin.email}}`);
-    const userId = UserAccounts.createUser({ email: admin.email, password: Random.id(8), language: admin.language });
+    const password = Random.id(8);
+    const userId = UserAccounts.createUser({ email: admin.email, password, language: admin.language });
     Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });
     Topics.insert(_.extend(voting, { communityId }));
-    // sendInviteLink
-    // https://demo.honline.hu/demo?lang=hu&promo=YRZhLNTzs3kAYaqyf
-    // promo param is the id of the community
+    // sendEmail: 
+    // Admin can login to https://demo.honline.hu with, email: admin.email, password: password
+    // InviteMembersLink: `https://demo.honline.hu/demo?lang=hu&promo=${communityId}`
     return communityId;
   },
 });

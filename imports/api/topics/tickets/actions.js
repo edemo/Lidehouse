@@ -48,6 +48,6 @@ AutoForm.addHooks('af.maintenance.insert', {
       if (expectedLength) doc.ticket.expectedFinish = moment(date).add(expectedLength).toDate();
       insert(doc);
     });
-    return false;
+    return false; // otherwise calls AJAX
   },
 });
