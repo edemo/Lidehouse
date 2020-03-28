@@ -147,6 +147,16 @@
           "1": "I apologize from everyone. The dog is ours, it ususally doesn't make any noise. But my granny was in the hospital, and it was left alone last week.",
           "2": "Fortunately granny is out of hospital and back home from yesterday, so it won't be causing noise anymore. Sincere apologies from everyone."
         }
+      },
+      "3": {
+        "title": "Help in shopping",
+        "text": "My dear neighbours! Can you help me please with shopping? I'd rather not go to the store because of the epidemic.",
+        "comment": {
+          "0": "Sure, just send me your list in private message and I will get you everything.",
+          "1": "I can help, too.",
+          "2": "Thank you!",
+          "3": "Do you know where can I get a thermometer? They ran out of it in the pharmacy at the corner."
+        }
       }
     },
     "news": {
@@ -161,6 +171,15 @@
       "2": {
         "title": "Useful information",
         "text": ""
+      },
+      "3": {
+        "title": "Information on epidemic precautions",
+        "text": ["Dear Owners, Residents! ",
+          "With regard to the coronavirus outbreak, we are introducing the following measures in our house:",
+          "- As part of the daily cleaning routine, the front door handles and the buttons on the elevators are cleaned with alcohol disinfectant by the cleaning staff.",
+          "- Staircase windows are open during the day. \n",
+          "We ask everyone to pay close attention to personal hygiene, wash their hands frequently and thoroughly with soap or alcohol hand disinfectant, do not stay in a larger community for extended periods of time, use tissue when coughing and sneeze, and follow the recommendations of the Operational Strain.",
+          "The condominium management will keep abreast of developments in the epidemiological situation, keeping an eye on communications issued by the Operational Strain. If any action is taken on the condominium, we will inform you immediately."]
       }
     },
     "vote": {
@@ -188,7 +207,7 @@
       },
       "wallColor": {
         "title": "Color of the building walls",
-        "text": "What color should we paint the building's walls during the renovation in August.",
+        "text": "What color should we paint the building's walls during the renovation in August?",
         "choice": {
           "0": "neutral white",
           "1": "light pink",
@@ -203,7 +222,22 @@
       "manager": {
         "title": "Replacement of Manager",
         "text": "Let's have a vote in writing or hold an extraordinary meeting for this purpose. Those who agree to replace the manager, please support this proposal. If at least 10% of the ownership ratios support this proposal the current manager is obliged to open a vote on this issue. If he fail to do this within 30 days of the successful completion of this vote, the Audit Board shall do the same."
-      }
+      },
+      "epidemic": {
+        "title": "Reduce shop rental fee",
+        "text": ["The confectionery on the ground floor has closed indefinitely due to the epidemic. The owner has asked for the rent to be released for the downtime, as he cannot pay the rent if he has no income.",
+          "Should we reduce the rent for the confectionery during the epidemic?"],
+        "choice": {
+          "0": "Yes, cut it in half (50%)",
+          "1": "Yes, let it go completely",
+          "2": "No, let them pay long as they can"
+        },
+        "comment": {
+          "0": "I think it is worth reducing to keep the current tenant because it will be difficult to find a new tenant in the emerging economic situation.",
+          "1": "I love this pastry shop, the owner is very cute.",
+          "2": "Who knows how long this situation will last, if he goes bankrupt anyway before it reopens, we won't win anything, we will give up our money unnecessarily."
+        }
+      }
     },
     "agenda": {
       "0": {
@@ -240,7 +274,7 @@
       }
     },
     "ticket": {
-      "0": {
+      "lift": {
         "title": "Elevator out of order",
         "text": "Stopped on the 6th floor. None of the buttons make it move.",
         "comment": {
@@ -248,7 +282,7 @@
           "1": "Looks like its repairable easily, but they took the electric panel with them to their HQ, only there can they fix it. Unfortunately this means we need to wait a few days for them to bring it back."
         }
       },
-      "1": {
+      "leak": {
         "title": "My bathroom is being flooded from above.",
         "text": "A part of the ceiling has even fallen. I was lucky to not have my bath at that moment. I could be dead now.",
         "comment": {
@@ -258,14 +292,14 @@
           "3": "The money arrived too. The bill has been paid today."
         }
       },
-      "2": {
+      "blackout": {
         "title": "Electricity shortages",
         "text": "It is the third time that the electricity goes away for a period during the nigth.",
         "comment": {
           "0": "I reported to the electricity company last week. They are looking into it."
         }
       },
-      "3": {
+      "plaster": {
         "title": "Cracks in the wall",
         "text": "On the second floor the wall is cracked, pieces of it fallen down.",
         "comment": {
