@@ -102,7 +102,8 @@ Topics.actions = {
   statusUpdate: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'statusUpdate',
     icon: 'fa fa-edit',
-    visible: doc && doc.statusObject().data && user.hasPermission(`${doc.category}.statusChange.${doc.status}.enter`, doc),
+    visible: doc && doc.statusObject().data && user.hasPermission(`${doc.category}.update`, doc)
+      && user.hasPermission(`${doc.category}.statusChange.${doc.status}.enter`, doc),
     run() {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -122,8 +123,9 @@ Topics.actions = {
     label: (!options.status && 'statusChange') || (options.status.label)
       || (__('Change status to', __('schemaTopics.status.' + options.status.name))),
     icon: (options.status && options.status.icon) || 'fa fa-cogs',
-    visible: !options.status
-      || user.hasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc),
+    visible: (!options.status && doc.possibleNextStatuses().length > 0
+      && doc.possibleNextStatuses().some(status => user.hasPermission(`${doc.category}.statusChange.${status.name}.enter`, doc)))
+      || (options.status && user.hasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc)),
     subActions: !options.status // if there is a status specified in options, that is a specific action w/o subActions
       && doc && doc.possibleNextStatuses().map(status => Topics.actions.statusChange({ status }, doc, user)),
     run() {

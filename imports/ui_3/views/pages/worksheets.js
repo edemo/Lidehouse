@@ -29,8 +29,8 @@ import './worksheets.html';
 Template.Worksheets.onCreated(function onCreated() {
   Session.set('activePartnerRelation', 'supplier');
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
-  const communityId = this.getCommunityId();
   this.autorun(() => {
+    const communityId = this.getCommunityId();
     this.subscribe('communities.byId', { _id: communityId });
     this.subscribe('topics.list', { communityId, category: 'ticket' });
     this.subscribe('contracts.inCommunity', { communityId });
