@@ -44,10 +44,11 @@ if (Meteor.isServer) {
           { communityId: Fixture.demoCommunityId },
           (collections) => {
             chai.assert.equal(collections.delegations.length, 2);
-            chai.assert.equal(collections.users.length, 2);
+            chai.assert.equal(collections.partners.length, 2);
+// TODO?            chai.assert.equal(collections.users.length, 2);
+            done();
           }
         );
-        done();
       });
 
       it('sends all delegations.toUser', function (done) {
@@ -57,10 +58,11 @@ if (Meteor.isServer) {
           { communityId: Fixture.demoCommunityId },
           (collections) => {
             chai.assert.equal(collections.delegations.length, 2);
-            chai.assert.equal(collections.users.length, 2);
+            chai.assert.equal(collections.partners.length, 2);
+// TODO?            chai.assert.equal(collections.users.length, 2);
+            done();
           }
         );
-        done();
       });
     });
 
