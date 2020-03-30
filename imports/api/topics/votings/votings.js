@@ -223,7 +223,10 @@ Topics.categoryHelpers('vote', {
         votePathDisplay() {
           if (this.votePath.length === 1) return 'direct';
           let path = '';
-          this.votePath.forEach((pid, ind) => { if (ind > 0) path += (' -> ' + Partners.findOne(pid).toString()); });
+          this.votePath.forEach((pid, ind) => {
+            const partner = Partners.findOne(pid);
+            if (ind > 0 && partner) path += (' -> ' + partner.toString());
+          });
           return path;
         },
       }));
