@@ -21,7 +21,7 @@ export const Permissions = [
   { name: 'delegate.insert',        roles: ['manager'] },
   { name: 'delegate.update',        roles: ['manager'] },
   { name: 'delegate.remove',        roles: ['manager'] },
-  { name: 'partners.inCommunity',   roles: ['manager', 'accountant', 'treasurer'] },
+  { name: 'partners.inCommunity',   roles: exceptGuest },
   { name: 'partners.details',       roles: ['manager'] },
   { name: 'partners.insert',        roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'partners.update',        roles: ['manager', 'accountant', 'treasurer'] },
