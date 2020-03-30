@@ -152,7 +152,7 @@ export const Permissions = [
 
   { name: 'ticket.statusChange',                      roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChange.reported.enter',     roles: exceptGuest },
-  { name: 'ticket.statusChange.reported.leave',     roles: exceptGuest },
+  { name: 'ticket.statusChange.reported.leave',     roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChange.confirmed.enter',    roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChange.confirmed.leave',    roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChange.toApprove.enter',    roles: ['manager', 'maintainer'] },
@@ -167,7 +167,7 @@ export const Permissions = [
   { name: 'ticket.statusChange.suspended.leave',    roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChange.finished.enter',     roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChange.finished.leave',     roles: ['manager', 'maintainer'] },
-  { name: 'ticket.statusChange.closed.enter',       roles: ['manager', 'maintainer'], allowAuthor: true },
+  { name: 'ticket.statusChange.closed.enter',       roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChange.closed.leave',       roles: nobody },
   { name: 'ticket.statusChange.deleted.enter',      roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChange.deleted.leave',      roles: nobody },  
