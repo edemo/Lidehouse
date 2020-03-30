@@ -16,7 +16,7 @@ Template.Chopped.viewmodel({
   },
   isChopped(ctx) {
     const chars = isNaN(ctx.chars) ? CHOP_AT_CHARS : ctx.chars; // Bypassing Blaze auto last params in helper if chars is not set
-    return (ctx.text && ctx.text.length > chars);
+    return (!this.showmore() && ctx.text && ctx.text.length > chars);
   },
 });
 
