@@ -659,6 +659,7 @@
   "actionDone_notify": "továbbítva",
   "actionDone_remove": "eltávolítva",
   "actionDone_statusUpdate": "státusz frissítve",
+  "actionDone_registerReading": "leolvasás rögzítve",
 // "bill parcels successful": "Közös költség terv kiróvva",
 // "close vote successful": "Szavazás lezárva",
 // "publish balances successful": "Aktuális egyenlegek publikálva",
