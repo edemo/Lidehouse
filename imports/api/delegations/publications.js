@@ -37,10 +37,11 @@ Meteor.publishComposite('delegations.fromUser', function delegationsFromUser(par
       find(delegation) {
         return Partners.find({ _id: delegation.targetId }, { fields: Partners.publicFields });
       },
-    }, {
-      find(delegation) {
-        return Meteor.users.find({ _id: delegation.targetId }, { fields: Meteor.users.publicFields });
-      },
+      children: [{
+        find(partner) {
+          return Meteor.users.find({ _id: partner.userId }, { fields: Meteor.users.publicFields });
+        },
+      }],
     }],
   };
 });
@@ -65,10 +66,11 @@ Meteor.publishComposite('delegations.toUser', function delegationsToUser(params)
       find(delegation) {
         return Partners.find({ _id: delegation.sourceId }, { fields: Partners.publicFields });
       },
-    }, {
-      find(delegation) {
-        return Meteor.users.find({ _id: delegation.sourceId }, { fields: Meteor.users.publicFields });
-      },
+      children: [{
+        find(partner) {
+          return Meteor.users.find({ _id: partner.userId }, { fields: Meteor.users.publicFields });
+        },
+      }],
     }],
   };
 });

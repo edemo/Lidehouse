@@ -70,9 +70,9 @@ if (Meteor.isServer) {
         accountantPartnerId = Fixture.partnerId(Fixture.dummyUsers[4]);
         randomUserId = Random.id();
         communityId = Fixture.demoCommunityId;
-        forumTopic = Factory.create('forum', { userId: maintainerId, communityId });
-        roomTopic = Factory.create('room', { userId: ownerId, communityId, participantIds: [ownerId, randomUserId] });
-        voteTopic = Factory.create('vote', { userId: ownerId, communityId });
+        forumTopic = Factory.create('forum', { creatorId: maintainerId, communityId });
+        roomTopic = Factory.create('room', { creatorId: ownerId, communityId, participantIds: [ownerId, randomUserId] });
+        voteTopic = Factory.create('vote', { creatorId: ownerId, communityId });
         insertDelegation._execute(
           { userId: ownerId },
           { sourceId: ownerPartnerId, targetId: benefactorPartnerId, scope: 'community', scopeObjectId: communityId }
@@ -82,10 +82,10 @@ if (Meteor.isServer) {
 
 
         _.times(3, () => {
-          Factory.create('comment', { topicId: forumTopic._id, userId: maintainerId });
+          Factory.create('comment', { topicId: forumTopic._id, creatorId: maintainerId });
         });
         _.times(2, () => {
-          Factory.create('comment', { topicId: roomTopic._id, userId: ownerId });
+          Factory.create('comment', { topicId: roomTopic._id, creatorId: ownerId });
         });
       });
 
