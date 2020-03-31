@@ -102,7 +102,9 @@ Topics.categoryHelpers('vote', {
     return choice;
   },
   unitsToShare(units) {
-    const votingShare = new Fraction(units, this.community().totalunits);
+    const community = this.community();
+    const totalunits = community && community.totalunits;
+    const votingShare = new Fraction(units, totalunits);
     return votingShare;
   },
   voteSuccessLimit() {
