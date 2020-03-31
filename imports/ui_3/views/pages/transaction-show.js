@@ -26,24 +26,24 @@ Template.Transaction_show.viewmodel({
   id() {
     return FlowRouter.getParam('_txid');
   },
-  doc() {
-    return { doc: { _id: this.id() } };
+  context() {
+    return { doc: this.doc() };
   },
-  transaction() {
+  doc() {
     return Transactions.findOne(this.id());
   },
   viewForm() {
-    const tx = this.transaction();
+    const tx = this.doc();
     const entity = tx && Transactions.entities[tx.entityName()];
     return entity && entity.viewForm;
   },
   pageTitle() {
-    const tx = this.transaction();
+    const tx = this.doc();
     const txdef = tx && tx.txdef();
     return txdef && `${__(txdef.name)} ${__('details')}`;
   },
   smallTitle() {
-    const tx = this.transaction();
+    const tx = this.doc();
     return tx && tx.serialId;
   },
   pageCrumbs() {
