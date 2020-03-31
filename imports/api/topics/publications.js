@@ -127,7 +127,9 @@ Meteor.publish('topics.list', function topicsList(params) {
     return this.ready();
   }
 
-  return Topics.find(params, { fields: Topics.publicFields });
+  const selector = _.extend({}, params, { $or: [{ participantIds: { $exists: false } }, { participantIds: this.userId }] });
+
+  return Topics.find(selector, { fields: Topics.publicFields });
 });
 
 Meteor.publishComposite('topics.roomsOfUser', function roomsOfUser(params) {
