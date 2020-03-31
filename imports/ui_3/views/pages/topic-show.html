@@ -35,10 +35,10 @@
                                   </div>
                                   {{#if (equals topic.category 'vote')}}
                                   <div class="tab-pane" id="tab-3">
-                                      {{#if or closed (currentUserHasPermission 'vote.peek')}}
+                                      {{#if or votingClosed (currentUserHasPermission 'vote.peek')}}
                                           {{> Vote_results}}
                                       {{else}}
-                                          <h5 class="text-center">{{_ 'Vote results become availailable once voting is closed'}}</h5>
+                                          <h5 class="text-center">{{_ 'Vote results become available once voting is closed'}}</h5>
                                       {{/if}}
                                   </div>
                                   {{/if}}
