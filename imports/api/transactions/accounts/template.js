@@ -33,6 +33,7 @@ export function defineAccountTemplates() {
     { code: '`381', name: 'Cash register', category: 'cash', primary: true }, // Pénztár
     { code: '`382', name: 'Checking account', category: 'bank', primary: true }, // Folyószámla
     { code: '`383', name: 'Savings account', category: 'bank', primary: false }, // Megtakarítási számla
+    { code: '`384', name: 'LTP', category: 'bank', primary: false }, // FUNDAMENTA
     { code: '`39', name: 'AKTÍV IDŐBELI ELHATÁROLÁSOK', category: 'asset' },
     // 4
     { code: '`4', name: 'Liabilities', category: 'liability', locked: true, sign: -1 },  // FORRÁSOK

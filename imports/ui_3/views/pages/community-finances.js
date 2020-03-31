@@ -8,6 +8,7 @@ import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { monthTags, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -96,17 +97,16 @@ const minusColors = [
 
 Template.Disclaimer.helpers({
   publishDate() {
-    const publishedBalance = Balances.findOne({ tag: 'P' });
+    const publishedBalance = Balances.findOne({ tag: 'T' });
     return publishedBalance ? publishedBalance.updatedAt : new Date('2000-01-01');
   },
 });
 
 Template.Community_finances.viewmodel({
-  accountToView: '323',
+  accountToView: '`382',
   communityId() { return Session.get('activeCommunityId'); },
   community() { return Communities.findOne(this.communityId()); },
-  DEMO() { return this.community() && _.contains(['Test house', 'Teszt ház', 'Demo house', 'Demo ház'], this.community().name); },
-  startTag: 'T-2017-1',
+  startTag: 'T-2019-01',
   endTag: PeriodBreakdown.currentMonthTag(),
   startIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.startTag()); },
   endIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.endTag()); },
@@ -137,88 +137,49 @@ Template.Community_finances.viewmodel({
     return this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: 'C' + l.code.substring(1) }).displayTotal());
   },
   statusData() {
-    return this.DEMO() ? {
-      labels: this.demoLabels(),
-      datasets: [
-        _.extend({
-          label: __("Money accounts"),
-          data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
-        }, plusColors[0]),
-        _.extend({
-          label: __("Commitments"),
-          data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
-        }, minusColors[0]),
-      ],
-    } : {
+    const data = {
       labels: this.marinaLabels(),
       datasets: [
         _.extend({
           label: __("Money accounts"),
-          data: this.monthlyDataFromCbalances('`38'),
+          data: this.monthlyDataFromTbalances('`38'),
         }, plusColors[0]),
         _.extend({
           label: __("Commitments"),
-          data: this.monthlyDataFromTbalances('454'),
+          data: this.monthlyDataFromTbalances('`45'),
         }, minusColors[0]),
       ],
     };
+    return data;
   },
   moneyData() {
-    let moneyData;
-    if (this.DEMO()) {
-      moneyData = {
-        labels: this.demoLabels(),
-        datasets: [
-          _.extend({
-            label: "Folyószámla",
-            data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
-          }, plusColors[0]),
-          _.extend({
-            label: "Megtakarítási számla",
-            data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
-          }, plusColors[1]),
-          _.extend({
-            label: "Pénztár",
-            data: [10, 40, 40, 90, 60, 70, 90, 50, 80, 50, 75, 40],
-          }, plusColors[2]),
-        ],
-      };
-    } else {
-      const datasets = [];
-      const moneyAccount = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
-      moneyAccount.leafs().reverse().forEach((account, index) => {
-        datasets.push(_.extend({
-          label: account.name,
-          data: this.monthlyDataFromCbalances(account.code),
-          fill: true,
-        }, plusColors[index + 1]));
-      });
-      moneyData = { labels: this.marinaLabels(), datasets };
-    }
+    const datasets = [];
+    const moneyAccount = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
+    moneyAccount.leafs().fetch().reverse().forEach((account, index) => {
+      datasets.push(_.extend({
+        label: __(account.name),
+        data: this.monthlyDataFromTbalances(account.code),
+        fill: true,
+      }, plusColors[index + 1]));
+    });
+    const moneyData = { labels: this.marinaLabels(), datasets };
     return moneyData;
   },
   commitmentData() {
-    return this.DEMO() ? {
-      labels: this.demoLabels(),
-      datasets: [
-        _.extend({
-          label: "Hosszú lejáratú bank hitel",
-          data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
-        }, minusColors[1]),
-        _.extend({
-          label: __("Suppliers"),
-          data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
-        }, minusColors[2]),
-      ],
-    } : {
+    const data = {
       labels: this.marinaLabels(),
       datasets: [
         _.extend({
-          label: __("Suppliers"),
-          data: this.monthlyDataFromTbalances('454'),
+          label: __("HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK"),
+          data: this.monthlyDataFromTbalances('`44'),
+        }, minusColors[0]),
+        _.extend({
+          label: __("RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK"),
+          data: this.monthlyDataFromTbalances('`45'),
         }, minusColors[0]),
       ],
     };
+    return data;
   },
   normalChartOptions() {
     return {
@@ -269,30 +230,40 @@ Template.Community_finances.viewmodel({
     };
   },
   getBalance(account) {
-    const communityId = Session.get('activeCommunityId');
-    const accountCode = parseInt(account, 10) ? account : Accounts.findOne({ communityId, name: account }).code;
-    return Balances.get({ communityId, account: accountCode, tag: 'P' }).displayTotal()
-      || Balances.get({ communityId, account: accountCode, tag: 'C' }).displayTotal();
+    const communityId = getActiveCommunityId();
+    if (!account.startsWith('`')) {
+      const a = Accounts.findOne({ communityId, name: account });
+      if (!a) {
+        console.log('No such account:', account);
+        return 0;
+      }
+      account = a.code;
+    }
+    return Balances.get({ communityId, account, tag: 'T' }).displayTotal();
   },
   getStatusBalance() {
-    return this.getBalance('Money accounts') - this.getBalance('Suppliers');
+    return this.getBalance('Money accounts') - this.getBalance('RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK');
   },
   statusAccounts() {
     return [
       { name: 'Money accounts', code: '`38' },
-      { name: 'Commitments', code: '454' },
+      { name: 'Commitments', code: '`45' },
     ];
   },
   leafsOf(account) {
     const accounts = Accounts.findOne({ communityId: this.communityId(), name: account });
+    if (!accounts) {
+      console.log('No such account:', account);
+      return [];
+    }
     return accounts.leafs();
   },
   commitmentAccounts() {
-    return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK', 'Suppliers'];
+    return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK'];
   },
-  breakdown(name) {
-    return Breakdowns.findOneByName(name, Session.get('activeCommunityId'));
-  },
+//  breakdown(name) {
+//    return Breakdowns.findOneByName(name, Session.get('activeCommunityId'));
+//  },
   totalTag() {
     return ['T'];
   },
