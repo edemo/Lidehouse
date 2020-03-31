@@ -17,7 +17,7 @@ Template.Transaction_show.viewmodel({
     instance.subscribe('transactions.byId', { _id: this.id() });
   },
   autorun() {
-    const tx = this.transaction();
+    const tx = this.doc();
     const communityId = tx && tx.communityId;
     if (communityId) {
       this.templateInstance.subscribe('txdefs.inCommunity', { communityId });
