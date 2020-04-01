@@ -72,7 +72,9 @@ Topics.actions = {
     icon: 'fa fa-eye',
     visible: user.hasPermission('topics.inCommunity', doc),
     href: FlowRouter.path('Topic show', { _tid: doc._id }),
-    run() {},
+    run() {
+      FlowRouter.go('Topic show', { _tid: doc._id });
+    },
   }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
