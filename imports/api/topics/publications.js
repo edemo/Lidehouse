@@ -105,6 +105,7 @@ Meteor.publishComposite('topics.active', function topicsBoard(params) {
       find(topic) {
         return Comments.find({ topicId: topic._id }, { limit: 5, sort: { createdAt: -1 } });
       },
+    }, {
       find(topic) {
         if (topic.category === 'vote' && topic.status === 'votingFinished') {
           return Topics.find({ _id: topic._id }, { fields: _.extend({}, Topics.publicFields, { voteResults: 1, voteSummary: 1 }) });
