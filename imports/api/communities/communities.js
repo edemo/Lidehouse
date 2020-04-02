@@ -41,9 +41,13 @@ Communities.schema = new SimpleSchema([{
   parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
 }]);
 
-Communities.publicFields = {
-  totalunits: 0,
+Communities.listingsFields = {
+  name: 1,
+  parcels: 1,
 };
+comtype.profileSchema._schemaKeys.forEach((key) => {
+  _.extend(Communities.listingsFields, { [key]: 1 });
+});
 
 Meteor.startup(function indexCommunities() {
   if (Meteor.isServer) {
