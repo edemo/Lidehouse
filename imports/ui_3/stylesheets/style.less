@@ -153,3 +153,121 @@ button, button p,
 .help-icon {
   cursor: help;
 }
+
+// Landing page
+
+@font-face {
+    font-family: kaffeesatz;
+    src: url('/font/YanoneKaffeesatz-Light.ttf');
+    font-weight: 100;
+    font-style: normal;
+}    
+@font-face {
+    font-family: kaffeesatz;
+    src: url('/font/YanoneKaffeesatz-Regular.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: kaffeesatz;
+    src: url('/font/YanoneKaffeesatz-SemiBold.ttf');
+    font-weight: 700;
+    font-style: normal;
+}
+
+.landing-specials {
+    font-family: kaffeesatz;
+
+    h1 {
+        font-size: 40px;
+        font-weight: 400;
+    }
+
+    h2 {
+        font-size: 25px;
+    }
+
+    .navy-line {
+        width: 100px;
+        height: 5px;
+        margin: 20px auto 20px;
+        border-bottom: 2px solid #1ab394;
+    }
+
+    .logo {
+        display: inline-block;
+        padding: 10px 50px 10px 50px;
+        font-size: 20px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .button {
+        box-shadow: 0 10px 20px 0 rgba(0,0,0,.25);
+        font-size: 20px;
+        padding: 10px 40px 10px 40px;
+        border-radius: 6px;
+        line-height: 1.333;
+        font-weight: 100;
+    }
+
+    .small-letter {
+        font-size: 20px;
+        font-weight: 100;
+    }
+
+    .image-in-bg {
+        overflow: visible !important;
+        width: 100%;
+        height: 500px;
+    }
+
+    .stripe-img-laptop {
+        background: url('/images/landing-stripe-laptop.png') 50% 0 no-repeat;
+    }
+
+    .stripe-img {
+        background: url('/images/landing-stripe.png') 50% 0 no-repeat;
+    } 
+
+    .promo {
+        color:#fff !important;
+    }
+
+    .font-30 {
+        font-size: 30px;
+        font-weight: 100;
+    }
+
+    .padding-top-lot {
+        padding-top: 60px;
+    }
+
+    .blank-stripe {
+        height: 20vh;
+    }
+
+   @media (max-width: 768px) {
+        .blank-stripe {
+            height: 0;
+        }
+        h1 {
+            font-size: 30px;
+        }
+        h2 {
+            font-size: 20px;
+        }
+        .p-xl {
+            padding: 10px 0 10px 0;
+        }
+        .stripe-img-laptop {
+            background: url('/images/landing-stripe-laptop.png') 30% 0 no-repeat;
+        }
+
+        .stripe-img {
+            background: url('/images/landing-stripe.png') 30% 0 no-repeat;
+        } 
+        .promo {
+            max-width: 70vw;
+        }
+    }
+}
