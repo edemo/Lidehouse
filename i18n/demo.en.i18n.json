@@ -349,8 +349,7 @@
       }
     },
     "parcelCount" : {
-      "label": "How many flats are in this community? (approx)",
-      "placeholder": "... this many users can be invited to join."
+      "label": "How many flat owners can join this community? "
     },
     "voting": {
       "label": "Your first voting",

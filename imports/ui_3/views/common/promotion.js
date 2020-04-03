@@ -6,7 +6,6 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
-import { moment } from 'meteor/momentjs:moment';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 
@@ -57,9 +56,6 @@ const schemaQuickCommunityLaunch = new SimpleSchema({
   community: { type: Object },
   'community.name': { type: String, max: 100 },
   parcelCount: { type: Number, max: 1000, optional: true, defaultValue: 100 },
-  voting: { type: Object },
-  'voting.title': { type: String, max: 100 },
-  'voting.text': { type: String, max: 5000, autoform: { rows: 5 } },
 });
 
 Meteor.startup(function attach() {
@@ -80,10 +76,7 @@ Template.Promotion.events({
         title: instance.viewmodel.message().header,
         schema: schemaQuickCommunityLaunch,
         doc: {
-          voting: {
-            title: 'Teszt szavazás',
-            text: 'Valaki majd kitalálja mi lesz a teszt szavazás szövege, és az lesz itt.',
-          },
+          parcelCount: 100,
         },
         type: 'normal',
         size: 'md',
@@ -131,17 +124,6 @@ AutoForm.addHooks('af.community.launch', {
     });
     doc.admin = _.extend({}, doc.admin, {
       language: 'hu',
-    });
-    doc.voting = _.extend({}, doc.voting, {
-      category: 'vote',
-      status: 'opened',
-      createdAt: moment().toDate(),
-      closesAt: moment().add(2, 'weeks').toDate(),
-      vote: {
-        procedure: 'online',
-        effect: 'poll',
-        type: 'yesno',
-      },
     });
     Meteor.call('communities.launch', doc,
       onSuccess((res) => {

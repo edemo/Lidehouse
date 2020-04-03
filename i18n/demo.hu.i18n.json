@@ -354,8 +354,7 @@
       }
     },
     "parcelCount" : {
-      "label": "Hány darab lakás van ebben a házban? (körülbelül)",
-      "placeholder": "(pl. 35) ... ennyien tudnak majd csatlakozni meghívóval."
+      "label": "Hány lakó csatlakozhat ehhez a házhoz"
     },
     "voting": {
       "label": "Az első szavazás a házban",
