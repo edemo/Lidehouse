@@ -117,3 +117,10 @@ Communities.actions = {
 
 AutoForm.addModalHooks('af.community.insert');
 AutoForm.addModalHooks('af.community.update');
+
+AutoForm.addHooks('af.community.insert', {
+  formToDoc(doc) {
+    if (doc.settings.modules.length === Communities.availableModules.length) delete doc.settings.modules;
+    return doc;
+  },
+});

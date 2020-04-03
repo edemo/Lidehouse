@@ -38,6 +38,7 @@
                         {{/if}}
                     </a>
                 </li-->
+                {{#if isActiveModule 'forum'}}
                 <li class="{{isActivePath regex='forum'}}">
                     <a href="{{pathFor 'Forum'}}">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
@@ -45,6 +46,8 @@
                         {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'forum') align='right'}}
                     </a>
                 </li>
+                {{/if}}
+                {{#if isActiveModule 'voting'}}
                 <li class="{{isActivePath regex='votings|agendas|delegations'}}">
                     <a class="js-submenu-toggle" href="#"><i class="fa fa-legal"></i>
                         <span class="nav-label">{{_ 'Decision making'}}</span>
@@ -72,20 +75,9 @@
                             </a>
                         </li>
                     </ul>
-                </li><!--
-                <li class="{{isActivePath regex='tickets'}}">
-                    <a href="{{pathFor 'Tickets'}}">
-                        <i class="glyphicon glyphicon-wrench" aria-hidden="true"></i>
-                        <span class="nav-label">{{_ 'Tickets'}}</span>
-                        {{#if Template.subscriptionsReady}}
-                        {{#if currentUserHasPermission 'ticket.update'}}
-                        {{#if unseenEventsCount 'ticket'}}
-                        <span class="badge badge-danger pull-right">{{unseenEventsCount 'ticket'}}</span>
-                        {{/if}}
-                        {{/if}}
-                        {{/if}}
-                    </a>
-                </li>-->
+                </li>
+                {{/if}}
+                {{#if isActiveModule 'maintenance'}}
                 <li class="{{isActivePath regex='tickets|worksheets|contracts'}}">
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
                         <span class="nav-label">{{_ 'Maintenance'}}</span>
@@ -114,6 +106,8 @@
                         </li>
                     </ul>
                 </li>
+                {{/if}}
+                {{#if isActiveModule 'finances'}}
                 <li class="{{isActivePath regex='finances|inventory|accounting'}}">
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-piggy-bank"></i>
                         <span class="nav-label">{{_ 'Finances'}}</span>
@@ -152,6 +146,7 @@
                         {{/if}}
                     </ul>
                 </li>
+                {{/if}}
                 <li class="{{isActivePath regex='community/'}} {{isActivePath path='/community'}}">
                     <a href="{{pathFor 'Community page'}}">
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
@@ -161,12 +156,14 @@
                         {{/if}}
                     </a>
                 </li>
+                {{#if isActiveModule 'documents'}}
                 <li class="{{isActivePath regex='documents'}}">
                     <a href="{{pathFor 'Documentstore'}}">
                         <i class="glyphicon glyphicon-paperclip" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Documentstore'}}</span>
                     </a>
                 </li>
+                {{/if}}
             </ul>
             {{else}}
             <ul>
