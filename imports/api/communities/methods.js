@@ -59,7 +59,7 @@ const launch = new ValidatedMethod({
 
   run({ community, admin, voting }) {
     const communityId = Communities.insert(community);
-    Log.info(`Promo community ${community.name}(${communityId}) created by ${admin.email}}`);
+    Log.info(`Sandbox community ${community.name}(${communityId}) created by ${admin.email}}`);
     const password = Random.id(8);
     const userId = UserAccounts.createUser({ email: admin.email, password, language: admin.language });
     Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });

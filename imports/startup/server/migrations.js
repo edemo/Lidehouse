@@ -372,8 +372,20 @@ Migrations.add({
   },
 });
 
-/* Migrations.add({
+Migrations.add({
   version: 21,
+  name: 'Communities status field added',
+  up() {
+    Communities.update(
+      { status: { $exists: false } },
+      { $set: { status: 'live' } },
+      { multi: true }
+    );
+  },
+});
+
+/* Migrations.add({
+  version: ??,
   name: 'Connect partner userId with membership userId',
   up() {
     Memberships.find({ userId: { $exists: false } }).forEach((m) => {
