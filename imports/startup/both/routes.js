@@ -16,6 +16,7 @@ if (Meteor.isClient) {
 
   import '/imports/ui_3/views/brand/intro-page.js';
   import '/imports/ui_3/views/brand/landing-page-covid.js';
+  import '/imports/ui_3/views/brand/landing-page-kozgyules.js';
   import '/imports/ui_3/views/brand/privacy.js';
   import '/imports/ui_3/views/brand/terms.js';
   import '/imports/ui_3/views/pages/demo-login.js';
@@ -84,6 +85,16 @@ FlowRouter.route('/covid', {
   name: 'Covid 19 charity offer',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Landing_page_covid_19' });
+  },
+  title() {
+    return __(FlowRouter.current().route.name);
+  },
+});
+
+FlowRouter.route('/online-kozgyules', {
+  name: 'Online assembly',
+  action() {
+    BlazeLayout.render('Blank_layout', { content: 'Landing_page_kozgyules' });
   },
   title() {
     return __(FlowRouter.current().route.name);
