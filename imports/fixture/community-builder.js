@@ -232,9 +232,9 @@ export class CommunityBuilder {
     const parcel = Parcels.findOne({ communityId: this.communityId, serial });
     return parcel.code;
   }
-  generateDemoPayments(parcel, membership) {
+  generateDemoPayments(parcel, membership, count = 12) {
     Clock.starts(1, 'year', 'ago');
-    for (let mm = 1; mm < 13; mm++) {
+    for (let mm = 1; mm <= count; mm++) {
       this.execute(ParcelBillings.methods.apply, {
         communityId: this.communityId,
         date: Clock.currentDate(),
