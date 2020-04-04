@@ -1,7 +1,7 @@
 <template name="Live_Chat">
     <div class="live-chat-config animated fadeInRightBig">
         <div class="live-chat-config-box">
-            {{#if liveAgenda}}
+            {{#if or liveAgenda joined}}
             <div class="spin-icon">
                 <i class="fa fa-video-camera"></i>
             </div>
