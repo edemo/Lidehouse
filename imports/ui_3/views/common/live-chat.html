@@ -1,12 +1,12 @@
-<template name="Video">
-    <div class="video-config animated fadeInRightBig">
-        <div class="video-config-box">
+<template name="Live_Chat">
+    <div class="live-chat-config animated fadeInRightBig">
+        <div class="live-chat-config-box">
             {{#if liveAgenda}}
             <div class="spin-icon">
                 <i class="fa fa-video-camera"></i>
             </div>
             {{/if}}
-            <div id="video">
+            <div id="live-chat">
             {{#if and liveAgenda notJoined}}
                 <span>Please join</span>
                 <span>{{liveAgenda.title}}</span>
