@@ -28,7 +28,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Agendas, _id);
-    checkModifier(doc, modifier, ['title']);
+    checkModifier(doc, modifier, ['title', 'live']);
     checkPermissions(this.userId, 'agendas.update', doc);
 
     Agendas.update({ _id }, modifier);

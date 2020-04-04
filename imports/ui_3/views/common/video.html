@@ -1,0 +1,18 @@
+<template name="Video">
+    <div class="video-config animated fadeInRightBig">
+        <div class="video-config-box">
+            {{#if liveAgenda}}
+            <div class="spin-icon">
+                <i class="fa fa-video-camera"></i>
+            </div>
+            {{/if}}
+            <div id="video">
+            {{#if and liveAgenda notJoined}}
+                <span>Please join</span>
+                <span>{{liveAgenda.title}}</span>
+                <button class='btn join-video'>Join</button>
+            {{/if}}
+            </div>
+        </div>
+    </div>
+</template>
