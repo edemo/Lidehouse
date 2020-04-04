@@ -7,10 +7,15 @@
             </div>
             {{/if}}
             <div id="live-chat">
-            {{#if and liveAgenda notJoined}}
-                <span>Please join</span>
-                <span>{{liveAgenda.title}}</span>
-                <button class='btn join-video'>Join</button>
+            {{#if and liveAgenda notJoined}}    
+            <div class="join-live-chat">
+                <div class="title">{{liveAgenda.title}}<br>
+                    <small style="text-transform: none;font-weight: 400">
+                        {{_ 'liveAgenda'}}<br>
+                        <button class='btn btn-primary join-video'>{{_ 'join'}}</button>
+                    </small>
+                </div>
+            </div>
             {{/if}}
             </div>
         </div>

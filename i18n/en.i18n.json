@@ -60,6 +60,7 @@
   "connectionIssue": "There seems to be a connection issue",
   "connectionIssueLine1": "No connection to the server.",
   "connectionIssueLine2": "Its not possible to send messages now.",
+  "liveAgenda": "Live Streaming",
   "newForumTitlePlaceholder": "New topic title…",
   "newForumTextPlaceholder": "New topic text…",
   "newCommentPlaceholder": "Make your comment...",
