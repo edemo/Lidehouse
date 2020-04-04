@@ -14,6 +14,9 @@ Template.Live_Chat.helpers({
   notJoined() {
     return !Session.get('joinedVideo');
   },
+  joined() {
+    return Session.get('joinedVideo');
+  },
 });
 
 export function joinLiveChat(user, doc) {
