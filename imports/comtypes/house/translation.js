@@ -68,6 +68,16 @@ export const HouseTranslation = {
       },
       "settings": {
         "label": "Settings",
+        "modules": {
+          "label": "Modules activated",
+          "options": {
+            "forum": "Forum",
+            "voting": "Decsion making",
+            "maintanance": "Maintenance",
+            "finances": "Finaces",
+            "documents": "Documentstore"
+          }
+        },
         "joinable": {
           "label": "Accepts join requests",
           "help": "If you are not providing all parcel owner's data yourself, and you'd like them to be able to join the community, providing their own data, allow this option. Before approving a join request, you can still edit the submitted data.",
@@ -264,6 +274,16 @@ export const HouseTranslation = {
       },
       "settings": {
         "label": "Beállítások",
+        "modules": {
+          "label": "Modulok aktiválva",
+          "options": {
+            "forum": "Fórum",
+            "voting": "Döntéshozás",
+            "maintanance": "Üzemeltetés",
+            "finances": "Pénzügyek",
+            "documents": "Dokumentumtár"
+          }
+        },
         "joinable": {
           "label": "Csatlakozási kérelmeket fogad",
           "help": "Ha nem ön viszi fel az összes tulajdonosi adatot, hanem szeretné engedni hogy a tulajdonosok maguktól, adataik megadásával csatlakozzanak, akkor engedélyezze. A csatlakozási kérelemben megadott albetét adatokat ön tudja még módosítani, mielőtt jóváhagyja azokat."

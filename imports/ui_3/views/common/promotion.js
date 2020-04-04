@@ -6,8 +6,8 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
-import { moment } from 'meteor/momentjs:moment';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { AccountsTemplates } from 'meteor/useraccounts:core';
 
 import { displayError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -18,6 +18,9 @@ import './promotion.html';
 
 Template.Promotion.viewmodel({
   fullShow: true,
+  autorun() {
+    this.templateInstance.subscribe('communities.byId', { _id: Session.get('promo') });
+  },
   show() {
     const promo = Session.get('promo');
     return !!promo;
@@ -52,10 +55,7 @@ const schemaQuickCommunityLaunch = new SimpleSchema({
   'admin.email': SimpleSchema.Types.Email,
   community: { type: Object },
   'community.name': { type: String, max: 100 },
-  parcelCount: { type: Number, max: 1000 },
-  voting: { type: Object },
-  'voting.title': { type: String, max: 100 },
-  'voting.text': { type: String, max: 5000, autoform: { rows: 5 } },
+  parcelCount: { type: Number, max: 1000, optional: true, defaultValue: 100 },
 });
 
 Meteor.startup(function attach() {
@@ -67,36 +67,38 @@ Template.Promotion.events({
     instance.viewmodel.fullShow(!instance.viewmodel.fullShow());
   },
   'click .call-to-action'(event, instance) {
-    const promo = Session.get('promo');
-    if (!promo) return;
-    if (promo === 'covid') {
+    const promoCode = Session.get('promo');
+    if (!promoCode) return;
+    if (promoCode === 'covid') {
       Modal.show('Autoform_modal', {
         body: 'Quick_community_launch',
         id: 'af.community.launch',
         title: instance.viewmodel.message().header,
         schema: schemaQuickCommunityLaunch,
         doc: {
-          voting: {
-            title: 'Teszt szavazás',
-            text: 'Valaki majd kitalálja mi lesz a teszt szavazás szövege, és az lesz itt.',
-          },
+          parcelCount: 100,
         },
         type: 'normal',
         size: 'md',
         btnOK: 'Ház elkészítése',
         btnClose: 'Maybe later',
       });
-    } else { // The promo code is s communityId for which the user was invited
-//      debugger;
-//      const community = Communities.findOne(promo);
-//      if (!community) return;
+    } else { // The promo code is a communityId into which the user was invited
+      const community = Communities.findOne(promoCode);
+      if (!community) return;
       Modal.show('Modal', {
         id: 'join-community',
         title: instance.viewmodel.message().header,
         text: __('promo.InstructionsToJoin'),
         btnOK: 'Belépés a saját házba',
         onOK() {
-          Meteor.setTimeout(Communities.actions.join({}, { _id: promo }).run, 1000);
+          Session.set('promo');
+          Meteor.logout(onSuccess(() => {
+            AccountsTemplates.forceLogin(
+              Communities.actions.join({}, community).run,
+              'signup'
+            );
+          }));
         },
         btnClose: 'Maybe later',
       });
@@ -109,29 +111,19 @@ AutoForm.addHooks('af.community.launch', {
   onSubmit(doc) {
     AutoForm.validateForm('af.community.launch');
     doc.community = _.extend({}, doc.community, {
+      status: 'sandbox',
       totalunits: 100 * doc.parcelCount,  // new joiners will get 100 voting units
-      city: '?város',
-      street: '?utca',
-      number: '?szám',
+      city: '?-város',
+      street: '?-utca',
+      number: '?-szám',
       zip: '1111',
-      lot: '?hrsz',
+      lot: '?-hrsz',
       settings: {
         language: 'hu',
       },
     });
     doc.admin = _.extend({}, doc.admin, {
       language: 'hu',
-    });
-    doc.voting = _.extend({}, doc.voting, {
-      category: 'vote',
-      status: 'opened',
-      createdAt: moment().toDate(),
-      closesAt: moment().add(2, 'weeks').toDate(),
-      vote: {
-        procedure: 'online',
-        effect: 'poll',
-        type: 'yesno',
-      },
     });
     Meteor.call('communities.launch', doc,
       onSuccess((res) => {

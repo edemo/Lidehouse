@@ -33,7 +33,7 @@ Accounts.ui.config({
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
   sendVerificationEmail: true,
-  enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
+  enforceEmailVerification: !Meteor.settings.public.enableDemo, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
   showResendVerificationEmailLink: true,
   enablePasswordChange: true,
   privacyUrl: '/privacy',
@@ -132,11 +132,11 @@ if (Meteor.isClient) {
 
   // Use this function if you need to perform some action that only logged in users can
   // to enforce a signin before continuing with the callback
-  AccountsTemplates.forceLogin = function forceLogin(callback = () => {}) {
+  AccountsTemplates.forceLogin = function forceLogin(callback = () => {}, loginPage = 'signin') {
     if (!Meteor.userId()) {
       signinRedirectRoute = FlowRouter.current();
       signinRedirectAction = callback;
-      FlowRouter.go('signin');
+      FlowRouter.go(loginPage);
     } else callback();
   };
 }

@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Random } from 'meteor/random';
 import { Accounts as UserAccounts } from 'meteor/accounts-base';
+import { moment } from 'meteor/momentjs:moment';
 
 import { Log } from '/imports/utils/log.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
@@ -53,16 +54,27 @@ const launch = new ValidatedMethod({
     admin: { type: Object },
     'admin.email': { type: String },
     'admin.language': { type: String },
-    voting: { type: Object, blackbox: true },
-//    voting: { type: Topics.simpleSchema({ category: 'vote' }) },
   }).validator({ clean: true }),
 
-  run({ community, admin, voting }) {
+  run({ community, admin }) {
     const communityId = Communities.insert(community);
-    Log.info(`Promo community ${community.name}(${communityId}) created by ${admin.email}}`);
+    Log.info(`Sandbox community ${community.name}(${communityId}) created by ${admin.email}}`);
     const password = Random.id(8);
     const userId = UserAccounts.createUser({ email: admin.email, password, language: admin.language });
     Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });
+    const voting = {
+      title: 'Teszt szavazás',
+      text: 'Valaki majd kitalálja mi lesz a teszt szavazás szövege, és az lesz itt.',
+      category: 'vote',
+      status: 'opened',
+      createdAt: moment().toDate(),
+      closesAt: moment().add(2, 'weeks').toDate(),
+      vote: {
+        procedure: 'online',
+        effect: 'poll',
+        type: 'yesno',
+      },
+    };
     Topics.insert(_.extend(voting, { communityId }));
     // sendEmail: 
     // Admin can login to https://demo.honline.hu with, email: admin.email, password: password

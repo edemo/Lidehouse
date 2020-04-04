@@ -1,12 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
-
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { _ } from 'meteor/underscore';
+
+import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { setMeAsParcelOwner } from '/imports/api/parcels/actions.js';
 import { Communities } from './communities.js';
 import './methods.js';
 
@@ -73,25 +76,27 @@ Communities.actions = {
     icon: 'fa fa-suitcase',
     visible: doc.settings && doc.settings.joinable,
     run() {
-      AccountsTemplates.forceLogin(() => {
-        Modal.show('Autoform_modal', {
-          title: 'pleaseSupplyParcelData',
-          id: 'af.@property.insert.unapproved',
-          schema: Parcels.simpleSchema({ category: '@property' }),
-          doc: { communityId: doc._id },
-          //        omitFields: ['serial'],
-          type: 'method',
-          meteormethod: 'parcels.insert',
-        });
-
-        /*    This can be used for immediate (no questions asked) joining - with a fixed ownership share
-              const communityId = FlowRouter.current().params._cid;
-              const maxSerial = Math.max.apply(Math, _.pluck(Parcels.find().fetch(), 'serial')) || 0;
-              Meteor.call('parcels.insert',
-                { communityId, approved: false, serial: maxSerial + 1, units: 300, type: 'flat' },
-                (error, result) => { onJoinParcelInsertSuccess(result); },
-              );
-        */
+      AccountsTemplates.forceLogin(function joinCommunity() {
+        const communityId = doc._id;
+        if (doc.status === 'sandbox') {   // Sandboxes have immediate (no questions asked) joining, with a fixed ownership share
+          const serials = _.pluck(Parcels.find({ communityId, category: '@property' }).fetch(), 'serial');
+          const maxSerial = serials.length ? Math.max(...serials) : 0;
+          Meteor.call('parcels.insert',
+            { communityId, category: '@property', approved: false, serial: maxSerial + 1, ref: 'A' + (maxSerial + 1), units: 100, type: 'flat' },
+            onSuccess(res => setMeAsParcelOwner(res, communityId, onSuccess(r => FlowRouter.go('App home')),
+            )),
+          );
+        } else {
+          Modal.show('Autoform_modal', {
+            title: 'pleaseSupplyParcelData',
+            id: 'af.@property.insert.unapproved',
+            schema: Parcels.simpleSchema({ category: '@property' }),
+            doc: { communityId: doc._id },
+            //        omitFields: ['serial'],
+            type: 'method',
+            meteormethod: 'parcels.insert',
+          });
+        }
       });
     },
   }),
@@ -112,3 +117,10 @@ Communities.actions = {
 
 AutoForm.addModalHooks('af.community.insert');
 AutoForm.addModalHooks('af.community.update');
+
+AutoForm.addHooks('af.community.insert', {
+  formToDoc(doc) {
+    if (doc.settings.modules.length === Communities.availableModules.length) delete doc.settings.modules;
+    return doc;
+  },
+});

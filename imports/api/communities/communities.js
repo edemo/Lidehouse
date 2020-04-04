@@ -19,8 +19,11 @@ export const Communities = new Mongo.Collection('communities');
 
 const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
+Communities.statusValues = ['sandbox', 'live', 'official'];
+Communities.availableModules = ['forum', 'voting', 'maintanance', 'finances', 'documents'];
 
 Communities.settingsSchema = new SimpleSchema({
+  modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', checked: true } },
   joinable: { type: Boolean, defaultValue: true },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   parcelRefFormat: { type: String, optional: true },
@@ -36,6 +39,7 @@ Communities.schema = new SimpleSchema([{
   management: { type: String, optional: true, autoform: { type: 'textarea' } },
   taxNo: { type: String, max: 50, optional: true },
   totalunits: { type: Number },
+  status: { type: String, allowedValues: Communities.statusValues, defaultValue: 'live', autoform: { type: 'hidden' } },
   settings: { type: Communities.settingsSchema },
   // cached fields:
   parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
