@@ -38,7 +38,7 @@ export function joinLiveChat(user, doc) {
     onload() {
       api.executeCommand('subject', houseName + ' - ' + agendaName);
       api.executeCommand('displayName', userName);
-      api.executeCommand('avatarURL', userAvatar);
+      api.executeCommand('avatarUrl', userAvatar);
     },
   };
   Session.set('joinedVideo', true);
