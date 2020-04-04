@@ -113,7 +113,7 @@
   "noSelectedPerson": "Please select a person on right panel.",
 
   // tickets
-  "Please dont report twice": "To help our maintanance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
+  "Please dont report twice": "To help our maintenance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
   "Report issue": "Report a new issue",
 
   "Sort by": "Sort by %s",

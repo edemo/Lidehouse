@@ -73,7 +73,7 @@ export const HouseTranslation = {
           "options": {
             "forum": "Forum",
             "voting": "Decsion making",
-            "maintanance": "Maintenance",
+            "maintenance": "Maintenance",
             "finances": "Finaces",
             "documents": "Documentstore"
           }
@@ -279,7 +279,7 @@ export const HouseTranslation = {
           "options": {
             "forum": "Fórum",
             "voting": "Döntéshozás",
-            "maintanance": "Üzemeltetés",
+            "maintenance": "Üzemeltetés",
             "finances": "Pénzügyek",
             "documents": "Dokumentumtár"
           }
