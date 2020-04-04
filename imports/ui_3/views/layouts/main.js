@@ -27,6 +27,7 @@ Template.Main_layout.onCreated(function() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
+    this.subscribe('communities.byId', { _id: Session.get('activeCommunityId') });
     this.subscribe('delegations.toUser', { communityId });
     this.subscribe('delegations.fromUser', { communityId });
     this.subscribe('topics.active', { communityId });

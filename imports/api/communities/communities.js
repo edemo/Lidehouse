@@ -61,6 +61,11 @@ Meteor.startup(function indexCommunities() {
 });
 
 Communities.helpers({
+  nextAvailableSerial() {
+    const serials = _.pluck(Parcels.find({ communityId: this._id, category: '@property' }).fetch(), 'serial');
+    const maxSerial = serials.length ? Math.max(...serials) : 0;
+    return maxSerial + 1;
+  },
   registeredUnits() {
     let total = 0;
     Parcels.find({ communityId: this._id, category: '@property' }).forEach(p => total += p.units);
