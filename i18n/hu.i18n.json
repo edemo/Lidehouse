@@ -608,6 +608,7 @@
   "connectionIssue": "Valami hiba van a hálózattal",
   "connectionIssueLine1": "Nincs kapcsolat a szerverrel.",
   "connectionIssueLine2": "Jelenleg nem tud üzeneteket küldeni.",
+  "liveAgenda": "Élő közvetítés",
   "pageNotFound": "Az odal nem található",
   "inviteSend": "Meghívó kiküldése",
   "newForumTitlePlaceholder": "Új téma címe…",
