@@ -1,14 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { Session } from 'meteor/session';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { Session } from 'meteor/session';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Agendas } from './agendas.js';
-import { Communities } from '/imports/api/communities/communities.js';
-import { joinVideo } from '/imports/ui_3/views/common/video.js';
+import { joinLiveChat } from '/imports/ui_3/views/common/live-chat.js';
 
 Agendas.actions = {
   new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
@@ -69,26 +68,27 @@ Agendas.actions = {
     icon: 'fa fa-video-camera',
     visible: !doc.closed() && user.hasPermission('agendas.insert', doc),
     run() {
-      const api = joinVideo(user, doc);
+      let api = {};
       const modifier = {};
       if (doc.live) {
-        api.executeCommand('hangup');
-        $('.video-config-box').removeClass('show');
+        //api.executeCommand('hangup');
+        $('.live-chat-config-box').removeClass('show');
         modifier.$set = { live: false };
       } else {
-        $('.video-config-box').addClass('show');
+        $('.live-chat-config-box').addClass('show');
         modifier.$set = { live: true };
       }
       Meteor.call('agendas.update', { _id: doc._id, modifier });
+      api = joinLiveChat(user, doc);
     },
   }),
   videoJoin: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'join video',
     icon: 'fa fa-video-camera',
-    visible: doc.live && user.hasPermission('agendas.inCommunity', doc),
+    visible: doc.live && !Session.get('joinedVideo') && user.hasPermission('agendas.inCommunity', doc),
     run() {
-      $('.video-config-box').toggleClass('show');
-      joinVideo(user, doc);
+      $('.live-chat-config-box').toggleClass('show');
+      joinLiveChat(user, doc);
     },
   }),
 };

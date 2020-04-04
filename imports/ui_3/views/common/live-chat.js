@@ -5,9 +5,9 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Session } from 'meteor/session';
 import { getActiveCommunity } from '/imports/ui_3/lib/active-community';
 
-import './video.html';
+import './live-chat.html';
 
-Template.Video.helpers({
+Template.Live_Chat.helpers({
   liveAgenda() {
     return Agendas.findOne({ live: true });
   },
@@ -16,7 +16,7 @@ Template.Video.helpers({
   },
 });
 
-export function joinVideo(user, doc) {
+export function joinLiveChat(user, doc) {
   const community = getActiveCommunity();
   const houseName = community.name;
   const houseGUID = community._id;
@@ -30,7 +30,7 @@ export function joinVideo(user, doc) {
   const domain = 'meet.jit.si';
   const jitsiOptions = {
     roomName,
-    parentNode: document.querySelector('#video'), // can't use jquery here
+    parentNode: $('#live-chat')[0],
     configOverwrite: {},
     interfaceConfigOverwrite: {
       filmStripOnly: true,
@@ -46,11 +46,11 @@ export function joinVideo(user, doc) {
   return api;
 }
 
-Template.Video.events({
+Template.Live_Chat.events({
   'click .spin-icon'() {
-      $('.video-config-box').toggleClass('show');
+    $('.live-chat-config-box').toggleClass('show');
   },
   'click .join-video'() {
-    joinVideo(Meteor.user(), Agendas.findOne({ live: true }));
+    joinLiveChat(Meteor.user(), Agendas.findOne({ live: true }));
   },
 });
