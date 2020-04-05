@@ -266,7 +266,7 @@ FlowRouter.route('/delegations', {
 CommunityRelatedRoutes.push('Delegations');
 
 FlowRouter.route('/tickets', {
-  name: 'Tickets',
+  name: 'Tickets report',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Tickets' });
   },
@@ -274,7 +274,7 @@ FlowRouter.route('/tickets', {
     return __(FlowRouter.current().route.name);
   },
 });
-CommunityRelatedRoutes.push('Tickets');
+CommunityRelatedRoutes.push('Tickets report');
 
 FlowRouter.route('/worksheets', {
   name: 'Worksheets',
