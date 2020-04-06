@@ -52,6 +52,35 @@
     "PaymentMethods": "A társasház bankszámlaszáma, amire átutalhatja az összeget",
     "PaymentInstructions": "A közlemény rovatba kérjük írja be a díjbekérő azonosító számát.",
 
+    "PromoSubject": "Üdvözöljük a HONLINE rendszerben",
+    "PromoFooter": "Ezt a üzenetet azért küldtük a regisztrációja során megadott e-mail címre, hogy tájékoztassuk a kezdeti lépésekről. Amennyiben úgy véli, tévedésből kapta ezt az e-mailt, kérjük, hagyja figyelmen kívül vagy írjon az info@honline.hu e-mail címre.",
+    "PromoContent": { 
+      "covid": {
+        "1": [
+          "<h4>Gratulálunk!</h4>",
+          "<p>A(z) __communityName__ társasház felépült a HONLINE világában is! A kulcsokat rögtön átadjuk, előtte még néhány tudnivaló:</p>",
+          "<h4>1. A ház még üres, Önöknek kell majd berendezniük!</h4>",
+          "<p>Mikor először lép be, röviden végigvezetjük a HONLINE szolgáltatásain. Érdemes végigmenni a menüpontokon a piros nyilak segítségével, így egy csapásra megtanulhatja",
+          "<ul><li>hogyan indíthat fórum témát, </li><li>hogyan jelentheti be, ha elromlott a lift vagy </li><li>hogyan hozhat létre szavazást</li></ul>",
+          "...apropó szavazás! Létrehoztunk egy <strong>kezdő szavazást</strong> a házban. Úgy látjuk, a jelenlegi, járvánnyal érintett időszakban a legfontosabb, ",
+          "hogy gyors döntést tudjanak hozni a ház ügyeiben, ezért emeltük ki a szavazást, mint funkciót.", 
+          "Ön is létrehozhat egy <strong>új szavazást</strong> valamely, a házat érintő sürgős témakörben.</p>",
+          "<h4>2. Hívja meg lakótársait!</h4>",
+          "<p>Az önök lakóközössége jelenleg hogyan kommunikál egymással? Körlevélben? Facebook csoportban? Messenger csoportban?<br/>",
+          "<strong>Ossza meg az alábbi linket</strong> valamelyik felületen, mutassa meg társainak, milyen okos társasházkezelő rendszerre lelt!<br/>",
+          "<a href=__inviteMembersLink__>__inviteMembersLink__</a><br/>",
+          "Miután lakótársai körülnéztek a demoházban, automatikusan <strong>az Ön által létrehozott társasházba invitáljuk őket</strong>, és kezdődhet is az online lakóközösségi élet!</p>",
+          "<h4>3. Íme, az Ön kulcsai a(z) __communityName__ társasházhoz!</h4>",
+          "<p>Azonosító: __loginEmail__ <br/>Jelszó: __password__</p>"
+        ],
+        "2": [
+          "<p>Mostmár minden adott ahhoz, hogy belépjen a saját online házába és elkezdje használni. Fedezze fel a funkciókat, hozzon létre akár minta bejegyzéseket, szavazásokat (később törölhetők).",
+          "Következő levelünkben küldünk néhány tippet és gyakorlati segítséget a ház mielőbbi berendezéséhez. Ha kérdése van, az <a href=mailto:info@honline.hu>info@honline.hu</a> címen veheti fel velünk a kapcsolatot!</p>", 
+          "Üdvözlettel,<br/>A Honline.hu csapata"
+        ]
+      }        
+    },
+
     "NotificationSubject": "Értesítések a __name__ társasházból",
     "NotificationsHeader": "A témák melletti Megtekintés gomb elviszi az adott téma oldalára, ahol van lehetősége hozzászólni.",
     "NotificationsFooter": ["Ön azért kapja ezeket az értesítéseket, mert beállításaiban az szerepel, hogy a társasházban történő eseményekről email értesítőt küldjünk __frequency__.<br>",

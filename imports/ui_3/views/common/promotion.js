@@ -56,6 +56,7 @@ const schemaQuickCommunityLaunch = new SimpleSchema({
   community: { type: Object },
   'community.name': { type: String, max: 100 },
   parcelCount: { type: Number, max: 1000, optional: true, defaultValue: 100 },
+  promoCode: { type: String, autoform: { type: 'hidden' } },
 });
 
 Meteor.startup(function attach() {
@@ -109,6 +110,10 @@ Template.Promotion.events({
 
 
 AutoForm.addHooks('af.community.launch', {
+  formToDoc(doc) {
+    doc.promoCode = Session.get('promo');
+    return doc;
+  },
   onSubmit(doc) {
     AutoForm.validateForm('af.community.launch');
     doc.community = _.extend({}, doc.community, {

@@ -36,6 +36,7 @@ export const EmailTemplateHelpers = {
   },
   subject(type, user, community) {
     const lang = user ? user.settings.language : community.settings.language;
+    if (type === 'Promo') return TAPi18n.__('email.PromoSubject', {}, lang);
     return TAPi18n.__('email.' + type, {}, lang) + ' ' + TAPi18n.__('email.fromTheCommunity', { name: community.name }, lang);
   },
   goodOrBad(color) {
