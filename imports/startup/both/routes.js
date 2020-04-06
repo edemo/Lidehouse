@@ -68,9 +68,6 @@ defineRoute('/', {
   action() {
     BlazeLayout.render('Blank_layout', { content: 'app_rootRedirector' });
   },
-  title() {
-    return __('Board');
-  },
 });
 
 // --------------------------------------------
@@ -94,9 +91,6 @@ defineRoute('/demo', {
   name: 'Demo login',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Demo_login' });
-  },
-  title() {
-    return __('Board');
   },
 });
 
