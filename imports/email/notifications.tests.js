@@ -258,5 +258,29 @@ if (Meteor.isServer) {
         sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ user: partner.user(), community: partner.community(), partner }) });
       });
     });
+
+    describe('Community launch promo email', function () {
+      it('Sends promo email when launching community from promo', function () {
+        const community = {
+          name: 'Promo house',
+          status: 'sandbox',
+          totalunits: 10000,
+          city: '?-város',
+          street: '?-utca',
+          number: '?-szám',
+          zip: '1111',
+          lot: '?-hrsz',
+          settings: {
+            language: 'hu',
+          },
+        };
+        const admin = { email: 'promoAdmin@promoemail.hu', language: 'hu' };
+        const promoCode = 'covid';
+        Communities.methods.launch._execute({}, { community, admin, promoCode });
+        sinon.assert.calledOnce(EmailSender.send);
+        sinon.assert.calledWithMatch(EmailSender.send, { to: admin.email });
+        sinon.assert.calledWithMatch(EmailSender.send, { template: 'Promo_Email' });
+      });
+    });
   });
 }
