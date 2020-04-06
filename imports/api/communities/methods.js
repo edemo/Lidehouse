@@ -9,6 +9,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { Log } from '/imports/utils/log.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
 import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { sendPromoEmail } from '/imports/email/promo-send.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -54,9 +55,10 @@ const launch = new ValidatedMethod({
     admin: { type: Object },
     'admin.email': { type: String },
     'admin.language': { type: String },
+    promoCode: { type: String },
   }).validator({ clean: true }),
 
-  run({ community, admin }) {
+  run({ community, admin, promoCode }) {
     const communityId = Communities.insert(community);
     Log.info(`Sandbox community ${community.name}(${communityId}) created by ${admin.email}}`);
     const password = Random.id(8);
@@ -76,9 +78,11 @@ const launch = new ValidatedMethod({
       },
     };
     Topics.insert(_.extend(voting, { communityId }));
-    // sendEmail: 
-    // Admin can login to https://demo.honline.hu with, email: admin.email, password: password
-    // InviteMembersLink: `https://demo.honline.hu/demo?lang=hu&promo=${communityId}`
+    const user = Meteor.users.findOne(userId);
+    if (Meteor.isServer) {
+      const emailParams = { promoCode, communityId, loginEmail: admin.email, password };
+      sendPromoEmail(user, emailParams);
+    }
     return communityId;
   },
 });
