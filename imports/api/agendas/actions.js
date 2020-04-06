@@ -68,27 +68,33 @@ Agendas.actions = {
     icon: 'fa fa-video-camera',
     visible: !doc.closed() && user.hasPermission('agendas.insert', doc),
     run() {
-      let api = {};
+      $('iframe[id*="jitsiConferenceFrame"]').remove();
       const modifier = {};
       if (doc.live) {
-        //api.executeCommand('hangup');
+        Session.set('joinedVideo', false);
         $('.live-chat-config-box').removeClass('show');
         modifier.$set = { live: false };
       } else {
         $('.live-chat-config-box').addClass('show');
         modifier.$set = { live: true };
+        joinLiveChat(user, doc);
       }
       Meteor.call('agendas.update', { _id: doc._id, modifier });
-      api = joinLiveChat(user, doc);
     },
   }),
   videoJoin: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'join video',
+    name: Session.get('joinedVideo') ? 'leave video' : 'join video',
     icon: 'fa fa-video-camera',
-    visible: doc.live && !Session.get('joinedVideo') && user.hasPermission('agendas.inCommunity', doc),
+    visible: (doc.live || Session.get('joinedVideo')) && user.hasPermission('agendas.inCommunity', doc),
     run() {
-      $('.live-chat-config-box').toggleClass('show');
-      joinLiveChat(user, doc);
+      $('iframe[id*="jitsiConferenceFrame"]').remove();
+      if (Session.get('joinedVideo')) {
+        $('.live-chat-config-box').removeClass('show');
+        Session.set('joinedVideo', false);
+      } else {
+        $('.live-chat-config-box').addClass('show');
+        joinLiveChat(user, doc);
+      }
     },
   }),
 };

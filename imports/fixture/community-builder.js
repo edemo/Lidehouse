@@ -38,6 +38,7 @@ export class CommunityBuilder {
     this.nextSerial = (lastCreatedParcel ? lastCreatedParcel.serial : 0) + 1;
     this.dummyUsers = [];
     this.nextUserIndex = 1;
+    this.password = Meteor.settings.demoPassword || faker.random.alphaNumeric(10);
   }
   __(text) {
     return TAPi18n.__(text, {}, this.lang);
@@ -161,7 +162,7 @@ export class CommunityBuilder {
   }
   createLoginableUser(role, userData, membershipData) {
     const emailAddress = `${role}@${this.demoOrTest}.${this.com}`;
-    const userId = Accounts.createUser({ email: emailAddress, password: 'password', language: this.lang });
+    const userId = Accounts.createUser({ email: emailAddress, password: this.password, language: this.lang });
     Meteor.users.update(userId, { $set: {
       'emails.0.verified': true,
       profile: {
@@ -195,7 +196,7 @@ export class CommunityBuilder {
   createFakeUser(i) {
     return Accounts.createUser({
       email: `${faker.name.lastName()}_${i}@${this.demoOrTest}.${this.com}`,
-      password: 'password',
+      password: this.password,
       language: this.lang,
     });
   }
