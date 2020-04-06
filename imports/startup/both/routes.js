@@ -53,11 +53,17 @@ if (Meteor.isClient) {
 
 export const CommunityRelatedRoutes = [];
 
+function defineRoute(url, options) {
+  options.title = options.title
+    || function defaultTitle() { return __(FlowRouter.current().route.name); };
+  FlowRouter.route(url, options);
+}
+
 //-------------------
 // Route definitions
 //-------------------
 
-FlowRouter.route('/', {
+defineRoute('/', {
   name: 'App home',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'app_rootRedirector' });
@@ -70,27 +76,21 @@ FlowRouter.route('/', {
 // --------------------------------------------
 // Business info pages
 
-FlowRouter.route('/intro', {
+defineRoute('/intro', {
   name: 'App intro',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Intro_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 
-FlowRouter.route('/online-kozgyules', {
+defineRoute('/online-kozgyules', {
   name: 'Online assembly',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Landing_page_covid' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 
-FlowRouter.route('/demo', {
+defineRoute('/demo', {
   name: 'Demo login',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Demo_login' });
@@ -100,29 +100,23 @@ FlowRouter.route('/demo', {
   },
 });
 
-FlowRouter.route('/privacy', {
+defineRoute('/privacy', {
   name: 'Privacy',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Privacy_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 
-FlowRouter.route('/terms', {
+defineRoute('/terms', {
   name: 'Terms',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Terms_page' });
-  },
-  title() {
-    return __(FlowRouter.current().route.name);
   },
 });
 
 // --------------------------------------------
 
-FlowRouter.route('/community', {
+defineRoute('/community', {
   name: 'Community page',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_page' });
@@ -134,7 +128,7 @@ FlowRouter.route('/community', {
 });
 CommunityRelatedRoutes.push('Community page');
 
-FlowRouter.route('/join/:_cid', {
+defineRoute('/join/:_cid', {
   name: 'Community join',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_join' });
@@ -145,7 +139,7 @@ FlowRouter.route('/join/:_cid', {
   },
 });
 
-FlowRouter.route('/community/:_cid', {
+defineRoute('/community/:_cid', {
   name: 'Community show',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_page' });
@@ -156,48 +150,32 @@ FlowRouter.route('/community/:_cid', {
   },
 });
 
-FlowRouter.route('/communities', {
+defineRoute('/communities', {
   name: 'Communities list',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Communities_listing' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 
-FlowRouter.route('/profile', {
+defineRoute('/profile', {
   name: 'User data page',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Profile_form' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
-/*
-FlowRouter.route('/feedbacks', {
-  name: 'Feedbacks',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Feedbacks' });
-  },
-});
-*/
+
 // --------------------------------------------
 // CommunityRelatedRoutes
 
-FlowRouter.route('/board', {
+defineRoute('/board', {
   name: 'Board',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Board' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Board');
 
-FlowRouter.route('/room/:_rid', {
+defineRoute('/room/:_rid', {
   name: 'Room show',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Room_show' });
@@ -209,29 +187,23 @@ FlowRouter.route('/room/:_rid', {
 });
 CommunityRelatedRoutes.push('Room show');
 
-FlowRouter.route('/forum', {
+defineRoute('/forum', {
   name: 'Forum',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Forum_topics' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Forum');
 
-FlowRouter.route('/votings', {
+defineRoute('/votings', {
   name: 'Votings',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Vote_topics' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Votings');
 
-FlowRouter.route('/topic/:_tid', {
+defineRoute('/topic/:_tid', {
   name: 'Topic show',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Topic_show' });
@@ -243,40 +215,31 @@ FlowRouter.route('/topic/:_tid', {
 });
 CommunityRelatedRoutes.push('Topic show');
 
-FlowRouter.route('/agendas', {
+defineRoute('/agendas', {
   name: 'Agendas',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Agendas' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Agendas');
 
-FlowRouter.route('/delegations', {
+defineRoute('/delegations', {
   name: 'Delegations',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Delegations' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Delegations');
 
-FlowRouter.route('/tickets', {
+defineRoute('/tickets', {
   name: 'Tickets report',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Tickets' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Tickets report');
 
-FlowRouter.route('/worksheets', {
+defineRoute('/worksheets', {
   name: 'Worksheets',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Worksheets' });
@@ -284,7 +247,7 @@ FlowRouter.route('/worksheets', {
 });
 CommunityRelatedRoutes.push('Worksheets');
 
-FlowRouter.route('/contracts', {
+defineRoute('/contracts', {
   name: 'Contracts',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Contracts' });
@@ -292,51 +255,39 @@ FlowRouter.route('/contracts', {
 });
 CommunityRelatedRoutes.push('Contracts');
 
-FlowRouter.route('/parcels-finances', {
+defineRoute('/parcels-finances', {
   name: 'Parcels finances',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Parcels_finances' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Parcels finances');
 
-FlowRouter.route('/community-finances', {
+defineRoute('/community-finances', {
   name: 'Community finances',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_finances' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Community finances');
 
-FlowRouter.route('/inventory', {
+defineRoute('/inventory', {
   name: 'Inventory',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Inventory_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Inventory');
 
-FlowRouter.route('/accounting', {
+defineRoute('/accounting', {
   name: 'Accounting',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Accounting_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Accounting');
 
-FlowRouter.route('/transaction/:_txid', {
+defineRoute('/transaction/:_txid', {
   name: 'Transaction show',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Transaction_show' });
@@ -348,29 +299,23 @@ FlowRouter.route('/transaction/:_txid', {
 });
 CommunityRelatedRoutes.push('Transaction show');
 
-FlowRouter.route('/community', {
+defineRoute('/community', {
   name: 'Community page default',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Community page default');
 
-FlowRouter.route('/documents', {
+defineRoute('/documents', {
   name: 'Documentstore',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Shareddoc_store' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Documentstore');
 
-FlowRouter.route('/user/:_id', {
+defineRoute('/user/:_id', {
   name: 'User show',
   action() {
     BlazeLayout.render('Main_layout', { content: 'User_show' });
