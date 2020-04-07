@@ -75,6 +75,7 @@ Topics.publicFields = {
   revision: 1,
   status: 1,
   serial: 1,
+  serialId: 1,
 };
 
 Topics.idSet = ['communityId', 'category', 'serial'];

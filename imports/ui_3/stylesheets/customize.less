@@ -249,8 +249,31 @@
 }
 
 @media print {
-    .page-heading, .footer, .border-bottom {
+
+    //Global page
+    .page-heading, .footer, .border-bottom, .btn {
         display: none;
+    }
+
+    //Modal
+    .modal-header {
+        display: none;
+    }
+
+    .modal-dialog {
+        position: absolute;
+        width: 100% !important;
+        height: 100%;
+        margin: 15 !important;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+
+    .modal-content {
+        height: 100%;
+        background-color: white !important;
     }
 }
 

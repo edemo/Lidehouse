@@ -2,6 +2,9 @@
   // for packages
   "markdownHelp": "In tte editor window, you may use markdown directives. Markdown directives can be typed in, or be applied to a selection, by selecting some text and then pressing one of the format buttons. The preview button shows you how the final text will look like. For a full list of applicable markdown directives, press this question mark.",
 
+  // routes
+  "App home": "Online Transparent Condominium Management",
+
   // buttons etc.
   "confirm": "Are you sure?",
   "inviteSend": "Send invitation",
@@ -60,6 +63,7 @@
   "connectionIssue": "There seems to be a connection issue",
   "connectionIssueLine1": "No connection to the server.",
   "connectionIssueLine2": "Its not possible to send messages now.",
+  "liveAgenda": "Live Streaming",
   "newForumTitlePlaceholder": "New topic title…",
   "newForumTextPlaceholder": "New topic text…",
   "newCommentPlaceholder": "Make your comment...",
@@ -113,7 +117,7 @@
   "noSelectedPerson": "Please select a person on right panel.",
 
   // tickets
-  "Please dont report twice": "To help our maintanance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
+  "Please dont report twice": "To help our maintenance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
   "Report issue": "Report a new issue",
 
   "Sort by": "Sort by %s",

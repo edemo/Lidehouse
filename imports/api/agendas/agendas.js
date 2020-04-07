@@ -25,6 +25,7 @@ const chooseTopic = {
 
 Agendas.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  live: { type: Boolean, optional: true, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
 //  topicIds: { type: Array, defaultValue: [] },
 //  'topicIds.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTopic },

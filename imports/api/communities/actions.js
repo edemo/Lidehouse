@@ -79,10 +79,8 @@ Communities.actions = {
       AccountsTemplates.forceLogin(function joinCommunity() {
         const communityId = doc._id;
         if (doc.status === 'sandbox') {   // Sandboxes have immediate (no questions asked) joining, with a fixed ownership share
-          const serials = _.pluck(Parcels.find({ communityId, category: '@property' }).fetch(), 'serial');
-          const maxSerial = serials.length ? Math.max(...serials) : 0;
           Meteor.call('parcels.insert',
-            { communityId, category: '@property', approved: false, serial: maxSerial + 1, ref: 'A' + (maxSerial + 1), units: 100, type: 'flat' },
+            { communityId, category: '@property', approved: false, serial: 0, ref: 'auto', units: 100, type: 'flat' },
             onSuccess(res => setMeAsParcelOwner(res, communityId, onSuccess(r => FlowRouter.go('App home')),
             )),
           );

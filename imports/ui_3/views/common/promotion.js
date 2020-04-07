@@ -95,6 +95,7 @@ Template.Promotion.events({
         onOK() {
           Session.set('promo');
           Meteor.logout(onSuccess(() => {
+            Session.set('activeCommunityId', promoCode);
             AccountsTemplates.forceLogin(
               Communities.actions.join({}, community).run,
               'signup'

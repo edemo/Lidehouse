@@ -63,7 +63,7 @@ ParcelBillings.actions = {
         id: 'af.parcelBilling.apply',
         description: `${__('schemaParcelBillings.lastAppliedAt.label')} > ${Render.formatDate(billing.lastAppliedAt().date)}`,
         schema: ParcelBillings.applySchema,
-        doc,
+        doc: doc || defaultNewDoc(),
         type: 'method',
         meteormethod: 'parcelBillings.apply',
       });
