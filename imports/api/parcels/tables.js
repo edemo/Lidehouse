@@ -45,7 +45,7 @@ export function localizerColumns() {
 export function parcelFinancesColumns() {
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
+    { data: 'type', title: __('schemaParcels.type.label'), render: Render.translateWithScope('schemaParcels.type') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: 'withFollowers()', title: __('follower parcels') },
     { data: 'payerMembership().outstanding', title: __('schemaBills.outstanding.label') },
