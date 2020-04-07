@@ -19,7 +19,7 @@ export function ticketColumns() {
     },
     { data: 'status', title: __('schemaTopics.status.label'), render: displayStatus },
     { data: 'ticket.localizer', title: __('schemaTickets.ticket.localizer.label'), render: l => displayLocalizer(l, communityId) },
-    { data: 'creator()', title: __('reportedBy') },
+    { data: 'creator().displayOfficialName()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },
     { data: 'ticket.urgency', title: __('schemaTickets.ticket.urgency.label'), render: displayUrgency },
     { data: 'ticket.type', title: __('schemaTickets.ticket.type.label'), render: displayTicketType },

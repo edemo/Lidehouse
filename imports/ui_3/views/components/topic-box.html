@@ -44,7 +44,7 @@
     <!-- creator details after the left corner -->
     <div class="media-body">
         <a href="{{pathFor 'User show' _id=creatorId}}">
-            {{creator}}
+            {{creator.displayOfficialName}}
         </a>                  
         <small class="text-muted" title="{{_ 'memberships'}}">
             {{join (translateArray (creator.activeRoles activeCommunityId null))}}
