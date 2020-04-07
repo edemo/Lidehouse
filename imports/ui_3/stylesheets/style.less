@@ -158,26 +158,27 @@ button, button p,
 // Landing page
 
 @font-face {
-    font-family: kaffeesatz;
-    src: url('/font/YanoneKaffeesatz-Light.ttf');
-    font-weight: 100;
-    font-style: normal;
-}    
-@font-face {
-    font-family: kaffeesatz;
-    src: url('/font/YanoneKaffeesatz-Regular.ttf');
+    font-family: kaffeesatz-variable;
+    src: url('/font/YanoneKaffeesatz_VariableFont_wght.ttf');
+    font-variation-settings: 'wght' 400;
     font-weight: 400;
-    font-style: normal;
 }
 @font-face {
-    font-family: kaffeesatz;
-    src: url('/font/YanoneKaffeesatz-SemiBold.ttf');
-    font-weight: 700;
-    font-style: normal;
+    font-family: kaffeesatz-variable;
+    src: url('/font/YanoneKaffeesatz_VariableFont_wght.ttf');
+    font-variation-settings: 'wght' 370;
+    font-weight: 300;
+}
+@font-face {
+    font-family: kaffeesatz-variable;
+    src: url('/font/YanoneKaffeesatz_VariableFont_wght.ttf');
+    font-variation-settings: 'wght' 300;
+    font-weight: 200;
 }
 
 .landing-specials {
-    font-family: kaffeesatz;
+    font-family: kaffeesatz-variable;
+    color: #5E5E60;
 
     h1 {
         font-size: 40px;
@@ -186,6 +187,7 @@ button, button p,
 
     h2 {
         font-size: 25px;
+        font-weight: 300
     }
 
     .navy-line {
@@ -208,12 +210,13 @@ button, button p,
         padding: 10px 40px 10px 40px;
         border-radius: 6px;
         line-height: 1.333;
-        font-weight: 100;
+        font-weight: 300;
+        text-shadow: 1px 1px gray;
     }
 
     .small-letter {
         font-size: 20px;
-        font-weight: 100;
+        font-weight: 300;
     }
 
     .image-in-bg {
@@ -223,58 +226,62 @@ button, button p,
     }
 
     .stripe-img-laptop {
-        background: url('/images/landing-stripe-laptop.png') 50% 0 no-repeat;
+        background: url('/images/landing-stripe-laptop.png') 45% 0 no-repeat;
     }
 
     .stripe-img {
-        background: url('/images/landing-stripe.png') 50% 0 no-repeat;
+        background: url('/images/landing-stripe.png') 45% 0 no-repeat;
     } 
 
     .promo {
         color:#fff !important;
+        max-width: 70vw;
     }
 
     .font-30 {
         font-size: 30px;
-        font-weight: 100;
+        font-weight: 300;
     }
 
     .padding-top-lot {
         padding-top: 60px;
     }
 
-    .blank-stripe {
-        height: 20vh;
-    }
-
-   @media (max-width: 768px) {
-        .blank-stripe {
-            height: 0;
-        }
+   @media (max-width: 1024px) {
         h1 {
-            font-size: 30px;
+            font-size: 25px;
         }
-        h2 {
+        h2, .font-30 {
             font-size: 20px;
         }
-        .p-xl {
+        .p-xl, .p-h-lg, .row.p-md{
             padding: 10px 0 10px 0;
         }
-        .stripe-img-laptop {
-            background: url('/images/landing-stripe-laptop.png') 30% 0 no-repeat;
+        .image-in-bg {
+            height: 350px;
         }
-
+        .stripe-img-laptop,
         .stripe-img {
-            background: url('/images/landing-stripe.png') 30% 0 no-repeat;
+            background: url('/images/landing-stripe-smaller.png') 28% 0 no-repeat;
         } 
+        .padding-top-lot, .p-h-lg {
+            padding-top: 10px;
+        }
+        .m-t-lg {
+            margin-top: 10px;
+        }
+        .small-letter {
+            font-size: 16px;
+        }
+    }
+    @media (max-width: 769px) and (min-width: 441px) {
         .promo {
-            max-width: 70vw;
+            max-width: 50vw;
         }
-        .font-30 {
-            font-size: 22px;
-        }
-        .row.p-md {
-            padding-top: 0;
+    }
+    @media (max-width: 330px) {
+        h2 {
+            font-size: 15px;
         }
     }
 }

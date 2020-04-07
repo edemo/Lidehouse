@@ -45,7 +45,7 @@
                         <div class="vote-info">
                             <i class="fa fa-comments-o"></i> <a class="text-capitalize" href="{{pathFor 'Topic show' _tid=_id}}">{{_ 'Comment'}} ({{commentCounter}})</a>
                             <i class="fa fa-clock-o"></i> <a href="">{{displayTimeFrom createdAt}}</a>
-                            <i class="fa fa-user"></i> <a href="">{{creator}}</a>
+                            <i class="fa fa-user"></i> <a href="">{{creator.displayOfficialName}}</a>
                         </div>
                     </div>
                     <div class="col-sm-2 ">

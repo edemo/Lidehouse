@@ -31,7 +31,7 @@
         </a>
         <div class="media-body" >
             <a href="{{pathFor 'User show' _id=this.creatorId}}">
-                {{creator}}
+                {{creator.displayOfficialName}}
             </a>
             {{#if (equals entityName "comment")}}
                 {{> Comment this}}

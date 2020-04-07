@@ -166,8 +166,8 @@ Topics.actions = {
   block: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'block',
     label: doc.creator() && (doc.creator().isFlaggedBy(user._id)
-      ? __('Unblock content from', doc.creator().toString())
-      : __('Block content from', doc.creator().toString())),
+      ? __('Unblock content from', doc.creator().displayOfficialName())
+      : __('Block content from', doc.creator().displayOfficialName())),
     icon: doc.creator() && (doc.creator().isFlaggedBy(user._id)
       ? 'fa fa-check fa-user' : 'fa fa-ban fa-user-o'),
     visible: doc.category !== 'vote' && doc.creatorId !== user._id && user.hasPermission('flag.toggle', doc),
