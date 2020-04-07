@@ -280,6 +280,7 @@ if (Meteor.isServer) {
         sinon.assert.calledOnce(EmailSender.send);
         sinon.assert.calledWithMatch(EmailSender.send, { to: admin.email });
         sinon.assert.calledWithMatch(EmailSender.send, { template: 'Promo_Email' });
+        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ emailParams: { communityName: 'Promo house', promoCode: 'covid', loginEmail: admin.email } }) });
       });
     });
   });
