@@ -9,6 +9,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { Log } from '/imports/utils/log.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
 import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { __ } from '/imports/localization/i18n.js';
 import { sendPromoEmail } from '/imports/email/promo-send.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -64,9 +65,10 @@ const launch = new ValidatedMethod({
     const password = Random.id(8);
     const userId = UserAccounts.createUser({ email: admin.email, password, language: admin.language });
     Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });
+    const lang = community.settings.language;
     const voting = {
-      title: 'Teszt szavazás',
-      text: 'Valaki majd kitalálja mi lesz a teszt szavazás szövege, és az lesz itt.',
+      title: __('demo.vote.promo.title', {}, lang),
+      text: __('demo.vote.promo.text', {}, lang),
       category: 'vote',
       status: 'opened',
       createdAt: moment().toDate(),
@@ -74,7 +76,11 @@ const launch = new ValidatedMethod({
       vote: {
         procedure: 'online',
         effect: 'poll',
-        type: 'yesno',
+        type: 'choose',
+        choices: [
+          __('demo.vote.promo.choice.0', {}, lang),
+          __('demo.vote.promo.choice.1', {}, lang),
+        ],
       },
     };
     const votingId = Topics.insert(_.extend(voting, { communityId }));
