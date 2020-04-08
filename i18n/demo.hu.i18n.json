@@ -343,7 +343,7 @@
 
   "promo": {
     "OneClickToLaunch": "Egy kattintás és kész a saját háza",
-    "InstructionsToLaunch": "Elkészítjük saját demo házát, amibe meghívhatja lakótársait. Egy első szavazást már most kiíírhat, további témákat is természetesen tud majd indítani, még mielőtt meghívja a többieket.",
+    "InstructionsToLaunch": "Építse fel saját társasházát a HONLINE rendszerében, az alábbi 3 adat megadásával!",
     "InstructionsToJoin": [
       "Lakótársa már elkészítette a saját házukat, és ki is írt benne egy próba szavazást. A zöld gomb megnyomásával ön beléphet ebbe a házba, és szavazhat is.<br><br>",
       "Belépéshez egy fiókot kell létrehozzunk önnek, ezért meg kell majd adnia egy email címet és egy jelszót. Erre azért van szükség, hogy minden személy csak egyszer tudjon szavazni."
@@ -365,7 +365,7 @@
       }
     },
     "parcelCount" : {
-      "label": "Hány lakó csatlakozhat ehhez a házhoz"
+      "label": "Hány lakás van ebben a házban? (ennyien csatlakozhatnak majd meghívóval)"
     },
     "voting": {
       "label": "Az első szavazás a házban",

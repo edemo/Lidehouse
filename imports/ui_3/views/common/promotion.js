@@ -82,7 +82,7 @@ Template.Promotion.events({
         type: 'normal',
         size: 'md',
         btnOK: 'Ház elkészítése',
-        btnClose: 'Maybe later',
+       // btnClose: 'Maybe later',
       });
     } else { // The promo code is a communityId into which the user was invited
       const community = Communities.findOne(promoCode);
@@ -102,7 +102,7 @@ Template.Promotion.events({
             );
           }));
         },
-        btnClose: 'Maybe later',
+        // btnClose: 'Maybe later',
       });
     }
   },

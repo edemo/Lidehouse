@@ -342,8 +342,8 @@
 
   "promo": {
     "OneClickToLaunch": "One click and your demo house is ready",
-    "InstructionsToLaunch": "We create a house for you, and you can invite your neighbors into it",
-    "InstructionsToJoin": "Your community has been craeted, and is waiting for you to cast your first vote",    
+    "InstructionsToLaunch": "We create a house for you, and you can invite your neighbours into it",
+    "InstructionsToJoin": "Your community has been created, and is waiting for you to cast your first vote",    
     "admin": {
       "name": {
         "label": "Your name"
@@ -360,7 +360,7 @@
       }
     },
     "parcelCount" : {
-      "label": "How many flat owners can join this community? "
+      "label": "How many flats are in your house? "
     },
     "voting": {
       "label": "Your first voting",
