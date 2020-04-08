@@ -36,9 +36,11 @@ Template.Promotion.viewmodel({
     if (!promo) return undefined;
     if (promo === 'covid') {
       return {
-        header: 'Mutassa meg lakótársainak',
-        callToAction: 'Küldjön meghívást',
-        details: 'lakótársainak egy saját demo házba!',
+        header: 'Tetszik, amit lát?',
+        details1: 'Építse fel saját házát a HONLINE rendszerében!',
+        details2: 'Egy kattintás és már kész is!',
+        callToAction: 'Regisztrálom a társasházamat!',
+        details3: 'Költözzön be és hívja meg lakótársait!',
       };
     } else { // The promo code is s communityId thtat invites the user
       return {
@@ -64,7 +66,7 @@ Meteor.startup(function attach() {
 });
 
 Template.Promotion.events({
-  'click .theme-config-box'(event, instance) {
+  'click .promotion-config-box'(event, instance) {
     instance.viewmodel.fullShow(!instance.viewmodel.fullShow());
   },
   'click .call-to-action'(event, instance) {
