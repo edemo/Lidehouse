@@ -39,7 +39,7 @@ Template.Promotion.viewmodel({
         header: 'Tetszik, amit lát?',
         details1: 'Építse fel saját házát a HONLINE rendszerében!',
         details2: 'Egy kattintás és már kész is!',
-        callToAction: 'Regisztrálom a társasházamat!',
+        callToAction: 'Létrehozom a társasházamat!',
         details3: 'Költözzön be és hívja meg lakótársait!',
       };
     } else { // The promo code is s communityId thtat invites the user
