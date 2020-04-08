@@ -77,7 +77,8 @@ const launch = new ValidatedMethod({
         type: 'yesno',
       },
     };
-    Topics.insert(_.extend(voting, { communityId }));
+    const votingId = Topics.insert(_.extend(voting, { communityId }));
+    if (Meteor.isServer) Topics.direct.update(votingId, { $set: { creatorId: userId } }, { selector: { category: 'vote' } });
     const user = Meteor.users.findOne(userId);
     if (Meteor.isServer) {
       const emailParams = { promoCode, communityId, loginEmail: admin.email, password };
