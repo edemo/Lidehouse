@@ -134,6 +134,9 @@ const buttonHelpers = {
     const actions = _.map(actionFuncs, a => a(this.getOptions(), this.getDoc(), Meteor.user()));
     return actions;
   },
+  hasVisibleAction(actions) {
+    return actions.some(a => a.visible);
+  },
   needsDividerAfter(action) {
     return !!action.subActions;
   },
