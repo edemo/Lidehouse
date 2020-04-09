@@ -7,16 +7,29 @@ const CHOP_AT_CHARS = 600;
 
 Template.Chopped.viewmodel({
   showmore: false,
-  choppedText(ctx) {
-    let text;
-    const chars = isNaN(ctx.chars) ? CHOP_AT_CHARS : ctx.chars; // Bypassing Blaze auto last params in helper if chars is not set
-    if (ctx.text.length <= chars || this.showmore()) text = ctx.text;
-    else text = ctx.text.substr(0, chars) + '... ';
-    return ctx.markdown ? sanitizeHtml(marked(text)) : text;
+  onRendered() {
+    const t = this.templateInstance;
+    t.$('.js-showmore').appendTo(t.$('.showmore'));
   },
-  isChopped(ctx) {
-    const chars = isNaN(ctx.chars) ? CHOP_AT_CHARS : ctx.chars; // Bypassing Blaze auto last params in helper if chars is not set
-    return (!this.showmore() && ctx.text && ctx.text.length > chars);
+  choppedText() {
+    const td = this.templateInstance.data;
+    let text;
+    const dots = td.markdown ? '...<span class="showmore"></span>' : '...';
+    const chars = isNaN(td.chars) ? CHOP_AT_CHARS : td.chars; // Bypassing Blaze auto last params in helper if chars is not set
+    if (td.text.length <= chars || this.showmore()) text = td.text;
+    else text = td.text.substr(0, chars) + dots;
+    const sanitizedText = sanitizeHtml(text, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['span']),
+      allowedClasses: {
+        'span': ['showmore'],
+      },
+    });
+    return td.markdown ? marked(sanitizedText) : text;
+  },
+  isChopped() {
+    const td = this.templateInstance.data;
+    const chars = isNaN(td.chars) ? CHOP_AT_CHARS : td.chars; // Bypassing Blaze auto last params in helper if chars is not set
+    return (!this.showmore() && td.text && td.text.length > chars);
   },
 });
 
