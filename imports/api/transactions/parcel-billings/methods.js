@@ -43,7 +43,7 @@ export const apply = new ValidatedMethod({
   name: 'parcelBillings.apply',
   validate: ParcelBillings.applySchema.validator(),
 
-  run({ communityId, date, ids, localizer }) {
+  run({ communityId, date, ids, localizer, withFollowers }) {
     if (Meteor.isClient) return;
     checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
     ActiveTimeMachine.runAtTime(date, () => {
@@ -55,7 +55,7 @@ export const apply = new ValidatedMethod({
       activeParcelBillings.forEach((parcelBilling) => {
 //        const alreadyAppliedAt = parcelBilling.alreadyAppliedAt(billingPeriod.label);
 //        if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
-        const parcels = parcelBilling.parcels(localizer);
+        const parcels = parcelBilling.parcels(localizer, withFollowers);
         parcels.forEach((parcel) => {
           productionAssert(parcel, 'Could not find parcel - Please check if parcel ref matches the building+floor+door exactly');
           const line = {

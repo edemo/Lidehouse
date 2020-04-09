@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
@@ -100,6 +101,7 @@ ParcelBillings.applySchema = new SimpleSchema({
   date: { type: Date, autoform: { value: new Date() } },
   ids: { type: [String], optional: true, regEx: SimpleSchema.RegEx.Id, autoform: _.extend({ type: 'select-checkbox', checked: true }, chooseParcelBilling) },
   localizer: { type: String, optional: true, autoform: chooseParcelBillingLocalizer() },
+  withFollowers: { type: Boolean, optional: true, autoform: { disabled() { const loc = AutoForm.getFieldValue('localizer'); return !loc || loc === '@'; } } },
 });
 
 Meteor.startup(function indexParcelBillings() {
@@ -110,12 +112,15 @@ ParcelBillings.helpers({
   community() {
     return Communities.findOne(this.communityId);
   },
-  parcels(appliedLocalizer) {
+  parcels(appliedLocalizer, withFollowers) {
     const localizer = appliedLocalizer || this.localizer;
     const selector = { communityId: this.communityId, category: '@property', code: new RegExp('^' + localizer) };
     if (this.type) selector.type = this.type;
     if (this.group) selector.group = this.group;
-    return Parcels.find(selector);
+    const parcels = Parcels.find(selector);
+    if (withFollowers) {
+      return parcels.fetch().map(p => p.withFollowers()).flat(1);
+    } else return parcels;
   },
   projectionUom() {
     switch (this.projection.base) {
