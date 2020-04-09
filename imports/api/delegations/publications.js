@@ -23,7 +23,7 @@ Meteor.publishComposite('delegations.fromUser', function delegationsFromUser(par
   const { communityId } = params;
 
   const user = Meteor.users.findOne(this.userId);
-  if (!user) {
+  if (!user || !user.partnerId(communityId)) {
     return this.ready();
   }
 
@@ -53,7 +53,7 @@ Meteor.publishComposite('delegations.toUser', function delegationsToUser(params)
   const { communityId } = params;
 
   const user = Meteor.users.findOne(this.userId);
-  if (!user) {
+  if (!user || !user.partnerId(communityId)) {
     return this.ready();
   }
 

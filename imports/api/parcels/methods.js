@@ -38,6 +38,7 @@ export const insert = new ValidatedMethod({
     }
     if (!doc.approved) {
       // Nothing to check. Things will be checked when it gets approved by community admin/manager.
+      if (community.status === 'sandbox') doc.approved = true;
     } else {
       checkPermissions(this.userId, 'parcels.insert', doc);
     }

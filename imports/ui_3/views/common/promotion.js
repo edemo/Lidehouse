@@ -44,7 +44,7 @@ Template.Promotion.viewmodel({
       return {
         header: 'Elkészült a saját háza',
         callToAction: 'Nézze meg',
-        details: 'a saját házát, és szavazzon benne!',
+        details3: 'a saját házát, és szavazzon benne!',
       };
     }
   },
@@ -82,7 +82,7 @@ Template.Promotion.events({
         type: 'normal',
         size: 'md',
         btnOK: 'Ház elkészítése',
-        btnClose: 'Maybe later',
+       // btnClose: 'Maybe later',
       });
     } else { // The promo code is a communityId into which the user was invited
       const community = Communities.findOne(promoCode);
@@ -102,7 +102,7 @@ Template.Promotion.events({
             );
           }));
         },
-        btnClose: 'Maybe later',
+        // btnClose: 'Maybe later',
       });
     }
   },
@@ -138,9 +138,8 @@ AutoForm.addHooks('af.community.launch', {
         Meteor.setTimeout(() => {
           Modal.show('Modal', {
             title: 'GRATULÁLUNK',
-            text: `Az ön háza elkészült! (azonosítója:${res}) <br><br>
-              A megadott email címre elküldtük a linket, amivel a meghívottak csatlakozhatnak. <br>
-              Ossza meg a linket lakótársaival.`,
+            text: `Az ön háza elkészült! (azonosítója: ${res}) <br><br>
+              A házhoz tartozó linket és a beköltözéshez szükséges információkat elküldtünk a megadott e-mail címre!`,
             btnOK: 'OK',
           });
         }, 1000);

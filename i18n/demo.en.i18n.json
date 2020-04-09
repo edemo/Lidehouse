@@ -237,7 +237,18 @@
           "1": "I love this pastry shop, the owner is very cute.",
           "2": "Who knows how long this situation will last, if he goes bankrupt anyway before it reopens, we won't win anything, we will give up our money unnecessarily."
         }
-      }
+      },
+      "promo": {
+        "title": "Do you think we should use HONLINE in our house?",
+        "text": ["It is practical that we are able to hold a legally valid online assembly and vote online on house affairs.", 
+          "We can discuss house matters in the forum and we can report maintenance problems online right away.", 
+          "The program is easy to use and now it is free.",
+          "We have nothing to lose. Shall we start using it?"],
+        "choice": {
+          "0": "Yes, definitely",
+          "1": "No, I am not interested"
+        }
+      }
     },
     "agenda": {
       "0": {
@@ -331,8 +342,8 @@
 
   "promo": {
     "OneClickToLaunch": "One click and your demo house is ready",
-    "InstructionsToLaunch": "We create a house for you, and you can invite your neighbors into it",
-    "InstructionsToJoin": "Your community has been craeted, and is waiting for you to cast your first vote",    
+    "InstructionsToLaunch": "We create a house for you, and you can invite your neighbours into it",
+    "InstructionsToJoin": "Your community has been created, and is waiting for you to cast your first vote",    
     "admin": {
       "name": {
         "label": "Your name"
@@ -349,7 +360,7 @@
       }
     },
     "parcelCount" : {
-      "label": "How many flat owners can join this community? "
+      "label": "How many flats are in your house? "
     },
     "voting": {
       "label": "Your first voting",
