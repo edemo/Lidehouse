@@ -85,6 +85,7 @@ defineRoute('/online-kozgyules', {
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Landing_page_covid' });
   },
+  title: 'Online közgyűlés',
 });
 
 defineRoute('/demo', {
