@@ -102,7 +102,8 @@ Partners.helpers({
     if (this.idCard && this.idCard.name) return this.idCard.name;
     if (this.userId) {
       const user = this.user();
-      const preText = (Meteor.isClient && Meteor.user().hasPermission('partners.update', this)) ? `[${__('Waiting for approval')}] ` : '';
+      const preText = (Meteor.isClient && Meteor.user().hasPermission('partners.update', this) && this.community().needsJoinApproval()) ?
+        `[${__('Waiting for approval')}] ` : '';
       if (user) return preText + user.displayProfileName(lang || user.settings.language);
     }
     if (this.contact && this.contact.email) {

@@ -14,6 +14,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
 
 export const Communities = new Mongo.Collection('communities');
 
@@ -122,6 +123,12 @@ Communities.helpers({
   voters() {
     const voters = this.voterships().map(v => v.partner());
     return _.uniq(voters, false, u => u._id);
+  },
+  needsJoinApproval() {
+    return this.status !== 'sandbox';
+  },
+  hasLiveAssembly() {
+    return !!Agendas.findOne({ communityId: this._id, live: true });
   },
   toString() {
     return this.name;

@@ -62,7 +62,7 @@ export const insert = new ValidatedMethod({
           `No permission to perform this activity: memberships.insert: ${doc}, user: ${this.userId}`);
       }
       // Nothing else to check. Things will be checked when it gets approved by community admin/manager.
-      if (doc.community() && doc.community().status === 'sandbox') { 
+      if (doc.community() && !doc.community().needsJoinApproval()) {
         doc.approved = true;
         doc.accepted = true;
       }
