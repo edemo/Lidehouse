@@ -3,13 +3,14 @@ import { $ } from 'meteor/jquery';
 import { Template } from 'meteor/templating';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Session } from 'meteor/session';
-import { getActiveCommunity } from '/imports/ui_3/lib/active-community';
+import { getActiveCommunity, getActiveCommunityId } from '/imports/ui_3/lib/active-community';
 
 import './live-chat.html';
 
 Template.Live_Chat.helpers({
   liveAgenda() {
-    return Agendas.findOne({ live: true });
+    const communityId = getActiveCommunityId();
+    return Agendas.findOne({ communityId, live: true });
   },
   notJoined() {
     return !Session.get('joinedVideo');
@@ -54,6 +55,7 @@ Template.Live_Chat.events({
     $('.live-chat-config-box').toggleClass('show');
   },
   'click .join-video'() {
-    joinLiveChat(Meteor.user(), Agendas.findOne({ live: true }));
+    const communityId = getActiveCommunityId();
+    joinLiveChat(Meteor.user(), Agendas.findOne({ communityId, live: true }));
   },
 });
