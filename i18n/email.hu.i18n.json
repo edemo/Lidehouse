@@ -60,7 +60,7 @@
           "<h4>Gratulálunk!</h4>",
           "<p>A(z) __communityName__ társasház felépült a HONLINE világában is! A kulcsokat rögtön átadjuk, előtte még néhány tudnivaló:</p>",
           "<h4>1. A ház még üres, Önöknek kell majd berendezniük!</h4>",
-          "<p>Mikor először lép be, röviden végigvezetjük a HONLINE szolgáltatásain. Érdemes végigmenni a menüpontokon a piros nyilak segítségével, így egy csapásra megtanulhatja",
+          "<p>Mikor először lép be, érdemes végigmennie a bal oldali menüpontokon, és kiróbálnia",
           "<ul><li>hogyan indíthat fórum témát, </li><li>hogyan jelentheti be, ha elromlott a lift vagy </li><li>hogyan hozhat létre szavazást</li></ul>",
           "...apropó szavazás! Létrehoztunk egy <strong>kezdő szavazást</strong> a házban. Úgy látjuk, a jelenlegi, járvánnyal érintett időszakban a legfontosabb, ",
           "hogy gyors döntést tudjanak hozni a ház ügyeiben, ezért emeltük ki a szavazást, mint funkciót.", 
@@ -74,8 +74,8 @@
           "<p>Azonosító: __loginEmail__ <br/>Jelszó: __password__</p>"
         ],
         "2": [
-          "<p>Mostmár minden adott ahhoz, hogy belépjen a saját online házába és elkezdje használni. Fedezze fel a funkciókat, hozzon létre akár minta bejegyzéseket, szavazásokat (később törölhetők).",
-          "Következő levelünkben küldünk néhány tippet és gyakorlati segítséget a ház mielőbbi berendezéséhez. Ha kérdése van, az <a href=mailto:info@honline.hu>info@honline.hu</a> címen veheti fel velünk a kapcsolatot!</p>", 
+          "<p>Mostmár minden adott ahhoz, hogy belépjen a saját online házába és elkezdje használni. Fedezze fel a funkciókat, hozzon létre akár minta bejegyzéseket, szavazásokat (később törölhetők). Töltse fel élettel a házat!",
+          "Ha kérdése van, az <a href=mailto:info@honline.hu>info@honline.hu</a> címen veheti fel velünk a kapcsolatot!</p>", 
           "Üdvözlettel,<br/>A Honline.hu csapata"
         ]
       }        
