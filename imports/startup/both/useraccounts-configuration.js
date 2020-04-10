@@ -137,6 +137,14 @@ if (Meteor.isClient) {
       signinRedirectRoute = FlowRouter.current();
       signinRedirectAction = callback;
       FlowRouter.go(loginPage);
+    } else if (FlowRouter.getQueryParam('demouser') === 'out') {
+      Meteor.setTimeout(() => { // waiting a bit for the user doc to arrive
+        if (Meteor.user().isDemo()) {
+          Meteor.logout(function onLogout(err) {
+            AccountsTemplates.forceLogin(callback, loginPage);
+          });
+        } else callback();
+      }, 3000);
     } else callback();
   };
 }

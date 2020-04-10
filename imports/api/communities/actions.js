@@ -95,7 +95,7 @@ Communities.actions = {
             meteormethod: 'parcels.insert',
           });
         }
-      });
+      }, 'signup');
     },
   }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({

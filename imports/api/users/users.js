@@ -170,6 +170,9 @@ Meteor.users.helpers({
     debugAssert(Meteor.isServer, 'Email addresses of users are not sent to the clients');
     return this.emails[0].verified;
   },
+  isDemo() {
+    return this.emails[0].address.includes('demouser@demo');
+  },
   language() {
     return this.settings.language || 'en';
   },

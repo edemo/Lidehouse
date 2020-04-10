@@ -129,9 +129,7 @@ Memberships.helpers({
     return entityOf(this.role);
   },
   community() {
-    const community = Communities.findOne(this.communityId);
-    debugAssert(community);
-    return community;
+    return Communities.findOne(this.communityId);
   },
   partner() {
     if (!this.partnerId) return undefined;
