@@ -43,7 +43,7 @@ export const apply = new ValidatedMethod({
   name: 'parcelBillings.apply',
   validate: ParcelBillings.applySchema.validator(),
 
-  run({ communityId, date, ids, localizer }) {
+  run({ communityId, date, ids, localizer, withFollowers }) {
     if (Meteor.isClient) return;
     checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
     ActiveTimeMachine.runAtTime(date, () => {
@@ -52,10 +52,11 @@ export const apply = new ValidatedMethod({
         ? ParcelBillings.findActive({ communityId, _id: { $in: ids } })
         : ParcelBillings.findActive({ communityId });
       const billingPeriod = Period.monthOfDate(date);
+      const activeParcels = ParcelBillings.filterParcels(communityId, localizer, withFollowers);
       activeParcelBillings.forEach((parcelBilling) => {
 //        const alreadyAppliedAt = parcelBilling.alreadyAppliedAt(billingPeriod.label);
 //        if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
-        const parcels = parcelBilling.parcels(localizer);
+        const parcels = parcelBilling.parcelsToBill().filter(b => activeParcels.find(a => a._id === b._id));
         parcels.forEach((parcel) => {
           productionAssert(parcel, 'Could not find parcel - Please check if parcel ref matches the building+floor+door exactly');
           const line = {
@@ -87,7 +88,7 @@ export const apply = new ValidatedMethod({
             }
           }
           if (!activeMeter) {
-            productionAssert(parcelBilling.projection, `Parcel ${parcel.ref} has no meter for billing ${parcelBilling.name}, and no projection is set up for this billing.`);
+            productionAssert(parcelBilling.projection, `Parcel ${parcel.ref} has no meter for billing ${parcelBilling.title}, and no projection is set up for this billing.`);
             line.unitPrice = parcelBilling.projection.unitPrice;
             line.uom = parcelBilling.projectionUom();
             line.quantity = parcelBilling.projectionQuantityOf(parcel);

@@ -30,6 +30,7 @@
 </template>
 
 <template name="Action_buttons_group">
+  {{#if hasVisibleAction getActions}}
   <div class="btn-group">
     {{#each action in getActions}}
         {{#if action.subActions}}
@@ -39,6 +40,7 @@
         {{/if}}
     {{/each}}
   </div>
+  {{/if}}
 </template>
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->

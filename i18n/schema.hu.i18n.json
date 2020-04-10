@@ -1030,6 +1030,10 @@
       "label": "Előírás helye",
       "help": "Az előírás kivetésre kerül egy adott albetétre, ha egy albetétet választ ki, vagy egy adott csoport minden elemére, ha egy csoprtot választ ki."
     },
+    "withFollowers": {
+      "label": "És a vezetett albetétekre is",
+      "help": "Amennyiben ez be van jelölve, akkor nem csak a fent megjelölt helyekre, hanem minden ahhoz kapcsolt vezetett albetétre is előírunk."
+    },
     "type": {
       "label": "Típus, amire előírunk",
       "help": "Válasszon típust, ha csak egy adott típusra kell előírni a költséget, a többire nem."

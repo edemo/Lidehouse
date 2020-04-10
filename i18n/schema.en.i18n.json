@@ -1024,6 +1024,10 @@
       "label": "Payin location",
       "help": "Billing will be applied to an individual parcel if an individual parcel is selected, or to all parcels that are under the selected group if a group is selected."
     },
+    "withFollowers": {
+      "label": "Also for the follower parcels",
+      "help": "If this is checked, we not only apply it to the above selected parcels, but also to all follower parcels linked to those."
+    },
     "type": {
       "label": "Type, the billing applies to",
       "help": "Choose a type if you'd like to apply to that type, but not the others."

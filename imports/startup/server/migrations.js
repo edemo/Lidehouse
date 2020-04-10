@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Migrations } from 'meteor/percolate:migrations';
+import { moment } from 'meteor/momentjs:moment';
+
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -15,6 +17,7 @@ import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolde
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
@@ -381,6 +384,35 @@ Migrations.add({
       { $set: { status: 'live' } },
       { multi: true }
     );
+  },
+});
+
+Migrations.add({
+  version: 22,
+  name: 'Db stores UTC dates, so they have to be midnight, if not, it means it was imported wrong (in local time)',
+  up() {
+    StatementEntries.find({}).forEach(se => {
+      const valueDate = moment.utc(se.valueDate);
+      if (valueDate.hours() !== 0) {
+        console.log("updating se");
+        console.log("old date", valueDate.toString());
+        valueDate.hours(0);
+        valueDate.add(1, 'day');
+        console.log("new date", valueDate.toString());
+        StatementEntries.update(se._id, { $set: { valueDate: valueDate.toDate() } });
+      }
+    });
+    Transactions.find({ category: 'payment' }).forEach(tx => {
+      const valueDate = moment.utc(tx.valueDate);
+      if (valueDate.hours() !== 0) {
+        console.log("updating tx");
+        console.log("old date", valueDate.toString());
+        valueDate.hours(0);
+        valueDate.add(1, 'day');
+        console.log("new date", valueDate.toString());
+        Transactions.update(tx._id, { $set: { valueDate: valueDate.toDate() } });
+      }
+    });
   },
 });
 

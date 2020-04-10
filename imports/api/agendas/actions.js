@@ -75,9 +75,11 @@ Agendas.actions = {
         $('.live-chat-config-box').removeClass('show');
         modifier.$set = { live: false };
       } else {
-        $('.live-chat-config-box').addClass('show');
         modifier.$set = { live: true };
-        joinLiveChat(user, doc);
+        Meteor.setTimeout(function () {
+          joinLiveChat(user, doc);
+          $('.live-chat-config-box').addClass('show');
+        }, 500);
       }
       Meteor.call('agendas.update', { _id: doc._id, modifier });
     },

@@ -468,7 +468,7 @@ export const Transformers = {
             tdoc = {
               ref: doc['Tranzakció azonosító'],
               refType: doc['Típus'],
-              valueDate: doc['Könyvelés dátuma'],
+              valueDate: moment.utc(doc['Könyvelés dátuma']).toDate(),
               amount: doc['Összeg'],
               name: doc['Partner elnevezése'],
               note: doc['Közlemény'],
@@ -481,7 +481,7 @@ export const Transformers = {
             tdoc = {
               ref: doc['Sorszám'],
               refType: (doc['Bevétel'] && 'Bevétel') || (doc['Kiadás'] && 'Kiadás'),
-              valueDate: doc['Dátum'],
+              valueDate: moment.utc(doc['Dátum']).toDate(),
               amount,
               name: doc['Név'],
               note: doc['Bizonylatszám (1)'],

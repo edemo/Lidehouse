@@ -1,3 +1,3 @@
 <template name="Chopped">
-    {{#if markdown}}{{{choppedText this}}}{{else}}{{choppedText this}}{{/if}} {{#if isChopped this}}<a href="" class="js-showmore">{{_ 'Show more'}}</a>{{/if}}
+    {{#if markdown}}{{{choppedText}}}{{else}}{{choppedText}}{{/if}}{{#if isChopped}}<a href="" class="js-showmore">{{_ 'Show more'}}</a>{{/if}}
 </template>

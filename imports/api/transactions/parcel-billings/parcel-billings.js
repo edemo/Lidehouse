@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
@@ -100,22 +101,32 @@ ParcelBillings.applySchema = new SimpleSchema({
   date: { type: Date, autoform: { value: new Date() } },
   ids: { type: [String], optional: true, regEx: SimpleSchema.RegEx.Id, autoform: _.extend({ type: 'select-checkbox', checked: true }, chooseParcelBilling) },
   localizer: { type: String, optional: true, autoform: chooseParcelBillingLocalizer() },
+  withFollowers: { type: Boolean, optional: true, autoform: { disabled() { const loc = AutoForm.getFieldValue('localizer'); return !loc || loc === '@'; } } },
 });
 
 Meteor.startup(function indexParcelBillings() {
   ParcelBillings.ensureIndex({ communityId: 1 });
 });
 
+ParcelBillings.filterParcels = function filterParcels(communityId, localizer, withFollowers) {
+  const selector = { communityId, category: '@property' };
+  if (localizer) selector.code = new RegExp('^' + localizer);
+  let parcels = Parcels.find(selector).fetch();
+  if (withFollowers) parcels = parcels.map(p => p.withFollowers()).flat(1);
+  return parcels;
+};
+
 ParcelBillings.helpers({
   community() {
     return Communities.findOne(this.communityId);
   },
-  parcels(appliedLocalizer) {
-    const localizer = appliedLocalizer || this.localizer;
-    const selector = { communityId: this.communityId, category: '@property', code: new RegExp('^' + localizer) };
+  parcelsToBill() {
+    const selector = { communityId: this.communityId, category: '@property' };
+    if (this.localizer) selector.code = new RegExp('^' + this.localizer);
     if (this.type) selector.type = this.type;
     if (this.group) selector.group = this.group;
-    return Parcels.find(selector);
+    const parcels = Parcels.find(selector).fetch();
+    return parcels;
   },
   projectionUom() {
     switch (this.projection.base) {

@@ -1,16 +1,22 @@
 <template name="Promotion">
     {{#if show}}
-    <div id="promotion" class="theme-config animated fadeInRightBig">
-        <div class="theme-config-box promotion {{fullShowClass}}">
+    <div id="promotion" class="promotion-config animated fadeInRightBig">
+        <div class="promotion-config-box promotion {{fullShowClass}}">
             <div class="spin-icon">
                 <i class="fa fa-lg {{icon}}"></i>
             </div>
-            <div class="skin-settings">
+            <div class="call-to-action-box">
                 <div class="title">
                   {{message.header}}<br>
-                  <button class="btn btn-primary call-to-action">{{message.callToAction}}</button><br>
                   <small style="text-transform: none;font-weight: 400">
-                     {{message.details}}
+                    {{message.details1}}
+                 </small><br>
+                 <small style="text-transform: none;font-weight: 400">
+                    {{message.details2}}
+                </small><br>
+                  <button class="btn btn-primary call-to-action m-b m-t">{{message.callToAction}}</button><br>
+                  <small style="text-transform: none;font-weight: 400">
+                     {{message.details3}}
                   </small>
                 </div>
             </div>
