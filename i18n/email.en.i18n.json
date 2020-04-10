@@ -46,7 +46,7 @@
     "PaymentMethods": "You may transfer the amount to this bank account",
     "PaymentInstructions": "Please provide the bill ID at the remarks.",
 
-    "PromoSubject": "Welcom to HONLINE system",
+    "PromoSubject": "Welcome to HONLINE system",
     "PromoFooter": "This letter was sent to the email address you provided during registration to inform you about the starting details. If you believe you have received this email by accident, please ignore it or write to info@honline.hu.",
     "PromoContent": { 
       "covid": {
@@ -55,7 +55,7 @@
           "<p>Share it with your housemates:<br/>",
           "<a href=__inviteMembersLink__>__inviteMembersLink__</a><br/>",
           "<p>You can login to __communityName__ as follows:</p>",
-          "<p>Azonosító: __loginEmail__ <br/>Jelszó: __password__</p>"
+          "<p>Username: __loginEmail__ <br/>Password: __password__</p>"
         ],
         "2": [
           ""

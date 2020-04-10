@@ -73,18 +73,20 @@ defineRoute('/', {
 // --------------------------------------------
 // Business info pages
 
-defineRoute('/intro', {
+defineRoute('/online-atlathato-tarsashazkezeles', {
   name: 'App intro',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Intro_page' });
   },
+  title: 'Online átlátható társasházkezelés',
 });
 
 defineRoute('/online-kozgyules', {
-  name: 'Online assembly',
+  name: 'Landing page covid',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Landing_page_covid' });
   },
+  title: 'Online közgyűlés',
 });
 
 defineRoute('/demo', {

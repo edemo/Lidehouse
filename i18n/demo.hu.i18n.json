@@ -238,6 +238,17 @@
           "1": "Én szeretem ezt a cukrászdát, a tulajdonos is nagyon aranyos.",
           "2": "Ki tudja, meddig tart ez a helyzet, ha amúgy is csődbe megy, mielőtt újra kinyitna, akkor nem nyerünk vele semmit, fölöslegesen mondunk le a pénzünkről."
         }
+      }, 
+      "promo": {
+        "title": "Szerintetek is bevezessük a HONLINE rendszerét a házunkba?",
+        "text": ["A járvánnyal érintett időszakban praktikus, hogy jogilag is érvényes online közgyűlést és online szavazásokat tudunk tartani a ház ügyeiről.", 
+          "A fórumon közvetlenebbül tudjuk megbeszélni a ház ügyeit, ha pedig valami elromlik a házban, online egyből jelenthetjük a hibát a közös képviselőnek, nem kell a nyitvatartási idejéhez alkalmazkodnunk.", 
+          "A program használata egyszerű, ráadásul a koronavírus miatt most 12 hónapra ingyenes hozzáférést biztosítanak!",
+          "Nincs vesztenivalónk. Bevezessük?"],
+        "choice": {
+          "0": "Igen, támogatom!",
+          "1": "Nem, nem érdekel az online társasházkezelés"
+        }
       }
     },
     "agenda": {
@@ -332,7 +343,7 @@
 
   "promo": {
     "OneClickToLaunch": "Egy kattintás és kész a saját háza",
-    "InstructionsToLaunch": "Elkészítjük saját demo házát, amibe meghívhatja lakótársait. Egy első szavazást már most kiíírhat, további témákat is természetesen tud majd indítani, még mielőtt meghívja a többieket.",
+    "InstructionsToLaunch": "Építse fel saját társasházát a HONLINE rendszerében, az alábbi 3 adat megadásával!",
     "InstructionsToJoin": [
       "Lakótársa már elkészítette a saját házukat, és ki is írt benne egy próba szavazást. A zöld gomb megnyomásával ön beléphet ebbe a házba, és szavazhat is.<br><br>",
       "Belépéshez egy fiókot kell létrehozzunk önnek, ezért meg kell majd adnia egy email címet és egy jelszót. Erre azért van szükség, hogy minden személy csak egyszer tudjon szavazni."
@@ -354,7 +365,7 @@
       }
     },
     "parcelCount" : {
-      "label": "Hány lakó csatlakozhat ehhez a házhoz"
+      "label": "Hány lakás van ebben a házban? (ennyien csatlakozhatnak majd meghívóval)"
     },
     "voting": {
       "label": "Az első szavazás a házban",
