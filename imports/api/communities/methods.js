@@ -65,6 +65,10 @@ const launch = new ValidatedMethod({
     const password = Random.id(8);
     const userId = UserAccounts.createUser({ email: admin.email, password, language: admin.language });
     Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });
+    const parcelId = Parcels.insert({ communityId, category: '@property', approved: true, serial: 1, ref: 'A001', units: 100, type: 'flat' });
+    Memberships.insert({ communityId, userId, parcelId, approved: true, accepted: true,
+      role: 'owner', ownership: { share: new Fraction(1) },
+    });
     const lang = community.settings.language;
     const voting = {
       title: __('demo.vote.promo.title', {}, lang),
