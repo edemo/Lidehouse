@@ -250,13 +250,25 @@
 
 @media print {
 
+    .no-height {
+        height: 0px;
+    }
+
     //Global page
-    .page-heading, .footer, .border-bottom, .btn {
+    .page-heading, .footer, .border-bottom, .btn, #small-chat {
         display: none;
     }
 
+    #page-wrapper {
+        margin-top: 0 !important;
+    }
+
+    .ibox-content {
+        border-width: 0;
+    }
+    
     //Modal
-    .modal-header {
+    .modal-header, .modal-footer {
         display: none;
     }
 
@@ -264,7 +276,6 @@
         position: absolute;
         width: 100% !important;
         height: 100%;
-        margin: 15 !important;
         top: 0;
         left: 0;
         bottom: 0;
@@ -273,7 +284,6 @@
 
     .modal-content {
         height: 100%;
-        background-color: white !important;
     }
 }
 
