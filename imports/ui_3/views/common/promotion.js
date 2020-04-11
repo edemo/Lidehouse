@@ -39,14 +39,16 @@ Template.Promotion.viewmodel({
         header: 'Tetszik, amit lát?',
         details1: 'Építse fel saját házát a HONLINE rendszerében!',
         details2: 'Egy kattintás és már kész is!',
-        callToAction: 'Létrehozom a társasházamat!',
+        callToAction: 'Létrehozom a társasházamat',
         details3: 'Költözzön be és hívja meg lakótársait!',
       };
     } else { // The promo code is s communityId thtat invites the user
       return {
-        header: 'Elkészült a saját háza',
-        callToAction: 'Nézze meg',
-        details3: 'a saját házát, és szavazzon benne!',
+        header: 'A saját háza is már várja!',
+        details1: 'Elkészült a saját háza is',
+        details2: 'amibe bármikor bejelentkezhet',
+        callToAction: 'Bejelentkezek a házamba',
+        details3: 'Lakótársai már várják önt.',
       };
     }
   },

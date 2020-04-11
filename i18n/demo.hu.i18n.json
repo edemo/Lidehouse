@@ -346,8 +346,8 @@
     "OneClickToLaunch": "Egy kattintás és kész a saját háza",
     "InstructionsToLaunch": "Építse fel saját társasházát a HONLINE rendszerében, az alábbi 3 adat megadásával!",
     "InstructionsToJoin": [
-      "Lakótársa már elkészítette a saját házukat, és ki is írt benne egy próba szavazást. A zöld gomb megnyomásával ön beléphet ebbe a házba, és szavazhat is.<br><br>",
-      "Belépéshez egy fiókot kell létrehozzunk önnek, ezért meg kell majd adnia egy email címet és egy jelszót. Erre azért van szükség, hogy minden személy csak egyszer tudjon szavazni."
+      "Egyik lakótársa már el is készítette a saját házukat, és elkezdte feltölteni tartalommal. A zöld gomb megnyomásával ön beléphet ebbe a házba, és akár szavazhat is.<br><br>",
+      "Belépéshez egy fiókot kell létrehozzunk önnek, ezért meg kell majd adjon egy email címet és egy jelszót. Erre azért van szükség, hogy minden személy csak egyszer tudjon szavazni."
     ],
     "admin": {
       "name": {
