@@ -84,6 +84,7 @@ const launch = new ValidatedMethod({
         choices: [
           __('demo.vote.promo.choice.0', {}, lang),
           __('demo.vote.promo.choice.1', {}, lang),
+          __('demo.vote.promo.choice.2', {}, lang),
         ],
       },
     };
