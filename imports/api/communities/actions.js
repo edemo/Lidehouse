@@ -76,26 +76,24 @@ Communities.actions = {
     icon: 'fa fa-suitcase',
     visible: doc.settings && doc.settings.joinable,
     run() {
-      AccountsTemplates.forceLogin(function joinCommunity() {
-        const communityId = doc._id;
-        if (doc.status === 'sandbox') {   // Sandboxes have immediate (no questions asked) joining, with a fixed ownership share
-          Meteor.call('parcels.insert',
-            { communityId, category: '@property', approved: false, serial: 0, ref: 'auto', units: 100, type: 'flat' },
-            onSuccess(res => setMeAsParcelOwner(res, communityId, onSuccess(r => FlowRouter.go('App home')),
-            )),
-          );
-        } else {
-          Modal.show('Autoform_modal', {
-            title: 'pleaseSupplyParcelData',
-            id: 'af.@property.insert.unapproved',
-            schema: Parcels.simpleSchema({ category: '@property' }),
-            doc: { communityId: doc._id },
-            //        omitFields: ['serial'],
-            type: 'method',
-            meteormethod: 'parcels.insert',
-          });
-        }
-      }, 'signup');
+      const communityId = doc._id;
+      if (doc.status === 'sandbox') {   // Sandboxes have immediate (no questions asked) joining, with a fixed ownership share
+        Meteor.call('parcels.insert',
+          { communityId, category: '@property', approved: false, serial: 0, ref: 'auto', units: 100, type: 'flat' },
+          onSuccess(res => setMeAsParcelOwner(res, communityId, onSuccess(r => FlowRouter.go('App home')),
+          )),
+        );
+      } else {
+        Modal.show('Autoform_modal', {
+          title: 'pleaseSupplyParcelData',
+          id: 'af.@property.insert.unapproved',
+          schema: Parcels.simpleSchema({ category: '@property' }),
+          doc: { communityId },
+          //        omitFields: ['serial'],
+          type: 'method',
+          meteormethod: 'parcels.insert',
+        });
+      }
     },
   }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({

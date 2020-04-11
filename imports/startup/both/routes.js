@@ -22,6 +22,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/profile-form.js';
   import '/imports/ui_3/views/pages/user-show.js';
   import '/imports/ui_3/views/pages/communities-listing.js';
+  import '/imports/ui_3/views/pages/community-join.js';
   import '/imports/ui_3/views/pages/vote-topics.js';
   import '/imports/ui_3/views/pages/agendas.js';
   import '/imports/ui_3/views/pages/delegations.js';
@@ -124,16 +125,13 @@ defineRoute('/community', {
 });
 CommunityRelatedRoutes.push('Community page');
 
-defineRoute('/join/:_cid', {
+defineRoute('/community/:_cid/join', {
   name: 'Community join',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_join' });
   },
-  title(params) {
-    const community = Communities.findOne({ _id: params._cid });
-    return __('join') + ' ' + community.name;
-  },
 });
+CommunityRelatedRoutes.push('Community join');
 
 defineRoute('/community/:_cid', {
   name: 'Community show',

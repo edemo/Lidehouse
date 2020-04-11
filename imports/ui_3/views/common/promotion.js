@@ -97,8 +97,7 @@ Template.Promotion.events({
         onOK() {
           Session.set('promo');
           Session.set('activeCommunityId', promoCode);
-          FlowRouter.setQueryParams({ demouser: 'out' });
-          Communities.actions.join({}, community).run();
+          FlowRouter.go('Community join', { _cid: promoCode }, { demouser: 'out' });
         },
         // btnClose: 'Maybe later',
       });

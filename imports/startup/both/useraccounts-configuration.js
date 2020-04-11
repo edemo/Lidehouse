@@ -132,19 +132,15 @@ if (Meteor.isClient) {
 
   // Use this function if you need to perform some action that only logged in users can
   // to enforce a signin before continuing with the callback
-  AccountsTemplates.forceLogin = function forceLogin(callback = () => {}, loginPage = 'signin') {
+  AccountsTemplates.forceLogin = function forceLogin(options = { loginPage: 'signin' }, callback = () => {}) {
     if (!Meteor.userId()) {
       signinRedirectRoute = FlowRouter.current();
       signinRedirectAction = callback;
-      FlowRouter.go(loginPage);
-    } else if (FlowRouter.getQueryParam('demouser') === 'out') {
-      Meteor.setTimeout(() => { // waiting a bit for the user doc to arrive
-        if (Meteor.user().isDemo()) {
-          Meteor.logout(function onLogout(err) {
-            AccountsTemplates.forceLogin(callback, loginPage);
-          });
-        } else callback();
-      }, 3000);
+      FlowRouter.go(options.loginPage);
+    } else if (FlowRouter.getQueryParam('demouser') === 'out' && Meteor.user().isDemo()) {
+      signinRedirectRoute = FlowRouter.current();
+      signinRedirectAction = callback;
+      Meteor.logout(() => FlowRouter.go(options.loginPage));
     } else callback();
   };
 }
