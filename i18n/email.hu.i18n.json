@@ -74,8 +74,9 @@
           "<p>Azonosító: __loginEmail__ <br/>Jelszó: __password__</p>"
         ],
         "2": [
-          "<p>Mostmár minden adott ahhoz, hogy belépjen a saját online házába és elkezdje használni. Fedezze fel a funkciókat, hozzon létre akár minta bejegyzéseket, szavazásokat (később törölhetők). Töltse fel élettel a házat!",
-          "Ha kérdése van, az <a href=mailto:info@honline.hu>info@honline.hu</a> címen veheti fel velünk a kapcsolatot!</p>", 
+          "<p>Most már minden adott ahhoz, hogy belépjen a saját online házába és elkezdje használni. Fedezze fel a funkciókat, hozzon létre akár minta bejegyzéseket, szavazásokat (később törölhetők). Töltse fel élettel a házat!<br/>",
+          "Ennek a háznak mostantól Ön az adminisztrátora, de ezt a tisztséget később megoszthatja vagy átruházhatja másokra. Mint adminisztrátor a Házlapon tud új tisztségeket kiadni a többieknek, melyekkel ők jogosultságokra tehetnek szert a házban.<br/>",
+          "Ha bármi kérdése van, az <a href=mailto:info@honline.hu>info@honline.hu</a> címen veheti fel velünk a kapcsolatot!</p>", 
           "Üdvözlettel,<br/>A Honline.hu csapata"
         ]
       }        

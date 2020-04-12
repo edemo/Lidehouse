@@ -137,8 +137,8 @@ AutoForm.addHooks('af.community.launch', {
         Meteor.setTimeout(() => {
           Modal.show('Modal', {
             title: 'GRATULÁLUNK',
-            text: `Az ön háza elkészült! (azonosítója: ${res}) <br><br>
-              A házhoz tartozó linket és a beköltözéshez szükséges információkat elküldtünk a megadott e-mail címre!`,
+            text: `Az ön háza elkészült!<br><br>
+              A házhoz tartozó linket és a beköltözéshez szükséges információkat elküldtük a megadott e-mail címre!`,
             btnOK: 'OK',
           });
         }, 1000);
