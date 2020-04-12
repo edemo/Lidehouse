@@ -27,6 +27,7 @@ export const Import = {
   },
 };
 
+
 // TODO: get this out from TAPI
 const schemaParcels = {
   "label": "Albetét",
