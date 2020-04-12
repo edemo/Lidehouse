@@ -12,9 +12,6 @@ import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
-function deepCopy(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
 export const Breakdowns = new Mongo.Collection('breakdowns');
 
 Breakdowns.define = function define(doc) {
@@ -192,7 +189,7 @@ Breakdowns.helpers({
           node.sign = node.sign || node.include.sign;
           if (node.include.children) {
             node.children = node.children || [];
-            node.children = node.children.concat(deepCopy(node.include.children));
+            node.children = node.children.concat(Object.deepClone(node.include.children));
           }
           delete node.include;
         }

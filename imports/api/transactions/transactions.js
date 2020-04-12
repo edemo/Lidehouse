@@ -221,7 +221,7 @@ Transactions.helpers({
     return sign * this.amount;
   },
   negator() {
-    const tx = JSON.parse(JSON.stringify(this));
+    const tx = Object.deepClone(this);
 //    const tx = _.extendOwn({}, this); // only available in new underscore version
 //    const tx = {}; $.extend(true, tx, this);
     Mongo.Collection.stripAdministrativeFields(tx);

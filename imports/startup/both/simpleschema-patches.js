@@ -12,5 +12,10 @@ SimpleSchema.Types = {
       }
       return undefined;
     },
+    autoform: {
+      type: 'email',
+      autocapitalize: 'none',
+      autocorrect: 'off',
+    },
   },
 };

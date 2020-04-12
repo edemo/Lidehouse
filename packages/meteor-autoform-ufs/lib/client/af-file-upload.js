@@ -40,7 +40,6 @@ Template.afFileUpload.viewmodel({
   },
   template() {
     const template = `Display_${this.templateInstance.data.atts.fileType}`;
-    console.log("template", template);
     return template;
   },
   context() {
