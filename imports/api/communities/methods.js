@@ -11,6 +11,7 @@ import { officerRoles } from '/imports/api/permissions/roles.js';
 import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 import { __ } from '/imports/localization/i18n.js';
 import { sendPromoEmail } from '/imports/email/promo-send.js';
+import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -91,6 +92,7 @@ const launch = new ValidatedMethod({
     const votingId = Topics.insert(_.extend(voting, { communityId }));
     if (Meteor.isServer) Topics.direct.update(votingId, { $set: { creatorId: userId } }, { selector: { category: 'vote' } });
     const user = Meteor.users.findOne(userId);
+    updateMyLastSeen._execute({ userId }, { topicId: votingId, lastSeenInfo: { timestamp: new Date() } });
     if (Meteor.isServer) {
       const emailParams = { promoCode, communityId, loginEmail: admin.email, password };
       sendPromoEmail(user, emailParams);
