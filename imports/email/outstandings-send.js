@@ -11,9 +11,12 @@ export function sendOutstandingsEmail(partnerId) {
   const partner = Partners.findOne(partnerId);
   const user = partner.user();
   const community = partner.community();
+  const email = partner.primaryEmail();
+  
+  if (!email) return;
 
   EmailSender.send({
-    to: partner.contact.email,
+    to: email,
     subject: EmailTemplateHelpers.subject('Outstandings', user, community),
     template: 'Outstandings_Email',
     data: {
