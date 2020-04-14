@@ -74,12 +74,12 @@ defineRoute('/', {
 // --------------------------------------------
 // Business info pages
 
-defineRoute('/online-atlathato-tarsashazkezeles', {
+defineRoute('/atlathato-tarsashazkezeles-online', {
   name: 'App intro',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Intro_page' });
   },
-  title: 'Online átlátható társasházkezelés',
+  title: 'Átlátható társasházkezelés online',
 });
 
 defineRoute('/online-kozgyules', {
