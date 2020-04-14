@@ -36,9 +36,6 @@ export function joinLiveChat(user, doc) {
     roomName,
     parentNode: $('#live-chat')[0],
     configOverwrite: {},
-    interfaceConfigOverwrite: {
-      filmStripOnly: true,
-    },
     onload() {
       api.executeCommand('subject', houseName + ' - ' + agendaName);
       api.executeCommand('displayName', userName);
