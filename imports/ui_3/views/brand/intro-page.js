@@ -7,13 +7,15 @@ import './intro-page.html';
 
 
 Template.Intro_page.onRendered(function(){
-    
     $('body').addClass('landing-page');
     $('body').attr('id', 'page-top');
     $('body').scrollspy({
         target: '.navbar-fixed-top',
         offset: 80
     });
+    $('.carousel').carousel({
+        interval: 5000
+    })
 
     // Page scrolling feature
     $('a.page-scroll').bind('click', function(event) {
