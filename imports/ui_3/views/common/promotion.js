@@ -98,8 +98,8 @@ Template.Promotion.events({
         btnOK: 'Belépés a saját házba',
         onOK() {
           Session.set('promo');
-          Session.set('activeCommunityId', promoCode);
-          FlowRouter.go('Community join', { _cid: promoCode }, { demouser: 'out' });
+          window.open(`https://honline.hu/community/${promoCode}}/join?demouser=out`, '_blank');
+//          FlowRouter.go('Community join', { _cid: promoCode }, { demouser: 'out' });
         },
         // btnClose: 'Maybe later',
       });
@@ -115,22 +115,8 @@ AutoForm.addHooks('af.community.launch', {
   },
   onSubmit(doc) {
     AutoForm.validateForm('af.community.launch');
-    doc.community = _.extend({}, doc.community, {
-      status: 'sandbox',
-      totalunits: 100 * doc.parcelCount,  // new joiners will get 100 voting units
-      city: '?-város',
-      street: '?-utca',
-      number: '?-szám',
-      zip: '1111',
-      lot: '?-hrsz',
-      settings: {
-        language: 'hu',
-      },
-    });
-    doc.admin = _.extend({}, doc.admin, {
-      language: 'hu',
-    });
-    Meteor.call('communities.launch', doc,
+    doc.community.settings = { language: 'hu' };
+    Meteor.call('communities.launchMail', doc,
       onSuccess((res) => {
         Modal.hide(this.template.parent());
         Session.set('promo'); // turn it off

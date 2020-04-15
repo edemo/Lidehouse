@@ -5,12 +5,13 @@ import { _ } from 'meteor/underscore';
 import { Random } from 'meteor/random';
 import { Accounts as UserAccounts } from 'meteor/accounts-base';
 import { moment } from 'meteor/momentjs:moment';
+import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 
 import { Log } from '/imports/utils/log.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
 import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 import { __ } from '/imports/localization/i18n.js';
-import { sendPromoEmail } from '/imports/email/promo-send.js';
+import { sendPromoLaunchLink, sendPromoInviteLink } from '/imports/email/promo-send.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -50,21 +51,46 @@ export const create = new ValidatedMethod({
   },
 });
 
+const launchMail = new ValidatedMethod({
+  name: 'communities.launchMail',
+  validate: new SimpleSchema({
+    community: { type: Object },
+    'community.name': { type: String },
+    'community.settings': { type: Object },
+    'community.settings.language': { type: String },
+    admin: { type: Object },
+    'admin.email': { type: String },
+    parcelCount: { type: Number },
+    promoCode: { type: String },
+  }).validator({ clean: true }),
+
+  run(params) {
+    if (Meteor.isServer) sendPromoLaunchLink(params);
+  },
+});
+
 const launch = new ValidatedMethod({
   name: 'communities.launch',
   validate: new SimpleSchema({
     community: { type: Communities.simpleSchema() },
     admin: { type: Object },
     'admin.email': { type: String },
-    'admin.language': { type: String },
     promoCode: { type: String },
   }).validator({ clean: true }),
 
   run({ community, admin, promoCode }) {
+    if (!Meteor.isServer) return '#';
+    if (UserAccounts.findUserByEmail(admin.email)) {  // cannot create 2 sandboxes, to avoid duplicate launch of community
+      return FlowRouterHelpers.urlFor('Board');
+    }
+
     const communityId = Communities.insert(community);
+    const communityDoc = Communities.findOne(communityId);
     Log.info(`Sandbox community ${community.name}(${communityId}) created by ${admin.email}}`);
-    const password = Random.id(8);
-    const userId = UserAccounts.createUser({ email: admin.email, password, language: admin.language });
+    const userId = UserAccounts.createUser({ email: admin.email, password: Random.id(8), language: community.settings.language });
+    const { token } = UserAccounts.generateResetToken(userId, admin.email, 'enrollAccount', {});
+    const enrollUrl = UserAccounts.urls.enrollAccount(token);
+
     Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });
     const parcelId = Parcels.insert({ communityId, category: '@property', approved: true, serial: 1, ref: 'A001', units: 100, type: 'flat' });
     Memberships.insert({ communityId, userId, parcelId, approved: true, accepted: true,
@@ -91,13 +117,12 @@ const launch = new ValidatedMethod({
     };
     const votingId = Topics.insert(_.extend(voting, { communityId }));
     if (Meteor.isServer) Topics.direct.update(votingId, { $set: { creatorId: userId } }, { selector: { category: 'vote' } });
-    const user = Meteor.users.findOne(userId);
     updateMyLastSeen._execute({ userId }, { topicId: votingId, lastSeenInfo: { timestamp: new Date() } });
-    if (Meteor.isServer) {
-      const emailParams = { promoCode, communityId, loginEmail: admin.email, password };
-      sendPromoEmail(user, emailParams);
-    }
-    return communityId;
+
+    const user = Meteor.users.findOne(userId);  // this.userId is undefined
+    if (Meteor.isServer) sendPromoInviteLink(user, communityDoc);
+
+    return enrollUrl;
   },
 });
 

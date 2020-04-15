@@ -54,33 +54,35 @@
 
     "PromoSubject": "Üdvözöljük a HONLINE rendszerben",
     "PromoFooter": "Ezt a üzenetet azért küldtük a regisztrációja során megadott e-mail címre, hogy tájékoztassuk a kezdeti lépésekről. Amennyiben úgy véli, tévedésből kapta ezt az e-mailt, kérjük, hagyja figyelmen kívül vagy írjon az info@honline.hu e-mail címre.",
-    "PromoContent": { 
-      "covid": {
-        "1": [
-          "<h4>Gratulálunk!</h4>",
-          "<p>A(z) __communityName__ társasház felépült a HONLINE világában is! A kulcsokat rögtön átadjuk, előtte még néhány tudnivaló:</p>",
-          "<h4>1. A ház még üres, Önöknek kell majd berendezniük!</h4>",
-          "<p>Mikor először lép be, érdemes végigmennie a bal oldali menüpontokon, és kiróbálnia",
-          "<ul><li>hogyan indíthat fórum témát, </li><li>hogyan jelentheti be, ha elromlott a lift vagy </li><li>hogyan hozhat létre szavazást</li></ul>",
-          "...apropó szavazás! Létrehoztunk egy <strong>kezdő szavazást</strong> a házban. Úgy látjuk, a jelenlegi, járvánnyal érintett időszakban a legfontosabb, ",
-          "hogy gyors döntést tudjanak hozni a ház ügyeiben, ezért emeltük ki a szavazást, mint funkciót.", 
-          "Ön is létrehozhat egy <strong>új szavazást</strong> valamely, a házat érintő sürgős témakörben.</p>",
-          "<h4>2. Hívja meg lakótársait!</h4>",
-          "<p>Az önök lakóközössége jelenleg hogyan kommunikál egymással? Körlevélben? Facebook csoportban? Messenger csoportban?<br/>",
-          "<strong>Ossza meg az alábbi linket</strong> valamelyik felületen, mutassa meg társainak, milyen okos társasházkezelő rendszerre lelt!<br/>",
-          "<a href=__inviteMembersLink__>__inviteMembersLink__</a><br/>",
-          "Miután lakótársai körülnéztek a demoházban, automatikusan <strong>az Ön által létrehozott társasházba invitáljuk őket</strong>, és kezdődhet is az online lakóközösségi élet!</p>",
-          "<h4>3. Íme, az Ön kulcsai a(z) __communityName__ társasházhoz!</h4>",
-          "<p>Azonosító: __loginEmail__ <br/>Jelszó: __password__</p>"
-        ],
-        "2": [
-          "<p>Most már minden adott ahhoz, hogy belépjen a saját online házába és elkezdje használni. Fedezze fel a funkciókat, hozzon létre akár minta bejegyzéseket, szavazásokat (később törölhetők). Töltse fel élettel a házat!<br/>",
-          "Ennek a háznak mostantól Ön az adminisztrátora, de ezt a tisztséget később megoszthatja vagy átruházhatja másokra. Mint adminisztrátor a Házlapon tud új tisztségeket kiadni a többieknek, melyekkel ők jogosultságokra tehetnek szert a házban.<br/>",
-          "Ha bármi kérdése van, az <a href=mailto:info@honline.hu>info@honline.hu</a> címen veheti fel velünk a kapcsolatot!</p>", 
-          "Üdvözlettel,<br/>A Honline.hu csapata"
-        ]
-      }        
-    },
+    "PromoSignature": [
+      "<p>Ha bármi kérdése van, az <a href=mailto:info@honline.hu>info@honline.hu</a> címen veheti fel velünk a kapcsolatot!</p>", 
+      "Üdvözlettel,<br/>A Honline.hu csapata"
+    ],
+    "PromoLaunchLinkContent": [
+      "<h4>Gratulálunk!</h4>",
+      "<p>A(z) __communityName__ társasház felépült a HONLINE világában is! A kulcsokat rögtön átadjuk, előtte még néhány tudnivaló:</p>",
+      "<h4>1. A ház még üres, Önöknek kell majd berendezniük!</h4>",
+      "<p>Mikor először lép be, érdemes végigmennie a bal oldali menüpontokon, és kiróbálnia",
+      "<ul><li>hogyan indíthat fórum témát, </li><li>hogyan jelentheti be, ha elromlott a lift vagy </li><li>hogyan hozhat létre szavazást</li></ul>",
+      "...apropó szavazás! Létrehoztunk egy <strong>kezdő szavazást</strong> a házban. Úgy látjuk, a jelenlegi, járvánnyal érintett időszakban a legfontosabb, ",
+      "hogy gyors döntést tudjanak hozni a ház ügyeiben, ezért emeltük ki a szavazást, mint funkciót.", 
+      "Ön is létrehozhat egy <strong>új szavazást</strong> valamely, a házat érintő sürgős témakörben.</p>",
+      "<h4>2. Ennek a háznak mostantól Ön az adminisztrátora!</h4>",
+      "<p>Ezt a tisztséget később természetesen megoszthatja vagy átruházhatja másokra. Mint adminisztrátor a Házlapon ön fog tudni új tisztségeket kiadni a többieknek, melyekkel ők jogosultságokra tehetnek szert a házban.</p>",
+      "<h4>3. A(z) __communityName__ társasház már készen áll, de csak ön tudja aktiválni!</h4>",
+      "<p>Most már minden adott ahhoz, hogy belépjen a saját online házába és elkezdje használni. Fedezze fel a funkciókat, hozzon létre akár minta bejegyzéseket, szavazásokat (később törölhetők). Töltse fel élettel a házat!<br>",
+      "Az aktiválás gombbal tudja a házat aktiválni. Aktiváláskor egy fiókot is létre kell hoznunk önnek. Ezért meg fogjuk kérni hogy határozzon meg magának egy jelszót, és fogadja el az adatvédelmi tájékoztatónkat.</p>"
+    ],
+    "PromoInviteLinkContent": [
+      "<h4>Házát sikeresen aktiválta!</h4>",
+      "<p>Mostantól nagyon egyszerűen, a honline.hu weboldalon tudja elérni a házát.",
+      "<h4>Hívja meg lakótársait!</h4>",
+      "<p>Az önök lakóközössége jelenleg hogyan kommunikál egymással? Körlevélben? Facebook csoportban? Messenger csoportban?<br/>",
+      "<strong>Ossza meg az alábbi linket</strong> valamelyik felületen, mutassa meg társainak, milyen okos társasházkezelő rendszerre lelt!<br/>",
+      "<a href=__inviteLink__>__inviteLink__</a><br/>",
+      "Miután lakótársai körülnéztek a demoházban, automatikusan <strong>az Ön által létrehozott társasházba invitáljuk őket</strong>, és kezdődhet is az online lakóközösségi élet!</p>",
+      ""
+    ],
 
     "NotificationSubject": "Értesítések a __name__ társasházból",
     "NotificationsHeader": "A témák melletti Megtekintés gomb elviszi az adott téma oldalára, ahol van lehetősége hozzászólni.",

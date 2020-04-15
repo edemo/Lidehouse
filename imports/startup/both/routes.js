@@ -22,6 +22,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/profile-form.js';
   import '/imports/ui_3/views/pages/user-show.js';
   import '/imports/ui_3/views/pages/communities-listing.js';
+  import '/imports/ui_3/views/pages/community-launch.js';
   import '/imports/ui_3/views/pages/community-join.js';
   import '/imports/ui_3/views/pages/vote-topics.js';
   import '/imports/ui_3/views/pages/agendas.js';
@@ -124,6 +125,13 @@ defineRoute('/community', {
   },
 });
 CommunityRelatedRoutes.push('Community page');
+
+defineRoute('/launch', {
+  name: 'Community launch',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_launch' });
+  },
+});
 
 defineRoute('/community/:_cid/join', {
   name: 'Community join',

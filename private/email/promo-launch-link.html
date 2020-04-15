@@ -3,12 +3,12 @@
         <tbody>    
             <tr>
                 <td class="project-title">
-                    {{{content emailParams 1}}}
+                    {{{_ 'email.PromoLaunchLinkContent' communityName=community.name}}}
                     <div class="aligncenter">
-                        <a href="{{emailParams.loginLink}}" class="btn btn-primary btn-sm">{{_ 'login'}}</a>
+                        <a href="{{launchLink}}" class="btn btn-primary btn-sm">{{_ 'Activate community'}}</a>
                     </div>
                     <br>
-                    {{{content emailParams 2}}}
+                    {{{_ 'email.PromoSignature'}}}
                 </td>
             </tr>
         </tbody>
