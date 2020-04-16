@@ -1,3 +1,4 @@
+/* globals window */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
@@ -44,11 +45,11 @@ Template.Promotion.viewmodel({
       };
     } else { // The promo code is s communityId thtat invites the user
       return {
-        header: 'A saját háza is már várja!',
-        details1: 'Elkészült a saját háza is',
-        details2: 'amibe bármikor bejelentkezhet',
-        callToAction: 'Bejelentkezek a házamba',
-        details3: 'Lakótársai már várják önt.',
+        header: 'Az Ön társasházát',
+        details1: 'egy lakótársa már létrehozta a honline',
+        details2: 'rendszerében, sőt egy szavazást is kiírt!',
+        callToAction: 'Belépek a saját házunkba',
+        details3: 'Lépjen be a házba és vegye birtokba lakását!',
       };
     }
   },
@@ -89,18 +90,7 @@ Template.Promotion.events({
        // btnClose: 'Maybe later',
       });
     } else { // The promo code is a communityId into which the user was invited
-      Modal.show('Modal', {
-        id: 'join-community',
-        title: instance.viewmodel.message().header,
-        text: __('promo.InstructionsToJoin'),
-        btnOK: 'Belépés a saját házba',
-        onOK() {
-          Session.set('promo');
-          window.open(`https://honline.hu/community/${promoCode}/join?demouser=out`, '_blank');
-//          FlowRouter.go('Community join', { _cid: promoCode }, { demouser: 'out' });
-        },
-        // btnClose: 'Maybe later',
-      });
+      window.open(`https://honline.hu/community/${promoCode}/join?demouser=out`, '_blank');
     }
   },
 });
