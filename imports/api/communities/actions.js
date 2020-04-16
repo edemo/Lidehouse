@@ -77,6 +77,10 @@ Communities.actions = {
     visible: doc.settings && doc.settings.joinable,
     run() {
       const communityId = doc._id;
+      if (user.hasJoinedCommunity(communityId)) {  // should not let same person join twice
+        FlowRouter.go('App home');
+        return;
+      }
       if (doc.status === 'sandbox') {   // Sandboxes have immediate (no questions asked) joining, with a fixed ownership share
         Meteor.call('parcels.insert',
           { communityId, category: '@property', approved: false, serial: 0, ref: 'auto', units: 100, type: 'flat' },
