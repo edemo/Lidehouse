@@ -89,8 +89,6 @@ Template.Promotion.events({
        // btnClose: 'Maybe later',
       });
     } else { // The promo code is a communityId into which the user was invited
-      const community = Communities.findOne(promoCode);
-      if (!community) return;
       Modal.show('Modal', {
         id: 'join-community',
         title: instance.viewmodel.message().header,
@@ -98,7 +96,7 @@ Template.Promotion.events({
         btnOK: 'Belépés a saját házba',
         onOK() {
           Session.set('promo');
-          window.open(`https://honline.hu/community/${promoCode}}/join?demouser=out`, '_blank');
+          window.open(`https://honline.hu/community/${promoCode}/join?demouser=out`, '_blank');
 //          FlowRouter.go('Community join', { _cid: promoCode }, { demouser: 'out' });
         },
         // btnClose: 'Maybe later',

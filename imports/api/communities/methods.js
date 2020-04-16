@@ -89,7 +89,9 @@ const launch = new ValidatedMethod({
     Log.info(`Sandbox community ${community.name}(${communityId}) created by ${admin.email}}`);
     const userId = UserAccounts.createUser({ email: admin.email, password: Random.id(8), language: community.settings.language });
     const { token } = UserAccounts.generateResetToken(userId, admin.email, 'enrollAccount', {});
-    const enrollUrl = UserAccounts.urls.enrollAccount(token);
+    let enrollUrl = UserAccounts.urls.enrollAccount(token);
+    const split = enrollUrl.split('/'); split.shift(); split.shift(); split.shift();
+    enrollUrl = split.join('/');
 
     Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });
     const parcelId = Parcels.insert({ communityId, category: '@property', approved: true, serial: 1, ref: 'A001', units: 100, type: 'flat' });
