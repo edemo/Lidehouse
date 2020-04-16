@@ -38,7 +38,7 @@
     "Client": "Ügyfél",
     "Outstandings": "Hátralék emlékeztető",
     "fromTheCommunity": "a __name__ társasházból",
-    "DontReplyToThis": "Erre az email-re kérjük ne válaszoljon, mert egy automata rendszer küldi ki.<br>",
+    "DontReplyToThis": "Kérjük erre a levélre ne válaszoljon, mert egy automata rendszer küldte ki.<br>",
     "GenericFooter": ["Ha úgy véli tévedésből kapta ezt a levelet, vagy nem ért egyet annak tartalmával,",
       "mielőbb lépjen kapcsolatba a társasházzal az email-ben megadott elérhetőségen, vagy értesítse a társasház <a href=\"mailto:__adminEmail__\">adminisztrátorát</a>."],
     "Dear": "Kedves",
