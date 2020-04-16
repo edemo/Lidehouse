@@ -156,9 +156,20 @@ Meteor.startup(function indexMeteorUsers() {
   }
 });
 
+function userRegisteredEmail(user) {
+  let email;
+  if (user.emails && user.emails.length > 0) {
+    email = user.emails[0].address;
+  } else if (user.services && Object.values(user.services).length > 0) {
+    const serviceWithEmail = Object.values(user.services).find(service => service.email);
+    email = serviceWithEmail ? serviceWithEmail.email : undefined;
+  }
+  return email;
+}
+
 export function initialUsername(user) {
-  const email = user.emails[0].address;
-  const emailChunk = email.split('@')[0].substring(0, 5);
+  const email = userRegisteredEmail(user);
+  const emailChunk = email ? email.split('@')[0].substring(0, 5) : 'user';
   const userId = user._id;
   const idChunk = userId.substring(0, 5);
   const userName = emailChunk + '_' + idChunk;
@@ -168,10 +179,9 @@ export function initialUsername(user) {
 Meteor.users.helpers({
   isVerified() {
     debugAssert(Meteor.isServer, 'Email addresses of users are not sent to the clients');
-    return this.emails[0].verified;
-  },
-  isDemo() {
-    return this.emails[0].address.includes('demouser@demo');
+    if (this.emails) return this.emails[0].verified;
+    else if (this.services && Object.values(this.services).length > 0) return true;
+    return false;
   },
   language() {
     return this.settings.language || 'en';
@@ -214,13 +224,21 @@ Meteor.users.helpers({
     else return 'different';
   },
   getPrimaryEmail() {
-    return this.emails[0].address;
+    const user = this;
+    return userRegisteredEmail(user);
   },
   setPrimaryEmail(address) {
     // TODO: Should check if email already exist in the system
+    if (!this.emails) {
+      this.emails = [];
+      this.emails.push({});
+    }
     this.emails[0].address = address;
     this.emails[0].verified = false;
     // TODO: A verification email has to be sent to the user now
+  },
+  isDemo() {
+    return this.getPrimaryEmail() && this.getPrimaryEmail().includes('demouser@demo');
   },
   // Memberships
   partnerId(communityId) {

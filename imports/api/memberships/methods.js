@@ -115,7 +115,7 @@ export const linkUser = new ValidatedMethod({
 
     if (doc.userId) {
       const linkedUser = Meteor.users.findOne(doc.userId);
-      if (linkedUser.emails[0].verified === false) {
+      if (linkedUser.isVerified() === false) {
         // Lets resend the enrollment request
         Accounts.sendEnrollmentEmail(doc.userId);
       } else if (doc.accepted === false) {
@@ -140,7 +140,7 @@ export const linkUser = new ValidatedMethod({
     }
 
     // TODO: We should ask for acceptance, not auto-accept it like now
-    const accepted = user.emails[0].verified; // if not verified, auto-acceptance will happen when he verifies
+    const accepted = user.isVerified(); // if not verified, auto-acceptance will happen when he verifies
     if (!partner.userId) Partners.update(doc.partnerId, { $set: { userId: user._id } });
     Memberships.update(doc._id, { $set: { accepted } }, { selector: { role: doc.role } });
   },
