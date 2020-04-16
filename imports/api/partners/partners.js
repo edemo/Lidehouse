@@ -88,7 +88,7 @@ Partners.helpers({
   },
   primaryEmail() {
     if (this.contact && this.contact.email) return this.contact.email;
-    if (this.userId && this.user() && Meteor.isServer) return this.user().emails[0].address;
+    if (this.userId && this.user() && Meteor.isServer) return this.user().getPrimaryEmail();
     return undefined;
   },
   avatar() {
