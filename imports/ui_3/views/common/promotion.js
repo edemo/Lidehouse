@@ -122,7 +122,8 @@ AutoForm.addHooks('af.community.launch', {
           Modal.show('Modal', {
             title: 'GRATULÁLUNK',
             text: `Az ön háza elkészült!<br><br>
-              A házhoz tartozó linket és a beköltözéshez szükséges információkat elküldtük a megadott e-mail címre!`,
+              A házhoz tartozó aktiváló linket és a beköltözéshez szükséges információkat elküldtük a megadott e-mail címre.<br>
+              Ha nem találja levelünket a bejövő email-ek között, nézze meg a Promóciók mappában.`,
             btnOK: 'OK',
           });
         }, 1000);
