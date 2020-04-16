@@ -34,6 +34,6 @@ Template.Community_launch.onRendered(function onRendered() {
     },
     parcelCount: FlowRouter.getQueryParam('count'),
     promoCode: FlowRouter.getQueryParam('promo'),
-  }, onSuccess(url => FlowRouter.go(url))
+  }, onSuccess(url => window.location.replace(url))
   );
 });
