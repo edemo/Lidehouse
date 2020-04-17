@@ -1,18 +1,12 @@
-/* globals window */
+/* globals window, fbq */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { $ } from 'meteor/jquery';
-import { _ } from 'meteor/underscore';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { AccountsTemplates } from 'meteor/useraccounts:core';
 
-import { displayError, onSuccess } from '/imports/ui_3/lib/errors.js';
-import { __ } from '/imports/localization/i18n.js';
-import { Communities } from '/imports/api/communities/communities.js';
+import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import '/imports/api/communities/actions.js';
 
 import './promotion.html';
@@ -116,6 +110,7 @@ AutoForm.addHooks('af.community.launch', {
               Ha nem találja levelünket a bejövő email-ek között, nézze meg a Promóciók mappában.`,
             btnOK: 'OK',
           });
+          if (fbq) fbq('track', 'CompleteRegistration');
         }, 1000);
       })
     );
