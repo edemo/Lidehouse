@@ -237,6 +237,7 @@
   "View my bills": "Számláim megtekintése",
   "View details": "Részletes nyomtatható nézet",
   "Print bill": "Számla nyomtatása",
+  "print": "nyomtatás",
 
   "link": "Kapcsolás",
   "join": "Csatlakozás",
@@ -545,6 +546,7 @@
   "Unposted": "Könyveletlen",
   "Unpaid": "Rendezetlen",
   "Overdue": "Hátralékos",
+  "Overpayment": "Túlfizetés",
   "Show only": "Csak ami",
   "issuer": "kiállító",
   "receiver": "vevő",
