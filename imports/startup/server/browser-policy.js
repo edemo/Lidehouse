@@ -3,7 +3,7 @@ import { BrowserPolicy } from 'meteor/browser-policy';
 // https://stackoverflow.com/questions/30280370/how-does-content-security-policy-work#30280371
 
 BrowserPolicy.framing.disallow();
-BrowserPolicy.content.disallowInlineScripts();
+BrowserPolicy.content.allowInlineScripts();
 BrowserPolicy.content.disallowEval();
 BrowserPolicy.content.allowInlineStyles();
 BrowserPolicy.content.allowFontDataUrl();
