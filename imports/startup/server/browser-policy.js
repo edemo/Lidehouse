@@ -13,4 +13,5 @@ BrowserPolicy.content.allowOriginForAll('https://fonts.googleapis.com');
 BrowserPolicy.content.allowOriginForAll('https://fonts.gstatic.com');
 BrowserPolicy.content.allowImageOrigin('*');
 BrowserPolicy.content.allowFrameOrigin('meet.jit.si');
-
+BrowserPolicy.content.allowOriginForAll('https://www.googletagmanager.com');
+BrowserPolicy.content.allowOriginForAll('https://connect.facebook.net');
