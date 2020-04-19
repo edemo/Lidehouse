@@ -128,7 +128,7 @@ export const linkUser = new ValidatedMethod({
 
     // Else if doc.userId is not yet set, we link user here
     let user = Meteor.users.findOne({ 'emails.0.address': email });
-    if (user && Partners.findOne({ partnerId: { $ne: doc.partnerId }, userId: user._id })) {
+    if (user && Partners.findOne({ _id: { $ne: doc.partnerId }, userId: user._id })) {
       throw new Meteor.Error('err_sanityCheckFailed', 'There is already an other partner connected with a user with this e-mail address in the community');
     }
     if (!user) {
