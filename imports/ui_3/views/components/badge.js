@@ -5,6 +5,7 @@ import './badge.html';
 
 Template.Badge.viewmodel({
   parentSubscriptionsReady() {
+    // unfortunately this does not work in tables
     return Template.instance().parent(1).subscriptionsReady();
   },
   extraClasses() {

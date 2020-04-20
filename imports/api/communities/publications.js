@@ -8,19 +8,11 @@ import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Memberships } from '/imports/api/memberships/memberships';
 import { Communities } from './communities.js';
 
-function visibleFields(userId, communityId) {
-  const user = Meteor.users.findOneOrNull(userId);
-  if (user.hasPermission('communities.details', communityId)) {
-    return {};  // all fields
-  }
-  return Communities.publicFields;
-}
-
 // This publication sends only very basic data about what communities exist on this server
 Meteor.publishComposite('communities.listing', function communitiesListing() {
   return {
     find() {
-      return Communities.find({}, { fields: Communities.publicFields });
+      return Communities.find({}, { fields: Communities.listingsFields });
     },
     children: [{
       find(community) {
@@ -39,7 +31,7 @@ Meteor.publishComposite('communities.listing', function communitiesListing() {
 function communityPublication(userId, _id) {
   return {
     find() {
-      return Communities.find({ _id: _id || undefined }, { fields: visibleFields(userId, _id) });
+      return Communities.find({ _id });
     },
     children: [{
       find(community) {

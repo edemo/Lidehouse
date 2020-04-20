@@ -129,7 +129,7 @@ Template.Top_navbar.events({
     displayMessage('success', `${newCommunity.name} ${__('selected')}`);
   },
   'click .js-new.community'() {
-    Communities.actions.new.run();
+    Communities.actions.new().run();
   },
   'click .js-logout'() {
     Meteor.logout(function onLogout(err) {

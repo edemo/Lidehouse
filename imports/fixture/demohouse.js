@@ -236,8 +236,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       case 2: builder.createMembership(dummyUserId, 'maintainer'); break;
       case 3: builder.createMembership(dummyUserId, 'accountant'); break;
       case 5: builder.createMembership(dummyUserId, 'treasurer'); break;
-      case 4:
-      case 10:
+      case 4: builder.createMembership(dummyUserId, 'overseer', { rank: 'chairman' }); break;
+      case 10: builder.createMembership(dummyUserId, 'overseer'); break;
       case 16: builder.createMembership(dummyUserId, 'overseer'); break;
       default: break;
     }
@@ -395,8 +395,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const demoTopicDates = [
     moment(`${lastYear}-09-16 08:25`).toDate(),
-    moment().subtract(4, 'month').toDate(),
     moment().subtract(3, 'week').toDate(),
+    moment().subtract(2, 'month').toDate(),
   ];
 
   ['0', '1', '2'].forEach((topicNo) => {
@@ -423,10 +423,29 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.clear();
 
+  Clock.starts(3, 'days', 'ago');
+  const epidemicTopicId = builder.insert(Topics, 'forum', {
+    title: __('demo.topic.3.title'),
+    text: __('demo.topic.3.text'),
+    status: 'opened',
+    creatorId: builder.dummyUsers[6]
+  });
+  ['0', '1', '2', '3'].forEach((commentNo) => {
+    Clock.tickSome('minutes');
+    if (commentNo === '3') Clock.tick(21, 'hours');
+    const commentText = __(`demo.topic.3.comment.${commentNo}`);
+    builder.insert(Comments, 'comment', {
+      topicId: epidemicTopicId,
+      text: commentText,
+      creatorId: (commentNo == 2) ? builder.dummyUsers[6] : builder.dummyUsers[commentNo],
+    });
+  });
+  Clock.clear();
+
   // ===== News =====
 
-  Clock.starts(2, 'weeks', 'ago');
-  ['0', '1'].forEach((newsNo) => {
+  Clock.starts(4, 'weeks', 'ago');
+  ['0', '1', '3'].forEach((newsNo) => {
     Clock.tickSome('days');
     const newsId = builder.create('news', {
       title: __(`demo.news.${newsNo}.title`),
@@ -449,6 +468,26 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.clear();
 
+  // ===== Room for test purpose =====
+
+  const demoMessageRoom = builder.create('room', {
+    creatorId: demoManagerId,
+    participantIds: [demoAdminId, dummyUserId],
+  });
+  Clock.starts(1, 'weeks', 'ago');
+  builder.insert(Comments, 'comment', {
+    creatorId: demoAdminId,
+    topicId: demoMessageRoom,
+    text: __('demo.messages.0'),
+  });
+  Clock.tickSome('hours');
+  builder.insert(Comments, 'comment', {
+    creatorId: dummyUserId,
+    topicId: demoMessageRoom,
+    text: __('demo.messages.1'),
+  });
+  Clock.clear();
+
   // ===== Votes =====
 
   const agenda0 = builder.create('agenda', {
@@ -468,25 +507,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   }
 
-  Clock.setSimulatedTime(moment(demoTopicDates[0]).subtract(2, 'months').toDate());
-  const voteTopicManager = builder.insert(Topics, 'vote', {
-    title: __('demo.vote.manager.title'),
-    text: __('demo.vote.manager.text'),
-    status: 'opened',
-    closesAt: moment(demoTopicDates[0]).subtract(1, 'months').toDate(),
-    vote: {
-      procedure: 'online',
-      effect: 'poll',
-      type: 'petition',
-    },
-  });
-  castDemoVotes(voteTopicManager, [[0], null, [0], [0], [0], [0], [0]]);
-  Clock.setSimulatedTime(moment(demoTopicDates[0]).subtract(1, 'months').toDate());
-  builder.execute(statusChange, { topicId: voteTopicManager, status: 'votingFinished' });
-  builder.execute(statusChange, { topicId: voteTopicManager, status: 'closed' });
-  Clock.clear();
-
-  Clock.setSimulatedTime(moment(demoTopicDates[0]).add(2, 'weeks').toDate());
+  Clock.setSimulatedTime(moment(demoTopicDates[0]).add(1, 'weeks').toDate());
   const voteTopicLoan = builder.insert(Topics, 'vote', {
     title: __('demo.vote.loan.title'),
     text: __('demo.vote.loan.text'),
@@ -506,7 +527,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   builder.execute(statusChange, { topicId: voteTopicLoan, status: 'closed' });
   Clock.clear();
 
-  Clock.setSimulatedTime(moment(demoTopicDates[0]).add(142, 'hours').toDate());
+  Clock.setSimulatedTime(moment(demoTopicDates[0]).add(300, 'hours').toDate());
   const voteTopicParking = builder.insert(Topics, 'vote', {
     title: __('demo.vote.parking.title'),
     text: __('demo.vote.parking.text'),
@@ -524,6 +545,29 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(6, 'weeks').toDate());
   builder.execute(statusChange, { topicId: voteTopicParking, status: 'votingFinished' });
   builder.execute(statusChange, { topicId: voteTopicParking, status: 'closed' });
+  Clock.clear();
+
+  Clock.setSimulatedTime(moment(demoTopicDates[0]).add(2.5, 'months').toDate());
+  const voteTopicCleaning = builder.insert(Topics, 'vote', {
+    title: __('demo.vote.cleaning.title'),
+    text: __('demo.vote.cleaning.text'),
+    status: 'opened',
+    closesAt: moment().add(1, 'months').toDate(),
+    vote: {
+      procedure: 'online',
+      effect: 'poll',
+      type: 'choose',
+      choices: [
+        __('demo.vote.cleaning.choice.0'),
+        __('demo.vote.cleaning.choice.1'),
+      ],
+    },
+  });
+
+  castDemoVotes(voteTopicCleaning, [[0], [0], [0], [0], [0], [0], [0]]);
+  Clock.setSimulatedTime(moment(demoTopicDates[0]).add(15, 'weeks').toDate());
+  builder.execute(statusChange, { topicId: voteTopicCleaning, status: 'votingFinished' });
+  builder.execute(statusChange, { topicId: voteTopicCleaning, status: 'closed' });
   Clock.clear();
 
   Clock.starts(3, 'weeks', 'ago');
@@ -548,7 +592,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopicWallColor, [null, [0, 1, 2, 3], null, [1, 2, 3, 0], null, [2, 3, 0, 1], null, [1, 0, 2, 3], null, [1, 2, 3, 0], null, [1, 2, 0, 3]]);
   ['0', '1'].forEach((commentNo) => {
-    Clock.setSimulatedTime(moment().subtract(3, 'days').add(commentNo + 2, 'minutes').toDate());
+    Clock.setSimulatedTime(moment().subtract(2, 'weeks').add(commentNo + 27, 'minutes').toDate());
     builder.insert(Comments, 'comment', {
       topicId: voteTopicWallColor,
       text: __(`demo.vote.wallColor.comment.${commentNo}`),
@@ -556,25 +600,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.clear();
   
-  Clock.starts(10, 'days', 'ago');
-  const voteTopicCleaning = builder.insert(Topics, 'vote', {
-    title: __('demo.vote.cleaning.title'),
-    text: __('demo.vote.cleaning.text'),
-    status: 'opened',
-    closesAt: moment().add(1, 'months').toDate(),
-    vote: {
-      procedure: 'online',
-      effect: 'poll',
-      type: 'choose',
-      choices: [
-        __('demo.vote.cleaning.choice.0'),
-        __('demo.vote.cleaning.choice.1'),
-      ],
-    },
-  });
-  // No one voted on this yet
-
-  Clock.starts(1, 'weeks', 'ago');
+  Clock.starts(2, 'weeks', 'ago');
   const voteTopicBike = builder.insert(Topics, 'vote', {
     title: __('demo.vote.bicycleStorage.title'),
     text: __('demo.vote.bicycleStorage.text'),
@@ -589,6 +615,37 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   castDemoVotes(voteTopicBike, [[0], [0], [0], [0], [1], [0], [0], [0]]);
+  Clock.clear();
+
+  Clock.starts(3, 'days', 'ago');
+  const voteTopicEpidemicId = builder.insert(Topics, 'vote', {
+    title: __('demo.vote.epidemic.title'),
+    text: __('demo.vote.epidemic.text'),
+    status: 'opened',
+    closesAt: moment().add(1, 'month').toDate(),
+    creatorId: demoManagerId,
+    vote: {
+      procedure: 'online',
+      effect: 'poll',
+      type: 'choose',
+      choices: [
+        __('demo.vote.epidemic.choice.0'),
+        __('demo.vote.epidemic.choice.1'),
+        __('demo.vote.epidemic.choice.2'),
+
+      ],
+    },
+  });
+
+  castDemoVotes(voteTopicEpidemicId, [[0], [1], [2], [0]]);
+  ['0', '1', '2'].forEach((commentNo) => {
+    Clock.tick(11, 'hours');
+    Clock.tickSome('minutes');
+    builder.insert(Comments, 'comment', {
+      topicId: voteTopicEpidemicId,
+      text: __(`demo.vote.epidemic.comment.${commentNo}`),
+    });
+  });
   Clock.clear();
 
   // ===== Shareddocs =====
@@ -730,8 +787,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.starts(1, 'week', 'ago');
 //  builder.nextUser(); // just to skip the maintainer
   const ticket0 = builder.insert(Topics, 'ticket', {
-    title: __('demo.ticket.0.title'),
-    text: __('demo.ticket.0.text'),
+    title: __('demo.ticket.lift.title'),
+    text: __('demo.ticket.lift.text'),
     status: 'reported',
     ticket: {
       type: 'issue',
@@ -740,7 +797,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.tickSome('minutes');
   builder.execute(statusChange, { topicId: ticket0, status: 'confirmed',
-    text: __('demo.ticket.0.comment.0'),
+    text: __('demo.ticket.lift.comment.0'),
     dataUpdate: {
       localizer: Accounts.findOne({ communityId, category: 'location', name: 'Lift' }),
       chargeType: 'lumpsum',
@@ -751,14 +808,15 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.tick(6, 'days');
   builder.execute(statusChange, { topicId: ticket0, status: 'progressing',
-    text: __('demo.ticket.0.comment.1'),
+    text: __('demo.ticket.lift.comment.1'),
     dataUpdate: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
 
-  Clock.starts(3, 'weeks', 'ago');
+  Clock.starts(5, 'weeks', 'ago');
+  Clock.tickSome('minutes');
   const ticket1 = builder.insert(Topics, 'ticket', {
-    title: __('demo.ticket.1.title'),
-    text: __('demo.ticket.1.text'),
+    title: __('demo.ticket.leak.title'),
+    text: __('demo.ticket.leak.text'),
     status: 'reported',
     ticket: {
       type: 'issue',
@@ -767,7 +825,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.tickSome('minutes');
   builder.execute(statusChange, { topicId: ticket1, status: 'confirmed',
-    text: __('demo.ticket.1.comment.0'),
+    text: __('demo.ticket.leak.comment.0'),
     dataUpdate: {
       localizer: '@A409',
       chargeType: 'insurance',
@@ -777,13 +835,13 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   const actualStart1 = Clock.tick(2, 'days');
   builder.execute(statusChange, { topicId: ticket1, status: 'progressing',
-    text: __('demo.ticket.1.comment.1'),
+    text: __('demo.ticket.leak.comment.1'),
     dataUpdate: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
   Clock.tickSome('minutes');
   const actualFinish1 = Clock.tick(2, 'days');
   builder.execute(statusChange, { topicId: ticket1, status: 'finished',
-    text: __('demo.ticket.1.comment.2'),
+    text: __('demo.ticket.leak.comment.2'),
     dataUpdate: {
       actualStart: actualStart1,
       actualFinish: actualFinish1,
@@ -791,14 +849,15 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.tick(2, 'days');
   builder.execute(statusChange, { topicId: ticket1, status: 'closed',
-    text: __('demo.ticket.1.comment.3'),
+    text: __('demo.ticket.leak.comment.3'),
     dataUpdate: {},
   });
 
-  Clock.starts(2, 'weeks', 'ago');
+  Clock.starts(3, 'weeks', 'ago');
+  Clock.tickSome('hours');
   const ticket2 = builder.insert(Topics, 'ticket', {
-    title: __('demo.ticket.2.title'),
-    text: __('demo.ticket.2.text'),
+    title: __('demo.ticket.blackout.title'),
+    text: __('demo.ticket.blackout.text'),
     status: 'reported',
     ticket: {
       type: 'issue',
@@ -808,13 +867,14 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.tickSome('minutes');
   builder.insert(Comments, 'comment', {
     topicId: ticket2,
-    text: __('demo.ticket.2.comment.0'),
+    text: __('demo.ticket.blackout.comment.0'),
   });
 
   Clock.starts(3, 'months', 'ago');
+  Clock.tickSome('minutes');
   const ticket3 = builder.insert(Topics, 'ticket', {
-    title: __('demo.ticket.3.title'),
-    text: __('demo.ticket.3.text'),
+    title: __('demo.ticket.plaster.title'),
+    text: __('demo.ticket.plaster.text'),
     status: 'reported',
     ticket: {
       type: 'issue',
@@ -823,7 +883,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.tickSome('hours');
   builder.execute(statusChange, { topicId: ticket3, status: 'confirmed',
-    text: __('demo.ticket.3.comment.0'),
+    text: __('demo.ticket.plaster.comment.0'),
     dataUpdate: {
       localizer: Accounts.findOne({ communityId, category: 'location', name: 'Lépcsőház' }),
       chargeType: 'oneoff',
@@ -835,7 +895,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   const actualStart3 = Clock.tick(1, 'week');
   builder.execute(statusChange, { topicId: ticket3, status: 'progressing',
-    text: __('demo.ticket.3.comment.1'),
+    text: __('demo.ticket.plaster.comment.1'),
     dataUpdate: {
       expectedFinish: Clock.date(10, 'day', 'ahead'),
     },
@@ -843,7 +903,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.tickSome('minutes');
   const actualFinish3 = Clock.tick(8, 'day');
   builder.execute(statusChange, { topicId: ticket3, status: 'finished',
-    text: __('demo.ticket.3.comment.2'),
+    text: __('demo.ticket.plaster.comment.2'),
     dataUpdate: {
       actualCost: 8500,
       actualStart: actualStart3,
@@ -853,11 +913,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.tickSome('hours');
   builder.insert(Comments, 'comment', {
     topicId: ticket3,
-    text: __('demo.ticket.3.comment.3'),
+    text: __('demo.ticket.plaster.comment.3'),
   });
   Clock.tickSome('minutes');
   builder.execute(statusChange, { topicId: ticket3, status: 'closed',
-    text: __('demo.ticket.3.comment.4'),
+    text: __('demo.ticket.plaster.comment.4'),
     dataUpdate: {},
   });
 
@@ -971,9 +1031,10 @@ export function insertDemoHouse(lang, demoOrTest) {
 // === Opening ===
 
   const openings = [
-    ['cash', 'Cash register', 1000000],
-    ['bank', 'Checking account', 1100000],
-    ['bank', 'Savings account', 1200000],
+    ['cash', 'Cash register', 300000],
+    ['bank', 'Checking account', 3100000],
+    ['bank', 'Savings account', 1400000],
+    ['bank', 'LTP', 100000],
   ];
   openings.forEach((opening) => {
     builder.create('opening', {
@@ -981,6 +1042,15 @@ export function insertDemoHouse(lang, demoOrTest) {
       side: 'debit',
       amount: opening[2],
       account: Accounts.findOne({ communityId, category: opening[0], name: opening[1] }).code,
+    });
+  });
+
+  ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
+    builder.create('transfer', {
+      valueDate: new Date(`${lastYear}-${mm}-01`),
+      amount: 100000,  
+      fromAccount: '`382',
+      toAccount: '`384',
     });
   });
 
@@ -1247,7 +1317,6 @@ Meteor.methods({
         const builder = new DemoCommunityBuilder(communityId, lang);
         const counter = builder.nextSerial;
 
-        Clock.starts(2, 'year', 'ago');
         const demoParcelId = builder.createProperty({
           units: 100,
           floor: '5',
@@ -1263,6 +1332,7 @@ Meteor.methods({
         });
         const demoMembership = Memberships.findOne(demoMembershipId);
 
+        Clock.starts(2, 'year', 'ago');
         const waterMeterId = builder.create('meter', { parcelId: demoParcelId, service: 'coldWater', uom: 'm3' });
         const heatingMeterId = builder.create('meter', { parcelId: demoParcelId, service: 'heating', uom: 'kJ' });
         Clock.starts(14, 'month', 'ago');
@@ -1279,9 +1349,7 @@ Meteor.methods({
         // Billings will be applied startig from a year ago, for each month
 
         const demoManagerId = builder.getUserWithRole('manager');
-        const chatPartnerId = builder.getUserWithRole('owner');
 
-        Clock.starts(3, 'weeks', 'ago');
         const demoUserMessageRoom = builder.create('room', {
           creatorId: demoUserId,
           participantIds: [demoUserId, demoManagerId],
@@ -1291,26 +1359,9 @@ Meteor.methods({
           topicId: demoUserMessageRoom,
           text: __('demo.manager.message'),
         });
-        const demoUserMessageRoom2 = builder.create('room', {
-          creatorId: demoUserId,
-          participantIds: [demoUserId, chatPartnerId],
-        });
-        Clock.starts(6, 'hours', 'ago');
-        builder.insert(Comments, 'comment', {
-          creatorId: demoUserId,
-          topicId: demoUserMessageRoom2,
-          text: __('demo.messages.0'),
-        });
-        Clock.starts(3, 'hours', 'ago');
-        builder.insert(Comments, 'comment', {
-          creatorId: chatPartnerId,
-          topicId: demoUserMessageRoom2,
-          text: __('demo.messages.1'),
-        });
-        Clock.clear();
         // lastSeens were updated in the comments.insert method,
 
-        builder.generateDemoPayments(demoParcel, demoMembership);
+        builder.generateDemoPayments(demoParcel, demoMembership, 3);
 
         Meteor.setTimeout(function () {
           purgeDemoUserWithParcel(demoUserId, demoParcelId, communityId);

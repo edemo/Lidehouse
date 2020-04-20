@@ -15,6 +15,7 @@ import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships, entityOf } from './memberships.js';
+import { sendAddedToRoleInfoEmail } from '/imports/email/added-to-role.js';
 
 function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
   // Checks that *user* has permission to add new member in given *community*  
@@ -61,6 +62,10 @@ export const insert = new ValidatedMethod({
           `No permission to perform this activity: memberships.insert: ${doc}, user: ${this.userId}`);
       }
       // Nothing else to check. Things will be checked when it gets approved by community admin/manager.
+      if (doc.community() && !doc.community().needsJoinApproval()) {
+        doc.approved = true;
+        doc.accepted = true;
+      }
     } else {
       checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     }
@@ -103,25 +108,29 @@ export const linkUser = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    const email = doc.partner().contact && doc.partner().contact.email;
-    if (!email && !doc.userId) throw new Meteor.Error('err_sanityCheckFailed', 'No contact email set for this membership', doc);
+    const partner = doc.partner();
+    const email = partner && partner.contact && partner.contact.email;
+    if (!email && !doc.userId) throw new Meteor.Error('err_sanityCheckFailed', 'No contact email set for this partner', doc);
     if (this.isSimulation) return;  // Not possible to find and link users on the client side, as no user data available
 
     if (doc.userId) {
       const linkedUser = Meteor.users.findOne(doc.userId);
-      if (linkedUser.emails[0].verified === false) {
+      if (linkedUser.isVerified() === false) {
         // Lets resend the enrollment request
         Accounts.sendEnrollmentEmail(doc.userId);
       } else if (doc.accepted === false) {
-        // TODO: This is where we should resend acceptance request email - if there was such a thing
+        sendAddedToRoleInfoEmail(linkedUser, doc.communityId, doc.role);
         Memberships.update(doc._id, { $set: { accepted: true } }, { selector: { role: doc.role } });
-       // now we auto-accept it for him (if he is already verified user)
+       // now we auto-accept it for him (if he is already verified user), we could send acceptance request email instead of info
       }
       return;   // thats all, user is already linked
     }
 
     // Else if doc.userId is not yet set, we link user here
     let user = Meteor.users.findOne({ 'emails.0.address': email });
+    if (user && Partners.findOne({ _id: { $ne: doc.partnerId }, userId: user._id })) {
+      throw new Meteor.Error('err_sanityCheckFailed', 'There is already an other partner connected with a user with this e-mail address in the community');
+    }
     if (!user) {
       const inviter = Meteor.users.findOne(this.userId);
       Log.info(`Invitation sending to ${email} in '${inviter.language()}', to join community ${doc.community().name}`);
@@ -131,9 +140,9 @@ export const linkUser = new ValidatedMethod({
     }
 
     // TODO: We should ask for acceptance, not auto-accept it like now
-    const accepted = user.emails[0].verified; // if not verified, auto-acceptance will happen when he verifies
-    Partners.update(doc.partnerId, { $set: { userId: user._id } });
-    Memberships.update(doc._id, { $set: { accepted, userId: user._id } }, { selector: { role: doc.role } });
+    const accepted = user.isVerified(); // if not verified, auto-acceptance will happen when he verifies
+    if (!partner.userId) Partners.update(doc.partnerId, { $set: { userId: user._id } });
+    Memberships.update(doc._id, { $set: { accepted } }, { selector: { role: doc.role } });
   },
 });
 

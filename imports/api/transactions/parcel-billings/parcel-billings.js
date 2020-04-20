@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
@@ -56,13 +57,13 @@ const selectFromExistingGroups = {
 };
 
 ParcelBillings.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   title: { type: String, max: 100 },
   consumption: { type: ParcelBillings.consumptionSchema, optional: true }, // if consumption based
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
   digit: { type: String, autoform: Accounts.choosePayinType },
   localizer: { type: String, autoform: Parcels.choosePhysical },
-  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: _.extend({}, autoformOptions(Parcels.typeValues), { firstOption: () => __('All') }) },
+  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: _.extend({}, autoformOptions(Parcels.typeValues, 'schemaParcels.type.'), { firstOption: () => __('All') }) },
   group: { type: String, optional: true, autoform: selectFromExistingGroups },
   note: { type: String, optional: true },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
@@ -96,26 +97,36 @@ function chooseParcelBillingLocalizer() {
 }
 
 ParcelBillings.applySchema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   date: { type: Date, autoform: { value: new Date() } },
   ids: { type: [String], optional: true, regEx: SimpleSchema.RegEx.Id, autoform: _.extend({ type: 'select-checkbox', checked: true }, chooseParcelBilling) },
   localizer: { type: String, optional: true, autoform: chooseParcelBillingLocalizer() },
+  withFollowers: { type: Boolean, optional: true, autoform: { disabled() { const loc = AutoForm.getFieldValue('localizer'); return !loc || loc === '@'; } } },
 });
 
 Meteor.startup(function indexParcelBillings() {
   ParcelBillings.ensureIndex({ communityId: 1 });
 });
 
+ParcelBillings.filterParcels = function filterParcels(communityId, localizer, withFollowers) {
+  const selector = { communityId, category: '@property' };
+  if (localizer) selector.code = new RegExp('^' + localizer);
+  let parcels = Parcels.find(selector).fetch();
+  if (withFollowers) parcels = parcels.map(p => p.withFollowers()).flat(1);
+  return parcels;
+};
+
 ParcelBillings.helpers({
   community() {
     return Communities.findOne(this.communityId);
   },
-  parcels(appliedLocalizer) {
-    const localizer = appliedLocalizer || this.localizer;
-    const selector = { communityId: this.communityId, category: '@property', code: new RegExp('^' + localizer) };
+  parcelsToBill() {
+    const selector = { communityId: this.communityId, category: '@property' };
+    if (this.localizer) selector.code = new RegExp('^' + this.localizer);
     if (this.type) selector.type = this.type;
     if (this.group) selector.group = this.group;
-    return Parcels.find(selector);
+    const parcels = Parcels.find(selector).fetch();
+    return parcels;
   },
   projectionUom() {
     switch (this.projection.base) {

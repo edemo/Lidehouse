@@ -23,8 +23,9 @@ export const Bill_Email = {
     path: '/bill-email/:bid',
     data: (params) => {
       const bill = Transactions.findOne(params.bid);
+      const partner = bill.partner();
       return {
-        user: bill.partner().user(),
+        user: partner.user(),
         community: bill.community(),
         bill,
         ...Bill_Email.layoutData,

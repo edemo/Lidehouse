@@ -23,11 +23,11 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { StatementEntries } from '/imports/api/transactions/statements/statements.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'remission', 'receipt', 'barter', 'transfer', 'opening', 'freeTx'];
+Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'transfer', 'opening', 'freeTx'];
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
@@ -39,7 +39,7 @@ Transactions.entrySchema = new SimpleSchema([
 ]);
 
 Transactions.coreSchema = {
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   category: { type: String, allowedValues: Transactions.categoryValues, autoform: { omit: true } },
   valueDate: { type: Date },
   amount: { type: Number, decimal: true },
@@ -52,27 +52,25 @@ Transactions.coreSchema = {
 //  month: { type: String, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getMonth() + 1; },
 //  },
+  status: { type: String, defaultValue: 'draft', allowedValues: ['draft', 'posted', 'void'], autoform: { omit: true } },
   postedAt: { type: Date, optional: true, autoform: { omit: true } },
   seId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 };
 
-Transactions.partnerSchema = new SimpleSchema([
-  LocationTagsSchema, {
-    relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
-    partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
-    contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract }, // ?? overriding LocationTags
-  },
-]);
+Transactions.partnerSchema = new SimpleSchema({
+  relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
+  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract }, // ?? overriding LocationTags
+});
 
 Transactions.legsSchema = {
   debit: { type: [Transactions.entrySchema], optional: true },
   credit: { type: [Transactions.entrySchema], optional: true },
   complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
-//  reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
 };
 
 Transactions.noteSchema = {
-//  ref: { type: String, optional: true },
   note: { type: String, optional: true, autoform: { rows: 3 } },
 };
 
@@ -85,7 +83,7 @@ Transactions.baseSchema = new SimpleSchema([
 Transactions.idSet = ['communityId', 'ref'];
 
 Meteor.startup(function indexTransactions() {
-  Transactions.ensureIndex({ communityId: 1, complete: 1, valueDate: -1 });
+  Transactions.ensureIndex({ communityId: 1, valueDate: -1 });
   Transactions.ensureIndex({ seId: 1 });
   Transactions.ensureIndex({ partnerId: 1 }, { sparse: true });
   Transactions.ensureIndex({ membershipId: 1 }, { sparse: true });
@@ -94,6 +92,7 @@ Meteor.startup(function indexTransactions() {
   } else if (Meteor.isServer) {
     Transactions._ensureIndex({ communityId: 1, category: 1, relation: 1, serial: 1 });
     Transactions._ensureIndex({ communityId: 1, serialId: 1 });
+    Transactions._ensureIndex({ communityId: 1, deliveryDate: 1 }, { sparse: true });
     Transactions._ensureIndex({ 'bills.id': 1 }, { sparse: true });
     Transactions._ensureIndex({ 'debit.account': 1 }, { sparse: true });
     Transactions._ensureIndex({ 'credit.account': 1 }, { sparse: true });
@@ -108,11 +107,11 @@ Meteor.startup(function indexTransactions() {
 // Note: in addition the Sign of the breakdown itself (in the schema) will control how we display it, 
 // and in the BIG EQUATION constraint (Assets + Expenses = Equity + Sources + Incomes + Liabilities)
 
-export function oppositeSide(side) {
+Transactions.oppositeSide = function oppositeSide(side) {
   if (side === 'debit') return 'credit';
   if (side === 'credit') return 'debit';
   return undefined;
-}
+};
 
 Transactions.helpers({
   community() {
@@ -174,6 +173,9 @@ Transactions.helpers({
     const elapsedHours = now.diff(creationTime, 'hours');
     return (elapsedHours > 24);
   },
+  isAutoPosting() {
+    return this.status === 'void' || this.txdef().isAutoPosting();
+  },
   calculateComplete() {
     let total = 0;
     if (!this.debit || !this.credit) return false;
@@ -213,25 +215,30 @@ Transactions.helpers({
     switch (this.category) {
       case 'bill':
       case 'receipt': sign = -1; break;
-      case 'payment':
-      case 'remission': sign = +1; break;
+      case 'payment': sign = +1; break;
       default: debugAssert(false);
     }
     return sign * this.amount;
   },
   negator() {
-    const tx = _.clone(this);
-    delete tx._id;
+    const tx = Object.deepClone(this);
+//    const tx = _.extendOwn({}, this); // only available in new underscore version
+//    const tx = {}; $.extend(true, tx, this);
+    Mongo.Collection.stripAdministrativeFields(tx);
+    tx.note = 'STORNO ' + tx.serialId;
     tx.amount *= -1;
-    tx.debit.forEach(l => l.amount *= -1);
-    tx.credit.forEach(l => l.amount *= -1);
-    return tx;
-  },
-  oppositor() {
-    const tx = _.clone(this);
-    delete tx._id;
-    tx.debit = this.credit;
-    tx.credit = this.debit;
+    if (tx.lines) {   // 'bill' have lines
+      tx.lines.forEach(l => {
+        l.quantity *= -1;
+        if (l.metering) {
+          const temp = l.metering.end; l.metering.end = l.metering.start; l.metering.start = temp;
+        }
+      });
+    }
+    if (tx.bills) tx.bills.forEach(l => l.amount *= -1);  // 'payment' have bills
+//    tx.debit.forEach(l => l.amount *= -1);
+//    tx.credit.forEach(l => l.amount *= -1);
+    const temp = tx.credit; tx.credit = tx.debit; tx.debit = temp;
     return tx;
   },
   updateBalances(directionSign = 1) {
@@ -284,7 +291,7 @@ Transactions.helpers({
     return undefined;
   },
   otherTxSide() {
-    return oppositeSide(this.matchingTxSide());
+    return Transactions.oppositeSide(this.matchingTxSide());
   },
   hasConteerData() {
     let result = true;
@@ -372,7 +379,7 @@ if (Meteor.isServer) {
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
     tdoc.updateBalances(+1);
-    if (tdoc.category === 'payment' || tdoc.category === 'remission') tdoc.registerOnBill();
+    if (tdoc.category === 'payment') tdoc.registerOnBill();
     tdoc.updateOutstandings(+1);
   });
 
@@ -406,6 +413,7 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     tdoc.updateBalances(-1);
     tdoc.updateOutstandings(-1);
+    if (tdoc.seId) StatementEntries.update(tdoc.seId, { $unset: { txId: 0 } });
   });
 }
 
@@ -447,15 +455,15 @@ function withSubs(code) {
 }
 
 function dateFilter(begin, end) {
-  return {
-    $gte: moment(begin).toDate(),
-    $lt: moment(end).add(1, 'day').toDate(),
-  };
+  const valueDate = {};
+  if (begin) valueDate.$gte = moment(begin).toDate();
+  valueDate.$lt = moment(end).add(1, 'day').toDate();
+  return valueDate;
 }
 
 Transactions.makeFilterSelector = function makeFilterSelector(params) {
   const selector = _.clone(params);
-  selector.valueDate = dateFilter(params.begin, params.end);
+  if (params.begin || params.end) selector.valueDate = dateFilter(params.begin, params.end);
   delete selector.begin; delete selector.end;
   if (params.defId) {
   } else delete selector.defId;

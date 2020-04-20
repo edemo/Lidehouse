@@ -1,0 +1,49 @@
+#live-chat {
+    width: 400px;
+    height: 200px;
+    background-color: white;
+    margin-left: 40px;
+};
+
+.live-chat-config {
+    position: fixed;
+    top: 90px;
+    right: 0;
+    overflow: hidden;
+}
+  
+.live-chat-config-box {
+    margin-right: -400px;
+    position: relative;
+    z-index: 2000;
+    transition-duration: 0.8s;
+}
+  
+.live-chat-config-box.show {
+    margin-right: 0;
+}
+
+.join-live-chat {
+    background: #efefef;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: block;
+    padding: 50px 15px;
+    font-size: 16px;
+    height: 100%;
+    border: 2px solid @red;
+    border-right: none;
+}
+
+@media screen and (max-width: 576px) {
+    #live-chat {
+        width: 85vw;
+        height: 100vh;
+        margin-left: 40px;
+    };
+  
+    .live-chat-config-box {
+        margin-right: -85vw;
+    }
+}

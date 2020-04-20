@@ -265,6 +265,14 @@
     "role": {
       "label": "Tisztség"
     },
+    "rank": {
+      "label": "Kiegészítő titulus",
+      "help": "Általában nincs rá szükség. A jogosultságokat nem befolyásolja, csak segíthet árnyalni a személy szerepkörét a tisztség listában.",
+      "chairman": "elnök",
+      "lead": "vezető",
+      "assistant": "asszisztens",
+      "substitute": "helyettes"
+    },
     "partnerId": {
       "label": "Személy"
     },
@@ -281,7 +289,10 @@
     "benefactorship": {
       "label": "Használat",
       "type": {
-        "label": "Típus"
+        "label": "Típus",
+        "rental": "Bérlet",
+        "favor": "Szívességi használat",
+        "right": "Haszonélvezeti jog"
       }
     }
   },
@@ -353,6 +364,12 @@
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
       "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+    },
+    "shareddocs": {
+      "label": "Dokumentumok (ha csatolni szeretne)",
+      "$": {
+        "placeholder": "Link megadása (pl. /uploads/document.pdf)"
+      }
     },
     "sticky" : {
       "label": "Rögzített"
@@ -534,13 +551,21 @@
   },
   "schemaComments": {
     "text": {
-//      "label": "Szöveg",
-//      "placeholder": "Arra gondoltam hogy..."
-      "label": "Megjegyzések",
-      "placeholder": "Azért váltok állapotot mert..."
+      "label": "Szöveg",
+      "placeholder": "Arra gondoltam hogy..."
+    },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "destinationId": {
       "label": "Áthelyezés ehhez a témához:"
+    }
+  },
+  "schemaStatusChanges": {
+    "text": {
+      "label": "Megjegyzések",
+      "placeholder": "Azért váltok állapotot mert..."
     }
   },
   "schemaBreakdowns": {
@@ -602,8 +627,17 @@
     }
   },
   "schemaTransactions": {
+    "category": {
+      "label": "Kategória"
+    },
     "defId": {
       "label": "Típus"
+    },
+    "status": {
+      "label": "Státusz",
+      "draft": "Könyveletlen",
+      "posted": "Könyvelt",
+      "void": "Sztornózott"
     },
     "valueDate": {
       "label": "Értéknap",
@@ -646,6 +680,9 @@
     "reconciled": {
       "label": "Egyeztetve"
     },
+    "allocated": {
+      "label": "Allokálva"
+    },
     "debit": {
       "label": "Tartozik",
       "$": {
@@ -677,8 +714,7 @@
       }
     },
     "note": {
-      "label": "Megjegyzés",
-      "placeholder": "(pl. közlemény vagy partner azonosító)"
+      "label": "Megjegyzések"
     },
     // Following lines are for the different txdefs
     "supplierBillId": {
@@ -764,7 +800,7 @@
       "label": "Kapcsolt felhasználó (ha már regisztrált)"
     },
     "idCard": {
-      "label" : "Személy hivatalos adatai",
+      "label" : "Személyi adatok",
       "type": {
         "label": "Személy típusa",
         "natural": "magánszemély",
@@ -852,9 +888,6 @@
       "label": "Kifizetetlen",
       "placeholder": "(pl. 14560)"
     },
-    "note": {
-      "label": "Megjegyzések"
-    },
     "lines" : {
       "label": "Tételek",
       "$" : {
@@ -929,7 +962,7 @@
       }
     },
     "outstanding": {
-      "label": "Fennmaradó összeg",
+      "label": "Allokálatlan összeg",
       "placeholder": "(pl. 14560)"
     }
   },
@@ -996,6 +1029,10 @@
     "localizer": {
       "label": "Előírás helye",
       "help": "Az előírás kivetésre kerül egy adott albetétre, ha egy albetétet választ ki, vagy egy adott csoport minden elemére, ha egy csoprtot választ ki."
+    },
+    "withFollowers": {
+      "label": "És a vezetett albetétekre is",
+      "help": "Amennyiben ez be van jelölve, akkor nem csak a fent megjelölt helyekre, hanem minden ahhoz kapcsolt vezetett albetétre is előírunk."
     },
     "type": {
       "label": "Típus, amire előírunk",

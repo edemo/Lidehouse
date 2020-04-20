@@ -17,29 +17,37 @@ import '/imports/api/users/users.js';
 import './methods.js';
 
 Comments.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission(`${options.entity.name}.insert`, doc),
-    run(options, doc) { /* NOP -- 'comments.insert is not used as command');*/ },
-  },
-  view: {
+    icon: 'fa fa-plus',
+    visible: user.hasPermission(`comment.insert`, doc),
+    run() {
+      Modal.show('Autoform_modal', {
+        id: 'af.comment.insert',
+        schema: Comments.simpleSchema({ category: 'comment' }),
+        doc,
+        type: 'method',
+        meteormethod: 'comments.insert',
+      });
+    },
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('events.inCommunity', doc),
-    run(options, doc) { /* NOP -- 'comments.view is not used as command');*/ },
-  },
-  edit: {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('events.inCommunity', doc),
+    run() { /* NOP -- 'comments.view is not used as command');*/ },
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc),
-    run(options, doc) { /* NOP -- 'comments.edit is not used as command');*/ },
-  },
-  move: {
+    icon: 'fa fa-pencil',
+    visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
+    run() { /* NOP -- 'comments.edit is not used as command');*/ },
+  }),
+  move: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'move',
-    icon: () => 'fa fa-arrow-right',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.move`, doc),
-    run(options, doc) {
+    icon: 'fa fa-arrow-right',
+    visible: doc && user.hasPermission(`${doc.entityName()}.move`, doc),
+    run() {
       debugAssert(doc.entityName() === 'comment', 'only comment can be moved');
       Modal.show('Autoform_modal', {
         id: 'af.comment.move',
@@ -49,74 +57,52 @@ Comments.actions = {
         meteormethod: 'comments.move',
       });
     },
-  },
-  like: {
+  }),
+  like: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'like',
-    label(options, doc) {
-      return doc && doc.isLikedBy(Meteor.userId()) ? 'unimportant' : 'important';
-    },
-    icon(options, doc) {
-      return doc && doc.isLikedBy(Meteor.userId()) ? 'fa fa-hand-o-down' : 'fa fa-hand-o-up';
-    },
-    visible(options, doc) {
-      if (doc.creatorId === Meteor.userId()) return false;
-      return currentUserHasPermission('like.toggle', doc);
-    },
-    run(options, doc) {
+    label: doc.isLikedBy(user._id) ? 'unimportant' : 'important',
+    icon: doc.isLikedBy(user._id) ? 'fa fa-hand-o-down' : 'fa fa-hand-o-up',
+    visible: (doc.creatorId !== user._id) && user.hasPermission('like.toggle', doc),
+    run() {
       Comments.methods.like.call({ id: doc._id }, handleError);
     },
-  },
-  mute: {
+  }),
+  mute: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'mute',
-    label(options, doc) {
-      return doc && doc.isFlaggedBy(Meteor.userId()) ? 'Unblock content' : 'Block content';
-    },
-    icon(options, doc) {
-      return doc && doc.isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
-    },
-    visible(options, doc) {
-      if (doc.creatorId === Meteor.userId()) return false;
-      return currentUserHasPermission('flag.toggle', doc);
-    },
-    run(options, doc) {
+    label: doc.isFlaggedBy(user._id) ? 'Unblock content' : 'Block content',
+    icon: doc.isFlaggedBy(user._id) ? 'fa fa-check' : 'fa fa-ban',
+    visible: (doc.creatorId !== user._id) && user.hasPermission('flag.toggle', doc),
+    run() {
       Comments.methods.flag.call({ id: doc._id }, handleError);
     },
-  },
-  block: {
+  }),
+  block: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'block',
-    label(options, doc) {
-      const creator = doc && doc.creator();
-      if (!creator) return '';
-      return doc.creator().isFlaggedBy(Meteor.userId()) ? __('Unblock content from', doc.creator().toString()) : __('Block content from', doc.creator().toString());
-    },
-    icon(options, doc) {
-      const creator = doc && doc.creator();
-      if (!creator) return '';
-      return doc.creator().isFlaggedBy(Meteor.userId()) ? 'fa fa-check fa-user' : 'fa fa-ban fa-user-o';
-    },
-    visible(options, doc) {
-      if (doc.creatorId === Meteor.userId()) return false;
-      return currentUserHasPermission('flag.toggle', doc);
-    },
-    run(options, doc) {
+    label: doc.creator() && doc.creator().isFlaggedBy(user._id)
+      ? __('Unblock content from', doc.creator().displayOfficialName())
+      : __('Block content from', doc.creator().displayOfficialName()),
+    icon: doc.creator() && doc.creator().isFlaggedBy(user._id)
+      ? 'fa fa-check fa-user' : 'fa fa-ban fa-user-o',
+    visible: doc.creatorId !== user._id && user.hasPermission('flag.toggle', doc),
+    run() {
       Meteor.users.methods.flag.call({ id: doc.creatorId }, handleError);
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`, doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: doc && user.hasPermission(`${doc.entityName()}.remove`, doc),
+    run() {
       Modal.confirmAndCall(Comments.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,
         message: 'It will disappear forever',
       });
     },
-  },
+  }),
 };
 
 //-------------------------------------------------------
 
-//  AutoForm.addModalHooks(`af.comment.insert`);
-//  AutoForm.addModalHooks(`af.comment.update`);
+AutoForm.addModalHooks(`af.comment.insert`);
+AutoForm.addModalHooks(`af.comment.update`);
 AutoForm.addModalHooks('af.comment.move');

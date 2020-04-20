@@ -12,38 +12,6 @@ import { Partners } from '/imports/api/partners/partners.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
 
-Meteor.publishComposite('topics.inCommunity', function topicsInCommunity(params) {
-  new SimpleSchema({
-    communityId: { type: String },
-  }).validate(params);
-
-  const { communityId } = params;
-  const user = Meteor.users.findOneOrNull(this.userId);
-
-  const selector = {
-    communityId,
-    // Filter for 'No participantIds (meaning everyone), or contains userId'
-    $or: [
-      { participantIds: { $exists: false } },
-      { participantIds: this.userId },
-    ],
-  };
-
-  const publicFields = Votings.extendPublicFieldsForUser(this.userId, communityId);
-  if (!user.hasPermission('topics.inCommunity', { communityId })) return this.ready();
-
-  return {
-    find() {
-      return Topics.find(selector, { fields: publicFields });
-    },
-    children: [{
-      find() {
-        return Topics.find(_.extend({}, selector, { category: 'vote', closed: true }));
-      },
-    }],
-  };
-});
-
 Meteor.publishComposite('topics.byId', function topicsById(params) {
   new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -57,6 +25,12 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
   if (!user.hasPermission('topics.inCommunity', { communityId })) return this.ready();
 
   const publicFields = Votings.extendPublicFieldsForUser(user._id, communityId);
+  function visibleFields() {
+    if (topic.category === 'vote' && (topic.status === 'closed' || topic.status === 'votingFinished')) {
+      return _.extend({}, Topics.publicFields, Votings.voteResultDetailsFields);
+    }
+    return publicFields;
+  }
   const selector = {
     _id,
     // Filter for 'No participantIds (meaning everyone), or contains userId'
@@ -68,16 +42,12 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
 
   return {
     find() {
-      return Topics.find(selector, { fields: publicFields });
+      return Topics.find(selector, { fields: visibleFields() });
     },
     children: [{
       // Publish the author of the Topic (for flagging status)
       find(topic) {
-        return Meteor.users.find({ _id: topic.userId }, { fields: Meteor.users.publicFields });
-      },
-    }, {
-      find() {
-        return Topics.find(_.extend({}, selector, { category: 'vote', closed: true }));
+        return Meteor.users.find({ _id: topic.creatorId }, { fields: Meteor.users.publicFields });
       },
     }, {
       // Publish all Comments of the Topic
@@ -86,7 +56,7 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
       },
       children: [{
         find(comment) {
-          return Meteor.users.find({ _id: comment.userId }, { fields: Meteor.users.publicFields });
+          return Meteor.users.find({ _id: comment.creatorId }, { fields: Meteor.users.publicFields });
         },
       }],
     }, {
@@ -135,6 +105,12 @@ Meteor.publishComposite('topics.active', function topicsBoard(params) {
       find(topic) {
         return Comments.find({ topicId: topic._id }, { limit: 5, sort: { createdAt: -1 } });
       },
+    }, {
+      find(topic) {
+        if (topic.category === 'vote' && topic.status === 'votingFinished') {
+          return Topics.find({ _id: topic._id }, { fields: _.extend({}, Topics.publicFields, { voteResults: 1, voteSummary: 1 }) });
+        }
+      },
     }],
   };
 });
@@ -152,7 +128,9 @@ Meteor.publish('topics.list', function topicsList(params) {
     return this.ready();
   }
 
-  return Topics.find(params);
+  const selector = _.extend({}, params, { $or: [{ participantIds: { $exists: false } }, { participantIds: this.userId }] });
+
+  return Topics.find(selector, { fields: Topics.publicFields });
 });
 
 Meteor.publishComposite('topics.roomsOfUser', function roomsOfUser(params) {

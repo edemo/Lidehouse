@@ -1,27 +1,17 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
+import { _ } from 'meteor/underscore';
 
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/users/users.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import '/imports/ui_3/views/components/badge.js';
 
 import './navigation.html';
 
-Template.Navigation.onCreated(function() {
-  this.autorun(() => {
-    const activeCommunityId = Session.get('activeCommunityId');
-    if (activeCommunityId) {
-      this.subscribe('communities.byId', { _id: activeCommunityId });
-      this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
-      this.subscribe('topics.list', { communityId: activeCommunityId, category: 'vote', closed: false });
-      this.subscribe('topics.list', { communityId: activeCommunityId, category: 'ticket', closed: false });
-    }
-  });
-});
 
 Template.Navigation.onRendered(function() {
   // Initialize metisMenu
@@ -35,7 +25,16 @@ Template.Navigation.onRendered(function() {
   });*/
 });
 
-Template.Navigation.helpers({
+Template.Navigation.viewmodel({
+  autorun() {
+    const activeCommunityId = getActiveCommunityId();
+    if (activeCommunityId) {
+      this.templateInstance.subscribe('communities.byId', { _id: activeCommunityId });
+      this.templateInstance.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
+      this.templateInstance.subscribe('topics.list', { communityId: activeCommunityId, category: 'vote', closed: false });
+      this.templateInstance.subscribe('topics.list', { communityId: activeCommunityId, category: 'ticket', closed: false });
+    }
+  },
   unseenEventsCount(category) {
     const userId = Meteor.userId();
     const topics = Topics.find({ communityId: getActiveCommunityId(), category });
@@ -59,6 +58,10 @@ Template.Navigation.helpers({
     const unapprovedParcelCount = Parcels.find({ communityId, approved: false }).count();
     const unapprovedMembershipCount = Memberships.find({ communityId, approved: false }).count();
     return unapprovedParcelCount + unapprovedMembershipCount;
+  },
+  isActiveModule(moduleName) {
+    const community = getActiveCommunity();
+    return !community.settings.modules || _.contains(community.settings.modules, moduleName);
   },
   developerMode() {
     return false;     // set this true to access developer features

@@ -8,6 +8,7 @@
 **/.passenger/*
 /public/**/brand/*
 /private/certs/*
+/client/x-*
 *.bak
 *.iml
 *.ipr

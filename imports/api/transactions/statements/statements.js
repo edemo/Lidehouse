@@ -16,7 +16,7 @@ export const Statements = new Mongo.Collection('statements');
 Statements.supportedBanks = ['K&H'];
 
 Statements.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   account: { type: String },
   bank: { type: String, allowedValues: Statements.supportedBanks, autoform: autoformOptions(Statements.supportedBanks) },
   startDate: { type: Date },

@@ -4,31 +4,32 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Txdefs } from './txdefs.js';
 import './methods.js';
 
 Txdefs.actions = {
-  new: {
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    color: () => 'primary',
-    label: () => `${__('new')} ${__('txdef')}`,
-    visible: (options, doc) => currentUserHasPermission('accounts.insert', doc),
+    icon: 'fa fa-plus',
+    color: 'primary',
+    label: `${__('new')} ${__('txdef')}`,
+    visible: user.hasPermission('accounts.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.txdef.insert',
         collection: Txdefs,
+        doc,
         type: 'method',
         meteormethod: 'txdefs.insert',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('accounts.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('accounts.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.txdef.update',
         collection: Txdefs,
@@ -38,17 +39,17 @@ Txdefs.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('accounts.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('accounts.remove', doc),
+    run() {
       Modal.confirmAndCall(Txdefs.methods.remove, { _id: doc._id }, {
         action: 'delete txdef',
       });
     },
-  },
+  }),
 };
 
 //------------------------------------------------------
@@ -56,10 +57,4 @@ Txdefs.actions = {
 AutoForm.addModalHooks('af.txdef.insert');
 AutoForm.addModalHooks('af.txdef.update');
 
-AutoForm.addHooks('af.txdef.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});
 

@@ -8,7 +8,7 @@ import { StatementEntries } from '/imports/api/transactions/statement-entries/st
 import '/imports/ui_3/views/components/accounting-bills.js';
 import '/imports/ui_3/views/components/accounting-ledger.js';
 import '/imports/ui_3/views/components/accounting-transactions.js';
-import '/imports/ui_3/views/components/accounting-breakdowns.js';
+import '/imports/ui_3/views/components/accounting-setup.js';
 import '/imports/ui_3/views/components/accounting-reconciliation.js';
 import './accounting-page.html';
 
@@ -28,18 +28,22 @@ Template.Accounting_page.viewmodel({
   },
   countUnpostedTxs() {
     const communityId = this.communityId();
-    return Transactions.find({ communityId, postedAt: { $exists: false } }).count();
+    const txs = Transactions.find({ communityId, postedAt: { $exists: false } });
+    return txs.count();
   },
   countUnreconciledTxs() {
     const communityId = this.communityId();
-    return Transactions.find({ communityId, category: { $in: ['payment', 'receipt'] }, seId: { $exists: false } }).count();
+    const txs = Transactions.find({ communityId, category: { $in: ['payment', 'receipt'] }, seId: { $exists: false } });
+    return txs.count();
   },
   countOutstandingBills() {
     const communityId = this.communityId();
-    return Transactions.find({ communityId, outstanding: { $gt: 0 } }).count();
+    const txs = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
+    return txs.count();
   },
   countUnreconciledEntries() {
     const communityId = this.communityId();
-    return StatementEntries.find({ communityId, txId: { $exists: false } }).count();
+    const ses = StatementEntries.find({ communityId, txId: { $exists: false } });
+    return ses.count();
   },
 });

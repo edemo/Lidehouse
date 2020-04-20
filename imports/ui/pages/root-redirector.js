@@ -24,7 +24,7 @@ Template.app_rootRedirector.onCreated(() => {
   } else {
     if (Meteor.settings.public.communityId) {
       Meteor.setTimeout(() => {
-        FlowRouter.go('Community page', { _cid: Meteor.settings.public.communityId });
+        FlowRouter.go('Community show', { _cid: Meteor.settings.public.communityId });
       });
     } else {
       Meteor.setTimeout(() => {

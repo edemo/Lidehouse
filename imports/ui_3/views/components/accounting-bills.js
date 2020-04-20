@@ -11,7 +11,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Session } from 'meteor/session';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
-import { partnersColumns } from '/imports/api/partners/tables.js';
+import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -81,11 +81,24 @@ Template.Accounting_bills.viewmodel({
     });
     return txdef || {};
   },
+  count(category, kind) {
+    const selector = { communityId: this.communityId(), category, relation: this.activePartnerRelation() };
+    if (kind === 'outstanding') selector.outstanding = { $gt: 0 };
+    else if (kind === 'unposted') selector.postedAt = { $exists: false };
+    else if (kind === 'unreconciled') selector.seId = { $exists: false };
+    const txs = Transactions.find(selector);
+    return txs.count();
+  },
+  countOverduePartners(color) {
+    const partners = Partners.find({ communityId: this.communityId(), relation: this.activePartnerRelation(), outstanding: { $gt: 0 } });
+    const overdues = partners.fetch().filter(partner => partner.mostOverdueDaysColor() === color);
+    return overdues.length;
+  },
   billsFilterSelector() {
     const selector = { communityId: this.communityId(), category: 'bill' };
     selector.relation = this.activePartnerRelation();
     if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
-    if (this.unpostedOnly()) selector.complete = false;
+    if (this.unpostedOnly()) selector.postedAt = { $exists: false };
     return selector;
   },
   billsTableDataFn() {
@@ -135,7 +148,7 @@ Template.Accounting_bills.viewmodel({
   },
   partnersOptionsFn() {
     return () => Object.create({
-      columns: partnersColumns(),
+      columns: partnersFinancesColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
     });
@@ -172,7 +185,7 @@ Template.Accounting_bills.events({
     instance.viewmodel.activePartnerRelation(partnerRelation);
   },
   'click .js-apply'(event, instance) {
-    ParcelBillings.actions.apply.run();
+    ParcelBillings.actions.apply().run();
   },
   'click .js-edit-defs'(event, instance) {
     const modalContext = {

@@ -33,6 +33,7 @@ export function defineAccountTemplates() {
     { code: '`381', name: 'Cash register', category: 'cash', primary: true }, // Pénztár
     { code: '`382', name: 'Checking account', category: 'bank', primary: true }, // Folyószámla
     { code: '`383', name: 'Savings account', category: 'bank', primary: false }, // Megtakarítási számla
+    { code: '`384', name: 'LTP', category: 'bank', primary: false }, // FUNDAMENTA
     { code: '`39', name: 'AKTÍV IDŐBELI ELHATÁROLÁSOK', category: 'asset' },
     // 4
     { code: '`4', name: 'Liabilities', category: 'liability', locked: true, sign: -1 },  // FORRÁSOK
@@ -51,7 +52,11 @@ export function defineAccountTemplates() {
     { code: '`45', name: 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK', category: 'liability' },
     { code: '`451', name: 'Rövid lejáratú bank Hitel', category: 'liability' },
     { code: '`452', name: 'Egyéb rövid lejáratú kötelezettségek', category: 'liability' },
-    { code: '`46', name: 'Suppliers', category: 'payable' },
+    { code: '`454', name: 'Suppliers', category: 'payable' },  // Szállítók
+    { code: '`455', name: 'Capital goods suppliers', category: 'payable' },  //  Beruházási szállítók
+    { code: '`466', name: 'VAT paid', category: 'expense' },  // Előzetesen felszámított általános forgalmi adó
+    { code: '`467', name: 'VAT payable', category: 'payable' },  // Fizetendő általános forgalmi adó
+    { code: '`468', name: 'VAT clearing', category: 'receivable' },  // Általános forgalmi adó elszámolási számla
     { code: '`48', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK', category: 'liability' },
     { code: '`49', name: 'ÉVI MÉRLEGSZÁMLÁK', category: 'liability' },
     { code: '`491', name: 'Opening account', category: 'liability' },
@@ -147,6 +152,7 @@ export function defineAccountTemplates() {
     { code: '`973', name: 'Hitelintézettől kapott kamatok', category: 'income' },
     { code: '`974', name: 'Egyéb pénzügyi bevételek', category: 'income' },
     { code: '`98', name: 'RENDKIVÜLI BEVÉTELEK', category: 'income' },
+    { code: '`99', name: 'KEREKÍTÉSI NYERESÉG-VESZTESÉG', category: 'income' },
   ],
   });
 
@@ -167,7 +173,7 @@ export function defineAccountTemplates() {
 
 /*
   Breakdowns.define({ communityId: null,
-    name: 'COA', label: 'Chart Of Accounts',
+    name: 'COA', label: 'Chart of Accounts',
     children: [
       { code: '1', include: 'BEFEKTETETT ESZKÖZÖK' },
       { code: '2', include: 'KÉSZLETEK' },
@@ -186,7 +192,7 @@ if (Meteor.isServer) {
 }
 
 /*
-export const ACCOUNTS_PAYABLE = '46';
+export const ACCOUNTS_PAYABLE = '454';
 export const ACCOUNTS_RECEIVABLE = '31';
 export const ACCOUNTS_RECEIVABLE_FROM_PARCELS = '33';
 */

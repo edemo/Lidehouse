@@ -41,7 +41,7 @@ const chooseRelation = _.extend(
 );
 
 Partners.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: chooseRelation },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   idCard: { type: IdCardSchema, optional: true },
@@ -49,6 +49,18 @@ Partners.schema = new SimpleSchema({
   BAN: { type: String, max: 100, optional: true },
   taxNo: { type: String, max: 50, optional: true },
 });
+
+Partners.idSet = ['communityId', 'userId', 'idCard.name'];
+
+Partners.publicFields = {
+  'idCard.address': 0,
+  'idCard.identifier': 0,
+  'idCard.mothersName': 0,
+  'idCard.dob': 0,
+  'contact': 0,
+};
+
+Partners.nonModifiableFields = ['communityId', 'relation', 'userId', 'outstanding'];
 
 
 Meteor.startup(function indexPartners() {
@@ -75,8 +87,8 @@ Partners.helpers({
     return undefined;
   },
   primaryEmail() {
-    if (this.userId && this.user()) return this.user().emails[0].address;
-    if (this.contact) return this.contact.email;
+    if (this.contact && this.contact.email) return this.contact.email;
+    if (this.userId && this.user() && Meteor.isServer) return this.user().getPrimaryEmail();
     return undefined;
   },
   avatar() {
@@ -90,7 +102,9 @@ Partners.helpers({
     if (this.idCard && this.idCard.name) return this.idCard.name;
     if (this.userId) {
       const user = this.user();
-      if (user) return user.displayProfileName(lang || user.settings.language);
+      const preText = (Meteor.isClient && Meteor.user().hasPermission('partners.update', this) && this.community().needsJoinApproval()) ?
+        `[${__('Waiting for approval')}] ` : '';
+      if (user) return preText + user.displayProfileName(lang || user.settings.language);
     }
     if (this.contact && this.contact.email) {
       const emailSplit = this.contact.email.split('@');
@@ -135,16 +149,6 @@ Meteor.startup(function attach() {
   Partners.simpleSchema().i18n('schemaPartners');
 });
 
-Partners.publicFields = {
-  'idCard.address': 0,
-  'idCard.identifier': 0,
-  'idCard.mothersName': 0,
-  'idCard.dob': 0,
-  'contact': 0,
-};
-
-Partners.nonModifiableFields = ['communityId', 'relation', 'userId', 'outstanding'];
-
 // --- Before/after actions ---
 
 if (Meteor.isServer) {
@@ -152,8 +156,12 @@ if (Meteor.isServer) {
   });
 
   Partners.after.update(function (userId, doc, fieldNames, modifier, options) {
-    // TODO: if partner.userId changes for any reason, the membership userId has to be changed accordingly!
-    //    Memberships.update(doc._id, { $set: { userId: doc.userId } }, { selector: { role: doc.role } });
+    const Memberships = Mongo.Collection.get('memberships');
+    if (modifier.$set && modifier.$set.userId && modifier.$set.userId !== this.previous.userId) {
+      Memberships.update({ partnerId: doc._id }, { $set: { userId: modifier.$set.userId } }, { selector: { role: doc.role }, multi: true });
+    } else if (this.previous.userId && modifier.$unset && 'userId' in modifier.$unset) {
+      Memberships.update({ partnerId: doc._id }, { $unset: { userId: '' } }, { selector: { role: doc.role }, multi: true });
+    }
   });
 }
 
@@ -222,12 +230,14 @@ if (Meteor.isClient) {
     },
     options() {
       const communityId = Session.get('activeCommunityId');
-      const relation = Session.get('activePartnerRelation');
+      const community = Communities.findOne(communityId);
+      const txdef = Session.get('modalContext').txdef;
+      const relation = (txdef && txdef.data.relation) || Session.get('activePartnerRelation');
       const partners = Partners.find({ communityId, relation });
       const options = partners.map(function option(p) {
         return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
       });
-      const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+      const sortedOptions = options.sort((a, b) => a.label.localeCompare(b.label, community.settings.language, { sensitivity: 'accent' }));
       return sortedOptions;
     },
     firstOption: () => __('(Select one)'),

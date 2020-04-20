@@ -8,18 +8,18 @@ export const defaultRoles = [
   { name: 'board' },        // same priviledges as manager (for now).
   { name: 'owner' },        // Title holder of a parcel. Has voting rights.
   { name: 'benefactor' },   // Uses the parcel. Owner handed over beneficiary rights to him/her.
-  { name: 'moderator' },    // Moderates the conversations on topics. Can remove comments.
+  { name: 'overseer' },     // Can oversee financial trransactions.
   { name: 'accountant' },   // Can set the Account and Transaction structure.
   { name: 'treasurer' },    // Can add new financial trransactions.
-  { name: 'overseer' },     // Can oversee financial trransactions.
   { name: 'maintainer' },   // Works on the reported errors. Sees them, can coment on them.
+  { name: 'moderator' },    // Moderates the conversations on topics. Can remove comments.
   { name: 'delegate' },     // Can vote for someone else.
   { name: 'guest' },        // Just looking around. Somone invited him/her to take a look.
 ];
 
-export const ranks = [
-  'chairman', 'assistant',
-];
+export const rolesPriorities = {};
+_.each(defaultRoles, (r, i) => rolesPriorities[r.name] = i);
+rolesPriorities.admin = rolesPriorities.moderator; // Needs to move to end of the officer list
 
 // Groupings just to ease configuration
 export const everyRole = defaultRoles.map(r => r.name);
@@ -40,7 +40,7 @@ export const votingRoles = ['owner', 'delegate'];
 export const Roles = new Mongo.Collection('roles');
 
 Roles.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
               // If not exist, that is a built-in role for all communities
   name: { type: String, max: 100 },
   permissions: { type: Array },

@@ -15,10 +15,6 @@ Transactions.entities = {
     editForm: 'Payment_edit',
     size: 'md',
   },
-  remission: {
-    name: 'remission',
-    fields: ['amount', 'valueDate'],
-  },
   barter: {
     name: 'barter',
     omitFields: () => ['debit', 'credit'],
@@ -31,11 +27,11 @@ Transactions.entities = {
   },
   transfer: {
     name: 'transfer',
-    fields: ['amount', 'valueDate', 'fromAccount', 'toAccount'],
+    fields: ['amount', 'valueDate', 'fromAccount', 'toAccount', 'communityId'],
   },
   opening: {
     name: 'opening',
-    fields: ['amount', 'valueDate', 'account'],
+    fields: ['amount', 'valueDate', 'account', 'communityId'],
   },
   freeTx: {
     name: 'freeTx',

@@ -27,11 +27,13 @@ const chooseProperty = {
 };
 
 Parcelships.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: false },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseProperty },
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
+
+Parcelships.idSet = ['parcelId'];
 
 Meteor.startup(function indexParcelships() {
   Parcelships.ensureIndex({ parcelId: 1 });

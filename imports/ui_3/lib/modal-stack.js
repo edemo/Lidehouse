@@ -59,6 +59,6 @@ export const ModalStack = {
     const modalStack = Session.get('modalStack');
     let ownModal = {};
     ownModal = _.find(modalStack, modal => (modal.id === ownId));
-    return ownModal.result[afId];
+    return ownModal && ownModal.result[afId];
   },
 };

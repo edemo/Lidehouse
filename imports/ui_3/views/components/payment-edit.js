@@ -14,15 +14,15 @@ Template.Payment_edit.viewmodel({
   partnerRelation() {
     return Session.get('modalContext').txdef.data.relation;
   },
-  reconciledAmount() {
-    let reconciled = 0;
+  allocatedAmount() {
+    let allocated = 0;
     (AutoForm.getFieldValue('bills') || []).forEach(bp => {
       if (!bp) return;
-      reconciled += bp.amount;
+      allocated += bp.amount;
     });
-    return reconciled;
+    return allocated;
   },
-  unreconciledAmount() {
-    return AutoForm.getFieldValue('amount') - this.reconciledAmount();
+  unallocatedAmount() {
+    return AutoForm.getFieldValue('amount') - this.allocatedAmount();
   },
 });

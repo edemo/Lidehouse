@@ -24,7 +24,7 @@ Tickets.urgencyColors = { high: 'danger', normal: 'warning', low: 'primary' };
 Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
 
 Tickets.extensionRawSchema = {
-  type: { type: String, allowedValues: Tickets.typeValues, autoform: autoformOptions(Tickets.typeValues, 'schemaTickets.ticket.type.') },
+  type: { type: String, allowedValues: Tickets.typeValues, autoform: { type: 'hidden' } },
   urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.'), defaultValue: 'normal' },
   localizer: { type: String, optional: true, autoform: chooseParcel() },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
@@ -157,22 +157,22 @@ Tickets.statusValues = Object.keys(Tickets.statuses);
 Tickets.workflows = {
   issue: {
     start: [reported],
-    reported: { obj: reported, next: [confirmed, deleted] },
-    confirmed: { obj: confirmed, next: [progressing] },
+    reported: { obj: reported, next: [confirmed, closed, deleted] },
+    confirmed: { obj: confirmed, next: [progressing, suspended, closed] },
     progressing: { obj: progressing, next: [finished, suspended] },
-    suspended: { obj: suspended, next: [progressing] },
+    suspended: { obj: suspended, next: [progressing, closed] },
     finished: { obj: finished, next: [closed, progressing] },
     closed: { obj: closed, next: [] },
     deleted: { obj: deleted, next: [reported] },
   },
   upgrade: {
     start: [reported],
-    reported: { obj: reported, next: [confirmed, deleted] },
-    confirmed: { obj: confirmed, next: [progressing, toApprove, toVote] },
+    reported: { obj: reported, next: [confirmed, closed, deleted] },
+    confirmed: { obj: confirmed, next: [progressing, suspended, toApprove, toVote, closed] },
     toApprove: { obj: toApprove, next: [progressing, confirmed, closed] },
     toVote: { obj: toVote, next: [progressing, confirmed, closed] },
     progressing: { obj: progressing, next: [finished, suspended] },
-    suspended: { obj: suspended, next: [progressing] },
+    suspended: { obj: suspended, next: [progressing, closed] },
     finished: { obj: finished, next: [closed, progressing] },
     closed: { obj: closed, next: [] },
     deleted: { obj: deleted, next: [reported] },

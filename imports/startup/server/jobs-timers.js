@@ -8,10 +8,10 @@ import { cleanCanceledVoteAttachments } from '/imports/api/shareddocs/methods.js
 import { emptyOldTrash } from '/imports/api/behaviours/trash.js';
 import { processNotifications, notifyExpiringVotings } from '/imports/email/notifications-send.js';
 
-const job = (func) => {
+const job = (func, ...params) => {
   const wrappedFunc = function () {
     const start = Date.now();
-    func();
+    func(...params);
     const finish = Date.now();
     console.log('Job', func.name, finish - start, 'ms');
   };
@@ -30,9 +30,9 @@ Meteor.startup(() => {
   later.setInterval(job(notifyExpiringVotings), dailySchedule);
   later.setInterval(job(closeClosableVotings), dailySchedule);
   later.setInterval(job(closeInactiveTopics), dailySchedule);
-  later.setInterval(job(() => openScheduledVotings()), later.parse.recur().on(1).hour());
+  later.setInterval(job(openScheduledVotings), later.parse.recur().on(1).hour());
 
-  later.setInterval(job(() => processNotifications('frequent')), later.parse.recur().on(8, 12, 16, 20).hour());
-  later.setInterval(job(() => processNotifications('daily')), later.parse.recur().on(18).hour());
-  later.setInterval(job(() => processNotifications('weekly')), later.parse.recur().on(6).dayOfWeek().on(14).hour());
+  later.setInterval(job(processNotifications, 'frequent'), later.parse.recur().on(8, 12, 16, 20).hour());
+  later.setInterval(job(processNotifications, 'daily'), later.parse.recur().on(18).hour());
+  later.setInterval(job(processNotifications, 'weekly'), later.parse.recur().on(6).dayOfWeek().on(14).hour());
 });

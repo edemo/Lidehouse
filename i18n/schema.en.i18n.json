@@ -97,7 +97,7 @@
     },
     "avatar": {
       "label": "Profile picture",
-      "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
     },
     "profile": {
       "label": "Profile [This data is publicly shown to the members of your community]",
@@ -192,7 +192,7 @@
         },
         "photo": {
           "label": "Photo (if applicable)",
-          "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+          "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
         }
       }
     },
@@ -248,7 +248,7 @@
       },
       "photo": {
         "label": "Photo (if applicable)",
-        "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
       }
     }
   },
@@ -263,6 +263,14 @@
   "schemaMemberships" : {
     "role": {
       "label": "Role"
+    },
+    "rank": {
+      "label": "Rank extension",
+      "help": "Usually not necessary. It has no effect on the permissions, but it may help to slightly differentiate between the roles on the officers page.",
+      "chairman": "chairman",
+      "lead": "lead",
+      "assistant": "assistant",
+      "substitute": "substitute"
     },
     "partnerId": {
       "label": "Person"
@@ -280,7 +288,10 @@
     "benefactorship": {
       "label": "Benefactor",
       "type": {
-        "label": "Type"
+        "label": "Type",
+        "rental": "Rental",
+        "favor": "Favor",
+        "right": "Right"
       }
     }
   },
@@ -351,7 +362,13 @@
     },
     "photo": {
       "label": "Photo (if applicable)",
-      "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+    },
+    "shareddocs": {
+      "label": "Documents (if applicable)",
+      "$": {
+        "placeholder": "File link (eg. /uploads/document.pdf)"
+      }
     },
     "sticky" : {
       "label": "Sticky"
@@ -529,13 +546,21 @@
   },
   "schemaComments": {
     "text": {
-//      "label": "Text",
-//      "placeholder": "My comment here..."
-      "label": "Notes",
-      "placeholder": "The reason for changing the state is..."
+      "label": "Text",
+      "placeholder": "My comment here..."
+    },
+    "photo": {
+      "label": "Photo (if applicable)",
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
     },
     "destinationId": {
       "label": "Move this over to:"
+    }
+  },
+  "schemaStatusChanges": {
+    "text": {
+      "label": "Notes",
+      "placeholder": "The reason for changing the state is..."
     }
   },
   "schemaBreakdowns": {
@@ -597,8 +622,17 @@
     }
   },
   "schemaTransactions": {
+    "category": {
+      "label": "Category"
+    },
     "defId": {
       "label": "Type"
+    },
+    "status": {
+      "label": "Status",
+      "draft": "Draft",
+      "posted": "Posted",
+      "void": "Void"
     },
     "valueDate": {
       "label": "Accounting date",
@@ -641,6 +675,9 @@
     "reconciled": {
       "label": "Reconciled"
     },
+    "allocated": {
+      "label": "Allocated"
+    },
     "debit": {
       "label": "Debit",
       "$": {
@@ -672,7 +709,7 @@
       }
     },
     "note": {
-      "label": "Note"
+      "label": "Notes"
     },
     // Following lines are for the different txdefs
     "supplierBillId": {
@@ -846,9 +883,6 @@
       "label": "Outstanding",
       "placeholder": "(eg. 14560)"
     },
-    "note": {
-      "label": "Notes"
-    },
     "lines" : {
       "label": "Line items",
       "$" : {
@@ -922,7 +956,7 @@
       }
     },
     "outstanding": {
-      "label": "Outstanding amount",
+      "label": "Unallocated amount",
       "placeholder": "(eg. 14560)"
     }
   },
@@ -989,6 +1023,10 @@
     "localizer": {
       "label": "Payin location",
       "help": "Billing will be applied to an individual parcel if an individual parcel is selected, or to all parcels that are under the selected group if a group is selected."
+    },
+    "withFollowers": {
+      "label": "Also for the follower parcels",
+      "help": "If this is checked, we not only apply it to the above selected parcels, but also to all follower parcels linked to those."
     },
     "type": {
       "label": "Type, the billing applies to",

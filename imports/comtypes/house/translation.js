@@ -26,7 +26,7 @@ export const HouseTranslation = {
       },
       "avatar": {
         "label": "Image",
-        "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
       },
       "zip": {
         "label": "Zip code",
@@ -68,6 +68,16 @@ export const HouseTranslation = {
       },
       "settings": {
         "label": "Settings",
+        "modules": {
+          "label": "Modules activated",
+          "options": {
+            "forum": "Forum",
+            "voting": "Decsion making",
+            "maintenance": "Maintenance",
+            "finances": "Finaces",
+            "documents": "Documentstore"
+          }
+        },
         "joinable": {
           "label": "Accepts join requests",
           "help": "If you are not providing all parcel owner's data yourself, and you'd like them to be able to join the community, providing their own data, allow this option. Before approving a join request, you can still edit the submitted data.",
@@ -75,6 +85,11 @@ export const HouseTranslation = {
         "language": {
           "label": "Language",
           "help": "The official language of the community. (Users receive their notifications translated to their own language.)"
+        },
+        "parcelRefFormat": {
+          "label": "Parcel reference format",
+          "placeholder": "(eg. bfdd)",
+          "help": "If a format is supplied, then the building, floor, door data can be calculated from the parcel reference. For example bfdd means the first character is the building, the second is the floor, and the 3rd-4th is the door number, so B108 is used for building B, first floor, door 8."
         },
         "topicAgeDays": {
           "label": "Topic ageing days",
@@ -102,11 +117,6 @@ export const HouseTranslation = {
         "placeholder": "(eg. 34)",
         "help": "The serial number of the property. An integer that grows, and lets you sort your list."
       },
-      "code": {
-        "label": "Accounting code",
-        "placeholder": "(eg. @B for building B)",
-        "help": "The accounting code can be anz unique character sequence. When codes share the same beginning sequence, they are sub-codes of that parent code. We recommend using using @ for physical location, and then follw with a convention like, bulding, floor, door. If you don't supply a code, the system will use the ref as the accounting code."
-      },
       "ref": {
         "label": "Reference",
         "placeholder": "(eg. B405)",
@@ -115,6 +125,11 @@ export const HouseTranslation = {
       "leadRef": {
         "label": "Lead parcel",
         "placeholder": "(eg. K108)"
+      },
+      "code": {
+        "label": "Accounting code",
+        "placeholder": "(eg. @B for building B)",
+        "help": "The accounting code can be anz unique character sequence. When codes share the same beginning sequence, they are sub-codes of that parent code. We recommend using using @ for physical location, and then follw with a convention like, bulding, floor, door. If you don't supply a code, the system will use the ref as the accounting code."
       },
       "units": {
         "label": "Voting share units",
@@ -141,6 +156,7 @@ export const HouseTranslation = {
         "cellar": "Cellar",
         "attic": "Attic",
         "shop": "Shop",
+        "office": "Office",
         "other": "Other"
       },
       "group": {
@@ -164,8 +180,11 @@ export const HouseTranslation = {
         "placeholder": "(eg. 142)"
       },
       "habitants": {
-        "label": "Number of habitants",
-        "placeholder": "(eg. 3)"
+        "label": "Habitants",
+        "placeholder": "(eg. 4)"
+      },
+      "occupants": {
+        "label": "Occupants"
       },
       "freeFields": {
         "label": "Free fields",
@@ -255,6 +274,16 @@ export const HouseTranslation = {
       },
       "settings": {
         "label": "Beállítások",
+        "modules": {
+          "label": "Modulok aktiválva",
+          "options": {
+            "forum": "Fórum",
+            "voting": "Döntéshozás",
+            "maintenance": "Üzemeltetés",
+            "finances": "Pénzügyek",
+            "documents": "Dokumentumtár"
+          }
+        },
         "joinable": {
           "label": "Csatlakozási kérelmeket fogad",
           "help": "Ha nem ön viszi fel az összes tulajdonosi adatot, hanem szeretné engedni hogy a tulajdonosok maguktól, adataik megadásával csatlakozzanak, akkor engedélyezze. A csatlakozási kérelemben megadott albetét adatokat ön tudja még módosítani, mielőtt jóváhagyja azokat."
@@ -262,6 +291,11 @@ export const HouseTranslation = {
         "language": {
           "label": "Nyelv",
           "help": "A közösség hivatalos nyelve. (A felhasználók a számukra küldött értesítőket a saját nyelvükre lefordítva kapják meg.)"
+        },
+        "parcelRefFormat": {
+          "label": "Albetét azonosító formátuma",
+          "placeholder": "(pl bfdd)",
+          "help": "Ha van megadva formátum, akkor az albetét azonosítóból automatikusan kinyerhetők az épület, emelet, ajtó adatok. A bfdd például at jelenti, az elso karakter az épület, a második az emelet, a harmadik-negyedik pedig az ajtó, azaz B108 jelölli a B épület első emelet 8-as lakást."
         },
         "topicAgeDays": {
           "label": "Témák elöregedése napokban",
@@ -289,19 +323,19 @@ export const HouseTranslation = {
         "placeholder": "(pl. 34)",
         "help": "Egyedi sorszám, mely segít sorba rendezni a helyeinket. A helyrajzi szám utolsó száma például kíválóan alkalmas erre."
       },
-      "code": {
-        "label": "Könyvelési kód",
-        "placeholder": "(pl. @B a B épülethez)",
-        "help": "A könyvelési kód tetszőleges karakter sorozat lehet. Amikor azonos karakterekkel kezdődik egy másik kód, akkor az az al-kódja a másik helynek, ezzel lehet hierarchiába rendezni a helyeinket. Érdemes konvenciót használni, mint pl @ jelöli a fizikai helyeket, és ezt követheti az épület, az emelet majd az ajtó kódja. Ha nem ad meg kódot, akkor a 'Megjejölést' fogja használni a rendszer könyvelési kódnak."
-      },
       "ref": {
-        "label": "Megjelölés",
+        "label": "Albetét",
         "placeholder": "(pl. B405)",
-        "help": "Egyedi azonosító, mellyel hivatkozni lehet erre a helyre"
+        "help": "Egyedi név, mellyel hivatkozni lehet erre a helyre"
       },
       "leadRef": {
         "label": "Vezető albetét",
         "placeholder": "(pl. K108)"
+      },
+      "code": {
+        "label": "Könyvelési kód",
+        "placeholder": "(pl. @B a B épülethez)",
+        "help": "A könyvelési kód tetszőleges karakter sorozat lehet. Ha nem ad meg kódot, akkor a @+'Elnevezést' fogja használni a rendszer könyvelési kódnak. Amikor azonos karakterekkel kezdődik egy másik kód, akkor az az al-kódja a másik helynek, ezzel lehet hierarchiába rendezni a helyeinket. Érdemes ezért konvenciót használni, mint pl @ jelöli a fizikai helyeket, és ezt követheti az épület, az emelet majd az ajtó kódja."
       },
       "units": {
         "label": "Tulajdoni hányad",
@@ -328,6 +362,7 @@ export const HouseTranslation = {
         "cellar": "Pince",
         "attic": "Padlás",
         "shop": "Üzlet",
+        "office": "Iroda",
         "other": "Egyéb"
       },
       "group": {
@@ -351,8 +386,10 @@ export const HouseTranslation = {
         "placeholder": "(pl. 142)"
       },
       "habitants": {
-        "label": "Lakók száma",
-        "placeholder": "(pl. 3)"
+        "label": "Lakók száma (fő)"
+      },
+      "occupants": {
+        "label": "Birtokosok"
       },
       "freeFields": {
         "label": "Kötetlen mezők",

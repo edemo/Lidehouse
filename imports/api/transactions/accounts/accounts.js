@@ -8,7 +8,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
+import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 
@@ -22,19 +22,21 @@ Accounts.categoryValues = Accounts.mainCategoryValues.concat(['payable', 'receiv
 Accounts.syncValues = ['none', 'manual', 'auto'];
 
 Accounts.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   category: { type: String, allowedValues: Accounts.categoryValues, autoform: autoformOptions(Accounts.categoryValues, 'schemaAccounts.category.') },
   name: { type: String, max: 100 },
-  code: { type: String, max: 25, optional: true },
+  code: { type: String, max: 25 },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   sign: { type: Number, allowedValues: [+1, -1], optional: true, autoform: { omit: true } },
 });
 
 Accounts.cashExtensionSchema = new SimpleSchema({
+  category: { type: String, defaultValue: 'cash', autoform: { type: 'hidden', defaultValue: 'cash' } },
   primary: { type: Boolean, optional: true },
 });
 
 Accounts.bankExtensionSchema = new SimpleSchema({
+  category: { type: String, defaultValue: 'bank', autoform: { type: 'hidden', defaultValue: 'bank' } },
   primary: { type: Boolean, optional: true },
   bank: { type: String, max: 100, optional: true },
   BAN: { type: String, max: 100, optional: true },  // Bank Account Number
@@ -57,7 +59,7 @@ Accounts.helpers({
   },
   nodes(leafsOnly = false) {
     const regexp = new RegExp('^' + this.code + (leafsOnly ? '.+' : ''));
-    return Accounts.find({ communityId: this.communityId, code: regexp });
+    return Accounts.find({ communityId: this.communityId, code: regexp }, { sort: { code: 1 } });
   },
   leafs() {
     return this.nodes(true);
@@ -107,14 +109,14 @@ _.extend(Accounts, {
     const regexp = new RegExp('^' + code + (leafsOnly ? '.+' : ''));
     return Accounts.find({ communityId, code: regexp }, { sort: { code: 1 } });
   },
-  nodeOptionsOf(communityId, code, leafsOnly) {
-    const codes = (code instanceof Array) ? code : [code];
-    const nodeOptions = codes.map(c => {
+  nodeOptionsOf(communityId, codeS, leafsOnly, addRootNode = false) {
+    const codes = (codeS instanceof Array) ? codeS : [codeS];
+    let nodeOptions = codes.map(code => {
       const nodes = Accounts.nodesOf(communityId, code, leafsOnly);
       return nodes.map(node => node.asOption());
     }).flat(1);
-    if (leafsOnly) return nodeOptions;
-    else return [Accounts.coa(communityId).asOption()].concat(nodeOptions);
+    if (codes.length > 1 && addRootNode) nodeOptions = [Accounts.coa(communityId).asOption()].concat(nodeOptions);
+    return nodeOptions;
   },
   chooseSubNode(code, leafsOnly) {
     return {

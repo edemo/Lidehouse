@@ -9,7 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
+import { autoformOptions, imageUpload } from '/imports/utils/autoform.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -123,7 +123,7 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$.address': SimpleSchema.Types.Email,
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
-  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload },
   profile: { type: PersonProfileSchema, optional: true },
   settings: { type: UserSettingsSchema },
 
@@ -141,15 +141,35 @@ Meteor.users.schema = new SimpleSchema({
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
+Meteor.users.publicFields = {
+  username: 1,
+  profile: 1,
+  avatar: 1,
+  status: 1,
+  settings: 1,
+  flags: 1,
+};
+
 Meteor.startup(function indexMeteorUsers() {
   if (Meteor.isServer) {
     Meteor.users._ensureIndex({ 'emails.0.address': 1 });
   }
 });
 
+function userRegisteredEmail(user) {
+  let email;
+  if (user.emails && user.emails.length > 0) {
+    email = user.emails[0].address;
+  } else if (user.services && Object.values(user.services).length > 0) {
+    const serviceWithEmail = Object.values(user.services).find(service => service.email);
+    email = serviceWithEmail ? serviceWithEmail.email : undefined;
+  }
+  return email;
+}
+
 export function initialUsername(user) {
-  const email = user.emails[0].address;
-  const emailChunk = email.split('@')[0].substring(0, 5);
+  const email = userRegisteredEmail(user);
+  const emailChunk = email ? email.split('@')[0].substring(0, 5) : 'user';
   const userId = user._id;
   const idChunk = userId.substring(0, 5);
   const userName = emailChunk + '_' + idChunk;
@@ -157,6 +177,12 @@ export function initialUsername(user) {
 }
 
 Meteor.users.helpers({
+  isVerified() {
+    debugAssert(Meteor.isServer, 'Email addresses of users are not sent to the clients');
+    if (this.emails) return this.emails[0].verified;
+    else if (this.services && Object.values(this.services).length > 0) return true;
+    return false;
+  },
   language() {
     return this.settings.language || 'en';
   },
@@ -185,7 +211,7 @@ Meteor.users.helpers({
     return this.displayProfileName(lang);
   },
   toString() {
-    return this.displayOfficialName();
+    return this.username;
   },
   personNameMismatch(communityId = getActiveCommunityId()) {
     const partner = Partners.findOne({ communityId, userId: this._id, 'idCard.name': { $exists: true } });
@@ -198,18 +224,27 @@ Meteor.users.helpers({
     else return 'different';
   },
   getPrimaryEmail() {
-    return this.emails[0].address;
+    const user = this;
+    return userRegisteredEmail(user);
   },
   setPrimaryEmail(address) {
     // TODO: Should check if email already exist in the system
+    if (!this.emails) {
+      this.emails = [];
+      this.emails.push({});
+    }
     this.emails[0].address = address;
     this.emails[0].verified = false;
     // TODO: A verification email has to be sent to the user now
   },
+  isDemo() {
+    return this.getPrimaryEmail() && this.getPrimaryEmail().includes('demouser@demo');
+  },
   // Memberships
   partnerId(communityId) {
-    const partner = Partners.findOne({ communityId, userId: this._id });
-    return partner ? partner._id : undefined;
+    const partnerIds = Partners.find({ communityId, userId: this._id }).map(p => p._id);
+    debugAssert(partnerIds.length <= 1, 'A user cannot have more partners in one community');
+    return partnerIds[0] || undefined;
   },
   partnerIds() {
     const partnerIds = Partners.find({ userId: this._id }).map(p => p._id);
@@ -255,6 +290,9 @@ Meteor.users.helpers({
   isUnapprovedInCommunity(communityId) {
     return !!Memberships.findOne({ communityId, approved: false, userId: this._id });
   },
+  hasJoinedCommunity(communityId) {
+    return !!Memberships.findOne({ communityId, userId: this._id });
+  },
   // Voting
   votingUnits(communityId) {
     let sum = 0;
@@ -265,8 +303,7 @@ Meteor.users.helpers({
     const userHasTheseRoles = this.activeRoles(communityId);
     return _.contains(userHasTheseRoles, roleName);
   },
-  hasPermission(permissionName, doc) {
-    debugAssert(doc, 'Need to provide a doc for permission check');
+  hasPermission(permissionName, doc = { communityId: getActiveCommunityId() }) {
     const permission = Permissions.find(p => p.name === permissionName);
     debugAssert(permission, `No such permission "${permissionName}"`);
     const rolesWithThePermission = permission.roles;
@@ -326,11 +363,3 @@ Meteor.users.deny({
   remove() { return true; },
 });
 
-Meteor.users.publicFields = {
-  username: 1,
-  profile: 1,
-  avatar: 1,
-  status: 1,
-  settings: 1,
-  flags: 1,
-};

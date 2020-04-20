@@ -1,0 +1,15 @@
+<template name="Display_file">
+    <div class="row">
+    <div class="col-xs-10">
+      <a target="_blank" href="{{value}}" title="{{displayDate createdAt}}">
+        <i class="fa fa-file"></i>
+        {{value}}
+      </a>
+    </div>
+    <div class="col-xs-2 text-right">
+      <a data-remove-file class="js-delete nav-item">
+        <i class="fa fa-trash" title={{_ 'delete'}}></i>
+      </a>
+    </div>
+    </div>
+</template>

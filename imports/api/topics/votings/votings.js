@@ -81,6 +81,8 @@ function defaultsTo(val) {
 }
 
 Votings.extensionSchema = new SimpleSchema({
+  category: { type: String, defaultValue: 'vote', autoform: { type: 'hidden', defaultValue: 'vote' } },
+  agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   vote: { type: Votings.voteSchema, optional: true },
   voteCasts: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
   voteCastsIndirect: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
@@ -100,7 +102,9 @@ Topics.categoryHelpers('vote', {
     return choice;
   },
   unitsToShare(units) {
-    const votingShare = new Fraction(units, this.community().totalunits);
+    const community = this.community();
+    const totalunits = community && community.totalunits;
+    const votingShare = new Fraction(units, totalunits);
     return votingShare;
   },
   voteSuccessLimit() {
@@ -221,7 +225,10 @@ Topics.categoryHelpers('vote', {
         votePathDisplay() {
           if (this.votePath.length === 1) return 'direct';
           let path = '';
-          this.votePath.forEach((pid, ind) => { if (ind > 0) path += (' -> ' + Partners.findOne(pid).toString()); });
+          this.votePath.forEach((pid, ind) => {
+            const partner = Partners.findOne(pid);
+            if (ind > 0 && partner) path += (' -> ' + partner.toString());
+          });
           return path;
         },
       }));
@@ -255,19 +262,21 @@ Votings.publicExtensionFields = {
   voteParticipation: 1,
 };
 _.extend(Topics.publicFields, Votings.publicExtensionFields);
+
+Votings.voteResultDetailsFields = {
+  voteCasts: 1,
+  voteCastsIndirect: 1,
+  votePaths: 1,
+  voteResults: 1,
+  voteSummary: 1,
+};
 Votings.extendPublicFieldsForUser = function extendForUser(userId, communityId) {
   // User cannot see other user's votes, but need to see his own votes (during active voting)
   // Soution: Use 2 subsrciptions, one on the live votings, one on the closed, and the public fields are different for the two
   const user = Meteor.users.findOne(userId);
   const partnerId = user.partnerId(communityId);
   if (user.hasPermission('vote.peek', { communityId })) {
-    return _.extend({}, Topics.publicFields, {
-      voteCasts: 1,
-      voteCastsIndirect: 1,
-      votePaths: 1,
-      voteResults: 1,
-      voteSummary: 1,
-    });
+    return _.extend({}, Topics.publicFields, Votings.voteResultDetailsFields);
   } else {
     const publicFiledsForOwnVotes = {};
     publicFiledsForOwnVotes['voteCasts.' + partnerId] = 1;

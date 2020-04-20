@@ -39,12 +39,17 @@ export const Render = Meteor.isServer ? {} : {
     occupants.forEach((m) => {
       const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
       const occupancyDetail = m.ownership ? '(' + m.ownership.share.toStringLong() + ')' : '';
-      result += `${m.partner().displayName()} ${occupancyDetail} ${repBadge}<br>`;
+      const partner = m.partner();
+      result += `${partner ? partner.displayName() : 'NO PARTNER'} ${occupancyDetail} ${repBadge}<br>`;
     });
     return result;
   },
   actionButtons(cellData, renderType, currentRow) {
     if (renderType === 'display') return '';
     return ''; // TODO: It would be nice to return the number buttons
+  },
+  badge(cellData, renderType, currentRow) {
+    if (renderType === 'display') return '';
+    return cellData;
   },
 };

@@ -203,6 +203,17 @@
     height: 32px;
 }
 
+.social-footer .social-comment .img-embed {
+    width: 50%;
+    height: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.social-footer .social-comment .well {
+    margin: 5px;
+}
+
 // Using the theme-config panel as the connection issue warning
 #connection-issue {
   z-index: 3000;
@@ -235,4 +246,50 @@
 .js-sort {
     cursor: pointer;
     user-select: none;
+}
+
+@media print {
+
+    .no-height {
+        height: 0px;
+    }
+
+    //Global page
+    .page-heading, .footer, .border-bottom, .btn, #small-chat {
+        display: none;
+    }
+
+    #page-wrapper {
+        margin-top: 0 !important;
+    }
+
+    .ibox-content {
+        border-width: 0;
+    }
+    
+    //Modal
+    .modal-header, .modal-footer {
+        display: none;
+    }
+
+    .modal-dialog {
+        position: absolute;
+        width: 100% !important;
+        height: 100%;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+
+    .modal-content {
+        height: 100%;
+    }
+}
+
+//While we using bs3, we need an additional breakpoint
+@media screen and (max-width: 576px) {
+    [class*="col-xs"] {
+        width: 100%;
+    }
 }

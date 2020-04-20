@@ -14,10 +14,10 @@ import { Fraction } from 'fractional';
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { __ } from '/imports/localization/i18n.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { leaderRoles, nonLeaderRoles, officerRoles } from '/imports/api/permissions/roles.js';
+import { leaderRoles, nonLeaderRoles, officerRoles, rolesPriorities } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/actions.js';
-import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import '/imports/api/parcels/actions.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
@@ -33,29 +33,21 @@ import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/active-archive-tabs.js';
 import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';
 import '/imports/ui_3/views/common/page-heading.js';
-import '/imports/ui_3/views/components/action-buttons.html';
 import '/imports/ui_3/views/components/contact-long.js';
 import '/imports/ui_3/views/blocks/active-period.js';
 import '/imports/ui_3/views/blocks/menu-overflow-guard.js';
+import '/imports/ui_3/views/components/partners-table.js';
 import './community-page.html';
 
 Template.Roleships_box.viewmodel({
   autorun() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.templateInstance.data.communityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
   },
-  leaders() {
-    const communityId = getActiveCommunityId();
-    return Memberships.findActive({ communityId, role: { $in: leaderRoles } }, { sort: { createdAt: 1 } }).fetch();
-  },
-  nonLeaders() {
-    const communityId = getActiveCommunityId();
-    return Memberships.findActive({ communityId, role: { $in: nonLeaderRoles } }, { sort: { createdAt: 1 } }).fetch();
-  },
   officers() {
-    const officers = this.leaders().concat(this.nonLeaders());
-    officers.push(officers.shift());  // put admin from front to the end
-    return officers;
+    const communityId = this.templateInstance.data.communityId();
+    const list = Memberships.findActive({ communityId, role: { $in: officerRoles } }, { sort: { createdAt: 1 } }).fetch();
+    return _.sortBy(list, m => rolesPriorities[m.role]);
   },
 });
 
@@ -72,22 +64,20 @@ Template.Occupants_table.viewmodel({
 
 Template.Occupants_box.viewmodel({
   autorun() {
-    const data = this.templateInstance.data;
-    this.templateInstance.subscribe('parcelships.ofParcel', { parcelId: data.parcelId });
+    const parcelId = this.templateInstance.data.parcel._id;
+    this.templateInstance.subscribe('parcelships.ofParcel', { parcelId });
   },
   membershipsContent() {
-    const data = this.templateInstance.data;
-    const communityId = getActiveCommunityId();
-    const selector = { communityId, parcelId: data.parcelId };
+    const parcelId = this.templateInstance.data.parcel._id;
+    const selector = { parcelId };
     return { collection: 'memberships', selector };
   },
   parcelDisplay() {
-    const parcelId = this.templateInstance.data.parcelId;
-    const parcel = Parcels.findOne(parcelId);
+    const parcel = this.templateInstance.data.parcel;
     return parcel ? parcel.display() : __('unknown');
   },
   parcelshipTitle() {
-    const parcelId = this.templateInstance.data.parcelId;
+    const parcelId = this.templateInstance.data.parcel._id;
     const parcelship = Parcelships.findOne({ parcelId });
     return parcelship ? ` - ${__('parcelship')}` : '';
   },
@@ -102,13 +92,12 @@ Template.Meters_table.viewmodel({
 
 Template.Meters_box.viewmodel({
   parcelDisplay() {
-    const parcelId = this.templateInstance.data.parcelId;
-    const parcel = Parcels.findOne(parcelId);
+    const parcel = this.templateInstance.data.parcel;
     return parcel ? parcel.display() : __('unknown');
   },
   metersContent() {
-    const communityId = getActiveCommunityId();
-    const parcelId = this.templateInstance.data.parcelId;
+    const communityId = this.templateInstance.data.community._id;
+    const parcelId = this.templateInstance.data.parcel._id;
     const selector = { communityId, parcelId };
     return { collection: 'meters', selector };
   },
@@ -118,15 +107,16 @@ Template.Parcels_box.viewmodel({
   showAllParcels: false,
   onCreated() {
     const user = Meteor.user();
-    const community = getActiveCommunity();
+    const communityId = this.templateInstance.data.communityId();
+    const community = this.templateInstance.data.community();
     const showAllParcelsDefault = (
-      (user && user.hasPermission('parcels.insert', { communityId: community._id }))
+      (user && user.hasPermission('parcels.insert', { communityId }))
       || (community && community.parcels.flat <= 25)
     );
     this.showAllParcels(!!showAllParcelsDefault);
   },
   autorun() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.templateInstance.data.communityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
@@ -135,7 +125,7 @@ Template.Parcels_box.viewmodel({
     }
   },
   parcels() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.templateInstance.data.communityId();
     return Parcels.find({ communityId, category: '@property' });
   },
   parcelsTableSelector() {
@@ -144,7 +134,7 @@ Template.Parcels_box.viewmodel({
     return selector;
   },
   parcelsTableContent() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.templateInstance.data.communityId();
     return {
       collection: 'parcels',
       selector: { communityId, category: '@property' },
@@ -177,22 +167,33 @@ Template.Community_page.viewmodel({
   },
   autorun: [
     function subscription() {
-      const communityId = getActiveCommunityId();
+      const communityId = this.communityId();
       this.templateInstance.subscribe('communities.byId', { _id: communityId });
     },
   ],
   communityId() {
-    return getActiveCommunityId();
+    return FlowRouter.getParam('_cid') || getActiveCommunityId();
+  },
+  communityIdObject() {
+    return { communityId: this.communityId() };
   },
   community() {
-    return getActiveCommunity();
+    return Communities.findOne(this.communityId());
+  },
+  reactiveContext() {
+    const self = this;
+    return {
+      communityId: () => self.communityId(),
+      communityIdObject: () => self.communityIdObject(),
+      community: () => self.community(),
+    };
   },
   communities() {
     return Communities;
   },
   title() {
-    const community = getActiveCommunity();
-    return `${__('Community page')} - ${community ? community.name : ''}`;
+    const community = this.community();
+    return `${__('Community page')} - ${community && community.name}`;
   },
   /*  thingsToDisplayWithCounter() {
       const result = [];
@@ -227,12 +228,13 @@ Template.Occupants_box.events({
   'click .js-member'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const membership = Memberships.findOne(id);
-    Meteor.users.actions.view.run({}, membership.partner().user());
+    const partner = membership.partner();
+    Meteor.users.actions.view({}, partner.user()).run();
   },
   'click .js-occupants'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
-    const leadParcel = Parcels.findOne(id);
-    Parcels.actions.occupants.run({}, leadParcel);
+    const parcel = Parcels.findOne(id);
+    Parcels.actions.occupants({}, parcel).run();
   },
 });
 
@@ -244,5 +246,22 @@ Template.Parcels_box.events({
   'click .parcels .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
     instance.viewmodel.showAllParcels(!oldVal);
+  },
+});
+
+Template.Community_page.events({
+  'click .js-partners'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    Modal.show('Modal', {
+      title: 'Teljes partner lista',
+      body: 'Partners_table',
+      bodyContext: { communityId },
+      size: 'lg',
+    });
+  },
+  'click .js-join'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    const community = Communities.findOne(communityId);
+    Communities.actions.join({}, community).run(event, instance);
   },
 });

@@ -1,34 +1,34 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { Session } from 'meteor/session';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Agendas } from './agendas.js';
-import './methods.js';
+import { joinLiveChat } from '/imports/ui_3/views/common/live-chat.js';
 
 Agendas.actions = {
-  new: {
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('agendas.insert', doc),
+    icon: 'fa fa-plus',
+    visible: user.hasPermission('agendas.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.agenda.insert',
         collection: Agendas,
+        doc,
         type: 'method',
         meteormethod: 'agendas.insert',
       });
     },
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('agendas.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('agendas.inCommunity', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.agenda.view',
         collection: Agendas,
@@ -36,12 +36,12 @@ Agendas.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('agendas.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('agendas.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.agenda.update',
         collection: Agendas,
@@ -51,27 +51,57 @@ Agendas.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('agendas.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('agendas.remove', doc),
+    run() {
       Modal.confirmAndCall(Agendas.methods.remove, { _id: doc._id }, {
         action: 'delete agenda',
         message: 'This will not delete topics',
       });
     },
-  },
+  }),
+  videoCall: (options, doc, user = Meteor.userOrNull()) => ({
+    name: doc.live ? 'video end' : 'video call',
+    icon: 'fa fa-video-camera',
+    visible: !doc.closed() && user.hasPermission('agendas.insert', doc),
+    run() {
+      $('iframe[id*="jitsiConferenceFrame"]').remove();
+      const modifier = {};
+      if (doc.live) {
+        Session.set('joinedVideo', false);
+        $('.live-chat-config-box').removeClass('show');
+        modifier.$set = { live: false };
+      } else {
+        modifier.$set = { live: true };
+        Meteor.setTimeout(function () {
+          joinLiveChat(user, doc);
+          $('.live-chat-config-box').addClass('show');
+        }, 500);
+      }
+      Meteor.call('agendas.update', { _id: doc._id, modifier });
+    },
+  }),
+  videoJoin: (options, doc, user = Meteor.userOrNull()) => ({
+    name: Session.get('joinedVideo') ? 'leave video' : 'join video',
+    icon: 'fa fa-video-camera',
+    visible: (doc.live || Session.get('joinedVideo')) && user.hasPermission('agendas.inCommunity', doc),
+    run() {
+      $('iframe[id*="jitsiConferenceFrame"]').remove();
+      if (Session.get('joinedVideo')) {
+        $('.live-chat-config-box').removeClass('show');
+        Session.set('joinedVideo', false);
+      } else {
+        $('.live-chat-config-box').addClass('show');
+        joinLiveChat(user, doc);
+      }
+    },
+  }),
 };
 
 //-----------------------------------------------
 
 AutoForm.addModalHooks('af.agenda.insert');
 AutoForm.addModalHooks('af.agenda.update');
-AutoForm.addHooks('af.agenda.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});

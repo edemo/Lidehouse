@@ -1,0 +1,23 @@
+<template name="Live_Chat">
+    {{#if or liveAgenda joined}}
+    <div class="live-chat-config animated fadeInRightBig">
+        <div class="live-chat-config-box">
+            <div class="spin-icon">
+                <i class="fa fa-video-camera"></i>
+            </div>
+            <div id="live-chat">
+            {{#if and liveAgenda notJoined}}    
+            <div class="join-live-chat">
+                <div class="title">{{liveAgenda.title}}<br>
+                    <small style="text-transform: none;font-weight: 400">
+                        {{_ 'liveAgenda'}}<br>
+                        <button class='btn btn-primary join-video'>{{_ 'join'}}</button>
+                    </small>
+                </div>
+            </div>
+            {{/if}}
+            </div>
+        </div>
+    </div>
+    {{/if}}
+</template>

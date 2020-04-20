@@ -21,6 +21,11 @@
       "\n__url__\n\nIf you didn't request this email, please ignore it.",
       "\nThanks,\nThe Honline team"],
 
+    "AddedToRole": ["You have been added as a member of community __name__ with role: __role__. ",
+    "You can visit the community at this link: __link__",
+    "\nIf you think you have been added by accident, or in fact not want to be part of the community, please contact the community administrator at __email__.",
+    "\nThanks,\nThe Honline team"],
+
     "Notifications": "Updates",
     "Confirmation": "Confirmation",
     "New bill": "New bill",
@@ -29,8 +34,9 @@
     "fromTheCommunity": "from __name__ community",
     "DontReplyToThis": "Please don't reply to this email, as it is sent by an automated system.<br>",
     "GenericFooter": ["If you believe this email was sent to you by mistake or you don't agree with its contents.",
-      "Please contact the community via the provided email, or contact the adminsitrator."],
-    "Dear": "Dear", "glyphAfterDear": ",",
+      "Please contact the community via the provided email, or contact the administrator."],
+    "Dear": "Dear",
+    "glyphAfterDear": ",",
     "OutstandingsPretext": "According to our accounting, you have some unpaid bills towrds the community.",
     "OutstandingsTotal": "Total amount outstanding",
     "OutstandingsDetails": "which comes from __quantity__ unsettled bills.",
@@ -39,6 +45,23 @@
     "BillText": "You have a new electronic bill, which can be viewed in detail and printed by <a href=\"__link__\">logging into the system</a>. Here you can also view your bill and payment history.",
     "PaymentMethods": "You may transfer the amount to this bank account",
     "PaymentInstructions": "Please provide the bill ID at the remarks.",
+
+    "PromoSignature": [
+      "In case you have any questions, you can email us at <a href=mailto:info@honline.hu>info@honline.hu</a>",
+      "Kind regards,<br/>The Honline team"
+    ],
+    "PromoSubject": "Welcome to HONLINE system",
+    "PromoFooter": "This letter was sent to the email address you provided during registration to inform you about the starting details. If you believe you have received this email by accident, please ignore it or write to info@honline.hu.",
+    "PromoLaunchLinkContent": [
+      "<p>__communityName__ house is ready.</p>",
+      "<p>Share it with your housemates:<br/>",
+      "<a href=__inviteMembersLink__>__inviteMembersLink__</a><br/>",
+      "<p>You can login to __communityName__ as follows:</p>",
+      "<p>Username: __loginEmail__ <br/>Password: __password__</p>"
+    ],
+    "PromoInviteLinkContent": [
+      ""
+    ],
 
     "NotificationsHeader": "The View button next to the topics will take you to that topic's page, where you can comment on it.",
     "NotificationsFooter": ["You are receiving these notifications, because you have asked us to send you email notifications about the activities in your community __frequency__.<br>",

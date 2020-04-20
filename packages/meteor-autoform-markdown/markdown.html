@@ -1,0 +1,29 @@
+<template name="markdownControls">
+  <button class="markdownBold select btn btn-xs btn-default" title="{{_ 'bold'}}"><i class="fa fa-bold"></i></button>
+  <button class="markdownItalic select btn btn-xs btn-default" title="{{_ 'italic'}}"><i class="fa fa-italic"></i></button>
+  <select class="markdownHeader">
+    <option value="">{{_ 'header'}}</option>
+    <option value="#"># h1</option>
+    <option value="##">## h2</option>
+    <option value="###">### h3</option>
+  </select>
+  <button class="markdownList select btn btn-xs btn-default" title="{{_ 'list'}}"><i class="fa fa-list"></i></button>
+  <button class="markdownLink select btn btn-xs btn-default" title="link"><i class="fa fa-link"></i></button>
+  <a href="https://marked.js.org/demo" target="_blank" title="{{_ 'markdownHelp'}}"><i class="fa fa-question-circle"></i></a>
+</template>
+
+<template name="afMarkdown">
+  <div class="tab-content">
+    <div id="markdownContent" class="markdownContent tab-pane active">
+      <a data-toggle="tab" href="#markdownPreview" class="btn btn-xs btn-default switch-mode">{{_ 'Preview'}} <i class="fa fa-eye"></i></a>
+      <textarea class="form-control markdownInput" {{atts}}>{{value}}</textarea>
+      <div class="markdownControls">{{>markdownControls}}</div>
+    </div>
+    <div id="markdownPreview" class="markdownPreview tab-pane">
+      <a data-toggle="tab" href="#markdownContent" class="btn btn-xs btn-default switch-mode"><i class="fa fa-pencil"></i></a>
+      <span class="form-control preview">
+          {{{markdownText}}}
+      </span>
+    </div>
+  </div>
+</template>

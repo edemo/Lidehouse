@@ -1,0 +1,68 @@
+<template name="Transaction_view">
+    <div class="row">
+        <div class="col-sm-12 col-md-8 pull-right text-right">
+            <h4>
+              {{{displayTxStatus doc.status}}} 
+              {{_ (or doc.txdef.name 'schemaTransactions.serialId.label')}}:
+              <span class="text-navy">{{doc.serialId}}</span>
+            </h4>
+            <p>
+                <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+        <div class="table-responsive m-t">
+            <strong>{{_ 'schemaTransactions.debit.label'}}</strong>
+            <table class="table invoice-table">
+                <thead>
+                    <tr>
+                        <th>{{_ 'schemaTransactions.debit.$.account.label'}}</th>
+                        <th>{{_ 'schemaTransactions.debit.$.localizer.label'}}</th>
+                        <th>{{_ 'schemaTransactions.debit.$.amount.label'}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each leg in doc.debit}}
+                    {{#if leg}}
+                    <tr>
+                        <td>{{{displayAccountText leg.account}}}</td>
+                        <td>{{{displayAccountText leg.localizer}}}</td>
+                        <td class="nowrap">{{displayMoney (or leg.amount doc.amount)}}</td>
+                    </tr>
+                    {{/if}}
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        </div><!-- /table-responsive -->
+        <div class="col-sm-6">
+        <div class="table-responsive m-t">
+            <strong>{{_ 'schemaTransactions.credit.label'}}</strong>
+            <table class="table invoice-table">
+                <thead>
+                    <tr>
+                        <th>{{_ 'schemaTransactions.credit.$.account.label'}}</th>
+                        <th>{{_ 'schemaTransactions.credit.$.localizer.label'}}</th>
+                        <th>{{_ 'schemaTransactions.credit.$.amount.label'}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each leg in doc.credit}}
+                    {{#if leg}}
+                    <tr>
+                        <td>{{{displayAccountText leg.account}}}</td>
+                        <td>{{{displayAccountText leg.localizer}}}</td>
+                        <td class="nowrap">{{displayMoney (or leg.amount doc.amount)}}</td>
+                    </tr>
+                    {{/if}}
+                    {{/each}}
+                </tbody>
+            </table>
+        </div><!-- /table-responsive -->
+        </div>
+    </div>
+
+</template>

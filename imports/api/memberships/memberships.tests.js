@@ -62,7 +62,7 @@ if (Meteor.isServer) {
       let parcelId;
       let ownership10d, ownership1Id, ownership2Id, ownership3Id, benefactorship1Id;
       beforeEach(function () {
-        parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '45', units: 0 });
+        parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, category: '@property', ref: '45', units: 0 });
         ownership0Id = Memberships.insert({
           communityId: Fixture.demoCommunityId,
           parcelId,
@@ -172,7 +172,7 @@ if (Meteor.isServer) {
         };
         if (newrole === 'owner' || newrole === 'benefactor') {
           _.extend(newMembership, {
-            parcelId: Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '45', units: 0 }),
+            parcelId: Parcels.insert({ communityId: Fixture.demoCommunityId, category: '@property', ref: '45', units: 0 }),
           });
         }
         if (newrole === 'owner') {
@@ -289,7 +289,7 @@ if (Meteor.isServer) {
       let testMembershipId;
 
       it('total ownership shares cannot exceed 1', function (done) {
-        const testParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '45', units: 0 });
+        const testParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, category: '@property', ref: '45', units: 0 });
   
         chai.assert.throws(() => {
           Memberships.methods.insert._execute({ userId: Fixture.demoAdminId },
@@ -331,8 +331,8 @@ if (Meteor.isServer) {
 
       xit('parcel should have either lead or owners, but not both', function (done) {
         const userId = Fixture.demoManagerId;
-        const leadParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '45', units: 0 });
-        const parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '56', units: 0 });
+        const leadParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, category: '@property', ref: '45', units: 0 });
+        const parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, category: '@property', ref: '56', units: 0 });
         insertParcelship._execute({ userId }, { communityId: Fixture.demoCommunityId, parcelId, leadParcelId, activeTime: { begin: new Date() } });
 
 

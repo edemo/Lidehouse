@@ -3,18 +3,18 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActivePartnerId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { Transactions } from './transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import '/imports/ui_3/views/components/transaction-view.js';
 import './entities.js';
 import './methods.js';
 
-function fillMissingOptionParams(options, doc) {
+function fillMissingOptions(options) {
   const mcTxdef = Session.get('modalContext').txdef;
   if (mcTxdef && !options.txdef) options.txdef = mcTxdef; // This happens when new tx action is called from within statementEntry match action
     // TODO: Refactor. - entity data may come from so many places its confusing (options.entity, options.txdef, modalContext.txdef)
@@ -24,16 +24,16 @@ function fillMissingOptionParams(options, doc) {
 }
 
 Transactions.actions = {
-  new: {
+  new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('transactions.insert', doc),
-    run(options, doc, event, instance) {
-      fillMissingOptionParams(options, doc);
+    icon: 'fa fa-plus',
+    visible: user.hasPermission('transactions.insert', doc),
+    run() {
+      fillMissingOptions(options);
       Session.update('modalContext', 'txdef', options.txdef);
       const entity = options.entity;
       const insertTx = Session.get('modalContext').insertTx;
-      doc = _.extend({}, insertTx, doc);
+      doc = _.extend(defaultNewDoc(), insertTx, doc);
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -51,16 +51,12 @@ Transactions.actions = {
 //        btnOK: `Insert ${entity.name}`,
       });
     },
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => {
-      const communityId = getActiveCommunityId();
-      return currentUserHasPermission('transactions.inCommunity', doc)
-        || getActivePartnerId() === doc.partnerId;
-    },
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: doc && (user.hasPermission('transactions.inCommunity', doc) || getActivePartnerId() === doc.partnerId),
+    run() {
       const entity = Transactions.entities[doc.entityName()];
       Session.update('modalContext', 'txdef', doc.txdef());
       Modal.show('Autoform_modal', {
@@ -77,15 +73,13 @@ Transactions.actions = {
         size: entity.size || 'md',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible(options, doc) {
-      if (!doc || doc.isPosted()) return false;
-      return currentUserHasPermission('transactions.update', doc);
-    },
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: doc && !doc.isPosted() && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
+      && user.hasPermission('transactions.update', doc),
+    run() {
       const entity = Transactions.entities[doc.entityName()];
       Session.update('modalContext', 'txdef', doc.txdef());
       Modal.show('Autoform_modal', {
@@ -105,92 +99,120 @@ Transactions.actions = {
 //        validation: entity.editForm ? 'blur' : undefined,
       });
     },
-  },
-  post: {
+  }),
+  post: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'post',
-    icon: (options, doc) => ((doc && doc.isPosted()) ? 'fa fa-envelope' : 'fa fa-check-square-o'),
-    color: (options, doc) => ((doc && doc.isPosted()) ? undefined : 'warning'),
-    label: (options, doc) => ((doc && doc.isPosted()) ? 'repost' : 'post'),
-    visible(options, doc) {
-      if (!doc) return false;
-      if (doc.category === 'bill' && !doc.hasConteerData()) return false;
-      if (doc.isPosted()) return currentUserHasPermission('transactions.repost', doc);
-      return currentUserHasPermission('transactions.post', doc);
-    },
-    run(options, doc) {
+    icon: doc && doc.isPosted() ? 'fa fa-list' : 'fa fa-check-square-o',
+    color: doc && doc.isPosted() ? undefined : 'warning',
+    label: doc && doc.isPosted() ? 'Accounting view' : 'post',
+    visible: doc && !(doc.category === 'bill' && !doc.hasConteerData())
+      && user.hasPermission('transactions.post', doc),
+    run() {
       if (doc.isPosted()) {
+        Modal.show('Modal', {
+          title: 'Accounting view',
+          body: 'Transaction_view',
+          bodyContext: { doc },
+          size: 'lg',
+        });
+      } else {
+//        if (options.batch) {
+//          Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
+//            displayMessage('info', 'actionDone_post');
+//          })
+//          );
+//        } else {
+        doc.makeJournalEntries(doc.community().settings.accountingMethod);
         Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
           action: 'post transaction',
-          message: 'This transaction has been already posted before',
+//            message: 'This will create the following journal entries',
+          body: 'Transaction_view',
+          bodyContext: { doc },
+          size: 'lg',
         });
-
-      } else {
-        Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
-          displayMessage('info', 'Szamla konyvelesbe kuldve');
-        }));
+//      } else {
+//        Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
+//          displayMessage('info', 'Szamla konyvelesbe kuldve');
+//        }));
       }
     },
-  },
-  registerPayment: {
-    name: 'registerPayment',
-    icon: () => 'fa fa-credit-card',
-    visible(options, doc) {
-      if (!doc) return false;
-      if (!doc.isPosted()) return false;
-      if (doc.category !== 'bill' || !doc.outstanding) return false;
-      return currentUserHasPermission('transactions.insert', doc);
+  }),
+  resend: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'resend',
+    icon: 'fa fa-envelope',
+    visible: doc && doc.isPosted() && user.hasPermission('transactions.resend', doc),
+    run() {
+      Modal.confirmAndCall(Transactions.methods.resend, { _id: doc._id }, {
+        action: 'resend email',
+        message: 'This will send the bill again',
+      });
     },
-    run(options, doc, event, instance) {
+  }),
+  registerPayment: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'registerPayment',
+    icon: 'fa fa-credit-card',
+    color: 'info',
+    visible: doc && (doc.status === 'posted') && (doc.category === 'bill') && doc.outstanding
+      && user.hasPermission('transactions.insert', doc),
+    run() {
       Session.update('modalContext', 'billId', doc._id);
       const txdef = Txdefs.findOne({ communityId: doc.communityId, category: 'payment', 'data.relation': doc.relation });
       Session.update('modalContext', 'txdef', txdef);
       const insertOptions = _.extend({}, options, { entity: Transactions.entities.payment });
-      const insertTx = _.extend({}, doc, { txdef, valueDate: new Date() });
-      delete insertTx.lines; delete insertTx.debit; delete insertTx.credit;
-      delete insertTx.serial; delete insertTx.serialId;
-      insertTx.bills = [{ id: doc._id, amount: doc.amount }];
-      Transactions.actions.new.run(insertOptions, insertTx);
+      const insertTx = {
+        category: 'payment',
+        defId: txdef._id,
+        valueDate: new Date(),
+        // - copied from the doc -
+        relation: doc.relation,
+        partnerId: doc.partnerId,
+        membershipId: doc.membershipId,
+        contractId: doc.contractId,
+        amount: doc.amount,
+        bills: [{ id: doc._id, amount: doc.amount }],
+      };
+      Transactions.actions.new(insertOptions, insertTx).run();
     },
-  },
-  registerRemission: {
-    name: 'registerRemission',
-    icon: () => 'fa fa-minus',
-    visible(options, doc) {
-      if (!doc) return false;
-      if (!doc.isPosted()) return false;
-      if (doc.category !== 'bill' || !doc.outstanding) return false;
-      return currentUserHasPermission('transactions.insert', doc);
-    },
-    run(options, doc, event, instance) {
-      Session.update('modalContext', 'billId', doc._id);
-      const txdef = Txdefs.findOne({ communityId: doc.communityId, category: 'remission', 'data.relation': doc.relation });
-      Session.update('modalContext', 'txdef', txdef);
-      const remissionOptions = _.extend({}, options, { entity: Transactions.entities.remission });
-      Transactions.actions.new.run(remissionOptions, doc);
-    },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('transactions.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('transactions.remove', doc),
+    run() {
       Modal.confirmAndCall(Transactions.methods.remove, { _id: doc._id }, {
         action: 'delete transaction',
-        message: doc.isSolidified() ? 'Remove not possible after 24 hours' : 'It will disappear forever',
+        message: doc.isPosted() ? 'Remove not possible after posting' : 'It will disappear forever',
       });
     },
-  },
+  }),
+  print: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'print',
+    icon: 'fa fa-print',
+    visible: user.hasPermission('transactions.inCommunity', doc),
+    run() {
+      if (ModalStack.active()) {
+        $('#wrapper').addClass('no-height');
+        window.print();
+        $('#wrapper').removeClass('no-height');
+      } else window.print();
+    },
+  }),
+};
+
+Transactions.dummyDoc = {
+  communityId: getActiveCommunityId(),
+  isPosted() { return false; },
+  isReconciled() { return false; },
 };
 
 Transactions.batchActions = {
-  post: new BatchAction(Transactions.actions.post, Transactions.methods.batch.post),
+  post: new BatchAction(Transactions.actions.post, Transactions.methods.batch.post, {}, Transactions.dummyDoc),
   delete: new BatchAction(Transactions.actions.delete, Transactions.methods.batch.remove),
 };
 
 //-------------------------------------------------
 
 Transactions.categoryValues.forEach(category => {
-  AutoForm.addModalHooks(`af.${category}.view`);
   AutoForm.addModalHooks(`af.${category}.insert`);
   AutoForm.addModalHooks(`af.${category}.update`);
 
@@ -200,14 +222,13 @@ Transactions.categoryValues.forEach(category => {
     },
     formToDoc(doc) {
       const modalContext = Session.get('modalContext');
-      doc.communityId = Session.get('activeCommunityId');
       doc.category = category;
       const txdef = modalContext.txdef;
       doc.defId = txdef._id;
       _.each(txdef.data, (value, key) => doc[key] = value);
       if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
-      } else if (category === 'payment' || category === 'remission') {
+      } else if (category === 'payment') {
         doc.bills = doc.bills || [];
         if (!doc.bills.length && modalContext.billId) {
           doc.bills = [{ id: modalContext.billId, amount: doc.amount }];

@@ -39,12 +39,12 @@ if (Meteor.isClient) {
 export function parcelColumns() {
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'leadRef', title: __('schemaParcelships.leadParcelId.label') },
+    { data: 'leadRef', title: __('schemaParcels.leadRef.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translateWithScope('schemaParcels.type') },
     { data: 'lot', title: __('schemaParcels.lot.label') },
-    { data: 'area', title: 'm2' },
-    { data: 'share()', title: __('schemaParcels.units.label') },
+    { data: 'area', title: __('schemaParcels.area.label') },
+    { data: 'units', title: __('schemaParcels.units.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
@@ -69,7 +69,7 @@ export function localizerColumns() {
 export function parcelFinancesColumns() {
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
+    { data: 'type', title: __('schemaParcels.type.label'), render: Render.translateWithScope('schemaParcels.type') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: 'withFollowers()', title: __('follower parcels') },
     { data: 'payerMembership().outstanding', title: __('schemaBills.outstanding.label') },

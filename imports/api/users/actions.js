@@ -12,49 +12,45 @@ import './users.js';
 import './methods.js';
 
 Meteor.users.actions = {
-  view: {
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: () => true,
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: true,
+    run() {
       Modal.show('Modal', {
         title: 'User data page',
         body: 'Contact_long',
         bodyContext: doc,
       });
     },
-  },
-  message: {
+  }),
+  message: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'message',
-    label: () => 'Send message',
-    icon: () => 'fa fa-envelope',
-    visible: () => true,
-    run(options, doc) {
+    label: 'Send message',
+    icon: 'fa fa-envelope',
+    visible: true,
+    run() {
       Rooms.goToRoom('private chat', doc._id);
       Modal.hideAll();
     },
-  },
-  delegation: {
+  }),
+  delegation: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delegation',
-    icon: () => 'fa fa-share',
-    visible: () => true,
-    href: () => FlowRouter.path('Delegations'),
-    run(options, doc) {
+    icon: 'fa fa-share',
+    visible: true,
+    href: FlowRouter.path('Delegations'),
+    run() {
       const communityId = getActiveCommunityId();
-      Delegations.actions.new.run({}, { targetId: doc.partnerId(communityId) });
+      Delegations.actions.new({}, { targetId: doc.partnerId(communityId) }).run();
     },
-  },
-  block: {
+  }),
+  block: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'block',
-    label(options, doc) {
-      return doc && doc.isFlaggedBy(Meteor.userId()) ? __('Unblock user') : __('Block user');
-    },
-    icon(options, doc) {
-      return doc && doc.isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
-    },
-    visible: () => true,
-    run(options, doc) {
+    label: doc.isFlaggedBy(user._id) ? __('Unblock user') : __('Block user'),
+    icon: doc.isFlaggedBy(user._id) ? 'fa fa-check' : 'fa fa-ban',
+    visible: true,
+    run() {
       Meteor.users.methods.flag.call({ id: doc._id }, handleError);
     },
-  },
+  }),
 };

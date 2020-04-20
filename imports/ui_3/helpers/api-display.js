@@ -97,6 +97,18 @@ export function displayStatus(name) {
   return label(__('schemaTopics.status.' + name), color);
 }
 
+export function displayTxStatus(name) {
+  if (!name) return '';
+  let color;
+  switch (name) {
+    case 'draft': color = 'warning'; break;
+    case 'posted': color = 'info'; return undefined;
+    case 'void': color = 'danger'; break;
+    default: debugAssert(false); return undefined;
+  }
+  return label(__('schemaTransactions.status.' + name), color);
+}
+
 export function displayUrgency(name) {
   if (!name) return '';
   const color = Tickets.urgencyColors[name];
@@ -143,6 +155,7 @@ if (Meteor.isClient) {
   Template.registerHelper('displayLocalizer', displayLocalizer);
   Template.registerHelper('displayAccountSpecification', displayAccountSpecification);
   Template.registerHelper('displayStatus', displayStatus);
+  Template.registerHelper('displayTxStatus', displayTxStatus);
   Template.registerHelper('displayTicketType', displayTicketType);
   Template.registerHelper('displayUrgency', displayUrgency);
   Template.registerHelper('displayChargeType', displayChargeType);

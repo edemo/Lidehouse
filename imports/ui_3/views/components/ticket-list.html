@@ -10,13 +10,13 @@
                 <td class="issue-info">
                     <a href="{{pathFor 'Topic show' _tid=_id}}">{{title}}</a>
                     {{> Badge color='info' value=(this.unseenCommentCountBy currentUser._id Meteor.users.SEEN_BY.EYES)}}
-                    <small>{{>Chopped text=text chars=150}}</small>
+                    <small>{{>Chopped text=text chars=150 markdown=true}}</small>
                 </td>
                 <td>
                     {{{displayLocalizer this.ticket.localizer (fromSession 'activeCommunityId')}}}
                 </td>
                 <td>
-                    {{creator}}
+                    {{creator.displayOfficialName}}
                 </td>
                 <td>
                     {{displayTime createdAt}}

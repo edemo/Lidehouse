@@ -3,10 +3,12 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Meters } from '/imports/api/meters/meters.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { sendBillEmail } from '/imports/email/bill-send.js';
 import '/imports/api/transactions/txdefs/methods.js';
@@ -49,26 +51,52 @@ export const post = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
-    let result;
-    if (!doc.isPosted()) { // throw new Meteor.Error('Transaction already posted');
-      if (doc.category === 'bill' || doc.category === 'receipt') {
-        if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-      } else if (doc.category === 'payment' || doc.category === 'remission') {
-        doc.bills.forEach(bp => checkBillIsPosted(bp.id));
-      } else if (doc.category === 'barter') {
-        checkBillIsPosted(doc.supplierBillId);
-        checkBillIsPosted(doc.customerBillId);
-      }
+    if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
 
+    if (doc.category === 'bill' || doc.category === 'receipt') {
+      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+    } else if (doc.category === 'payment') {
+      doc.bills.forEach(bp => checkBillIsPosted(bp.id));
+    } else if (doc.category === 'barter') {
+      checkBillIsPosted(doc.supplierBillId);
+      checkBillIsPosted(doc.customerBillId);
+    }
+
+    const modifier = { $set: { postedAt: new Date() } };
+    if (doc.status === 'draft') { // voided already has the accounting data on it
       const community = Communities.findOne(doc.communityId);
       const accountingMethod = community.settings.accountingMethod;
       const updateData = doc.makeJournalEntries(accountingMethod);
-      result = Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
-    } else console.warn('Transaction already posted');
+      _.extend(modifier.$set, { status: 'posted', ...updateData });
+    }
+    const result = Transactions.update(_id, modifier);
 
-    if (Meteor.isServer && doc.category === 'bill') sendBillEmail(doc);
+    if (Meteor.isServer && doc.category === 'bill') {
+      doc.lines.forEach((line) => {
+        if (line.metering) {
+          Meters.methods.registerBilling._execute({ userId: this.userId }, { _id: line.metering.id,
+            billing: { date: line.metering.end.date, value: line.metering.end.value, billId: doc._id },
+          });
+        }
+      });
+      sendBillEmail(doc);
+    }
 
     return result;
+  },
+});
+
+export const resend = new ValidatedMethod({
+  name: 'transactions.resend',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id }) {
+    const doc = checkExists(Transactions, _id);
+    checkPermissions(this.userId, 'transactions.post', doc);
+    if (Meteor.isServer && doc.category === 'bill') {
+      sendBillEmail(doc);
+    }
   },
 });
 
@@ -78,7 +106,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     doc = Transactions._transform(doc);
     checkPermissions(this.userId, 'transactions.insert', doc);
-    if (doc.category === 'payment' || doc.category === 'remission') {
+    if (doc.category === 'payment') {
       doc.bills.forEach((bp, i) => {
         const bill = Transactions.findOne(bp.id);
 //      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
@@ -101,7 +129,7 @@ export const insert = new ValidatedMethod({
     }
 
     const _id = Transactions.insert(doc);
-    if (doc.txdef().isAutoPosting()) post._execute({ userId: this.userId }, { _id });
+    if (doc.isAutoPosting()) post._execute({ userId: this.userId }, { _id });
 //    runPositingRules(this, doc);
     return _id;
   },
@@ -117,8 +145,8 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Transactions, _id);
     checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'transactions.update', doc);
-    if (doc.isSolidified() && doc.complete) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after 24 hours');
+    if (doc.isPosted()) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting');
     }
     Transactions.update({ _id }, modifier, { selector: { category: doc.category } });
   },
@@ -132,12 +160,14 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.remove', doc);
-    if (doc.isSolidified() && doc.complete) {
-      // Not possible to delete tx after 24 hours, but possible to negate it with another tx
-      Transactions.insert(doc.negator());
-    } else {
+    if (doc.status === 'draft') {
       Transactions.remove(_id);
-    }
+    } else if (doc.status === 'posted') {
+      Transactions.update(doc._id, { $set: { status: 'void' } });
+      Transactions.insert(_.extend(doc.negator(), { status: 'void' }));
+    } else if (doc.status === 'void') {
+      throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');
+    } else debugAssert(false, `No such tx status: ${doc.status}`);
   },
 });
 
@@ -156,6 +186,6 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 });
 
 Transactions.methods = Transactions.methods || {};
-_.extend(Transactions.methods, { insert, update, post, remove, cloneAccountingTemplates });
+_.extend(Transactions.methods, { insert, update, post, resend, remove, cloneAccountingTemplates });
 _.extend(Transactions.methods, crudBatchOps(Transactions));
 Transactions.methods.batch.post = new BatchMethod(Transactions.methods.post);

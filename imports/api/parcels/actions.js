@@ -5,12 +5,10 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Fraction } from 'fractional';
 import { _ } from 'meteor/jquery';
 
-import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
@@ -21,50 +19,50 @@ import './methods.js';
 import './entities.js';
 
 Parcels.actions = {
-  new: {
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    color: () => 'primary',
-    label: options => (Array.isArray(options.entity) ? `${__('new') + ' ' + __('parcel')}` : `${__('new')} ${__('schemaParcels.category.' + options.entity.name)}`),
-    visible: (options, doc) => currentUserHasPermission('parcels.insert', doc),
-    subActions: options => Array.isArray(options.entity) && options.entity.length,
-    subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),
-    run(options, doc) {
-      const entity = options.entity;
-      const omitFields = 'category';
+    icon: 'fa fa-plus',
+    color: 'primary',
+    label: (options.splitable() ? `${__('new') + ' ' + __('parcel')}`
+      : `${__('new')} ${__('schemaParcels.category.' + options.entity.name)}`),
+    visible: user.hasPermission('parcels.insert', doc),
+    subActions: options.splitable() && options.split().map(opts => Parcels.actions.new(opts.fetch(), doc, user)),
+    run() {
+      let entity = options.entity;
+      if (typeof entity === 'string') entity = Parcels.entities[entity];
       Modal.show('Autoform_modal', {
-        id: 'af.parcel.insert',
+        id: `af.${entity.name}.insert`,
         schema: entity.schema,
-        omitFields,
+        doc,
         type: 'method',
         meteormethod: 'parcels.insert',
       });
     },
-  },
-  import: {
+  }),
+  import: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'import',
-    icon: () => 'fa fa-upload',
-    visible: (options, doc) => currentUserHasPermission('parcels.upsert', doc),
+    icon: 'fa fa-upload',
+    visible: user.hasPermission('parcels.upsert', doc),
     run: () => importCollectionFromFile(Parcels),
-  },
-  view: {
+  }),
+  view: (options, doc, user) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('parcels.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('parcels.inCommunity', doc),
+    run() {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
-        id: 'af.parcel.view',
+        id: `af.${entity.name}.view`,
         schema: entity.schema,
         doc,
         type: 'readonly',
       });
     },
-  },
-  occupants: {
+  }),
+  occupants: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'occupants',
-    icon: (options, doc) => (doc && doc.isLed() ? 'fa fa-user-o' : 'fa fa-user'),
-    color: (options, doc) => {
+    icon: (doc && doc.isLed() ? 'fa fa-user-o' : 'fa fa-user'),
+    color: (() => {
       let colorClass = '';
       if (Memberships.findOneActive({ parcelId: doc._id, approved: false })) colorClass = 'danger';
       else {
@@ -82,57 +80,56 @@ Parcels.actions = {
         }
       }
       return colorClass;
-    },
-    visible: (options, doc) => currentUserHasPermission('memberships.inCommunity', doc),
-    run(options, doc, event, instance) {
+    })(),
+    visible: user.hasPermission('memberships.inCommunity', doc),
+    run() {
       Session.update('modalContext', 'parcelId', doc._id);
       Modal.show('Modal', {
         title: `${doc ? doc.display() : __('unknown')} - ${__('occupants')}`,
         body: 'Occupants_box',
         bodyContext: {
-          communityId: doc.communityId,
-          parcelId: doc._id,
+          community: doc.community(),
+          parcel: doc,
         },
-        size: currentUserHasPermission('partners.details', doc) ? 'lg' : 'md',
+        size: user.hasPermission('partners.details', doc) ? 'lg' : 'md',
       });
     },
-  },
-  meters: {
+  }),
+  meters: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'meters',
-    icon: () => 'fa fa-tachometer',
-    color: (options, doc) => doc && doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
-    visible: (options, doc) =>
-      currentUserHasPermission('meters.insert', doc) || currentUserHasPermission('parcels.details', doc),
-    run(options, doc, event, instance) {
+    icon: 'fa fa-tachometer',
+    color: doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
+    visible: user.hasPermission('meters.insert', doc) || user.hasPermission('parcels.details', doc),
+    run(event, instance) {
       Session.update('modalContext', 'parcelId', doc._id);
       Modal.show('Modal', {
         title: `${doc ? doc.display() : __('unknown')} - ${__('meters')}`,
         body: 'Meters_box',
         bodyContext: {
-          communityId: doc.communityId,
-          parcelId: doc._id,
+          community: doc.community(),
+          parcel: doc,
         },
-        size: currentUserHasPermission('meters.update', doc) ? 'lg' : 'md',
+        size: user.hasPermission('meters.update', doc) ? 'lg' : 'md',
       });
     },
-  },
-  finances: {
+  }),
+  finances: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'finances',
-    icon: () => 'fa fa-money',
-    visible: (options, doc) => currentUserHasPermission('parcels.inCommunity', doc),
-    href: () => '#view-target',
-    run(options, doc, event, instance) {
+    icon: 'fa fa-money',
+    visible: user.hasPermission('parcels.inCommunity', doc),
+    href: '#view-target',
+    run(event, instance) {
       instance.viewmodel.parcelToView(doc._id);
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('parcels.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('parcels.update', doc),
+    run() {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
-        id: 'af.parcel.update',
+        id: `af.${entity.name}.update`,
         schema: entity.schema,
         doc,
         type: 'method-update',
@@ -140,14 +137,15 @@ Parcels.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  period: {
+  }),
+  period: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'period',
-    icon: () => 'fa fa-history',
-    visible: (options, doc) => currentUserHasPermission('parcels.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-history',
+    visible: user.hasPermission('parcels.update', doc),
+    run() {
+      const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
-        id: 'af.parcel.update',
+        id: `af.${entity.name}.update`,
         schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
@@ -155,25 +153,23 @@ Parcels.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('parcels.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('parcels.remove', doc),
+    run() {
       Modal.confirmAndCall(Parcels.methods.remove, { _id: doc._id }, {
         action: 'delete parcel',
         message: 'You should rather archive it',
       });
     },
-  },
+  }),
 };
 
 //-----------------------------------------------
 
-function onJoinParcelInsertSuccess(parcelId) {
-  const communityId = FlowRouter.current().params._cid;
-  const communityName = Communities.findOne(communityId).name;
+export function setMeAsParcelOwner(parcelId, communityId, callback) {
   Memberships.methods.insert.call({
     userId: Meteor.userId(),
     communityId,
@@ -183,9 +179,14 @@ function onJoinParcelInsertSuccess(parcelId) {
     ownership: {
       share: new Fraction(1),
     },
-  }, (err, res) => {
-    if (err) displayError(err);
-    else displayMessage('success', 'Join request submitted', communityName);
+  }, callback);
+}
+
+function onJoinParcelInsertSuccess(parcelId) {
+  const communityId = FlowRouter.current().params._cid;
+  const communityName = Communities.findOne(communityId).name;
+  setMeAsParcelOwner(parcelId, communityId, onSuccess((res) => {
+    displayMessage('success', 'Join request submitted', communityName);
     Meteor.setTimeout(() => Modal.show('Modal', {
       title: __('Join request submitted', communityName),
       text: __('Join request notification'),
@@ -194,29 +195,33 @@ function onJoinParcelInsertSuccess(parcelId) {
       onOK() { FlowRouter.go('App home'); },
       //      onClose() { removeMembership.call({ _id: res }); }, -- has no permission to do it, right now
     }), 3000);
-  });
+  }),
+  );
 }
 
-AutoForm.addModalHooks('af.parcel.insert');
-AutoForm.addModalHooks('af.parcel.update');
-AutoForm.addHooks('af.parcel.insert', {
-  formToDoc(doc) {
-    doc.communityId = getActiveCommunityId();
-    return doc;
-  },
-});
-AutoForm.addHooks('af.parcel.update', {
-  formToModifier(modifier) {
-    modifier.$set.approved = true;
-    return modifier;
-  },
+Parcels.categoryValues.forEach(category => {
+  AutoForm.addModalHooks(`af.${category}.insert`);
+  AutoForm.addModalHooks(`af.${category}.update`);
+
+  AutoForm.addHooks(`af.${category}.insert`, {
+    formToDoc(doc) {
+      doc.category = category;
+      return doc;
+    },
+  });
+  AutoForm.addHooks(`af.${category}.update`, {
+    formToModifier(modifier) {
+      modifier.$set.approved = true;
+      return modifier;
+    },
+  });
 });
 
-AutoForm.addModalHooks('af.parcel.insert.unapproved');
-AutoForm.addHooks('af.parcel.insert.unapproved', {
+AutoForm.addModalHooks('af.@property.insert.unapproved');
+AutoForm.addHooks('af.@property.insert.unapproved', {
   formToDoc(doc) {
-    doc.communityId = getActiveCommunityId();
     doc.approved = false;
+    doc.category = '@property';
     return doc;
   },
   onSuccess(formType, result) {

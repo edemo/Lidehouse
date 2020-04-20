@@ -6,7 +6,7 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -28,7 +28,7 @@ Txdefs.clone = function clone(name, communityId) {
 };
 
 Txdefs.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   name: { type: String, max: 100 },
   category: { type: String, max: 15, optional: true, autoform: { omit: true } }, // Name of the entity
   data: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // Default data values
@@ -58,10 +58,12 @@ Txdefs.helpers({
     return this.isAccountantTx();
   },
   isAccountantTx() {
-    return !_.contains(['bill', 'payment', 'remission', 'receipt'], this.category);
+    if (this.category === 'payment') return this.data.remission;
+    return !_.contains(['bill', 'receipt'], this.category);
   },
   isReconciledTx() {
-    return _.contains(['payment', 'receipt', 'transfer', 'freeTx'], this.category);
+    if (this.category === 'payment') return !this.data.remission;
+    return _.contains(['receipt', 'transfer', 'freeTx'], this.category);
   },
   conteerSide() {
     if (this.data.side) return this.data.side;  // opening, closing txs
@@ -100,14 +102,18 @@ Meteor.startup(function attach() {
 Factory.define('txdef', Txdefs, {
 });
 
-export const chooseConteerAccount = {
-  options() {
-    const communityId = Session.get('activeCommunityId');
-    const txdefId = Session.get('modalContext').txdef._id;
-    const txdef = Txdefs.findOne(txdefId);
-    if (!txdef) return [];
-    const codes = txdef[txdef.conteerSide()];
-    return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false);
-  },
-  firstOption: () => __('Chart Of Accounts'),
-};
+export function chooseConteerAccount(flipSide = false) {
+  return {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      let txdef = Session.get('modalContext').txdef;
+      if (!txdef) return [];
+      txdef = Txdefs._transform(txdef); // in the Session they loose their functions
+      let side = txdef.conteerSide();
+      if (flipSide) side = Transactions.oppositeSide(side);
+      const codes = txdef[side];
+      return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false);
+    },
+    firstOption: () => __('Chart of Accounts'),
+  };
+}

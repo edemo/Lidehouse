@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Migrations } from 'meteor/percolate:migrations';
+import { moment } from 'meteor/momentjs:moment';
+
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -13,9 +15,13 @@ import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import '/imports/api/transactions/accounts/template.js';
 
 const keepOrderSort = { sort: { updatedAt: 1 } };   // use this to keep updatedAt order intact
 
@@ -296,14 +302,135 @@ Migrations.add({
   version: 16,
   name: 'Parcels can have different categories',
   up() {
-    Parcels.update(
-      { category: { $exists: false } },
-      { $set: { category: '@property' } },
+    Parcels.find({ category: { $exists: false } }).forEach(parcel => {
+      Parcels.update(parcel._id, { $set: { category: '@property', code: '@' + parcel.ref } });
+    });
+  },
+});
+
+Migrations.add({
+  version: 17,
+  name: 'Setup Accounts',
+  up() {
+    Communities.find({}).forEach(community => {
+      if (!Accounts.findOne({ communityId: community._id })) {
+        Templates.clone('Condominium_COA', community._id);
+      }
+    });
+    Transactions.find({}).forEach(tx => {
+      ['debit', 'credit'].forEach(side => {
+        if (!tx[side]) return;
+        const modifiedJournalEntries = [];
+        tx[side].forEach(je => {
+          const modifiedJE = _.clone(je);
+          modifiedJE.account = '`' + modifiedJE.account;
+          modifiedJournalEntries.push(modifiedJE);
+        });
+        Transactions.update(tx._id, { $set: { [side]: modifiedJournalEntries } });
+      });
+    });
+    Balances.find({}).forEach(bal => {
+      Balances.update(bal._id, { $set: { account: '`' + bal.account } });
+    });
+    Txdefs.find({}).forEach(def => {
+      ['debit', 'credit'].forEach(side => {
+        const modifiedSide = def[side].map(account => '`' + account);
+        Txdefs.update(def._id, { $set: { [side]: modifiedSide } });
+      });
+    });
+  },
+});
+
+Migrations.add({
+  version: 18,
+  name: 'Remissions are just payments',
+  up() {
+    Txdefs.find({ category: 'remission' }).forEach(def => {
+      Txdefs.update(def._id, { $set: { category: 'payment', 'data.remission': true } });
+    });
+  },
+});
+
+Migrations.add({
+  version: 19,
+  name: 'Transactions have a status',
+  up() {
+    Transactions.find({}).forEach(tx => {
+      const status = tx.postedAt ? 'posted' : 'draft';
+      Transactions.update(tx._id, { $set: { status } });
+    });
+  },
+});
+
+Migrations.add({
+  version: 20,
+  name: 'Billing becomes a separate sub-schema in bills',
+  up() {
+    Transactions.find({ category: 'bill' }).forEach(bill => {
+      const modifier = { $set: {} };
+      bill.lines.forEach((line, i) => {
+        modifier.$set[`line.${i}.billing`] = { id: line.billingId, period: line.period };
+      });
+    });
+  },
+});
+
+Migrations.add({
+  version: 21,
+  name: 'Communities status field added',
+  up() {
+    Communities.update(
+      { status: { $exists: false } },
+      { $set: { status: 'live' } },
       { multi: true }
     );
   },
 });
 
+Migrations.add({
+  version: 22,
+  name: 'Db stores UTC dates, so they have to be midnight, if not, it means it was imported wrong (in local time)',
+  up() {
+    StatementEntries.find({}).forEach(se => {
+      const valueDate = moment.utc(se.valueDate);
+      if (valueDate.hours() !== 0) {
+        console.log("updating se");
+        console.log("old date", valueDate.toString());
+        valueDate.hours(0);
+        valueDate.add(1, 'day');
+        console.log("new date", valueDate.toString());
+        StatementEntries.update(se._id, { $set: { valueDate: valueDate.toDate() } });
+      }
+    });
+    Transactions.find({ category: 'payment' }).forEach(tx => {
+      const valueDate = moment.utc(tx.valueDate);
+      if (valueDate.hours() !== 0) {
+        console.log("updating tx");
+        console.log("old date", valueDate.toString());
+        valueDate.hours(0);
+        valueDate.add(1, 'day');
+        console.log("new date", valueDate.toString());
+        Transactions.update(tx._id, { $set: { valueDate: valueDate.toDate() } });
+      }
+    });
+  },
+});
+
+/* Migrations.add({
+  version: ??,
+  name: 'Connect partner userId with membership userId',
+  up() {
+    Memberships.find({ userId: { $exists: false } }).forEach((m) => {
+      const partner = Partners.findOne(m.partnerId);
+      if (partner && partner.userId) Memberships.update({ _id: m._id }, { $set: { userId: partner.userId } });
+    });
+    Partners.find({ userId: { $exists: false } }).forEach((p) => {
+      const membership = Memberships.findOne({ partnerId: p._id, userId: { $exists: true } });
+      if (membership && membership.userId) Partners.update({ _id: p._id }, { $set: { userId: membership.userId } });
+    });
+  },
+});
+ */
 Meteor.startup(() => {
   Migrations.unlock();
   Migrations.migrateTo('latest');

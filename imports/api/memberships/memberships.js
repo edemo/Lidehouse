@@ -10,7 +10,7 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { officerRoles, everyRole, nonOccupantRoles, Roles, ranks } from '/imports/api/permissions/roles.js';
+import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -22,9 +22,11 @@ import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
+const rankValues = ['chairman', 'lead', 'assistant', 'substitute'];
+
 // Memberships are the Ownerships, Benefactorships and Roleships in a single collection
 Memberships.baseSchema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },  // manager approved this membership
   accepted: { type: Boolean, autoform: { omit: true }, defaultValue: false },  // person accepted this membership
   role: { type: String, allowedValues() { return everyRole; },
@@ -35,7 +37,6 @@ Memberships.baseSchema = new SimpleSchema({
       firstOption: () => __('(Select one)'),
     },
   },
-  rank: { type: String, optional: true, allowedValues: ranks, autoform: autoformOptions(ranks) },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
   person: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // deprecated for partnerId
@@ -53,22 +54,46 @@ const OwnershipSchema = new SimpleSchema({
 
 const benefactorTypeValues = ['rental', 'favor', 'right'];
 const BenefactorshipSchema = new SimpleSchema({
-  type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues) },
+  type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues, 'schemaMemberships.benefactorship.type.') },
 });
 
 const Ownerships = {};
 Ownerships.schema = new SimpleSchema({
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   ownership: { type: OwnershipSchema },
+  role: { type: String, defaultValue: 'owner', autoform: { type: 'hidden', defaultValue: 'owner' } },
 });
 
 const Benefactorships = {};
 Benefactorships.schema = new SimpleSchema({
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  benefactorship: { type: BenefactorshipSchema } },
-);
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  benefactorship: { type: BenefactorshipSchema },
+  role: { type: String, defaultValue: 'benefactor', autoform: { type: 'hidden', defaultValue: 'benefactor' } },
+});
 
-Memberships.idSet = ['communityId', 'role', 'parcelId', 'partner.idCard.name', 'partner.contact.email'];
+const Officerships = {};
+Officerships.schema = new SimpleSchema({
+  rank: { type: String, optional: true, allowedValues: rankValues, autoform: autoformOptions(rankValues, 'schemaMemberships.rank.') },
+});
+
+const Delegateships = {};
+Delegateships.schema = new SimpleSchema({
+  role: { type: String, defaultValue: 'delegate', autoform: { type: 'hidden', defaultValue: 'delegate' } },
+});
+
+Memberships.idSet = ['communityId', 'role', 'parcelId', 'partnerId'];
+
+Memberships.modifiableFields = [
+  // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
+  'rank',
+  'ownership.share',
+  'ownership.representor',
+  'benefactorship.type',
+];
+
+Memberships.publicFields = {
+  // fields come from behaviours
+};
 
 Meteor.startup(function indexMemberships() {
   Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
@@ -104,9 +129,7 @@ Memberships.helpers({
     return entityOf(this.role);
   },
   community() {
-    const community = Communities.findOne(this.communityId);
-    debugAssert(community);
-    return community;
+    return Communities.findOne(this.communityId);
   },
   partner() {
     if (!this.partnerId) return undefined;
@@ -140,12 +163,14 @@ Memberships.helpers({
   votingUnits() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
+    if (this.parcel().isLed()) return 0;
     const votingUnits = this.isRepresentor() ? this.parcel().ledUnits() : this.parcel().ledUnits() * this.ownership.share.toNumber();
     return votingUnits;
   },
   votingShare() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
+    if (this.parcel().isLed()) return 0;
     const votingShare = this.isRepresentor() ? this.parcel().ledShare() : this.parcel().ledShare().multiply(this.ownership.share);
     return votingShare;
   },
@@ -156,7 +181,8 @@ Memberships.helpers({
     return result;
   },
   toString() {
-    const display = `${this.partner().displayName('hu')}, ${this.displayRole()}`;
+    const partner = this.partner();
+    const display = `${partner && partner.displayName('hu')}, ${this.displayRole()}`;
     return display;
   },
 });
@@ -168,10 +194,11 @@ Memberships.attachBehaviour(Timestamped);
 
 Memberships.attachVariantSchema(Ownerships.schema, { selector: { role: 'owner' } });
 Memberships.attachVariantSchema(Benefactorships.schema, { selector: { role: 'benefactor' } });
-// Memberships.attachVariantSchema(undefined, { selector: { role: { $nin: ['owner', 'benefactor'] } } });
-nonOccupantRoles.forEach(role =>
-  Memberships.attachVariantSchema(undefined, { selector: { role } })
+officerRoles.forEach(role =>
+  Memberships.attachVariantSchema(Officerships.schema, { selector: { role } })
 );
+Memberships.attachVariantSchema(Delegateships.schema, { selector: { role: 'delegate' } });
+Memberships.attachVariantSchema(undefined, { selector: { role: 'guest' } });
 
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,
@@ -209,13 +236,6 @@ if (Meteor.isServer) {
   Memberships.after.remove(function (userId, doc) {
   });
 }
-
-Memberships.modifiableFields = [
-  // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
-  'ownership.share',
-  'ownership.representor',
-  'benefactorship.type',
-];
 
 Factory.define('membership', Memberships, {
   userId: () => Factory.get('user'),

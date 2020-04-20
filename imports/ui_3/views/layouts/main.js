@@ -12,11 +12,13 @@ import { autosetActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import '../common/ibox-tools.js';
 import '../common/navigation.js';
 import '../common/top-navbar.js';
+import '../common/live-chat.js';
 import '../common/page-heading.js';
 import '../common/footer.js';
 import '../common/tech-chat.js';
 import '../common/right-sidebar.js';
 import '../common/connection-issue.js';
+import '../common/promotion.js';
 import './main.html';
 
 Template.Main_layout.onCreated(function() {
@@ -25,6 +27,7 @@ Template.Main_layout.onCreated(function() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
+    this.subscribe('communities.byId', { _id: Session.get('activeCommunityId') });
     this.subscribe('delegations.toUser', { communityId });
     this.subscribe('delegations.fromUser', { communityId });
     this.subscribe('topics.active', { communityId });

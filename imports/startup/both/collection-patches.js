@@ -14,6 +14,7 @@ Mongo.Collection.stripAdministrativeFields = function(doc) {
   delete doc.creatorId;
   delete doc.updatedAt;
   delete doc.updaterId;
+  delete doc.postedAt;
 };
 
 // With this function you can create the same logical index on the client and server sides
@@ -70,8 +71,11 @@ Mongo.Collection.prototype.attachBehaviour = function attachBehaviour(behaviour)
 
 Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour, schemaOptions) {
   const collection = this;
-//  console.log('_applyBehaviour', behaviour, schemaOptions);
   collection.attachSchema(behaviour.schema, schemaOptions);
+  // TODO: Only 0 values supported in public fields
+  if (behaviour.publicFields) {
+    collection.publicFields = _.extend({}, collection.publicFields, behaviour.publicFields);
+  }
 
   collection._behaviourMethodsApplied = collection._behaviourMethodsApplied || {};
   if (collection._behaviourMethodsApplied[behaviour.name]) return;

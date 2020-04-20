@@ -49,6 +49,11 @@ Object.deepEquals = function deepEquals(a, b) {
   return true;
 };
 
+// Info: https://www.samanthaming.com/tidbits/70-3-ways-to-clone-objects/
+Object.deepClone = function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+};
+
 String.prototype.forEachChar = function forEachChar(func) {
   for (let i = 0; i < this.length; i++) {
     func(this.charAt(i));
@@ -57,6 +62,10 @@ String.prototype.forEachChar = function forEachChar(func) {
 
 String.prototype.capitalize = function capitalize() {
   return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
+String.prototype.deaccent = function deaccent() { 
+  return this.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 };
 
 Number.prototype.round = function round(places) {

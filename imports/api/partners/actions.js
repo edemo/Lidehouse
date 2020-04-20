@@ -1,33 +1,41 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
+import { displayMessage } from '/imports/ui_3/lib/errors.js';
+import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Partners } from './partners.js';
 import './methods.js';
 
 Partners.actions = {
-  new: {
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('partners.insert', doc),
+    icon: 'fa fa-plus',
+    color: 'primary',
+    visible: user.hasPermission('partners.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.partner.insert',
         collection: Partners,
+        doc,
         type: 'method',
         meteormethod: 'partners.insert',
       });
     },
-  },
-  view: {
+  }),
+  import: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'import',
+    icon: 'fa fa-upload',
+    visible: user.hasPermission('partners.upsert', doc),
+    run: () => importCollectionFromFile(Partners),
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('partners.inCommunity', doc),
-    run(options, doc) {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('partners.inCommunity', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.partner.view',
         collection: Partners,
@@ -35,12 +43,12 @@ Partners.actions = {
         type: 'readonly',
       });
     },
-  },
-  edit: {
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('partners.update', doc),
-    run(options, doc) {
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('partners.update', doc),
+    run() {
       Modal.show('Autoform_modal', {
         id: 'af.partner.update',
         collection: Partners,
@@ -50,30 +58,34 @@ Partners.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  remindOutstandings: {
+  }),
+  remindOutstandings: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'remindOutstandings',
-    color: (options, doc) => doc.mostOverdueDaysColor(),
-    icon: () => 'fa fa-exclamation',
-    visible: (options, doc) => currentUserHasPermission('partners.remindOutstandings', doc) && doc.mostOverdueDays(),
-    run(options, doc) {
-      Modal.confirmAndCall(Partners.methods.remindOutstandings, { _id: doc._id }, {
-        action: 'remind outstandings',
-        message: __('Sending outstandings reminder', doc.primaryEmail() || __('undefined')),
-      });
+    color: doc.mostOverdueDaysColor(),
+    icon: 'fa fa-exclamation',
+    visible: user.hasPermission('partners.remindOutstandings', doc) && (doc.relation !== 'supplier') && doc.mostOverdueDays(),
+    run() {
+      if ((!doc.contact || !doc.contact.email) && !doc.userId) {
+        displayMessage('warning', 'No contact email set for this partner');
+      } else {
+        Modal.confirmAndCall(Partners.methods.remindOutstandings, { _id: doc._id }, {
+          action: 'remind outstandings',
+          message: __('Sending outstandings reminder', doc.displayName() || __('undefined')),
+        });
+      }
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('partners.remove', doc),
-    run(options, doc) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('partners.remove', doc),
+    run() {
       Modal.confirmAndCall(Partners.methods.remove, { _id: doc._id }, {
         action: 'delete partner',
         message: 'It will disappear forever',
       });
     },
-  },
+  }),
 };
 
 //-------------------------------------------------------
@@ -81,9 +93,3 @@ Partners.actions = {
 AutoForm.addModalHooks('af.partner.insert');
 AutoForm.addModalHooks('af.partner.update');
 
-AutoForm.addHooks('af.partner.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});

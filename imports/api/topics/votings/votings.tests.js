@@ -343,6 +343,51 @@ if (Meteor.isServer) {
         done();
       });
 
+      it('evaluates well with lead and follower parcel', function (done) {
+        const extraParcelId = Fixture.builder.createProperty({
+          units: 50,
+          floor: '2',
+          door: '05',
+          type: 'flat',
+          area: 50,
+        });
+        const otherVotingId = Fixture.builder.create('vote', {
+          vote: {
+            procedure: 'online',
+            effect: 'poll',
+            type: 'yesno',
+          },
+        });
+        castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: otherVotingId, castedVote: [1] });
+        castVote._execute({ userId: Fixture.dummyUsers[2] }, { topicId: otherVotingId, castedVote: [2] });
+        castVote._execute({ userId: Fixture.dummyUsers[3] }, { topicId: otherVotingId, castedVote: [0] });
+        let otherVoting = Topics.findOne(otherVotingId);
+        chai.assert.deepEqual(otherVoting.voteParticipation, { count: 3, units: 60 });
+
+        // no membership on follower parcel just parcelship
+        Fixture.builder.create('parcelship', { parcelId: extraParcelId, leadParcelId: Fixture.dummyParcels[1] });
+        otherVoting.voteEvaluate();
+        otherVoting = Topics.findOne(otherVotingId);
+        chai.assert.deepEqual(otherVoting.voteParticipation, { count: 3, units: 110 });
+        chai.assert.deepEqual(otherVoting.voteCasts[Fixture.partnerId(Fixture.dummyUsers[1])], [1]);
+
+        // both membership and parcelship exists for follower parcel
+        const extraMembershipId = Fixture.builder.createMembership(Fixture.dummyUsers[1], 'owner', {
+          parcelId: extraParcelId,
+          ownership: {
+            share: new Fraction(1, 1),
+          },
+        });
+        otherVoting.voteEvaluate();
+        otherVoting = Topics.findOne(otherVotingId);
+        chai.assert.deepEqual(otherVoting.voteParticipation, { count: 4, units: 110 });
+        chai.assert.deepEqual(otherVoting.voteCasts[Fixture.partnerId(Fixture.dummyUsers[1])], [1]);
+
+        Parcelships.remove({});
+        Memberships.remove(extraMembershipId);
+        done();
+      });
+
       describe('multiChoose evaluation', function () {
 
         before(function () {

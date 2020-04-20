@@ -8,6 +8,7 @@
 
 <template name="Bill_edit">
     <div class="row">
+        {{> afQuickField name="communityId" type="hidden"}} <!-- hidden, needed for autoform doc data -->
         <div class="col-sm-6 col-md-4">
             <h5>{{_ 'issuer'}}:</h5>
             <address>
@@ -25,7 +26,7 @@
         </div>
 
         <div class="col-sm-6 col-md-4 col-md-offset-4">
-            {{#if doc}}
+            {{#if doc.serialId}}
                 <h4>{{_ doc.txdef.name}}:
                 <span class="text-navy">{{doc.serialId}}</span></h4>
             {{/if}}

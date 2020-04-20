@@ -15,11 +15,8 @@
             </div>
             </div>
           {{/if}}
-          {{#if body}}
-            {{> Template.dynamic template=body data=bodyContext}}
-          {{else}}
-            {{{text}}}
-          {{/if}}
+          {{#if text}}{{{text}}}{{/if}}
+          {{#if body}}{{> Template.dynamic template=body data=bodyContext}}{{/if}}
         </div>
         <div class="modal-footer">
           {{#if btnClose}}

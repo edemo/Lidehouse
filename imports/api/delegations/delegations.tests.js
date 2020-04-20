@@ -37,26 +37,28 @@ if (Meteor.isServer) {
 
     describe('publications', function () {
 
-      xit('sends all delegations.fromUser', function (done) {
+      it('sends all delegations.fromUser', function (done) {
         const collector = new PublicationCollector({ userId: Fixture.demoUserId });
         collector.collect(
           'delegations.fromUser',
-          { userId: Fixture.demoUserId },
+          { communityId: Fixture.demoCommunityId },
           (collections) => {
             chai.assert.equal(collections.delegations.length, 2);
+            chai.assert.equal(collections.partners.length, 2);
             chai.assert.equal(collections.users.length, 2);
             done();
           }
         );
       });
 
-      xit('sends all delegations.toUser', function (done) {
+      it('sends all delegations.toUser', function (done) {
         const collector = new PublicationCollector({ userId: Fixture.demoUserId });
         collector.collect(
           'delegations.toUser',
-          { userId: Fixture.demoUserId },
+          { communityId: Fixture.demoCommunityId },
           (collections) => {
             chai.assert.equal(collections.delegations.length, 2);
+            chai.assert.equal(collections.partners.length, 2);
             chai.assert.equal(collections.users.length, 2);
             done();
           }
@@ -153,16 +155,17 @@ if (Meteor.isServer) {
 
     describe('permissions', function () {
       it('only allows to view the user\'s own delegations', function (done) {
-        chai.assert.throws(() => {
-          const collector = new PublicationCollector({ userId: Fixture.demoUserId });
-          collector.collect(
-            'delegations.toUser',
-            { userId: Fixture.dummyUsers[0] },
-            () => {},
-          );
-        });
+        const collector = new PublicationCollector({ userId: Fixture.demoUserId });
+        const partnerId = Fixture.partnerId(Fixture.demoUserId);
+        collector.collect(
+          'delegations.toUser',
+          { communityId: Fixture.demoCommunityId },
+          (collections) => {
+            collections.delegations.forEach(delegation => chai.assert.equal(delegation.targetId, partnerId));
+          },
+        );
         done();
-      }, 'err_permissionDenied');
+      });
 
       it('only allows to insert the user\'s own outbound delegations (unless manager)', function (done) {
         chai.assert.throws(() => {

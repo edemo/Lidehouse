@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
@@ -5,9 +6,60 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';  // TODO get rid of
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import './menu-overflow-guard.js';
 import './action-buttons.html';
 
+export class ActionOptions {
+  constructor(collection) {
+    this.collection = collection;
+  }
+  fields() {
+    const keys = _.toArray(Object.keys(this));
+    return _.without(keys.filter(k => (typeof k !== 'function')), 'collection');
+  }
+  splitable() {
+    return _.some(this.fields(), field => Array.isArray(this[field]));
+  }
+  split() { // It will split up the options to several options sets, in case array values are found in the parameters
+    //console.log("splitting", this);
+    const arrayFields = [];
+    const nonArrayfields = [];
+    this.fields().forEach(field => (Array.isArray(this[field]) ? arrayFields.push(field) : nonArrayfields.push(field)));
+    const fixedOptions = _.pick(this.fields(), nonArrayfields);
+    let results = [fixedOptions];
+    arrayFields.forEach(key => {
+      const values = this[key];
+      const descartedResults = [];
+      values.forEach(value => {
+        results.forEach(obj => descartedResults.push(_.extend({}, obj, { [key]: value })));
+      });
+      results = descartedResults;
+    });
+    //console.log("result", results);
+    return results.map(r => Object.setPrototypeOf(r, Object.getPrototypeOf(this)));
+  }
+  fetch() { // Wherever a string is used as parameter, it will fetch the appropriate object, named by the string
+    //console.log("fetching", this);
+    if (typeof this.status === 'string') {
+      const status = this.collection.statuses[this.status];
+      debugAssert(status, `No such status "${this.status}" for collection ${this.collection._name}`);
+      this.status = status;
+    }
+    if (typeof this.entity === 'string') {
+      const entity = this.collection.entities[this.entity];
+      debugAssert(entity, `No such entity "${this.entity}" for collection ${this.collection._name}`);
+      this.entity = entity;
+    }
+    if (typeof this.txdef === 'string') {
+      this.txdef = Txdefs.findOne(this.txdef);
+    }
+    //console.log("result", this);
+    return this;
+  }
+}
+
+//---------------------------------------------------------------------------
 // Apply these event handlers to your template, if the buttons are not created as Action_button templates,
 // hence they don't have their event handlers yet
 // (like buttons in datatables, where the buttons are not templates, just simple html)
@@ -20,7 +72,7 @@ export function actionHandlers(collection, actionNames) {
     eventHandlers[`click .js-${action.name}.${collection._name},.${collection._name} .js-${action.name}`] = function (event, instance) {
       // TODO should copy all data-* atts over in one generic call
       const id = $(event.target).closest('[data-id]').data('id');
-      const doc = id ? collection.findOne(id) : undefined;
+      const doc = id ? collection.findOne(id) : defaultNewDoc();
       const entity = $(event.target).closest('[data-entity]').data('entity');
       const txdef = $(event.target).closest('[data-txdef]').data('txdef');
       const status = $(event.target).closest('[data-status]').data('status');
@@ -29,7 +81,8 @@ export function actionHandlers(collection, actionNames) {
         txdef: txdef && Txdefs.findOne(txdef),
         status: doc && status && doc.statusObject(status),
       };
-      action.run(options, doc, event, instance);
+      Object.setPrototypeOf(options, new ActionOptions(collection));
+      action(options, doc).run(event, instance);
     };
   });
   return eventHandlers;
@@ -40,7 +93,7 @@ export function actionHandlers(collection, actionNames) {
 const buttonHelpers = {
   title() {
     const action = this.templateInstance.data.action;
-    const btnText = (action.label) ? action.label(this.getOptions(), this.getDoc()) : action.name;
+    const btnText = (action.label) ? action.label : action.name;
     return __(btnText).capitalize();
   },
   large() {
@@ -60,23 +113,10 @@ const buttonHelpers = {
   },
   getOptions() {
     const instanceData = this.templateInstance.data;
-    if (!instanceData.options) return {};
-    if (typeof instanceData.options.status === 'string') {
-      const collection = Mongo.Collection.get(instanceData.collection);
-      const status = collection.statuses[instanceData.options.status];
-      debugAssert(status, `No such status "${instanceData.options.status}" for collection ${instanceData.collection}`);
-      instanceData.options.status = status;
-    }
-    if (typeof instanceData.options.entity === 'string') {
-      const collection = Mongo.Collection.get(instanceData.collection);
-      const entity = collection.entities[instanceData.options.entity];
-      debugAssert(entity, `No such entity "${instanceData.options.entity}" for collection ${instanceData.collection}`);
-      instanceData.options.entity = entity;
-    }
-    if (typeof instanceData.options.txdef === 'string') {
-      instanceData.options.txdef = Txdefs.findOne(instanceData.options.txdef);
-    }
-    return instanceData.options;
+    const collection = Mongo.Collection.get(instanceData.collection);
+    instanceData.options = instanceData.options || {};
+    Object.setPrototypeOf(instanceData.options, new ActionOptions(collection));
+    return instanceData.options.fetch();
   },
   getDoc() {
     const instanceData = this.templateInstance.data;
@@ -84,15 +124,18 @@ const buttonHelpers = {
       const collection = Mongo.Collection.get(instanceData.collection);
       instanceData.doc = collection.findOne(instanceData.doc);
     }
-    return instanceData.doc;
+    return instanceData.doc || defaultNewDoc();
   },
   getActions() {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);
-    const actions = this.templateInstance.data.actions
+    const actionFuncs = this.templateInstance.data.actions
       ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
-//      : _.map(collection.actions, (action, name) => action);
-      : _.values(_.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block'));
+      : _.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block', 'print');
+    const actions = _.map(actionFuncs, a => a(this.getOptions(), this.getDoc(), Meteor.user()));
     return actions;
+  },
+  hasVisibleAction(actions) {
+    return actions.some(a => a.visible);
   },
   needsDividerAfter(action) {
     return !!action.subActions;
@@ -125,7 +168,7 @@ Template.Action_buttons_group.viewmodel(buttonHelpers);
 Template.Action_button.events({
   // This can be used most of the time to handle the click event - except when we are unable to render a proper template (like into a jquery cell).
   'click .btn'(event, instance) {
-    instance.data.action.run(instance.viewmodel.getOptions(), instance.viewmodel.getDoc(), event, instance);
+    instance.data.action.run(event, instance);
   },
 });
 
@@ -138,7 +181,7 @@ Template.Action_buttons_dropdown.viewmodel(buttonHelpers);
 
 Template.Action_listitem.events({
   'click li.enabled'(event, instance) {
-    instance.data.action.run(instance.viewmodel.getOptions(), instance.viewmodel.getDoc(), event, instance);
+    instance.data.action.run(event, instance);
   },
   'click li:not(.enabled)'(event, instance) {
     event.stopPropagation();

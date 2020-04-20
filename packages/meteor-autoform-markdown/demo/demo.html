@@ -1,0 +1,17 @@
+<head>
+  <title>Autoform Markdown Demo</title>
+</head>
+
+<body>
+  {{> newquest}}
+</body>
+
+<template name="newquest">
+  <h1>New Quest</h1>
+
+  {{#if quest}}
+    {{> quickForm collection="Quests" doc=quest id="updateQuestForm" type="update"}}
+  {{else}}
+    <span class="loading">Loading...</span>
+  {{/if}}
+</template>

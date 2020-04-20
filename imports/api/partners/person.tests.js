@@ -8,9 +8,9 @@ import sinon from 'sinon';
 import { Fraction } from 'fractional';
 import '/imports/startup/both/fractional.js';  // TODO: should be automatic, but not included in tests
 
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/methods.js';
-import { insert as insertParcel } from '/imports/api/parcels/methods.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import '/imports/api/users/users.js';
 
@@ -29,8 +29,9 @@ if (Meteor.isServer) {
     before(function () {
       sinon.stub(Email);          // Mocking the Email sending
       Fixture = freshFixture();
-      parcelId = insertParcel._execute({ userId: Fixture.demoManagerId }, {
+      parcelId = Parcels.methods.insert._execute({ userId: Fixture.demoManagerId }, {
         communityId: Fixture.demoCommunityId,
+        category: '@property',
         serial: 1001,
         ref: '1001',
         units: 0,
@@ -436,8 +437,8 @@ if (Meteor.isServer) {
           chai.assert.equal(membership.partner().id(), alreadyUserId);
           chai.assert.equal(membership.partner().primaryEmail(), alreadyUser.getPrimaryEmail());
 
-          Partners.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Partners.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
           done();
         });
 

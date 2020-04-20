@@ -9,9 +9,9 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -42,16 +42,15 @@ function statusChangeSchema(doc, statusName) {
 }
 
 Topics.actions = {
-  new: {
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
-    icon: () => 'fa fa-plus',
-    color: () => 'primary',
-    label: options => (Array.isArray(options.entity) ? `${__('new')}  ${__(options.category)}` :
+    icon: 'fa fa-plus',
+    color: 'primary',
+    label: (options.splitable() ? `${__('new')}  ${__(options.category)}` :
       (options.entity.name === 'issue' ? __('Report issue') : `${__('new')} ${__(options.entity.name)}`)),
-    visible: (options, doc) => Array.isArray(options.entity) ? true : currentUserHasPermission(`${options.entity.name}.insert`, doc),
-    subActions: options => Array.isArray(options.entity) && options.entity.length,
-    subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),
-    run(options, doc) {
+    visible: options.splitable() ? true : user.hasPermission(`${options.entity.name}.insert`, doc),
+    subActions: options.splitable() && options.split().map(opts => Topics.actions.new(opts.fetch(), doc, user)),
+    run() {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
         body: options.entity.form,
@@ -59,7 +58,6 @@ Topics.actions = {
         id: `af.${entity.name}.insert`,
         schema: entity.schema,
         fields: entity.inputFields,
-        omitFields: (entity.omitFields || []).concat(Session.get('modalContext').omitFields),
         doc,
         type: entity.formType || 'method',
         meteormethod: 'topics.insert',
@@ -68,26 +66,31 @@ Topics.actions = {
         btnOK: `Create ${entity.name}`,
       });
     },
-  },
-  view: {
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
-    icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('topics.inCommunity', doc),
-    href: (options, doc) => FlowRouter.path('Topic show', { _tid: doc._id }),
-    run(options, doc, event, instance) {},
-  },
-  edit: {
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('topics.inCommunity', doc),
+    href: FlowRouter.path('Topic show', { _tid: doc._id }),
+    run() {
+      FlowRouter.go('Topic show', { _tid: doc._id });
+    },
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
-    icon: () => 'fa fa-pencil',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc),
-    run(options, doc, event, instance) {
+    icon: 'fa fa-pencil',
+    visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
+    run() {
       const entity = Topics.entities[doc.entityName()];
+      const fields = doc.category === 'ticket' ?
+        (_.intersection(entity.inputFields, doc.modifiableFields())).concat('ticket.type') :
+        undefined;
       Modal.show('Autoform_modal', {
         body: entity.form,
         // --- autoform ---
         id: `af.${doc.entityName()}.update`,
         schema: entity.schema,
-        fields: _.intersection(entity.inputFields, doc.modifiableFields()),
+        fields,
         omitFields: entity.omitFields,
         doc,
         type: 'method-update',
@@ -97,12 +100,13 @@ Topics.actions = {
         size: entity.form ? 'lg' : 'md',
       });
     },
-  },
-  statusUpdate: {
+  }),
+  statusUpdate: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'statusUpdate',
-    icon: () => 'fa fa-edit',
-    visible: (options, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.category}.statusChange.${doc.status}.enter`, doc),
-    run(options, doc, event, instance) {
+    icon: 'fa fa-edit',
+    visible: doc && doc.statusObject().data && user.hasPermission(`${doc.category}.update`, doc)
+      && user.hasPermission(`${doc.category}.statusChange.${doc.status}.enter`, doc),
+    run() {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.statusUpdate`,
@@ -115,28 +119,18 @@ Topics.actions = {
         singleMethodArgument: true,
       });
     },
-  },
-  statusChange: {
+  }),
+  statusChange: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'statusChange',
-    label(options) {
-      const status = options.status;
-      if (!status) return 'statusChange';
-      const statusName = __('schemaTopics.status.' + status.name);
-      return status.label || __('Change status to', statusName);
-    },
-    icon(options) {
-      if (!options || !options.status || !options.status.icon) return 'fa fa-cogs';
-      return options.status.icon;
-    },
-    visible(options, doc) {
-      return Array.isArray(options.entity) ? true : currentUserHasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc);
-    },
-    subActions: () => true,
-    subActionsOptions(options, doc) {
-      if (!doc) return [];
-      return doc.possibleNextStatuses().map(status => ({ status }));
-    },
-    run(options, doc, event, instance) {
+    label: (!options.status && 'statusChange') || (options.status.label)
+      || (__('Change status to', __('schemaTopics.status.' + options.status.name))),
+    icon: (options.status && options.status.icon) || 'fa fa-cogs',
+    visible: (!options.status && doc.possibleNextStatuses().length > 0
+      && doc.possibleNextStatuses().some(status => user.hasPermission(`${doc.category}.statusChange.${status.name}.enter`, doc)))
+      || (options.status && user.hasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc)),
+    subActions: !options.status // if there is a status specified in options, that is a specific action w/o subActions
+      && doc && doc.possibleNextStatuses().map(status => Topics.actions.statusChange({ status }, doc, user)),
+    run() {
       const newStatus = options.status;
       Session.update('modalContext', 'topicId', doc._id);
       Session.update('modalContext', 'status', newStatus.name);
@@ -150,73 +144,48 @@ Topics.actions = {
         btnOK: 'Change status',
       });
     },
-  },
-  like: {
+  }),
+  like: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'like',
-    label(options, doc) {
-      return doc && doc.isLikedBy(Meteor.userId()) ? 'unimportant' : 'important';
-    },
-    icon(options, doc) {
-      return doc && doc.isLikedBy(Meteor.userId()) ? 'fa fa-hand-o-down' : 'fa fa-hand-o-up';
-    },
-    visible(options, doc) {
-      if (!doc && doc.category === 'vote') return false;
-      if (doc.creatorId === Meteor.userId()) return false;
-      return currentUserHasPermission('like.toggle', doc);
-    },
-    run(options, doc, event, instance) {
+    label: doc && doc.isLikedBy(user._id) ? 'unimportant' : 'important',
+    icon: doc && doc.isLikedBy(user._id) ? 'fa fa-hand-o-down' : 'fa fa-hand-o-up',
+    visible: doc.category !== 'vote' && doc.creatorId !== user._id && user.hasPermission('like.toggle', doc),
+    run() {
       Topics.methods.like.call({ id: doc._id }, handleError);
     },
-  },
-  mute: {
+  }),
+  mute: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'mute',
-    label(options, doc) {
-      return doc && doc.isFlaggedBy(Meteor.userId()) ? 'Unblock content' : 'Block content';
-    },
-    icon(options, doc) {
-      return doc && doc.isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
-    },
-    visible(options, doc) {
-      if (!doc && doc.category === 'vote') return false;
-      if (doc.creatorId === Meteor.userId()) return false;
-      return currentUserHasPermission('flag.toggle', doc);
-    },
-    run(options, doc, event, instance) {
+    label: doc && doc.isFlaggedBy(user._id) ? 'Unblock content' : 'Block content',
+    icon: doc && doc.isFlaggedBy(user._id) ? 'fa fa-check' : 'fa fa-ban',
+    visible: doc.category !== 'vote' && doc.creatorId !== user._id && user.hasPermission('flag.toggle', doc),
+    run() {
       Topics.methods.flag.call({ id: doc._id }, handleError);
     },
-  },
-  block: {
+  }),
+  block: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'block',
-    label(options, doc) {
-      const creator = doc && doc.creator();
-      if (!creator) return '';
-      return doc.creator().isFlaggedBy(Meteor.userId()) ? __('Unblock content from', doc.creator().toString()) : __('Block content from', doc.creator().toString());
-    },
-    icon(options, doc) {
-      const creator = doc && doc.creator();
-      if (!creator) return '';
-      return doc.creator().isFlaggedBy(Meteor.userId()) ? 'fa fa-check fa-user' : 'fa fa-ban fa-user-o';
-    },
-    visible(options, doc) {
-      if (!doc && doc.category === 'vote') return false;
-      if (doc.creatorId === Meteor.userId()) return false;
-      return currentUserHasPermission('flag.toggle', doc);
-    },
-    run(options, doc, event, instance) {
+    label: doc.creator() && (doc.creator().isFlaggedBy(user._id)
+      ? __('Unblock content from', doc.creator().displayOfficialName())
+      : __('Block content from', doc.creator().displayOfficialName())),
+    icon: doc.creator() && (doc.creator().isFlaggedBy(user._id)
+      ? 'fa fa-check fa-user' : 'fa fa-ban fa-user-o'),
+    visible: doc.category !== 'vote' && doc.creatorId !== user._id && user.hasPermission('flag.toggle', doc),
+    run() {
       Meteor.users.methods.flag.call({ id: doc.creatorId }, handleError);
     },
-  },
-  delete: {
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    icon: () => 'fa fa-trash',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`, doc),
-    run(options, doc, event, instance) {
+    icon: 'fa fa-trash',
+    visible: user.hasPermission(`${doc.entityName()}.remove`, doc),
+    run() {
       Modal.confirmAndCall(Topics.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,
         message: 'It will disappear forever',
       });
     },
-  },
+  }),
 };
 
 //-------------------------------------------------------

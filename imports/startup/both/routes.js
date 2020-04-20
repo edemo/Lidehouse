@@ -6,6 +6,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { getActiveCommunity } from '/imports/ui_3/lib/active-community';
 
 // Import UI pages only on the client!
 // But the route defs need to be available on the server as well, for calculating link paths in emails
@@ -14,12 +15,15 @@ if (Meteor.isClient) {
   import '/imports/ui/pages/app-not-found.js';
 
   import '/imports/ui_3/views/brand/intro-page.js';
+  import '/imports/ui_3/views/brand/landing-page-covid.js';
   import '/imports/ui_3/views/brand/privacy.js';
   import '/imports/ui_3/views/brand/terms.js';
   import '/imports/ui_3/views/pages/demo-login.js';
   import '/imports/ui_3/views/pages/profile-form.js';
   import '/imports/ui_3/views/pages/user-show.js';
   import '/imports/ui_3/views/pages/communities-listing.js';
+  import '/imports/ui_3/views/pages/community-launch.js';
+  import '/imports/ui_3/views/pages/community-join.js';
   import '/imports/ui_3/views/pages/vote-topics.js';
   import '/imports/ui_3/views/pages/agendas.js';
   import '/imports/ui_3/views/pages/delegations.js';
@@ -49,154 +53,159 @@ if (Meteor.isClient) {
   new FlowRouterTitle(FlowRouter);
 }
 
+export const CommunityRelatedRoutes = [];
+
+function defineRoute(url, options) {
+  options.title = options.title
+    || function defaultTitle() { return __(FlowRouter.current().route.name); };
+  FlowRouter.route(url, options);
+}
+
 //-------------------
 // Route definitions
 //-------------------
 
-FlowRouter.route('/', {
+defineRoute('/', {
   name: 'App home',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'app_rootRedirector' });
-  },
-  title() {
-    return __('Board');
   },
 });
 
 // --------------------------------------------
 // Business info pages
 
-FlowRouter.route('/intro', {
+defineRoute('/atlathato-tarsashazkezeles-online', {
   name: 'App intro',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Intro_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
+  title: 'Átlátható társasházkezelés online',
 });
 
-FlowRouter.route('/demo/:_lang', {
+defineRoute('/online-kozgyules', {
+  name: 'Landing page covid',
+  action() {
+    BlazeLayout.render('Blank_layout', { content: 'Landing_page_covid' });
+  },
+  title: 'Online közgyűlés',
+});
+
+defineRoute('/demo', {
   name: 'Demo login',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Demo_login' });
   },
-  title() {
-    return __('Board');
-  },
 });
 
-FlowRouter.route('/privacy', {
+defineRoute('/privacy', {
   name: 'Privacy',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Privacy_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 
-FlowRouter.route('/terms', {
+defineRoute('/terms', {
   name: 'Terms',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Terms_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 
 // --------------------------------------------
 
-FlowRouter.route('/community/:_cid', {
+defineRoute('/community', {
   name: 'Community page',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_page' });
   },
-  title(params) {
-    const Community = Communities.findOne({ _id: params._cid });
-    return Community && `${Community.name}`;
+  title() {
+    const community = getActiveCommunity();
+    return community && `${community.name}`;
+  },
+});
+CommunityRelatedRoutes.push('Community page');
+
+defineRoute('/launch', {
+  name: 'Community launch',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_launch' });
   },
 });
 
-FlowRouter.route('/communities', {
+defineRoute('/community/:_cid/join', {
+  name: 'Community join',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_join' });
+  },
+});
+CommunityRelatedRoutes.push('Community join');
+
+defineRoute('/community/:_cid', {
+  name: 'Community show',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_page' });
+  },
+  title(params) {
+    const community = Communities.findOne({ _id: params._cid });
+    return community && `${community.name}`;
+  },
+});
+
+defineRoute('/communities', {
   name: 'Communities list',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Communities_listing' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 
-FlowRouter.route('/profile', {
+defineRoute('/profile', {
   name: 'User data page',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Profile_form' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
-/*
-FlowRouter.route('/feedbacks', {
-  name: 'Feedbacks',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Feedbacks' });
-  },
-});
-*/
+
 // --------------------------------------------
 // CommunityRelatedRoutes
 
-export const CommunityRelatedRoutes = [];
-
-FlowRouter.route('/board', {
+defineRoute('/board', {
   name: 'Board',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Board' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Board');
 
-FlowRouter.route('/room/:_rid', {
+defineRoute('/room/:_rid', {
   name: 'Room show',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Room_show' });
   },
   title(params) {
-    const Room = Topics.findOne(params._rid);
-    return Room && `${Room.title}`;
+    const room = Topics.findOne(params._rid);
+    return room && `${room.title}`;
   },
 });
 CommunityRelatedRoutes.push('Room show');
 
-FlowRouter.route('/forum', {
+defineRoute('/forum', {
   name: 'Forum',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Forum_topics' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Forum');
 
-FlowRouter.route('/votings', {
+defineRoute('/votings', {
   name: 'Votings',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Vote_topics' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Votings');
 
-FlowRouter.route('/topic/:_tid', {
+defineRoute('/topic/:_tid', {
   name: 'Topic show',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Topic_show' });
@@ -208,40 +217,31 @@ FlowRouter.route('/topic/:_tid', {
 });
 CommunityRelatedRoutes.push('Topic show');
 
-FlowRouter.route('/agendas', {
+defineRoute('/agendas', {
   name: 'Agendas',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Agendas' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Agendas');
 
-FlowRouter.route('/delegations', {
+defineRoute('/delegations', {
   name: 'Delegations',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Delegations' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Delegations');
 
-FlowRouter.route('/tickets', {
-  name: 'Tickets',
+defineRoute('/tickets', {
+  name: 'Tickets report',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Tickets' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
-CommunityRelatedRoutes.push('Tickets');
+CommunityRelatedRoutes.push('Tickets report');
 
-FlowRouter.route('/worksheets', {
+defineRoute('/worksheets', {
   name: 'Worksheets',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Worksheets' });
@@ -249,7 +249,7 @@ FlowRouter.route('/worksheets', {
 });
 CommunityRelatedRoutes.push('Worksheets');
 
-FlowRouter.route('/contracts', {
+defineRoute('/contracts', {
   name: 'Contracts',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Contracts' });
@@ -257,51 +257,39 @@ FlowRouter.route('/contracts', {
 });
 CommunityRelatedRoutes.push('Contracts');
 
-FlowRouter.route('/parcels-finances', {
+defineRoute('/parcels-finances', {
   name: 'Parcels finances',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Parcels_finances' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Parcels finances');
 
-FlowRouter.route('/community-finances', {
+defineRoute('/community-finances', {
   name: 'Community finances',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_finances' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Community finances');
 
-FlowRouter.route('/inventory', {
+defineRoute('/inventory', {
   name: 'Inventory',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Inventory_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Inventory');
 
-FlowRouter.route('/accounting', {
+defineRoute('/accounting', {
   name: 'Accounting',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Accounting_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Accounting');
 
-FlowRouter.route('/transaction/:_txid', {
+defineRoute('/transaction/:_txid', {
   name: 'Transaction show',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Transaction_show' });
@@ -313,36 +301,30 @@ FlowRouter.route('/transaction/:_txid', {
 });
 CommunityRelatedRoutes.push('Transaction show');
 
-FlowRouter.route('/community', {
+defineRoute('/community', {
   name: 'Community page default',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_page' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Community page default');
 
-FlowRouter.route('/documents', {
+defineRoute('/documents', {
   name: 'Documentstore',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Shareddoc_store' });
   },
-  title() {
-    return __(FlowRouter.current().route.name);
-  },
 });
 CommunityRelatedRoutes.push('Documentstore');
 
-FlowRouter.route('/user/:_id', {
+defineRoute('/user/:_id', {
   name: 'User show',
   action() {
     BlazeLayout.render('Main_layout', { content: 'User_show' });
   },
   title(params) {
-    const User = Meteor.users.findOne(params._id);
-    return User && `${User.displayOfficialName()}`;
+    const user = Meteor.users.findOne(params._id);
+    return user && `${user.displayOfficialName()}`;
   },
 });
 CommunityRelatedRoutes.push('User show');

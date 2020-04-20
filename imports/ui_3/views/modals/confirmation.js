@@ -16,7 +16,7 @@ Template.Confirmation.events({
   },
 });
 
-Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options) {
+Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options, callback) {
   const split = options.action.split(' ');
   const translatedDoneMessage = __(split[1]) + ' ' + __(`actionDone_${split[0]}`);
   Modal.show('Confirmation', _.extend({}, options, {
@@ -28,6 +28,7 @@ Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options) {
         } else {
           Modal.hide();
           displayMessage('success', options.notification || translatedDoneMessage);
+          if (callback) callback();
         }
       });
     },

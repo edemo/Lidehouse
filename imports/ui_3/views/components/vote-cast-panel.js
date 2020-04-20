@@ -13,7 +13,7 @@ import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunity, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
 import { toggle } from '/imports/api/utils.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../components/select-voters.js';
@@ -23,8 +23,9 @@ import { createEnvelope } from './envelope.js';
 
 function castVoteBasedOnPermission(topicId, castedVote, callback) {
   Session.set('activePartnerRelation', 'member');
-  const communityId = getActiveCommunityId();
-  if (Meteor.user().hasPermission('vote.castForOthers', { communityId })) {
+  const community = getActiveCommunity();
+  const communityId = community._id;
+  if (Meteor.user().hasPermission('vote.castForOthers', { communityId }) && community.hasLiveAssembly()) {
     const modalContext = {
       title: 'Proxy voting',
       body: 'Select_voters',
