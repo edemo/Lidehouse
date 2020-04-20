@@ -3,7 +3,6 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId, getActivePartnerId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
@@ -175,18 +174,6 @@ Transactions.actions = {
         action: 'delete transaction',
         message: doc.isPosted() ? 'Remove not possible after posting' : 'It will disappear forever',
       });
-    },
-  }),
-  print: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'print',
-    icon: 'fa fa-print',
-    visible: user.hasPermission('transactions.inCommunity', doc),
-    run() {
-      if (ModalStack.active()) {
-        $('#wrapper').addClass('no-height');
-        window.print();
-        $('#wrapper').removeClass('no-height');
-      } else window.print();
     },
   }),
 };
