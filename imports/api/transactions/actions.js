@@ -159,10 +159,18 @@ Transactions.actions = {
       const txdef = Txdefs.findOne({ communityId: doc.communityId, category: 'payment', 'data.relation': doc.relation });
       Session.update('modalContext', 'txdef', txdef);
       const insertOptions = _.extend({}, options, { entity: Transactions.entities.payment });
-      const insertTx = _.extend({}, doc, { txdef, valueDate: new Date() });
-      delete insertTx.lines; delete insertTx.debit; delete insertTx.credit;
-      delete insertTx.serial; delete insertTx.serialId;
-      insertTx.bills = [{ id: doc._id, amount: doc.amount }];
+      const insertTx = {
+        category: 'payment',
+        defId: txdef._id,
+        valueDate: new Date(),
+        // - copied from the doc -
+        relation: doc.relation,
+        partnerId: doc.partnerId,
+        membershipId: doc.membershipId,
+        contractId: doc.contractId,
+        amount: doc.amount,
+        bills: [{ id: doc._id, amount: doc.amount }],
+      };
       Transactions.actions.new(insertOptions, insertTx).run();
     },
   }),
