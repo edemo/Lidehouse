@@ -16,14 +16,14 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 export const StatementEntries = new Mongo.Collection('statementEntries');
 
 StatementEntries.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   account: { type: String, autoform: Accounts.chooseSubNode('`38') },
   ref: { type: String, max: 50 }, // external (uniq) ref id provided by the bank
   refType: { type: String, max: 50, optional: true }, // type info to the ref
   valueDate: { type: Date },
   amount: { type: Number },
-  name: { type: String, max: 50, optional: true },
-  note: { type: String, max: 200, optional: true },
+  name: { type: String, max: 100, optional: true },
+  note: { type: String, max: 250, optional: true },
   statementId: { type: String, /* regEx: SimpleSchema.RegEx.Id, */ optional: true, autoform: { omit: true } },
   original: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
 //  match: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },

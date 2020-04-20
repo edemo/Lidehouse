@@ -365,6 +365,12 @@
       "label": "Fénykép (ha csatolni szeretne)",
       "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
+    "shareddocs": {
+      "label": "Dokumentumok (ha csatolni szeretne)",
+      "$": {
+        "placeholder": "Link megadása (pl. /uploads/document.pdf)"
+      }
+    },
     "sticky" : {
       "label": "Rögzített"
     },
@@ -545,13 +551,21 @@
   },
   "schemaComments": {
     "text": {
-//      "label": "Szöveg",
-//      "placeholder": "Arra gondoltam hogy..."
-      "label": "Megjegyzések",
-      "placeholder": "Azért váltok állapotot mert..."
+      "label": "Szöveg",
+      "placeholder": "Arra gondoltam hogy..."
+    },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "destinationId": {
       "label": "Áthelyezés ehhez a témához:"
+    }
+  },
+  "schemaStatusChanges": {
+    "text": {
+      "label": "Megjegyzések",
+      "placeholder": "Azért váltok állapotot mert..."
     }
   },
   "schemaBreakdowns": {
@@ -1015,6 +1029,10 @@
     "localizer": {
       "label": "Előírás helye",
       "help": "Az előírás kivetésre kerül egy adott albetétre, ha egy albetétet választ ki, vagy egy adott csoport minden elemére, ha egy csoprtot választ ki."
+    },
+    "withFollowers": {
+      "label": "És a vezetett albetétekre is",
+      "help": "Amennyiben ez be van jelölve, akkor nem csak a fent megjelölt helyekre, hanem minden ahhoz kapcsolt vezetett albetétre is előírunk."
     },
     "type": {
       "label": "Típus, amire előírunk",

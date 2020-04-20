@@ -11,6 +11,7 @@ import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -41,7 +42,7 @@ function statusChangeSchema(doc, statusName) {
 }
 
 Topics.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     color: 'primary',
@@ -57,7 +58,6 @@ Topics.actions = {
         id: `af.${entity.name}.insert`,
         schema: entity.schema,
         fields: entity.inputFields,
-        omitFields: (entity.omitFields || []).concat(Session.get('modalContext').omitFields),
         doc,
         type: entity.formType || 'method',
         meteormethod: 'topics.insert',
@@ -72,7 +72,9 @@ Topics.actions = {
     icon: 'fa fa-eye',
     visible: user.hasPermission('topics.inCommunity', doc),
     href: FlowRouter.path('Topic show', { _tid: doc._id }),
-    run() {},
+    run() {
+      FlowRouter.go('Topic show', { _tid: doc._id });
+    },
   }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
@@ -80,12 +82,15 @@ Topics.actions = {
     visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
     run() {
       const entity = Topics.entities[doc.entityName()];
+      const fields = doc.category === 'ticket' ?
+        (_.intersection(entity.inputFields, doc.modifiableFields())).concat('ticket.type') :
+        undefined;
       Modal.show('Autoform_modal', {
         body: entity.form,
         // --- autoform ---
         id: `af.${doc.entityName()}.update`,
         schema: entity.schema,
-        fields: _.intersection(entity.inputFields, doc.modifiableFields()),
+        fields,
         omitFields: entity.omitFields,
         doc,
         type: 'method-update',
@@ -99,7 +104,8 @@ Topics.actions = {
   statusUpdate: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'statusUpdate',
     icon: 'fa fa-edit',
-    visible: doc && doc.statusObject().data && user.hasPermission(`${doc.category}.statusChange.${doc.status}.enter`, doc),
+    visible: doc && doc.statusObject().data && user.hasPermission(`${doc.category}.update`, doc)
+      && user.hasPermission(`${doc.category}.statusChange.${doc.status}.enter`, doc),
     run() {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -119,8 +125,9 @@ Topics.actions = {
     label: (!options.status && 'statusChange') || (options.status.label)
       || (__('Change status to', __('schemaTopics.status.' + options.status.name))),
     icon: (options.status && options.status.icon) || 'fa fa-cogs',
-    visible: !options.status
-      || user.hasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc),
+    visible: (!options.status && doc.possibleNextStatuses().length > 0
+      && doc.possibleNextStatuses().some(status => user.hasPermission(`${doc.category}.statusChange.${status.name}.enter`, doc)))
+      || (options.status && user.hasPermission(`${doc.category}.statusChange.${options.status.name}.enter`, doc)),
     subActions: !options.status // if there is a status specified in options, that is a specific action w/o subActions
       && doc && doc.possibleNextStatuses().map(status => Topics.actions.statusChange({ status }, doc, user)),
     run() {
@@ -159,8 +166,8 @@ Topics.actions = {
   block: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'block',
     label: doc.creator() && (doc.creator().isFlaggedBy(user._id)
-      ? __('Unblock content from', doc.creator().toString())
-      : __('Block content from', doc.creator().toString())),
+      ? __('Unblock content from', doc.creator().displayOfficialName())
+      : __('Block content from', doc.creator().displayOfficialName())),
     icon: doc.creator() && (doc.creator().isFlaggedBy(user._id)
       ? 'fa fa-check fa-user' : 'fa fa-ban fa-user-o'),
     visible: doc.category !== 'vote' && doc.creatorId !== user._id && user.hasPermission('flag.toggle', doc),

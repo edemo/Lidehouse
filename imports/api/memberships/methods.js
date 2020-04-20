@@ -62,6 +62,10 @@ export const insert = new ValidatedMethod({
           `No permission to perform this activity: memberships.insert: ${doc}, user: ${this.userId}`);
       }
       // Nothing else to check. Things will be checked when it gets approved by community admin/manager.
+      if (doc.community() && !doc.community().needsJoinApproval()) {
+        doc.approved = true;
+        doc.accepted = true;
+      }
     } else {
       checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     }
@@ -111,7 +115,7 @@ export const linkUser = new ValidatedMethod({
 
     if (doc.userId) {
       const linkedUser = Meteor.users.findOne(doc.userId);
-      if (linkedUser.emails[0].verified === false) {
+      if (linkedUser.isVerified() === false) {
         // Lets resend the enrollment request
         Accounts.sendEnrollmentEmail(doc.userId);
       } else if (doc.accepted === false) {
@@ -124,7 +128,7 @@ export const linkUser = new ValidatedMethod({
 
     // Else if doc.userId is not yet set, we link user here
     let user = Meteor.users.findOne({ 'emails.0.address': email });
-    if (user && Partners.findOne({ partnerId: { $ne: doc.partnerId }, userId: user._id })) {
+    if (user && Partners.findOne({ _id: { $ne: doc.partnerId }, userId: user._id })) {
       throw new Meteor.Error('err_sanityCheckFailed', 'There is already an other partner connected with a user with this e-mail address in the community');
     }
     if (!user) {
@@ -136,7 +140,7 @@ export const linkUser = new ValidatedMethod({
     }
 
     // TODO: We should ask for acceptance, not auto-accept it like now
-    const accepted = user.emails[0].verified; // if not verified, auto-acceptance will happen when he verifies
+    const accepted = user.isVerified(); // if not verified, auto-acceptance will happen when he verifies
     if (!partner.userId) Partners.update(doc.partnerId, { $set: { userId: user._id } });
     Memberships.update(doc._id, { $set: { accepted } }, { selector: { role: doc.role } });
   },

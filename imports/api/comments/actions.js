@@ -20,8 +20,16 @@ Comments.actions = {
   new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
-    visible: user.hasPermission(`${options.entity.name}.insert`, doc),
-    run() { /* NOP -- 'comments.insert is not used as command');*/ },
+    visible: user.hasPermission(`comment.insert`, doc),
+    run() {
+      Modal.show('Autoform_modal', {
+        id: 'af.comment.insert',
+        schema: Comments.simpleSchema({ category: 'comment' }),
+        doc,
+        type: 'method',
+        meteormethod: 'comments.insert',
+      });
+    },
   }),
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
@@ -71,8 +79,8 @@ Comments.actions = {
   block: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'block',
     label: doc.creator() && doc.creator().isFlaggedBy(user._id)
-      ? __('Unblock content from', doc.creator().toString())
-      : __('Block content from', doc.creator().toString()),
+      ? __('Unblock content from', doc.creator().displayOfficialName())
+      : __('Block content from', doc.creator().displayOfficialName()),
     icon: doc.creator() && doc.creator().isFlaggedBy(user._id)
       ? 'fa fa-check fa-user' : 'fa fa-ban fa-user-o',
     visible: doc.creatorId !== user._id && user.hasPermission('flag.toggle', doc),
@@ -95,6 +103,6 @@ Comments.actions = {
 
 //-------------------------------------------------------
 
-//  AutoForm.addModalHooks(`af.comment.insert`);
-//  AutoForm.addModalHooks(`af.comment.update`);
+AutoForm.addModalHooks(`af.comment.insert`);
+AutoForm.addModalHooks(`af.comment.update`);
 AutoForm.addModalHooks('af.comment.move');

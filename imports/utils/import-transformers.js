@@ -27,6 +27,7 @@ export const Import = {
   },
 };
 
+
 // TODO: get this out from TAPI
 const schemaParcels = {
   "label": "Albetét",
@@ -388,7 +389,7 @@ export const Transformers = {
           amount: parseInt(doc['Számla összege'], 10),
           // debit is one of the '8' accounts
           credit: [{
-            account: '`46',
+            account: '`454',
           }],
         };
         tdocs.push(bill);
@@ -404,7 +405,7 @@ export const Transformers = {
             amount: parseInt(doc['Számla összege'], 10),
     //          amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
             debit: [{
-              account: '`46',
+              account: '`454',
             }],
             // credit is one of the '`38' accounts
           };
@@ -468,7 +469,7 @@ export const Transformers = {
             tdoc = {
               ref: doc['Tranzakció azonosító'],
               refType: doc['Típus'],
-              valueDate: doc['Könyvelés dátuma'],
+              valueDate: moment.utc(doc['Könyvelés dátuma']).toDate(),
               amount: doc['Összeg'],
               name: doc['Partner elnevezése'],
               note: doc['Közlemény'],
@@ -481,7 +482,7 @@ export const Transformers = {
             tdoc = {
               ref: doc['Sorszám'],
               refType: (doc['Bevétel'] && 'Bevétel') || (doc['Kiadás'] && 'Kiadás'),
-              valueDate: doc['Dátum'],
+              valueDate: moment.utc(doc['Dátum']).toDate(),
               amount,
               name: doc['Név'],
               note: doc['Bizonylatszám (1)'],

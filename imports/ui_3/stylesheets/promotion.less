@@ -1,0 +1,45 @@
+.promotion-config {
+    position: fixed;
+    top: 90px;
+    right: 0;
+    overflow: hidden;
+}
+  
+.promotion-config-box {
+    width: 400px;
+    margin-right: -360px;
+    position: relative;
+    z-index: 2000;
+    transition-duration: 0.8s;
+}
+  
+.promotion-config-box.show {
+    margin-right: 0;
+}
+
+.call-to-action-box {
+    background: #efefef;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: block;
+    padding: 25px 15px;
+    font-size: 16px;
+    height: 100%;
+    border: 2px solid @red;
+    border-right: none;
+    margin-left: 40px;
+}
+
+@media screen and (max-width: 576px) {
+
+    .promotion-config-box.show {
+        margin-right: 0;
+    }
+    
+    .promotion-config-box {
+        width: 300px;
+        margin-left: 40px;
+        margin-right: -260px;
+    };
+}

@@ -38,7 +38,7 @@
     "Client": "Ügyfél",
     "Outstandings": "Hátralék emlékeztető",
     "fromTheCommunity": "a __name__ társasházból",
-    "DontReplyToThis": "Erre az email-re kérjük ne válaszoljon, mert egy automata rendszer küldi ki.<br>",
+    "DontReplyToThis": "Kérjük erre a levélre ne válaszoljon, mert egy automata rendszer küldte ki.<br>",
     "GenericFooter": ["Ha úgy véli tévedésből kapta ezt a levelet, vagy nem ért egyet annak tartalmával,",
       "mielőbb lépjen kapcsolatba a társasházzal az email-ben megadott elérhetőségen, vagy értesítse a társasház <a href=\"mailto:__adminEmail__\">adminisztrátorát</a>."],
     "Dear": "Kedves",
@@ -51,6 +51,46 @@
     "BillText": "Önnek új elektronikus számlája érkezett, amelyet az <a href=\"__link__\">online felületre belépve</a> részleteiben is megtekinthet vagy kinyomtathat. Ugyanitt a korábbi számláit is átnézheti.",
     "PaymentMethods": "A társasház bankszámlaszáma, amire átutalhatja az összeget",
     "PaymentInstructions": "A közlemény rovatba kérjük írja be a díjbekérő azonosító számát.",
+
+    "PromoSubject": "Üdvözöljük a HONLINE rendszerben",
+    "PromoFooter": "Ezt a üzenetet azért küldtük a regisztrációja során megadott e-mail címre, hogy tájékoztassuk a kezdeti lépésekről. Amennyiben úgy véli, tévedésből kapta ezt az e-mailt, kérjük, hagyja figyelmen kívül vagy írjon az info@honline.hu e-mail címre.",
+    "PromoSignature": [
+      "<p>Ha bármi kérdése van, az <a href=mailto:info@honline.hu>info@honline.hu</a> címen veheti fel velünk a kapcsolatot!</p>", 
+      "Üdvözlettel,<br/>A Honline.hu csapata"
+    ],
+    "PromoLaunchLinkContent1": [
+      "<h4>Gratulálunk!</h4>",
+      "<p>A(z) __communityName__ társasház felépült a HONLINE világában is! A kulcsokat rögtön átadjuk, előtte még néhány tudnivaló:</p>",
+      "<h4>1. A ház még üres, Önöknek kell majd berendezniük!</h4>",
+      "<p>Mikor először lép be, érdemes végigmennie a bal oldali menüpontokon, és kiróbálnia",
+      "<ul><li>hogyan indíthat fórum témát, </li><li>hogyan jelentheti be, ha elromlott a lift vagy </li><li>hogyan hozhat létre szavazást</li></ul>",
+      "...apropó szavazás! Létrehoztunk egy <strong>kezdő szavazást</strong> a házban. Úgy látjuk, a jelenlegi, járvánnyal érintett időszakban a legfontosabb, ",
+      "hogy gyors döntést tudjanak hozni a ház ügyeiben, ezért emeltük ki a szavazást, mint funkciót.", 
+      "Ön is létrehozhat egy <strong>új szavazást</strong> valamely, a házat érintő sürgős témakörben.</p>",
+      "<h4>2. Ennek a háznak mostantól Ön az adminisztrátora!</h4>",
+      "<p>Mivel a házat Ön hozta létre a honline rendszerében, Önt illetik az adminisztrátori jogok.",
+      "Kiadhat tisztségeket a lakótársainak (mint például gondnok vagy számvizsgáló), amivel így ők is jogosultságokhoz jutnak a házban.",
+      "Ha megosztaná vagy átruházná valaki másra adminisztrátori jogait, azt is megteheti!</p>",
+      "<h4>3. A(z) __communityName__ társasház már készen áll, lépjen be!</h4>",
+      "<p>Nyomjon rá az alábbi “Aktiválom a házamat” gombra és a ház kapujába repítjük.<br/>", 
+      "Itt regisztráljon e-mail címével és egy Ön által megválasztott jelszóval, és már be is léphet a házba.</p>"
+    ],
+    "PromoLaunchLinkContent2": [
+      "<h4>4. Regisztráció után hívja meg lakótársait is!</h4>",
+      "<p>Miután a fenti zöld gomb megnyomásával regisztrált és belépett a(z) __communityName__ társasházba, ",
+      "újabb e-mailt küldünk Önnek, melyben lapul majd egy meghívó. Ezzel tudja majd a lakótársait a házba invitálni.",
+      "</p>"
+    ],
+    "PromoInviteLinkContent1": [
+      "<h4>Házát sikeresen aktiválta!</h4>",
+      "<p>Mostantól nagyon egyszerűen, a <a href=https://honline.hu>honline.hu</a> linken tudja elérni a házát.",
+      "<h4>Hívja meg lakótársait!</h4>",
+      "<p>Az önök lakóközössége jelenleg hogyan kommunikál egymással? Körlevélben? Facebook csoportban? Messenger csoportban?<br/>",
+      "<strong>Ossza meg az alábbi linket</strong> valamelyik felületen, mutassa meg társainak, milyen okos társasházkezelő rendszerre lelt!<br/>"
+    ],
+    "PromoInviteLinkContent2": [
+      "<p>Miután lakótársai körülnéztek a demoházban, automatikusan <strong>az Ön által létrehozott társasházba invitáljuk őket</strong>, és kezdődhet is az online lakóközösségi élet!</p>"
+    ],
 
     "NotificationSubject": "Értesítések a __name__ társasházból",
     "NotificationsHeader": "A témák melletti Megtekintés gomb elviszi az adott téma oldalára, ahol van lehetősége hozzászólni.",

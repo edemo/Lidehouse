@@ -51,8 +51,8 @@ Template.Topic_show.helpers({
         return [{
           title: __('Worksheets'),
           url: FlowRouter.path('Worksheets'),
-//          title: __('Tickets'),
-//          url: FlowRouter.path('Tickets'),
+//          title: __('Tickets report'),
+//          url: FlowRouter.path('Tickets report'),
         }];
       }
       default: return [];

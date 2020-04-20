@@ -29,9 +29,10 @@ import './worksheets.html';
 Template.Worksheets.onCreated(function onCreated() {
   Session.set('activePartnerRelation', 'supplier');
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
-  const communityId = this.getCommunityId();
   this.autorun(() => {
+    const communityId = this.getCommunityId();
     this.subscribe('communities.byId', { _id: communityId });
+    this.subscribe('topics.list', { communityId, category: 'ticket' });
     this.subscribe('contracts.inCommunity', { communityId });
     this.subscribe('partners.inCommunity', { communityId });
   });
@@ -241,11 +242,7 @@ Template.Worksheets.viewmodel({
 });
 
 Template.Worksheets.events({ 
-  ...(actionHandlers(Topics, 'new')),
-  'click .js-view'(event, instance) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    FlowRouter.go('Topic show', { _tid: id });
-  },
+  ...(actionHandlers(Topics, 'new,view')),
   'click .js-mode'(event, instance) {
     const oldVal = instance.viewmodel.calendarView();
     instance.viewmodel.calendarView(!oldVal);

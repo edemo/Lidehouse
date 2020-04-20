@@ -48,6 +48,7 @@ const extensionSchema = {
   valueDate: { type: Date },  // same as Tx, but we need the readonly added
   amount: { type: Number, decimal: true },  // same as Tx, but we need the readonly added
   payAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
+  remission: { type: Boolean, optional: true },
 };
 _.each(extensionSchema, val => val.autoform = _.extend({}, val.autoform, { readonly() { return !!Session.get('modalContext').statementEntry; } }));
 Payments.extensionSchema = new SimpleSchema(extensionSchema);
@@ -109,7 +110,7 @@ Transactions.categoryHelpers('payment', {
       if (equalWithinRounding(unallocatedAmount, 0)) {
         this[this.conteerSide()].push({ amount: unallocatedAmount, account: '`99' });
       } else {
-        this[this.conteerSide()].push({ amount: unallocatedAmount, account: '`431' });
+        this[this.conteerSide()].push({ amount: unallocatedAmount, account: this.txdef()[this.conteerSide()][0] });
       }
     }
     return { debit: this.debit, credit: this.credit };

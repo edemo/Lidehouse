@@ -1,0 +1,36 @@
+<template name="Promotion">
+    {{#if show}}
+    <div id="promotion" class="promotion-config animated fadeInRightBig">
+        <div class="promotion-config-box promotion {{fullShowClass}}">
+            <div class="spin-icon">
+                <i class="fa fa-lg {{icon}}"></i>
+            </div>
+            <div class="call-to-action-box">
+                <div class="title">
+                  {{message.header}}<br>
+                  <small style="text-transform: none;font-weight: 400">
+                    {{message.details1}}
+                 </small><br>
+                 <small style="text-transform: none;font-weight: 400">
+                    {{message.details2}}
+                </small><br>
+                  <button class="btn btn-primary call-to-action m-b m-t">{{message.callToAction}}</button><br>
+                  <small style="text-transform: none;font-weight: 400">
+                     {{message.details3}}
+                  </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if}}    
+</template>
+
+<template name='Quick_community_launch'>
+  <div class="panel panel-info">
+    <div class="panel-heading">{{_ 'promo.OneClickToLaunch'}}</div>
+    <div class="panel-body">{{_ 'promo.InstructionsToLaunch'}}</div>
+  </div>
+  {{> afQuickField name='admin.email'}}
+  {{> afQuickField name='community.name'}}
+  {{> afQuickField name='parcelCount'}}
+</template>

@@ -48,4 +48,8 @@ export const Render = Meteor.isServer ? {} : {
     if (renderType === 'display') return '';
     return ''; // TODO: It would be nice to return the number buttons
   },
+  badge(cellData, renderType, currentRow) {
+    if (renderType === 'display') return '';
+    return cellData;
+  },
 };

@@ -7,13 +7,15 @@ import './intro-page.html';
 
 
 Template.Intro_page.onRendered(function(){
-    
     $('body').addClass('landing-page');
     $('body').attr('id', 'page-top');
     $('body').scrollspy({
         target: '.navbar-fixed-top',
         offset: 80
     });
+    $('.carousel').carousel({
+        interval: 5000
+    })
 
     // Page scrolling feature
     $('a.page-scroll').bind('click', function(event) {
@@ -69,9 +71,9 @@ Template.Intro_page.helpers({
     return (new Date()).getFullYear();
   },
   demoUrl() {
-    const _lang = 'hu';
-    if (Meteor.settings.public.enableDemo) return FlowRouter.path('Demo login', { _lang });
-    else return 'https://demo.honline.hu/demo/' + _lang;
+    const lang = 'hu';
+    if (Meteor.settings.public.enableDemo) return FlowRouter.path('Demo login', {}, { lang });
+    else return `https://demo.honline.hu/demo?lang=${lang}`;
   },
 });
 

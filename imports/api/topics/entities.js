@@ -24,29 +24,15 @@ Topics.entities = {
   news: {
     name: 'news',
     schema: Topics.simpleSchema({ category: 'news' }),
-    inputFields: ['title', 'text', 'photo', 'sticky'],
-    implicitFields: {
-      communityId: () => Session.get('activeCommunityId'),
-      category: 'news',
-    },
   },
   forum: {
     name: 'forum',
     schema: Topics.simpleSchema({ category: 'forum' }),
-    inputFields: ['title', 'text', 'photo'],
-    implicitFields: {
-      communityId: () => Session.get('activeCommunityId'),
-      category: 'forum',
-    },
   },
   vote: {
     name: 'vote',
     schema: Topics.simpleSchema({ category: 'vote' }),
     form: 'Voting_edit',
-    implicitFields: {
-      communityId: () => Session.get('activeCommunityId'),
-      category: 'vote',
-    },
   },
   // tickets
   issue: {
@@ -69,9 +55,6 @@ Topics.entities = {
       communityId: () => Session.get('activeCommunityId'),
       category: 'ticket',
       'ticket.type': 'maintenance',
-      'ticket.contractId': () => Session.get('modalContext').contractId,
-      'ticket.partnerId': () => Session.get('modalContext').partnerId,
-      'ticket.expectedStart': () => Session.get('modalContext').expectedStart,
     },
   },
   upgrade: {

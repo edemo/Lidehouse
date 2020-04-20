@@ -58,7 +58,7 @@ const PersonIdSchema = new SimpleSchema({
 */
 
 Delegations.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { type: 'hidden' } },
   sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: _.omit(choosePartner, ['relation', 'value']) },
   targetId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
   scope: { type: String, allowedValues: Delegations.scopeValues, autoform: autoformOptions(Delegations.scopeValues, 'schemaDelegations.scope.') },

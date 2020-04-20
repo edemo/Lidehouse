@@ -2,9 +2,17 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import { Random } from 'meteor/random';
+import { Accounts as UserAccounts } from 'meteor/accounts-base';
+import { moment } from 'meteor/momentjs:moment';
+import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 
+import { Log } from '/imports/utils/log.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
 import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { __ } from '/imports/localization/i18n.js';
+import { sendPromoLaunchLink, sendPromoInviteLink } from '/imports/email/promo-send.js';
+import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -40,6 +48,81 @@ export const create = new ValidatedMethod({
     // The user creating the community, becomes the first 'admin' of it.
     Memberships.insert({ communityId, userId: this.userId, role: 'admin', approved: true, accepted: true });
     return communityId;
+  },
+});
+
+const launchMail = new ValidatedMethod({
+  name: 'communities.launchMail',
+  validate: new SimpleSchema({
+    community: { type: Object },
+    'community.name': { type: String },
+    'community.settings': { type: Object },
+    'community.settings.language': { type: String },
+    admin: { type: Object },
+    'admin.email': { type: String },
+    parcelCount: { type: Number },
+    promoCode: { type: String },
+  }).validator({ clean: true }),
+
+  run(params) {
+    if (Meteor.isServer) sendPromoLaunchLink(params);
+  },
+});
+
+const launch = new ValidatedMethod({
+  name: 'communities.launch',
+  validate: new SimpleSchema({
+    community: { type: Communities.simpleSchema() },
+    admin: { type: Object },
+    'admin.email': { type: String },
+    promoCode: { type: String },
+  }).validator({ clean: true }),
+
+  run({ community, admin, promoCode }) {
+    if (!Meteor.isServer) return '#';
+    if (UserAccounts.findUserByEmail(admin.email)) {  // cannot create 2 sandboxes, to avoid duplicate launch of community
+      return FlowRouterHelpers.urlFor('Board');
+    }
+
+    const communityId = Communities.insert(community);
+    const communityDoc = Communities.findOne(communityId);
+    Log.info(`Sandbox community ${community.name}(${communityId}) created by ${admin.email}}`);
+    const userId = UserAccounts.createUser({ email: admin.email, password: Random.id(8), language: community.settings.language });
+    const { token } = UserAccounts.generateResetToken(userId, admin.email, 'enrollAccount', {});
+    const enrollUrl = UserAccounts.urls.enrollAccount(token);
+
+    Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });
+    const parcelId = Parcels.insert({ communityId, category: '@property', approved: true, serial: 1, ref: 'A001', units: 100, type: 'flat' });
+    Memberships.insert({ communityId, userId, parcelId, approved: true, accepted: true,
+      role: 'owner', ownership: { share: new Fraction(1) },
+    });
+    const lang = community.settings.language;
+    const voting = {
+      title: __('demo.vote.promo.title', {}, lang),
+      text: __('demo.vote.promo.text', {}, lang),
+      category: 'vote',
+      status: 'opened',
+      createdAt: moment().toDate(),
+      closesAt: moment().add(2, 'weeks').toDate(),
+      vote: {
+        procedure: 'online',
+        effect: 'poll',
+        type: 'choose',
+        choices: [
+          __('demo.vote.promo.choice.0', {}, lang),
+          __('demo.vote.promo.choice.1', {}, lang),
+          __('demo.vote.promo.choice.2', {}, lang),
+        ],
+      },
+    };
+    const votingId = Topics.insert(_.extend(voting, { communityId }));
+    if (Meteor.isServer) Topics.direct.update(votingId, { $set: { creatorId: userId } }, { selector: { category: 'vote' } });
+    updateMyLastSeen._execute({ userId }, { topicId: votingId, lastSeenInfo: { timestamp: new Date() } });
+
+    const user = Meteor.users.findOne(userId);  // this.userId is undefined
+    if (Meteor.isServer) sendPromoInviteLink(user, communityDoc);
+
+    return enrollUrl;
   },
 });
 
@@ -100,4 +183,4 @@ export const remove = new ValidatedMethod({
 });
 
 Communities.methods = Communities.methods || {};
-_.extend(Communities.methods, { create, update, remove });
+_.extend(Communities.methods, { create, launch, update, remove });

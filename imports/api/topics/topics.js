@@ -6,7 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
+import { imageUpload, documentUpload } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Revisioned } from '/imports/api/behaviours/revisioned.js';
@@ -18,6 +18,7 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 
 import './category-helpers.js';
 
@@ -31,17 +32,26 @@ Topics.categoryValues.forEach(cat => Topics.categories[cat] = {}); // Specific c
 Topics.extensionSchemas = {};
 
 Topics.baseSchema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
-  category: { type: String, allowedValues: Topics.categoryValues, autoform: { omit: true } },
+  category: { type: String, allowedValues: Topics.categoryValues, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
-  text: { type: String, max: 5000, autoform: { rows: 8 } },
-  agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  photo: { type: String, optional: true, autoform: fileUpload },
-  sticky: { type: Boolean, optional: true, defaultValue: false },
+  text: { type: String, max: 5000, autoform: { type: 'markdown' } },
+  photo: { type: String, optional: true, autoform: imageUpload },
+//  shareddocs: { type: Array, optional: true },
+//  'shareddocs.$': { type: String, optional: true, autoform: documentUpload },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
+});
+
+Topics.extensionSchemas.news = new SimpleSchema({
+  category: { type: String, defaultValue: 'news', autoform: { type: 'hidden', defaultValue: 'news' } },
+  sticky: { type: Boolean, optional: true, defaultValue: false },
+});
+
+Topics.extensionSchemas.forum = new SimpleSchema({
+  category: { type: String, defaultValue: 'forum', autoform: { type: 'hidden', defaultValue: 'forum' } },
 });
 
 Topics.publicFields = {
@@ -65,6 +75,7 @@ Topics.publicFields = {
   revision: 1,
   status: 1,
   serial: 1,
+  serialId: 1,
 };
 
 Topics.idSet = ['communityId', 'category', 'serial'];
@@ -95,6 +106,9 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
+  getShareddocs() {
+    return Shareddocs.find({ topicId: this._id });
+  },
   hiddenBy(userId) {
     const author = this.creator();
     if (this.creatorId === userId) return undefined;
@@ -118,6 +132,11 @@ Topics.helpers({
   },
   unseenCommentListBy(userId, seenType) {
     return this.unseenCommentsBy(userId, seenType).fetch();
+  },
+  // This goes into the UI badges
+  unseenCommentCount() {
+    debugAssert(Meteor.isClient);
+    return this.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
   },
   // This goes into the user's event feed
   unseenEventsBy(userId, seenType) {
@@ -213,8 +232,8 @@ Topics.attachBehaviour(Workflow());
 Topics.attachBehaviour(SerialId(['category', 'ticket.type']));
 
 Topics.attachVariantSchema(undefined, { selector: { category: 'room' } });
-Topics.attachVariantSchema(undefined, { selector: { category: 'forum' } });
-Topics.attachVariantSchema(undefined, { selector: { category: 'news' } });
+Topics.attachVariantSchema(Topics.extensionSchemas.forum, { selector: { category: 'forum' } });
+Topics.attachVariantSchema(Topics.extensionSchemas.news, { selector: { category: 'news' } });
 
 Meteor.startup(function attach() {
   Topics.categoryValues.forEach(category =>

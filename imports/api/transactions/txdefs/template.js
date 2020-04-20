@@ -11,14 +11,14 @@ export function defineTxdefTemplates() {
     category: 'bill',
     data: { relation: 'supplier' },
     debit: ['`1', '`5', '`8'],
-    credit: ['`46'],
+    credit: ['`454'],
 /*
   }, {
     name: 'Recording inventory', // 'Készletrevétel',
     category: 'bill',
     data: { relation: 'supplier' },
     debit: ['`2'],
-    credit: ['`46'],
+    credit: ['`454'],
   }, {
     name: 'Costing of inventory', // 'Készlet költség elszámolás',
     category: 'free',
@@ -29,13 +29,20 @@ export function defineTxdefTemplates() {
     name: 'Supplier payment', // 'Bejövő számla kifizetése',
     category: 'payment',
     data: { relation: 'supplier' },
-    debit: ['`46'],
+    debit: ['`454'],
     credit: ['`38'],
   }, {
+//    Not really needed. When paying bills we always know what bills are we intending to pay
+//    name: 'Supplier payment identification', // 'Bejövő számla kifizetés azonosítása',
+//    category: 'identification',
+//    data: { relation: 'supplier' },
+//    debit: ['`454'],
+//    credit: ['`454'],
+//  }, {
     name: 'Supplier bill remission', // 'Bejövő számla elengedés',
     category: 'payment',
     data: { relation: 'supplier', remission: true },
-    debit: ['`46'],
+    debit: ['`454'],
     credit: ['`969'],
   }, {
     name: 'Customer bill', // 'Kimenő számla',
@@ -50,6 +57,12 @@ export function defineTxdefTemplates() {
     debit: ['`38'],
     credit: ['`31'],
   }, {
+//    name: 'Customer payment identification', // 'Kimenő számla befolyás azonosítása',
+//    category: 'identification',
+//    data: { relation: 'customer' },
+//    debit: ['`31'],
+//    credit: ['`31'],
+//  }, {
     name: 'Customer bill remission', // 'Kimenő számla elengedés',
     category: 'payment',
     data: { relation: 'customer', remission: true },
@@ -68,6 +81,12 @@ export function defineTxdefTemplates() {
     debit: ['`38'],
     credit: ['`33'],
   }, {
+//    name: 'Parcel payment identification', // 'Albetét befizetés azonosítása',
+//    category: 'identification',
+//    data: { relation: 'member' },
+//    debit: ['`33'],
+//    credit: ['`33'],
+//  }, {
     name: 'Parcel bill remission', // 'Albetét előírás elengedés',
     category: 'payment',
     data: { relation: 'member', remission: true },
@@ -125,7 +144,7 @@ export function defineTxdefTemplates() {
     name: 'Barter', // 'Albetét előírás elengedés',
     category: 'barter',
 //    data: { relation: 'member' },
-    debit: ['`46'],
+    debit: ['`454'],
     credit: ['`31', '`33'],
 //    debit: ['`9'],
 //    credit: ['`8', '`5'],

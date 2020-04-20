@@ -33,11 +33,12 @@ export class CommunityBuilder {
     this.lang = lang;
     this.com = { en: 'com', hu: 'hu' }[lang];
 
-    const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { createdAt: -1 } });
+    const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { serial: -1 } });
     const lastCreatedParcel = parcels.fetch()[0];
     this.nextSerial = (lastCreatedParcel ? lastCreatedParcel.serial : 0) + 1;
     this.dummyUsers = [];
     this.nextUserIndex = 1;
+    this.password = Meteor.settings.demoPassword || faker.random.alphaNumeric(10);
   }
   __(text) {
     return TAPi18n.__(text, {}, this.lang);
@@ -161,7 +162,7 @@ export class CommunityBuilder {
   }
   createLoginableUser(role, userData, membershipData) {
     const emailAddress = `${role}@${this.demoOrTest}.${this.com}`;
-    const userId = Accounts.createUser({ email: emailAddress, password: 'password', language: this.lang });
+    const userId = Accounts.createUser({ email: emailAddress, password: this.password, language: this.lang });
     Meteor.users.update(userId, { $set: {
       'emails.0.verified': true,
       profile: {
@@ -195,7 +196,7 @@ export class CommunityBuilder {
   createFakeUser(i) {
     return Accounts.createUser({
       email: `${faker.name.lastName()}_${i}@${this.demoOrTest}.${this.com}`,
-      password: 'password',
+      password: this.password,
       language: this.lang,
     });
   }
@@ -232,9 +233,9 @@ export class CommunityBuilder {
     const parcel = Parcels.findOne({ communityId: this.communityId, serial });
     return parcel.code;
   }
-  generateDemoPayments(parcel, membership) {
+  generateDemoPayments(parcel, membership, count = 12) {
     Clock.starts(1, 'year', 'ago');
-    for (let mm = 1; mm < 13; mm++) {
+    for (let mm = 1; mm <= count; mm++) {
       this.execute(ParcelBillings.methods.apply, {
         communityId: this.communityId,
         date: Clock.currentDate(),

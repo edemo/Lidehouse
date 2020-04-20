@@ -10,10 +10,6 @@ import { debugAssert } from '/imports/utils/assert.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
-function deepCopy(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
-
 export const Templates = new Mongo.Collection('templates');
 
 Templates.define = function define(doc) {

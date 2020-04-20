@@ -1,4 +1,10 @@
 {  
+  // for packages
+  "markdownHelp": "In tte editor window, you may use markdown directives. Markdown directives can be typed in, or be applied to a selection, by selecting some text and then pressing one of the format buttons. The preview button shows you how the final text will look like. For a full list of applicable markdown directives, press this question mark.",
+
+  // routes
+  "App home": "Online Transparent Condominium Management",
+
   // buttons etc.
   "confirm": "Are you sure?",
   "inviteSend": "Send invitation",
@@ -50,13 +56,14 @@
   "err_sanityCheckFailed": "Data input is invalid",
   "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
 
-  "youNeedToSaveYourChanges": "The change becomes active once you press Save on the form",
+  "youNeedToSaveYourChanges": "Your changes only take effect once you press the Save button at the bottom",
   "needToRemoveCurrentToAddNew" : "To add a different file, you need to remove the current one",
   "pageNotFound": "Page not found",
   "tryingToConnect": "Trying to connect…",
   "connectionIssue": "There seems to be a connection issue",
   "connectionIssueLine1": "No connection to the server.",
   "connectionIssueLine2": "Its not possible to send messages now.",
+  "liveAgenda": "Live Streaming",
   "newForumTitlePlaceholder": "New topic title…",
   "newForumTextPlaceholder": "New topic text…",
   "newCommentPlaceholder": "Make your comment...",
@@ -110,8 +117,10 @@
   "noSelectedPerson": "Please select a person on right panel.",
 
   // tickets
-  "Please dont report twice": "To help our maintanance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
+  "Please dont report twice": "To help our maintenance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
   "Report issue": "Report a new issue",
+
+  "Sort by": "Sort by %s",
 
   // account
   "Localizer": "Accounting location",
@@ -138,10 +147,12 @@
   "actionDone_notify": "notified",
   "actionDone_remove": "removed",
   "actionDone_statusUpdate": "status updated",
+  "actionDone_registerReading": "reading registered",
+  "actionDone_remind": "reminder sent",
 
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "Reconnecting user": "This person will be sent a new enrollment email to the same email address, as the previous one was sent to. As soon as the new email is sent, the old one becomes expired.",
-  "Sending outstandings reminder": "To the following email: <strong>'%s'</strong> you are about to send out an outstandings reminder email.",
+  "Sending outstandings reminder": "To the following partner: <strong>'%s'</strong> you are about to send out an outstandings reminder email.",
 
   "import data": "import __collection__ data",
   "delete user": "delete your account permanently",

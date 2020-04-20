@@ -41,7 +41,7 @@ const chooseRelation = _.extend(
 );
 
 Partners.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: chooseRelation },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   idCard: { type: IdCardSchema, optional: true },
@@ -87,8 +87,8 @@ Partners.helpers({
     return undefined;
   },
   primaryEmail() {
-    if (this.userId && this.user()) return this.user().emails[0].address;
-    if (this.contact) return this.contact.email;
+    if (this.contact && this.contact.email) return this.contact.email;
+    if (this.userId && this.user() && Meteor.isServer) return this.user().getPrimaryEmail();
     return undefined;
   },
   avatar() {
@@ -102,7 +102,8 @@ Partners.helpers({
     if (this.idCard && this.idCard.name) return this.idCard.name;
     if (this.userId) {
       const user = this.user();
-      const preText = (Meteor.isClient && Meteor.user().hasPermission('partners.update', this)) ? `[${__('Waiting for approval')}] ` : '';
+      const preText = (Meteor.isClient && Meteor.user().hasPermission('partners.update', this) && this.community().needsJoinApproval()) ?
+        `[${__('Waiting for approval')}] ` : '';
       if (user) return preText + user.displayProfileName(lang || user.settings.language);
     }
     if (this.contact && this.contact.email) {

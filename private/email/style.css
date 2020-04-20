@@ -165,10 +165,6 @@ h1 {
 
 h2 {
     font-size: 24px;
-    color: white;
-    background-color: #2e4050;
-    text-align: center;
-    padding: 2px;
     font-weight: 400;
 }
 
@@ -194,6 +190,13 @@ p li, ul li, ol li {
 
 small {
     font-size: 10px;
+}
+
+.indigo {
+    color: white;
+    background-color: #2e4050;
+    text-align: center;
+    padding: 2px;
 }
 
 /* -------------------------------------

@@ -28,12 +28,17 @@ export const insert = new ValidatedMethod({
   validate: doc => Parcels.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
     const community = Communities.findOne(doc.communityId);
+    if (doc.category === '@property') {
+      if (!doc.serial) doc.serial = community.nextAvailableSerial();
+      if (doc.ref === 'auto') doc.ref = 'A' + doc.serial.toString().padStart(3, '0');
+    }
     if (doc.ref) {
       checkNotExists(Parcels, { communityId: doc.communityId, ref: doc.ref });
       doc = ParcelRefFormat.extractFieldsFromRef(community.settings.parcelRefFormat, doc);
     }
     if (!doc.approved) {
       // Nothing to check. Things will be checked when it gets approved by community admin/manager.
+      if (!community.needsJoinApproval()) doc.approved = true;
     } else {
       checkPermissions(this.userId, 'parcels.insert', doc);
     }

@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 
@@ -12,7 +13,6 @@ export let getActivePartnerId = function getActivePartnerId() {
 
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
-  import { FlowRouter } from 'meteor/kadira:flow-router';
 
   export function autosetActiveCommunity() {
     const activeCommunityId = Session.get('activeCommunityId');
@@ -44,4 +44,8 @@ export function getActiveCommunity() {
 export function getActivePartner() {
   const id = getActivePartnerId();
   return Partners.findOne(id);
+}
+
+export function defaultNewDoc() {
+  return { communityId: FlowRouter.getParam('_cid') || getActiveCommunityId() };
 }

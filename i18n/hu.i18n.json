@@ -2,7 +2,7 @@
   // TODO use this, instead of fixed title, so its configurable
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
-
+  "Demo under construction": "Egy pillanat türelmet kérünk, <br>a Demo társasházban munkatársaink <br>már építik az Ön demo lakását...",
   // Shared
   "createdAt": "Létrehozva",
   "creatorId": "Létrehozta",
@@ -12,8 +12,20 @@
   "reportedBy": "Bejelentette",
   "Last activity": "Utolsó aktivitás",
   "text": "Leírás",
+  "name": "név",
+  "date": "dátum",
+  "size": "méret",
   "type": "típus",
   "never": "soha",
+  "increasing": "növekvő",
+  "decreasing": "csökkenő",
+  // for package
+  "header": "címsor",
+  "Preview": "Előnézet",
+  "bold": "vastag betű",
+  "italic": "dőlt betű",
+  "markdownHelp": "A szerkesztő ablakban van lehetősége formázni a szövegen ún. markdown direktívákkal. Ezeket a direktívákat begépelheti, vagy ha kijelöl egy szövegrészt, a lenti formázó gombokkal is ráteheti a kijelölt szövegrészre. Az előnézet gombbal megtekintheti hogyan fog kinézni a szöveg a weboldalon. Az összes markdown direktíva listájához, kattintson erre a kérdőjelre.",
+  "Maybe later": "Talán később",
 
   "role": "jogkör",
   "roles": "jogkörök",
@@ -60,6 +72,7 @@
   "Other roles": "Egyéb tisztségek",
 
   // routes
+  "App home": "Online Átlátható Tásasházkezelés",
   "App intro": "Bemutatkozó oldal",
   "Privacy": "Adatkezelési tájékoztató",
   "Terms": "Felhasználási feltételek",
@@ -78,8 +91,10 @@
   "Parcels finances": "Albetét elszámolás",
   "Community finances": "Ház pénzügyek",
   "Accounting": "Könyvelés",
+  "Community page": "Házlap",
   "Documentstore": "Dokumentumtár",
   "User data page": "Felhasználói adatlap",
+  "Online assembly": "Online közgyűlés",
 
   "News board": "Faliújság",
   "Useful Informations": "Hasznos Információk",
@@ -94,7 +109,6 @@
   "your question": "kérdés, észrevétel",
 
   // api
-  "name": "név",
   "user": "felhasználó",
   "username": "felhasználónév",
   "Profile settings": "Profil beállítások",
@@ -145,6 +159,7 @@
   "remission": "számla elengedés",
   "receipt": "nyugta",
   "receipts": "nyugták",
+  "outstandings": "hátralék",
   "transfer": "átvezetés",
   "opening": "nyitó",
   "freeTx": "könyvelési tranzakció",
@@ -183,6 +198,10 @@
   "Delete user account": "Felhasználói fiók törlése",
   "Delete community": "Közösség törlése",
   "remove": "eltávolítás",
+  "video call": "közvetítés indítása",
+  "video end": "közvetítés lezárása",
+  "join video": "csatlakozás",
+  "leave video": "kilépés",
   "save": "mentés",
   "send": "elküldés",
   "Send message": "Üzenet küldése",
@@ -218,6 +237,7 @@
   "View my bills": "Számláim megtekintése",
   "View details": "Részletes nyomtatható nézet",
   "Print bill": "Számla nyomtatása",
+  "print": "nyomtatás",
 
   "link": "Kapcsolás",
   "join": "Csatlakozás",
@@ -230,6 +250,8 @@
   "new": "Új",
   "menuDown": "Lenyit",
   "menuUp": "Összecsuk",
+  "file": "fájl",
+  "files": "fájlok",
   "Upload file": "Fájl feltöltés",
   "Upload statement": "Kivonat feltöltés",
   "Upload balances": "Egyenleg feltöltés",
@@ -373,7 +395,7 @@
     "petition": "Ha támogatja a kezdeményezést, kattintson a Támogatom gombra, majd küldje el szavazatát a zöld gombbal. Ha nem támogatja, akkor nincsen semmi teendője."
   },
   "No amendments were made to this document": "A dokumentumon nem történt módosítás",
-  "Vote results become availailable once voting is closed": "A szavazatok azonnal láthatóvá válnak, amint a szavazás lezárul",
+  "Vote results become available once voting is closed": "A szavazatok azonnal láthatóvá válnak, amint a szavazás lezárul",
   "Voting has not started yet, please come back": "A szavazás még nem kezdődött el, kérjük látogasson vissza",
 
   // delegations
@@ -524,6 +546,7 @@
   "Unposted": "Könyveletlen",
   "Unpaid": "Rendezetlen",
   "Overdue": "Hátralékos",
+  "Overpayment": "Túlfizetés",
   "Show only": "Csak ami",
   "issuer": "kiállító",
   "receiver": "vevő",
@@ -588,12 +611,13 @@
   "login": "belépés",
   "register": "új fiók",
 
-  "youNeedToSaveYourChanges": "A változtatás a lenti Mentés gomb megnyomásával válik aktívvá",
+  "youNeedToSaveYourChanges": "Az eszközölt változtatások csak a lenti Mentés gomb megnyomásával lépnek életbe",
   "needToRemoveCurrentToAddNew" : "Új fájl megadásához először a régit el kell távolítania",
   "tryingToConnect": "Kapcsolódás folyamatban…",
   "connectionIssue": "Valami hiba van a hálózattal",
   "connectionIssueLine1": "Nincs kapcsolat a szerverrel.",
   "connectionIssueLine2": "Jelenleg nem tud üzeneteket küldeni.",
+  "liveAgenda": "Élő közvetítés",
   "pageNotFound": "Az odal nem található",
   "inviteSend": "Meghívó kiküldése",
   "newForumTitlePlaceholder": "Új téma címe…",
@@ -607,6 +631,7 @@
   "Page not found": "A keresett tartalom nem található",
   "pageNotFoundMessage": "A %s nem található a rendszerben.\nEnnek lehet oka, hogy időközben már törölték.\nDe az is lehet hogy önnek nincs megfelelő jogosultsága hogy megtekintse.",
   "Back to the board": "Vissza a főoldalra",
+  "Activate community": "Aktiválom a házamat",
 
   "userAccountsSubtitle": {
     "signIn": "A rendszer használatához lépjen be",
@@ -620,6 +645,7 @@
   },
   "documentStoreSubtitle": "Mindenki számára elérhető dokumentumok helye.",
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
+  "Sort by": "Rendezés %s szerint",
 
   // Notifications
   "Join request submitted": "Csatlakozási kérelem beadva a(z) %s közösséghez",
@@ -641,9 +667,12 @@
   "actionDone_move": "áthelyezve",
   "actionDone_import": "importálva",
   "actionDone_post": "könyvelésbe küldve",
+  "actionDone_apply": "kivetve",
   "actionDone_notify": "továbbítva",
   "actionDone_remove": "eltávolítva",
   "actionDone_statusUpdate": "státusz frissítve",
+  "actionDone_registerReading": "leolvasás rögzítve",
+  "actionDone_remind": "emlékeztető elküldve",
 // "bill parcels successful": "Közös költség terv kiróvva",
 // "close vote successful": "Szavazás lezárva",
 // "publish balances successful": "Aktuális egyenlegek publikálva",
@@ -702,7 +731,7 @@
   "You should rather archive it" : "Törlés helyett inkább az aktív időszakot szerkessze és zárja le, mert akkor megmaradnak kereshetőek a múltbeli adatok. Csak akkor törölje le, ha tévedésből lett létrehozva.",
   "Connecting user": "A(z) <strong>'%s'</strong> email című felhasználót kapcsolni fogja a tagsághoz. Ha az illetőnek még nincs felhasználói fiókja a rendszerben, akkor most meghívót fog neki küldeni erre az email címre.",
   "Reconnecting user": "A felhasználónak ezzel új meghívót fog küldeni ugyanarra az email címre, amivel előzőleg is meghívta. Az új meghívó kiküldésével a régi meghívó automatikusan lejárttá válik.",
-  "Sending outstandings reminder": "A(z) <strong>'%s'</strong> email címre ezzel egy hátralék emlékeztető emailt fog kiküldeni.",
+  "Sending outstandings reminder": "<strong>'%s'</strong> nevű partnernek ezzel egy hátralék emlékeztető emailt fog kiküldeni.",
   "This will publish the current account balances": "Ezzel a jelen pillanatban élő számlaegyenlegek lesznek mostantól láthatóak a tulajdonosok felé mutatott kimutatásokban",
   "This transaction has been already posted before": "Ezt a tranzakciót korábban már könyvelésbe küldte",
   "This will send the bill again": "Ezzel ismételten elküldi a számlát a tranzakciós partnernek",

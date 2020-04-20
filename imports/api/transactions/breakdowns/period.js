@@ -87,7 +87,7 @@ export class Period {
 
 PeriodBreakdown.currentMonthTag = function () {
   const now = new Date();
-  return `T-${now.getFullYear()}-${now.getMonth() + 1}`;
+  return `T-${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
 };
 PeriodBreakdown.currentYearTag = function () {
   const now = new Date();

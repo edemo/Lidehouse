@@ -5,12 +5,10 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Fraction } from 'fractional';
 import { _ } from 'meteor/jquery';
 
-import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
@@ -21,7 +19,7 @@ import './methods.js';
 import './entities.js';
 
 Parcels.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     color: 'primary',
@@ -35,6 +33,7 @@ Parcels.actions = {
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.insert`,
         schema: entity.schema,
+        doc,
         type: 'method',
         meteormethod: 'parcels.insert',
       });
@@ -170,9 +169,7 @@ Parcels.actions = {
 
 //-----------------------------------------------
 
-function onJoinParcelInsertSuccess(parcelId) {
-  const communityId = FlowRouter.current().params._cid;
-  const communityName = Communities.findOne(communityId).name;
+export function setMeAsParcelOwner(parcelId, communityId, callback) {
   Memberships.methods.insert.call({
     userId: Meteor.userId(),
     communityId,
@@ -182,9 +179,14 @@ function onJoinParcelInsertSuccess(parcelId) {
     ownership: {
       share: new Fraction(1),
     },
-  }, (err, res) => {
-    if (err) displayError(err);
-    else displayMessage('success', 'Join request submitted', communityName);
+  }, callback);
+}
+
+function onJoinParcelInsertSuccess(parcelId) {
+  const communityId = FlowRouter.current().params._cid;
+  const communityName = Communities.findOne(communityId).name;
+  setMeAsParcelOwner(parcelId, communityId, onSuccess((res) => {
+    displayMessage('success', 'Join request submitted', communityName);
     Meteor.setTimeout(() => Modal.show('Modal', {
       title: __('Join request submitted', communityName),
       text: __('Join request notification'),
@@ -193,7 +195,8 @@ function onJoinParcelInsertSuccess(parcelId) {
       onOK() { FlowRouter.go('App home'); },
       //      onClose() { removeMembership.call({ _id: res }); }, -- has no permission to do it, right now
     }), 3000);
-  });
+  }),
+  );
 }
 
 Parcels.categoryValues.forEach(category => {
@@ -202,7 +205,6 @@ Parcels.categoryValues.forEach(category => {
 
   AutoForm.addHooks(`af.${category}.insert`, {
     formToDoc(doc) {
-      doc.communityId = Session.get('activeCommunityId');
       doc.category = category;
       return doc;
     },
@@ -218,8 +220,8 @@ Parcels.categoryValues.forEach(category => {
 AutoForm.addModalHooks('af.@property.insert.unapproved');
 AutoForm.addHooks('af.@property.insert.unapproved', {
   formToDoc(doc) {
-    doc.communityId = getActiveCommunityId();
     doc.approved = false;
+    doc.category = '@property';
     return doc;
   },
   onSuccess(formType, result) {

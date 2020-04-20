@@ -36,10 +36,19 @@ export const noUpdate = {
   },
 };
 
-export const fileUpload = {
+export const imageUpload = {
   afFieldInput: {
     type: 'fileUpload',
     collection: 'attachments',
+    fileType: 'image',
   },
 };
 
+export const documentUpload = {
+  afFieldInput: {
+    type: 'fileUpload',
+    collection: 'shareddocs',
+    fileType: 'document',
+//    multi: true,
+  },
+};

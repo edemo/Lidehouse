@@ -12,9 +12,6 @@ import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
-function deepCopy(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
 export const Breakdowns = new Mongo.Collection('breakdowns');
 
 Breakdowns.define = function define(doc) {
@@ -67,7 +64,7 @@ export function chooseSubAccount(brk, nodeCode, leafsOnly = true) {
 /*
 Breakdowns.schema = new SimpleSchema({
   name: { type: String },
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
 
   // An account is either a root (then it has a type)...
   type: { type: String, allowedValues: Breakdowns.typeValues, optional: true },
@@ -192,7 +189,7 @@ Breakdowns.helpers({
           node.sign = node.sign || node.include.sign;
           if (node.include.children) {
             node.children = node.children || [];
-            node.children = node.children.concat(deepCopy(node.include.children));
+            node.children = node.children.concat(Object.deepClone(node.include.children));
           }
           delete node.include;
         }

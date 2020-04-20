@@ -49,6 +49,11 @@ Object.deepEquals = function deepEquals(a, b) {
   return true;
 };
 
+// Info: https://www.samanthaming.com/tidbits/70-3-ways-to-clone-objects/
+Object.deepClone = function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+};
+
 String.prototype.forEachChar = function forEachChar(func) {
   for (let i = 0; i < this.length; i++) {
     func(this.charAt(i));

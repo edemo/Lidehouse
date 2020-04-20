@@ -3,11 +3,10 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActivePartnerId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -34,7 +33,7 @@ Transactions.actions = {
       Session.update('modalContext', 'txdef', options.txdef);
       const entity = options.entity;
       const insertTx = Session.get('modalContext').insertTx;
-      doc = _.extend({}, insertTx, doc);
+      doc = _.extend(defaultNewDoc(), insertTx, doc);
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -56,7 +55,7 @@ Transactions.actions = {
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: user.hasPermission('transactions.inCommunity', doc) || getActivePartnerId() === doc.partnerId,
+    visible: doc && (user.hasPermission('transactions.inCommunity', doc) || getActivePartnerId() === doc.partnerId),
     run() {
       const entity = Transactions.entities[doc.entityName()];
       Session.update('modalContext', 'txdef', doc.txdef());
@@ -78,7 +77,8 @@ Transactions.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: !doc.isPosted() && user.hasPermission('transactions.update', doc),
+    visible: doc && !doc.isPosted() && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
+      && user.hasPermission('transactions.update', doc),
     run() {
       const entity = Transactions.entities[doc.entityName()];
       Session.update('modalContext', 'txdef', doc.txdef());
@@ -102,14 +102,11 @@ Transactions.actions = {
   }),
   post: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'post',
-    icon: doc.isPosted() ? 'fa fa-list' : 'fa fa-check-square-o',
-    color: doc.isPosted() ? undefined : 'warning',
-    label: doc.isPosted() ? 'Accounting view' : 'post',
-    visible: (() => {
-      if (!doc) return false;
-      if (doc.category === 'bill' && !doc.hasConteerData()) return false;
-      return user.hasPermission('transactions.post', doc);
-    })(),
+    icon: doc && doc.isPosted() ? 'fa fa-list' : 'fa fa-check-square-o',
+    color: doc && doc.isPosted() ? undefined : 'warning',
+    label: doc && doc.isPosted() ? 'Accounting view' : 'post',
+    visible: doc && !(doc.category === 'bill' && !doc.hasConteerData())
+      && user.hasPermission('transactions.post', doc),
     run() {
       if (doc.isPosted()) {
         Modal.show('Modal', {
@@ -143,7 +140,7 @@ Transactions.actions = {
   resend: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'resend',
     icon: 'fa fa-envelope',
-    visible: doc.isPosted() && user.hasPermission('transactions.resend', doc),
+    visible: doc && doc.isPosted() && user.hasPermission('transactions.resend', doc),
     run() {
       Modal.confirmAndCall(Transactions.methods.resend, { _id: doc._id }, {
         action: 'resend email',
@@ -155,21 +152,25 @@ Transactions.actions = {
     name: 'registerPayment',
     icon: 'fa fa-credit-card',
     color: 'info',
-    visible: (() => {
-      if (!doc) return false;
-      if (doc.status !== 'posted') return false;
-      if (doc.category !== 'bill' || !doc.outstanding) return false;
-      return user.hasPermission('transactions.insert', doc);
-    })(),
+    visible: doc && (doc.status === 'posted') && (doc.category === 'bill') && doc.outstanding
+      && user.hasPermission('transactions.insert', doc),
     run() {
       Session.update('modalContext', 'billId', doc._id);
       const txdef = Txdefs.findOne({ communityId: doc.communityId, category: 'payment', 'data.relation': doc.relation });
       Session.update('modalContext', 'txdef', txdef);
       const insertOptions = _.extend({}, options, { entity: Transactions.entities.payment });
-      const insertTx = _.extend({}, doc, { txdef, valueDate: new Date() });
-      delete insertTx.lines; delete insertTx.debit; delete insertTx.credit;
-      delete insertTx.serial; delete insertTx.serialId;
-      insertTx.bills = [{ id: doc._id, amount: doc.amount }];
+      const insertTx = {
+        category: 'payment',
+        defId: txdef._id,
+        valueDate: new Date(),
+        // - copied from the doc -
+        relation: doc.relation,
+        partnerId: doc.partnerId,
+        membershipId: doc.membershipId,
+        contractId: doc.contractId,
+        amount: doc.amount,
+        bills: [{ id: doc._id, amount: doc.amount }],
+      };
       Transactions.actions.new(insertOptions, insertTx).run();
     },
   }),
@@ -182,6 +183,18 @@ Transactions.actions = {
         action: 'delete transaction',
         message: doc.isPosted() ? 'Remove not possible after posting' : 'It will disappear forever',
       });
+    },
+  }),
+  print: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'print',
+    icon: 'fa fa-print',
+    visible: user.hasPermission('transactions.inCommunity', doc),
+    run() {
+      if (ModalStack.active()) {
+        $('#wrapper').addClass('no-height');
+        window.print();
+        $('#wrapper').removeClass('no-height');
+      } else window.print();
     },
   }),
 };
@@ -209,7 +222,6 @@ Transactions.categoryValues.forEach(category => {
     },
     formToDoc(doc) {
       const modalContext = Session.get('modalContext');
-      doc.communityId = Session.get('activeCommunityId');
       doc.category = category;
       const txdef = modalContext.txdef;
       doc.defId = txdef._id;

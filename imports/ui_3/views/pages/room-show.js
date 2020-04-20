@@ -62,7 +62,7 @@ Template.Room_show.helpers({
   selectedPerson() {
     const roomId = FlowRouter.getParam('_rid');
     const room = Topics.findOne(roomId);
-    // const participantList = room.participantIds.map(pid => Meteor.users.findOne(pid).toString()).join(' ');
+    // const participantList = room.participantIds.map(pid => Meteor.users.findOne(pid).displayOfficialName()).join(' ');
     const otherPersonId = room.participantIds.filter(pid => pid !== Meteor.userId())[0];
     return Meteor.users.findOne(otherPersonId);
   },
@@ -118,6 +118,6 @@ Template.Message_send.events({
     onSuccess((res) => {
       textarea.value = '';
       if ($(window).width() > 768) $('.js-focused').focus();
-      }));
+    }));
   },
 });

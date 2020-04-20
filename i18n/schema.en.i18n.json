@@ -97,7 +97,7 @@
     },
     "avatar": {
       "label": "Profile picture",
-      "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
     },
     "profile": {
       "label": "Profile [This data is publicly shown to the members of your community]",
@@ -192,7 +192,7 @@
         },
         "photo": {
           "label": "Photo (if applicable)",
-          "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+          "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
         }
       }
     },
@@ -248,7 +248,7 @@
       },
       "photo": {
         "label": "Photo (if applicable)",
-        "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
       }
     }
   },
@@ -362,7 +362,13 @@
     },
     "photo": {
       "label": "Photo (if applicable)",
-      "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+    },
+    "shareddocs": {
+      "label": "Documents (if applicable)",
+      "$": {
+        "placeholder": "File link (eg. /uploads/document.pdf)"
+      }
     },
     "sticky" : {
       "label": "Sticky"
@@ -540,13 +546,21 @@
   },
   "schemaComments": {
     "text": {
-//      "label": "Text",
-//      "placeholder": "My comment here..."
-      "label": "Notes",
-      "placeholder": "The reason for changing the state is..."
+      "label": "Text",
+      "placeholder": "My comment here..."
+    },
+    "photo": {
+      "label": "Photo (if applicable)",
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
     },
     "destinationId": {
       "label": "Move this over to:"
+    }
+  },
+  "schemaStatusChanges": {
+    "text": {
+      "label": "Notes",
+      "placeholder": "The reason for changing the state is..."
     }
   },
   "schemaBreakdowns": {
@@ -1009,6 +1023,10 @@
     "localizer": {
       "label": "Payin location",
       "help": "Billing will be applied to an individual parcel if an individual parcel is selected, or to all parcels that are under the selected group if a group is selected."
+    },
+    "withFollowers": {
+      "label": "Also for the follower parcels",
+      "help": "If this is checked, we not only apply it to the above selected parcels, but also to all follower parcels linked to those."
     },
     "type": {
       "label": "Type, the billing applies to",

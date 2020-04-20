@@ -28,7 +28,7 @@ Txdefs.clone = function clone(name, communityId) {
 };
 
 Txdefs.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   name: { type: String, max: 100 },
   category: { type: String, max: 15, optional: true, autoform: { omit: true } }, // Name of the entity
   data: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // Default data values

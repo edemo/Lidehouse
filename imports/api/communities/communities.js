@@ -7,20 +7,24 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
-import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
+import { autoformOptions, imageUpload } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
 
 export const Communities = new Mongo.Collection('communities');
 
 const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
+Communities.statusValues = ['sandbox', 'live', 'official'];
+Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'documents'];
 
 Communities.settingsSchema = new SimpleSchema({
+  modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', checked: true } },
   joinable: { type: Boolean, defaultValue: true },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   parcelRefFormat: { type: String, optional: true },
@@ -31,19 +35,24 @@ Communities.settingsSchema = new SimpleSchema({
 Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
   description: { type: String, max: 1200, optional: true },
-  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload },
 }, comtype.profileSchema, {
   management: { type: String, optional: true, autoform: { type: 'textarea' } },
   taxNo: { type: String, max: 50, optional: true },
   totalunits: { type: Number },
+  status: { type: String, allowedValues: Communities.statusValues, defaultValue: 'live', autoform: { type: 'hidden' } },
   settings: { type: Communities.settingsSchema },
   // cached fields:
   parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
 }]);
 
-Communities.publicFields = {
-  totalunits: 0,
+Communities.listingsFields = {
+  name: 1,
+  parcels: 1,
 };
+comtype.profileSchema._schemaKeys.forEach((key) => {
+  _.extend(Communities.listingsFields, { [key]: 1 });
+});
 
 Meteor.startup(function indexCommunities() {
   if (Meteor.isServer) {
@@ -53,6 +62,11 @@ Meteor.startup(function indexCommunities() {
 });
 
 Communities.helpers({
+  nextAvailableSerial() {
+    const serials = _.pluck(Parcels.find({ communityId: this._id, category: '@property' }).fetch(), 'serial');
+    const maxSerial = serials.length ? Math.max(...serials) : 0;
+    return maxSerial + 1;
+  },
   registeredUnits() {
     let total = 0;
     Parcels.find({ communityId: this._id, category: '@property' }).forEach(p => total += p.units);
@@ -109,6 +123,12 @@ Communities.helpers({
   voters() {
     const voters = this.voterships().map(v => v.partner());
     return _.uniq(voters, false, u => u._id);
+  },
+  needsJoinApproval() {
+    return this.status !== 'sandbox';
+  },
+  hasLiveAssembly() {
+    return !!Agendas.findOne({ communityId: this._id, live: true });
   },
   toString() {
     return this.name;

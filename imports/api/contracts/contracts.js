@@ -17,7 +17,7 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 export const Contracts = new Mongo.Collection('contracts');
 
 Contracts.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { rows: 8 } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },

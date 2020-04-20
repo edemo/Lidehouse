@@ -127,7 +127,7 @@ if (Meteor.isServer) {
         chai.assert.equal(tx.category, 'bill');
         chai.assert.equal(tx.amount, 300);
         chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '`861', localizer: '@' }]);
-        chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '`46', localizer: '@' }]);
+        chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '`454', localizer: '@' }]);
       });
 
       it('Can register Payments', function () {
@@ -162,13 +162,13 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId1 });
         tx1 = Transactions.findOne(paymentId1);
         chai.assert.isTrue(tx1.isPosted());
-        chai.assert.deepEqual(tx1.debit, [{ amount: 100, account: '`46', localizer: '@' }]);
+        chai.assert.deepEqual(tx1.debit, [{ amount: 100, account: '`454', localizer: '@' }]);
         chai.assert.deepEqual(tx1.credit, [{ amount: 100, account: bankAccount }]);
 
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
         tx2 = Transactions.findOne(paymentId2);
         chai.assert.isTrue(tx2.isPosted());
-        chai.assert.deepEqual(tx2.debit, [{ amount: 200, account: '`46', localizer: '@' }]);
+        chai.assert.deepEqual(tx2.debit, [{ amount: 200, account: '`454', localizer: '@' }]);
         chai.assert.deepEqual(tx2.credit, [{ amount: 200, account: bankAccount }]);
       });
     });
@@ -365,7 +365,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.getPaymentTransactions()[0].isPosted(), true);
         chai.assert.deepEqual(
           bill.getPaymentTransactions()[0].debit,
-          [{ amount: 300, account: '`46', localizer: '@' }, { amount: -2, account: '`99' }]
+          [{ amount: 300, account: '`454', localizer: '@' }, { amount: -2, account: '`99' }]
         );
         chai.assert.deepEqual(
           bill.getPaymentTransactions()[0].credit,
@@ -400,7 +400,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.getPaymentTransactions()[0].isPosted(), true);
         chai.assert.deepEqual(
           bill.getPaymentTransactions()[0].debit,
-          [{ amount: 300, account: '`46', localizer: '@' }, { amount: 2, account: '`99' }]
+          [{ amount: 300, account: '`454', localizer: '@' }, { amount: 2, account: '`99' }]
         );
         chai.assert.deepEqual(
           bill.getPaymentTransactions()[0].credit,

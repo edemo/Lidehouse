@@ -43,12 +43,6 @@
                                 </li>
                                 {{/each}}
                             </ul>
-                            <!--h5 class="tag-title">Tags</h5>
-                            <ul class="tag-list" style="padding: 0">
-                                <li><a href="">Work</a></li>
-                                <li><a href="">Home</a></li>
-                                <li><a href="">Holidays</a></li>
-                            </ul-->
                             {{#if currentUserHasPermission 'shareddocs.upload'}}
                             <button name="newdir" class="btn btn-default btn-xs js-new">
                                 <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'sharedfolder'}}
@@ -59,6 +53,26 @@
                                 <i class="fa fa-upload"></i>
                                 {{_ 'Upload file'}}
                             </button>
+                            <div class="hr-line-dashed"></div>
+                            <h5>{{_ 'Show'}}</h5>
+                            <div class="">
+                                <select name="sort-by" {{b 'value: sortBy'}}>
+                                  <option value="name" selected>{{_ 'Sort by' (_ 'name')}}</option>
+                                  <option value="uploadedAt">{{_ 'Sort by' (_ 'date')}}</option>
+                                  <option value="size">{{_ 'Sort by' (_ 'size')}}</option>
+                                  <option value="type">{{_ 'Sort by' (_ 'type')}}</option>
+                                </select>
+                                <select name="sort-direction" {{b 'value: sortDirection'}}>
+                                  <option value="1" selected>{{_ 'increasing'}}</option>
+                                  <option value="-1">{{_ 'decreasing'}}</option>
+                                </select>
+                            </div>
+                            <!--h5 class="tag-title">Tags</h5>
+                            <ul class="tag-list" style="padding: 0">
+                                <li><a href="">Work</a></li>
+                                <li><a href="">Home</a></li>
+                                <li><a href="">Holidays</a></li>
+                            </ul-->
                             <div class="clearfix"></div>
                         </div>
                     </div>

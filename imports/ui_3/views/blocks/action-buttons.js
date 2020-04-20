@@ -6,39 +6,11 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';  // TODO get rid of
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import './menu-overflow-guard.js';
 import './action-buttons.html';
 
-// Apply these event handlers to your template, if the buttons are not created as Action_button templates,
-// hence they don't have their event handlers yet
-// (like buttons in datatables, where the buttons are not templates, just simple html)
-
-// depreacted, can be removed:
-export function actionHandlers(collection, actionNames) { 
-  const actions = actionNames ? actionNames.split(',').map(a => collection.actions[a]) : collection.actions;
-  const eventHandlers = {};
-  _.each(actions, (action) => {
-    eventHandlers[`click .js-${action.name}.${collection._name},.${collection._name} .js-${action.name}`] = function (event, instance) {
-      // TODO should copy all data-* atts over in one generic call
-      const id = $(event.target).closest('[data-id]').data('id');
-      const doc = id ? collection.findOne(id) : undefined;
-      const entity = $(event.target).closest('[data-entity]').data('entity');
-      const txdef = $(event.target).closest('[data-txdef]').data('txdef');
-      const status = $(event.target).closest('[data-status]').data('status');
-      const options = {
-        entity: entity && collection.entities[entity],
-        txdef: txdef && Txdefs.findOne(txdef),
-        status: doc && status && doc.statusObject(status),
-      };
-      action(options, doc).run(event, instance);
-    };
-  });
-  return eventHandlers;
-}
-
-//---------------------------------------------------------------------------
-
-class ActionOptions {
+export class ActionOptions {
   constructor(collection) {
     this.collection = collection;
   }
@@ -88,6 +60,35 @@ class ActionOptions {
 }
 
 //---------------------------------------------------------------------------
+// Apply these event handlers to your template, if the buttons are not created as Action_button templates,
+// hence they don't have their event handlers yet
+// (like buttons in datatables, where the buttons are not templates, just simple html)
+
+// depreacted, can be removed:
+export function actionHandlers(collection, actionNames) { 
+  const actions = actionNames ? actionNames.split(',').map(a => collection.actions[a]) : collection.actions;
+  const eventHandlers = {};
+  _.each(actions, (action) => {
+    eventHandlers[`click .js-${action.name}.${collection._name},.${collection._name} .js-${action.name}`] = function (event, instance) {
+      // TODO should copy all data-* atts over in one generic call
+      const id = $(event.target).closest('[data-id]').data('id');
+      const doc = id ? collection.findOne(id) : defaultNewDoc();
+      const entity = $(event.target).closest('[data-entity]').data('entity');
+      const txdef = $(event.target).closest('[data-txdef]').data('txdef');
+      const status = $(event.target).closest('[data-status]').data('status');
+      const options = {
+        entity: entity && collection.entities[entity],
+        txdef: txdef && Txdefs.findOne(txdef),
+        status: doc && status && doc.statusObject(status),
+      };
+      Object.setPrototypeOf(options, new ActionOptions(collection));
+      action(options, doc).run(event, instance);
+    };
+  });
+  return eventHandlers;
+}
+
+//---------------------------------------------------------------------------
 
 const buttonHelpers = {
   title() {
@@ -123,15 +124,18 @@ const buttonHelpers = {
       const collection = Mongo.Collection.get(instanceData.collection);
       instanceData.doc = collection.findOne(instanceData.doc);
     }
-    return instanceData.doc;
+    return instanceData.doc || defaultNewDoc();
   },
   getActions() {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);
     const actionFuncs = this.templateInstance.data.actions
       ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
-      : _.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block');
+      : _.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block', 'print');
     const actions = _.map(actionFuncs, a => a(this.getOptions(), this.getDoc(), Meteor.user()));
     return actions;
+  },
+  hasVisibleAction(actions) {
+    return actions.some(a => a.visible);
   },
   needsDividerAfter(action) {
     return !!action.subActions;

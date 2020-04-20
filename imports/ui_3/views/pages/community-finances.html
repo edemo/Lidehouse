@@ -107,7 +107,7 @@
                 <div class= "row">
 
                     <div class="col-md-3">
-                        <h1 class="m-b-xs">{{displayMoney (add (getBalance 'HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK') (getBalance 'Suppliers'))}}</h1>
+                        <h1 class="m-b-xs">{{displayMoney (add (getBalance 'HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK') (getBalance 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK'))}}</h1>
                         <h3 class="font-bold no-margins"> {{_ 'Commitments total'}}</h3>
                     </div>
 
@@ -142,7 +142,7 @@
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
-                {{>Account_history beginDate='2017-01-01' endDate='2017-01-31' accountOptions=(subAccountOptionsOf '`38') accountSelected=accountToView}}
+                {{>Account_history beginDate='2019-12-01' endDate='2019-12-31' accountOptions=(subAccountOptionsOf '`38') accountSelected=accountToView}}
             </div>
         </div>
     </div>
@@ -178,7 +178,7 @@
 
     {{#if this.DEMO}}
     {{#if currentUserHasPermission 'balances.ofAccounts'}}
-    <div class="col-md-12">
+    <!--div class="col-md-12">
         <div class="ibox ibox-dark" id='incomes-expenses-history'>
             <div class="ibox-title">
                 <h5>{{_ 'Incomes'}}/{{_ 'Expenses'}} {{_ "'s history"}}</h5>
@@ -203,7 +203,7 @@
                 {{> Disclaimer}}
             </div>
         </div>
-    </div>
+    </div-->
     {{/if}}
     {{/if}}
 

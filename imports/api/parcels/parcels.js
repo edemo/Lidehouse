@@ -31,7 +31,7 @@ Parcels.categoryValues = ['@property', '@common', '@group', '#tag'];
 Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'office', 'other'];
 
 Parcels.baseSchema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   category: { type: String, allowedValues: Parcels.categoryValues, autoform: { omit: true } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   ref: { type: String,    // 1. unique reference within a community (readable by the user)
@@ -151,14 +151,14 @@ Parcels.helpers({
   },
   payerMembership() {
     const payer = this.representor() || this.owners().fetch()[0];
-    productionAssert('err_invalidData', `Unable to pay for parcel ${this.ref} - no payer membership found`);
+    productionAssert(payer, 'err_invalidData', `Unable to pay for parcel ${this.ref} - no payer membership found`);
     return payer;
   },
   payerPartner() {
     return this.payerMembership().partner();
   },
   display() {
-    return `${this.ref || '?'} (${this.location()}) ${__(this.type)}`;
+    return `${this.ref || '?'} (${this.location()}) ${__('schemaParcels.type.' + this.type)}`;
   },
   displayName() {
     return this.location() || __(this.ref);

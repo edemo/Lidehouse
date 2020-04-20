@@ -1,14 +1,11 @@
 /* global alert */
-
-import { Template } from 'meteor/templating';
-import { Tracker } from 'meteor/tracker';
-
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { $ } from 'meteor/jquery';
 
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { remove as removeUser } from '/imports/api/users/methods.js';
@@ -50,8 +47,10 @@ Template.Profile_form.viewmodel({
     return Meteor.users.findOne({ _id: this.getUserId() });
   },
   schema() {
+    const DisabledEmailType = $.extend(true, {}, SimpleSchema.Types.Email);
+    DisabledEmailType.autoform.disabled = true;
     const profileSchema = new SimpleSchema([
-      { email: { type: String, regEx: SimpleSchema.RegEx.Email, autoform: { disabled: true } } },
+      { email: DisabledEmailType },
       Meteor.users.simpleSchema(),
     ]);
     profileSchema.i18n('schemaUsers');

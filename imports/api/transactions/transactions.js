@@ -39,7 +39,7 @@ Transactions.entrySchema = new SimpleSchema([
 ]);
 
 Transactions.coreSchema = {
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   category: { type: String, allowedValues: Transactions.categoryValues, autoform: { omit: true } },
   valueDate: { type: Date },
   amount: { type: Number, decimal: true },
@@ -221,7 +221,7 @@ Transactions.helpers({
     return sign * this.amount;
   },
   negator() {
-    const tx = JSON.parse(JSON.stringify(this));
+    const tx = Object.deepClone(this);
 //    const tx = _.extendOwn({}, this); // only available in new underscore version
 //    const tx = {}; $.extend(true, tx, this);
     Mongo.Collection.stripAdministrativeFields(tx);
@@ -455,15 +455,15 @@ function withSubs(code) {
 }
 
 function dateFilter(begin, end) {
-  return {
-    $gte: moment(begin).toDate(),
-    $lt: moment(end).add(1, 'day').toDate(),
-  };
+  const valueDate = {};
+  if (begin) valueDate.$gte = moment(begin).toDate();
+  valueDate.$lt = moment(end).add(1, 'day').toDate();
+  return valueDate;
 }
 
 Transactions.makeFilterSelector = function makeFilterSelector(params) {
   const selector = _.clone(params);
-  selector.valueDate = dateFilter(params.begin, params.end);
+  if (params.begin || params.end) selector.valueDate = dateFilter(params.begin, params.end);
   delete selector.begin; delete selector.end;
   if (params.defId) {
   } else delete selector.defId;

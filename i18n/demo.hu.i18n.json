@@ -146,6 +146,16 @@
           "1": "Elnézést kérek a lakóktól. Mienk a kutyus, nem szokott vonyítani. A nagyi sajnos három hétig kórházban, és szegény kutyus nagyon rosszul bírja az egyedüllétet.",
           "2": "Szerencsére a nagyit már hazaengedték, tegnap óta már otthon van. Úgyhogy nem lesz többet gond, és tényeg elnézést kérek mindenkitől."
         }
+      },
+      "3": {
+        "title": "Segítség a vásárlásban",
+        "text": "Kedves szomszédaim! Tudtok nekem segíteni a bevásárlással? Nem szívesen mennék le a járvány idején a boltba.",
+        "comment": {
+          "0": "Persze, Joli néni, tessék átküldeni személyes üzenetben a listát és másnap már viszem is, ami kell.",
+          "1": "Én is szívesen segítek.",
+          "2": "Nagyon köszönöm!",
+          "3": "Nem tudjátok hol lehet lázmérőt kapni? A sarki patikában kifogyott."
+        }
       }
     },
     "news": {
@@ -160,6 +170,15 @@
       "2": {
         "title": "Hasznos informáciok",
         "text": ""
+      },
+      "3": {
+        "title": "Járványhelyzet tájékoztató",
+        "text": ["Tisztelt Tulajdonosok, Lakók!",
+          "A koronavírus járvánnyal kapcsolatban házunkban az alábbi intézkedéseket vezetjük be:",
+          "- A napi rendszeres takarítás keretében a ház bejárati ajtajának kilincseit és a liftekben lévő nyomógombokat alkoholos fertőtlenítővel törli át a takarító személyzet.",
+          "- A lépcsőházi ablakokat napközben nyitva tartjuk.\n",
+          "Mindenkit kérünk, hogy fokozottan figyeljen a személyi higiénére, gyakran és alaposan mosson kezet szappannal vagy használjon alkoholos kézfertőtlenítőt, ne tartózkodjon nagyobb közösségben huzamosabb ideig, köhögéskor, tüsszentéskor használjon papírzsebkendőt és kövesse az Operatív Törzs ajánlásait.",
+          "Természetesen a társasház képviselete folyamatosan nyomon követi a járványügyi helyzettel kapcsolatos fejleményeket, figyelemmel kíséri az Operatív Törzs által kiadott közleményeket. Amennyiben bármilyen a társasházat érintő intézkedés elrendelésére kerülne sor, arról azonnal tájékoztatni fogjuk Önöket."]
       }
     },
     "vote": {
@@ -189,7 +208,7 @@
       },
       "wallColor": {
         "title": "Lépcsőház színéről",
-        "text": "Milyen színűre fessük a lépcsőház homlokzatát az augusztusi felújítás során.",
+        "text": "Milyen színűre fessük a lépcsőház homlokzatát az augusztusi felújítás során?",
         "choice": {
           "0": "semleges fehér",
           "1": "halvány rózsaszín",
@@ -204,6 +223,33 @@
       "manager": {
         "title": "Közös képviselő leváltása",
         "text": "Kerüljön kiírásra írásos szavazás vagy tartsunk rendkívüli közgyűlést ebből a célból. Kérjük azokat, akik egyetértenek a közös képviselő leváltásával, támogassák ezt a javaslatot. Amennyiben a tulajdoni hányadok legalább 10%-a támogatja ezt a javaslatot, akkor a jelenlegi közös képviselőnek kötelező ebben a kérdésben szavazást kiírni. Amennyiben erre nem kerül sor ezen szavazás sikeres lezárását követő 30 napon belül, akkor a Számvizsgáló Bizottságnak kell ugyanezt megtennie."
+      },
+      "epidemic": {
+        "title": "Üzlethelyiség bérleti díjának csökkentése",
+        "text": ["A földszinti üzlethelyiségben a cukrászda a járványra tekintettel határozatlan időre bezárt. A tulajdonos kérte a bérleti díj elengedését a kieső időszakra, tekintettel arra, hogy ha nincs bevétele, nem tudja kitermelni a bérleti díjat.",
+          "Csökkentsük-e a cukrászda üzlethelyiség bérleti díját a járvány idejére?"],
+        "choice": {
+          "0": "Igen, csökkentsük a felére (50%)",
+          "1": "Igen, engedjük el teljesen",
+          "2": "Nem, fizessen, amíg tud"
+        },
+        "comment": {
+          "0": "Szerintem érdemes csökkenteni, hogy megtartsuk a jelenlegi bérlőt, mert nehéz lesz majd új bérlőt találni a kialakuló gazdasági helyzetben.",
+          "1": "Én szeretem ezt a cukrászdát, a tulajdonos is nagyon aranyos.",
+          "2": "Ki tudja, meddig tart ez a helyzet, ha amúgy is csődbe megy, mielőtt újra kinyitna, akkor nem nyerünk vele semmit, fölöslegesen mondunk le a pénzünkről."
+        }
+      }, 
+      "promo": {
+        "title": "Bevezessük a HONLINE rendszerét a házunkba?",
+        "text": ["A járvánnyal érintett időszakban praktikus, hogy jogilag is érvényes online szavazásokat tudjunk tartani a ház ügyeiről.", 
+          "A fórumon közvetlenebbül tudjuk megbeszélni a ház ügyeit, ha pedig valami elromlik a házban, online egyből jelenthetjük a hibát a közös képviselőnek, nem kell a nyitvatartási idejéhez alkalmazkodnunk.", 
+          "A program használata egyszerű, ráadásul a koronavírus miatt most 12 hónapra ingyenes hozzáférést biztosítanak hozzá!",
+          "Nincs vesztenivalónk. Bevezessük?"],
+        "choice": {
+          "0": "Igen, támogatom!",
+          "1": "Nem, nem érdekel az online társasházkezelés",
+          "2": "Tartózkodom"
+        }
       }
     },
     "agenda": {
@@ -236,12 +282,12 @@
       },
       "10": {
         "title": "Reklám felület bérlet",
-        "text": "Holokzati felület kiadása, éves díj",
+        "text": "Homlokzati felület kiadása, éves díj",
         "partner": "Info terjesztő Kft"
       }
     },
     "ticket": {
-      "0": {
+      "lift": {
         "title": "Elromlott a lift",
         "text": "A hatodikon megállt. Semmilyen gombra nem reagál.",
         "comment": {
@@ -249,7 +295,7 @@
           "1": "Úgy néz ki egyszerűen javítható, de el kellett vinniük az elektromos panelt, csak a műhelyben tudják javítani. Sajnos így egy pár napot várnunk kell mire visszahozzák."
         }
       },
-      "1": {
+      "leak": {
         "title": "Beázik a fürdőszobám a felettem lakótól.",
         "text": "Le is omlott egy darab a mennyezetből. Még szerencse hogy nem fürödtem éppen akkor. Most lehet már nem élnék.",
         "comment": {
@@ -259,14 +305,14 @@
           "3": "A pénz is megjött. A számlát rendeztük."
         }
       },
-      "2": {
+      "blackout": {
         "title": "Áramkimaradás éjjelente",
         "text": "Harmadszor fordul elő, hogy hirtelen áramkimaradás van éjjel.",
         "comment": {
           "0": "Igen, már jelentettem az elműnek. Azt mondták utánanéznek"
         }
       },
-      "3": {
+      "plaster": {
         "title": "A lépcsőházban hullik a vakolat",
         "text": "A II. emeleti lépcsőfordulónál vettem észre.",
         "comment": {
@@ -294,5 +340,29 @@
   },
   "test": {
     "house": "Teszt ház"
+  },
+
+  "promo": {
+    "OneClickToLaunch": "Egy kattintás és kész a saját háza",
+    "InstructionsToLaunch": "Építse fel saját társasházát a HONLINE rendszerében, az alábbi 3 adat megadásával!",
+    "admin": {
+      "name": {
+        "label": "Az ön neve",
+        "placeholder": "... öntől fogják kapni a meghívót."
+      },
+      "email": {
+        "label": "Az ön email címe",
+        "placeholder": "(pl. cili@domain.hu) ... ide fogjuk kiküldeni az elkészült ház linkjét."
+      }
+    },
+    "community": {
+      "name" : {
+        "label": "A társasház neve",
+        "placeholder": "(pl. Kankalin utca 4)"
+      }
+    },
+    "parcelCount" : {
+      "label": "Hány lakás van ebben a házban? (ennyien csatlakozhatnak majd meghívóval)"
+    }
   }
 }

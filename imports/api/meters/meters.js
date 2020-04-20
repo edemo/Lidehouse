@@ -8,7 +8,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
+import { autoformOptions, imageUpload, noUpdate } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
@@ -21,14 +21,14 @@ Meters.serviceValues = ['coldWater', 'hotWater', 'electricity', 'gas', 'heating'
 Meters.readingSchema = new SimpleSchema({
   date: { type: Date },
   value: { type: Number, decimal: true },
-  photo: { type: String, optional: true, autoform: fileUpload },
+  photo: { type: String, optional: true, autoform: imageUpload },
   approved: { type: Boolean, optional: true, autoform: { omit: true }, defaultValue: true },
 });
 
 Meters.unapprovedReadingSchema = new SimpleSchema({
   date: { type: Date, autoValue: Clock.currentDate, autoform: { value: new Date(), readonly: true } },
   value: { type: Number, decimal: true },
-  photo: { type: String, optional: true, autoform: fileUpload },
+  photo: { type: String, optional: true, autoform: imageUpload },
 });
 
 // Meters.billingTypeValues = ['reading', 'estimate'];
@@ -41,7 +41,7 @@ Meters.billingSchema = new SimpleSchema({
 });
 
 Meters.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   identifier: { type: String },
   service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },

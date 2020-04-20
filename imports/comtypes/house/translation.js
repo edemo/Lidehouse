@@ -26,7 +26,7 @@ export const HouseTranslation = {
       },
       "avatar": {
         "label": "Image",
-        "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
       },
       "zip": {
         "label": "Zip code",
@@ -68,6 +68,16 @@ export const HouseTranslation = {
       },
       "settings": {
         "label": "Settings",
+        "modules": {
+          "label": "Modules activated",
+          "options": {
+            "forum": "Forum",
+            "voting": "Decsion making",
+            "maintenance": "Maintenance",
+            "finances": "Finaces",
+            "documents": "Documentstore"
+          }
+        },
         "joinable": {
           "label": "Accepts join requests",
           "help": "If you are not providing all parcel owner's data yourself, and you'd like them to be able to join the community, providing their own data, allow this option. Before approving a join request, you can still edit the submitted data.",
@@ -169,6 +179,10 @@ export const HouseTranslation = {
         "label": "Volume (m3)",
         "placeholder": "(eg. 142)"
       },
+      "habitants": {
+        "label": "Habitants",
+        "placeholder": "(eg. 4)"
+      },
       "occupants": {
         "label": "Occupants"
       },
@@ -260,6 +274,16 @@ export const HouseTranslation = {
       },
       "settings": {
         "label": "Beállítások",
+        "modules": {
+          "label": "Modulok aktiválva",
+          "options": {
+            "forum": "Fórum",
+            "voting": "Döntéshozás",
+            "maintenance": "Üzemeltetés",
+            "finances": "Pénzügyek",
+            "documents": "Dokumentumtár"
+          }
+        },
         "joinable": {
           "label": "Csatlakozási kérelmeket fogad",
           "help": "Ha nem ön viszi fel az összes tulajdonosi adatot, hanem szeretné engedni hogy a tulajdonosok maguktól, adataik megadásával csatlakozzanak, akkor engedélyezze. A csatlakozási kérelemben megadott albetét adatokat ön tudja még módosítani, mielőtt jóváhagyja azokat."
@@ -360,6 +384,9 @@ export const HouseTranslation = {
       "volume": {
         "label": "Légköbméter (m3)",
         "placeholder": "(pl. 142)"
+      },
+      "habitants": {
+        "label": "Lakók száma (fő)"
       },
       "occupants": {
         "label": "Birtokosok"

@@ -1,17 +1,16 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
+import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
-import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Partners } from './partners.js';
 import './methods.js';
 
 Partners.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     color: 'primary',
@@ -20,6 +19,7 @@ Partners.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.partner.insert',
         collection: Partners,
+        doc,
         type: 'method',
         meteormethod: 'partners.insert',
       });
@@ -63,12 +63,16 @@ Partners.actions = {
     name: 'remindOutstandings',
     color: doc.mostOverdueDaysColor(),
     icon: 'fa fa-exclamation',
-    visible: user.hasPermission('partners.remindOutstandings', doc) && doc.mostOverdueDays(),
+    visible: user.hasPermission('partners.remindOutstandings', doc) && (doc.relation !== 'supplier') && doc.mostOverdueDays(),
     run() {
-      Modal.confirmAndCall(Partners.methods.remindOutstandings, { _id: doc._id }, {
-        action: 'remind outstandings',
-        message: __('Sending outstandings reminder', doc.primaryEmail() || __('undefined')),
-      });
+      if ((!doc.contact || !doc.contact.email) && !doc.userId) {
+        displayMessage('warning', 'No contact email set for this partner');
+      } else {
+        Modal.confirmAndCall(Partners.methods.remindOutstandings, { _id: doc._id }, {
+          action: 'remind outstandings',
+          message: __('Sending outstandings reminder', doc.displayName() || __('undefined')),
+        });
+      }
     },
   }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
@@ -89,9 +93,3 @@ Partners.actions = {
 AutoForm.addModalHooks('af.partner.insert');
 AutoForm.addModalHooks('af.partner.update');
 
-AutoForm.addHooks('af.partner.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});

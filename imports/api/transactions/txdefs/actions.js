@@ -4,12 +4,12 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Txdefs } from './txdefs.js';
 import './methods.js';
 
 Txdefs.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
+  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
     icon: 'fa fa-plus',
     color: 'primary',
@@ -19,6 +19,7 @@ Txdefs.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.txdef.insert',
         collection: Txdefs,
+        doc,
         type: 'method',
         meteormethod: 'txdefs.insert',
       });
@@ -56,10 +57,4 @@ Txdefs.actions = {
 AutoForm.addModalHooks('af.txdef.insert');
 AutoForm.addModalHooks('af.txdef.update');
 
-AutoForm.addHooks('af.txdef.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});
 
