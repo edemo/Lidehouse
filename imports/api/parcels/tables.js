@@ -35,7 +35,13 @@ if (Meteor.isClient) {
   printButton(window, $);
 }
 
-/*
+function handlingRemove(view, cell) {
+  $(cell).on('remove', function () {
+    Blaze.remove(view);
+  });
+  return view;
+}
+
 export function parcelColumns() {
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
@@ -47,12 +53,11 @@ export function parcelColumns() {
     { data: 'units', title: __('schemaParcels.units.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'parcels', actions: 'view,edit,occupants,meters,delete', size: 'sm' }, cell),
+      createdCell: (cell, cellData, rowData) => handlingRemove(Blaze.renderWithData(Template.Action_buttons_group,
+      { doc: cellData, collection: 'parcels', actions: 'view,edit,occupants,meters,delete', size: 'sm' }, cell), cell),
     },
   ];
 }
-*/
 
 export function localizerColumns() {
   return [
