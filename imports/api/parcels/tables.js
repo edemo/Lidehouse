@@ -42,6 +42,7 @@ function handlingRemove(view, cell) {
   return view;
 }
 
+/*
 export function parcelColumns() {
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
@@ -58,6 +59,7 @@ export function parcelColumns() {
     },
   ];
 }
+*/
 
 export function localizerColumns() {
   return [
