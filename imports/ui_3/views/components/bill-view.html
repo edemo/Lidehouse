@@ -130,7 +130,7 @@
 
     <div class="text-right" data-id="{{doc._id}}">
       {{>Action_buttons_group collection='transactions' doc=doc actions='edit,post,registerPayment' size='xl'}}
-      {{>Print_Button size="xl"}}
+        {{>Action_button action=print size='xl'}}
     </div>
 
     {{#if doc.note}}
