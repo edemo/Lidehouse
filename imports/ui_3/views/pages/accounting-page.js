@@ -18,8 +18,8 @@ Template.Accounting_page.viewmodel({
       const communityId = this.communityId();
       instance.subscribe('partners.inCommunity', { communityId });
       instance.subscribe('contracts.inCommunity', { communityId });
-      instance.subscribe('transactions.outstanding', { communityId });
-      instance.subscribe('transactions.unreconciled', { communityId });
+//      instance.subscribe('transactions.outstanding', { communityId });
+//      instance.subscribe('transactions.unreconciled', { communityId });
       instance.subscribe('statementEntries.unreconciled', { communityId });
     });
   },

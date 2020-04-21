@@ -5,6 +5,8 @@ import { Session } from 'meteor/session';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { __ } from '/imports/localization/i18n.js';
+import { $ } from 'meteor/jquery';
 
 import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import '/imports/api/communities/actions.js';
@@ -51,7 +53,7 @@ Template.Promotion.viewmodel({
 
 const schemaQuickCommunityLaunch = new SimpleSchema({
   admin: { type: Object },
-  'admin.email': SimpleSchema.Types.Email,
+  'admin.email': $.extend(true, {}, SimpleSchema.Types.Email),
   community: { type: Object },
   'community.name': { type: String, max: 100 },
   parcelCount: { type: Number, max: 1000, optional: true, defaultValue: 100 },
@@ -73,7 +75,7 @@ Template.Promotion.events({
       Modal.show('Autoform_modal', {
         body: 'Quick_community_launch',
         id: 'af.community.launch',
-        title: instance.viewmodel.message().header,
+        title: __('promo.OneClickToLaunch'),
         schema: schemaQuickCommunityLaunch,
         doc: {
           parcelCount: 100,
@@ -81,8 +83,9 @@ Template.Promotion.events({
         type: 'normal',
         size: 'md',
         btnOK: 'Ház elkészítése',
-       // btnClose: 'Maybe later',
+        btnClose: '-',
       });
+      if (fbq) fbq('track', 'AddToCart');
     } else { // The promo code is a communityId into which the user was invited
       window.open(`https://honline.hu/community/${promoCode}/join?demouser=out`, '_blank');
     }

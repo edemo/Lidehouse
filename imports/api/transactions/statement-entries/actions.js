@@ -81,6 +81,7 @@ StatementEntries.actions = {
       .map(txdef => StatementEntries.actions.reconcile({ txdef }, doc, user)),
     run() {
       const insertTx = {
+        // triggers some 'SimpleSchema.clean: filtered out value' because we dont't switch on category
         amount: Math.abs(doc.amount),  // payment
         lines: [{ quantity: 1, unitPrice: Math.abs(doc.amount) }],  // receipt
         partnerName: doc.name, // receipt
