@@ -290,6 +290,9 @@ Meteor.users.helpers({
   isUnapprovedInCommunity(communityId) {
     return !!Memberships.findOne({ communityId, approved: false, userId: this._id });
   },
+  hasJoinedCommunity(communityId) {
+    return !!Memberships.findOne({ communityId, userId: this._id });
+  },
   // Voting
   votingUnits(communityId) {
     let sum = 0;

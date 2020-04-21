@@ -17,15 +17,17 @@
                     <tr>
                         <td class="alert alert-{{alert}}">
                             {{{subject type user community}}}
+                        </td>
+                    </tr>
+                    {{#if header}}
+                    <tr>
+                        <td class="content aligncenter" style="padding-bottom: 0">
                             <p><small>{{{_ 'email.DontReplyToThis'}}}</small>
-                            {{#if header}}<small>{{{_ (concat 'email.' header)}}}</small>{{/if}}
+                            <small>{{{_ (concat 'email.' header)}}}</small>
                             </p>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                        </td>
-                    </tr>
+                    {{/if}}
                     <tr>
                         <td class="content-wrap">
                             <table width="100%" cellpadding="0" cellspacing="0">

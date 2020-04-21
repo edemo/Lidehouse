@@ -48,6 +48,7 @@ const extensionSchema = {
   valueDate: { type: Date },  // same as Tx, but we need the readonly added
   amount: { type: Number, decimal: true },  // same as Tx, but we need the readonly added
   payAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
+  remission: { type: Boolean, optional: true },
 };
 _.each(extensionSchema, val => val.autoform = _.extend({}, val.autoform, { readonly() { return !!Session.get('modalContext').statementEntry; } }));
 Payments.extensionSchema = new SimpleSchema(extensionSchema);

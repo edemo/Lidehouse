@@ -344,7 +344,6 @@
   "promo": {
     "OneClickToLaunch": "One click and your demo house is ready",
     "InstructionsToLaunch": "We create a house for you, and you can invite your neighbours into it",
-    "InstructionsToJoin": "Your community has been created, and is waiting for you to cast your first vote",    
     "admin": {
       "name": {
         "label": "Your name"

@@ -3,8 +3,11 @@
         <tbody>    
             <tr>
                 <td class="project-title">
-                    {{{_ 'email.PromoInviteLinkContent' inviteLink=inviteLink}}}
+                    {{{_ 'email.PromoInviteLinkContent1'}}}
+                    <p><a href={{inviteLink}}>{{inviteLink}}</a></p>
+                    {{{_ 'email.PromoInviteLinkContent2'}}}
                     <br>
+                    {{{_ 'email.DontReplyToThis'}}}
                     {{{_ 'email.PromoSignature'}}}
                 </td>
             </tr>

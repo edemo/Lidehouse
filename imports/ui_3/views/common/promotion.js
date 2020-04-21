@@ -1,17 +1,14 @@
+/* globals window, fbq */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { $ } from 'meteor/jquery';
-import { _ } from 'meteor/underscore';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { AccountsTemplates } from 'meteor/useraccounts:core';
-
-import { displayError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { __ } from '/imports/localization/i18n.js';
-import { Communities } from '/imports/api/communities/communities.js';
+import { $ } from 'meteor/jquery';
+
+import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import '/imports/api/communities/actions.js';
 
 import './promotion.html';
@@ -44,11 +41,11 @@ Template.Promotion.viewmodel({
       };
     } else { // The promo code is s communityId thtat invites the user
       return {
-        header: 'A saját háza is már várja!',
-        details1: 'Elkészült a saját háza is',
-        details2: 'amibe bármikor bejelentkezhet',
-        callToAction: 'Bejelentkezek a házamba',
-        details3: 'Lakótársai már várják önt.',
+        header: 'Az Ön társasházát',
+        details1: 'egy lakótársa már létrehozta a honline',
+        details2: 'rendszerében, sőt egy szavazást is kiírt!',
+        callToAction: 'Belépek a saját házunkba',
+        details3: 'Lépjen be a házba és vegye birtokba lakását!',
       };
     }
   },
@@ -56,7 +53,7 @@ Template.Promotion.viewmodel({
 
 const schemaQuickCommunityLaunch = new SimpleSchema({
   admin: { type: Object },
-  'admin.email': SimpleSchema.Types.Email,
+  'admin.email': $.extend(true, {}, SimpleSchema.Types.Email),
   community: { type: Object },
   'community.name': { type: String, max: 100 },
   parcelCount: { type: Number, max: 1000, optional: true, defaultValue: 100 },
@@ -78,7 +75,7 @@ Template.Promotion.events({
       Modal.show('Autoform_modal', {
         body: 'Quick_community_launch',
         id: 'af.community.launch',
-        title: instance.viewmodel.message().header,
+        title: __('promo.OneClickToLaunch'),
         schema: schemaQuickCommunityLaunch,
         doc: {
           parcelCount: 100,
@@ -86,21 +83,11 @@ Template.Promotion.events({
         type: 'normal',
         size: 'md',
         btnOK: 'Ház elkészítése',
-       // btnClose: 'Maybe later',
+        btnClose: '-',
       });
+      if (fbq) fbq('track', 'AddToCart');
     } else { // The promo code is a communityId into which the user was invited
-      Modal.show('Modal', {
-        id: 'join-community',
-        title: instance.viewmodel.message().header,
-        text: __('promo.InstructionsToJoin'),
-        btnOK: 'Belépés a saját házba',
-        onOK() {
-          Session.set('promo');
-          window.open(`https://honline.hu/community/${promoCode}/join?demouser=out`, '_blank');
-//          FlowRouter.go('Community join', { _cid: promoCode }, { demouser: 'out' });
-        },
-        // btnClose: 'Maybe later',
-      });
+      window.open(`https://honline.hu/community/${promoCode}/join?demouser=out`, '_blank');
     }
   },
 });
@@ -122,9 +109,11 @@ AutoForm.addHooks('af.community.launch', {
           Modal.show('Modal', {
             title: 'GRATULÁLUNK',
             text: `Az ön háza elkészült!<br><br>
-              A házhoz tartozó linket és a beköltözéshez szükséges információkat elküldtük a megadott e-mail címre!`,
+              A házhoz tartozó aktiváló linket és a beköltözéshez szükséges információkat elküldtük a megadott e-mail címre.<br>
+              Ha nem találja levelünket a bejövő email-ek között, nézze meg a Promóciók mappában.`,
             btnOK: 'OK',
           });
+          if (fbq) fbq('track', 'CompleteRegistration');
         }, 1000);
       })
     );

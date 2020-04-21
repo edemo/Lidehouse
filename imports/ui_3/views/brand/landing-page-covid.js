@@ -1,3 +1,4 @@
+/* globals fbq */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
@@ -5,11 +6,11 @@ import { $ } from 'meteor/jquery';
 
 import './landing-page-covid.html';
 
-Template.Landing_page_covid.onRendered(function(){
+Template.Landing_page_covid.onRendered(function onRendered() {
   $('body').addClass('landing-page');
 });
 
-Template.Landing_page_covid.onDestroyed(function() {
+Template.Landing_page_covid.onDestroyed(function onDestroyed() {
   $('body').removeClass('landing-page');
 });
 
@@ -26,4 +27,7 @@ Template.Landing_page_covid.helpers({
 });
 
 Template.Landing_page_covid.events({
+  'click .call-to-action'(event) {
+    if (fbq) fbq('track', 'Lead');
+  },
 });
