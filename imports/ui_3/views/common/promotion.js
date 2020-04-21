@@ -83,7 +83,7 @@ Template.Promotion.events({
         type: 'normal',
         size: 'md',
         btnOK: 'Ház elkészítése',
-       // btnClose: 'Maybe later',
+        btnClose: '-',
       });
       if (fbq) fbq('track', 'AddToCart');
     } else { // The promo code is a communityId into which the user was invited
