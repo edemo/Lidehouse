@@ -259,4 +259,5 @@ Template.Community_page.events({
     const community = Communities.findOne(communityId);
     Communities.actions.join({}, community).run(event, instance);
   },
+  ...(actionHandlers(Communities, 'delete')),
 });

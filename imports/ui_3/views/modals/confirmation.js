@@ -10,6 +10,13 @@ import '/imports/ui_3/views/modals/modal-guard.js';
 
 import './confirmation.html';
 
+Template.Confirmation.helpers({
+  okButtonText(action) {
+    if (action.split(' ')[0] === 'delete') return __('delete');
+    return __('ok');
+  },
+});
+
 Template.Confirmation.events({
   'click #btn-ok'(event, instance) {
     instance.data.onOK.call();
