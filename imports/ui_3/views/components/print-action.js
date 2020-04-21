@@ -2,7 +2,6 @@ import { Template } from 'meteor/templating';
 import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { $ } from 'meteor/jquery';
-import './print-action.html';
 
 Template.registerHelper('print', function print() {
   return {
