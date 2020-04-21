@@ -351,8 +351,8 @@
         "placeholder": "... öntől fogják kapni a meghívót."
       },
       "email": {
-        "label": "Az ön email címe",
-        "placeholder": "(pl. cili@domain.hu) ... ide fogjuk kiküldeni az elkészült ház linkjét."
+        "label": "Az ön email címe (ide fogjuk küldeni az elkészült ház linkjét)",
+        "placeholder": "(pl. tibi45@domain.hu)"
       }
     },
     "community": {
