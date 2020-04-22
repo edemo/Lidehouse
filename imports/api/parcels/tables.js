@@ -35,6 +35,7 @@ if (Meteor.isClient) {
   printButton(window, $);
 }
 
+/*
 function handlingRemove(view, cell) {
   $(cell).on('remove', function () {
     Blaze.remove(view);
@@ -42,7 +43,7 @@ function handlingRemove(view, cell) {
   return view;
 }
 
-/*
+
 export function parcelColumns() {
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
@@ -60,6 +61,7 @@ export function parcelColumns() {
   ];
 }
 */
+
 
 export function localizerColumns() {
   return [
@@ -104,7 +106,7 @@ const parcelColumns = [
   { data: 'type', titleFn: () => __('schemaParcels.type.label'), render: Meteor.isClient && Render.translateWithScope('schemaParcels.type') },
   { data: 'lot', titleFn: () => __('schemaParcels.lot.label') },
   { data: 'area', titleFn: () => 'm2' },
-  { data: 'share()', titleFn: () => __('schemaParcels.units.label') },
+  { data: 'units', titleFn: () => __('schemaParcels.units.label') },
   { data: 'occupants()', titleFn: () => __('occupants'), render: Meteor.isClient && Render.joinOccupants },
   { tmpl: Meteor.isClient && Template.Action_buttons_group, titleFn: () => __('Action buttons'),
     tmplContext: rowData => ({
