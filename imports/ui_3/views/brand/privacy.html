@@ -1,5 +1,5 @@
 <template name="Privacy_page">
-  {{#if (fromSettings 'deployment')}}
+  {{#if (equals (fromSettings 'deployment') 'marina')}}
   {{> Privacy_local}}
   {{else}}
   {{> Privacy_generic}}

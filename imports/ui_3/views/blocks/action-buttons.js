@@ -130,7 +130,7 @@ const buttonHelpers = {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);
     const actionFuncs = this.templateInstance.data.actions
       ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
-      : _.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block', 'print');
+      : _.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block');
     const actions = _.map(actionFuncs, a => a(this.getOptions(), this.getDoc(), Meteor.user()));
     return actions;
   },
@@ -164,7 +164,6 @@ const buttonHelpers = {
 Template.Action_button.viewmodel(buttonHelpers);
 Template.Action_sub_actions_button.viewmodel(buttonHelpers);
 Template.Action_buttons_group.viewmodel(buttonHelpers);
-
 Template.Action_button.events({
   // This can be used most of the time to handle the click event - except when we are unable to render a proper template (like into a jquery cell).
   'click .btn'(event, instance) {

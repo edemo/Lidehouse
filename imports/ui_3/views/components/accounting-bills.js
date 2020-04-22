@@ -25,6 +25,7 @@ import '/imports/ui_3/views/components/bill-view.js';
 import '/imports/ui_3/views/components/bill-edit.js';
 import '/imports/ui_3/views/components/payment-view.js';
 import '/imports/ui_3/views/components/payment-edit.js';
+import '/imports/ui_3/views/components/print-action.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
 import '/imports/ui_3/views/modals/confirmation.js';
