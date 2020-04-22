@@ -39,6 +39,13 @@ Template.ReactiveDatatable.rendered = function() {
     });
 
   this.autorun(function() {
+    dt.cells().every( function () {
+      const nodeData = $(this.node()).data();
+      if (!_.isEmpty(nodeData)) {
+        Blaze.remove(nodeData.view);
+        $(this.node()).removeData('view');
+      }
+    });
     reactiveDataTable.update(data.tableData());
   });
 };
