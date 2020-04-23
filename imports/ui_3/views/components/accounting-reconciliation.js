@@ -71,8 +71,10 @@ Template.Accounting_reconciliation.viewmodel({
     const selector = { 
       communityId: getActiveCommunityId(),
       account: this.accountSelected(),
-//      valueDate: { $gte: this.beginDate(), $lte: this.endDate() },
+      valueDate: {},
     };
+    if (this.beginDate()) selector.valueDate.$gte = new Date(this.beginDate());
+    if (this.endDate()) selector.valueDate.$lte = new Date(this.endDate());
     if (this.unreconciledOnly()) selector.txId = { $exists: false };
     return selector;
   },
