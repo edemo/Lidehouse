@@ -30,3 +30,13 @@ ReactiveDatatable.prototype.update = function(data) {
 		.page(self.page || 0) // XXX: Can we avoid drawing twice?
 		.draw(false);		  // I couldn't get the page drawing to work otherwise
 };
+
+ReactiveDatatable.prototype.cleanup = function() {
+  this.datatable.cells().every( function () {
+    const nodeData = $(this.node()).data();
+    if (!_.isEmpty(nodeData)) {
+      Blaze.remove(nodeData.view);
+      $(this.node()).removeData('view');
+    }
+  });
+}
