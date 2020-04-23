@@ -23,6 +23,8 @@ Template.ReactiveDatatable.rendered = function() {
     var tableClasses = options.tableClasses || "";
     table.className = 'table dataTable ' + tableClasses;
 
+    options.deferRender = true;
+
     var wrapper = document.createElement('div');
 //    wrapper.id = "wrapper_" + Math.floor(Math.random()*1000);   // just to prove Blaze doesnt replace it
     wrapper.className = 'datatable_wrapper';
