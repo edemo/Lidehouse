@@ -27,7 +27,7 @@ if (Meteor.isServer) {
   let Fixture;
 
   describe('Notifications', function () {
-    this.timeout(15000);
+    this.timeout(150000);
     let topicId;
     let ticketId;
     let demoCommunity;
@@ -279,8 +279,8 @@ if (Meteor.isServer) {
         Communities.methods.launch._execute({}, { community, admin, promoCode });
         sinon.assert.calledOnce(EmailSender.send);
         sinon.assert.calledWithMatch(EmailSender.send, { to: admin.email });
-        sinon.assert.calledWithMatch(EmailSender.send, { template: 'Promo_Email' });
-        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ emailParams: { communityName: 'Promo house', promoCode: 'covid', loginEmail: admin.email } }) });
+        sinon.assert.calledWithMatch(EmailSender.send, { template: 'Promo_Invite_Link' });
+        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ community }) });
       });
     });
   });
