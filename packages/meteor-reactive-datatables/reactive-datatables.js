@@ -19,6 +19,12 @@ ReactiveDatatable = function(options) {
 	});
 };
 
+ReactiveDatatable.renderWithData = function(...params) {
+  const view = Blaze.renderWithData(...params);
+  const cell = params.pop();
+  $(cell).data('view', view);
+}
+
 ReactiveDatatable.prototype.update = function(data) {
 	if (!data) return;
 	var self = this;
