@@ -19,6 +19,12 @@ ReactiveDatatable = function(options) {
 	});
 };
 
+ReactiveDatatable.renderWithData = function(...params) {
+  const view = Blaze.renderWithData(...params);
+  const cell = params.pop();
+  $(cell).data('view', view);
+}
+
 ReactiveDatatable.prototype.update = function(data) {
 	if (!data) return;
 	var self = this;
@@ -30,3 +36,13 @@ ReactiveDatatable.prototype.update = function(data) {
 		.page(self.page || 0) // XXX: Can we avoid drawing twice?
 		.draw(false);		  // I couldn't get the page drawing to work otherwise
 };
+
+ReactiveDatatable.prototype.cleanup = function() {
+  this.datatable.cells().every( function () {
+    const nodeData = $(this.node()).data();
+    if (!_.isEmpty(nodeData)) {
+      Blaze.remove(nodeData.view);
+      $(this.node()).removeData('view');
+    }
+  });
+}

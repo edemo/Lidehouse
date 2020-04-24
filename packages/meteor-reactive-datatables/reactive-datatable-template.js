@@ -1,3 +1,4 @@
+
 Template.ReactiveDatatable.rendered = function() {
   var data = this.data;
   var options = data.options();
@@ -22,6 +23,8 @@ Template.ReactiveDatatable.rendered = function() {
     var tableClasses = options.tableClasses || "";
     table.className = 'table dataTable ' + tableClasses;
 
+    options.deferRender = true;
+
     var wrapper = document.createElement('div');
 //    wrapper.id = "wrapper_" + Math.floor(Math.random()*1000);   // just to prove Blaze doesnt replace it
     wrapper.className = 'datatable_wrapper';
@@ -38,7 +41,21 @@ Template.ReactiveDatatable.rendered = function() {
         reactiveDataTable.page = info.page;
     });
 
+    // This code helps to stop event bubbling on dataTable buttons, so it doesn't select the row after button click
+    // Classic event.stopPropagation() on button doesn't work, cause the table immediately gets the click event
+    // ref: https://datatables.net/reference/event/user-select
+    dt.on('user-select', function( e, dt, type, cell, originalEvent) {
+      if ($(originalEvent.target).closest('.btn').length) e.preventDefault();
+    });
+
+  this.reactiveDataTable = reactiveDataTable;
+
   this.autorun(function() {
+    reactiveDataTable.cleanup();
     reactiveDataTable.update(data.tableData());
   });
 };
+
+Template.ReactiveDatatable.onDestroyed(function () {
+  this.reactiveDataTable.cleanup();
+});

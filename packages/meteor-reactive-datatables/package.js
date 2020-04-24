@@ -18,5 +18,6 @@ Package.onUse(function(api) {
   	'reactive-datatable-template.html',
   	'reactive-datatable-template.js',
   ], 'client');
+  api.export('ReactiveDatatable', 'client');
   api.export('datatables_i18n');
 });

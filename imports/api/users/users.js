@@ -150,6 +150,13 @@ Meteor.users.publicFields = {
   flags: 1,
 };
 
+Meteor.users.detailedFields = _.extend({
+  emails: 1,
+  services: 1,
+}, Meteor.users.publicFields
+);
+
+
 Meteor.startup(function indexMeteorUsers() {
   if (Meteor.isServer) {
     Meteor.users._ensureIndex({ 'emails.0.address': 1 });
@@ -178,7 +185,7 @@ export function initialUsername(user) {
 
 Meteor.users.helpers({
   isVerified() {
-    debugAssert(Meteor.isServer, 'Email addresses of users are not sent to the clients');
+//    debugAssert(Meteor.isServer, 'Email addresses of users are not sent to the clients');
     if (this.emails) return this.emails[0].verified;
     else if (this.services && Object.values(this.services).length > 0) return true;
     return false;

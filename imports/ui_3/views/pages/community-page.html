@@ -6,7 +6,9 @@
                 {{#each doc in roleships}}
                     <tr data-id="{{doc._id}}">
                         <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-avatar"><img alt="image" src={{doc.partner.avatar}}></a></td>
-                        <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-link">{{doc.partner.displayName}}</a></td>
+                        <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-link">{{doc.partner.displayName}}</a>
+                            {{>Action_buttons_group collection='partners' doc=doc.partnerId actions='view,edit' size='sm'}}
+                        </td>
                         <td><span class="label label-plain">{{_ doc.role}}</span> 
                             {{#if doc.rank}}<span class="label label-plain">{{_ (concat 'schemaMemberships.rank.' doc.rank)}}</span>{{/if}}
                         </td>
@@ -22,7 +24,7 @@
                             {{/if}}
                         </td>
                         <td class="text-right">
-                            {{>Action_buttons_group collection='memberships' doc=doc actions='edit,invite,delete' size='lg'}}
+                            {{>Action_buttons_group collection='memberships' doc=doc actions='edit,invite,period,delete' size='lg'}}
                         </td>
                     </tr>
                 {{/each}}

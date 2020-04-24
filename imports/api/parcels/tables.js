@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { $ } from 'meteor/jquery';
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
+import { ReactiveDatatable } from 'meteor/ephemer:reactive-datatables';
 //import Tabular from 'meteor/aldeed:tabular';
 //import { TAPi18n } from 'meteor/tap:i18n';
 //import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
@@ -24,7 +25,7 @@ export function parcelColumns() {
     { data: 'units', title: __('schemaParcels.units.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'view,edit,occupants,meters,delete', size: 'sm' }, cell),
     },
   ];

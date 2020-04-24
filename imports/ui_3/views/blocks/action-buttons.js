@@ -122,7 +122,9 @@ const buttonHelpers = {
     const instanceData = this.templateInstance.data;
     if (typeof instanceData.doc === 'string') {
       const collection = Mongo.Collection.get(instanceData.collection);
-      instanceData.doc = collection.findOne(instanceData.doc);
+      const doc = collection.findOne(instanceData.doc);
+      if (doc) instanceData.doc = doc;
+      return instanceData.doc;
     }
     return instanceData.doc || defaultNewDoc();
   },

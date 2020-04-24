@@ -27,7 +27,7 @@ if (Meteor.isServer) {
   let Fixture;
 
   describe('Notifications', function () {
-    this.timeout(15000);
+    this.timeout(150000);
     let topicId;
     let ticketId;
     let demoCommunity;
@@ -296,6 +296,7 @@ if (Meteor.isServer) {
         sinon.assert.calledOnce(EmailSender.send);
         sinon.assert.calledWithMatch(EmailSender.send, { to: admin.email });
         sinon.assert.calledWithMatch(EmailSender.send, { template: 'Promo_Invite_Link' });
+        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ community }) });
       });
     });
   });
