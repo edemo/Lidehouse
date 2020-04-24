@@ -377,6 +377,7 @@ if (Meteor.isServer) {
 
         it('[4] user accepts enrollment (and verifies account)', function (done) {
           Memberships.methods.accept._execute({ userId });
+          Meteor.users.update(userId, { $set: { 'emails.0.verified': true } });
 
           const membership = Memberships.findOne(membershipId);
           chai.assert.isDefined(membership.partner().userId);
@@ -400,7 +401,15 @@ if (Meteor.isServer) {
           sinon.assert.calledTwice(Email.send); // no further emails sent
 
           const membership3 = Memberships.findOne(membershipId3);
-          // TODO: chai.assert.isTrue(membership3.accepted);    // what makes him into accepted state, should we send him a noti, which he approves with a click, or by not objecting to it?
+
+          Memberships.methods.linkUser._execute({ userId: Fixture.demoAdminId }, { _id: membershipId3 });
+          sinon.assert.calledThrice(Email.send); // user is notified about the new role
+          const emailOptions = Email.send.getCall(2).args[0];
+          chai.assert.equal(emailOptions.to, user.getPrimaryEmail());
+          chai.assert.match(emailOptions.text, /treasurer/);
+
+          // what makes him into accepted state, should we send him a noti, which he approves with a click, or by not objecting to it?
+          chai.assert.isFalse(membership3.accepted);
 
           done();
         });
