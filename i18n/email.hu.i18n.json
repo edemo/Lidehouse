@@ -2,7 +2,7 @@
   "email": {
     "EnrollAccountSubject": "Meghívó a __name__ honline rendszerének használatához (Enrollment to __name__'s honline system)",
     "EnrollAccount": [
-      "A __name__ társasház honlapjának adminisztrátora meghívja Önt a közösség honline rendszerébe, mint __role__t.\n",
+      "A __name__ társasház honlapjának adminisztrátora meghívja Önt a közösség honline rendszerébe, mint __role__.\n",
       "Ha elfogadja ezt a meghívást, akkor mostantól online",
       "- nyomon követheti a társasházi eseményeket és pénzügyeket,",
       "- megvitathatja az aktuális kérdéseket és szavazhat róluk,",
@@ -27,7 +27,7 @@
       "\n__url__\n",
       "Üdvözlettel, \nA Honline Csapata"],
 
-    "AddedToRole": ["A __name__ társasház honlapjának adminisztrátora felvette Önt a közösség honline rendszerébe, mint __role__t.",
+    "AddedToRole": ["A __name__ társasház honlapjának adminisztrátora felvette Önt a közösség honline rendszerébe, mint __role__.",
       "Az alábbi linken keresheti fel a közösséget: __link__",
       "\nHa úgy véli, tévedésből kapta ezt az e-mailt vagy nem kíván a közösséghez csatlakozni, akkor vegye fel a kapcsolatot a ház  adminisztrátorával a(z) __email__ e-mail címen.",
       "\nÜdvözlettel, \nA Honline Csapata"],

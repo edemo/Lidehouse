@@ -88,7 +88,7 @@ Memberships.actions = {
   }),
   invite: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'invite',
-    label: doc.userId ? 'link' : 'invite',
+    label: !doc.userId ? 'invite' : (doc.user().isVerified() ? 'link' : 'reinvite'),
     icon: 'fa fa-user-plus',
     color: doc.userId ? 'info' : 'warning',
     visible: user.hasPermission(`${doc.entityName()}.update`, doc) && !doc.accepted,
@@ -99,7 +99,7 @@ Memberships.actions = {
       if (!doc.userId && !email) {
         displayMessage('warning', 'No contact email set for this partner');
       } else {
-        const message = doc.userId ? __('Reconnecting user') : __('Connecting user', email);
+        const message = !doc.userId ? __('Connecting user', email) : (doc.user().isVerified() ? __('Linking user') : __('Reconnecting user'));
         Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, { action, message });
       }
     },
