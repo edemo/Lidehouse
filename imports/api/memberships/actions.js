@@ -59,6 +59,7 @@ Memberships.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
+    color: !doc.approved ? 'danger' : '',
     visible: user.hasPermission(`${doc.entityName()}.update`, doc),
     run() {
       const entity = Memberships.entities[doc.entityName()];

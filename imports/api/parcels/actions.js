@@ -125,6 +125,7 @@ Parcels.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
+    color: !doc.approved ? 'danger' : '',
     visible: user.hasPermission('parcels.update', doc),
     run() {
       const entity = Parcels.entities[doc.entityName()];
