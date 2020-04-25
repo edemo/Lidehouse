@@ -66,19 +66,18 @@ const hooks = {};
 // Hooking into find and findOne did not work, because update and remove calls find and so it was not possible to
 // remove non-active docs, only with direct.remove, which then doesn't perform other hooks that might be needed
 
-const staticHelpers = {
-  findActive(selector, options) {
-    if (!selector.active && !selector.activeTime) {
-      _.extend(selector, ActiveTimeMachine.selector());
-    }
-    return this.find(selector, options);
-  },
-  findOneActive(selector, options) {
-    if (!selector.active && !selector.activeTime) {
-      _.extend(selector, ActiveTimeMachine.selector());
-    }
-    return this.findOne(selector, options);
-  },
+Mongo.Collection.prototype.findActive = function findActive(selector, options) {
+  if (!selector.active && !selector.activeTime) {
+    _.extend(selector, ActiveTimeMachine.selector());
+  }
+  return this.find(selector, options);
+};
+
+Mongo.Collection.prototype.findOneActive = function findOneActive(selector, options) {
+  if (!selector.active && !selector.activeTime) {
+    _.extend(selector, ActiveTimeMachine.selector());
+  }
+  return this.findOne(selector, options);
 };
 
 const indexes = function indexActivePeriod(collection) {
@@ -90,7 +89,7 @@ const indexes = function indexActivePeriod(collection) {
 };
 
 export const ActivePeriod = { name: 'ActivePeriod',
-  schema, helpers, staticHelpers, methods, hooks, indexes,
+  schema, helpers, methods, hooks, indexes,
 };
 
 ActivePeriod.fields = [

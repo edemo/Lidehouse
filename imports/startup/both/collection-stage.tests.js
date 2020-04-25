@@ -16,6 +16,9 @@ if (Meteor.isServer) {
 
     before(function () {
       Whatevers = new Mongo.Collection('whatevers');
+      Mongo.Collection.prototype.staticFindFoo = function() {
+        return this.findOne({ foo: { $exists: true } });
+      };
       Stage = Whatevers.Stage();
     });
 
@@ -33,6 +36,10 @@ if (Meteor.isServer) {
       chai.assert.isUndefined(Whatevers.findOne({ foo: 'stage-inserted' }));
       chai.assert.isDefined(Stage.findOne(id));
       chai.assert.isDefined(Stage.findOne({ foo: 'stage-inserted' }));
+    });
+
+    it('can use static helpers on the stage', function () {
+      chai.assert.isDefined(Stage.staticFindFoo());
     });
 
     it('can update doc of collection', function () {
