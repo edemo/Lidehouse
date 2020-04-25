@@ -12,7 +12,7 @@
                         <td><span class="label label-plain">{{_ doc.role}}</span> 
                             {{#if doc.rank}}<span class="label label-plain">{{_ (concat 'schemaMemberships.rank.' doc.rank)}}</span>{{/if}}
                         </td>
-                        <td>
+                        <td class="nowrap">
                             {{#if doc.partner.user.profile.publicEmail}}
                             <i class="contact-type fa fa-at"></i>{{doc.partner.user.profile.publicEmail}}
                             {{/if}}
