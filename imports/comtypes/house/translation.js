@@ -119,7 +119,7 @@ export const HouseTranslation = {
       },
       "ref": {
         "label": "Reference",
-        "placeholder": "(eg. B405)",
+        "placeholder": "(eg. B405 or II/4)",
         "help": "An abritrary but unique reference within the community"
       },
       "leadRef": {
@@ -325,7 +325,7 @@ export const HouseTranslation = {
       },
       "ref": {
         "label": "Albetét",
-        "placeholder": "(pl. B405)",
+        "placeholder": "(pl. B405 vagy II/4)",
         "help": "Egyedi név, mellyel hivatkozni lehet erre a helyre"
       },
       "leadRef": {

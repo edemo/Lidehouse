@@ -257,7 +257,9 @@ Template.Community_page.events({
   'click .js-join'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     const community = Communities.findOne(communityId);
-    Communities.actions.join({}, community).run(event, instance);
+    AccountsTemplates.forceLogin({ loginPage: 'signin' }, () => {
+      Communities.actions.join({}, community).run(event, instance);
+    });
   },
   ...(actionHandlers(Communities, 'delete')),
 });
