@@ -18,6 +18,7 @@ Memberships.entities = {
   roleship: {
     name: 'roleship',
     schema: transformSchemaForUI(Memberships.simpleSchema({ role: 'manager' })),
+    omitFields: ['activeTime'],
     modifiableFields: ['role', 'rank', 'partnerId'],
   },
   ownership: {

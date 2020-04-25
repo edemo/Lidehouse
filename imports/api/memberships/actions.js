@@ -28,6 +28,7 @@ Memberships.actions = {
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.insert`,
         schema: entity.schema,
+        omitFields: entity.omitFields,
         doc,
         type: 'method',
         meteormethod: 'memberships.insert',
@@ -49,6 +50,7 @@ Memberships.actions = {
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.view`,
         schema: entity.schema,
+        omitFields: entity.omitFields,
         doc,
         type: 'readonly',
       });
@@ -64,6 +66,7 @@ Memberships.actions = {
         id: `af.${doc.entityName()}.update`,
         schema: entity.schema,
         fields: entity.modifiableFields,
+        omitFields: entity.omitFields,
         doc,
         type: 'method-update',
         meteormethod: 'memberships.update',
@@ -111,7 +114,7 @@ Memberships.actions = {
     run() {
       Modal.confirmAndCall(Memberships.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,
-        message: 'You should rather archive it',
+        message: doc.entityName() !== 'roleship' && 'You should rather archive it',
       });
     },
   }),
