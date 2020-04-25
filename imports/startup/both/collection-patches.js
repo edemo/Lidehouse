@@ -82,11 +82,6 @@ Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour,
   collection._behaviourMethodsApplied[behaviour.name] = true;
 
   collection.helpers(behaviour.helpers);
-  if (behaviour.staticHelpers) {
-    _.each(behaviour.staticHelpers, function (func, key) {
-      collection[key] = func;
-    });
-  }
 
 //  console.log('_applyBehaviour methods!');
 

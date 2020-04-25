@@ -209,6 +209,29 @@ if (Meteor.isServer) {
         done();
       });
 
+      it('admin can add/update/remove other admin, but cannot remove the last admin', function (done) {
+        testMembershipId = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId },
+          createMembership('admin'));
+        chai.assert.isDefined(testMembershipId);
+        let testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.isDefined(testMembership);
+        chai.assert.equal(testMembership.role, 'admin');
+
+        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
+          { _id: testMembershipId, modifier: { $set: { 'activeTime.end': new Date() } } });
+        testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.equal(testMembership.active, false);
+
+        const demoAdminMembership = Memberships.findOne({ userId: Fixture.demoAdminId });
+        chai.assert.throws(() => {
+          // Unable to remove himself, as he is the last active admin
+          Memberships.methods.remove._execute({ userId: Fixture.demoAdminId },
+            { _id: demoAdminMembership._id });
+        }, 'err_unableToRemove');
+
+        done();
+      });
+
       xit('owner can only add/update/remove benefactor', function (done) {
         testMembershipId = Memberships.methods.insert._execute({ userId: Fixture.demoUserId }, createMembership('benefactor'));
         chai.assert.isDefined(testMembershipId);

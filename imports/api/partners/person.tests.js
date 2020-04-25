@@ -406,8 +406,8 @@ if (Meteor.isServer) {
           chai.assert.equal(emailOptions.to, user.getPrimaryEmail());
           chai.assert.match(emailOptions.text, /treasurer/);
 
-          // what makes him into accepted state, we send him a noti, which he approves by not objecting to it
           const membership3 = Memberships.findOne(membershipId3);
+          // what makes him into accepted state -- should the noti contain a button, and he approves with a click, or simply by not objecting to the noti?
           chai.assert.isTrue(membership3.accepted);
 
           done();

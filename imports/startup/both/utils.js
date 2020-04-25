@@ -73,6 +73,10 @@ Number.prototype.round = function round(places) {
   return +(Math.round(this + 'e+' + places) + 'e-' + places);
 };
 
+// Sometimes you don't know if you are dealing with an array or a cursor. 
+// So by calling fetch, you can make sure it becomes an Array
+Array.prototype.fetch = function fetch() { return this; };
+
 _.isDefined = function (obj) { // underscore did not have this
   return obj !== undefined;
 };

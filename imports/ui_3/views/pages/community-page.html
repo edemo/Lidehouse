@@ -7,7 +7,7 @@
                     <tr data-id="{{doc._id}}">
                         <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-avatar"><img alt="image" src={{doc.partner.avatar}}></a></td>
                         <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-link">{{doc.partner.displayName}}</a>
-                            {{>Action_buttons_group collection='partners' doc=doc.partnerId actions='view,edit' size='sm'}}
+                            {{>Action_buttons_group collection='partners' doc=doc.partner actions='view,edit' size='sm'}}
                         </td>
                         <td><span class="label label-plain">{{_ doc.role}}</span> 
                             {{#if doc.rank}}<span class="label label-plain">{{_ (concat 'schemaMemberships.rank.' doc.rank)}}</span>{{/if}}
@@ -66,7 +66,7 @@
                     <tr class="memberships" data-id="{{doc._id}}">
                         <td><a href="" class="client-avatar js-member"><img alt="image" src={{doc.partner.avatar}}></a></td>
                         <td><a href="" class="client-link js-member">{{doc.partner.displayName}}</a>  
-                           {{>Action_buttons_group collection='partners' doc=doc.partnerId actions='view,edit' size='sm'}}
+                           {{>Action_buttons_group collection='partners' doc=doc.partner actions='view,edit' size='sm'}}
                         </td>
                         <td>{{>Active_period collection='memberships' doc=doc}}</td>
                             {{#if equals entity 'ownership'}}

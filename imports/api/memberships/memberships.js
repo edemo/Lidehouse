@@ -223,7 +223,7 @@ if (Meteor.isServer) {
     if (doc.userId && !doc.partnerId) {
       const partnerObject = { communityId: doc.communityId, relation: 'member', userId: doc.userId };
       const partner = Partners.findOne(partnerObject);
-      const user = Meteor.users.findOne(userId);
+      const user = Meteor.users.findOne(doc.userId);
       partnerObject.contact = { email: user.getPrimaryEmail() };
       doc.partnerId = partner ? partner._id : Partners.insert(partnerObject);
     }
