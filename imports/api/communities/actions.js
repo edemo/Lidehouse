@@ -107,7 +107,7 @@ Communities.actions = {
     run() {
       Modal.confirmAndCall(Communities.methods.remove, { _id: doc._id }, {
         action: 'delete community',
-        message: 'You should rather archive it',
+        message: 'It will disappear forever',
       });
     },
   }),
