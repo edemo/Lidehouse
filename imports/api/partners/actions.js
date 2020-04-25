@@ -34,7 +34,7 @@ Partners.actions = {
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: user.hasPermission('partners.inCommunity', doc),
+    visible: user.hasPermission('partners.details', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.partner.view',
