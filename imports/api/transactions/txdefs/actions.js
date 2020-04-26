@@ -25,6 +25,19 @@ Txdefs.actions = {
       });
     },
   }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'view',
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('accounts.inCommunity', doc),
+    run() {
+      Modal.show('Autoform_modal', {
+        id: 'af.txdef.view',
+        collection: Txdefs,
+        doc,
+        type: 'readonly',
+      });
+    },
+  }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',

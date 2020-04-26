@@ -9,7 +9,7 @@ export function partnersColumns() {
   const columns = [
     { data: 'toString()', title: __('schemaTransactions.partnerId.label') },
     { data: 'idCard.type', title: __('schemaPartners.idCard.type.label'), render: Render.translateWithScope('schemaPartners.idCard.type') },
-    { data: 'relation', title: __('schemaPartners.relation.label'), render: Render.translateWithScope('schemaPartners.relation') },
+    { data: 'relation', title: __('schemaPartners.relation.label'), render: Render.translateWithScope('schemaPartners.relation.options') },
     { data: 'contact.email', title: __('schemaPartners.contact.email.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,

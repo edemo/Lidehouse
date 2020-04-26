@@ -13,7 +13,7 @@ export const Render = Meteor.isServer ? {} : {
   translateWithScope(scope) {
     return function translate(cellData, renderType, currentRow) {
       if (!cellData) return '---';
-      return __(`${scope}.${cellData}`);
+      return cellData.toString().split(',').map(text => __(`${scope}.${text}`)).join(',');
     };
   },
   formatNumber: $.fn.dataTable.render.number(' ', ',', 0),  // numeral no good here, it renders a string, so sorting not working correctly on this column afterwards

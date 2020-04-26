@@ -30,8 +30,8 @@ Template.Contracts.viewmodel({
   autorun() {
     Session.set('activePartnerRelation', this.activePartnerRelation());
   },
-  partnerRelations() {
-    return ['supplier', 'customer'];
+  relationValues() {
+    return Contracts.relationValues;
   },
   activeClass(partnerRelation) {
     return (this.activePartnerRelation() === partnerRelation) && 'btn-primary active';
@@ -39,7 +39,7 @@ Template.Contracts.viewmodel({
   contracts() {
     const communityId = Session.get('activeCommunityId');
     const relation = Session.get('activePartnerRelation');
-    return Contracts.find({ communityId }).fetch().filter(c => c.partner() && (c.partner().relation === relation));
+    return Contracts.find({ communityId, relation });
   },
   ticketStatuses() {
     return Object.values(Tickets.statuses);

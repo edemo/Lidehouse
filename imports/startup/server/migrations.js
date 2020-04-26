@@ -5,6 +5,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -412,6 +413,21 @@ Migrations.add({
         console.log("new date", valueDate.toString());
         Transactions.update(tx._id, { $set: { valueDate: valueDate.toDate() } });
       }
+    });
+  },
+});
+
+Migrations.add({
+  version: 23,
+  name: 'Partners can have multiple relations',
+  up() {
+    Contracts.find({}).forEach(contract => {
+      const relation = contract.partner().relation;
+      Contracts.update(contract._id, { $set: { relation } });
+    });
+    Partners.find({}).forEach(partner => {
+      const relation = partner.relation;
+      Partners.update(partner._id, { $set: { relation: [relation] } });
     });
   },
 });

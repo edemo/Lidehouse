@@ -16,10 +16,13 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 
 export const Contracts = new Mongo.Collection('contracts');
 
+Contracts.relationValues = _.without(Partners.relationValues, 'member');
+
 Contracts.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { rows: 8 } },
+  relation: { type: String, allowedValues: Contracts.relationValues },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
 });
 
@@ -38,6 +41,7 @@ Contracts.attachBehaviour(ActivePeriod);
 
 Meteor.startup(function attach() {
   Contracts.simpleSchema().i18n('schemaContracts');
+  Contracts.simpleSchema().i18n('schemaPartners');    // for relation translation
   Contracts.simpleSchema().i18n('schemaActivePeriod');
 });
 

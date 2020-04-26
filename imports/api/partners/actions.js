@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
+import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -16,6 +18,8 @@ Partners.actions = {
     color: 'primary',
     visible: user.hasPermission('partners.insert', doc),
     run() {
+      const activeRelation = Session.get('activePartnerRelation');
+      if (activeRelation) _.extend(doc, { relation: [activeRelation] });
       Modal.show('Autoform_modal', {
         id: 'af.partner.insert',
         collection: Partners,
@@ -68,7 +72,7 @@ Partners.actions = {
     name: 'remindOutstandings',
     color: doc.mostOverdueDaysColor(),
     icon: 'fa fa-exclamation',
-    visible: user.hasPermission('partners.remindOutstandings', doc) && (doc.relation !== 'supplier') && doc.mostOverdueDays(),
+    visible: user.hasPermission('partners.remindOutstandings', doc) && (Session.get('activePartnerRelation') !== 'supplier') && doc.mostOverdueDays(),
     run() {
       if ((!doc.contact || !doc.contact.email) && !doc.userId) {
         displayMessage('warning', 'No contact email set for this partner');

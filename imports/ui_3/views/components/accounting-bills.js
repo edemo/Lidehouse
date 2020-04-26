@@ -60,7 +60,7 @@ Template.Accounting_bills.viewmodel({
   parcelBillings() {
     return ParcelBillings.find({ communityId: this.communityId() });
   },
-  partnerRelations() {
+  relationValues() {
     return Partners.relationValues;
   },
   activeClass(partnerRelation) {

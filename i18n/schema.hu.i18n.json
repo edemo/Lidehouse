@@ -792,9 +792,12 @@
   "schemaPartners": {
     "relation": {
       "label": "Partner viszony",
-      "supplier": "Szállító",
-      "customer": "Vevő",
-      "member": "Tagság"      
+      "help": "Egy személy egyszerre több partneri viszonyban is lehet a közösséggel. A tagság viszony azt jeleni, hogy tulajdonos, bérlő vagy bármilyen tisztség amivel jogosultságok járnak.",
+      "options": {
+        "supplier": "Szállító",
+        "customer": "Vevő",
+        "member": "Tagság"
+      }
     },
     "userId": {
       "label": "Kapcsolt felhasználó (ha már regisztrált)"

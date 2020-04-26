@@ -35,14 +35,10 @@ const IdCardSchema = new SimpleSchema({
 });
 
 Partners.relationValues = ['supplier', 'customer', 'member'];
-const chooseRelation = _.extend(
-  { value: () => Session.get('activePartnerRelation') },
-  autoformOptions(Partners.relationValues, 'schemaPartners.relation.')
-);
 
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: chooseRelation },
+  relation: { type: [String], allowedValues: Partners.relationValues, autoform: { type: 'select-checkbox-inline' } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   idCard: { type: IdCardSchema, optional: true },
   contact: { type: ContactSchema, optional: true },
@@ -60,7 +56,7 @@ Partners.publicFields = {
   'contact': 0,
 };
 
-Partners.nonModifiableFields = ['communityId', 'relation', 'userId', 'outstanding'];
+Partners.nonModifiableFields = ['communityId', 'userId', 'outstanding'];
 
 
 Meteor.startup(function indexPartners() {

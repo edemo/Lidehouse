@@ -787,9 +787,12 @@
   "schemaPartners": {
     "relation": {
       "label": "Partner relation",
-      "supplier": "Supplier",
-      "customer": "Customer",
-      "member": "Member"      
+      "help": "A person can have multiple partner relations with the community. Member includes all owners and officers, so all persons with system permissions.",
+      "options": {
+        "supplier": "Supplier",
+        "customer": "Customer",
+        "member": "Member"
+      }
     },
     "userId": {
       "label": "Linked user account (if already registered)"

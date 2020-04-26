@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
+import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -13,6 +15,8 @@ Contracts.actions = {
     icon: 'fa fa-plus',
     visible: user.hasPermission('contracts.insert', doc),
     run() {
+      const activeRelation = Session.get('activePartnerRelation');
+      if (activeRelation) _.extend(doc, { relation: activeRelation });
       Modal.show('Autoform_modal', {
         id: 'af.contract.insert',
         collection: Contracts,
