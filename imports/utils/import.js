@@ -6,7 +6,7 @@ import { $ } from 'meteor/jquery';
 import { Fraction } from 'fractional';
 import { flatten } from 'flat';
 import { UploadFS } from 'meteor/jalik:ufs';
-import { XLSX } from 'meteor/huaming:js-xlsx';
+import XLSX from 'xlsx';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { displayError } from '/imports/ui_3/lib/errors.js';
