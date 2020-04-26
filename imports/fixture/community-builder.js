@@ -222,7 +222,7 @@ export class CommunityBuilder {
     }
     if (!partnerId) {
       person.communityId = this.communityId;
-      person.relation = 'member';
+      person.relation = ['member'];
       debugAssert(person.idCard);
       partnerId = Partners.insert(person);
     }

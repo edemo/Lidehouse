@@ -221,7 +221,7 @@ if (Meteor.isServer) {
     }
     // If partner is not provided, it can be created automatically
     if (doc.userId && !doc.partnerId) {
-      const partnerObject = { communityId: doc.communityId, relation: 'member', userId: doc.userId };
+      const partnerObject = { communityId: doc.communityId, relation: ['member'], userId: doc.userId };
       const partner = Partners.findOne(partnerObject);
       const user = Meteor.users.findOne(doc.userId);
       partnerObject.contact = { email: user.getPrimaryEmail() };

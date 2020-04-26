@@ -170,7 +170,7 @@ Factory.define('partner', Partners, {
 });
 
 Factory.define('customer', Partners, {
-  relation: 'customer',
+  relation: ['customer'],
   idCard: {
     type: 'legal',
     name: () => faker.random.word(),
@@ -185,7 +185,7 @@ Factory.define('customer', Partners, {
 });
 
 Factory.define('supplier', Partners, {
-  relation: 'supplier',
+  relation: ['supplier'],
   idCard: {
     type: 'legal',
     name: () => faker.random.word() + ' inc',
@@ -200,7 +200,7 @@ Factory.define('supplier', Partners, {
 });
 
 Factory.define('member', Partners, {
-  relation: 'member',
+  relation: ['member'],
   idCard: {
     type: 'natural',
     name: () => faker.random.word() + ' inc',

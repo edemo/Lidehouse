@@ -738,21 +738,25 @@ export function insertDemoHouse(lang, demoOrTest) {
   const contract0 = builder.create('contract', {
     title: __('demo.contract.0.title'),
     text: __('demo.contract.0.text'),
+    relation: 'supplier',
     partnerId: supplier0,
   });
   const contract1 = builder.create('contract', {
     title: __('demo.contract.1.title'),
     text: __('demo.contract.1.text'),
+    relation: 'supplier',
     partnerId: supplier1,
   });
   const contract2 = builder.create('contract', {
     title: __('demo.contract.2.title'),
     text: __('demo.contract.2.text'),
+    relation: 'supplier',
     partnerId: supplier2,
   });
   const contract10 = builder.create('contract', {
     title: __('demo.contract.10.title'),
     text: __('demo.contract.10.text'),
+    relation: 'customer',
     partnerId: customer0,
   });
 

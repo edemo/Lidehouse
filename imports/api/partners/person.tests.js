@@ -72,7 +72,7 @@ if (Meteor.isServer) {
           chai.assert.throws(() => {
 /*            partnerId = Partners.methods.insert._execute({ userId }, {
               communityId: Fixture.demoCommunityId,
-              relation: 'member',
+              relation: ['member'],
               userId,
               idCard: { type: 'natural', name: 'Mr New' },
               contact: { email: 'newuser@honline.hu' },
@@ -92,7 +92,7 @@ if (Meteor.isServer) {
         it('[2] user asks to join community', function (done) {
 /*          partnerId = Partners.methods.insert._execute({ userId }, {
             communityId: Fixture.demoCommunityId,
-            relation: 'member',
+            relation: ['member'],
             userId,
             idCard: { type: 'natural', name: 'Mr New' },
             contact: { email: 'newuser@honline.hu' },
@@ -187,7 +187,7 @@ if (Meteor.isServer) {
         it('[2] admin adds him with a role', function (done) {
           partnerId = Partners.methods.insert._execute({ userId: Fixture.demoAdminId }, {
             communityId: Fixture.demoCommunityId,
-            relation: 'member',
+            relation: ['member'],
             userId,
               // no contact email
           });
@@ -221,7 +221,7 @@ if (Meteor.isServer) {
         it('[1] manager creates identifed person, and links it to the parcel with an ownership', function (done) {
           partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
-            relation: 'member',
+            relation: ['member'],
             idCard: { type: 'natural', name: 'Jim', identifier: 'JIMS_ID_NUMBER' },
             contact: { phone: '+3630 3334445' },
           });
@@ -264,7 +264,7 @@ if (Meteor.isServer) {
           chai.assert.throws(() => {
             partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
               communityId: Fixture.demoCommunityId,
-              relation: 'member',
+              relation: ['member'],
               userId: Fixture.demoUserId,
               idCard: { type: 'natural', name: 'Jim' },
               contact: { name: 'Jimmy', email: 'jim@honline.hu' }, // mismatched contact email supplied
@@ -285,7 +285,7 @@ if (Meteor.isServer) {
         it('[1] manager creates approved person, and links it to the parcel with an ownership', function (done) {
           partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
-            relation: 'member',
+            relation: ['member'],
             idCard: { type: 'natural', name: 'Jim' },
             contact: { email: 'jim@honline.hu' },
           });
@@ -426,7 +426,7 @@ if (Meteor.isServer) {
         it('B3a: creating membership and linking in same step', function (done) {
           const partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
-            relation: 'member',
+            relation: ['member'],
             userId: alreadyUserId, // immediately link him
             idCard: { type: 'natural', name: 'Mr Already' },
             // no contact email
@@ -453,7 +453,7 @@ if (Meteor.isServer) {
         it('B3x: cannot link partner if an other partner exists connected to user with same email', function (done) {
           const partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
-            relation: 'member',
+            relation: ['member'],
             idCard: { type: 'natural', name: 'New Already' },
             contact: { email: 'alreadyuser@honline.hu' },
           });
@@ -477,7 +477,7 @@ if (Meteor.isServer) {
         it('B3b: creating membership and linking in two steps', function (done) {
           const partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
-            relation: 'member',
+            relation: ['member'],
             // no userId yet
             idCard: { type: 'natural', name: 'Mr Already' },
             contact: { name: 'Already User', email: 'alreadyuser@honline.hu' },
