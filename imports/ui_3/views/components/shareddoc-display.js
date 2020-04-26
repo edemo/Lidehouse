@@ -32,6 +32,11 @@ Template.Shareddoc_boxy.helpers({
   userHasPermissionToRemoveUploaded() {
     return Shareddocs.hasPermissionToRemoveUploaded(Meteor.userId(), this);
   },
+  shortened(name, maxLengt) {
+    if (name.length <= maxLengt) return name;
+    const halfLength = Math.floor(maxLengt / 2);
+    return `${name.slice(0, halfLength)}...${name.slice((-1) * halfLength)}`;
+  },
 });
 
 Template.Shareddoc_boxy.events({
