@@ -260,9 +260,30 @@ if (Meteor.isServer) {
     });
 
     describe('Community launch promo email', function () {
-      it('Sends promo email when launching community from promo', function () {
-        const community = {
+      let community;
+      let admin;
+      let promoCode;
+
+      it('Sends email to launch (activate) community from promo', function () {
+        community = {
           name: 'Promo house',
+          settings: {
+            language: 'hu',
+          },
+        };
+        admin = { email: 'promoAdmin@promoemail.hu', language: 'hu' };
+        const parcelCount = 100;
+        promoCode = 'covid';
+
+        Meteor.call('communities.launchMail', { community, admin, parcelCount, promoCode });
+        sinon.assert.calledOnce(EmailSender.send);
+        sinon.assert.calledWithMatch(EmailSender.send, { to: admin.email });
+        sinon.assert.calledWithMatch(EmailSender.send, { template: 'Promo_Launch_Link' });
+        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ community: { name: 'Promo house' }, promoCode: 'covid' }) });
+      });
+
+      it('Sends promo invitation link in email when launching community from promo', function () {
+        _.extend(community, {
           status: 'sandbox',
           totalunits: 10000,
           city: '?-város',
@@ -270,12 +291,7 @@ if (Meteor.isServer) {
           number: '?-szám',
           zip: '1111',
           lot: '?-hrsz',
-          settings: {
-            language: 'hu',
-          },
-        };
-        const admin = { email: 'promoAdmin@promoemail.hu', language: 'hu' };
-        const promoCode = 'covid';
+        });
         Communities.methods.launch._execute({}, { community, admin, promoCode });
         sinon.assert.calledOnce(EmailSender.send);
         sinon.assert.calledWithMatch(EmailSender.send, { to: admin.email });

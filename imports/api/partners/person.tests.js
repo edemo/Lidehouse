@@ -49,7 +49,7 @@ if (Meteor.isServer) {
       // scenario B1: 1. manager creates an identity to be used in the system
       //                 (no intention to create user account later - can be used to list parcel owner or register in person votes)
       // scenario B2: 1. manager creates an identity and an account for user 2. adds him to community 3. invites him to this account 4. user later accepts
-      // scenario B3:
+      // scenario B3: manager links person, who is already a user
       // scenario BONUS: user changes his email address after all this, or during the process
 
       describe('Scenario A1: Person creates user account, submits join community request', function () {
@@ -446,7 +446,31 @@ if (Meteor.isServer) {
           chai.assert.equal(membership.partner().primaryEmail(), alreadyUser.getPrimaryEmail());
 
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
-          Partners.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
+          // we need the partner for the next test
+          done();
+        });
+
+        it('B3x: cannot link partner if an other partner exists connected to user with same email', function (done) {
+          const partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            relation: 'member',
+            idCard: { type: 'natural', name: 'New Already' },
+            contact: { email: 'alreadyuser@honline.hu' },
+          });
+          const membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            approved: true,
+            partnerId,
+            role: 'owner',
+            parcelId,
+            ownership: { share: new Fraction(1, 1) },
+          });
+          chai.assert.throws(() => {
+            Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          }, 'err_sanityCheckFailed');
+
+          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Partners.remove({});
           done();
         });
 
