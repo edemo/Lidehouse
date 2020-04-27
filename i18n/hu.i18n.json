@@ -202,6 +202,7 @@
   "video end": "közvetítés lezárása",
   "join video": "csatlakozás",
   "leave video": "kilépés",
+  "import": "importálás",
   "save": "mentés",
   "send": "elküldés",
   "Send message": "Üzenet küldése",
@@ -266,6 +267,16 @@
   "editing data": "adatok szerkesztése",
   "viewing data": "adatok megtekintése",
   "insertion": "felvitele",
+
+  // import
+  "importing data": "adatok importálása",
+  "Importable columns": "Importálható oszlopok",
+  "Download template": "Sablon letöltése",
+  "importUploadInstructions": "Feltöltés után egy előnézet lesz látható, ahol még lesz lehetősége módosítani, mind a cellákon, mind az oszlopneveken, ha az adott oszlopot a feltöltött fájlban máshogy hívják, ekkor lesz még lehetőség átnevezni.",
+  "importPreviewInstructions": ["Importálás előtt még végezhet módosításokat a cellákon, és komplett sorokat is törölhet.",
+    "A sárgával megjelölt oszlopneveket nem ismertük fel, ha szeretné őket importálni, akkor kattintson rájuk, és válassza meg hogy milyen adatként ételmezzük.",
+    "Ha szeretné hogy ezek az oszlop hozzárendelések máskor automatikusan megtörténjenek, mentse el az Oszlop hozzásrendelést."
+  ],
 
   "Start new topic": "Új téma indítása",
   "Show more": "Tovább",

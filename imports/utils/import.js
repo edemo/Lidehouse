@@ -1,9 +1,10 @@
 /* globals FileReader */
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
+import { Template } from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
-import { Fraction } from 'fractional';
 import { flatten } from 'flat';
 import { UploadFS } from 'meteor/jalik:ufs';
 import XLSX from 'xlsx';
@@ -13,6 +14,7 @@ import { displayError } from '/imports/ui_3/lib/errors.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/readmore.js';
+import '/imports/ui_3/views/components/import-dialog.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Translator, Transformers, touchedCollections } from './import-transformers.js';
 
@@ -30,16 +32,40 @@ function singlify(jsons) {
   return tjsons;
 }
 
+Template.Import_dialog.events({
+  'click button[name=upload]'(event, instance) {
+    UploadFS.selectFile(function (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        let data = e.target.result;
+        if (!rABS) data = new Uint8Array(data);
+        const workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' });
+        const sheetName = workbook.SheetNames[0]; // importing only the first sheet
+        const worksheet = workbook.Sheets[sheetName];
+        const html = XLSX.utils.sheet_to_html(worksheet, { editable: true });
+        instance.viewmodel.table(html);
+      };
+      if (rABS) reader.readAsBinaryString(file);
+      else reader.readAsArrayBuffer(file);
+    });
+  },
+});
+
+
 export function importCollectionFromFile(collection, options) {
-  UploadFS.selectFile(function (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      let data = e.target.result;
-      if (!rABS) data = new Uint8Array(data);
-      const workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' });
-      const sheetName = workbook.SheetNames[0]; // importing only the first sheet
-      const worksheet = workbook.Sheets[sheetName];
-      const jsons = XLSX.utils.sheet_to_json(worksheet).map(flatten.unflatten);
+  const buttonsAreDisabled = new ReactiveVar(false);
+  Modal.show('Modal', {
+    title: 'importing data',
+    body: 'Import_dialog',
+    bodyContext: { collection, options, buttonsAreDisabled },
+    size: 'lg',
+    btnOK: 'import',
+    btnClose: 'cancel',
+    buttonsAreDisabled,
+    onOK() {
+      const importTable = $('.import-table')[0];
+      const importSheet = XLSX.utils.table_to_sheet(importTable);
+      const jsons = XLSX.utils.sheet_to_json(importSheet).map(flatten.unflatten);
 
       const user = Meteor.user();
       const communityId = getActiveCommunityId();
@@ -75,8 +101,7 @@ export function importCollectionFromFile(collection, options) {
         });
       };
       processNextCollection();
-    };
-    if (rABS) reader.readAsBinaryString(file); else reader.readAsArrayBuffer(file);
+    },
   });
 }
 
