@@ -5,7 +5,7 @@
         {{> Modal_guard}}
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">{{_ title}} {{debugInfo}} {{>Action_button action=print size='sm'}}</h4>
+          <h4 class="modal-title" id="myModalLabel">{{_ title}} {{debugInfo}} {{#if printable}} {{>Action_button action=print size='sm'}} {{/if}}</h4>
         </div>
         {{! Needed autoform context comes from the outer modal creator: id=, collection=, schema=, doc=, type=, meteormethod=, singleMethodArgument=true, template=}}
         {{#autoForm}}
