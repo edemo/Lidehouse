@@ -19,5 +19,12 @@
             </ol>
             {{/unless}}
         </div>
+        <div class="col-lg-4">
+            {{#if printable}}
+                <div class="title-action">
+                {{>Action_button action=print size='xl'}}
+                </div>
+            {{/if}}
+        </div>
     </div>
 </template>
