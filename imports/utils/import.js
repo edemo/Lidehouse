@@ -49,18 +49,24 @@ Template.Import_dialog.events({
       else reader.readAsArrayBuffer(file);
     });
   },
+});
+
+Template.Import_upload.events({
   'click button[name=download]'(event, instance) {
+    const selected = instance.viewmodel.selected();
+    const columns = instance.parent().data.columns;
     const wb = XLSX.utils.book_new();
     const ws_data = [[], []]; // eslint-disable-line camelcase
-    instance.data.columns.forEach((colDef) => {
-      if (!colDef.schema) return;
+    columns.forEach((colDef) => {
+      if (!colDef.key) return;
+      if (selected.length && !_.contains(selected, colDef.name)) return;
       ws_data[0].push(colDef.name);
       ws_data[1].push(colDef.example);
     });
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     const ws_name = __('template'); // eslint-disable-line camelcase
     XLSX.utils.book_append_sheet(wb, ws, ws_name);
-    XLSX.writeFile(wb, `honline-${__('template')}-${__(instance.data.collection._name)}.xls`);
+    XLSX.writeFile(wb, `honline-${__('template')}-${__(instance.parent().data.collection._name)}.xls`);
   },
 });
 
@@ -69,9 +75,9 @@ export function importCollectionFromFile(collection, options) {
   const buttonsAreDisabled = new ReactiveVar(false);
   const collectionsToImport = getCollectionsToImport(collection);
   const columns = [];
-  collectionsToImport.forEach((cti) => {
+  collectionsToImport.forEach((cti, ind) => {
     const translator = new Translator(cti.collection, 'hu');
-    columns.push({ name: `${translator.__('_')} ${__('data')}`.toUpperCase() });
+    columns.push({ name: ind, display: `${translator.__('_')} ${__('data')}`.toUpperCase() });
     _.each(cti.schema._schema, (value, key) => {
       const split = key.split('.');
       if (_.contains(['Array', 'Object'], value.type.name)) return;
@@ -79,7 +85,10 @@ export function importCollectionFromFile(collection, options) {
       if (_.contains(split, 'activeTime')) return;
       if (_.contains(cti.omitFields, key)) return;
       if (!value.label) return;
-      columns.push({ key, name: translator.__(key), schema: value, example: translator.example(key, value) });
+      const name = translator.__(key);
+      const example = translator.example(key, value);
+      const display = `[${name}]${value.optional ? '' : '(*)'}: ${value.type.name} ${example}`;
+      columns.push({ key, name, example, display });
     });
   });
 

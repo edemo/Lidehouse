@@ -8,17 +8,15 @@ import './import-dialog.html';
 
 Template.Import_upload.viewmodel({
   viewColumns: false,
-  typeOf(col) {
-    return col.schema.type.name;
-  },
-  optionalityOf(col) {
-    return col.schema.optional ? '' : '(*)';
-  },
+  selected: [],
 });
 
 Template.Import_upload.events({
   'click #view-columns'(event, instance) {
     instance.viewmodel.viewColumns(true);
+  },
+  'focusout select'(event, instance) {
+    instance.viewmodel.viewColumns(false);
   },
 });
 

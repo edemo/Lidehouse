@@ -1,28 +1,20 @@
 <template name="Import_upload">
     <div class="panel panel-info">
-      <div class="panel-heading"><i class="fa fa-lg fa-info-circle"></i> {{_ 'Uploading'}}</div>
+      <div class="panel-heading"><i class="fa fa-file"></i> {{_ 'Uploading'}}</div>
       <div class="panel-body">
         <div class="pull-right">
             <button name="download" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> {{_ 'Download template'}}</button>
         </div>
         {{_ 'Importable columns'}}: 
         {{#if viewColumns}}
-          <select multiple style="position:fixed">
-            <option value={{importOptionalInstructions}}>--- {{_ 'importOptionalInstructions'}} ---</option>
-            {{#each col in columns}}
-              {{#if col.schema}}
-                <option value={{col.name}}>[<strong>{{col.name}}</strong>]{{optionalityOf col}}: {{typeOf col}} {{col.example}}</option>
-              {{else}}
-                <option value={{col.name}}>{{col.name}}</option>
-              {{/if}}
-            {{/each}}
-            <option value={{importSelectionInstructions}}>--- {{_ 'importSelectionInstructions'}} ---</option>
-          </select>
+          <select multiple style="position:fixed" size="6" {{b "options: columns, optionsValue: name, optionsText: display, value: selected"}} ></select>
         {{else}}
           <a href="" id="view-columns">{{_ 'view'}}</a>
         {{/if}}
         <br>
-        {{_ 'importUploadInstructions'}}
+        {{_ 'importOptionalInstructions'}}    
+        {{_ 'importSelectionInstructions'}}<br><br>
+        {{_ 'importUploadInstructions'}}<br>
       </div>
     </div>
     <div class="row">
@@ -36,7 +28,7 @@
 
 <template name="Import_preview">
     <div class="panel panel-warning">
-      <div class="panel-heading"><i class="fa fa-lg fa-info-circle"></i> {{_ 'Preview'}}</div>
+      <div class="panel-heading"><i class="fa fa-pencil"></i> {{_ 'Preview'}}</div>
       <div class="panel-body">{{_ 'importPreviewInstructions'}}</div>
     </div>
     <div class="table-responsive">
