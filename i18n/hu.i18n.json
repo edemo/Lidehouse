@@ -271,8 +271,11 @@
   // import
   "importing data": "adatok importálása",
   "Importable columns": "Importálható oszlopok",
+  "template": "sablon",
   "Download template": "Sablon letöltése",
-  "importUploadInstructions": "Feltöltés után egy előnézet lesz látható, ahol még lesz lehetősége módosítani, mind a cellákon, mind az oszlopneveken, ha az adott oszlopot a feltöltött fájlban máshogy hívják, ekkor lesz még lehetőség átnevezni.",
+  "importOptionalInstructions": "A csillagozott [mezők] kötelezőek, a többi opcionális.",
+  "importSelectionInstructions": "Kérhet sablont úgy is, hogy csak a kijelölt oszlopok legyenek benne.",
+  "importUploadInstructions": "Feltöltés után egy előnézet lesz látható, ahol még lesz lehetősége módosítani, mind a cellák tartalmán, mind az oszlopneveken, hogy megfeleljenek az elvárt oszlop neveknek.",
   "importPreviewInstructions": ["Importálás előtt még végezhet módosításokat a cellákon, és komplett sorokat is törölhet.",
     "A sárgával megjelölt oszlopneveket nem ismertük fel, ha szeretné őket importálni, akkor kattintson rájuk, és válassza meg hogy milyen adatként ételmezzük.",
     "Ha szeretné hogy ezek az oszlop hozzárendelések máskor automatikusan megtörténjenek, mentse el az Oszlop hozzásrendelést."

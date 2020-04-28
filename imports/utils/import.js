@@ -16,7 +16,7 @@ import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/readmore.js';
 import '/imports/ui_3/views/components/import-dialog.js';
 import { __ } from '/imports/localization/i18n.js';
-import { Translator, Transformers, touchedCollections } from './import-transformers.js';
+import { Translator, Transformers, getCollectionsToImport } from './import-transformers.js';
 
 const rABS = true;
 
@@ -49,15 +49,44 @@ Template.Import_dialog.events({
       else reader.readAsArrayBuffer(file);
     });
   },
+  'click button[name=download]'(event, instance) {
+    const wb = XLSX.utils.book_new();
+    const ws_data = [[], []]; // eslint-disable-line camelcase
+    instance.data.columns.forEach((colDef) => {
+      if (!colDef.schema) return;
+      ws_data[0].push(colDef.name);
+      ws_data[1].push(colDef.example);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    const ws_name = __('template'); // eslint-disable-line camelcase
+    XLSX.utils.book_append_sheet(wb, ws, ws_name);
+    XLSX.writeFile(wb, `honline-${__('template')}-${__(instance.data.collection._name)}.xls`);
+  },
 });
 
 
 export function importCollectionFromFile(collection, options) {
   const buttonsAreDisabled = new ReactiveVar(false);
+  const collectionsToImport = getCollectionsToImport(collection);
+  const columns = [];
+  collectionsToImport.forEach((cti) => {
+    const translator = new Translator(cti.collection, 'hu');
+    columns.push({ name: `${translator.__('_')} ${__('data')}`.toUpperCase() });
+    _.each(cti.schema._schema, (value, key) => {
+      const split = key.split('.');
+      if (_.contains(['Array', 'Object'], value.type.name)) return;
+      if (value.autoform && (value.autoform.omit || value.autoform.readonly || _.contains(['hidden'], value.autoform.type))) return;
+      if (_.contains(split, 'activeTime')) return;
+      if (_.contains(cti.omitFields, key)) return;
+      if (!value.label) return;
+      columns.push({ key, name: translator.__(key), schema: value, example: translator.example(key, value) });
+    });
+  });
+
   Modal.show('Modal', {
     title: 'importing data',
     body: 'Import_dialog',
-    bodyContext: { collection, options, buttonsAreDisabled },
+    bodyContext: { collection, columns, options, buttonsAreDisabled },
     size: 'lg',
     btnOK: 'import',
     btnClose: 'cancel',
@@ -71,9 +100,8 @@ export function importCollectionFromFile(collection, options) {
       const communityId = getActiveCommunityId();
 
       let docs = jsons;
-      const collections = touchedCollections(collection);
       const processNextCollection = function () {
-        const collection = collections.shift();
+        const collection = collectionsToImport.shift().collection;
         if (!collection) return;
   //      if (options && options.multipleDocsPerLine) docs = singlify(docs);
         const translator = new Translator(collection, user.settings.language);

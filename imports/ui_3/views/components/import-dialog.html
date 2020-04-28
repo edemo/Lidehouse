@@ -5,7 +5,23 @@
         <div class="pull-right">
             <button name="download" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> {{_ 'Download template'}}</button>
         </div>
-        {{_ 'Importable columns'}}:<br>
+        {{_ 'Importable columns'}}: 
+        {{#if viewColumns}}
+          <select multiple style="position:fixed">
+            <option value={{importOptionalInstructions}}>--- {{_ 'importOptionalInstructions'}} ---</option>
+            {{#each col in columns}}
+              {{#if col.schema}}
+                <option value={{col.name}}>[<strong>{{col.name}}</strong>]{{optionalityOf col}}: {{typeOf col}} {{col.example}}</option>
+              {{else}}
+                <option value={{col.name}}>{{col.name}}</option>
+              {{/if}}
+            {{/each}}
+            <option value={{importSelectionInstructions}}>--- {{_ 'importSelectionInstructions'}} ---</option>
+          </select>
+        {{else}}
+          <a href="" id="view-columns">{{_ 'view'}}</a>
+        {{/if}}
+        <br>
         {{_ 'importUploadInstructions'}}
       </div>
     </div>
@@ -38,6 +54,6 @@
         {{> Import_preview table=table}}
     {{else}}
         {{enableButtons false}}
-        {{> Import_upload}}
+        {{> Import_upload columns=columns}}
     {{/if}}
 </template>

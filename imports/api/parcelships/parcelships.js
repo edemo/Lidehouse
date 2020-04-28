@@ -28,7 +28,7 @@ const chooseProperty = {
 
 Parcelships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: false },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseProperty },
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });

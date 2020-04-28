@@ -39,8 +39,6 @@ Memberships.baseSchema = new SimpleSchema({
   },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
-  person: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // deprecated for partnerId
-  personId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for partnerId
 });
 
 // Parcels can be jointly owned, with each owner having a fractional *share* of it
