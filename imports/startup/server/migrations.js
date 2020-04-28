@@ -291,11 +291,11 @@ Migrations.add({
         { multi: true }
       );
     }
-    upgrade(Partners, 'relation');
     upgrade(Txdefs, 'data.relation');
     upgrade(Transactions, 'relation', { category: 'bill' });
     upgrade(Transactions, 'relation', { category: 'payment' });
     upgrade(Transactions, 'relation', { category: 'receipt' });
+    Partners.update({ relation: 'parcel' }, { $set: { relation: ['member'] } }, { multi: true });
   },
 });
 
