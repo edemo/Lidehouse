@@ -1,3 +1,4 @@
+/* globals Waypoint */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { numeral } from 'meteor/numeral:numeral';
@@ -20,6 +21,10 @@ if (Meteor.isClient) {
     return Meteor;
   });
 
+  Template.registerHelper('Waypoint', function waypoint(method) {
+    return Waypoint[method]();
+  });
+
   Template.registerHelper('and', function and(a, b) {
     return a && b;
   });
@@ -38,6 +43,10 @@ if (Meteor.isClient) {
 
   Template.registerHelper('add', function add(a, b) {
     return a + b;
+  });
+
+  Template.registerHelper('subtract', function add(a, b) {
+    return a - b;
   });
 
   Template.registerHelper('includes', function includes(a, b) {

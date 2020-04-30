@@ -7,6 +7,7 @@
         {{/if}}
         {{#each event in eventsOfTopic}}
             {{> Frame event}}
+            {{#if equals @index (subtract eventsOfTopic.length 1)}}{{Waypoint 'refreshAll'}}{{/if}}
         {{/each}}
       
         <div class="social-comment">
