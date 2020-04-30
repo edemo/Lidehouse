@@ -1,4 +1,4 @@
-/* globals document */
+/* globals document Waypoint */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
@@ -27,6 +27,26 @@ Template.Topic_vote_body.onCreated(function voteboxOnCreated() {
     const topicId = this.data._id;
     this.subscribe('shareddocs.ofTopic', { communityId, topicId });
   });
+});
+
+Template.Topic_vote_body.onRendered(function () {
+  const self = this;
+  const doc = this.data;
+  this.waypoint = new Waypoint({
+    element: this.find('.progress-bar'),
+    handler() {
+      self.autorun(() => {
+        const votedPercent = Topics.findOne(doc._id).votedPercent().toFixed(2);
+        self.$('.progress-bar').css('width', votedPercent + '%');
+      });
+      return self.waypoint && self.waypoint.disable();
+    },
+    offset: '80%',
+  });
+});
+
+Template.Topic_vote_body.onDestroyed(function () {
+  this.waypoint.destroy();
 });
 
 Template.Topic_vote_body.helpers({
