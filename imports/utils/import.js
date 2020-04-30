@@ -95,7 +95,7 @@ export function importCollectionFromFile(collection, options) {
   Modal.show('Modal', {
     title: 'importing data',
     body: 'Import_dialog',
-    bodyContext: { collection, columns, options, buttonsAreDisabled },
+    bodyContext: { collection, options, columns, buttonsAreDisabled },
     size: 'lg',
     btnOK: 'import',
     btnClose: 'cancel',
