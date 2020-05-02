@@ -43,18 +43,23 @@
 <template name="Import_dialog">
     {{#if table}}
         {{enableButtons true}}
-        {{> Import_preview table=table columns=columns}}
+        {{> Import_preview table=table columns=columns availableColumns=availableColumns}}
     {{else}}
         {{enableButtons false}}
         {{> Import_upload columns=columns}}
     {{/if}}
 </template>
 
-<template name="Select_from_columns">
-    <select style="background-color: #999999">
-        <option value="">{{_ '(Select one)'}}</option>
-        {{#each column in availableColums}}
-        <option value="{{column}}">{{column}}</option>
-        {{/each}}
-    </select>
+<template name="Import_header_cell">
+  <span contenteditable="true" class="label {{#if isValidColumn}}label-primary{{else}}label-danger{{/if}}">
+    {{columnName}}
+  </span>
+  {{#unless isValidColumn}} <br>
+  <select>
+      <option value="">{{_ '(Select one)'}}</option>
+      {{#each column in getAvailableColums}}
+      <option value="{{column}}">{{column}}</option>
+      {{/each}}
+  </select>
+  {{/unless}}
 </template>
