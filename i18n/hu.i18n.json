@@ -273,12 +273,13 @@
   "Importable columns": "Importálható oszlopok",
   "template": "sablon",
   "Download template": "Sablon letöltése",
-  "importOptionalInstructions": "(*) A csillagozott [mezők] kötelezőek.",
-  "importSelectionInstructions": "Sablont kérhet úgy is, hogy csak a kijelölt oszlopok legyenek benne.",
+  "importColumnsInstructions": ["* A csillagozott [mezők] kötelezőek.",
+    " Sablont kérhet csak a kijelölt oszlopokra is."
+  ],
   "importUploadInstructions": "Feltöltés után egy előnézet lesz látható, ahol még lesz lehetőség módosítani, mind a cellák tartalmán, mind az oszlopneveken, hogy azok megfeleljenek az elvárt oszlop neveknek.",
-  "importPreviewInstructions": ["Importálás előtt még végezhet módosításokat a cellákon, és komplett sorokat is törölhet.",
-    "A sárgával megjelölt oszlopneveket nem ismertük fel, ha szeretné őket importálni, akkor kattintson rájuk, és válassza meg hogy milyen adatként ételmezzük.",
-    "Ha szeretné hogy ezek az oszlop hozzárendelések máskor automatikusan megtörténjenek, mentse el az Oszlop hozzásrendelést."
+  "importPreviewInstructions": ["Importálás előtt még végezhet módosításokat a cellákon.<br>",
+    "A pirossal jelölt oszlopneveket nem ismertük fel, ha szeretné őket importálni, akkor válassza meg, milyen adatként ételmezzük.",
+    "Ha szeretné hogy ezek az oszlop átértelmezések máskor is automatikusan megtörténjenek, mentse el az Oszlop hozzásrendelést."
   ],
 
   "Start new topic": "Új téma indítása",

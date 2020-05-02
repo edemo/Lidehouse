@@ -7,14 +7,12 @@
         </div>
         {{_ 'Importable columns'}}: 
         {{#if viewColumns}}
-          <select multiple style="position:fixed" size="6" {{b "options: columns, optionsValue: name, optionsText: display, value: selected"}} ></select>
+            <select multiple style="position:fixed" size="6" {{b "options: columns, optionsValue: name, optionsText: display, value: selected"}} ></select>
         {{else}}
-          <a href="" id="view-columns">{{_ 'view'}}</a>
+          <a href="" id="view-columns" class="text-capitalize"><u>{{_ 'view'}}</u><b class="caret"></b></a>
         {{/if}}
-        <br>
-        {{_ 'importOptionalInstructions'}}    
-        {{_ 'importSelectionInstructions'}}<br><br>
-        {{_ 'importUploadInstructions'}}<br>
+        <br><br><br>
+        {{{_ 'importUploadInstructions'}}}<br>
       </div>
     </div>
     <div class="row">
@@ -29,7 +27,7 @@
 <template name="Import_preview">
     <div class="panel panel-warning">
       <div class="panel-heading"><i class="fa fa-pencil"></i> {{_ 'Preview'}}</div>
-      <div class="panel-body">{{_ 'importPreviewInstructions'}}</div>
+      <div class="panel-body">{{{_ 'importPreviewInstructions'}}}</div>
     </div>
     <div class="table-responsive">
       <div class="datatable_wrapper">

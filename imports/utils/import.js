@@ -74,7 +74,7 @@ Template.Import_upload.events({
 export function importCollectionFromFile(collection, options) {
   const buttonsAreDisabled = new ReactiveVar(false);
   const collectionsToImport = getCollectionsToImport(collection);
-  const columns = [];
+  const columns = [{ display: __('importColumnsInstructions') }];
   collectionsToImport.forEach((cti, ind) => {
     const translator = new Translator(cti.collection, 'hu');
     columns.push({ name: ind, display: `${translator.__('_')} ${__('data')}`.toUpperCase() });
