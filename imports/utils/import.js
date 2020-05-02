@@ -110,8 +110,9 @@ export function importCollectionFromFile(collection, options) {
 
       let docs = jsons;
       const processNextCollection = function () {
-        const collection = collectionsToImport.shift().collection;
-        if (!collection) return;
+        const collectionToImport = collectionsToImport.shift().collection;
+        if (!collectionToImport) return;
+        const collection = collectionToImport.collection;
   //      if (options && options.multipleDocsPerLine) docs = singlify(docs);
         const translator = new Translator(collection, user.settings.language);
         if (translator) docs = translator.reverse(docs);

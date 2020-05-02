@@ -393,7 +393,7 @@ export const Transformers = {
         if (!doc.idCard || !doc.idCard.name) return;
         const tdoc = {}; $.extend(true, tdoc, doc);
         tdoc.idCard.type = tdoc.idCard.type || 'natural';
-        tdoc.relation = tdoc.relation || 'member';
+        tdoc.relation = tdoc.relation || ['member'];
         tdocs.push(tdoc);
       });
       return tdocs;
