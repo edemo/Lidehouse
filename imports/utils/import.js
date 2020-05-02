@@ -110,7 +110,7 @@ export function importCollectionFromFile(collection, options) {
 
       let docs = jsons;
       const processNextCollection = function () {
-        const collectionToImport = collectionsToImport.shift().collection;
+        const collectionToImport = collectionsToImport.shift();
         if (!collectionToImport) return;
         const collection = collectionToImport.collection;
   //      if (options && options.multipleDocsPerLine) docs = singlify(docs);

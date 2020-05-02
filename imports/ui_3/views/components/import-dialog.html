@@ -51,8 +51,8 @@
 </template>
 
 <template name="Import_header_cell">
-  <span contenteditable="true" class="label {{#if isValidColumn}}label-primary{{else}}label-danger{{/if}}">
-    {{columnName}}
+  <span contenteditable="true" class="label {{#if isValidColumn}}label-primary{{else}}label-danger{{/if}}"
+    {{b "text:columnName"}}>
   </span>
   {{#unless isValidColumn}} <br>
   <select>

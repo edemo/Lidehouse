@@ -58,11 +58,18 @@ Template.Import_header_cell.viewmodel({
   onCreated(instance) {
     this.columnName(instance.data._columnName);
   },
+  onRendered(instance) {
+    const vm = this;
+    instance.find('span').addEventListener('input', function() { vm.textChanged(); }, false);
+  },
   autorun() {
     const data = this.templateInstance.data;
     if (_.contains(data.availableColumns(), this.columnName())) {
       data.availableColumns(_.without(data.availableColumns(), this.columnName()));
     }
+  },
+  textChanged() {
+    this.columnName(this.templateInstance.$('span')[0].innerText);
   },
   isValidColumn() {
     return _.contains(this.getValidColums(), this.columnName());
