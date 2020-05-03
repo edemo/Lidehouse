@@ -8,6 +8,9 @@ Template.Modal.events({
   'click #btn-ok'(event, instance) {
     if (instance.data.onOK) instance.data.onOK.call();
   },
+  'click #btn-action'(event, instance) {
+    if (instance.data.onAction) instance.data.onAction.call();
+  },
   'click #btn-close'(event, instance) {
     if (instance.data.onClose) instance.data.onClose.call();
   },

@@ -97,48 +97,54 @@ export function importCollectionFromFile(collection, options) {
     body: 'Import_dialog',
     bodyContext: { collection, options, columns, buttonsAreDisabled },
     size: 'lg',
-    btnOK: 'import',
+    btnAction: 'import',
     btnClose: 'cancel',
     buttonsAreDisabled,
-    onOK() {
-      const importTable = $('.import-table')[0];
-      const importSheet = XLSX.utils.table_to_sheet(importTable);
-      const jsons = XLSX.utils.sheet_to_json(importSheet).map(flatten.unflatten);
+    onAction() {
+      buttonsAreDisabled.set(true);
+      Meteor.setTimeout(() => {  // We defer, so the button disable happens before the processing
+        const importTable = $('.import-table')[0];
+        const importSheet = XLSX.utils.table_to_sheet(importTable);
+        const jsons = XLSX.utils.sheet_to_json(importSheet).map(flatten.unflatten);
 
-      const user = Meteor.user();
-      const communityId = getActiveCommunityId();
+        const user = Meteor.user();
+        const communityId = getActiveCommunityId();
 
-      let docs = jsons;
-      const processNextCollection = function () {
-        const collectionToImport = collectionsToImport.shift();
-        if (!collectionToImport) return;
-        const collection = collectionToImport.collection;
-  //      if (options && options.multipleDocsPerLine) docs = singlify(docs);
-        const translator = new Translator(collection, user.settings.language);
-        if (translator) docs = translator.reverse(docs);
-        // --- Custom transformation is applied to the docs, that may even change the set of docs
-        const transformer = Transformers[collection._name][(options && options.transformer) || 'default'];
-        const tdocs = transformer ? transformer(docs, options) : docs;
-        tdocs.forEach(doc => doc.communityId = communityId);
-        // console.log(collection._name, tdocs);
-        if (!tdocs.length) { processNextCollection(); return; }  // nothing to do with this collection, handle the next
+        let docs = jsons;
+        const processNextCollection = function () {
+          const collectionToImport = collectionsToImport.shift();
+          if (!collectionToImport) { // Import cycle ended - can close import dialog here
+            Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
+            return;
+          }
+          const collection = collectionToImport.collection;
+    //      if (options && options.multipleDocsPerLine) docs = singlify(docs);
+          const translator = new Translator(collection, user.settings.language);
+          if (translator) docs = translator.reverse(docs);
+          // --- Custom transformation is applied to the docs, that may even change the set of docs
+          const transformer = Transformers[collection._name][(options && options.transformer) || 'default'];
+          const tdocs = transformer ? transformer(docs, options) : docs;
+          tdocs.forEach(doc => doc.communityId = communityId);
+          // console.log(collection._name, tdocs);
+          if (!tdocs.length) { processNextCollection(); return; }  // nothing to do with this collection, handle the next
 
-        collection.methods.batch.test.call({ args: tdocs }, function (err, res) {
-          if (err) { displayError(err); return; }
-          const neededOps = res;
-          Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocs }, {
-            action: __('import data', { collection: __(collection._name) }),
-            message: __('This operation will do the following') + '<br>' +
-              __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>' +
-              __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>' +
-              __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>' +
-              __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
-            body: 'Readmore',
-            bodyContext: JSON.stringify(neededOps, null, 2),
-          }, processNextCollection);
-        });
-      };
-      processNextCollection();
+          collection.methods.batch.test.call({ args: tdocs }, function (err, res) {
+            if (err) { displayError(err); return; }
+            const neededOps = res;
+            Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocs }, {
+              action: __('import data', { collection: __(collection._name) }),
+              message: __('This operation will do the following') + '<br>' +
+                __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>' +
+                __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>' +
+                __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>' +
+                __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
+              body: 'Readmore',
+              bodyContext: JSON.stringify(neededOps, null, 2),
+            }, processNextCollection);
+          });
+        };
+        processNextCollection();
+      }, 100);
     },
   });
 }
