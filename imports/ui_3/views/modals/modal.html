@@ -19,7 +19,7 @@
           {{#if body}}{{> Template.dynamic template=body data=bodyContext}}{{/if}}
         </div>
         <div class="modal-footer">
-          {{#unless buttonsAreDisabled.get}}
+          {{#unless buttonsAreDisabled}}
             {{#if btnClose}}
             <button id="btn-close" type="button" class="btn btn-default" data-dismiss="modal">{{_ btnClose}}</button>
             {{/if}}

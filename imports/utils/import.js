@@ -75,12 +75,6 @@ Template.Import_upload.events({
 export function importCollectionFromFile(mainCollection, options) {
   const user = Meteor.user();
   const communityId = getActiveCommunityId();
-
-  const buttonsAreDisabled = new ReactiveVar(false);
-  const columnMapping = new ReactiveVar(Settings.get(`columnMappings.${mainCollection._name}`) || {});
-  const saveColumnMapppings = new ReactiveVar(false);
-  const vm = { buttonsAreDisabled, columnMapping, saveColumnMapppings };
-
   const collectionsToImport = getCollectionsToImport(mainCollection);
   const columns = [{ display: __('importColumnsInstructions') }];
   collectionsToImport.forEach((cti, ind) => {
@@ -103,13 +97,13 @@ export function importCollectionFromFile(mainCollection, options) {
   Modal.show('Modal', {
     title: 'importing data',
     body: 'Import_dialog',
-    bodyContext: { collection: mainCollection, options, columns, vm },
+    bodyContext: { collection: mainCollection, options, columns },
     size: 'lg',
     btnAction: 'import',
     btnClose: 'cancel',
-    buttonsAreDisabled,
     onAction() {
-      buttonsAreDisabled.set(true);
+      const viewmodel = this;
+      viewmodel.buttonsAreDisabled(true);
       Meteor.setTimeout(() => {  // We defer, so the button disable happens before the long processing
         const importTable = $('.import-table')[0];
         const importSheet = XLSX.utils.table_to_sheet(importTable);
@@ -120,9 +114,9 @@ export function importCollectionFromFile(mainCollection, options) {
           const collectionToImport = collectionsToImport.shift();
           if (!collectionToImport) { // Import cycle ended - can close import dialog here
             Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
-            if (saveColumnMapppings.get()) {
+            if (viewmodel.saveColumnMapppings()) {
               const _id = Settings.ensureExists();
-              const mapping = _.extend({}, columnMapping.get());
+              const mapping = _.extend({}, viewmodel.columnMapping());
               Settings.update(_id, { $set: { [`columnMappings.${mainCollection._name}`]: mapping } });
             }
             return;

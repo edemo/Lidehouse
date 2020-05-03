@@ -49,7 +49,7 @@
 <template name="Import_dialog">
     {{#if table}}
         {{enableButtons true}}
-        {{> Import_preview table=table columns=columns vm=vm}}
+        {{> Import_preview table=table columns=columns}}
     {{else}}
         {{enableButtons false}}
         {{> Import_upload columns=columns}}
@@ -63,7 +63,7 @@
   {{#unless isValidColumn}} <br>
   <select>
       <option value="">{{_ '(Select one)'}}</option>
-      {{#each column in getAvailableColums}}
+      {{#each column in availableColumns}}
       <option value="{{column}}">{{column}}</option>
       {{/each}}
   </select>
