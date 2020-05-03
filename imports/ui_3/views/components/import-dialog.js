@@ -3,6 +3,7 @@ import { Blaze } from 'meteor/blaze';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 
+import '/imports/ui_3/views/blocks/help-icon.js';
 import './import-dialog.html';
 
 Template.Import_upload.viewmodel({
@@ -23,6 +24,10 @@ Template.Import_upload.events({
 
 Template.Import_preview.viewmodel({
   availableColumns: [],
+  checked: false,
+  autorun() {
+    this.templateInstance.data.vm.saveColumnMapppings.set(this.checked());
+  },
 });
 
 Template.Import_preview.onRendered(function () {
@@ -36,8 +41,9 @@ Template.Import_preview.onRendered(function () {
     const tdElem = $(td);
     const _columnName = td.innerText;
     tdElem.empty();
+    const vm = _.extend({}, this.data.vm, { availableColumns: this.viewmodel.availableColumns });
     Blaze.renderWithData(Template.Import_header_cell,
-      { _columnName, columns: validColumnNames, availableColumns: this.viewmodel.availableColumns }, td
+      { _columnName, columns: validColumnNames, vm }, td
     );
   });
 });
@@ -47,7 +53,7 @@ Template.Import_preview.onRendered(function () {
 Template.Import_dialog.viewmodel({
   table: '',
   enableButtons(val) {
-    this.templateInstance.data.buttonsAreDisabled.set(!val);
+    this.templateInstance.data.vm.buttonsAreDisabled.set(!val);
   },
 });
 
@@ -56,16 +62,17 @@ Template.Import_dialog.viewmodel({
 Template.Import_header_cell.viewmodel({
   columnName: '',
   onCreated(instance) {
-    this.columnName(instance.data._columnName);
+    const mappedName = instance.data.vm.columnMapping.get()[instance.data._columnName];
+    this.columnName(mappedName || instance.data._columnName);
   },
   onRendered(instance) {
-    const vm = this;
-    instance.find('span').addEventListener('input', function() { vm.textChanged(); }, false);
+    const viewmodel = this;
+    instance.find('span').addEventListener('input', function() { viewmodel.textChanged(); }, false);
   },
   autorun() {
     const data = this.templateInstance.data;
-    if (_.contains(data.availableColumns(), this.columnName())) {
-      data.availableColumns(_.without(data.availableColumns(), this.columnName()));
+    if (_.contains(data.vm.availableColumns(), this.columnName())) {
+      data.vm.availableColumns(_.without(data.vm.availableColumns(), this.columnName()));
     }
   },
   textChanged() {
@@ -75,7 +82,7 @@ Template.Import_header_cell.viewmodel({
     return _.contains(this.getValidColums(), this.columnName());
   },
   getAvailableColums() {
-    return this.templateInstance.data.availableColumns(); // it is a viewmodel var, in the parent (so they share it)
+    return this.templateInstance.data.vm.availableColumns(); // it is a viewmodel var, in the parent (so they share it)
   },
   getValidColums() {
     return this.templateInstance.data.columns;
@@ -86,6 +93,7 @@ Template.Import_header_cell.events({
   'change select'(event, instance) {
     const selected = event.target.selectedOptions[0].value;
     instance.viewmodel.columnName(selected);
+    instance.data.vm.columnMapping.get()[instance.data._columnName] = selected;
 //    Blaze.remove(instance.view);  should remove somewhere
   },
 });

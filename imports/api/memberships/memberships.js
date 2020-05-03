@@ -46,7 +46,7 @@ Memberships.baseSchema = new SimpleSchema({
 // or if there is a single *representor*, he can cast votes for the whole parcel.
 
 const OwnershipSchema = new SimpleSchema({
-  share: { type: Fraction },
+  share: { type: Fraction, defaultValue: new Fraction(1) },
   representor: { type: Boolean, optional: true },
 });
 
@@ -84,8 +84,10 @@ Memberships.idSet = ['communityId', 'role', 'parcelId', 'partnerId'];
 Memberships.modifiableFields = [
   // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
   'rank',
+  'ownership',
   'ownership.share',
   'ownership.representor',
+  'benefactorship',
   'benefactorship.type',
 ];
 

@@ -27,7 +27,15 @@
 <template name="Import_preview">
     <div class="panel panel-warning">
       <div class="panel-heading"><i class="fa fa-pencil"></i> {{_ 'Preview'}}</div>
-      <div class="panel-body">{{{_ 'importPreviewInstructions'}}}</div>
+      <div class="panel-body">
+        {{{_ 'importPreviewInstructions'}}}
+        <br><br>
+        <form>
+            <input type="checkbox" {{b "check: checked" }} name="save-transformation" id="save-transformation">
+            <label for="save-transformation">{{_ 'Save column transformations'}}</label>
+            {{>Help_icon name="save-transformation" title=(_ 'saveTransformationsHelp')}}
+        </form>
+      </div>
     </div>
     <div class="table-responsive">
       <div class="datatable_wrapper">
@@ -41,7 +49,7 @@
 <template name="Import_dialog">
     {{#if table}}
         {{enableButtons true}}
-        {{> Import_preview table=table columns=columns availableColumns=availableColumns}}
+        {{> Import_preview table=table columns=columns vm=vm}}
     {{else}}
         {{enableButtons false}}
         {{> Import_upload columns=columns}}

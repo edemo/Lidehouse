@@ -1,3 +1,5 @@
+import '/imports/api/settings/settings.js';
+import '/imports/api/settings/publications.js';
 import '/imports/api/communities/methods.js';
 import '/imports/api/communities/publications.js';
 import '/imports/api/parcels/methods.js';
