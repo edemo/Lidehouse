@@ -92,7 +92,7 @@ Memberships.actions = {
   }),
   invite: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'invite',
-    label: !doc.userId ? 'invite' : (doc.user().isVerified() ? 'link' : 'reinvite'),
+    label: !doc.userId ? 'invite' : (doc.user() && doc.user().isVerified() ? 'link' : 'reinvite'),
     icon: 'fa fa-user-plus',
     color: doc.userId ? 'info' : 'warning',
     visible: user.hasPermission(`${doc.entityName()}.update`, doc) && !doc.accepted,

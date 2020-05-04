@@ -121,7 +121,7 @@ Topics.helpers({
   },
   unseenCommentsBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
-    const lastSeenInfo = user.lastSeens[seenType][this._id];
+    const lastSeenInfo = user && user.lastSeens[seenType][this._id];
     const messages = lastSeenInfo ?
        Comments.find({ topicId: this._id, createdAt: { $gt: lastSeenInfo.timestamp } }) :
        Comments.find({ topicId: this._id });

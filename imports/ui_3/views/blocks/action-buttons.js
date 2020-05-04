@@ -133,11 +133,11 @@ const buttonHelpers = {
     const actionFuncs = this.templateInstance.data.actions
       ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
       : _.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block');
-    const actions = _.map(actionFuncs, a => a(this.getOptions(), this.getDoc(), Meteor.user()));
+    const actions = _.map(actionFuncs, a => a(this.getOptions(), this.getDoc(), Meteor.userOrNull()));
     return actions;
   },
   hasVisibleAction(actions) {
-    return actions.some(a => a.visible);
+    return actions && actions.some(a => a.visible);
   },
   needsDividerAfter(action) {
     return !!action.subActions;
