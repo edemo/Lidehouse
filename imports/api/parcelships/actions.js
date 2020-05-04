@@ -20,7 +20,7 @@ Parcelships.actions = {
         id: 'af.parcelship.insert',
         collection: Parcelships,
         doc,
-        omitFields: ['parcelId'],
+        omitFields: [],
         type: 'method',
         meteormethod: 'parcelships.insert',
       });
@@ -47,7 +47,7 @@ Parcelships.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.parcelship.update',
         collection: Parcelships,
-        omitFields: ['parcelId', 'leadParcelId'],
+        omitFields: ['leadParcelId'],
         doc,
         type: 'method-update',
         meteormethod: 'parcelships.update',

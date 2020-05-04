@@ -39,8 +39,6 @@ Memberships.baseSchema = new SimpleSchema({
   },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
-  person: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // deprecated for partnerId
-  personId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for partnerId
 });
 
 // Parcels can be jointly owned, with each owner having a fractional *share* of it
@@ -48,7 +46,7 @@ Memberships.baseSchema = new SimpleSchema({
 // or if there is a single *representor*, he can cast votes for the whole parcel.
 
 const OwnershipSchema = new SimpleSchema({
-  share: { type: Fraction },
+  share: { type: Fraction, defaultValue: new Fraction(1) },
   representor: { type: Boolean, optional: true },
 });
 
@@ -86,8 +84,10 @@ Memberships.idSet = ['communityId', 'role', 'parcelId', 'partnerId'];
 Memberships.modifiableFields = [
   // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
   'rank',
+  'ownership',
   'ownership.share',
   'ownership.representor',
+  'benefactorship',
   'benefactorship.type',
 ];
 

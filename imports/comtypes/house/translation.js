@@ -4,20 +4,23 @@ export const HouseTranslation = {
 
   en:
   {
-    "community": "building",
-    "Join a community": "Join a building",
-    "Create a community": "Create a building",
-    "Community finder note": "If you create a new building, you will be its Administrator.",
-    "Community finder text": ["Here you can see the houses created in our system that receive new members. ",
-       "If you find your house in the list and are not yet a member of the community, you can submit a request to join on the house page, which can be approved by the house's executives. ",
-       "If your house is not already in your system, you can create it and invite your housemates to join."],
+    "community": "condominum",
+    "Join a community": "Join a condominum",
+    "Create a community": "Create a condominum",
+    "Community finder note": "If you create a new condominum, you will be its Administrator.",
+    "Community finder text": ["Here you can see the condominums created in our system that receive new members. ",
+       "If you find your condominum in the list and are not yet a member of the community, you can submit a request to join on the community page, which can be approved by the condominum's executives. ",
+       "If your condominum is not already in your system, you can create it and invite your condominum mates to join."],
 
     "centralHeating": "Central heating",
     "ownHeating": "Own heating system",
 
     "schemaCommunities": {
+      "_": {
+        "label": "Condominum"
+      },
       "name": {
-        "label": "Name of the Building",
+        "label": "Name of Condominum",
         "placeholder": "(eg. Marina Gardens)"
       },
       "description": {
@@ -104,7 +107,9 @@ export const HouseTranslation = {
       }
     },
     "schemaParcels": {
-      "label": "Parcel",
+      "_": {
+        "label": "Parcel"
+      },
       "category": {
         "label": "Category",
         "@property": "Property",
@@ -222,6 +227,9 @@ export const HouseTranslation = {
     "ownership proportion": "tulajdoni hányad",
 
     "schemaCommunities": {
+      "_": {
+        "label": "Társasház"
+      },
       "name": {
         "label": "Társasház neve",
         "placeholder": "(pl. Rózsakert lakópark vagy Kankalin u 45)"
@@ -310,7 +318,9 @@ export const HouseTranslation = {
       }
     },
     "schemaParcels": {
-      "label": "Albetét",
+      "_": {
+        "label": "Albetét"
+      },
       "category": {
         "label": "Kategória",
         "@property": "Albetét",

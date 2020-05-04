@@ -1,0 +1,71 @@
+<template name="Import_upload">
+    <div class="panel panel-info">
+      <div class="panel-heading"><i class="fa fa-file"></i> {{_ 'Uploading'}}</div>
+      <div class="panel-body">
+        <div class="pull-right">
+            <button name="download" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> {{_ 'Download template'}}</button>
+        </div>
+        {{_ 'Importable columns'}}: 
+        {{#if viewColumns}}
+            <select multiple style="position:fixed" size="6" {{b "options: columns, optionsValue: name, optionsText: display, value: selected"}} ></select>
+        {{else}}
+          <a href="" id="view-columns" class="text-capitalize"><u>{{_ 'view'}}</u><b class="caret"></b></a>
+        {{/if}}
+        <br><br><br>
+        {{{_ 'importUploadInstructions'}}}<br>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="align-center">
+                <button name="upload" class="btn btn-primary btn-block"><i class="fa fa-upload"></i> {{_ 'Upload file'}}</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="Import_preview">
+    <div class="panel panel-warning">
+      <div class="panel-heading"><i class="fa fa-pencil"></i> {{_ 'Preview'}}</div>
+      <div class="panel-body">
+        {{{_ 'importPreviewInstructions'}}}
+        <br><br>
+        <form>
+            <input type="checkbox" {{b "check: checked" }} name="save-transformation" id="save-transformation">
+            <label for="save-transformation">{{_ 'Save column transformations'}}</label>
+            {{>Help_icon name="save-transformation" title=(_ 'saveTransformationsHelp')}}
+        </form>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <div class="datatable_wrapper">
+        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+          {{{table}}}
+        </div>
+      </div>
+    </div>
+ </template>
+
+<template name="Import_dialog">
+    {{#if table}}
+        {{enableButtons true}}
+        {{> Import_preview table=table columns=columns}}
+    {{else}}
+        {{enableButtons false}}
+        {{> Import_upload columns=columns}}
+    {{/if}}
+</template>
+
+<template name="Import_header_cell">
+  <span contenteditable="true" class="label {{#if isValidColumn}}label-primary{{else}}label-danger{{/if}}"
+    {{b "text:columnName"}}>
+  </span>
+  {{#unless isValidColumn}} <br>
+  <select>
+      <option value="">{{_ '(Select one)'}}</option>
+      {{#each column in availableColumns}}
+      <option value="{{column}}">{{column}}</option>
+      {{/each}}
+  </select>
+  {{/unless}}
+</template>

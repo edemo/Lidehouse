@@ -8,7 +8,7 @@ import './actions.js';
 export function partnersColumns() {
   const columns = [
     { data: 'toString()', title: __('schemaTransactions.partnerId.label') },
-    { data: 'idCard.type', title: __('schemaPartners.idCard.type.label'), render: Render.translateWithScope('schemaPartners.idCard.type') },
+    { data: 'idCard.type', title: __('schemaPartners.idCard.type.label'), render: Render.translateWithScope('schemaPartners.idCard.type.options') },
     { data: 'relation', title: __('schemaPartners.relation.label'), render: Render.translateWithScope('schemaPartners.relation.options') },
     { data: 'contact.email', title: __('schemaPartners.contact.email.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
