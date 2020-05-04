@@ -254,6 +254,9 @@
     }
   },
   "schemaParcelships" : {
+    "_": {
+      "label": "Vezető albetét"
+    },
     "leadParcelId": {
       "label": "Vezető albetét"
     },
@@ -262,6 +265,9 @@
     }
   },
   "schemaMemberships" : {
+    "_": {
+      "label": "Tagság"
+    },
     "role": {
       "label": "Tisztség"
     },
@@ -740,6 +746,9 @@
     }
   },
   "schemaStatementEntries": {
+    "_": {
+      "label": "Kivonat tétel"
+    },
     "valueDate": {
       "label": "Könyvelési nap",
       "placeholder": "(pl. 2017-05-06)"
@@ -790,8 +799,12 @@
     }
   },
   "schemaPartners": {
+    "_": {
+      "label": "Partner"
+    },
     "relation": {
       "label": "Partner viszony",
+      "placeholder": "(Válasszon a listából)",
       "help": "Egy személy egyszerre több partneri viszonyban is lehet a közösséggel. A tagság viszony azt jeleni, hogy tulajdonos, bérlő vagy bármilyen tisztség amivel jogosultságok járnak.",
       "options": {
         "supplier": "Szállító",
@@ -806,8 +819,11 @@
       "label" : "Személyi adatok",
       "type": {
         "label": "Személy típusa",
-        "natural": "magánszemély",
-        "legal": "jogi személyiség"
+        "placeholder": "(Válasszon a listából)",
+        "options": {
+          "natural": "természetes személy",
+          "legal": "jogi személy"
+        }
       },
       "name": {
         "label": "Név",
@@ -818,11 +834,11 @@
         "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
       },
       "identifier": {
-        "label": "Szig. szám ill. cégjegyzékszám",
+        "label": "Szig vagy cégjegyzékszám",
         "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
       },
       "dob": {
-        "label": "Születési ill. alapítási idő"
+        "label": "Születési vagy alapítási idő"
       },
       "mothersName": {
         "label": "Anyja leánykori neve",

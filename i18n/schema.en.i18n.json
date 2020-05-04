@@ -253,6 +253,9 @@
     }
   },
   "schemaParcelships": {
+    "_": {
+      "label": "Lead parcel"
+    },
     "leadParcelId": {
       "label": "Lead parcel"
     },
@@ -261,6 +264,9 @@
     }
   },
   "schemaMemberships" : {
+    "_": {
+      "label": "Membership"
+    },
     "role": {
       "label": "Role"
     },
@@ -735,6 +741,9 @@
     }
   },
   "schemaStatementEntries": {
+    "_": {
+      "label": "StatementEntry"
+    },
     "valueDate": {
       "label": "Accounting date",
       "placeholder": "(eg. 2017-05-06)"
@@ -785,6 +794,9 @@
     }
   },
   "schemaPartners": {
+    "_": {
+      "label": "Partner"
+    },
     "relation": {
       "label": "Partner relation",
       "help": "A person can have multiple partner relations with the community. Member includes all owners and officers, so all persons with system permissions.",
@@ -801,8 +813,10 @@
       "label" : "Person's official data",
       "type": {
         "label": "Person type",
-        "natural": "natural person",
-        "legal": "legal entity"
+        "options": {
+          "natural": "natural person",
+          "legal": "legal person"
+        }
       },
       "name": {
         "label": "Name",
@@ -814,7 +828,7 @@
       },
       "identifier": {
         "label": "Official identifier",
-        "placeholder": "(id card number or company registration number)"
+        "placeholder": "(id card / company reg number)"
       },
       "dob": {
         "label": "Date of birth or formation"

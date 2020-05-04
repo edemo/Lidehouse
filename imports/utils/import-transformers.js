@@ -5,6 +5,7 @@ import { flatten } from 'flat';
 import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
 
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -30,7 +31,9 @@ export const Import = {
 
 // TODO: get this out from TAPI
 const schemaParcels = {
-  "label": "Albetét",
+  "_": {
+    "label": "Albetét"
+  },
   "category": {
     "label": "Kategória",
     "@property": "Albetét",
@@ -123,6 +126,9 @@ const schemaParcels = {
   }
 };
 const schemaParcelships = {
+  "_": {
+    "label": "Vezető albetét"
+  },
   "leadParcelId": {
     "label": "Vezető albetét az"
   },
@@ -134,6 +140,9 @@ const schemaParcelships = {
   },
 };
 const schemaPartners = {
+  "_": {
+    "label": "Partner"
+  },
   "relation": {
     "label": "Partner viszony",
     "supplier": "Szállító",
@@ -196,6 +205,9 @@ const schemaPartners = {
   }
 };
 const schemaMemberships = {
+  "_": {
+    "label": "Tagság"
+  },
   "role": {
     "label": "Tisztség"
   },
@@ -226,10 +238,24 @@ const schemaMemberships = {
   }
 };
 
-export function touchedCollections(collection) {
-  return (collection._name === 'parcels')
-    ? [Parcels, Parcelships, Partners, Memberships]
-    : [collection];
+export function getCollectionsToImport(collection) {
+  if (collection._name === 'parcels') {
+    return [{
+      collection: Parcels,
+      schema: Parcels.simpleSchema({ category: '@property' }),
+    }, {
+      collection: Parcelships,
+      schema: Parcelships.simpleSchema(),
+    }, {
+      collection: Partners,
+      schema: Partners.simpleSchema(),
+    }, {
+      collection: Memberships,
+      schema: Memberships.simpleSchema({ role: 'owner' }),
+      omitFields: ['partnerId', 'ownership.representor'],
+    }];
+  }
+  return [{ collection, schema: collection.simpleSchema() }];
 }
 
 // It is only available in undescore 1.8.1, and we are forced use 1.0.10
@@ -255,6 +281,28 @@ export class Translator {
       else if (collection._name === 'memberships') this.dictionary = schemaMemberships;
       else this.dictionary = {};
     }
+  }
+  __(key) {
+    const split = key.split('.');
+    const transSplit = split.map((k, i) => {
+      const path = split.slice(0, i + 1).join('.');
+      const trans = TAPi18n.__(`schema${this.collection._name.capitalize()}.${path}.label`, {}, this.lang);
+      return trans;
+    });
+    return transSplit.join('.');
+  }
+  example(key, schema) {
+    if (schema.autoform && schema.autoform.placeholder) return schema.autoform.placeholder();
+    if (schema.allowedValues) {
+      let result = '(';
+      schema.allowedValues.forEach((val, i) => {
+        result += __(`schema${this.collection._name.capitalize()}.${key}.options.${val}`);
+        if (i < schema.allowedValues.length - 1) result += '/';
+      });
+      result += ')';
+      return result;
+    }
+    return '';
   }
   reverse(docs) {
 /*    let categorySelector;
@@ -345,7 +393,7 @@ export const Transformers = {
         if (!doc.idCard || !doc.idCard.name) return;
         const tdoc = {}; $.extend(true, tdoc, doc);
         tdoc.idCard.type = tdoc.idCard.type || 'natural';
-        tdoc.relation = tdoc.relation || 'member';
+        tdoc.relation = tdoc.relation || ['member'];
         tdocs.push(tdoc);
       });
       return tdocs;
