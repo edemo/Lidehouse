@@ -30,7 +30,7 @@ Migrations.add({
   version: 1,
   name: 'Add CreatedBy and UpdatedBy fields (and use CreatedBy instead of userId)',
   up() {
-    function upgrade(collection) {
+    /* function upgrade(collection) {
       collection.find({ creatorId: { $exists: false } }).forEach(doc => {
         const creatorId = doc.userId;
         collection.update(doc._id, { $unset: { userId: 0 } });
@@ -38,7 +38,7 @@ Migrations.add({
       });
     }
     upgrade(Topics);
-    upgrade(Comments);
+    upgrade(Comments); */
   },
 });
 
@@ -46,7 +46,7 @@ Migrations.add({
   version: 2,
   name: 'Use communityId:null for the shared assets',
   up() {
-    function upgrade(collection) {
+   /*  function upgrade(collection) {
       collection.update(
         { communityId: { $exists: false } },
         { $set: { communityId: null } },
@@ -54,7 +54,7 @@ Migrations.add({
       );
     }
     upgrade(Sharedfolders);
-    upgrade(Breakdowns);
+    upgrade(Breakdowns); */
   },
 });
 
@@ -62,11 +62,11 @@ Migrations.add({
   version: 3,
   name: 'Tickets get a type',
   up() {
-    Topics.update(
+    /* Topics.update(
       { category: 'ticket', 'ticket.type': { $exists: false } },
       { $set: { 'ticket.type': 'issue' } },
       { multi: true }
-    );
+    ); */
   },
 });
 
@@ -74,11 +74,11 @@ Migrations.add({
   version: 4,
   name: 'Vote closesAt is set directly on topic',
   up() {
-    Topics.find({ category: 'vote', 'vote.closesAt': { $gte: new Date() } }).forEach((topic) => {
+    /* Topics.find({ category: 'vote', 'vote.closesAt': { $gte: new Date() } }).forEach((topic) => {
       const closingDate = topic.vote.closesAt;
       Topics.update(topic._id, { $set: { closesAt: closingDate } });
      // Topics.update(topic._id, { $unset: { 'vote.closesAt': 0 } });
-    });
+    }); */
   },
 });
 
@@ -86,7 +86,7 @@ Migrations.add({
   version: 5,
   name: 'Topics all get a status',
   up() {
-    Topics.find({ category: 'ticket', status: { $exists: false } }).forEach((ticket) => {
+   /*  Topics.find({ category: 'ticket', status: { $exists: false } }).forEach((ticket) => {
       if (!ticket.ticket.status) throw new Meteor.Error('err_migrationFailed', 'There is no ticket.ticket.status');
       Topics.update(ticket._id, { $set: { status: ticket.ticket.status } });
     });
@@ -99,7 +99,7 @@ Migrations.add({
       { status: { $exists: false }, closed: true },
       { $set: { status: 'closed' } },
       { multi: true }
-    );
+    ); */
   },
 });
 
@@ -107,7 +107,7 @@ Migrations.add({
   version: 6,
   name: 'Communities get a settings section and an accountingMethod',
   up() {
-    Communities.update(
+  /*   Communities.update(
       { settings: { $exists: false } },
       { $set: { settings: {
         joinable: true,
@@ -116,7 +116,7 @@ Migrations.add({
         topicAgeDays: 365,
         accountingMethod: 'accrual' } } },
       { multi: true }
-    );
+    ); */
   },
 });
 
@@ -124,14 +124,14 @@ Migrations.add({
   version: 7,
   name: 'Topics need serial',
   up() {
-    Topics.find({}, { sort: { createdAt: 1 } }).forEach((doc) => {
+   /*  Topics.find({}, { sort: { createdAt: 1 } }).forEach((doc) => {
       const selector = { communityId: doc.communityId, category: doc.category };
       const last = Topics.findOne(selector, { sort: { serial: -1 } });
       const lastSerial = last ? (last.serial || 0) : 0;
       const nextSerial = lastSerial + 1;
       doc.serial = nextSerial;
       Topics.update(doc._id, { $set: { serial: nextSerial, serialId: doc.computeSerialId() } });
-    });
+    }); */
   },
 });
 
@@ -139,12 +139,12 @@ Migrations.add({
   version: 8,
   name: 'Remove leadRef from parcel, and create parcelships with it',
   up() {
-    Parcels.find({ leadRef: { $exists: true } }).fetch().filter(p => p.ref !== p.leadRef).forEach((doc) => {
+    /* Parcels.find({ leadRef: { $exists: true } }).fetch().filter(p => p.ref !== p.leadRef).forEach((doc) => {
       const leadParcel = Parcels.findOne({ communityId: doc.communityId, ref: doc.leadRef });
       if (leadParcel) {
         Parcelships.insert({ communityId: doc.communityId, parcelId: doc._id, leadParcelId: leadParcel._id });
       }
-    });
+    }); */
   },
 });
 
@@ -152,11 +152,11 @@ Migrations.add({
   version: 9,
   name: 'Comments category is now required field',
   up() {
-    Comments.update(
+   /*  Comments.update(
       { category: { $exists: false } },
       { $set: { category: 'comment' } },
       { multi: true }
-    );
+    ); */
   },
 });
 
@@ -164,7 +164,7 @@ Migrations.add({
   version: 10,
   name: 'Membership persons become partners, and partners cast the votes, delegate and pay the bills',
   up() {
-    Memberships.update(
+    /* Memberships.update(
       { 'person.idCard.name': { $exists: true },
         'person.contact.email': { $exists: false },
         'person.userId': { $exists: true } },
@@ -212,7 +212,7 @@ Migrations.add({
       const targetUser = Meteor.users.findOne(targetUserId);
       const targetPartnerId = targetUser.partnerId(doc.communityId);
       Delegations.update(doc._id, { $set: { sourceId: sourcePartnerId, targetId: targetPartnerId }, $unset: { sourcePersonId: '', targetPersonId: '' } });
-    });
+    }); */
   },
 });
 
@@ -220,13 +220,13 @@ Migrations.add({
   version: 11,
   name: 'Remove all documents from Transactions, Balances, Txdefs collections',
   up() {
-    const newTransaction = Transactions.findOne({ category: 'bill' });
+   /*  const newTransaction = Transactions.findOne({ category: 'bill' });
     if (!newTransaction) {
       Transactions.direct.remove({});
       Balances.direct.remove({});
       Breakdowns.direct.remove({});
       Txdefs.direct.remove({});
-    }
+    } */
   },
 });
 
@@ -234,13 +234,13 @@ Migrations.add({
   version: 12,
   name: 'Move Közgyűlési meghívók, határozatok (Marina created folder) uploads to the Agendas folder ',
   up() {
-    const folderToKill = Sharedfolders.findOne({ name: 'Közgyűlési meghívók, határozatok' });
+   /*  const folderToKill = Sharedfolders.findOne({ name: 'Közgyűlési meghívók, határozatok' });
     if (folderToKill) {
       const folderId = folderToKill._id;
       Shareddocs.direct.update({ folderId }, { $set: { folderId: 'agenda' } }, { multi: true });
       Sharedfolders.remove(folderId);
       Sharedfolders.remove('decision');
-    }
+    } */
   },
 });
 
@@ -248,7 +248,7 @@ Migrations.add({
   version: 13,
   name: 'Remove unnecessary owners, where a lead parcel is specified',
   up() {
-    Parcels.find({}).fetch().forEach((parcel) => {
+    /* Parcels.find({}).fetch().forEach((parcel) => {
       if (parcel.isLed()) {
         const leadParcel = parcel.leadParcel();
         Memberships.findActive({ parcelId: parcel._id, role: 'owner' }).forEach((doc) => {
@@ -263,7 +263,7 @@ Migrations.add({
           }
         });
       }
-    });
+    }); */
   },
 });
 
@@ -271,12 +271,12 @@ Migrations.add({
   version: 14,
   name: 'Remove duplicate partners',
   up() {
-    Meteor.users.find({}).fetch().forEach((user) => {
+    /* Meteor.users.find({}).fetch().forEach((user) => {
       const partners = Partners.find({ userId: user._id });
       if (partners.count() > 1) {
         console.warn(`MERGE CONFLICT: User ${user._id} (${user.emails[0].address}) has multiple partners: ${partners.fetch()})`);
       }
-    });
+    }); */
   },
 });
 
@@ -284,7 +284,7 @@ Migrations.add({
   version: 15,
   name: 'Rename partner relation parcel to member',
   up() {
-    function upgrade(collection, field, selector = {}) {
+   /*  function upgrade(collection, field, selector = {}) {
       collection.update(
         _.extend({ [field]: 'parcel' }, selector),
         { $set: { [field]: 'member' } },
@@ -295,7 +295,7 @@ Migrations.add({
     upgrade(Txdefs, 'data.relation');
     upgrade(Transactions, 'relation', { category: 'bill' });
     upgrade(Transactions, 'relation', { category: 'payment' });
-    upgrade(Transactions, 'relation', { category: 'receipt' });
+    upgrade(Transactions, 'relation', { category: 'receipt' }); */
   },
 });
 
@@ -303,9 +303,9 @@ Migrations.add({
   version: 16,
   name: 'Parcels can have different categories',
   up() {
-    Parcels.find({ category: { $exists: false } }).forEach(parcel => {
+   /*  Parcels.find({ category: { $exists: false } }).forEach(parcel => {
       Parcels.update(parcel._id, { $set: { category: '@property', code: '@' + parcel.ref } });
-    });
+    }); */
   },
 });
 
@@ -313,7 +313,7 @@ Migrations.add({
   version: 17,
   name: 'Setup Accounts',
   up() {
-    Communities.find({}).forEach(community => {
+    /* Communities.find({}).forEach(community => {
       if (!Accounts.findOne({ communityId: community._id })) {
         Templates.clone('Condominium_COA', community._id);
       }
@@ -338,7 +338,7 @@ Migrations.add({
         const modifiedSide = def[side].map(account => '`' + account);
         Txdefs.update(def._id, { $set: { [side]: modifiedSide } });
       });
-    });
+    }); */
   },
 });
 
@@ -346,9 +346,9 @@ Migrations.add({
   version: 18,
   name: 'Remissions are just payments',
   up() {
-    Txdefs.find({ category: 'remission' }).forEach(def => {
+   /*  Txdefs.find({ category: 'remission' }).forEach(def => {
       Txdefs.update(def._id, { $set: { category: 'payment', 'data.remission': true } });
-    });
+    }); */
   },
 });
 
@@ -356,10 +356,10 @@ Migrations.add({
   version: 19,
   name: 'Transactions have a status',
   up() {
-    Transactions.find({}).forEach(tx => {
+    /* Transactions.find({}).forEach(tx => {
       const status = tx.postedAt ? 'posted' : 'draft';
       Transactions.update(tx._id, { $set: { status } });
-    });
+    }); */
   },
 });
 
@@ -367,12 +367,12 @@ Migrations.add({
   version: 20,
   name: 'Billing becomes a separate sub-schema in bills',
   up() {
-    Transactions.find({ category: 'bill' }).forEach(bill => {
+    /* Transactions.find({ category: 'bill' }).forEach(bill => {
       const modifier = { $set: {} };
       bill.lines.forEach((line, i) => {
         modifier.$set[`line.${i}.billing`] = { id: line.billingId, period: line.period };
       });
-    });
+    }); */
   },
 });
 
