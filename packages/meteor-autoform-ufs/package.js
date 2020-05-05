@@ -18,7 +18,7 @@ Package.onUse(function(api) {
     'aldeed:autoform@5.8.1',
     'dburles:mongo-collection-instances@0.3.5',
     'manuel:viewmodel@6.3.4',
-    'jalik:ufs@0.7.4_1'
+    'jalik:ufs'
   ]);
 
   api.addFiles([
