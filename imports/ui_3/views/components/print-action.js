@@ -31,7 +31,7 @@ Template.registerHelper('printable', function printable() {
     return tx && tx.category === 'bill';
   }
   if (ModalStack.active() && this.doc) {
-    const tx = Transactions.findOne(this.doc._id);
+    const tx = this.doc._id && Transactions.findOne(this.doc._id);
     return tx && tx.category === 'bill';
   }
   return false;

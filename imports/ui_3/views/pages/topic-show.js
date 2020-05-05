@@ -24,7 +24,8 @@ Template.Topic_show.onCreated(function topicShowOnCreated() {
 
 Template.Topic_show.helpers({
   topic() {
-    const topic = Topics.findOne(FlowRouter.getParam('_tid'));
+    const topicId = FlowRouter.getParam('_tid');
+    const topic = topicId && Topics.findOne(topicId);
     return topic;
   },
   pageTitle() {

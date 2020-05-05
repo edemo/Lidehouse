@@ -32,7 +32,8 @@ if (Meteor.isClient) {
 
   getActivePartnerId = function getActivePartnerId() {
     const communityId = getActiveCommunityId();
-    return Meteor.user().partnerId(communityId);
+    const user = Meteor.user();
+    return user && user.partnerId(communityId);
   };
 }
 

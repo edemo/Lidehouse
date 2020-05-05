@@ -7,8 +7,8 @@
 @import "ticket.less";
 @import "reports.less";
 
-// Marking the required fields on autoforms
-[data-required] label:after {
+// Marking the required fields on autoforms - only top level in form groups, avoiding marking each checkbox option
+[data-required] > label:after {
   content: '*';
   color: #ed5565;
 }
