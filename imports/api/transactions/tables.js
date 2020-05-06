@@ -1,5 +1,6 @@
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
+import { ReactiveDatatable } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
@@ -32,7 +33,7 @@ export function transactionColumns() {
 //    { data: 'ref', title: __('schemaTransactions.ref.label') },
     { data: 'note', title: __('schemaTransactions.note.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'transactions', actions: '', size: 'sm' }, cell),
     },
   ];

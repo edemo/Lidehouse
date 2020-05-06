@@ -1,5 +1,6 @@
 //import { Template } from 'meteor/templating';
 //import { Blaze } from 'meteor/blaze';
+//import { ReactiveDatatable } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { displayAccountText } from '/imports/ui_3/helpers/api-display.js';
@@ -15,7 +16,7 @@ export function journalEntriesColumns() {
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
     { data: 'transaction().serialId', title: __('transaction') + ' ' + __('schemaTransactions.serialId.label') },
   //  { data: '_id', title: __('Action buttons'), render: Render.actionButtons,,
-  //    createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+  //    createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
   //      { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.bill }, actions: '', size: 'sm' }, cell),
   //  },
   ];
