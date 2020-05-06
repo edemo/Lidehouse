@@ -288,7 +288,8 @@
         "placeholder": "(eg. 1/1 or 1/2)"
       },
       "representor": {
-        "label": "Representor?"
+        "label": "Representor?",
+        "help:": "If owner is Representor of the parcel, she carries the vote of the full ownership share, even if she is only 1/2 part owner. Also, she will be receiving the common cost bills."
       }
     },
     "benefactorship": {

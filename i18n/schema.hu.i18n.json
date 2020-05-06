@@ -289,7 +289,8 @@
         "placeholder": "(pl. 1/1 vagy 1/2)"
       },
       "representor": {
-        "label": "Képviselője?"
+        "label": "Képviselője?",
+        "help:": "Az abetét tulajdonos, ha Képviselője az albetétnek, akkor a teljes albetét tulajdonrésszel szavaz (akkor is ha ő csak 1/2 rész tulajdonosa az albetétnek), és ő fogja megkapni az albetéthez kapcsolodó közös költség számlákat."
       }
     },
     "benefactorship": {
@@ -805,7 +806,7 @@
     "relation": {
       "label": "Partner viszony",
       "placeholder": "(Válasszon a listából)",
-      "help": "Egy személy egyszerre több partneri viszonyban is lehet a közösséggel. A tagság viszony azt jeleni, hogy tulajdonos, bérlő vagy bármilyen tisztség amivel jogosultságok járnak.",
+      "help": "A szállítók és vevők a közösség gazdasági partnerei. A tagság viszony pedig azt jeleni, hogy bármilyen egyéb tisztség amivel jogosultságok járnak (ide tartozik a tulajdonos, bérlő, számvizsgáló, stb). Egy személy egyszerre több partneri viszonyban is lehet a közösséggel.",
       "options": {
         "supplier": "Szállító",
         "customer": "Vevő",
