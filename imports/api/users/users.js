@@ -364,6 +364,12 @@ Meteor.users.attachSchema(Meteor.users.schema);
 Meteor.users.attachBehaviour(Timestamped);
 Meteor.users.attachBehaviour(Flagable);
 
+if (Meteor.isServer) {
+  Meteor.users.after.insert(function () {
+    Notifications.insert({ userId: this._id, lastSeens: [{}, {}] });
+  });
+}
+
 Meteor.startup(function attach() {
   Meteor.users.simpleSchema().i18n('schemaUsers');
 });

@@ -14,7 +14,6 @@ import { checkNoOutstanding } from '/imports/api/behaviours/accounting-location.
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { Notifications } from '/imports/api/notifications/notifications.js';
 import { Memberships, entityOf } from './memberships.js';
 import { sendAddedToRoleInfoEmail } from '/imports/email/added-to-role.js';
 
@@ -136,7 +135,6 @@ export const linkUser = new ValidatedMethod({
       const inviter = Meteor.users.findOne(this.userId);
       Log.info(`Invitation sending to ${email} in '${inviter.language()}', to join community ${doc.community().name}`);
       const userId = Accounts.createUser({ email, password: Random.id(8), language: inviter.language() });
-      Notifications.insert({ userId, lastSeens: [{}, {}] });
       Accounts.sendEnrollmentEmail(userId);
       user = Meteor.users.findOne(userId);
     }

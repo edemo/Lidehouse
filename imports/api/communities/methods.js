@@ -34,7 +34,6 @@ import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Attachments } from '/imports/api/attachments/attachments.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
-import { Notifications } from '/imports/api/notifications/notifications.js';
 import { Communities } from './communities.js';
 
 export const create = new ValidatedMethod({
@@ -89,7 +88,6 @@ const launch = new ValidatedMethod({
     const communityDoc = Communities.findOne(communityId);
     Log.info(`Sandbox community ${community.name}(${communityId}) created by ${admin.email}}`);
     const userId = UserAccounts.createUser({ email: admin.email, password: Random.id(8), language: community.settings.language });
-    Notifications.insert({ userId, lastSeens: [{}, {}] });
     const { token } = UserAccounts.generateResetToken(userId, admin.email, 'enrollAccount', {});
     const enrollUrl = UserAccounts.urls.enrollAccount(token);
 

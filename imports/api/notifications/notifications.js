@@ -12,6 +12,12 @@ Notifications.schema = new SimpleSchema({
 
 Notifications.attachSchema(Notifications.schema);
 
+Meteor.startup(function indexNotifications() {
+  if (Meteor.isServer) {
+    Notifications._ensureIndex({ userId: 1 });
+  }
+});
+
 Notifications.allow({
   insert() { return true; },
   update() { return true; },

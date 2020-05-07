@@ -14,7 +14,6 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Notifications } from '/imports/api/notifications/notifications.js';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
@@ -173,7 +172,6 @@ export class CommunityBuilder {
         bio: this.__(`demo.${role}.bio`),
       },
     } });
-    Notifications.insert({ userId, lastSeens: [{}, {}] });
     if (userData) Meteor.users.update(userId, { $set: userData });
     if (role === 'admin') this.adminId = userId;
     this.createMembership(userId, role, membershipData);
@@ -333,7 +331,6 @@ export class DemoCommunityBuilder extends CommunityBuilder {
       password: 'password',
       language: this.lang,
     });
-    Notifications.insert({ userId: demoUserId, lastSeens: [{}, {}] });
     const firstNames = this.__('demo.user.firstNames').split('\n');
     const nameCounter = lastDemoUserCounter % 20;
     Meteor.users.update({ _id: demoUserId }, {
