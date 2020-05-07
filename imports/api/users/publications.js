@@ -3,10 +3,20 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Notifications } from '/imports/api/notifications/notifications.js';
 
 // Everyone has access to all of his own stuff automatically
-Meteor.publish(null, function self() {
-  return Meteor.users.find({ _id: this.userId });
+Meteor.publishComposite(null, function self() {
+  return {
+    find() {
+      return Meteor.users.find({ _id: this.userId });
+    },
+    children: [{
+      find(user) {
+        return Notifications.find({ userId: user._id });
+      },
+    }],
+  };
 });
 
 // Subscribes to the public fields of users in the same community

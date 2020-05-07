@@ -7,6 +7,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Notifications } from '/imports/api/notifications/notifications.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/votings/votings.js';
@@ -428,6 +429,18 @@ Migrations.add({
     Partners.find({}).forEach(partner => {
       const relation = partner.relation;
       Partners.update(partner._id, { $set: { relation: [relation] } });
+    });
+  },
+});
+
+Migrations.add({
+  version: 24,
+  name: 'LastSeens has been removed from user, and put it to his own collection',
+  up() {
+    Meteor.users.find({}).forEach((user) => {
+      const lastSeens = user.lastSeens;
+      Notifications.insert({ userId: user._id, lastSeens }, { validate: false });
+      Meteor.users.update(user._id, { $unset: { lastSeens: '' } }, { validate: false });
     });
   },
 });
