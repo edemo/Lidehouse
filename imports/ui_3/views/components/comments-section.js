@@ -6,7 +6,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { __ } from '/imports/localization/i18n.js';
-import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
+import { displayMessage, displayError, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/comments/methods.js';
 import '/imports/api/comments/actions.js';
@@ -40,6 +40,7 @@ const RECENT_COMMENT_COUNT = 5;
 
 Template.Comments_section.viewmodel({
   commentText: '',
+  draft: '',
   isVote() {
     const topic = this.templateInstance.data;
     return topic.category === 'vote';
@@ -75,11 +76,17 @@ Template.Comments_section.events({
   },
   'click .social-comment .js-send'(event, instance) {
     const vm = instance.viewmodel;
+    vm.draft(vm.commentText());
+    vm.commentText('');
     Comments.methods.insert.call({
       topicId: this._id,
-      text: instance.viewmodel.commentText(),
-    }, onSuccess(res => vm.commentText(''))
-    );
+      text: vm.draft(),
+    }, (err) => {
+      if (err) {
+        vm.commentText(vm.draft());
+        displayError(err);
+      }
+    });
   },
 });
 

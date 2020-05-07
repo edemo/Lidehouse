@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { Blaze } from 'meteor/blaze';
+import { ReactiveDatatable } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { displayLocalizer } from '/imports/ui_3/helpers/api-display.js';
@@ -20,7 +21,7 @@ export function parcelBillingColumns() {
 //    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'lastAppliedAt().date', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'parcelBillings', actions: '', size: 'sm' }, cell),
     },
   ];

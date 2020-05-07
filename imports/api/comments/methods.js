@@ -18,12 +18,10 @@ export const insert = new ValidatedMethod({
     const topic = checkExists(Topics, doc.topicId);
     checkPermissions(this.userId, `${doc.entityName()}.insert`, topic);
     const docId = Comments.insert(doc);
-    if (Meteor.isServer) {
-      const newDoc = Comments.findOne(docId); // we need the createdAt timestamp from the server
-      updateMyLastSeen._execute({ userId: this.userId },
-        { topicId: topic._id, lastSeenInfo: { timestamp: newDoc.createdAt } },
-      );
-    }
+    const newDoc = Comments.findOne(docId); // we need the createdAt timestamp
+    updateMyLastSeen._execute({ userId: this.userId },
+      { topicId: topic._id, lastSeenInfo: { timestamp: newDoc.createdAt } },
+    );
     return docId;
   },
 });

@@ -30,7 +30,7 @@ StatementEntries.schema = new SimpleSchema({
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
-StatementEntries.idSet = ['communityId', 'ref', 'refType'];
+StatementEntries.idSet = ['communityId', 'valueDate', 'ref', 'refType'];
 
 Meteor.startup(function indexStatementEntries() {
   StatementEntries.ensureIndex({ ref: 1 });

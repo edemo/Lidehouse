@@ -96,7 +96,7 @@ Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour,
   });
 //  console.log(collection.methods);
 
-  if (Meteor.isClient) return;  // No hooking on the client side
+  // if (Meteor.isClient) return;  // No hooking on the client side
   const hooks = (typeof behaviour.hooks === 'function') ? behaviour.hooks(collection) : behaviour.hooks;
   _.each(hooks, (actions, when) => {
     _.each(actions, (actionFunc, action) => {

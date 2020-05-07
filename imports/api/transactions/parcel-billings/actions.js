@@ -5,6 +5,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { __ } from '/imports/localization/i18n.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
+import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { ParcelBillings } from './parcel-billings.js';
 import './methods.js';
 
@@ -44,9 +45,25 @@ ParcelBillings.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.update',
         collection: ParcelBillings,
+        omitFields: ['activeTime'],
         doc,
         type: 'method-update',
         meteormethod: 'parcelBillings.update',
+        singleMethodArgument: true,
+      });
+    },
+  }),
+  period: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'period',
+    icon: 'fa fa-history',
+    visible: user.hasPermission('parcelBillings.update', doc),
+    run() {
+      Modal.show('Autoform_modal', {
+        id: 'af.parcelBilling.update',
+        schema: ActivePeriod.schema,
+        doc,
+        type: 'method-update',
+        meteormethod: 'parcelBillings.updateActivePeriod',
         singleMethodArgument: true,
       });
     },
@@ -105,8 +122,10 @@ AutoForm.addModalHooks('af.parcelBilling.apply');
 AutoForm.addHooks('af.parcelBilling.update', {
   formToModifier(modifier) {
     // TODO: nasty hack to trick autoform - AF is trying to $unset these, and then throws error, that these values are mandatory
-    delete modifier.$unset['consumption.service'];
-    delete modifier.$unset['consumption.charges'];
+    if (modifier.$unset) {
+      delete modifier.$unset['consumption.service'];
+      delete modifier.$unset['consumption.charges'];
+    }
     return modifier;
   },
 });
