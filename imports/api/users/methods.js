@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Notifications } from '/imports/api/notifications/notifications.js';
 import './users.js';
 
 export const update = new ValidatedMethod({
@@ -68,15 +69,16 @@ export const updateMyLastSeen = new ValidatedMethod({
     modifier['$set'] = {};
     // When we call this method from the client it implicates SEEN_BY.EYES, if we call it from the server it is always SEEN_BY.NOTI
     if (!seenType) seenType = Meteor.users.SEEN_BY.EYES;
-    if (user.lastSeens[seenType][topicId] && user.lastSeens[seenType][topicId].timestamp > lastSeenInfo.timestamp) return;
+    const lastSeens = user.lastSeens();
+    if (lastSeens[seenType][topicId]?.timestamp > lastSeenInfo.timestamp) return;
     // When user seen it by EYES, it implies no NOTI needed - so lastSeen info propagates upwards (SEEN_BY.EYES=0, SEEN_BY.NOTI=1)
     for (let i = seenType; i <= Meteor.users.SEEN_BY.NOTI; i++) {
       modifier['$set']['lastSeens.' + i + '.' + topicId] = lastSeenInfo;
     }
-    Meteor.users.update(this.userId, modifier);
+    Notifications.update({ userId: this.userId }, modifier);
   },
 });
-
+ 
 if (Meteor.isClient) {
   import { displayMessage, handleError } from '/imports/ui_3/lib/errors.js';
 
@@ -87,7 +89,7 @@ if (Meteor.isClient) {
       // Otherwise we should not bother the server constantly with requests, that we saw this thing.
       const seenType = Meteor.users.SEEN_BY.EYES;
       const topic = Topics.findOne(topicId);
-      const oldLastSeenInfo = this.lastSeens[seenType][topic._id];
+      const oldLastSeenInfo = this.lastSeens()[seenType][topic._id];
       const comments = topic.comments().fetch(); // returns newest-first order
       if (!comments[0] && topic.creatorId === this._id) { return; }
       if (comments[0] && comments[0].creatorId === this._id) { return; }  

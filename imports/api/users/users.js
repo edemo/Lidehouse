@@ -21,6 +21,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
+import { Notifications } from '/imports/api/notifications/notifications.js';
 
 export let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
 if (Meteor.isClient) {
@@ -130,8 +131,8 @@ Meteor.users.schema = new SimpleSchema({
   status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', optional: true, autoform: { omit: true } },
 
   // lastSeens.0 is what was seen on screen, lastSeens.1 is to which the email notification was sent out
-  lastSeens: { type: Array, autoValue() { if (this.isInsert) return [{}, {}]; }, autoform: { omit: true } },
-  'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
+  // lastSeens: { type: Array, autoValue() { if (this.isInsert) return [{}, {}]; }, autoform: { omit: true } },
+  // 'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
     // topicId -> { timestamp: lastseen comment's createdAt (if seen any) }
 
   // Make sure this services field is in your schema if you're using any of the accounts packages
@@ -184,6 +185,10 @@ export function initialUsername(user) {
 }
 
 Meteor.users.helpers({
+  lastSeens() {
+    const noti = Notifications.findOne({ userId: this._id });
+    return noti && noti.lastSeens;
+  },
   isVerified() {
 //    debugAssert(Meteor.isServer, 'Email addresses of users are not sent to the clients');
     if (this.emails) return this.emails[0].verified;
@@ -358,6 +363,12 @@ Meteor.users.helpers({
 Meteor.users.attachSchema(Meteor.users.schema);
 Meteor.users.attachBehaviour(Timestamped);
 Meteor.users.attachBehaviour(Flagable);
+
+if (Meteor.isServer) {
+  Meteor.users.after.insert(function () {
+    Notifications.insert({ userId: this._id, lastSeens: [{}, {}] });
+  });
+}
 
 Meteor.startup(function attach() {
   Meteor.users.simpleSchema().i18n('schemaUsers');
