@@ -19,7 +19,7 @@ Meteor.startup(function indexNotifications() {
 });
 
 Notifications.allow({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
+  insert(userId, doc) { return doc.userId === userId; },
+  update(userId, doc) { return doc.userId === userId; },
+  remove(userId, doc) { return doc.userId === userId; },
 });
