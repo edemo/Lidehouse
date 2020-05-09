@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import { importCollectionFromFile } from '/imports/utils/import.js';
+import { importCollectionFromFile } from '/imports/data-import/import.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';

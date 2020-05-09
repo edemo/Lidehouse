@@ -17,7 +17,7 @@ import '/imports/api/topics/actions.js';
 import '/imports/api/topics/tickets/actions.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
-import { importCollectionFromFile } from '/imports/utils/import.js';
+import { importCollectionFromFile } from '/imports/data-import/import.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';

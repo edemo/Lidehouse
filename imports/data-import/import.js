@@ -1,8 +1,6 @@
 /* globals FileReader */
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 import { flatten } from 'flat';
@@ -17,7 +15,10 @@ import '/imports/ui_3/views/blocks/readmore.js';
 import '/imports/ui_3/views/components/import-dialog.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Settings } from '/imports/api/settings/settings.js';
-import { Translator, Parser, Transformers, getCollectionsToImport } from './import-transformers.js';
+import { Translator } from './translator.js';
+import { Parser } from './parser.js';
+import { Transformers } from './transformers.js';
+import { getCollectionsToImport } from './conductors.js';
 
 const rABS = true;
 
@@ -115,7 +116,7 @@ export function importCollectionFromFile(mainCollection, options) {
     onAction() {
       const viewmodel = this;
       viewmodel.buttonsAreDisabled(true);
-      Meteor.setTimeout(() => {  // We defer, so the button disable happens before the long processing
+      Meteor.setTimeout(() => { // We defer, so the button disable happens before the long processing
         const importTable = $('.import-table')[0];
         const importSheet = XLSX.utils.table_to_sheet(importTable);
         const jsons = XLSX.utils.sheet_to_json(importSheet).map(flatten.unflatten);
@@ -145,18 +146,18 @@ export function importCollectionFromFile(mainCollection, options) {
           const parser = new Parser(collectionToImport.schema);
           tdocs.forEach(doc => { parser.parse(doc); doc.communityId = communityId; });
           // console.log(collection._name, tdocs);
-          if (!tdocs.length) { processNextCollection(); return; }  // nothing to do with this collection, handle the next
+          if (!tdocs.length) { processNextCollection(); return; } // nothing to do with this collection, handle the next
 
           collection.methods.batch.test.call({ args: tdocs }, function (err, res) {
             if (err) { displayError(err); return; }
             const neededOps = res;
             Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocs }, {
               action: __('import data', { collection: __(collection._name) }),
-              message: __('This operation will do the following') + '<br>' +
-                __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>' +
-                __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>' +
-                __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>' +
-                __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
+              message: __('This operation will do the following') + '<br>'
+                + __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>'
+                + __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>'
+                + __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>'
+                + __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
               body: 'Readmore',
               bodyContext: JSON.stringify(neededOps, null, 2),
             }, processNextCollection);
