@@ -17,7 +17,7 @@ import '/imports/ui_3/views/blocks/readmore.js';
 import '/imports/ui_3/views/components/import-dialog.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Settings } from '/imports/api/settings/settings.js';
-import { Translator, Transformers, getCollectionsToImport } from './import-transformers.js';
+import { Translator, Parser, Transformers, getCollectionsToImport } from './import-transformers.js';
 
 const rABS = true;
 
@@ -75,10 +75,10 @@ Template.Import_upload.events({
 export function importCollectionFromFile(mainCollection, options) {
   const user = Meteor.user();
   const communityId = getActiveCommunityId();
-  const collectionsToImport = getCollectionsToImport(mainCollection);
+  const collectionsToImport = getCollectionsToImport(mainCollection, options);
   const columns = [{ display: __('importColumnsInstructions') }];
   collectionsToImport.forEach((cti, ind) => {
-    const translator = new Translator(cti.collection, 'hu');
+    const translator = cti.translator;
     columns.push({ name: ind, display: `${translator.__('_')} ${__('data')}`.toUpperCase() });
     _.each(cti.schema._schema, (value, key) => {
       const split = key.split('.');
@@ -91,6 +91,17 @@ export function importCollectionFromFile(mainCollection, options) {
       const example = translator.example(key, value);
       const display = `[${name}]${value.optional ? '' : '(*)'}: ${value.type.name} ${example}`;
       columns.push({ key, name, example, display });
+    });
+    _.each(cti.translator.dictionary, (value, key) => {
+      if (value.depends) {
+        const i = columns.findIndex(c => c.key === key);
+        if (i >= 0) columns.splice(i, 1);
+        value.depends.forEach(name => {
+          if (columns.find(c => c.name === name)) return;
+          const display = `[${name}](*)`;
+          columns.push({ key: name, name, example: '', display });
+        });
+      }
     });
   });
 
@@ -123,12 +134,16 @@ export function importCollectionFromFile(mainCollection, options) {
           }
           const collection = collectionToImport.collection;
     //      if (options && options.multipleDocsPerLine) docs = singlify(docs);
-          const translator = new Translator(collection, user.settings.language);
-          if (translator) docs = translator.reverse(docs);
+          const translator = collectionToImport.translator;
+          if (translator) {
+            docs = translator.reverse(docs);
+            translator.applyDefaults(docs);
+          }
           // --- Custom transformation is applied to the docs, that may even change the set of docs
-          const transformer = Transformers[collection._name][(options && options.transformer) || 'default'];
+          const transformer = Transformers[collection._name]?.[(options && options.transformer) || 'default'];
           const tdocs = transformer ? transformer(docs, options) : docs;
-          tdocs.forEach(doc => doc.communityId = communityId);
+          const parser = new Parser(collectionToImport.schema);
+          tdocs.forEach(doc => { parser.parse(doc); doc.communityId = communityId; });
           // console.log(collection._name, tdocs);
           if (!tdocs.length) { processNextCollection(); return; }  // nothing to do with this collection, handle the next
 
@@ -148,8 +163,7 @@ export function importCollectionFromFile(mainCollection, options) {
           });
         };
         processNextCollection();
-      }, 100);
+      }, 500);
     },
   });
 }
-

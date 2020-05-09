@@ -4,6 +4,7 @@ import { Fraction } from 'fractional';
 import { flatten } from 'flat';
 import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
+import deepExtend from 'deep-extend';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
@@ -28,27 +29,6 @@ export const Import = {
   },
 };
 
-
-export function getCollectionsToImport(collection) {
-  if (collection._name === 'parcels') {
-    return [{
-      collection: Parcels,
-      schema: Parcels.simpleSchema({ category: '@property' }),
-    }, {
-      collection: Parcelships,
-      schema: Parcelships.simpleSchema(),
-    }, {
-      collection: Partners,
-      schema: Partners.simpleSchema(),
-    }, {
-      collection: Memberships,
-      schema: Memberships.simpleSchema({ role: 'owner' }),
-      omitFields: ['partnerId', 'ownership.representor'],
-    }];
-  }
-  return [{ collection, schema: collection.simpleSchema() }];
-}
-
 // It is only available in undescore 1.8.1, and we are forced use 1.0.10
 _.findKey = function findKey(obj, predicate) {
   let result;
@@ -62,22 +42,26 @@ _.findKey = function findKey(obj, predicate) {
 }
 
 export class Translator {
-  constructor(collection, lang) {
+  constructor(collection, options, lang, dictionary) {
     this.collection = collection;
+    this.options = options;
     this.lang = lang;
-    if (lang === 'hu') {
-      if (collection._name === 'parcels') this.dictionary = TAPi18n.__('schemaParcels', { returnObjectTrees: true }, 'hu');
-      else if (collection._name === 'parcelships') this.dictionary = TAPi18n.__('schemaParcelships', { returnObjectTrees: true }, 'hu');
-      else if (collection._name === 'partners') this.dictionary = TAPi18n.__('schemaPartners', { returnObjectTrees: true }, 'hu');
-      else if (collection._name === 'memberships') this.dictionary = TAPi18n.__('schemaMemberships', { returnObjectTrees: true }, 'hu');
-      else this.dictionary = {};
-    }
+    debugAssert(lang === 'hu');
+    let schemaTranslation;
+    if (collection._name === 'parcels') schemaTranslation = TAPi18n.__('schemaParcels', { returnObjectTrees: true }, 'hu');
+    else if (collection._name === 'parcelships') schemaTranslation = TAPi18n.__('schemaParcelships', { returnObjectTrees: true }, 'hu');
+    else if (collection._name === 'partners') schemaTranslation = TAPi18n.__('schemaPartners', { returnObjectTrees: true }, 'hu');
+    else if (collection._name === 'memberships') schemaTranslation = TAPi18n.__('schemaMemberships', { returnObjectTrees: true }, 'hu');
+    else if (collection._name === 'statementEntries') schemaTranslation = TAPi18n.__('schemaStatementEntries', { returnObjectTrees: true }, 'hu');
+    else schemaTranslation = {};
+    this.dictionary = deepExtend({}, schemaTranslation, dictionary);
+    console.log('dict', this.dictionary);
   }
   __(key) {
     const split = key.split('.');
     const transSplit = split.map((k, i) => {
       const path = split.slice(0, i + 1).join('.');
-      const trans = TAPi18n.__(`schema${this.collection._name.capitalize()}.${path}.label`, {}, this.lang);
+      const trans = Object.getByString(this.dictionary, `${path}.label`);
       return trans;
     });
     return transSplit.join('.');
@@ -118,44 +102,210 @@ export class Translator {
           const enFieldName =
             (dictionary && _.findKey(dictionary, k => sameString(trimFieldName, dictionary[k].label)))
             || trimFieldName;
-          if (typeof fieldValue === 'object') {
+          function reverseValue(fieldValue) {
+            const trimFieldValue = fieldValue.trim();
+            return (dictionary && _.findKey(dictionary[enFieldName], k => sameString(trimFieldValue, dictionary[enFieldName][k])))
+              || trimFieldValue;
+          }
+          if (typeof fieldValue === 'object' && !Array.isArray(fieldValue)) {
             path.push(enFieldName);
             reverseObject(fieldValue);
             path.pop();
           } else {
-            let enFieldValue;
+            let reversedValue;
             if (typeof fieldValue === 'string') {
-              const trimFieldValue = fieldValue.trim();
-              enFieldValue =
-                (dictionary && _.findKey(dictionary[enFieldName], k => sameString(trimFieldValue, dictionary[enFieldName][k])))
-                || trimFieldValue;
-            }
-            Object.setByString(tdoc, path.concat([enFieldName]).join('.'), enFieldValue || fieldValue);
+              reversedValue = reverseValue(fieldValue);
+            } else if (Array.isArray(fieldValue)) {
+              reversedValue = fieldValue.map(v => reverseValue(v));
+            } else reversedValue = fieldValue;
+            Object.setByString(tdoc, path.concat([enFieldName]).join('.'), reversedValue);
           }
         });
       }
+      const original = Object.deepClone(doc);
       reverseObject(doc);
+      if (this.options.keepOriginals) tdoc.original = original;
       return tdoc;
     });
   }
-}
+  applyDefaults(docs) {
+    const self = this;
+    return docs.map((doc, index) => {
+      const path = [];
+      function applyDefault(dic) {
+        if (dic.formula) {
+          const calculatedValue = eval(dic.formula)
+          Object.setByString(doc, path.join('.'), calculatedValue);
+        } 
+        if (dic.default) {
+          Object.setByString(doc, path.join('.'), dic.default);
+        } 
+        if (typeof dic === 'object' && !Array.isArray(dic)) {
+          _.each(dic, (value, key) => {
+            if (typeof value === 'object') {
+              path.push(key);
+              applyDefault(value);
+              path.pop();
+            }
+          });
+        }
+      }
+      applyDefault(self.dictionary);
+    });
+  }}
 
 // Problem of dealing with dates as js Date objects:
 // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
 // https://stackoverflow.com/questions/15130735/how-can-i-remove-time-from-date-with-moment-js
 
+export class Parser {
+  constructor(schema) {
+    this.schema = schema;
+  }
+  parse(doc) {
+    _.each(this.schema._schema, (schemaValue, key) => {
+      const textValue = Object.getByString(doc, key);
+      if (!textValue) return;
+      switch (schemaValue.type.name) {
+        case 'Date': {
+          const date = moment.utc(textValue);
+          if (!date.isValid()) throw new Meteor.error('err_invalidData', `Invalid date in import: ${textValue}`);
+          Object.setByString(doc, key, date.toDate());
+          break;
+        }
+        case 'Fraction': {
+          const fraction = new Fraction(textValue);
+          if (!fraction) throw new Meteor.error('err_invalidData', `Invalid fraction in import: ${textValue}`);
+          Object.setByString(doc, key, fraction);
+          break;
+        }
+        case 'Number': {
+          const number = schemaValue.decimal ? parseFloat(textValue) : parseInt(textValue, 10);
+          if (number === NaN) throw new Meteor.error('err_invalidData', `Invalid number in import: ${textValue}`);
+          Object.setByString(doc, key, number);
+          break;
+        }
+        case 'Boolean': {
+          const boolean = new Boolean(textValue);
+          Object.setByString(doc, key, boolean);
+          break;
+        }
+        case 'String':
+        case 'Object':
+        case 'Array': break;
+        default: productionAssert(false, `Not able to parse ${schemaValue.type.name}`);
+      }
+    });
+  }
+}
+
+// Multiple collections can be imported with one import command
+
+export function getCollectionsToImport(collection, options) {
+  switch (collection._name) {
+    case 'parcels': {
+      return [{
+        collection: Parcels,
+        schema: Parcels.simpleSchema({ category: '@property' }),
+        translator: new Translator(Parcels, options, 'hu', {
+          category: { default: '@property' },
+        }),
+      }, {
+        collection: Parcelships,
+        schema: Parcelships.simpleSchema(),
+        translator: new Translator(Parcelships, options, 'hu'),
+      }, {
+        collection: Partners,
+        schema: Partners.simpleSchema(),
+        translator: new Translator(Partners, options, 'hu', {
+          relation: { default: ['member'] },
+          idCard: { type: { default: 'natural' } },
+        }),
+      }, {
+        collection: Memberships,
+        schema: Memberships.simpleSchema({ role: 'owner' }),
+        omitFields: ['partnerId', 'ownership.representor'],
+        translator: new Translator(Memberships, options, 'hu', {
+          role: { default: 'owner' },
+          ownership: { default: { share: '1/1' } },
+        }),
+      }];
+    }
+    case 'transactions': {
+      return [{
+        collection: Transactions,
+        schema: Parcels.simpleSchema({ category: 'bill' }),
+        translator: new Translator(Transactions, options, 'hu', {
+          category: { default: 'bill' },
+          ref: { formula: "'SZ/SZALL/IMP/' + index" },
+          partner: { label: 'Szállító neve adóigazgatási azonosító száma' },
+          valueDate: { label: /* 'A számla fizetési határideje' || */'Számla kelte' },
+          amount: { label: 'Számla összege' },
+          // debit is one of the '8' accounts
+          credit: { default: [{ account: '`454' }] },
+        }),
+      }, {
+        collection: Transactions,
+        schema: Parcels.simpleSchema({ category: 'payment' }),
+        translator: new Translator(Transactions, options, 'hu', {
+          category: { default: 'payment' },
+          ref: { formula: "'FIZ/SZALL/IMP/' + index" },
+          partner: { label: 'Szállító neve adóigazgatási azonosító száma' },
+          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
+          amount: { label: 'Számla összege' },
+  //          amount: { label: 'A számla kiegyenlítésének összege' },
+          debit: { default: [{ account: '`454' }] },
+        }),
+      }];
+    }
+    case 'statementEntries': {
+      const account = Accounts.findOne({ communityId: options.communityId, code: options.account });
+      const dictionary = {
+        account: { default: options.account },
+        statementId: { default: options.source },
+      };
+      switch (account.bank) {
+        case 'K&H': {
+//            productionAssert(options.account.code === Import.findAccountByNumber(doc['Könyvelési számla']).code, 'Bank account mismatch on bank statement');
+          _.extend(dictionary, {
+            ref: { label: 'Tranzakció azonosító' },
+            refType: { label: 'Típus' },
+            valueDate: { label: 'Könyvelés dátuma' },
+            amount: { label: 'Összeg' },
+            name: { label: 'Partner elnevezése' },
+            note: { label: 'Közlemény' },
+          });
+          break;
+        }
+        case undefined: {
+          productionAssert(account.category === 'cash');
+          _.extend(dictionary, {
+            ref: { label: 'Sorszám' },
+            refType: { depends: ['Bevétel', 'Kiadás'], formula: "(doc['Bevétel'] && 'Bevétel') || (doc['Kiadás'] && 'Kiadás')" },
+            valueDate: { label: 'Dátum' },
+            amount: { depends: ['Bevétel', 'Kiadás'], formula: "doc['Bevétel'] || (doc['Kiadás'] * -1)" },
+            name: { label: 'Név' },
+            note: { label: 'Bizonylatszám (1)' },
+          });
+          break;
+        }
+        default: productionAssert(false, `No protocol for bank ${account.bank}`);
+      }
+      return [{
+        collection,
+        schema: collection.simpleSchema(),
+        translator: new Translator(collection, options, 'hu', dictionary),
+      }];
+    }
+    default: return [{
+      collection,
+      schema: collection.simpleSchema(),
+      translator: new Translator(collection, options, 'hu'),
+    }];
+  }
+}
+
 export const Transformers = {
-  parcels: {
-    default: (docs, options) => {
-      const tdocs = [];
-      docs.forEach((doc) => {
-        const tdoc = {}; $.extend(true, tdoc, doc);
-        tdoc.category = tdoc.category || '@property';
-        tdocs.push(tdoc);
-      });
-      return tdocs;
-    },
-  },
   parcelships: {
     default: (docs, options) => {
       const tdocs = [];
@@ -175,21 +325,6 @@ export const Transformers = {
       return tdocs;
     },
   },
-  partners: {
-    default: (docs, options) => {
-      const tdocs = [];
-      const communityId = getActiveCommunityId();
-      debugAssert(communityId);
-      docs.forEach((doc) => {
-        if (!doc.idCard || !doc.idCard.name) return;
-        const tdoc = {}; $.extend(true, tdoc, doc);
-        tdoc.idCard.type = tdoc.idCard.type || 'natural';
-        tdoc.relation = tdoc.relation || ['member'];
-        tdocs.push(tdoc);
-      });
-      return tdocs;
-    },
-  },
   memberships: {
     default: (docs, options) => {
       const tdocs = [];
@@ -204,58 +339,11 @@ export const Transformers = {
         const tdoc = {}; $.extend(true, tdoc, doc);
         tdoc.parcelId = parcel._id;
         tdoc.partnerId = partner._id;
-        if (!tdoc.role) tdoc.role = 'owner';
-        if (!tdoc.ownership) tdoc.ownership = { share: new Fraction(1) };
         tdocs.push(tdoc);
       });
       return tdocs;
     },
   },
-  transactions: {
-    // Before upload: convert two money columns to number
-    default: (docs, options) => {
-      const tdocs = [];
-      docs.forEach((doc, i) => {
-        const docRef = '' + (i+2) + '-' + doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
-    //    const cutoffDate = moment(moment.utc('2019-06-01'));
-        const incomingDate = moment(moment.utc(doc['A számla fizetési határideje'] || doc['Számla kelte']));
-        if (!incomingDate.isValid()) console.error('ERROR: Invalid date in import', doc);
-    //    if (incomingDate < cutoffDate) {
-        const bill = {
-          ref: '>' + docRef,
-          partner: doc['Szállító neve adóigazgatási azonosító száma'],
-          valueDate: incomingDate.toDate(),
-          amount: parseInt(doc['Számla összege'], 10),
-          // debit is one of the '8' accounts
-          credit: [{
-            account: '`454',
-          }],
-        };
-        tdocs.push(bill);
-    //    }
-        if (doc['A számla kiegyenlítésének időpontja']) {
-          const paymentDate = moment(moment.utc(doc['A számla kiegyenlítésének időpontja']));
-          if (!paymentDate.isValid()) console.error('ERROR: Invalid date in import', doc);
-    //      if (paymentDate < cutoffDate) {
-          const payment = {
-            ref: '<' + docRef,
-            partner: doc['Szállító neve adóigazgatási azonosító száma'],
-            valueDate: paymentDate.toDate(),
-            amount: parseInt(doc['Számla összege'], 10),
-    //          amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
-            debit: [{
-              account: '`454',
-            }],
-            // credit is one of the '`38' accounts
-          };
-          tdocs.push(payment);
-    //      }
-        }
-      });
-      return tdocs;
-    },
-  },
-
   // Before upload: convert all money columns to number
   balances: {
     default: (docs, options) => {
@@ -291,49 +379,6 @@ export const Transformers = {
           tag,
           debit: fundamentaBalance,
         });
-      });
-      return tdocs;
-    },
-  },
-
-  statementEntries: {
-    default: (docs, options) => {
-      const account = Accounts.findOne({ communityId: options.communityId, code: options.account });
-      const tdocs = [];
-      docs.forEach((doc) => {
-        let tdoc;
-        switch (account.bank) {
-          case 'K&H': {
-//            productionAssert(options.account.code === Import.findAccountByNumber(doc['Könyvelési számla']).code, 'Bank account mismatch on bank statement');
-            tdoc = {
-              ref: doc['Tranzakció azonosító'],
-              refType: doc['Típus'],
-              valueDate: moment.utc(doc['Könyvelés dátuma']).toDate(),
-              amount: doc['Összeg'],
-              name: doc['Partner elnevezése'],
-              note: doc['Közlemény'],
-            };
-            break;
-          }
-          case undefined: {
-            productionAssert(account.category === 'cash');
-            const amount = doc['Bevétel'] || (doc['Kiadás'] * -1);
-            tdoc = {
-              ref: doc['Sorszám'],
-              refType: (doc['Bevétel'] && 'Bevétel') || (doc['Kiadás'] && 'Kiadás'),
-              valueDate: moment.utc(doc['Dátum']).toDate(),
-              amount,
-              name: doc['Név'],
-              note: doc['Bizonylatszám (1)'],
-            };
-            break;
-          }
-          default: productionAssert(false, `No protocol for bank ${account.bank}`);
-        }
-        tdoc.account = options.account;
-        tdoc.statementId = options.source;
-        if (options.keepOriginals) tdoc.original = doc;
-        tdocs.push(tdoc);
       });
       return tdocs;
     },
