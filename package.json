@@ -52,45 +52,41 @@
     "rules": {
       "import/no-extraneous-dependencies": "off",
       "import/prefer-default-export": "off",
+      "import/no-absolute-path": "off",
+      "import/extensions": "off",
       "no-underscore-dangle": "off",
-      "object-shorthand": [
-        "error",
-        "always",
-        {
-          "avoidQuotes": false
-        }
-      ],
+      "object-shorthand": ["error", "always", {
+        "avoidQuotes": false
+      }],
       "object-property-newline": "off",
-      "max-len": [
-        "warn",
-        150
-      ],
-      "meteor/eventmap-params": [
-        "error",
-        {
-          "eventParamName": "event",
-          "templateInstanceParamName": "instance"
-        }
-      ],
+      "object-curly-newline": "off",
+      "arrow-parens": "off",
+      "max-len": ["warn", 150, {
+        "ignoreComments": true
+      }],
+      "indent": ["warn", 2, {
+        "ignoreComments": true,
+        "SwitchCase": 1
+      }],
+      "meteor/eventmap-params": ["error", {
+        "eventParamName": "event",
+        "templateInstanceParamName": "instance"
+      }],
       "meteor/template-names": "off",
       "meteor/no-session": "off",
       "prefer-template": "off",
       "prefer-arrow-callback": "off",
-      "no-param-reassign": [
-        "error",
-        {
-          "props": false
-        }
-      ],
+      "prefer-destructuring": "off",
+      "no-param-reassign": ["error", {
+        "props": false
+      }],
       "no-return-assign": "warn",
       "no-useless-concat": "warn",
       "no-unused-vars": "warn",
-      "no-plusplus": [
-        "error",
-        {
-          "allowForLoopAfterthoughts": true
-        }
-      ]
+      "no-nested-ternary": "warn",
+      "no-plusplus": ["error", {
+        "allowForLoopAfterthoughts": true
+      }]
     },
     "settings": {
       "import/resolver": "meteor"

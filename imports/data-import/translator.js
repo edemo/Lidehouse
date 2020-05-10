@@ -109,7 +109,7 @@ export class Translator {
 
   applyDefaults(docs) {
     const self = this;
-    return docs.map((doc, index) => {
+    return docs.forEach((doc, index) => {
       const path = [];
       function applyDefault(dic) {
         if (dic.formula) {
