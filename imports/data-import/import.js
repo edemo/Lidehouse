@@ -41,7 +41,7 @@ Template.Import_dialog.events({
       reader.onload = function (e) {
         let data = e.target.result;
         if (!rABS) data = new Uint8Array(data);
-        const workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' });
+        const workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' /*, cellDates: true*/ });
         const sheetName = workbook.SheetNames[0]; // importing only the first sheet
         const worksheet = workbook.Sheets[sheetName];
         const html = XLSX.utils.sheet_to_html(worksheet, { editable: true });
@@ -118,7 +118,7 @@ export function importCollectionFromFile(mainCollection, options) {
       viewmodel.buttonsAreDisabled(true);
       Meteor.setTimeout(() => { // We defer, so the button disable happens before the long processing
         const importTable = $('.import-table')[0];
-        const importSheet = XLSX.utils.table_to_sheet(importTable);
+        const importSheet = XLSX.utils.table_to_sheet(importTable /*, { cellDates: true }*/);
         const jsons = XLSX.utils.sheet_to_json(importSheet).map(flatten.unflatten);
 
         let docs = jsons;

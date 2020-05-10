@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
 import { moment } from 'meteor/momentjs:moment';
+import XLSX from 'xlsx';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 
@@ -16,33 +17,34 @@ export class Parser {
 
   parse(doc) {
     _.each(this.schema._schema, (schemaValue, key) => {
-      const textValue = Object.getByString(doc, key);
-      if (!textValue) return;
+      const cellValue = Object.getByString(doc, key);
+      if (!cellValue) return;
       switch (schemaValue.type.name) {
         case 'Date': {
-          const date = moment.utc(textValue);
-          if (!date.isValid()) throw new Meteor.Error('err_invalidData', `Invalid date in import: ${textValue}`);
-          Object.setByString(doc, key, date.toDate());
+          const d = XLSX.SSF.parse_date_code(cellValue); // XLSX stores date cells as number, and can parse it into its own object format
+          const utc = moment.utc([d.y, d.m - 1, d.d]);
+          if (!utc.isValid()) throw new Meteor.Error('err_invalidData', `Invalid date in import: ${cellValue}`);
+          Object.setByString(doc, key, utc.toDate());
           break;
         }
         case 'Fraction': {
-          const fraction = new Fraction(textValue);
-          if (!fraction) throw new Meteor.Error('err_invalidData', `Invalid fraction in import: ${textValue}`);
+          const fraction = new Fraction(cellValue);
+          if (!fraction) throw new Meteor.Error('err_invalidData', `Invalid fraction in import: ${cellValue}`);
           Object.setByString(doc, key, fraction);
           break;
         }
         case 'Number': {
-          const number = schemaValue.decimal ? parseFloat(textValue) : parseInt(textValue, 10);
-          if (isNaN(number)) throw new Meteor.Error('err_invalidData', `Invalid number in import: ${textValue}`);
+          const number = schemaValue.decimal ? parseFloat(cellValue) : parseInt(cellValue, 10);
+          if (isNaN(number)) throw new Meteor.Error('err_invalidData', `Invalid number in import: ${cellValue}`);
           Object.setByString(doc, key, number);
           break;
         }
         case 'Boolean': {
           let boolean;
-          switch (textValue.toLowerCase().trim()) {
+          switch (cellValue.toLowerCase().trim()) {
             case 'true': case 'yes': case '1': boolean = true; break;
             case 'false': case 'no': case '0': case null: boolean = false; break;
-            default: boolean = Boolean(textValue);
+            default: boolean = Boolean(cellValue);
           }
           Object.setByString(doc, key, boolean);
           break;
