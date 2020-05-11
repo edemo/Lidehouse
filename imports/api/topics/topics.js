@@ -39,9 +39,9 @@ Topics.baseSchema = new SimpleSchema({
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { type: 'markdown' } },
-  photo: { type: String, optional: true, autoform: imageUpload },
+  photo: { type: String, optional: true, autoform: imageUpload() },
 //  shareddocs: { type: Array, optional: true },
-//  'shareddocs.$': { type: String, optional: true, autoform: documentUpload },
+//  'shareddocs.$': { type: String, optional: true, autoform: documentUpload() },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 

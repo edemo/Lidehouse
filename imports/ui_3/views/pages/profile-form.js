@@ -11,7 +11,6 @@ import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { remove as removeUser } from '/imports/api/users/methods.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/api/users/users.js';
 import './profile-form.html';
@@ -19,9 +18,6 @@ import './profile-form.html';
 Template.Profile_form.viewmodel({
   autorun() {
     if (!Session.get('personMismatchWarningWasShown')) this.nameMismatchModal();
-  },
-  onRendered() {
-    initializeHelpIcons(this.templateInstance, 'schemaUsers');
   },
   nameMismatchModal() {
     if (Meteor.user() && Meteor.user().personNameMismatch()) {
@@ -47,7 +43,7 @@ Template.Profile_form.viewmodel({
     return Meteor.users.findOne({ _id: this.getUserId() });
   },
   schema() {
-    const DisabledEmailType = $.extend(true, {}, SimpleSchema.Types.Email);
+    const DisabledEmailType = $.extend(true, {}, SimpleSchema.Types.Email());
     DisabledEmailType.autoform.disabled = true;
     const profileSchema = new SimpleSchema([
       { email: DisabledEmailType },

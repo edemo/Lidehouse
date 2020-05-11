@@ -7,7 +7,7 @@ Template.Help_icon.onRendered(function () {
 //  this.$('.help-icon').tooltip();
 });
 
-export function initializeHelpIcons(template, schemaName) {
+/* export function initializeHelpIcons(template, schemaName) {
   const helpIcons = template.$('.help-icon');
   helpIcons.each(function () {
     const helpIcon = $(this);
@@ -20,4 +20,4 @@ export function initializeHelpIcons(template, schemaName) {
       helpIcon.toggleClass('hidden');
     }
   });
-}
+} */

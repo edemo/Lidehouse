@@ -8,7 +8,6 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { afId2details } from '/imports/ui_3/views/modals/autoform-modal.js';
-import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -52,7 +51,6 @@ Template.Voting_edit.onRendered(function () {
   const instance = Template.instance();
   const doc = autoformDataContext().doc;
   if (doc && doc.vote) instance.choices.set(doc.vote.choices);
-  initializeHelpIcons(this, 'schemaVotings');
 });
 
 Template.Voting_edit.helpers({

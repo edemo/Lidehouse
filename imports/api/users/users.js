@@ -78,7 +78,7 @@ export const PersonProfileSchema = new SimpleSchema({
 const PersonProfileSchema = new SimpleSchema({
   firstName: { type: String, optional: true },
   lastName: { type: String, optional: true },
-  publicEmail: _.extend({ optional: true }, SimpleSchema.Types.Email),
+  publicEmail: _.extend({ optional: true }, SimpleSchema.Types.Email()),
   address: { type: String, optional: true },
   phone: { type: String, max: 20, optional: true },
   bio: { type: String, optional: true },
@@ -120,10 +120,10 @@ Meteor.users.schema = new SimpleSchema({
 
   emails: { type: Array },
   'emails.$': { type: Object },
-  'emails.$.address': SimpleSchema.Types.Email,
+  'emails.$.address': SimpleSchema.Types.Email(),
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
-  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
   profile: { type: PersonProfileSchema, optional: true },
   settings: { type: UserSettingsSchema },
 

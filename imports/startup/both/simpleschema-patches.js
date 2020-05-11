@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema'; 
 
 SimpleSchema.Types = {
-  Email: {
+  Email: () => ({
     type: String,
     regEx: SimpleSchema.RegEx.Email,
     custom() {
@@ -17,5 +17,5 @@ SimpleSchema.Types = {
       autocapitalize: 'none',
       autocorrect: 'off',
     },
-  },
+  }),
 };

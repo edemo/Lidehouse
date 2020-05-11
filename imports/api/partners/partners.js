@@ -21,7 +21,7 @@ export const Partners = new Mongo.Collection('partners');
 const ContactSchema = new SimpleSchema({
   address: { type: String, optional: true },
   phone: { type: String, optional: true },
-  email: _.extend({ optional: true }, SimpleSchema.Types.Email),
+  email: _.extend({ optional: true }, SimpleSchema.Types.Email()),
 });
 
 const idCardTypeValues = ['natural', 'legal'];

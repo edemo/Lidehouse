@@ -53,7 +53,7 @@ Template.Promotion.viewmodel({
 
 const schemaQuickCommunityLaunch = new SimpleSchema({
   admin: { type: Object },
-  'admin.email': $.extend(true, {}, SimpleSchema.Types.Email),
+  'admin.email': SimpleSchema.Types.Email(),
   community: { type: Object },
   'community.name': { type: String, max: 100 },
   parcelCount: { type: Number, max: 1000, optional: true, defaultValue: 100 },

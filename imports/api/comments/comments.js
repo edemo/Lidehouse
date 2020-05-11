@@ -24,7 +24,7 @@ Comments.schema = new SimpleSchema({
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   category: { type: String, defaultValue: 'comment', allowedValues: Comments.categoryValues, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
-  photo: { type: String, optional: true, autoform: imageUpload },
+  photo: { type: String, optional: true, autoform: imageUpload() },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true },
     autoValue() {
