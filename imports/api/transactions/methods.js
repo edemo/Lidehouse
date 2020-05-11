@@ -179,6 +179,7 @@ export const cloneAccountingTemplates = new ValidatedMethod({
   }).validator(),
   run({ communityId /*, name*/ }) {
     checkPermissions(this.userId, 'accounts.insert', { communityId });
+    if (Meteor.isClient) return // account templates are not available on client side
     Templates.clone('Condominium_COA', communityId);
     Templates.clone('Condominium_Localizer', communityId);
     Templates.clone('Condominium_Txdefs', communityId);
