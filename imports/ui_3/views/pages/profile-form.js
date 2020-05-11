@@ -43,7 +43,7 @@ Template.Profile_form.viewmodel({
     return Meteor.users.findOne({ _id: this.getUserId() });
   },
   schema() {
-    const DisabledEmailType = $.extend(true, {}, SimpleSchema.Types.Email());
+    const DisabledEmailType = SimpleSchema.Types.Email();
     DisabledEmailType.autoform.disabled = true;
     const profileSchema = new SimpleSchema([
       { email: DisabledEmailType },
