@@ -32,7 +32,7 @@ Template.Members_panel.viewmodel({
     if (partnerSearch) {
       managers = managers.filter(m => m.partner() && m.partner().displayName().toLowerCase().search(partnerSearch.toLowerCase()) >= 0);
     }
-    managers =  _.sortBy(managers, m => {
+    managers = _.sortBy(managers, m => {
       const room = Rooms.getRoom(Session.get('roomMode'), m.userId);
       return room ? -1 * room.updatedAt : 0;
     });
