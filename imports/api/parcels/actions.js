@@ -9,7 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
-import { importCollectionFromFile } from '/imports/utils/import.js';
+import { importCollectionFromFile } from '/imports/data-import/import.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';

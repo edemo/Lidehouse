@@ -15,9 +15,9 @@
   "dependencies": {
     "@babel/runtime": "^7.9.6",
     "autoprefixer": "^6.4.1",
-    "babel-runtime": "^6.26.0",
     "bcrypt": "^4.0.1",
     "compress.js": "^1.1.2",
+    "deep-extend": "^0.6.0",
     "faker": "^3.1.0",
     "flat": "^4.1.0",
     "fractional": "^1.0.0",
@@ -27,7 +27,7 @@
     "xlsx": "^0.15.6"
   },
   "devDependencies": {
-    "babel-eslint": "^6.1.2",
+    "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-import-resolver-meteor": "^0.4.0",
@@ -46,51 +46,47 @@
       "meteor"
     ],
     "extends": [
-      "airbnb",
+      "airbnb-base",
       "plugin:meteor/recommended"
     ],
     "rules": {
       "import/no-extraneous-dependencies": "off",
       "import/prefer-default-export": "off",
+      "import/no-absolute-path": "off",
+      "import/extensions": "off",
       "no-underscore-dangle": "off",
-      "object-shorthand": [
-        "error",
-        "always",
-        {
-          "avoidQuotes": false
-        }
-      ],
+      "object-shorthand": ["error", "always", {
+        "avoidQuotes": false
+      }],
       "object-property-newline": "off",
-      "max-len": [
-        "warn",
-        150
-      ],
-      "meteor/eventmap-params": [
-        "error",
-        {
-          "eventParamName": "event",
-          "templateInstanceParamName": "instance"
-        }
-      ],
+      "object-curly-newline": "off",
+      "arrow-parens": "off",
+      "max-len": ["warn", 150, {
+        "ignoreComments": true
+      }],
+      "indent": ["warn", 2, {
+        "ignoreComments": true,
+        "SwitchCase": 1
+      }],
+      "meteor/eventmap-params": ["error", {
+        "eventParamName": "event",
+        "templateInstanceParamName": "instance"
+      }],
       "meteor/template-names": "off",
       "meteor/no-session": "off",
       "prefer-template": "off",
       "prefer-arrow-callback": "off",
-      "no-param-reassign": [
-        "error",
-        {
-          "props": false
-        }
-      ],
+      "prefer-destructuring": "off",
+      "no-param-reassign": ["error", {
+        "props": false
+      }],
       "no-return-assign": "warn",
       "no-useless-concat": "warn",
       "no-unused-vars": "warn",
-      "no-plusplus": [
-        "error",
-        {
-          "allowForLoopAfterthoughts": true
-        }
-      ]
+      "no-nested-ternary": "warn",
+      "no-plusplus": ["error", {
+        "allowForLoopAfterthoughts": true
+      }]
     },
     "settings": {
       "import/resolver": "meteor"

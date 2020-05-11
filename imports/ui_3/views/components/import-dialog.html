@@ -60,7 +60,7 @@
   <span contenteditable="true" class="label {{#if isValidColumn}}label-primary{{else}}label-danger{{/if}}"
     {{b "text:columnName"}}>
   </span>
-  {{#unless isValidColumn}} <br>
+  {{#unless (or isValidColumn buttonsAreDisabled)}} <br>
   <select>
       <option value="">{{_ '(Select one)'}}</option>
       {{#each column in availableColumns}}

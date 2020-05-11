@@ -20,7 +20,7 @@ export const Render = Meteor.isServer ? {} : {
   // https://datatables.net/manual/data/renderers#Number-helper
   formatDate(cellData, renderType, currentRow) {
     if (!cellData) return '---';
-    return moment(cellData).format('L');
+    return moment.utc(cellData).format('L');
   },
   formatTime(cellData, renderType, currentRow) {
     if (!cellData) return '---';

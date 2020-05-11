@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import { importCollectionFromFile } from '/imports/utils/import.js';
+import { importCollectionFromFile } from '/imports/data-import/import.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
@@ -92,7 +92,7 @@ Memberships.actions = {
   }),
   invite: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'invite',
-    label: !doc.userId ? 'invite' : (doc.user() && doc.user().isVerified() ? 'link' : 'reinvite'),
+    label: !doc.userId ? 'invite' : (doc.user()?.isVerified() ? 'link' : 'reinvite'),
     icon: 'fa fa-user-plus',
     color: doc.userId ? 'info' : 'warning',
     visible: user.hasPermission(`${doc.entityName()}.update`, doc) && !doc.accepted,
@@ -103,7 +103,7 @@ Memberships.actions = {
       if (!doc.userId && !email) {
         displayMessage('warning', 'No contact email set for this partner');
       } else {
-        const message = !doc.userId ? __('Connecting user', email) : (doc.user().isVerified() ? __('Linking user') : __('Reconnecting user'));
+        const message = !doc.userId ? __('Connecting user', email) : (doc.user()?.isVerified() ? __('Linking user') : __('Reconnecting user'));
         Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, { action, message });
       }
     },

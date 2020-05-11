@@ -6,7 +6,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
-import { importCollectionFromFile } from '/imports/utils/import.js';
+import { importCollectionFromFile } from '/imports/data-import/import.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';

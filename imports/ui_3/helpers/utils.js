@@ -13,7 +13,7 @@ export function displayMoney(number) {
 
 export function displayDate(time) {
   if (!time) return '---';
-  return moment(time).format('L');
+  return moment.utc(time).format('L');
 }
 
 if (Meteor.isClient) {
