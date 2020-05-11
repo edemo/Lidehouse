@@ -2,8 +2,10 @@
   <div class="form-group {{#if afFieldIsInvalid name=this.name}}has-error{{/if}} {{afFormGroupClass}}" data-required={{required}} {{afFormGroupAtts}}>
     {{#unless skipLabel}}
     <label {{afFieldLabelAtts}}>{{#if this.labelText}}{{this.labelText}}{{else}}{{afFieldLabelText name=this.name}}{{/if}}</label>
-    <!--This template is an exact copy of the original afGroup_bootstrap template, with the addition of this one line-->
-    {{> Help_icon name=this.name title=this.title}}
+    <!--This template is an exact copy of the original afGroup_bootstrap template, with the addition of this one block-->
+    {{#if afFieldInputAtts.help}}
+    <i class="help-icon fa fa-question-circle text-info" data-toggle="tooltip" data-placement="right" title="{{afFieldInputAtts.help}}"></i>
+    {{/if}} 
     {{/unless}}
     {{> afFieldInput afFieldInputAtts}}
     <span class="help-block">{{{afFieldMessage name=this.name}}}</span>

@@ -7,7 +7,6 @@ import { Factory } from 'meteor/dburles:factory';
 import { _ } from 'meteor/underscore';
 
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
@@ -31,13 +30,6 @@ export function details2afId(details) {
 
 Template.Autoform_modal.onCreated(function () {
   Session.set('autoformType', this.data.type);
-});
-
-Template.Autoform_modal.onRendered(function () {
-  const id = afId2details(this.data.id);
-  const collection = Factory.get(id.object).collection;
-  const schemaName = `schema${collection._name.capitalize()}`;
-  initializeHelpIcons(this, schemaName);
 });
 
 Template.Autoform_modal.helpers({

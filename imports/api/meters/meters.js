@@ -21,14 +21,14 @@ Meters.serviceValues = ['coldWater', 'hotWater', 'electricity', 'gas', 'heating'
 Meters.readingSchema = new SimpleSchema({
   date: { type: Date },
   value: { type: Number, decimal: true },
-  photo: { type: String, optional: true, autoform: imageUpload },
+  photo: { type: String, optional: true, autoform: imageUpload() },
   approved: { type: Boolean, optional: true, autoform: { omit: true }, defaultValue: true },
 });
 
 Meters.unapprovedReadingSchema = new SimpleSchema({
   date: { type: Date, autoValue: Clock.currentDate, autoform: { value: new Date(), readonly: true } },
   value: { type: Number, decimal: true },
-  photo: { type: String, optional: true, autoform: imageUpload },
+  photo: { type: String, optional: true, autoform: imageUpload() },
 });
 
 // Meters.billingTypeValues = ['reading', 'estimate'];
