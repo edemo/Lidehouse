@@ -50,7 +50,8 @@
     },
     "code": {
       "label": "Code",
-      "placeholder": "(pl. 2)"
+      "placeholder": "(pl. 2)", 
+      "help": "It needs to be unique. If there is already a transaction under this code, it is not modifiable."
     },
     "bank": {
       "label": "Bank name",
@@ -289,7 +290,7 @@
       },
       "representor": {
         "label": "Representor?",
-        "help:": "If owner is Representor of the parcel, she carries the vote of the full ownership share, even if she is only 1/2 part owner. Also, she will be receiving the common cost bills."
+        "help": "If owner is Representor of the parcel, she carries the vote of the full ownership share, even if she is only 1/2 part owner. Also, she will be receiving the common cost bills."
       }
     },
     "benefactorship": {
@@ -369,7 +370,8 @@
     },
     "photo": {
       "label": "Photo (if applicable)",
-      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)",
+      "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
     },
     "shareddocs": {
       "label": "Documents (if applicable)",
@@ -423,17 +425,20 @@
     },
     "vote": {
       "choices": {
-        "label": "Vote choices"
+        "label": "Vote choices",
+        "help": "The voting type may define the choices. If it is not default you can define the choices. First choose the voting type."
       },
       "procedure": {
         "label": "Voting procedure",
         "online": "Online",
-        "meeting": "Owner's meeting"
+        "meeting": "Owner's meeting",
+         "help": "There is no owner's meeting at the end of online voting."
       },
       "effect": {
         "label": "Voting effect",
         "poll": "Poll",
-        "legal": "Legal power"
+        "legal": "Legal power",
+        "help": "Poll does not have a legal effect, it is a preparation for a legal voting or survey on opinions."
       },
       "type": {
         "label": "Voting type",
@@ -441,7 +446,8 @@
         "choose": "Simple selection",
         "preferential": "Rank choices by preference",
         "petition": "Petition",
-        "multiChoose": "Multiple choice"
+        "multiChoose": "Multiple choice",
+        "help": "Choose the optimal type for the decision."
       },
       "voters": {
         "label": "Voters"
@@ -462,8 +468,7 @@
     },
     "photo": {
       "label": "Photo (if applicable)",
-      "placeholder": "Link to file (eg. https://imgbb.com/pic.jpg)",
-      "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
+      "placeholder": "Link to file (eg. https://imgbb.com/pic.jpg)"
     },
     "status": {
       "label": "Status"

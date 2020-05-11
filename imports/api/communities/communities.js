@@ -35,7 +35,7 @@ Communities.settingsSchema = new SimpleSchema({
 Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
   description: { type: String, max: 1200, optional: true },
-  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
 }, comtype.profileSchema, {
   management: { type: String, optional: true, autoform: { type: 'textarea' } },
   taxNo: { type: String, max: 50, optional: true },

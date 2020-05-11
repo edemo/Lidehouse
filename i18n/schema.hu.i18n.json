@@ -290,7 +290,7 @@
       },
       "representor": {
         "label": "Képviselője?",
-        "help:": "Az abetét tulajdonos, ha Képviselője az albetétnek, akkor a teljes albetét tulajdonrésszel szavaz (akkor is ha ő csak 1/2 rész tulajdonosa az albetétnek), és ő fogja megkapni az albetéthez kapcsolodó közös költség számlákat."
+        "help": "Az albetét tulajdonos, ha Képviselője az albetétnek, akkor a teljes albetét tulajdonrésszel szavaz (akkor is ha ő csak 1/2 rész tulajdonosa az albetétnek), és ő fogja megkapni az albetéthez kapcsolodó közös költség számlákat."
       }
     },
     "benefactorship": {
@@ -370,7 +370,8 @@
     },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)",
+      "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
     },
     "shareddocs": {
       "label": "Dokumentumok (ha csatolni szeretne)",
@@ -467,8 +468,7 @@
     },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)",
-      "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "status": {
       "label": "Státusz"
@@ -868,7 +868,7 @@
     "taxNo": { 
       "label": "Adószám",
       "placeholder": "(pl 123456-2-42)",
-      "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
+      "help": "Nem szükséges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
     }
   },
   "schemaBills": {
