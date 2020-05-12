@@ -40,18 +40,12 @@ Template.Members_panel.viewmodel({
     let nonManagers = Memberships.findActive({ communityId, role: { $not: { $in: leaderRoles } }, userId: { $exists: true, $ne: Meteor.userId() } }).fetch();
     nonManagers = _.uniq(nonManagers, false, m => m.userId);
     if (nonManagers.length > MEMBERS_TO_SHOW * 2) this.tooManyMembers(true);
-    if (partnerSearch) {
-      nonManagers = nonManagers.filter(m => m.partner() && m.partner().displayName().toLowerCase().search(partnerSearch.toLowerCase()) >= 0);
-    } else {
-      if (this.tooManyMembers()) {
-        nonManagers = nonManagers.filter(m => Rooms.getRoom(Session.get('roomMode'), m.userId));
-      } else {
-        nonManagers = _.sortBy(nonManagers, m => {
-          const room = Rooms.getRoom(Session.get('roomMode'), m.userId);
-          return room ? -1 * room.updatedAt : 0;
-        });
-      }
-    }
+    if (partnerSearch) nonManagers = nonManagers.filter(m => m.partner() && m.partner().displayName().toLowerCase().search(partnerSearch.toLowerCase()) >= 0);
+    else if (this.tooManyMembers()) nonManagers = nonManagers.filter(m => Rooms.getRoom(Session.get('roomMode'), m.userId));
+    nonManagers = _.sortBy(nonManagers, m => {
+      const room = Rooms.getRoom(Session.get('roomMode'), m.userId);
+      return room ? -1 * room.updatedAt : 0;
+    });
     return nonManagers;
   },
 });
