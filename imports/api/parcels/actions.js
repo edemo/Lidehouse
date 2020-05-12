@@ -119,7 +119,7 @@ Parcels.actions = {
     visible: user.hasPermission('parcels.inCommunity', doc),
     href: '#view-target',
     run(event, instance) {
-      instance.viewmodel.parcelToView(doc._id);
+      Session.set('parcelToView', doc._id);
     },
   }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({
