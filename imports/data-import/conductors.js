@@ -1,4 +1,6 @@
 import { _ } from 'meteor/underscore';
+import { Session } from 'meteor/session';
+
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels';
@@ -7,6 +9,7 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 
 import { Translator } from './translator.js';
 
@@ -44,24 +47,44 @@ export function getCollectionsToImport(collection, options) {
     }
     case 'transactions': {
       return [{
-        collection: Transactions,
-        schema: Parcels.simpleSchema({ category: 'bill' }),
-        translator: new Translator(Transactions, options, 'hu', {
-          category: { default: 'bill' },
-          ref: { formula: "'SZ/SZALL/IMP/' + index" },
-          partner: { label: 'Szállító neve adóigazgatási azonosító száma' },
-          valueDate: { label: /* 'A számla fizetési határideje' || */'Számla kelte' },
-          amount: { label: 'Számla összege' },
-          // debit is one of the '8' accounts
-          credit: { default: [{ account: '`454' }] },
+        collection: Partners,
+        schema: Partners.simpleSchema(),
+        translator: new Translator(Partners, options, 'hu', {
+          relation: { default: ['supplier'] },
+          idCard: {
+            type: { default: 'legal' },
+            name: { label: 'Szállító neve adóigazgatási azonosító száma' },
+          },
         }),
       }, {
         collection: Transactions,
-        schema: Parcels.simpleSchema({ category: 'payment' }),
+        schema: Transactions.simpleSchema({ category: 'bill' }),
+        translator: new Translator(Transactions, options, 'hu', {
+          category: { default: 'bill' },
+          relation: { default: Session.get('activePartnerRelation') },
+          serialId: { formula: "'SZ/SZALL/IMP/' + index" },
+          defId: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'bill', 'data.relation': Session.get('activePartnerRelation') }),
+          partnerId: { label: 'Szállító neve adóigazgatási azonosító száma' },
+          valueDate: { label: 'Számla kelte' },
+          dueDate: { label: 'A számla fizetési határideje' },
+          'lines.0.title': { label: 'Számla száma, vevőkód, fogy hely azonosító' },
+          'lines.0.uom': { default: 'piece' },
+          'lines.0.quantity': { default: 1 },
+          'lines.0.unitPrice': { label: 'Számla összege' },
+          // debit is one of the '8' accounts
+          credit: { default: [{ account: '`454' }] },
+          status: { default: 'posted' },
+          postedAt: { formula: 'doc.valueDate' },
+        }),
+      }, {
+        collection: Transactions,
+        schema: Transactions.simpleSchema({ category: 'payment' }),
         translator: new Translator(Transactions, options, 'hu', {
           category: { default: 'payment' },
-          ref: { formula: "'FIZ/SZALL/IMP/' + index" },
-          partner: { label: 'Szállító neve adóigazgatási azonosító száma' },
+          relation: { default: Session.get('activePartnerRelation') },
+          serialId: { formula: "'FIZ/SZALL/IMP/' + index" },
+          defId: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'payment', 'data.relation': Session.get('activePartnerRelation') }),
+          partnerId: { label: 'Szállító neve adóigazgatási azonosító száma' },
           valueDate: { label: 'A számla kiegyenlítésének időpontja' },
           amount: { label: 'Számla összege' },
 //          amount: { label: 'A számla kiegyenlítésének összege' },

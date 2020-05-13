@@ -73,7 +73,7 @@ Template.Import_upload.events({
 });
 
 
-export function importCollectionFromFile(mainCollection, options) {
+export function importCollectionFromFile(mainCollection, options = {}) {
   const user = Meteor.user();
   const communityId = getActiveCommunityId();
   const collectionsToImport = getCollectionsToImport(mainCollection, options);

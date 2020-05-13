@@ -44,7 +44,7 @@ const periodTags = {
 export const PeriodBreakdown = Breakdowns._transform(periodTags);
 
 export class Period {
-  constructor(label) {  // label format: '2018-09' or '2019'
+  constructor(label) { // label format: '2018-09' or '2019'
     const split = label.split('-');
 //    debugAssert(split.length === 2);  // we allow traditional js date to come in, and we drop the day
     this.year = split[0];
@@ -52,20 +52,25 @@ export class Period {
     this.label = this.year;
     if (this.month) this.label += '-' + this.month;
   }
-  static fromTag(tag) {   // tag format: 'T-2018-09' or 'T-2019' or 'T'
+
+  static fromTag(tag) { // tag format: 'T-2018-09' or 'T-2019' or 'T'
     return new Period(tag.substr(2));
   }
+
   static monthOfDate(date) {
     return new Period(moment(date).format('YYYY-MM'));
   }
+
   static yearOfDate(date) {
     return new Period(moment(date).format('YYYY'));
   }
+
   type() {
     if (!this.year) return 'total';
     else if (!this.month) return 'year';
     else return 'month';
   }
+
   begin(format = 'YYYY-MM-DD') {
     let date;
     if (!this.year) date = moment(0);
@@ -73,6 +78,7 @@ export class Period {
     else date = moment([this.year, this.month - 1]).startOf('month');
     return date.format(format);
   }
+
   end(format = 'YYYY-MM-DD') {
     let date;
     if (!this.year) date = moment();
@@ -80,15 +86,26 @@ export class Period {
     else date = moment([this.year, this.month - 1]).endOf('month');
     return date.format(format);
   }
+
   toString() {
     return this.label;
   }
 }
 
-PeriodBreakdown.currentMonthTag = function () {
-  const now = new Date();
-  return `T-${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+PeriodBreakdown.date2tag = function date2tag(date, tagLetter) {
+  return `${tagLetter}-${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
 };
+
+PeriodBreakdown.endOfLastMonthTag = function endOfLastMonthTag() {
+  const lastMonth = moment().subtract(1, 'month').toDate();
+  return PeriodBreakdown.date2tag(lastMonth, 'C');
+};
+
+PeriodBreakdown.currentMonthTag = function currentMonthTag() {
+  const now = new Date();
+  return PeriodBreakdown.date2tag(now, 'T');
+};
+
 PeriodBreakdown.currentYearTag = function () {
   const now = new Date();
   return `T-${now.getFullYear()}`;

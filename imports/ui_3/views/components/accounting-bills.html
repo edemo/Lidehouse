@@ -25,6 +25,7 @@
                           <li><a href="" class="js-new" data-entity="receipt" data-txdef="{{txdef._id}}"> {{_ 'new'}} {{_ txdef.name}}</a></li>
                           {{/let}}
                       </ul>
+                      {{>Action_buttons_group collection='transactions' actions='import' size='lg'}}
                   </div>
                 {{/if}}
               {{/if}}

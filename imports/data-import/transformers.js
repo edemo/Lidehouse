@@ -1,10 +1,5 @@
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
-import { Fraction } from 'fractional';
-import { flatten } from 'flat';
-import { moment } from 'meteor/momentjs:moment';
-import { TAPi18n } from 'meteor/tap:i18n';
-import deepExtend from 'deep-extend';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
@@ -15,6 +10,8 @@ import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
+import { Parser } from './parser.js';
 
 function flattenBankAccountNumber(BAN) {
   return BAN.trim().split('-').join();
@@ -50,6 +47,19 @@ export const Transformers = {
       return tdocs;
     },
   },
+  transactions: {
+    default: (docs, options) => {
+      const communityId = getActiveCommunityId();
+      debugAssert(communityId);
+      docs.forEach((doc) => {
+        if (!doc.partnerId) return;
+        const partner = Partners.findOne({ communityId, relation: 'supplier', 'idCard.name': doc.partnerId });
+        productionAssert(partner, `No partner with this name ${doc.partnerId}`);
+        doc.partnerId = partner._id;
+      });
+      return docs;
+    },
+  },
   memberships: {
     default: (docs, options) => {
       const tdocs = [];
@@ -74,9 +84,9 @@ export const Transformers = {
     default: (docs, options) => {
       const tdocs = [];
       docs.forEach((doc) => {
-        const date = moment.utc(doc["Dátum"]);
-        const tag = `C-${date.year()}-${date.month() + 1}`;
-        const number = key => (Number(doc[key]) || 0);
+        const date = Parser.parseValue(doc["Dátum"], 'Date');
+        const tag = PeriodBreakdown.date2tag(date, 'C');
+        const number = key => (Parser.parseValue(doc[key], 'Number', { decimal: false }));
     //  '`381' name: 'Pénztár' },
     //  '`382', name: 'Folyószámla' },
     //  '`383', name: 'Megtakarítási számla' },

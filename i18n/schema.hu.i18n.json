@@ -634,6 +634,9 @@
     }
   },
   "schemaTransactions": {
+    "_": {
+      "label": "Tranzakció"
+    },
     "category": {
       "label": "Kategória"
     },

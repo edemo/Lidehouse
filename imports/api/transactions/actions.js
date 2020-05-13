@@ -6,6 +6,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId, getActivePartnerId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
+import { importCollectionFromFile } from '/imports/data-import/import.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -50,6 +51,12 @@ Transactions.actions = {
 //        btnOK: `Insert ${entity.name}`,
       });
     },
+  }),
+  import: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'import',
+    icon: 'fa fa-upload',
+    visible: user.hasPermission('transactions.upsert', doc),
+    run: () => importCollectionFromFile(Transactions),
   }),
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',

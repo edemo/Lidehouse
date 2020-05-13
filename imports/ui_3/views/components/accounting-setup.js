@@ -16,10 +16,12 @@ import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import '/imports/api/transactions/txdefs/actions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { accountColumns } from '/imports/api/transactions/accounts/tables.js';
 import { localizerColumns } from '/imports/api/parcels/tables.js';
 import '/imports/api/transactions/accounts/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
+import { importCollectionFromFile } from '/imports/data-import/import.js';
 import '/imports/api/transactions/txdefs/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
@@ -99,5 +101,8 @@ Template.Accounting_setup.events({
   'click #coa .js-clone'(event, instance) {
     const communityId = Session.get('activeCommunityId');
     Transactions.methods.cloneAccountingTemplates.call({ communityId }, handleError);
+  },
+  'click .js-import'(event, instance) {
+    importCollectionFromFile(Balances);
   },
 });

@@ -24,12 +24,10 @@ export class Translator {
     this.lang = lang;
     debugAssert(lang === 'hu');
     let schemaTranslation;
-    if (collection._name === 'parcels') schemaTranslation = TAPi18n.__('schemaParcels', { returnObjectTrees: true }, 'hu');
-    else if (collection._name === 'parcelships') schemaTranslation = TAPi18n.__('schemaParcelships', { returnObjectTrees: true }, 'hu');
-    else if (collection._name === 'partners') schemaTranslation = TAPi18n.__('schemaPartners', { returnObjectTrees: true }, 'hu');
-    else if (collection._name === 'memberships') schemaTranslation = TAPi18n.__('schemaMemberships', { returnObjectTrees: true }, 'hu');
-    else if (collection._name === 'statementEntries') schemaTranslation = TAPi18n.__('schemaStatementEntries', { returnObjectTrees: true }, 'hu');
-    else schemaTranslation = {};
+    if (collection._name === 'balances') schemaTranslation = {};
+    else {
+      schemaTranslation = TAPi18n.__(`schema${this.collection._name.capitalize()}`, { returnObjectTrees: true }, 'hu');
+    }
     this.dictionary = deepExtend({}, schemaTranslation, dictionary);
   }
 
@@ -58,16 +56,6 @@ export class Translator {
   }
 
   reverse(docs) {
-/*    let categorySelector;
-    if (this.collection._name === 'parcels') categorySelector = { category: '@property' };
-    if (this.collection._name === 'memberships') categorySelector = { role: 'owner' };
-    const schema = this.collection.simpleSchema(categorySelector);
-    const tapi = TAPi18n;
-    debugger;
-    _.each(schema._schemaKeys, key => {
-      this.dictionary[key] = `schema${this.collection._name.capitalize()}.${key}`;
-    });
-*/
     const self = this;
     const sameString = (str1, str2) => (str1.localeCompare(str2, this.lang, { sensitivity: 'base' }) === 0);
     return docs.map(doc => {

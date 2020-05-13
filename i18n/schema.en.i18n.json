@@ -634,6 +634,9 @@
     }
   },
   "schemaTransactions": {
+    "_": {
+      "label": "Transaction"
+    },
     "category": {
       "label": "Category"
     },

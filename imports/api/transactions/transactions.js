@@ -80,7 +80,7 @@ Transactions.baseSchema = new SimpleSchema([
   Transactions.noteSchema,
 ]);
 
-Transactions.idSet = ['communityId', 'ref'];
+Transactions.idSet = ['communityId', 'serialId'];
 
 Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, valueDate: -1 });
