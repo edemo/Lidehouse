@@ -18,23 +18,27 @@ export class Parser {
   static parseValue(cellValue, typeName, schemaValue) {
     switch (typeName) {
       case 'Date': {
+        if (cellValue instanceof Date) return cellValue;
         const d = XLSX.SSF.parse_date_code(cellValue); // XLSX stores date cells as number, and can parse it into its own object format
         const utc = moment.utc([d.y, d.m - 1, d.d]);
         if (!utc.isValid()) throw new Meteor.Error('err_invalidData', `Invalid date in import: ${cellValue}`);
         return utc.toDate();
       }
       case 'Fraction': {
+        if (cellValue instanceof Fraction) return cellValue;
         const fraction = new Fraction(cellValue);
         if (!fraction) throw new Meteor.Error('err_invalidData', `Invalid fraction in import: ${cellValue}`);
         return fraction;
       }
       case 'Number': {
+        if (cellValue instanceof Number) return cellValue;
         if (!cellValue) return 0;
         const number = schemaValue.decimal ? parseFloat(cellValue) : parseInt(cellValue, 10);
         if (isNaN(number)) throw new Meteor.Error('err_invalidData', `Invalid number in import: ${cellValue}`);
         return number;
       }
       case 'Boolean': {
+        if (cellValue instanceof Boolean) return cellValue;
         let boolean;
         switch (cellValue.toLowerCase().trim()) {
           case 'true': case 'yes': case '1': boolean = true; break;

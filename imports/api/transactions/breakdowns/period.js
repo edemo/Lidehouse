@@ -23,6 +23,16 @@ export const monthTags = {
 const yearTags = {
   name: 'years',
   children: [
+  { digit: '-2000', name: '2000', include: monthTags },
+  { digit: '-2001', name: '2001', include: monthTags },
+  { digit: '-2002', name: '2002', include: monthTags },
+  { digit: '-2003', name: '2003', include: monthTags },
+  { digit: '-2004', name: '2004', include: monthTags },
+  { digit: '-2005', name: '2005', include: monthTags },
+  { digit: '-2006', name: '2006', include: monthTags },
+  { digit: '-2007', name: '2007', include: monthTags },
+  { digit: '-2008', name: '2008', include: monthTags },
+  { digit: '-2009', name: '2009', include: monthTags },
   { digit: '-2010', name: '2010', include: monthTags },
   { digit: '-2011', name: '2011', include: monthTags },
   { digit: '-2012', name: '2012', include: monthTags },

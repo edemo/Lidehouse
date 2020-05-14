@@ -893,6 +893,13 @@
       "label": "Fizetési határidő",
       "placeholder": "(pl. 2017-05-06)"
     },
+    "paymentMethod": {
+      "label": "Fizetés módja",
+      "options": {
+        "cash": "készpénz",
+        "bank": "átutalás"
+      }
+    },
     "paymentDate": {
       "label": "Kifizetés ideje",
       "placeholder": "(pl. 2017-05-06)"
@@ -910,6 +917,10 @@
     "outstanding": {
       "label": "Kifizetetlen",
       "placeholder": "(pl. 14560)"
+    },
+    "title": { 
+      "label": "Termék vagy szolgáltatás neve",
+      "placeholder": "(pl. Kerti pad)"
     },
     "lines" : {
       "label": "Tételek",

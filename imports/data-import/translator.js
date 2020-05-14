@@ -24,11 +24,16 @@ export class Translator {
     this.lang = lang;
     debugAssert(lang === 'hu');
     let schemaTranslation;
-    if (collection._name === 'balances') schemaTranslation = {};
-    else {
-      schemaTranslation = TAPi18n.__(`schema${this.collection._name.capitalize()}`, { returnObjectTrees: true }, 'hu');
+    if (collection._name === 'balances') schemaTranslation = [];
+    else if (collection._name === 'transactions') {
+      schemaTranslation = [
+        TAPi18n.__(`schema${this.collection._name.capitalize()}`, { returnObjectTrees: true }, 'hu'),
+        TAPi18n.__(`schema${this.options.entity.capitalize()}s`, { returnObjectTrees: true }, 'hu'),
+      ];
+    } else {
+      schemaTranslation = [TAPi18n.__(`schema${this.collection._name.capitalize()}`, { returnObjectTrees: true }, 'hu')];
     }
-    this.dictionary = deepExtend({}, schemaTranslation, dictionary);
+    this.dictionary = deepExtend({}, ...schemaTranslation, dictionary);
   }
 
   __(key) {
@@ -69,11 +74,13 @@ export class Translator {
             (dictionary && _.findKey(dictionary, k => sameString(trimFieldName, dictionary[k].label)))
             || trimFieldName;
           function reverseValue(fieldValue) {
+            if (typeof fieldValue === 'undefined') return undefined;
+            if (typeof fieldValue !== 'string') return fieldValue;
             const trimFieldValue = fieldValue.trim();
             return (dictionary && _.findKey(dictionary[enFieldName], k => sameString(trimFieldValue, dictionary[enFieldName][k])))
               || trimFieldValue;
           }
-          if (typeof fieldValue === 'object' && !Array.isArray(fieldValue)) {
+          if (_.isSimpleObject(fieldValue)) {
             path.push(enFieldName);
             reverseObject(fieldValue);
             path.pop();

@@ -7,18 +7,22 @@ export class BatchAction {
     this.action = action;
     this.method = method;
     this.options = options; // _.extend({ batch: true }, options);
-    this.sampleDoc = sampleDoc;   // sampleDoc will be used to determine icon, etc...
+    this.sampleDoc = sampleDoc; // sampleDoc will be used to determine icon, etc...
     this.sampleAction = action(options, sampleDoc);
   }
+
   name() {
     return this.sampleAction.name;
   }
+
   icon() {
     return this.sampleAction.icon;
   }
+
   visible(docs) {
     return _.every(docs, doc => this.action(this.options, doc).visible);
   }
+
   run(docs) {
     Modal.confirmAndCall(this.method, { args: _.map(docs, doc => ({ _id: doc._id, ...this.options })) }, {
       action: this.sampleAction.name,

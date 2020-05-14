@@ -53,42 +53,43 @@ export function getCollectionsToImport(collection, options) {
           relation: { default: ['supplier'] },
           idCard: {
             type: { default: 'legal' },
-            name: { label: 'Szállító neve adóigazgatási azonosító száma' },
+//            name: { label: 'Szállító neve adóigazgatási azonosító száma' }, -> columnMapping
           },
         }),
       }, {
         collection: Transactions,
         schema: Transactions.simpleSchema({ category: 'bill' }),
-        translator: new Translator(Transactions, options, 'hu', {
+        translator: new Translator(Transactions, _.extend({}, options, { entity: 'bill' }), 'hu', {
           category: { default: 'bill' },
           relation: { default: Session.get('activePartnerRelation') },
           serialId: { formula: "'SZ/SZALL/IMP/' + index" },
-          defId: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'bill', 'data.relation': Session.get('activePartnerRelation') }),
-          partnerId: { label: 'Szállító neve adóigazgatási azonosító száma' },
-          valueDate: { label: 'Számla kelte' },
-          dueDate: { label: 'A számla fizetési határideje' },
-          'lines.0.title': { label: 'Számla száma, vevőkód, fogy hely azonosító' },
-          'lines.0.uom': { default: 'piece' },
-          'lines.0.quantity': { default: 1 },
-          'lines.0.unitPrice': { label: 'Számla összege' },
-          // debit is one of the '8' accounts
+          defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'bill', 'data.relation': Session.get('activePartnerRelation') })._id },
+          partnerName: { formula: 'doc.idCard.name' },
+          deliveryDate: { formula: 'doc.deliveryDate || doc.issueDate' },
+          dueDate: { formula: 'doc.dueDate || doc.issueDate' },
+          title: { formula: 'doc.title || "---"' },
+          debit: { default: [{ account: '`8' }] },
           credit: { default: [{ account: '`454' }] },
           status: { default: 'posted' },
-          postedAt: { formula: 'doc.valueDate' },
+          postedAt: { formula: 'doc.issueDate' },
         }),
       }, {
         collection: Transactions,
         schema: Transactions.simpleSchema({ category: 'payment' }),
-        translator: new Translator(Transactions, options, 'hu', {
+        translator: new Translator(Transactions, _.extend({}, options, { entity: 'payment' }), 'hu', {
           category: { default: 'payment' },
           relation: { default: Session.get('activePartnerRelation') },
           serialId: { formula: "'FIZ/SZALL/IMP/' + index" },
-          defId: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'payment', 'data.relation': Session.get('activePartnerRelation') }),
-          partnerId: { label: 'Szállító neve adóigazgatási azonosító száma' },
-          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
-          amount: { label: 'Számla összege' },
+          defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'payment', 'data.relation': Session.get('activePartnerRelation') })._id },
+          partnerName: { formula: 'doc.idCard.name' },
+//          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
+//          valueDate: { formula: 'doc.paymentDate' },
+//          amount: { label: 'Számla összege' },
 //          amount: { label: 'A számla kiegyenlítésének összege' },
           debit: { default: [{ account: '`454' }] },
+          credit: { default: [{ account: '`38' }] },
+          status: { default: 'posted' },
+          postedAt: { formula: 'doc.valueDate' },
         }),
       }];
     }

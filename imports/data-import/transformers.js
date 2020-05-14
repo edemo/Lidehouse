@@ -9,6 +9,7 @@ import { Parcels } from '/imports/api/parcels/parcels';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Parser } from './parser.js';
@@ -49,15 +50,40 @@ export const Transformers = {
   },
   transactions: {
     default: (docs, options) => {
+      const tdocs = [];
       const communityId = getActiveCommunityId();
       debugAssert(communityId);
       docs.forEach((doc) => {
-        if (!doc.partnerId) return;
-        const partner = Partners.findOne({ communityId, relation: 'supplier', 'idCard.name': doc.partnerId });
-        productionAssert(partner, `No partner with this name ${doc.partnerId}`);
+        if (!doc.partnerName) return;
+        const partner = Partners.findOne({ communityId, relation: 'supplier', 'idCard.name': doc.partnerName });
+        productionAssert(partner, `No partner with this name ${doc.partnerName}`);
         doc.partnerId = partner._id;
+        delete doc.partnerName;
+        if (doc.category === 'bill') {
+          doc.lines = [{
+            title: doc.title,
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: doc.amount,
+            account: doc.debit[0].account,
+          }];
+          delete doc.title;
+          tdocs.push(doc);
+        }
+        if (doc.category === 'payment') {
+          if (!doc.valueDate) return;
+          const paymentId = doc.serialId;
+          const split = paymentId.split('/'); split[0] = 'SZ';
+          const billId = split.join('/');
+          doc.bills = [{
+            id: Transactions.findOne({ serialId: billId })._id,
+            amount: doc.amount,
+          }];
+          doc.payAccount = doc.credit[0].account;
+          tdocs.push(doc);
+        }
       });
-      return docs;
+      return tdocs;
     },
   },
   memberships: {

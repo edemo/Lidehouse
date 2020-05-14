@@ -56,7 +56,7 @@ Transactions.actions = {
     name: 'import',
     icon: 'fa fa-upload',
     visible: user.hasPermission('transactions.upsert', doc),
-    run: () => importCollectionFromFile(Transactions),
+    run: () => importCollectionFromFile(Transactions, options),
   }),
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',

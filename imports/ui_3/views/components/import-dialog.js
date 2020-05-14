@@ -11,6 +11,7 @@ import './import-dialog.html';
 ViewModel.share({
   import: {
     buttonsAreDisabled: false,
+    worksheet: null,
     columnMapping: {},
     saveColumnMapppings: false,
     availableColumns: [],

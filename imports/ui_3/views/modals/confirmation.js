@@ -39,5 +39,8 @@ Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options, cal
         }
       });
     },
+    onClose() {
+      if (callback) callback();
+    },
   }));
 };

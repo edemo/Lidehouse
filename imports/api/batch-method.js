@@ -1,4 +1,4 @@
-/* eslint-disable dot-notation */
+/* eslint-disable dot-notation, max-classes-per-file */
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
@@ -96,7 +96,8 @@ export class UpsertMethod extends ValidatedMethod {
     const upsertName = collection._name + '.upsert';
     const options = {
       name: upsertName,
-      validate: doc => collection.simpleSchema(doc).validator({ clean: true })(doc),
+      validate: null, // doc => collection.simpleSchema(doc).validator({ clean: true })(doc),
+                      // cannot validate here - that causes defaultvalues to be addded, which cause differing
       run(doc) {
 //        console.log('Upserting:', doc);
         const communityId = doc.communityId;
