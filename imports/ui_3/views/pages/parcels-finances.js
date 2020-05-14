@@ -22,7 +22,6 @@ import './parcels-finances.html';
 
 Template.Parcels_finances.viewmodel({
   showAllParcels: false,
-  parcelToView: '',
   onCreated(instance) {
     const self = this;
     instance.autorun(() => {
@@ -40,6 +39,12 @@ Template.Parcels_finances.viewmodel({
       }
     });
   },
+  onDestroyed() {
+    Session.set('parcelToView');
+  },
+  parcelToView() {
+    return Session.get('parcelToView');
+  },
   myLeadParcels() {
     const communityId = Session.get('activeCommunityId');
     const user = Meteor.user();
@@ -49,7 +54,7 @@ Template.Parcels_finances.viewmodel({
   parcelChoices() {
     const communityId = Session.get('activeCommunityId');
     const parcels = Meteor.userOrNull().hasPermission('balances.ofLocalizers', { communityId }) ?
-        Parcels.find({ communityId, category: '@property', approved: true }).fetch().filter(p => !p.isLed()) : this.myLeadParcels();
+      Parcels.find({ communityId, category: '@property', approved: true }).fetch().filter(p => !p.isLed()) : this.myLeadParcels();
     return parcels.map((parcel) => {
       return {
         label: parcel.display(),
@@ -124,7 +129,7 @@ Template.Parcels_finances.viewmodel({
         ],
       };
     };
-  },*/
+  }, */
 });
 
 Template.Parcels_finances.events({
