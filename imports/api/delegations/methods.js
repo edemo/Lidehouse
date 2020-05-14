@@ -18,17 +18,24 @@ function checkTargetUserAllowsDelegatingTo(targetId, doc) {
   }
 }
 
+function checkNoSelfDelegation(doc, modifierSet) {
+  if (doc.targetId === doc.sourceId || (modifierSet && (modifierSet.targetId === modifierSet.sourceId || modifierSet.targetId === doc.sourceId))) {
+    throw new Meteor.Error('err_sanityCheckFailed', 'You can not delegate to yourself');
+  }
+}
+
 export const insert = new ValidatedMethod({
   name: 'delegations.insert',
   validate: Delegations.simpleSchema().validator({ clean: true }),
 
   run(doc) {
     doc = Delegations._transform(doc);
-    if (this.userId !== doc.sourceUser()._id) {
+    if (this.userId !== doc.sourceUserId()) {
       // Normal user can only delegate his own votes, but special permission allows for others' as well
       checkPermissions(this.userId, 'delegations.forOthers', doc);
     }
     checkTargetUserAllowsDelegatingTo(doc.targetId, doc);
+    checkNoSelfDelegation(doc);
     const delegationId = Delegations.insert(doc);
     const delegation = Delegations.findOne(delegationId); // Refetch needed for timestamps and helper methods
 
@@ -51,11 +58,12 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Delegations, _id);
     checkModifier(doc, modifier, ['targetId', 'scope', 'scopeObjectId']);
-    if (this.userId !== doc.sourceUser()._id) {
+    if (this.userId !== doc.sourceUserId()) {
       // Normal user can only delegate his own votes, but special permission allows for others' as well
       checkPermissions(this.userId, 'delegations.forOthers', doc);
     }
     checkTargetUserAllowsDelegatingTo(modifier.$set.targetId, doc);
+    checkNoSelfDelegation(doc, modifier.$set);
 
     Delegations.update({ _id }, modifier);
 
@@ -79,7 +87,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Delegations, _id);
-    if (this.userId !== doc.sourceUser()._id && this.userId !== doc.targetUser()._id) {
+    if (this.userId !== doc.sourceUserId() && this.userId !== doc.targetUserId()) {
       // User can only remove delegations that delegetes from him, or delegates to him, unless special permissions
       checkPermissions(this.userId, 'delegations.forOthers', doc);
     }

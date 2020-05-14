@@ -342,8 +342,9 @@ Meteor.users.helpers({
     let total = 0;
     // TODO: needs traversing calculation
     Delegations.find({ targetId: this.partnerId(communityId) }).forEach(function addUpUnits(d) {
-      const sourceUser = Meteor.users.findOne(d.sourceUser()._id);
-      total += sourceUser.votingUnits();
+      Memberships.findActive({ communityId, approved: true, role: 'owner', partnerId: d.sourceId }).forEach(function (m) {
+        total += m.votingUnits();
+      });
     });
     return total;
   },

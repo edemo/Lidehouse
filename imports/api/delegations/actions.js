@@ -45,7 +45,7 @@ Delegations.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: user._id === doc.sourceUser()._id || user._id === doc.targetUser()._id
+    visible: user._id === doc.sourceUserId() || user._id === doc.targetUserId()
       || user.hasPermission('delegations.remove', doc),
     run() {
       const communityId = Session.get('activeCommunityId');
@@ -64,12 +64,12 @@ Delegations.actions = {
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',
-    visible: user._id === doc.sourceUser()._id || user._id === doc.targetUser()._id
+    visible: user._id === doc.sourceUserId() || user._id === doc.targetUserId()
       || user.hasPermission('delegations.remove', doc),
     run() {
       let action = 'delete delegation';
-      if (doc.targetUser()._id === user._id) action = 'refuse delegation';
-      if (doc.sourceUser()._id === user._id) action = 'revoke delegation';
+      if (doc.targetUserId() === user._id) action = 'refuse delegation';
+      if (doc.sourceUserId() === user._id) action = 'revoke delegation';
       Modal.confirmAndCall(Delegations.methods.remove, { _id: doc._id }, {
         action,
       });
@@ -89,6 +89,10 @@ AutoForm.addHooks('af.delegation.insert', {
   onError(formType, error) {
     if (error.error === 'err_otherPartyNotAllowed') {
       displayMessage('warning', 'Other party not allowed this activity');
+      return;
+    }
+    if (error.error === 'err_sanityCheckFailed') {
+      displayMessage('warning', 'You can not delegate to yourself');
       return;
     }
     displayError(error);
