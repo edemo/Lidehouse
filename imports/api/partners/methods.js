@@ -9,6 +9,7 @@ import { crudBatchOps } from '/imports/api/batch-method.js';
 import { sendOutstandingsEmail } from '/imports/email/outstandings-send.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Partners } from './partners.js';
 
 
@@ -73,6 +74,8 @@ export const remove = new ValidatedMethod({
     if (membership) throw new Meteor.Error('err_unableToRemove', `Partner ${_id} may not be removed, until membership ${membership._id} is using it.`);
     const transaction = Transactions.findOne({ partnerId: _id });
     if (transaction) throw new Meteor.Error('err_unableToRemove', `Partner ${_id} may not be removed, until transaction ${transaction._id} is using it.`);
+    const contract = Contracts.findOne({ partnerId: _id });
+    if (contract) throw new Meteor.Error('err_unableToRemove', `Partner ${_id} may not be removed, until contract ${contract._id} is using it.`);
     return Partners.remove(_id);
   },
 });
