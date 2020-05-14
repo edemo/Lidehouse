@@ -14,13 +14,16 @@ export class ActionOptions {
   constructor(collection) {
     this.collection = collection;
   }
+
   fields() {
     const keys = _.toArray(Object.keys(this));
     return _.without(keys.filter(k => (typeof k !== 'function')), 'collection');
   }
+
   splitable() {
     return _.some(this.fields(), field => Array.isArray(this[field]));
   }
+
   split() { // It will split up the options to several options sets, in case array values are found in the parameters
     //console.log("splitting", this);
     const arrayFields = [];
@@ -39,6 +42,7 @@ export class ActionOptions {
     //console.log("result", results);
     return results.map(r => Object.setPrototypeOf(r, Object.getPrototypeOf(this)));
   }
+
   fetch() { // Wherever a string is used as parameter, it will fetch the appropriate object, named by the string
     //console.log("fetching", this);
     if (typeof this.status === 'string') {
@@ -65,7 +69,7 @@ export class ActionOptions {
 // (like buttons in datatables, where the buttons are not templates, just simple html)
 
 // depreacted, can be removed:
-export function actionHandlers(collection, actionNames) { 
+export function actionHandlers(collection, actionNames) {
   const actions = actionNames ? actionNames.split(',').map(a => collection.actions[a]) : collection.actions;
   const eventHandlers = {};
   _.each(actions, (action) => {

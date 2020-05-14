@@ -634,6 +634,9 @@
     }
   },
   "schemaTransactions": {
+    "_": {
+      "label": "Transaction"
+    },
     "category": {
       "label": "Category"
     },
@@ -888,6 +891,13 @@
       "label": "Due date",
       "placeholder": "(eg. 2017-05-06)"
     },
+    "paymentMethod": {
+      "label": "Payment method",
+      "options": {
+        "cash": "cash",
+        "bank": "bank"
+      }
+    },
     "paymentDate": {
       "label": "Payment date",
       "placeholder": "(eg. 2017-05-06)"
@@ -905,6 +915,10 @@
     "outstanding": {
       "label": "Outstanding",
       "placeholder": "(eg. 14560)"
+    },
+    "title": { 
+      "label": "Name of product or service",
+      "placeholder": "(eg. Garden chair)"
     },
     "lines" : {
       "label": "Line items",
