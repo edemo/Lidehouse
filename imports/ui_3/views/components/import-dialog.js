@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 
 import { Settings } from '/imports/api/settings/settings.js';
+import { doubleScroll } from '/imports/api/utils.js';
 import '/imports/ui_3/views/blocks/help-icon.js';
 import './import-dialog.html';
 
@@ -57,6 +58,7 @@ Template.Import_preview.viewmodel({
         { _columnName, columns: validColumnNames }, td
       );
     });
+    Meteor.setTimeout(function () { doubleScroll(tableElem); }, 1000);
   },
 });
 
