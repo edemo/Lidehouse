@@ -27,3 +27,15 @@ export function momentWithoutTZ(time) {
 export function equalWithinRounding(amount1, amount2) {
   return Math.abs(amount1 - amount2) < 5;
 }
+
+export function resetSession() {
+  if (Meteor.isClient) {
+    import { Session } from 'meteor/session';
+
+    Object.keys(Session.keys).forEach(function unset(key) {
+      Session.set(key, undefined);
+    });
+    Session.keys = {};
+    Session.set('modalContext', {});
+  }
+}

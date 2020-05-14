@@ -9,6 +9,7 @@ import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/actions.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { resetSession } from '/imports/api/utils.js';
 import '/imports/api/users/users.js';
 import '/imports/ui_3/views/components/badge.js';
 import './right-sidebar.js';
@@ -136,11 +137,7 @@ Template.Top_navbar.events({
       if (err) {
     //        Alerts.add('Error logging out: '+err); // using mrt:bootstrap-alerts
       } else {
-        // Session cleanup
-        Object.keys(Session.keys).forEach(function unset(key) {
-          Session.set(key, undefined);
-        });
-        Session.keys = {};
+        resetSession();
         // Redirect to the home page
         FlowRouter.go('/');
       }
