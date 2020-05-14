@@ -72,8 +72,9 @@ Bills.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);
 
 Bills.receiptSchema = new SimpleSchema({
   // amount overrides non-optional value of transactions, with optional & calculated value
-  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+  amount: { type: Number, decimal: true, optional: true },
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+  title: { type: String, max: 200, optional: true }, // title here used only when there are no lines
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
 });
@@ -90,6 +91,7 @@ Bills.extensionSchema = new SimpleSchema([
     issueDate: { type: Date },
     deliveryDate: { type: Date },
     dueDate: { type: Date },
+    paymentMethod: { type: String, optional: true, allowedValues: ['cash', 'bank'] },
     payments: { type: [Bills.paymentSchema], defaultValue: [] },
     outstanding: { type: Number, decimal: true, min: 0, optional: true },
   //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now

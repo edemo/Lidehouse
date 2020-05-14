@@ -1,10 +1,5 @@
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
-import { Fraction } from 'fractional';
-import { flatten } from 'flat';
-import { moment } from 'meteor/momentjs:moment';
-import { TAPi18n } from 'meteor/tap:i18n';
-import deepExtend from 'deep-extend';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
@@ -14,7 +9,10 @@ import { Parcels } from '/imports/api/parcels/parcels';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
+import { Parser } from './parser.js';
 
 function flattenBankAccountNumber(BAN) {
   return BAN.trim().split('-').join();
@@ -50,6 +48,44 @@ export const Transformers = {
       return tdocs;
     },
   },
+  transactions: {
+    default: (docs, options) => {
+      const tdocs = [];
+      const communityId = getActiveCommunityId();
+      debugAssert(communityId);
+      docs.forEach((doc) => {
+        if (!doc.partnerName) return;
+        const partner = Partners.findOne({ communityId, relation: 'supplier', 'idCard.name': doc.partnerName });
+        productionAssert(partner, `No partner with this name ${doc.partnerName}`);
+        doc.partnerId = partner._id;
+        delete doc.partnerName;
+        if (doc.category === 'bill') {
+          doc.lines = [{
+            title: doc.title,
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: doc.amount,
+            account: doc.debit[0].account,
+          }];
+          delete doc.title;
+          tdocs.push(doc);
+        }
+        if (doc.category === 'payment') {
+          if (!doc.valueDate) return;
+          const paymentId = doc.serialId;
+          const split = paymentId.split('/'); split[0] = 'SZ';
+          const billId = split.join('/');
+          doc.bills = [{
+            id: Transactions.findOne({ serialId: billId })._id,
+            amount: doc.amount,
+          }];
+          doc.payAccount = doc.credit[0].account;
+          tdocs.push(doc);
+        }
+      });
+      return tdocs;
+    },
+  },
   memberships: {
     default: (docs, options) => {
       const tdocs = [];
@@ -74,9 +110,9 @@ export const Transformers = {
     default: (docs, options) => {
       const tdocs = [];
       docs.forEach((doc) => {
-        const date = moment.utc(doc["Dátum"]);
-        const tag = `C-${date.year()}-${date.month() + 1}`;
-        const number = key => (Number(doc[key]) || 0);
+        const date = Parser.parseValue(doc["Dátum"], 'Date');
+        const tag = PeriodBreakdown.date2tag(date, 'C');
+        const number = key => (Parser.parseValue(doc[key], 'Number', { decimal: false }));
     //  '`381' name: 'Pénztár' },
     //  '`382', name: 'Folyószámla' },
     //  '`383', name: 'Megtakarítási számla' },

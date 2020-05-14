@@ -4,6 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
@@ -45,8 +46,8 @@ _.each(billPaidSchema, val => val.autoform = _.extend({}, val.autoform, { afForm
 Payments.billPaidSchema = new SimpleSchema(billPaidSchema);
 
 const extensionSchema = {
-  valueDate: { type: Date },  // same as Tx, but we need the readonly added
-  amount: { type: Number, decimal: true },  // same as Tx, but we need the readonly added
+  valueDate: { type: Date }, // same as Tx, but we need the readonly added
+  amount: { type: Number, decimal: true }, // same as Tx, but we need the readonly added
   payAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
   remission: { type: Boolean, optional: true },
 };

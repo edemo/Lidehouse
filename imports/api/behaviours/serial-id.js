@@ -45,15 +45,17 @@ export function SerialId(definerFields = []) {
     return {
       before: {
         insert(userId, doc) {
-          const selector = { communityId: doc.communityId };
-          definerFields.forEach((field) => {
-            selector[field] = Object.getByString(doc, field) || { $exists: false };
-          });
-          const last = collection.findOne(selector, { sort: { serial: -1 } });
-          const nextSerial = last ? last.serial + 1 : 1;
-          doc.serial = nextSerial;
-          const tdoc = this.transform();
-          doc.serialId = tdoc.computeSerialId();
+          if (!doc.serialId) { // keep it, if already exists
+            const selector = { communityId: doc.communityId };
+            definerFields.forEach((field) => {
+              selector[field] = Object.getByString(doc, field) || { $exists: false };
+            });
+            const last = collection.findOne(selector, { sort: { serial: -1 } });
+            const nextSerial = last ? last.serial + 1 : 1;
+            doc.serial = nextSerial;
+            const tdoc = this.transform();
+            doc.serialId = tdoc.computeSerialId();
+          }
           return true;
         },
       },

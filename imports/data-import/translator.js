@@ -24,13 +24,16 @@ export class Translator {
     this.lang = lang;
     debugAssert(lang === 'hu');
     let schemaTranslation;
-    if (collection._name === 'parcels') schemaTranslation = TAPi18n.__('schemaParcels', { returnObjectTrees: true }, 'hu');
-    else if (collection._name === 'parcelships') schemaTranslation = TAPi18n.__('schemaParcelships', { returnObjectTrees: true }, 'hu');
-    else if (collection._name === 'partners') schemaTranslation = TAPi18n.__('schemaPartners', { returnObjectTrees: true }, 'hu');
-    else if (collection._name === 'memberships') schemaTranslation = TAPi18n.__('schemaMemberships', { returnObjectTrees: true }, 'hu');
-    else if (collection._name === 'statementEntries') schemaTranslation = TAPi18n.__('schemaStatementEntries', { returnObjectTrees: true }, 'hu');
-    else schemaTranslation = {};
-    this.dictionary = deepExtend({}, schemaTranslation, dictionary);
+    if (collection._name === 'balances') schemaTranslation = [];
+    else if (collection._name === 'transactions') {
+      schemaTranslation = [
+        TAPi18n.__(`schema${this.collection._name.capitalize()}`, { returnObjectTrees: true }, 'hu'),
+        TAPi18n.__(`schema${this.options.entity.capitalize()}s`, { returnObjectTrees: true }, 'hu'),
+      ];
+    } else {
+      schemaTranslation = [TAPi18n.__(`schema${this.collection._name.capitalize()}`, { returnObjectTrees: true }, 'hu')];
+    }
+    this.dictionary = deepExtend({}, ...schemaTranslation, dictionary);
   }
 
   __(key) {
@@ -58,16 +61,6 @@ export class Translator {
   }
 
   reverse(docs) {
-/*    let categorySelector;
-    if (this.collection._name === 'parcels') categorySelector = { category: '@property' };
-    if (this.collection._name === 'memberships') categorySelector = { role: 'owner' };
-    const schema = this.collection.simpleSchema(categorySelector);
-    const tapi = TAPi18n;
-    debugger;
-    _.each(schema._schemaKeys, key => {
-      this.dictionary[key] = `schema${this.collection._name.capitalize()}.${key}`;
-    });
-*/
     const self = this;
     const sameString = (str1, str2) => (str1.localeCompare(str2, this.lang, { sensitivity: 'base' }) === 0);
     return docs.map(doc => {
@@ -81,11 +74,13 @@ export class Translator {
             (dictionary && _.findKey(dictionary, k => sameString(trimFieldName, dictionary[k].label)))
             || trimFieldName;
           function reverseValue(fieldValue) {
+            if (typeof fieldValue === 'undefined') return undefined;
+            if (typeof fieldValue !== 'string') return fieldValue;
             const trimFieldValue = fieldValue.trim();
             return (dictionary && _.findKey(dictionary[enFieldName], k => sameString(trimFieldValue, dictionary[enFieldName][k])))
               || trimFieldValue;
           }
-          if (typeof fieldValue === 'object' && !Array.isArray(fieldValue)) {
+          if (_.isSimpleObject(fieldValue)) {
             path.push(enFieldName);
             reverseObject(fieldValue);
             path.pop();

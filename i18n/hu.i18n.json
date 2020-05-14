@@ -276,7 +276,7 @@
   "importColumnsInstructions": ["* A csillagozott [mezők] kötelezőek.",
     " Sablont kérhet csak a kijelölt oszlopokra is."
   ],
-  "importUploadInstructions": "Feltöltés után egy előnézet lesz látható, ahol még lesz lehetőség módosítani, mind a cellák tartalmán, mind az oszlopneveken, hogy azok megfeleljenek az elvárt oszlop neveknek.",
+  "importUploadInstructions": "Feltöltés után egy előnézet lesz látható, ahol még lesz lehetőség módosítani az oszlopneveken, hogy azok megfeleljenek az elvárt oszlop neveknek.",
   "importPreviewInstructions": ["Importálás előtt még végezhet módosításokat a cellákon.<br>",
     "A pirossal jelölt oszlopneveket nem ismertük fel, ha szeretné őket importálni, akkor válassza meg, milyen adatként ételmezzük."
   ],

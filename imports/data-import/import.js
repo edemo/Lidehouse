@@ -44,6 +44,7 @@ Template.Import_dialog.events({
         const workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' /*, cellDates: true*/ });
         const sheetName = workbook.SheetNames[0]; // importing only the first sheet
         const worksheet = workbook.Sheets[sheetName];
+        instance.viewmodel.worksheet(worksheet);
         const html = XLSX.utils.sheet_to_html(worksheet, { editable: true });
         instance.viewmodel.table(html);
       };
@@ -73,7 +74,7 @@ Template.Import_upload.events({
 });
 
 
-export function importCollectionFromFile(mainCollection, options) {
+export function importCollectionFromFile(mainCollection, options = {}) {
   const user = Meteor.user();
   const communityId = getActiveCommunityId();
   const collectionsToImport = getCollectionsToImport(mainCollection, options);
@@ -85,6 +86,7 @@ export function importCollectionFromFile(mainCollection, options) {
       const split = key.split('.');
       if (_.contains(['Array', 'Object'], value.type.name)) return;
       if (value.autoform && (value.autoform.omit || value.autoform.readonly || _.contains(['hidden'], value.autoform.type))) return;
+      if (_.contains(split, '$')) return;
       if (_.contains(split, 'activeTime')) return;
       if (_.contains(cti.omitFields, key)) return;
       if (!value.label) return;
@@ -117,11 +119,17 @@ export function importCollectionFromFile(mainCollection, options) {
       const viewmodel = this;
       viewmodel.buttonsAreDisabled(true);
       Meteor.setTimeout(() => { // We defer, so the button disable happens before the long processing
-        const importTable = $('.import-table')[0];
-        const importSheet = XLSX.utils.table_to_sheet(importTable /*, { cellDates: true }*/);
-        const jsons = XLSX.utils.sheet_to_json(importSheet).map(flatten.unflatten);
+        const editedTable = $('.import-table')[0];
+        const editedSheet = XLSX.utils.table_to_sheet(editedTable /*, { cellDates: true }*/);
+        const worksheet = viewmodel.worksheet();
+        _.each(worksheet, (cell, key) => {
+          if (key.length === 2 && key[1] === '1') { // so if header cell (A1, B1, ..., Z1)
+            worksheet[key] = editedSheet[key];
+          }
+        });
+        const jsons = XLSX.utils.sheet_to_json(worksheet, { /*header: 1,*/ blankRows: false }).map(flatten.unflatten);
+        let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
 
-        let docs = jsons;
         const processNextCollection = function () {
           const collectionToImport = collectionsToImport.shift();
           if (!collectionToImport) { // Import cycle ended - can close import dialog here
@@ -140,11 +148,11 @@ export function importCollectionFromFile(mainCollection, options) {
             docs = translator.reverse(docs);
             translator.applyDefaults(docs);
           }
+          const parser = new Parser(collectionToImport.schema);
+          docs.forEach(doc => { parser.parse(doc); doc.communityId = communityId; });
           // --- Custom transformation is applied to the docs, that may even change the set of docs
           const transformer = Transformers[collection._name]?.[(options && options.transformer) || 'default'];
           const tdocs = transformer ? transformer(docs, options) : docs;
-          const parser = new Parser(collectionToImport.schema);
-          tdocs.forEach(doc => { parser.parse(doc); doc.communityId = communityId; });
           // console.log(collection._name, tdocs);
           if (!tdocs.length) { processNextCollection(); return; } // nothing to do with this collection, handle the next
 
