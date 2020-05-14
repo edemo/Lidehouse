@@ -55,6 +55,7 @@
       "import/no-absolute-path": "off",
       "import/extensions": "off",
       "no-underscore-dangle": "off",
+      "no-else-return": "off",
       "object-shorthand": ["error", "always", {
         "avoidQuotes": false
       }],

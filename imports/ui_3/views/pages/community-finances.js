@@ -9,6 +9,7 @@ import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { debugAssert } from '/imports/utils/assert.js';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { monthTags, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -103,6 +104,7 @@ Template.Disclaimer.helpers({
 });
 
 Template.Community_finances.viewmodel({
+  displayBankBalancesFrom: Meteor.settings.public.deployment === 'marina' ? 'C' : 'T',
   accountToView: '`382',
   communityId() { return Session.get('activeCommunityId'); },
   community() { return Communities.findOne(this.communityId()); },
@@ -123,18 +125,24 @@ Template.Community_finances.viewmodel({
   },
   onRendered(instance) {
   },
+  tagLetter(account) {
+    if (account.startsWith('`38')) return this.displayBankBalancesFrom();
+    return 'T';
+  },
   aggregate(array, startValue) {
     let sum = startValue || 0;
     return array.map((elem) => { sum += elem; return sum; });
   },
-  monthlyDataFromTbalances(account) {
-    return this.aggregate(
-      this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: l.code }).displayTotal()),
-      this.aggregate(this.prePeriods().map(l => Balances.get({ communityId: this.communityId(), account, tag: l.code }).displayTotal())).pop()
-    );
-  },
-  monthlyDataFromCbalances(account) {
-    return this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: 'C' + l.code.substring(1) }).displayTotal());
+  monthlyData(account) {
+    const tagLetter = this.tagLetter(account);
+    if (tagLetter === 'T') {
+      return this.aggregate(
+        this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: l.code }).displayTotal()),
+        this.aggregate(this.prePeriods().map(l => Balances.get({ communityId: this.communityId(), account, tag: l.code }).displayTotal())).pop()
+      );
+    } else if (tagLetter === 'C') {
+      return this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: 'C' + l.code.substring(1) }).displayTotal());
+    } else { debugAssert(false); return undefined; }
   },
   statusData() {
     const data = {
@@ -142,11 +150,11 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("Money accounts"),
-          data: this.monthlyDataFromTbalances('`38'),
+          data: this.monthlyData('`38'),
         }, plusColors[0]),
         _.extend({
           label: __("Commitments"),
-          data: this.monthlyDataFromTbalances('`45'),
+          data: this.monthlyData('`45'),
         }, minusColors[0]),
       ],
     };
@@ -158,7 +166,7 @@ Template.Community_finances.viewmodel({
     moneyAccount.leafs().fetch().reverse().forEach((account, index) => {
       datasets.push(_.extend({
         label: __(account.name),
-        data: this.monthlyDataFromTbalances(account.code),
+        data: this.monthlyData(account.code),
         fill: true,
       }, plusColors[index + 1]));
     });
@@ -171,11 +179,11 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK"),
-          data: this.monthlyDataFromTbalances('`44'),
+          data: this.monthlyData('`44'),
         }, minusColors[0]),
         _.extend({
           label: __("RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK"),
-          data: this.monthlyDataFromTbalances('`45'),
+          data: this.monthlyData('`45'),
         }, minusColors[0]),
       ],
     };
@@ -239,7 +247,9 @@ Template.Community_finances.viewmodel({
       }
       account = a.code;
     }
-    return Balances.get({ communityId, account, tag: 'T' }).displayTotal();
+    const tagLetter = this.tagLetter(account);
+    const tag = (tagLetter === 'C') ? PeriodBreakdown.endOfLastMonthTag() : tagLetter;
+    return Balances.get({ communityId, account, tag }).displayTotal();
   },
   getStatusBalance() {
     return this.getBalance('Money accounts') - this.getBalance('RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK');

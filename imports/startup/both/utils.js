@@ -77,8 +77,14 @@ Number.prototype.round = function round(places) {
 // So by calling fetch, you can make sure it becomes an Array
 Array.prototype.fetch = function fetch() { return this; };
 
-_.isDefined = function (obj) { // underscore did not have this
+Array.prototype.count = function count() { return this.length; };
+
+_.isDefined = function isDefined(obj) { // underscore did not have this
   return obj !== undefined;
+};
+
+_.isSimpleObject = function isSimpleObject(variable) {
+  return Object.prototype.toString.call(variable) === '[object Object]';
 };
 
 let lastTimeCheck;

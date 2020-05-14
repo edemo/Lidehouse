@@ -1,4 +1,6 @@
 import { _ } from 'meteor/underscore';
+import { Session } from 'meteor/session';
+
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels';
@@ -7,6 +9,7 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 
 import { Translator } from './translator.js';
 
@@ -44,28 +47,49 @@ export function getCollectionsToImport(collection, options) {
     }
     case 'transactions': {
       return [{
-        collection: Transactions,
-        schema: Parcels.simpleSchema({ category: 'bill' }),
-        translator: new Translator(Transactions, options, 'hu', {
-          category: { default: 'bill' },
-          ref: { formula: "'SZ/SZALL/IMP/' + index" },
-          partner: { label: 'Szállító neve adóigazgatási azonosító száma' },
-          valueDate: { label: /* 'A számla fizetési határideje' || */'Számla kelte' },
-          amount: { label: 'Számla összege' },
-          // debit is one of the '8' accounts
-          credit: { default: [{ account: '`454' }] },
+        collection: Partners,
+        schema: Partners.simpleSchema(),
+        translator: new Translator(Partners, options, 'hu', {
+          relation: { default: ['supplier'] },
+          idCard: {
+            type: { default: 'legal' },
+//            name: { label: 'Szállító neve adóigazgatási azonosító száma' }, -> columnMapping
+          },
         }),
       }, {
         collection: Transactions,
-        schema: Parcels.simpleSchema({ category: 'payment' }),
-        translator: new Translator(Transactions, options, 'hu', {
+        schema: Transactions.simpleSchema({ category: 'bill' }),
+        translator: new Translator(Transactions, _.extend({}, options, { entity: 'bill' }), 'hu', {
+          category: { default: 'bill' },
+          relation: { default: Session.get('activePartnerRelation') },
+          serialId: { formula: "'SZ/SZALL/IMP/' + index" },
+          defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'bill', 'data.relation': Session.get('activePartnerRelation') })._id },
+          partnerName: { formula: 'doc.idCard.name' },
+          deliveryDate: { formula: 'doc.deliveryDate || doc.issueDate' },
+          dueDate: { formula: 'doc.dueDate || doc.issueDate' },
+          title: { formula: 'doc.title || "---"' },
+          debit: { default: [{ account: '`8' }] },
+          credit: { default: [{ account: '`454' }] },
+          status: { default: 'posted' },
+          postedAt: { formula: 'doc.issueDate' },
+        }),
+      }, {
+        collection: Transactions,
+        schema: Transactions.simpleSchema({ category: 'payment' }),
+        translator: new Translator(Transactions, _.extend({}, options, { entity: 'payment' }), 'hu', {
           category: { default: 'payment' },
-          ref: { formula: "'FIZ/SZALL/IMP/' + index" },
-          partner: { label: 'Szállító neve adóigazgatási azonosító száma' },
-          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
-          amount: { label: 'Számla összege' },
+          relation: { default: Session.get('activePartnerRelation') },
+          serialId: { formula: "'FIZ/SZALL/IMP/' + index" },
+          defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'payment', 'data.relation': Session.get('activePartnerRelation') })._id },
+          partnerName: { formula: 'doc.idCard.name' },
+//          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
+//          valueDate: { formula: 'doc.paymentDate' },
+//          amount: { label: 'Számla összege' },
 //          amount: { label: 'A számla kiegyenlítésének összege' },
           debit: { default: [{ account: '`454' }] },
+          credit: { default: [{ account: '`38' }] },
+          status: { default: 'posted' },
+          postedAt: { formula: 'doc.valueDate' },
         }),
       }];
     }

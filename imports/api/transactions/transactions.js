@@ -80,7 +80,7 @@ Transactions.baseSchema = new SimpleSchema([
   Transactions.noteSchema,
 ]);
 
-Transactions.idSet = ['communityId', 'ref'];
+Transactions.idSet = ['communityId', 'serialId'];
 
 Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, valueDate: -1 });
@@ -378,6 +378,7 @@ if (Meteor.isServer) {
 
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
+    console.log('updating oustandinsg', tdoc);
     tdoc.updateBalances(+1);
     if (tdoc.category === 'payment') tdoc.registerOnBill();
     tdoc.updateOutstandings(+1);
