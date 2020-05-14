@@ -43,7 +43,7 @@ export function checkPermissions(userId, permissionName, doc) {
   const user = Meteor.users.findOneOrNull(userId);
   if (!user.hasPermission(permissionName, doc)) {
     throw new Meteor.Error('err_permissionDenied',
-      `No permission to perform this activity: ${permissionName}, userId: ${userId}, doc: ${doc}`);
+      `No permission to perform this activity: ${permissionName}, userId: ${userId}, doc: ${JSON.stringify(doc)}`);
   }
 }
 
@@ -55,7 +55,7 @@ export function checkPermissionsWithApprove(userId, permissionName, doc) {
     doc.approved = false;
   } else {
     throw new Meteor.Error('err_permissionDenied',
-      `No permission to perform this activity: ${permissionName}, userId: ${userId}, doc: ${doc}`);
+      `No permission to perform this activity: ${permissionName}, userId: ${userId}, doc: ${JSON.stringify(doc)}`);
   }
 }
 

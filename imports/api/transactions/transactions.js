@@ -378,7 +378,6 @@ if (Meteor.isServer) {
 
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
-    console.log('updating oustandinsg', tdoc);
     tdoc.updateBalances(+1);
     if (tdoc.category === 'payment') tdoc.registerOnBill();
     tdoc.updateOutstandings(+1);

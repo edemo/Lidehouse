@@ -21,6 +21,9 @@ Template.Confirmation.events({
   'click #btn-ok'(event, instance) {
     instance.data.onOK.call();
   },
+  'click #btn-cancel'(event, instance) {
+    instance.data.onCancel.call();
+  },
 });
 
 Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options, callback) {
@@ -39,7 +42,7 @@ Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options, cal
         }
       });
     },
-    onClose() {
+    onCancel() {
       if (callback) callback();
     },
   }));

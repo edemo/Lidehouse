@@ -149,12 +149,13 @@ export function importCollectionFromFile(mainCollection, options = {}) {
             translator.applyDefaults(docs);
           }
           const parser = new Parser(collectionToImport.schema);
-          docs.forEach(doc => { parser.parse(doc); doc.communityId = communityId; });
+          docs.forEach(doc => { parser.parse(doc); });
           // --- Custom transformation is applied to the docs, that may even change the set of docs
           const transformer = Transformers[collection._name]?.[(options && options.transformer) || 'default'];
           const tdocs = transformer ? transformer(docs, options) : docs;
           // console.log(collection._name, tdocs);
           if (!tdocs.length) { processNextCollection(); return; } // nothing to do with this collection, handle the next
+          tdocs.forEach(doc => { doc.communityId = communityId; });
 
           collection.methods.batch.test.call({ args: tdocs }, function (err, res) {
             if (err) { displayError(err); return; }
