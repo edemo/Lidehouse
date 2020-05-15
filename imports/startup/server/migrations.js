@@ -423,8 +423,8 @@ Migrations.add({
   name: 'Partners can have multiple relations',
   up() {
     Contracts.find({}).forEach(contract => {
-      const relation = contract.partner().relation;
-      Contracts.update(contract._id, { $set: { relation } });
+      const relation = contract.partner()?.relation;
+      if (relation) Contracts.update(contract._id, { $set: { relation } });
     });
     Partners.find({}).forEach(partner => {
       const relation = partner.relation;
