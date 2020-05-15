@@ -30,6 +30,7 @@ Template.Delegations.onCreated(function onCreated() {
     const communityId = getActiveCommunityId();
     this.subscribe('parcels.ofSelf', { communityId });
     this.subscribe('delegations.inCommunity', { communityId });
+    this.subscribe('parcels.inCommunity', { communityId });
   });
 });
 
