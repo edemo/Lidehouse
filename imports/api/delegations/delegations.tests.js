@@ -8,6 +8,8 @@ import { Random } from 'meteor/random';
 import { _ } from 'meteor/underscore';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
+import { Memberships }from '/imports/api/memberships/memberships.js';
+import { Partners }from '/imports/api/partners/partners.js';
 import { insert as insertDelegation, update as updateDelegation, remove as removeDelegation, allow as allowDelegations } from './methods.js';
 
 if (Meteor.isServer) {
@@ -105,12 +107,12 @@ if (Meteor.isServer) {
         done();
       });
 
-      xit('self delegation not allowed', function (done) {
+      it('self delegation not allowed', function (done) {
         chai.assert.throws(() => {
           updateDelegation._execute({ userId: Fixture.demoUserId },
             { _id: delegationId, modifier: { $set: { targetId: Fixture.partnerId(Fixture.demoUserId) } } }
           );
-        });
+        }, 'err_sanityCheckFailed');
         done();
       });
 
@@ -148,6 +150,31 @@ if (Meteor.isServer) {
         createDelegation(Fixture.dummyUsers[1], Fixture.demoUserId);
         createDelegation(Fixture.dummyUsers[2], Fixture.demoUserId);
         chai.assert.equal(Delegations.find({ targetId: Fixture.partnerId(Fixture.demoUserId) }).fetch().length, 2);
+        done();
+      });
+
+      it('can handle delegation without registered user', function (done) {
+        const noUserPartnerId = Memberships.findOne({ role: 'owner', userId: { $exists: false } }).partnerId;
+        const noUserPartner = Partners.findOne(noUserPartnerId);
+        chai.assert.isDefined(noUserPartner);
+        chai.assert.isUndefined(noUserPartner.userId);
+        delegationId = insertDelegation._execute({ userId: Fixture.demoUserId },
+          { sourceId: Fixture.partnerId(Fixture.demoUserId), targetId: noUserPartnerId, scope: 'community', scopeObjectId: Fixture.demoCommunityId });
+        let delegation = Delegations.findOne(delegationId);
+        chai.assert.isDefined(delegation);
+        removeDelegation._execute({ userId: Fixture.demoUserId }, { _id: delegationId });
+        delegation = Delegations.findOne({ sourceId: Fixture.partnerId(Fixture.demoUserId), targetId: noUserPartnerId });
+        chai.assert.isUndefined(delegation);
+
+        const delegationFromPartnerId = insertDelegation._execute({ userId: Fixture.demoManagerId },
+          { sourceId: noUserPartnerId, targetId: Fixture.partnerId(Fixture.dummyUsers[1]), scope: 'community', scopeObjectId: Fixture.demoCommunityId });
+        let delegationFromPartner = Delegations.findOne(delegationFromPartnerId);
+        chai.assert.isDefined(delegationFromPartner);
+        chai.assert.equal(delegationFromPartner.targetId, Fixture.partnerId(Fixture.dummyUsers[1]));
+        updateDelegation._execute({ userId: Fixture.demoManagerId },
+          { _id: delegationFromPartnerId, modifier: { $set: { targetId: Fixture.partnerId(Fixture.dummyUsers[3]) } } });
+        delegationFromPartner = Delegations.findOne(delegationFromPartnerId);
+        chai.assert.equal(delegationFromPartner.targetId, Fixture.partnerId(Fixture.dummyUsers[3]));
         done();
       });
 

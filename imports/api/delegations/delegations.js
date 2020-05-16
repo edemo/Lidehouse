@@ -92,11 +92,11 @@ Delegations.helpers({
   targetPerson() {
     return Partners.findOne(this.targetId);
   },
-  sourceUser() {
-    return Partners.findOne(this.sourceId).user();
+  sourceUserId() {
+    return Partners.findOne(this.sourceId).userId;
   },
-  targetUser() {
-    return Partners.findOne(this.targetId).user();
+  targetUserId() {
+    return Partners.findOne(this.targetId).userId;
   },
   getAffectedVotings() {
     if (this.scope === 'community') return Topics.find({ communityId: this.scopeObjectId, category: 'vote', closed: false });

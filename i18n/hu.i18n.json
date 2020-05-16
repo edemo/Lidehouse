@@ -607,6 +607,7 @@
   "This operation requires that you log in": "Ehhez a művelethez be kell jelentkeznie",
   "err_otherPartyNotAllowed": "Nincs engedélyezve a másik fél részéről",
   "Other party not allowed this activity": "A másik fél nem engedélyezte ezt a műveletet.",
+  "You can not delegate to yourself": "Nem adhat meghatalmazást saját magának.",
   "err_unableToRemove": "Az objektum nem törölhető",
   "Community cannot be deleted while it has active officers" : "A közösség nem törölhető amíg még vannak aktív tisztségviselői. Először törölnie kell ezeket",
   "Parcel cannot be deleted while it has active owners": "Az albetét nem törölhető, amíg aktív tulajdonosai vannak. Előszőr a tulajdonosokat kell törölnie",
