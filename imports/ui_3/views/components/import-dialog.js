@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 
 import { Settings } from '/imports/api/settings/settings.js';
-import { doubleScroll } from '/imports/api/utils.js';
+import { doubleScroll } from '/imports/ui_3/lib/double-scroll.js';
 import '/imports/ui_3/views/blocks/help-icon.js';
 import './import-dialog.html';
 

@@ -83,6 +83,7 @@ Transactions.baseSchema = new SimpleSchema([
 Transactions.idSet = ['communityId', 'serialId'];
 
 Meteor.startup(function indexTransactions() {
+  Transactions.ensureIndex({ communityId: 1, serialId: 1 });
   Transactions.ensureIndex({ communityId: 1, valueDate: -1 });
   Transactions.ensureIndex({ seId: 1 });
   Transactions.ensureIndex({ partnerId: 1 }, { sparse: true });
@@ -91,7 +92,6 @@ Meteor.startup(function indexTransactions() {
     Transactions._collection._ensureIndex('relation');
   } else if (Meteor.isServer) {
     Transactions._ensureIndex({ communityId: 1, category: 1, relation: 1, serial: 1 });
-    Transactions._ensureIndex({ communityId: 1, serialId: 1 });
     Transactions._ensureIndex({ communityId: 1, deliveryDate: 1 }, { sparse: true });
     Transactions._ensureIndex({ 'bills.id': 1 }, { sparse: true });
     Transactions._ensureIndex({ 'debit.account': 1 }, { sparse: true });

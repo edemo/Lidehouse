@@ -29,6 +29,7 @@ export const Import = {
 
 
 export const Transformers = {
+  // Make sure your transformer clones the doc - in case there are several rounds, you dont want your original docs cleaned
   parcelships: {
     default: (docs, options) => {
       const tdocs = [];
@@ -55,33 +56,31 @@ export const Transformers = {
       debugAssert(communityId);
       docs.forEach((doc) => {
         if (!doc.partnerName) return;
+        const tdoc = {}; $.extend(true, tdoc, doc);
         const partner = Partners.findOne({ communityId, relation: 'supplier', 'idCard.name': doc.partnerName });
         productionAssert(partner, `No partner with this name ${doc.partnerName}`);
-        doc.partnerId = partner._id;
-        delete doc.partnerName;
+        tdoc.partnerId = partner._id;
         if (doc.category === 'bill') {
-          doc.lines = [{
+          tdoc.lines = [{
             title: doc.title,
             uom: 'piece',
             quantity: 1,
             unitPrice: doc.amount,
             account: doc.debit[0].account,
           }];
-          delete doc.title;
-          tdocs.push(doc);
         }
         if (doc.category === 'payment') {
           if (!doc.valueDate) return;
           const paymentId = doc.serialId;
           const split = paymentId.split('/'); split[0] = 'SZ';
           const billId = split.join('/');
-          doc.bills = [{
+          tdoc.bills = [{
             id: Transactions.findOne({ serialId: billId })._id,
             amount: doc.amount,
           }];
-          doc.payAccount = doc.credit[0].account;
-          tdocs.push(doc);
+          tdoc.payAccount = doc.credit[0].account;
         }
+        tdocs.push(tdoc);
       });
       return tdocs;
     },

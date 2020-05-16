@@ -7,13 +7,14 @@ import { cleanExpiredEmails } from '/imports/startup/server/accounts-verificatio
 import { cleanCanceledVoteAttachments } from '/imports/api/shareddocs/methods.js';
 import { emptyOldTrash } from '/imports/api/behaviours/trash.js';
 import { processNotifications, notifyExpiringVotings } from '/imports/email/notifications-send.js';
+import { Log } from '/imports/utils/log.js';
 
 const job = (func, ...params) => {
   const wrappedFunc = function () {
     const start = Date.now();
     func(...params);
     const finish = Date.now();
-    console.log('Job', func.name, finish - start, 'ms');
+    Log.info('Job', func.name, finish - start, 'ms');
   };
   return Meteor.bindEnvironment(wrappedFunc, (err) => { console.error(err); });
 };

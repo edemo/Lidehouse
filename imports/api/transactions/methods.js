@@ -146,7 +146,7 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'transactions.update', doc);
     if (doc.isPosted()) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting');
+      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
     }
     Transactions.update({ _id }, modifier, { selector: { category: doc.category } });
   },

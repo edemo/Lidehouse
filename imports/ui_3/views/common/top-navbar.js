@@ -9,7 +9,7 @@ import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/actions.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { resetSession } from '/imports/api/utils.js';
+import { resetSession } from '/imports/ui_3/lib/session.js';
 import '/imports/api/users/users.js';
 import '/imports/ui_3/views/components/badge.js';
 import './right-sidebar.js';

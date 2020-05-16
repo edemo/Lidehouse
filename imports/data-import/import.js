@@ -118,6 +118,11 @@ export function importCollectionFromFile(mainCollection, options = {}) {
     onAction() {
       const viewmodel = this;
       viewmodel.buttonsAreDisabled(true);
+      if (viewmodel.saveColumnMapppings()) {
+        const _id = Settings.ensureExists();
+        const mapping = _.extend({}, viewmodel.columnMapping());
+        Settings.update(_id, { $set: { [`columnMappings.${mainCollection._name}`]: mapping } });
+      }
       Meteor.setTimeout(() => { // We defer, so the button disable happens before the long processing
         const editedTable = $('.import-table')[0];
         const editedSheet = XLSX.utils.table_to_sheet(editedTable /*, { cellDates: true }*/);
@@ -134,30 +139,36 @@ export function importCollectionFromFile(mainCollection, options = {}) {
           const collectionToImport = collectionsToImport.shift();
           if (!collectionToImport) { // Import cycle ended - can close import dialog here
             Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
-            if (viewmodel.saveColumnMapppings()) {
-              const _id = Settings.ensureExists();
-              const mapping = _.extend({}, viewmodel.columnMapping());
-              Settings.update(_id, { $set: { [`columnMappings.${mainCollection._name}`]: mapping } });
-            }
             return;
           }
           const collection = collectionToImport.collection;
+          console.log(`Importing into ${collection._name}`);
     //      if (options && options.multipleDocsPerLine) docs = singlify(docs);
           const translator = collectionToImport.translator;
           if (translator) {
+            console.log(`Tranlsating ${docs.length} docs`);
             docs = translator.reverse(docs);
+            console.log(`Applying defaults to ${docs.length} docs`);
             translator.applyDefaults(docs);
           }
           const parser = new Parser(collectionToImport.schema);
+          console.log(`Parsing ${docs.length} docs`);
           docs.forEach(doc => { parser.parse(doc); });
           // --- Custom transformation is applied to the docs, that may even change the set of docs
+          console.log(`Transforming ${docs.length} docs`);
           const transformer = Transformers[collection._name]?.[(options && options.transformer) || 'default'];
-          const tdocs = transformer ? transformer(docs, options) : docs;
+          const tdocs = transformer ? transformer(docs, options) : docs.map(doc => Object.deepClone(doc));
           // console.log(collection._name, tdocs);
           if (!tdocs.length) { processNextCollection(); return; } // nothing to do with this collection, handle the next
-          tdocs.forEach(doc => { doc.communityId = communityId; });
+          tdocs.forEach(doc => {
+            doc.communityId = communityId;
+            collection.simpleSchema(doc).clean(doc);
+            collection.simpleSchema(doc).validate(doc);
+          });
 
+          console.log(`Calling batch test on ${tdocs.length} docs`);
           collection.methods.batch.test.call({ args: tdocs }, function (err, res) {
+            console.log(`Response from batch test. Err:${err}`);
             if (err) { displayError(err); return; }
             const neededOps = res;
             Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocs }, {
