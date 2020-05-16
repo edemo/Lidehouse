@@ -31,11 +31,25 @@ export function doubleScroll(element) {
     'overflow': 'none'
   });
 
+  // based on: https://stackoverflow.com/questions/3934271/horizontal-scrollbar-on-top-and-bottom-of-table/56384091#56384091
+  let scrolling = false;
+
   wrapper1.on('scroll', function () {
+    if (scrolling) {
+      scrolling = false;
+      return true;
+    }
+    scrolling = true;
     wrapper2.scrollLeft(wrapper1.scrollLeft());
   });
 
+
   wrapper2.on('scroll', function () {
+    if (scrolling) {
+      scrolling = false;
+      return true;
+    }
+    scrolling = true;
     wrapper1.scrollLeft(wrapper2.scrollLeft());
   });
 }
