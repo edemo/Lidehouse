@@ -24,13 +24,12 @@ export const displayError = (error) => {
     let message;
     if (error instanceof Meteor.Error) {
       // For server side errors, on the client side we always get a Meteor.Error, that is what gets channeled over DDP.
-      message = __(error.error) + '\n' + __(error.reason);
-      if (Meteor.isDevelopment) message += '\n' + error.details;
+      message = __(error.error) + '\n' + __(error.reason) + '\n' + JSON.stringify(error.details);
     } else {
       message = (error.message);
     }
     if (Meteor.isDevelopment) message += '\n\n' + error.stack;
-    alert(message);     // It would be better to not alert the error here but inform the user in some more subtle way
+    alert(message); // It would be better to not alert the error here but inform the user in some more subtle way
   }
 };
 

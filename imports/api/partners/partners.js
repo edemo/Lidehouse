@@ -60,6 +60,7 @@ Partners.nonModifiableFields = ['communityId', 'userId', 'outstanding'];
 
 
 Meteor.startup(function indexPartners() {
+  // Partners.ensureIndex({ communityId: 1, 'idCard.name': 1 }); should be here, but minmongo indexing does not support 'dot'
   if (Meteor.isServer) {
     Partners._ensureIndex({ 'contact.email': 1 }, { sparse: true });
     Partners._ensureIndex({ 'idCard.identifier': 1 }, { sparse: true });
