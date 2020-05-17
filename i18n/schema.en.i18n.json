@@ -848,7 +848,12 @@
       }
     },
     "contact": {
-      "label" : "Person's contact",
+      "label" : "Contact information",
+      "name": {
+        "label": "Name of contactee",
+        "placeholder": "(eg. Bill Smith)",
+        "help": "Only need to fill this, if this name is different from the partner's name."
+      },
       "address": {
         "label": "Mailing address",
         "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"

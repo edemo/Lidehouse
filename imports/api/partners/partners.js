@@ -19,6 +19,7 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 export const Partners = new Mongo.Collection('partners');
 
 const ContactSchema = new SimpleSchema({
+  name: { type: String, optional: true },
   address: { type: String, optional: true },
   phone: { type: String, optional: true },
   email: _.extend({ optional: true }, SimpleSchema.Types.Email()),

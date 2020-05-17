@@ -851,6 +851,11 @@
     },
     "contact": {
       "label" : "Kapcsolattartási adatok",
+      "name": {
+        "label": "Kapcsolattartó neve",
+        "placeholder": "(pl. Kovács Béla)",
+        "help": "Csak akkor adja meg, ha különbözik a partner nevétől."
+      },
       "address": {
         "label": "Levelezési cím",
         "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
