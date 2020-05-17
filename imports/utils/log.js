@@ -15,4 +15,7 @@ export const Log = {
   info(...params) {
     console.info(timestamp(), ...params);
   },
+  debug(...params) {
+    console.debug(timestamp(), ...params);
+  },
 };

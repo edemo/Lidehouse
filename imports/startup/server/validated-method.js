@@ -7,6 +7,7 @@ ValidatedMethod.prototype._mdgExecute = ValidatedMethod.prototype._execute;
 
 ValidatedMethod.prototype._execute = function (...args) {
   CollectionHooks.defaultUserId = args[0].userId;
+  Log.debug('Invoking', this.name);
   const start = Date.now();
   const result = this._mdgExecute(...args);
   const finish = Date.now();
