@@ -44,15 +44,14 @@ export class BatchMethod extends ValidatedMethod {
 
 function hasChanges(newObj, oldObj) {
 //  console.log("check change between", newObj, oldObj)
-  let changed;
+  let changes;
   _.each(newObj, (value, key) => {
     if (!_.isEqual(value, oldObj[key])) {
-      changed = key;
-      return false;
+      changes = changes || { $set: {} };
+      changes.$set[key] = value;
     }
-    return true;
   });
-  return changed;
+  return changes;
 }
 export class BatchTester extends ValidatedMethod {
   constructor(collection) {
@@ -63,7 +62,7 @@ export class BatchTester extends ValidatedMethod {
       validate: batchOperationSchema.validator({ clean: true }),
       run({ args }) {
         checkPermissions(this.userId, batchUpsertName, { communityId: args[0].communityId });
-        if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
+//        if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
 
         const neededOperations = { insert: [], update: [], remove: [], noChange: [] };
         args.forEach((doc, i) => {
@@ -78,11 +77,14 @@ export class BatchTester extends ValidatedMethod {
 //          console.log("selector", selector);
           const existingDoc = collection.findOne(selector);
           if (!existingDoc) neededOperations.insert.push(i);
-          else if (hasChanges(doc, existingDoc)) {
-            neededOperations.update.push({ _id: existingDoc._id, modifier: { $set: doc } });
+          else {
+            const changes = hasChanges(doc, existingDoc);
+            if (changes) {
+              neededOperations.update.push({ _id: existingDoc._id, modifier: changes });
             // console.log(`Field ${hasChanges(doc, existingDoc)} has changed in doc: ${JSON.stringify(existingDoc)}`);
-          } else neededOperations.noChange.push(i);
-          // Shall we determine also what to remove?
+            } else neededOperations.noChange.push(i);
+            // Shall we determine also what to remove?
+          }
         });
         return neededOperations;
       },

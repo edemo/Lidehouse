@@ -74,8 +74,9 @@ Template.Import_upload.events({
 });
 
 
-export function importCollectionFromFile(mainCollection, options = { format: 'default' }) {
-  const user = Meteor.user();
+export function importCollectionFromFile(mainCollection, options = {}) {
+  options.format = options.format || 'default';
+  const userId = Meteor.userId();
   const communityId = getActiveCommunityId();
   const conductor = getConductor(mainCollection, options);
   const columns = [{ display: __('importColumnsInstructions') }];
@@ -167,21 +168,18 @@ export function importCollectionFromFile(mainCollection, options = { format: 'de
           });
 
           console.log(`Calling batch test on ${tdocs.length} docs`);
-          collection.methods.batch.test.call({ args: tdocs }, function (err, res) {
-            console.log(`Response from batch test. Err:${err}`);
-            if (err) { displayError(err); return; }
-            const neededOps = res;
-            Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocs }, {
-              action: __('import data', { collection: __(collection._name) }),
-              message: __('This operation will do the following') + '<br>'
-                + __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>'
-                + __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>'
-                + __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>'
-                + __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
-              body: 'Readmore',
-              bodyContext: JSON.stringify(neededOps, null, 2),
-            }, processNextPhase);
-          });
+          const neededOps = collection.methods.batch.test._execute({ userId }, { args: tdocs });
+          const tdocsToUpsert = _.reject(tdocs, (d, i) => _.contains(neededOps.noChange, i));
+          Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocsToUpsert }, {
+            action: __('import data', { collection: __(collection._name) }),
+            message: __('This operation will do the following') + '<br>'
+              + __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>'
+              + __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>'
+              + __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>'
+              + __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
+            body: 'Readmore',
+            bodyContext: JSON.stringify(neededOps, null, 2),
+          }, processNextPhase);
         };
         processNextPhase();
       }, 500);
