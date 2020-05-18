@@ -18,7 +18,7 @@ import { Settings } from '/imports/api/settings/settings.js';
 import { Translator } from './translator.js';
 import { Parser } from './parser.js';
 import { Transformers } from './transformers.js';
-import { getCollectionsToImport } from './conductors.js';
+import { getConductor } from './conductors.js';
 
 const rABS = true;
 
@@ -74,28 +74,28 @@ Template.Import_upload.events({
 });
 
 
-export function importCollectionFromFile(mainCollection, options = {}) {
+export function importCollectionFromFile(mainCollection, options = { format: 'default' }) {
   const user = Meteor.user();
   const communityId = getActiveCommunityId();
-  const collectionsToImport = getCollectionsToImport(mainCollection, options);
+  const conductor = getConductor(mainCollection, options);
   const columns = [{ display: __('importColumnsInstructions') }];
-  collectionsToImport.forEach((cti, ind) => {
-    const translator = cti.translator;
-    columns.push({ name: ind, display: `${translator.__('_')} ${__('data')}`.toUpperCase() });
-    _.each(cti.schema._schema, (value, key) => {
+  conductor.forEach((phase, phaseIndex) => {
+    const translator = phase.translator;
+    columns.push({ name: phaseIndex, display: `${translator.__('_')} ${__('data')}`.toUpperCase() });
+    _.each(phase.schema._schema, (value, key) => {
       const split = key.split('.');
       if (_.contains(['Array', 'Object'], value.type.name)) return;
       if (value.autoform && (value.autoform.omit || value.autoform.readonly || _.contains(['hidden'], value.autoform.type))) return;
       if (_.contains(split, '$')) return;
       if (_.contains(split, 'activeTime')) return;
-      if (_.contains(cti.omitFields, key)) return;
+      if (_.contains(phase.omitFields, key)) return;
       if (!value.label) return;
       const name = translator.__(key);
       const example = translator.example(key, value);
       const display = `[${name}]${value.optional ? '' : '(*)'}: ${value.type.name} ${example}`;
       columns.push({ key, name, example, display });
     });
-    _.each(cti.translator.dictionary, (value, key) => {
+    _.each(phase.translator.dictionary, (value, key) => {
       if (value.depends) {
         const i = columns.findIndex(c => c.key === key);
         if (i >= 0) columns.splice(i, 1);
@@ -135,23 +135,23 @@ export function importCollectionFromFile(mainCollection, options = {}) {
         const jsons = XLSX.utils.sheet_to_json(worksheet, { /*header: 1,*/ blankRows: false }).map(flatten.unflatten);
         let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
 
-        const processNextCollection = function () {
-          const collectionToImport = collectionsToImport.shift();
-          if (!collectionToImport) { // Import cycle ended - can close import dialog here
+        const processNextPhase = function () {
+          const phase = conductor.shift();
+          if (!phase) { // Import cycle ended - can close import dialog here
             Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
             return;
           }
-          const collection = collectionToImport.collection;
+          const collection = phase.collection;
           console.log(`Importing into ${collection._name}`);
     //      if (options && options.multipleDocsPerLine) docs = singlify(docs);
-          const translator = collectionToImport.translator;
+          const translator = phase.translator;
           if (translator) {
             console.log(`Tranlsating ${docs.length} docs`);
             docs = translator.reverse(docs);
             console.log(`Applying defaults to ${docs.length} docs`);
             translator.applyDefaults(docs);
           }
-          const parser = new Parser(collectionToImport.schema);
+          const parser = new Parser(phase.schema);
           console.log(`Parsing ${docs.length} docs`);
           docs.forEach(doc => { parser.parse(doc); });
           // --- Custom transformation is applied to the docs, that may even change the set of docs
@@ -159,7 +159,7 @@ export function importCollectionFromFile(mainCollection, options = {}) {
           const transformer = Transformers[collection._name]?.[(options && options.transformer) || 'default'];
           const tdocs = transformer ? transformer(docs, options) : docs.map(doc => Object.deepClone(doc));
           // console.log(collection._name, tdocs);
-          if (!tdocs.length) { processNextCollection(); return; } // nothing to do with this collection, handle the next
+          if (!tdocs.length) { processNextPhase(); return; } // nothing to do with this collection, handle the next
           tdocs.forEach(doc => {
             doc.communityId = communityId;
             collection.simpleSchema(doc).clean(doc);
@@ -180,10 +180,10 @@ export function importCollectionFromFile(mainCollection, options = {}) {
                 + __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
               body: 'Readmore',
               bodyContext: JSON.stringify(neededOps, null, 2),
-            }, processNextCollection);
+            }, processNextPhase);
           });
         };
-        processNextCollection();
+        processNextPhase();
       }, 500);
     },
   });

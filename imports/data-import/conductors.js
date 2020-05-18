@@ -15,9 +15,10 @@ import { Translator } from './translator.js';
 
 // Multiple collections can be imported with one import command
 
-export function getCollectionsToImport(collection, options) {
+export function getConductor(collection, options) {
   switch (collection._name) {
     case 'parcels': {
+      debugAssert(options.format === 'default');
       return [{
         collection: Parcels,
         schema: Parcels.simpleSchema({ category: '@property' }),
@@ -46,6 +47,7 @@ export function getCollectionsToImport(collection, options) {
       }];
     }
     case 'transactions': {
+      debugAssert(options.format === 'default');
       return [{
         collection: Partners,
         schema: Partners.simpleSchema(),
@@ -132,10 +134,13 @@ export function getCollectionsToImport(collection, options) {
         translator: new Translator(collection, options, 'hu', dictionary),
       }];
     }
-    default: return [{
-      collection,
-      schema: collection.simpleSchema(),
-      translator: new Translator(collection, options, 'hu'),
-    }];
+    default: {
+      debugAssert(options.format === 'default');
+      return [{
+        collection,
+        schema: collection.simpleSchema(),
+        translator: new Translator(collection, options, 'hu'),
+      }];
+    }
   }
 }
