@@ -111,7 +111,7 @@ Template.Parcels_box.viewmodel({
     const community = this.templateInstance.data.community();
     const showAllParcelsDefault = (
       (user && user.hasPermission('parcels.insert', { communityId }))
-      || (community && community.parcels.flat <= 25)
+      || (community && community.parcels.flat <= 80)
     );
     this.showAllParcels(!!showAllParcelsDefault);
   },

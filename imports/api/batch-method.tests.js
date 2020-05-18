@@ -148,7 +148,7 @@ if (Meteor.isServer) {
 
       it('when inerting multiple, and one has error, the rest is inserted', function (done) {
         topic1 = { ...header, serial: 1, title: 'First', text: '-' };
-        topic2 = { /* missing header */ title: 'Second', text: '-' };
+        topic2 = { /* header */ communityId, title: 'Second', text: '-' };
         topic3 = { ...header, serial: 3, title: 'Third', text: '-' };
         const params = { args: [topic1, topic2, topic3] };
 

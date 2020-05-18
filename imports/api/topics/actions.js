@@ -101,6 +101,21 @@ Topics.actions = {
       });
     },
   }),
+  move: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'move',
+    label: __('move under other topic'),
+    icon: 'fa fa-arrow-right',
+    visible: doc && doc.entityName() === 'forum' && user.hasPermission(`comment.move`, doc),
+    run() {
+      Modal.show('Autoform_modal', {
+        id: 'af.comment.move',
+        schema: Comments.moveSchema,
+        doc: { _id: doc._id },
+        type: 'method',
+        meteormethod: 'topics.move',
+      });
+    },
+  }),
   statusUpdate: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'statusUpdate',
     icon: 'fa fa-edit',

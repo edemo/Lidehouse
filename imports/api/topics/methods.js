@@ -62,12 +62,11 @@ export const move = new ValidatedMethod({
   }).validator(),
   run({ _id, destinationId }) {
     const doc = checkExists(Topics, _id);
-    checkPermissions(this.userId, 'comments.move', doc);
-    Comments.insert({
-      _id,
+    checkPermissions(this.userId, 'comment.move', doc);
+    Comments.direct.insert(_.extend({}, doc, {
+      category: 'comment',
       topicId: destinationId,
-      text: doc.text,
-    });
+    }));
     doc.comments().forEach((comment) => {
       Comments.update(comment._id, { $set: { topicId: destinationId } });
     });
