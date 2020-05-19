@@ -12,10 +12,14 @@ import './import-dialog.html';
 ViewModel.share({
   import: {
     buttonsAreDisabled: false,
+    phaseIndex: -1,
     worksheet: null,
     columnMapping: {},
     saveColumnMapppings: false,
     availableColumns: [],
+    phase() {
+      return this.phaseIndex() >= 0 ? this.templateInstance.data.conductor.phase(this.phaseIndex()) : undefined;
+    },
   },
 });
 
@@ -68,7 +72,10 @@ Template.Import_dialog.viewmodel({
   share: 'import',
   table: '',
   onCreated(instance) {
-    this.columnMapping(Settings.get(`columnMappings.${instance.data.collection._name}`) || {});
+    if (this.phaseIndex() >= 0) {
+      const data = this.templateInstance.data;
+      this.columnMapping(Settings.get(`import.${data.collection._name}#${data.options.format}.${this.phaseIndex()}.columnMapping`) || {});
+    }
   },
   enableButtons(val) {
     this.buttonsAreDisabled(!val);

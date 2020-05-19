@@ -1,4 +1,5 @@
 import { _ } from 'meteor/underscore';
+import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 import deepExtend from 'deep-extend';
 
@@ -104,6 +105,7 @@ export class Translator {
 
   applyDefaults(docs) {
     const self = this;
+    const phases = Session.get('conductor')._phases;
     return docs.forEach((doc, index) => {
       const path = [];
       function applyDefault(dic) {

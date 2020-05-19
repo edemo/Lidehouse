@@ -1,10 +1,12 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
 import { moment } from 'meteor/momentjs:moment';
 import XLSX from 'xlsx';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
+import { Partners } from '../api/partners/partners';
 
 // Problem of dealing with dates as js Date objects:
 // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
@@ -47,7 +49,20 @@ export class Parser {
         }
         return boolean;
       }
-      case 'String':
+      case 'String': {
+        switch (schemaValue?.autoform?.relation) {
+          case 'partner': {
+            try {
+              check(cellValue, Meteor.Collection.ObjectID);
+              return cellValue;
+            } catch (err) {
+              const partner = Partners.findOne({ 'idCard.name': cellValue });
+              return partner?._id;
+            }
+          }
+          default: return cellValue;
+        }
+      }
       case 'Object':
       case 'Array': return cellValue;
       default: productionAssert(false, `Don't know how to parse ${typeName}`); return undefined;

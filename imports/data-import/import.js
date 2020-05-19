@@ -47,6 +47,7 @@ Template.Import_dialog.events({
         instance.viewmodel.worksheet(worksheet);
         const html = XLSX.utils.sheet_to_html(worksheet, { editable: true });
         instance.viewmodel.table(html);
+        instance.viewmodel.phaseIndex(0);
       };
       if (rABS) reader.readAsBinaryString(file);
       else reader.readAsArrayBuffer(file);
@@ -80,10 +81,10 @@ export function importCollectionFromFile(mainCollection, options = {}) {
   const communityId = getActiveCommunityId();
   const conductor = getConductor(mainCollection, options);
   const columns = [{ display: __('importColumnsInstructions') }];
-  conductor.forEach((phase, phaseIndex) => {
-    const translator = phase.translator;
+  conductor.phases().forEach((phase, phaseIndex) => {
+    const translator = phase.translator();
     columns.push({ name: phaseIndex, display: `${translator.__('_')} ${__('data')}`.toUpperCase() });
-    _.each(phase.schema._schema, (value, key) => {
+    _.each(phase.schema()._schema, (value, key) => {
       const split = key.split('.');
       if (_.contains(['Array', 'Object'], value.type.name)) return;
       if (value.autoform && (value.autoform.omit || value.autoform.readonly || _.contains(['hidden'], value.autoform.type))) return;
@@ -96,7 +97,7 @@ export function importCollectionFromFile(mainCollection, options = {}) {
       const display = `[${name}]${value.optional ? '' : '(*)'}: ${value.type.name} ${example}`;
       columns.push({ key, name, example, display });
     });
-    _.each(phase.translator.dictionary, (value, key) => {
+    _.each(phase.translator().dictionary, (value, key) => {
       if (value.depends) {
         const i = columns.findIndex(c => c.key === key);
         if (i >= 0) columns.splice(i, 1);
@@ -112,77 +113,75 @@ export function importCollectionFromFile(mainCollection, options = {}) {
   Modal.show('Modal', {
     title: 'importing data',
     body: 'Import_dialog',
-    bodyContext: { collection: mainCollection, options, columns },
+    bodyContext: { collection: mainCollection, options, conductor, columns },
     size: 'lg',
     btnAction: 'import',
     btnClose: 'cancel',
     onAction() {
       const viewmodel = this;
-      viewmodel.buttonsAreDisabled(true);
+//      viewmodel.buttonsAreDisabled(true);
       if (viewmodel.saveColumnMapppings()) {
-        const _id = Settings.ensureExists();
         const mapping = _.extend({}, viewmodel.columnMapping());
-        Settings.update(_id, { $set: { [`columnMappings.${mainCollection._name}`]: mapping } });
+        Settings.set(`import.${mainCollection._name}#${options.format}.${viewmodel.phaseIndex()}.columnMapping`, mapping);
       }
-      Meteor.setTimeout(() => { // We defer, so the button disable happens before the long processing
-        const editedTable = $('.import-table')[0];
-        const editedSheet = XLSX.utils.table_to_sheet(editedTable /*, { cellDates: true }*/);
-        const worksheet = viewmodel.worksheet();
-        _.each(worksheet, (cell, key) => {
-          if (key.length === 2 && key[1] === '1') { // so if header cell (A1, B1, ..., Z1)
-            worksheet[key] = editedSheet[key];
-          }
-        });
-        const jsons = XLSX.utils.sheet_to_json(worksheet, { /*header: 1,*/ blankRows: false }).map(flatten.unflatten);
-        let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
 
-        const processNextPhase = function () {
-          const phase = conductor.shift();
-          if (!phase) { // Import cycle ended - can close import dialog here
-            Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
-            return;
-          }
-          const collection = phase.collection;
-          console.log(`Importing into ${collection._name}`);
-    //      if (options && options.multipleDocsPerLine) docs = singlify(docs);
-          const translator = phase.translator;
-          if (translator) {
-            console.log(`Tranlsating ${docs.length} docs`);
-            docs = translator.reverse(docs);
-            console.log(`Applying defaults to ${docs.length} docs`);
-            translator.applyDefaults(docs);
-          }
-          const parser = new Parser(phase.schema);
-          console.log(`Parsing ${docs.length} docs`);
-          docs.forEach(doc => { parser.parse(doc); });
-          // --- Custom transformation is applied to the docs, that may even change the set of docs
-          console.log(`Transforming ${docs.length} docs`);
-          const transformer = Transformers[collection._name]?.[(options && options.transformer) || 'default'];
-          const tdocs = transformer ? transformer(docs, options) : docs.map(doc => Object.deepClone(doc));
-          // console.log(collection._name, tdocs);
-          if (!tdocs.length) { processNextPhase(); return; } // nothing to do with this collection, handle the next
-          tdocs.forEach(doc => {
-            doc.communityId = communityId;
-            collection.simpleSchema(doc).clean(doc);
-            collection.simpleSchema(doc).validate(doc);
-          });
+      const editedTable = $('.import-table')[0];
+      const editedSheet = XLSX.utils.table_to_sheet(editedTable /*, { cellDates: true }*/);
+      const worksheet = viewmodel.worksheet();
+      _.each(worksheet, (cell, key) => {
+        if (key.length === 2 && key[1] === '1') { // so if header cell (A1, B1, ..., Z1)
+          worksheet[key] = editedSheet[key];
+        }
+      });
+      const jsons = XLSX.utils.sheet_to_json(worksheet, { /*header: 1,*/ blankRows: false }).map(flatten.unflatten);
+      let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
 
-          console.log(`Calling batch test on ${tdocs.length} docs`);
-          const neededOps = collection.methods.batch.test._execute({ userId }, { args: tdocs });
-          const tdocsToUpsert = _.reject(tdocs, (d, i) => _.contains(neededOps.noChange, i));
-          Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocsToUpsert }, {
-            action: __('import data', { collection: __(collection._name) }),
-            message: __('This operation will do the following') + '<br>'
-              + __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>'
-              + __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>'
-              + __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>'
-              + __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
-            body: 'Readmore',
-            bodyContext: JSON.stringify(neededOps, null, 2),
-          }, processNextPhase);
-        };
-        processNextPhase();
-      }, 500);
+      const phase = conductor.remainingPhases().shift();
+      if (!phase) { // Import cycle ended - can close import dialog here
+        Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
+        return;
+      }
+      const collection = phase.collection();
+      console.log(`Importing into ${collection._name}`);
+//      if (options && options.multipleDocsPerLine) docs = singlify(docs);
+      const translator = phase.translator();
+      if (translator) {
+        console.log(`Tranlsating ${docs.length} docs`);
+        docs = translator.reverse(docs);
+        console.log(`Applying defaults to ${docs.length} docs`);
+        translator.applyDefaults(docs);
+      }
+      const parser = new Parser(phase.schema());
+      console.log(`Parsing ${docs.length} docs`);
+      docs.forEach(doc => { parser.parse(doc); });
+      // --- Custom transformation is applied to the docs, that may even change the set of docs
+      console.log(`Transforming ${docs.length} docs`);
+      const transformer = Transformers[collection._name]?.[(options && options.transformer) || 'default'];
+      const tdocs = transformer ? transformer(docs, options) : docs.map(doc => Object.deepClone(doc));
+      // console.log(collection._name, tdocs);
+      tdocs.forEach(doc => {
+        doc.communityId = communityId;
+        collection.simpleSchema(doc).clean(doc);
+        collection.simpleSchema(doc).validate(doc);
+      });
+      phase.docs = tdocs;
+
+      console.log(`Calling batch test on ${tdocs.length} docs`);
+      const neededOps = collection.methods.batch.test._execute({ userId }, { args: tdocs });
+      const tdocsToUpsert = _.reject(tdocs, (d, i) => _.contains(neededOps.noChange, i));
+      Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocsToUpsert }, {
+        action: __('import data', { collection: __(collection._name) }),
+        message: __('This operation will do the following') + '<br>'
+          + __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>'
+          + __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>'
+          + __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>'
+          + __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
+        body: 'Readmore',
+        bodyContext: JSON.stringify(neededOps, null, 2),
+      }, () => {
+        viewmodel.phaseIndex(viewmodel.phaseIndex() + 1);
+        $('#modal-content').scrollTop(0);
+      });
     },
   });
 }

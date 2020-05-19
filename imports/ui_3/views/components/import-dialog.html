@@ -28,6 +28,7 @@
     <div class="panel panel-warning">
       <div class="panel-heading"><i class="fa fa-pencil"></i> {{_ 'Preview'}}</div>
       <div class="panel-body">
+        {{_ 'Import phase'}}: ({{phaseIndex}}){{_ phase.collection._name}}<br>
         {{{_ 'importPreviewInstructions'}}}
         <br><br>
         <form>
@@ -49,10 +50,10 @@
 <template name="Import_dialog">
     {{#if table}}
         {{enableButtons true}}
-        {{> Import_preview table=table columns=columns}}
+        {{> Import_preview table=table conductor=conductor columns=columns}}
     {{else}}
         {{enableButtons false}}
-        {{> Import_upload columns=columns}}
+        {{> Import_upload conductor=conductor columns=columns}}
     {{/if}}
 </template>
 

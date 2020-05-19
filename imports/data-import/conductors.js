@@ -1,5 +1,7 @@
+/* eslint-disable max-classes-per-file */
 import { _ } from 'meteor/underscore';
 import { Session } from 'meteor/session';
+import { Mongo } from 'meteor/mongo';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -15,58 +17,95 @@ import { Translator } from './translator.js';
 
 // Multiple collections can be imported with one import command
 
-export function getConductor(collection, options) {
+export class ImportPhase {
+  constructor(obj) {
+    _.extend(this, obj);
+  }
+  collection() {
+    return Mongo.Collection.get(this.collectionName);
+  }
+  schema() {
+    return this.collection().simpleSchema(this.schemaSelector);
+  }
+  translator() {
+    return new Translator(this.collection(), this.options, 'hu', this.dictionary);
+  }
+}
+
+export class ImportConductor {
+  constructor(phases) {
+    this._phases = phases;
+    this._remainingPhases = [].concat(phases);
+  }
+  phases() {
+    return this._phases.map(p => new ImportPhase(p));
+  }
+  remainingPhases() {
+    return this._remainingPhases.map(p => new ImportPhase(p));
+  }
+  phase(index) {
+    return new ImportPhase(this._phases[index]);
+  }
+}
+
+function _getConductor(collection, options) {
   switch (collection._name) {
     case 'parcels': {
       debugAssert(options.format === 'default');
       return [{
-        collection: Parcels,
-        schema: Parcels.simpleSchema({ category: '@property' }),
-        translator: new Translator(Parcels, options, 'hu', {
+        collectionName: 'parcels',
+        schemaSelector: { category: '@property' },
+        options,
+        dictionary: {
           category: { default: '@property' },
-        }),
+        },
       }, {
-        collection: Parcelships,
-        schema: Parcelships.simpleSchema(),
-        translator: new Translator(Parcelships, options, 'hu'),
+        collectionName: 'parcelships',
+        schemaSelector: undefined,
+        options,
+        dictionary: undefined,
       }, {
-        collection: Partners,
-        schema: Partners.simpleSchema(),
-        translator: new Translator(Partners, options, 'hu', {
+        collectionName: 'partners',
+        schemaSelector: undefined,
+        options,
+        dictionary: {
           relation: { default: ['member'] },
           idCard: { type: { default: 'natural' } },
-        }),
+        },
       }, {
-        collection: Memberships,
-        schema: Memberships.simpleSchema({ role: 'owner' }),
+        collectionName: 'memberships',
+        schemaSelector: { role: 'owner' },
         omitFields: ['partnerId', 'ownership.representor'],
-        translator: new Translator(Memberships, options, 'hu', {
+        options,
+        dictionary: {
           role: { default: 'owner' },
           ownership: { default: { share: '1/1' } },
-        }),
+        },
       }];
     }
     case 'transactions': {
       debugAssert(options.format === 'default');
       return [{
-        collection: Partners,
-        schema: Partners.simpleSchema(),
-        translator: new Translator(Partners, options, 'hu', {
+        collectionName: 'partners',
+        schemaSelector: undefined,
+        options,
+        dictionary: {
           relation: { default: ['supplier'] },
           idCard: {
             type: { default: 'legal' },
 //            name: { label: 'Szállító neve adóigazgatási azonosító száma' }, -> columnMapping
           },
-        }),
+        },
       }, {
-        collection: Transactions,
-        schema: Transactions.simpleSchema({ category: 'bill' }),
-        translator: new Translator(Transactions, _.extend({}, options, { entity: 'bill' }), 'hu', {
+        collectionName: 'transactions',
+        schemaSelector: { category: 'bill' },
+        options: _.extend({}, options, { entity: 'bill' }),
+        dictionary: {
           category: { default: 'bill' },
           relation: { default: Session.get('activePartnerRelation') },
           serialId: { formula: "'SZ/SZALL/IMP/' + index" },
           defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'bill', 'data.relation': Session.get('activePartnerRelation') })._id },
-          partnerName: { formula: 'doc.idCard.name' },
+          partnerId: { formula: 'phase[0].docs[index].idCard.name' },
           deliveryDate: { formula: 'doc.deliveryDate || doc.issueDate' },
           dueDate: { formula: 'doc.dueDate || doc.issueDate' },
           title: { formula: 'doc.title || "---"' },
@@ -74,16 +113,17 @@ export function getConductor(collection, options) {
           credit: { default: [{ account: '`454' }] },
           status: { default: 'posted' },
           postedAt: { formula: 'doc.issueDate' },
-        }),
+        },
       }, {
-        collection: Transactions,
-        schema: Transactions.simpleSchema({ category: 'payment' }),
-        translator: new Translator(Transactions, _.extend({}, options, { entity: 'payment' }), 'hu', {
+        collectionName: 'transactions',
+        schemaSelector: { category: 'payment' },
+        options: _.extend({}, options, { entity: 'payment' }),
+        dictionary: {
           category: { default: 'payment' },
           relation: { default: Session.get('activePartnerRelation') },
           serialId: { formula: "'FIZ/SZALL/IMP/' + index" },
           defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'payment', 'data.relation': Session.get('activePartnerRelation') })._id },
-          partnerName: { formula: 'doc.idCard.name' },
+          partnerId: { formula: 'phase[0].docs[index].idCard.name' },
 //          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
 //          valueDate: { formula: 'doc.paymentDate' },
 //          amount: { label: 'Számla összege' },
@@ -92,7 +132,7 @@ export function getConductor(collection, options) {
           credit: { default: [{ account: '`38' }] },
           status: { default: 'posted' },
           postedAt: { formula: 'doc.valueDate' },
-        }),
+        },
       }];
     }
     case 'statementEntries': {
@@ -129,18 +169,27 @@ export function getConductor(collection, options) {
         default: productionAssert(false, `No protocol for bank ${account.bank}`);
       }
       return [{
-        collection,
-        schema: collection.simpleSchema(),
-        translator: new Translator(collection, options, 'hu', dictionary),
+        collectionName: 'statementEntries',
+        schemaSelector: undefined,
+        options,
+        dictionary,
       }];
     }
     default: {
       debugAssert(options.format === 'default');
       return [{
-        collection,
-        schema: collection.simpleSchema(),
-        translator: new Translator(collection, options, 'hu'),
+        collectionName: collection._name,
+        schemaSelector: undefined,
+        options,
+        dictionary: undefined,
       }];
     }
   }
+}
+
+export function getConductor(...params) {
+  const conductor = _getConductor(...params);
+  conductor.forEach(p => delete p.options.collection);
+  Session.set('conductor', conductor);
+  return new ImportConductor(conductor);
 }
