@@ -34,7 +34,85 @@ function singlify(jsons) {
   return tjsons;
 }
 
-Template.Import_dialog.events({
+const launchNextPhase = function launchNextPhase(instance) {
+  Modal.show('Modal', {
+    title: 'importing data',
+    body: 'Import_preview',
+    bodyContext: instance.data,
+    size: 'lg',
+    btnOK: 'import',
+    onOK() {
+      const userId = Meteor.userId();
+      const communityId = getActiveCommunityId();
+      const conductor = instance.data.conductor;
+      const viewmodel = this;
+      if (viewmodel.saveColumnMapppings()) {
+        const mapping = _.extend({}, viewmodel.columnMapping());
+        Settings.set(`import.${conductor.name()}.${viewmodel.phaseIndex()}.columnMapping`, mapping);
+      }
+
+      const editedTable = $('.import-table')[0];
+      const editedSheet = XLSX.utils.table_to_sheet(editedTable /*, { cellDates: true }*/);
+      const worksheet = viewmodel.worksheet();
+      _.each(worksheet, (cell, key) => {
+        if (key.length === 2 && key[1] === '1') { // so if header cell (A1, B1, ..., Z1)
+          worksheet[key] = editedSheet[key];
+        }
+      });
+      const jsons = XLSX.utils.sheet_to_json(worksheet, { /*header: 1,*/ blankRows: false }).map(flatten.unflatten);
+      let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
+
+      const phase = conductor.nextPhase();
+      if (!phase) { // Import cycle ended - can close import dialog here
+        Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
+        return;
+      }
+      const collection = phase.collection();
+      console.log(`Importing into ${collection._name}`);
+//      if (options && options.multipleDocsPerLine) docs = singlify(docs);
+      const translator = phase.translator();
+      if (translator) {
+        console.log(`Tranlsating ${docs.length} docs`);
+        docs = translator.reverse(docs);
+        console.log(`Applying defaults to ${docs.length} docs`);
+        translator.applyDefaults(docs);
+      }
+      const parser = new Parser(phase.schema());
+      console.log(`Parsing ${docs.length} docs`);
+      docs.forEach(doc => { parser.parse(doc); });
+      // --- Custom transformation is applied to the docs, that may even change the set of docs
+      console.log(`Transforming ${docs.length} docs`);
+      const transformer = phase.transformer();
+      const tdocs = transformer(docs);
+      // console.log(collection._name, tdocs);
+      tdocs.forEach(doc => {
+        doc.communityId = communityId;
+        collection.simpleSchema(doc).clean(doc);
+        collection.simpleSchema(doc).validate(doc);
+      });
+      phase.docs = tdocs;
+
+      console.log(`Calling batch test on ${tdocs.length} docs`);
+      const neededOps = collection.methods.batch.test._execute({ userId }, { args: tdocs });
+      const tdocsToUpsert = _.reject(tdocs, (d, i) => _.contains(neededOps.noChange, i));
+      Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocsToUpsert }, {
+        action: __('import data', { collection: __(collection._name) }),
+        message: __('This operation will do the following') + '<br>'
+          + __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>'
+          + __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>'
+          + __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>'
+          + __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
+        body: 'Readmore',
+        bodyContext: JSON.stringify(neededOps, null, 2),
+      }, () => {
+        viewmodel.phaseIndex(viewmodel.phaseIndex() + 1);
+        launchNextPhase(instance);
+      });
+    },
+  });
+};
+
+Template.Import_upload.events({
   'click button[name=upload]'(event, instance) {
     UploadFS.selectFile(function (file) {
       const reader = new FileReader();
@@ -48,6 +126,8 @@ Template.Import_dialog.events({
         const html = XLSX.utils.sheet_to_html(worksheet, { editable: true });
         instance.viewmodel.table(html);
         instance.viewmodel.phaseIndex(0);
+        Modal.hideAll();
+        launchNextPhase(instance);
       };
       if (rABS) reader.readAsBinaryString(file);
       else reader.readAsArrayBuffer(file);
@@ -77,8 +157,6 @@ Template.Import_upload.events({
 
 export function importCollectionFromFile(mainCollection, options = {}) {
   options.format = options.format || 'default';
-  const userId = Meteor.userId();
-  const communityId = getActiveCommunityId();
   const conductor = getConductor(mainCollection, options);
   const columns = [{ display: __('importColumnsInstructions') }];
   conductor.phases().forEach((phase, phaseIndex) => {
@@ -110,78 +188,11 @@ export function importCollectionFromFile(mainCollection, options = {}) {
     });
   });
 
+
   Modal.show('Modal', {
     title: 'importing data',
-    body: 'Import_dialog',
+    body: 'Import_upload',
     bodyContext: { collection: mainCollection, options, conductor, columns },
     size: 'lg',
-    btnAction: 'import',
-    btnClose: 'cancel',
-    onAction() {
-      const viewmodel = this;
-//      viewmodel.buttonsAreDisabled(true);
-      if (viewmodel.saveColumnMapppings()) {
-        const mapping = _.extend({}, viewmodel.columnMapping());
-        Settings.set(`import.${mainCollection._name}#${options.format}.${viewmodel.phaseIndex()}.columnMapping`, mapping);
-      }
-
-      const editedTable = $('.import-table')[0];
-      const editedSheet = XLSX.utils.table_to_sheet(editedTable /*, { cellDates: true }*/);
-      const worksheet = viewmodel.worksheet();
-      _.each(worksheet, (cell, key) => {
-        if (key.length === 2 && key[1] === '1') { // so if header cell (A1, B1, ..., Z1)
-          worksheet[key] = editedSheet[key];
-        }
-      });
-      const jsons = XLSX.utils.sheet_to_json(worksheet, { /*header: 1,*/ blankRows: false }).map(flatten.unflatten);
-      let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
-
-      const phase = conductor.remainingPhases().shift();
-      if (!phase) { // Import cycle ended - can close import dialog here
-        Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
-        return;
-      }
-      const collection = phase.collection();
-      console.log(`Importing into ${collection._name}`);
-//      if (options && options.multipleDocsPerLine) docs = singlify(docs);
-      const translator = phase.translator();
-      if (translator) {
-        console.log(`Tranlsating ${docs.length} docs`);
-        docs = translator.reverse(docs);
-        console.log(`Applying defaults to ${docs.length} docs`);
-        translator.applyDefaults(docs);
-      }
-      const parser = new Parser(phase.schema());
-      console.log(`Parsing ${docs.length} docs`);
-      docs.forEach(doc => { parser.parse(doc); });
-      // --- Custom transformation is applied to the docs, that may even change the set of docs
-      console.log(`Transforming ${docs.length} docs`);
-      const transformer = Transformers[collection._name]?.[(options && options.transformer) || 'default'];
-      const tdocs = transformer ? transformer(docs, options) : docs.map(doc => Object.deepClone(doc));
-      // console.log(collection._name, tdocs);
-      tdocs.forEach(doc => {
-        doc.communityId = communityId;
-        collection.simpleSchema(doc).clean(doc);
-        collection.simpleSchema(doc).validate(doc);
-      });
-      phase.docs = tdocs;
-
-      console.log(`Calling batch test on ${tdocs.length} docs`);
-      const neededOps = collection.methods.batch.test._execute({ userId }, { args: tdocs });
-      const tdocsToUpsert = _.reject(tdocs, (d, i) => _.contains(neededOps.noChange, i));
-      Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocsToUpsert }, {
-        action: __('import data', { collection: __(collection._name) }),
-        message: __('This operation will do the following') + '<br>'
-          + __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>'
-          + __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>'
-          + __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>'
-          + __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
-        body: 'Readmore',
-        bodyContext: JSON.stringify(neededOps, null, 2),
-      }, () => {
-        viewmodel.phaseIndex(viewmodel.phaseIndex() + 1);
-        $('#modal-content').scrollTop(0);
-      });
-    },
   });
 }

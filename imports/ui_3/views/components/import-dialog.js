@@ -1,18 +1,20 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
 import { ViewModel } from 'meteor/manuel:viewmodel';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 
-import { Settings } from '/imports/api/settings/settings.js';
+import { debugAssert } from '/imports/utils/assert.js';
 import { doubleScroll } from '/imports/ui_3/lib/double-scroll.js';
+import { Settings } from '/imports/api/settings/settings.js';
 import '/imports/ui_3/views/blocks/help-icon.js';
 import './import-dialog.html';
 
 ViewModel.share({
   import: {
-    buttonsAreDisabled: false,
     phaseIndex: -1,
+    table: '',
     worksheet: null,
     columnMapping: {},
     saveColumnMapppings: false,
@@ -26,6 +28,7 @@ ViewModel.share({
 //--------------------------------------------
 
 Template.Import_upload.viewmodel({
+  share: 'import',
   viewColumns: false,
   selected: [],
 });
@@ -47,6 +50,11 @@ Template.Import_preview.viewmodel({
   autorun() {
     this.saveColumnMapppings(this.checked());
   },
+  onCreated(instance) {
+    debugAssert(this.phaseIndex() >= 0);
+    const data = this.templateInstance.data;
+    this.columnMapping(Settings.get(`import.${data.conductor.name()}.${this.phaseIndex()}.columnMapping`) || {});
+  },
   onRendered(instance) {
     const columns = instance.data.columns.filter(c => c.key); // leave out the sperators, like "PARCELS DATA"
     const validColumnNames = _.without(_.pluck(columns, 'name'), undefined);
@@ -59,26 +67,10 @@ Template.Import_preview.viewmodel({
       const _columnName = td.innerText;
       tdElem.empty();
       Blaze.renderWithData(Template.Import_header_cell,
-        { _columnName, columns: validColumnNames }, td
+        { _columnName, columns: validColumnNames }, td,
       );
     });
     Meteor.setTimeout(function () { doubleScroll(tableElem); }, 1000);
-  },
-});
-
-//--------------------------------------------
-
-Template.Import_dialog.viewmodel({
-  share: 'import',
-  table: '',
-  onCreated(instance) {
-    if (this.phaseIndex() >= 0) {
-      const data = this.templateInstance.data;
-      this.columnMapping(Settings.get(`import.${data.collection._name}#${data.options.format}.${this.phaseIndex()}.columnMapping`) || {});
-    }
-  },
-  enableButtons(val) {
-    this.buttonsAreDisabled(!val);
   },
 });
 
@@ -116,4 +108,3 @@ Template.Import_header_cell.events({
 //    Blaze.remove(instance.view);  should remove somewhere
   },
 });
-

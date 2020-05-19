@@ -12,8 +12,8 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-
 import { Translator } from './translator.js';
+import { Transformers } from './transformers.js';
 
 // Multiple collections can be imported with one import command
 
@@ -30,25 +30,36 @@ export class ImportPhase {
   translator() {
     return new Translator(this.collection(), this.options, 'hu', this.dictionary);
   }
+  transformer() {
+    return Transformers[this.collectionName]?.[this.options?.transformer || 'default']
+      || (docs => docs.map(doc => Object.deepClone(doc)));
+  }
 }
 
 export class ImportConductor {
-  constructor(phases) {
+  constructor(collectionName, format, phases) {
+    this.collectionName = collectionName;
+    this.format = format;
     this._phases = phases;
-    this._remainingPhases = [].concat(phases);
+    this._phaseIndex = -1;
+  }
+  name() {
+    return `${this.collectionName}#${this.format}`;
   }
   phases() {
     return this._phases.map(p => new ImportPhase(p));
   }
-  remainingPhases() {
-    return this._remainingPhases.map(p => new ImportPhase(p));
-  }
   phase(index) {
     return new ImportPhase(this._phases[index]);
   }
+  nextPhase() {
+    this._phaseIndex += 1;
+    const _phase = this._phases[this._phaseIndex];
+    return _phase ? new ImportPhase(_phase) : undefined;
+  }
 }
 
-function _getConductor(collection, options) {
+function _getPhases(collection, options) {
   switch (collection._name) {
     case 'parcels': {
       debugAssert(options.format === 'default');
@@ -105,7 +116,7 @@ function _getConductor(collection, options) {
           relation: { default: Session.get('activePartnerRelation') },
           serialId: { formula: "'SZ/SZALL/IMP/' + index" },
           defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'bill', 'data.relation': Session.get('activePartnerRelation') })._id },
-          partnerId: { formula: 'phase[0].docs[index].idCard.name' },
+          partnerId: { formula: 'phases[0].docs[index].idCard.name' },
           deliveryDate: { formula: 'doc.deliveryDate || doc.issueDate' },
           dueDate: { formula: 'doc.dueDate || doc.issueDate' },
           title: { formula: 'doc.title || "---"' },
@@ -123,7 +134,7 @@ function _getConductor(collection, options) {
           relation: { default: Session.get('activePartnerRelation') },
           serialId: { formula: "'FIZ/SZALL/IMP/' + index" },
           defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'payment', 'data.relation': Session.get('activePartnerRelation') })._id },
-          partnerId: { formula: 'phase[0].docs[index].idCard.name' },
+          partnerId: { formula: 'phases[0].docs[index].idCard.name' },
 //          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
 //          valueDate: { formula: 'doc.paymentDate' },
 //          amount: { label: 'Számla összege' },
@@ -187,9 +198,9 @@ function _getConductor(collection, options) {
   }
 }
 
-export function getConductor(...params) {
-  const conductor = _getConductor(...params);
-  conductor.forEach(p => delete p.options.collection);
-  Session.set('conductor', conductor);
-  return new ImportConductor(conductor);
+export function getConductor(collection, options) {
+  const phases = _getPhases(collection, options);
+  phases.forEach(p => delete p.options.collection);
+  Session.set('conductor', phases);
+  return new ImportConductor(collection._name, options.format, phases);
 }

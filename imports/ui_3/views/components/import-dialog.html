@@ -47,21 +47,11 @@
     </div>
  </template>
 
-<template name="Import_dialog">
-    {{#if table}}
-        {{enableButtons true}}
-        {{> Import_preview table=table conductor=conductor columns=columns}}
-    {{else}}
-        {{enableButtons false}}
-        {{> Import_upload conductor=conductor columns=columns}}
-    {{/if}}
-</template>
-
 <template name="Import_header_cell">
   <span contenteditable="true" class="label {{#if isValidColumn}}label-primary{{else}}label-danger{{/if}}"
     {{b "text:columnName"}}>
   </span>
-  {{#unless (or isValidColumn buttonsAreDisabled)}} <br>
+  {{#unless isValidColumn}} <br>
   <select>
       <option value="">{{_ '(Select one)'}}</option>
       {{#each column in availableColumns}}
