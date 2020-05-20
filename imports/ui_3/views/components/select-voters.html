@@ -1,6 +1,10 @@
 <template name="Select_voters">
+  {{#if Template.subscriptionsReady}}
   <p>{{_ "Please select voters"}}</p>
   {{#autoForm id="af.select.voters" schema=schema type=method meteormethod="vote.castForOthers"}}
+    <input type="checkbox" name="selectAll" id="selectAllVoters" {{b "check: allSelected"}} {{selectAll}}>
+    <label for="selectAll">{{_ 'Select all'}}</label>
     {{> afQuickField name="voters"}}
   {{/autoForm}}
+  {{/if}}
 </template>
