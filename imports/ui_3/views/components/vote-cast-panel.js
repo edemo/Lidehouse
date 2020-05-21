@@ -29,7 +29,7 @@ function castVoteBasedOnPermission(topicId, castedVote, callback) {
     const modalContext = {
       title: 'Proxy voting',
       body: 'Select_voters',
-      bodyContext: _.extend(this, { topicId, castedVote }),
+      bodyContext: { topicId, castedVote },
       btnClose: 'cancel',
       btnOK: 'Send vote',
       onOK() {
