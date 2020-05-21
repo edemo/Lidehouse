@@ -79,7 +79,7 @@ if (Meteor.isServer) {
       it('updates single', function (done) {
         topic3 = { ...header, serial: 3, title: 'Third', text: 'third' };
         const params3 = { args: [topic3] };
-        const update3 = { args: [{ _id: doc3._id, modifier: { $set: topic3 } }] };
+        const update3 = { args: [{ _id: doc3._id, modifier: { $set: { text: 'third' } } }] };
 
         const ops = Topics.methods.batch.test._execute({ userId }, params3);
         chai.assert.equal(ops.insert.length, 0);
@@ -99,7 +99,7 @@ if (Meteor.isServer) {
         topic2 = { ...header, serial: 2, title: 'Second', text: 'second' };
         topic1 = { ...header, serial: 1, title: 'First', text: 'first' };
         const update21 = {
-          args: [{ _id: doc2._id, modifier: { $set: topic2 } }, { _id: doc1._id, modifier: { $set: topic1 } }],
+          args: [{ _id: doc2._id, modifier: { $set: { text: 'second' } } }, { _id: doc1._id, modifier: { $set: { text: 'first' } } }],
         };
         const params = { args: [topic3, topic2, topic1] };
 
