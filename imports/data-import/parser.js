@@ -6,7 +6,8 @@ import { moment } from 'meteor/momentjs:moment';
 import XLSX from 'xlsx';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { Partners } from '../api/partners/partners';
+import { Partners } from '/imports/api/partners/partners';
+import { Parcels } from '/imports//api/parcels/parcels';
 
 // Problem of dealing with dates as js Date objects:
 // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
@@ -17,7 +18,7 @@ export class Parser {
     this.schema = schema;
   }
 
-  static parseValue(cellValue, typeName, schemaValue) {
+  static parseValue(cellValue, doc, typeName, schemaValue) {
     switch (typeName) {
       case 'Date': {
         if (cellValue instanceof Date) return cellValue;
@@ -27,6 +28,7 @@ export class Parser {
         return utc.toDate();
       }
       case 'Fraction': {
+        debugger;
         if (cellValue instanceof Fraction) return cellValue;
         const fraction = new Fraction(cellValue);
         if (!fraction) throw new Meteor.Error('err_invalidData', `Invalid fraction in import: ${cellValue}`);
@@ -51,12 +53,23 @@ export class Parser {
       }
       case 'String': {
         switch (schemaValue?.autoform?.relation) {
+          case '@property': {
+            try {
+              check(cellValue, Meteor.Collection.ObjectID);
+              return cellValue;
+            } catch (err) {
+              const parcel = Parcels.findOne({ communityId: doc.communityId, ref: cellValue });
+              productionAssert(parcel, `No parcel with this ref ${cellValue}`);
+              return parcel?._id;
+            }
+          }
           case 'partner': {
             try {
               check(cellValue, Meteor.Collection.ObjectID);
               return cellValue;
             } catch (err) {
-              const partner = Partners.findOne({ 'idCard.name': cellValue });
+              const partner = Partners.findOne({ communityId: doc.communityId, 'idCard.name': cellValue });
+              productionAssert(partner, `No partner with this name ${cellValue}`);
               return partner?._id;
             }
           }
@@ -73,7 +86,7 @@ export class Parser {
     _.each(this.schema._schema, (schemaValue, key) => {
       const cellValue = Object.getByString(doc, key);
       if (!cellValue) return;
-      const parsedValue = Parser.parseValue(cellValue, schemaValue.type.name, schemaValue);
+      const parsedValue = Parser.parseValue(cellValue, doc, schemaValue.type.name, schemaValue);
       if (parsedValue !== cellValue) Object.setByString(doc, key, parsedValue);
     });
   }

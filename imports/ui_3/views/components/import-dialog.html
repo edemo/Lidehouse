@@ -26,9 +26,9 @@
 
 <template name="Import_preview">
     <div class="panel panel-warning">
-      <div class="panel-heading"><i class="fa fa-pencil"></i> {{_ 'Preview'}}</div>
+      <div class="panel-heading"><i class="fa fa-pencil"></i> {{_ 'Import phase'}} [{{add conductor.phaseIndex 1}}]: {{_ conductor.currentPhase.collectionName}} {{_ 'import'}}</div>
       <div class="panel-body">
-        {{_ 'Import phase'}}: ({{phaseIndex}}){{_ phase.collection._name}}<br>
+        {{_ 'Preview'}}<br>
         {{{_ 'importPreviewInstructions'}}}
         <br><br>
         <form>

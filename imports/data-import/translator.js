@@ -105,9 +105,9 @@ export class Translator {
 
   applyDefaults(docs) {
     const self = this;
-    const phases = Session.get('conductor')._phases;
     return docs.forEach((doc, index) => {
       const path = [];
+      const conductor = this.conductor; // so it can be used in eval's context
       function applyDefault(dic) {
         if (dic.formula) {
           const calculatedValue = eval(dic.formula);

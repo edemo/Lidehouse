@@ -35,6 +35,14 @@ function singlify(jsons) {
 }
 
 const launchNextPhase = function launchNextPhase(instance) {
+  const userId = Meteor.userId();
+  const communityId = getActiveCommunityId();
+  const conductor = instance.data.conductor;
+  const phase = conductor.nextPhase();
+  if (!phase) { // Import cycle ended - can close import dialog here
+    Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
+    return;
+  }
   Modal.show('Modal', {
     title: 'importing data',
     body: 'Import_preview',
@@ -42,16 +50,12 @@ const launchNextPhase = function launchNextPhase(instance) {
     size: 'lg',
     btnOK: 'import',
     onOK() {
-      const userId = Meteor.userId();
-      const communityId = getActiveCommunityId();
-      const conductor = instance.data.conductor;
       const viewmodel = this;
       if (viewmodel.saveColumnMapppings()) {
         const mapping = _.extend({}, viewmodel.columnMapping());
-        Settings.set(`import.${conductor.name()}.${viewmodel.phaseIndex()}.columnMapping`, mapping);
+        Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`, mapping);
       }
-
-      const editedTable = $('.import-table')[0];
+      const editedTable = viewmodel.getTable();
       const editedSheet = XLSX.utils.table_to_sheet(editedTable /*, { cellDates: true }*/);
       const worksheet = viewmodel.worksheet();
       _.each(worksheet, (cell, key) => {
@@ -62,11 +66,6 @@ const launchNextPhase = function launchNextPhase(instance) {
       const jsons = XLSX.utils.sheet_to_json(worksheet, { /*header: 1,*/ blankRows: false }).map(flatten.unflatten);
       let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
 
-      const phase = conductor.nextPhase();
-      if (!phase) { // Import cycle ended - can close import dialog here
-        Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
-        return;
-      }
       const collection = phase.collection();
       console.log(`Importing into ${collection._name}`);
 //      if (options && options.multipleDocsPerLine) docs = singlify(docs);
@@ -86,7 +85,6 @@ const launchNextPhase = function launchNextPhase(instance) {
       const tdocs = transformer(docs);
       // console.log(collection._name, tdocs);
       tdocs.forEach(doc => {
-        doc.communityId = communityId;
         collection.simpleSchema(doc).clean(doc);
         collection.simpleSchema(doc).validate(doc);
       });
@@ -105,7 +103,6 @@ const launchNextPhase = function launchNextPhase(instance) {
         body: 'Readmore',
         bodyContext: JSON.stringify(neededOps, null, 2),
       }, () => {
-        viewmodel.phaseIndex(viewmodel.phaseIndex() + 1);
         launchNextPhase(instance);
       });
     },
@@ -125,7 +122,6 @@ Template.Import_upload.events({
         instance.viewmodel.worksheet(worksheet);
         const html = XLSX.utils.sheet_to_html(worksheet, { editable: true });
         instance.viewmodel.table(html);
-        instance.viewmodel.phaseIndex(0);
         Modal.hideAll();
         launchNextPhase(instance);
       };
@@ -159,7 +155,7 @@ export function importCollectionFromFile(mainCollection, options = {}) {
   options.format = options.format || 'default';
   const conductor = getConductor(mainCollection, options);
   const columns = [{ display: __('importColumnsInstructions') }];
-  conductor.phases().forEach((phase, phaseIndex) => {
+  conductor.phases.forEach((phase, phaseIndex) => {
     const translator = phase.translator();
     columns.push({ name: phaseIndex, display: `${translator.__('_')} ${__('data')}`.toUpperCase() });
     _.each(phase.schema()._schema, (value, key) => {

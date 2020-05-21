@@ -18,10 +18,10 @@ export class BatchMethod extends ValidatedMethod {
       name: batchMethodName,
       validate: batchOperationSchema.validator({ clean: true }),
       run({ args }) {
+        if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
 //        console.log("running batch with", args.length, ":", args[0]);
         const userId = this.userId;
 //        checkPermissions(userId, method.name, { communityId });  // Whoever has perm for the method, can do it in batch as well
-        if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
         const results = [];
         const errors = [];
         args.forEach((arg) => {
@@ -61,10 +61,11 @@ export class BatchTester extends ValidatedMethod {
       name: batchTesterName,
       validate: batchOperationSchema.validator({ clean: true }),
       run({ args }) {
-        checkPermissions(this.userId, batchUpsertName, { communityId: args[0].communityId });
 //        if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
-
         const neededOperations = { insert: [], update: [], remove: [], noChange: [] };
+        if (!args.length) return neededOperations;
+        checkPermissions(this.userId, batchUpsertName, { communityId: args[0].communityId });
+
         args.forEach((doc, i) => {
           collection.simpleSchema(doc).clean(doc);
           collection.simpleSchema(doc).validate(doc);

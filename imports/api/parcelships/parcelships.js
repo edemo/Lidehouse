@@ -15,6 +15,7 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 export const Parcelships = new Mongo.Collection('parcelships');
 
 const chooseProperty = {
+  relation: '@property',
   options() {
     const communityId = Session.get('activeCommunityId');
     const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { ref: 1 } });
@@ -28,7 +29,7 @@ const chooseProperty = {
 
 Parcelships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden', relation: '@property' } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseProperty },
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });

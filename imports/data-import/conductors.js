@@ -4,6 +4,7 @@ import { Session } from 'meteor/session';
 import { Mongo } from 'meteor/mongo';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
@@ -18,9 +19,6 @@ import { Transformers } from './transformers.js';
 // Multiple collections can be imported with one import command
 
 export class ImportPhase {
-  constructor(obj) {
-    _.extend(this, obj);
-  }
   collection() {
     return Mongo.Collection.get(this.collectionName);
   }
@@ -28,127 +26,147 @@ export class ImportPhase {
     return this.collection().simpleSchema(this.schemaSelector);
   }
   translator() {
-    return new Translator(this.collection(), this.options, 'hu', this.dictionary);
+    const translator = new Translator(this.collection(), this.options, 'hu', this.dictionary);
+    translator.phase = this;
+    translator.conductor = this.conductor;
+    return translator;
   }
   transformer() {
     return Transformers[this.collectionName]?.[this.options?.transformer || 'default']
       || (docs => docs.map(doc => Object.deepClone(doc)));
   }
 }
+ImportPhase.Instance = new ImportPhase();
+ImportPhase.from = obj => { Object.setPrototypeOf(obj, ImportPhase.Instance); return obj; };
 
 export class ImportConductor {
-  constructor(collectionName, format, phases) {
-    this.collectionName = collectionName;
-    this.format = format;
-    this._phases = phases;
-    this._phaseIndex = -1;
-  }
-  name() {
-    return `${this.collectionName}#${this.format}`;
-  }
-  phases() {
-    return this._phases.map(p => new ImportPhase(p));
-  }
-  phase(index) {
-    return new ImportPhase(this._phases[index]);
+  init() {
+    this.phases.forEach(p => { p.conductor = this; ImportPhase.from(p); });
+    this.name = `${this.collectionName}#${this.format}`;
+    this.phaseIndex = -1;
   }
   nextPhase() {
-    this._phaseIndex += 1;
-    const _phase = this._phases[this._phaseIndex];
-    return _phase ? new ImportPhase(_phase) : undefined;
+    this.phaseIndex += 1;
+    const phase = this.phases[this.phaseIndex];
+    return phase;
+  }
+  currentPhase() {
+    const phase = this.phases[this.phaseIndex];
+    return phase;
   }
 }
+ImportConductor.Instance = new ImportConductor();
+ImportConductor.from = obj => { Object.setPrototypeOf(obj, ImportConductor.Instance); return obj; };
 
-function _getPhases(collection, options) {
+function _getConductor(collection, options) {
   switch (collection._name) {
     case 'parcels': {
       debugAssert(options.format === 'default');
-      return [{
+      return {
         collectionName: 'parcels',
-        schemaSelector: { category: '@property' },
-        options,
-        dictionary: {
-          category: { default: '@property' },
-        },
-      }, {
-        collectionName: 'parcelships',
-        schemaSelector: undefined,
-        options,
-        dictionary: undefined,
-      }, {
-        collectionName: 'partners',
-        schemaSelector: undefined,
-        options,
-        dictionary: {
-          relation: { default: ['member'] },
-          idCard: { type: { default: 'natural' } },
-        },
-      }, {
-        collectionName: 'memberships',
-        schemaSelector: { role: 'owner' },
-        omitFields: ['partnerId', 'ownership.representor'],
-        options,
-        dictionary: {
-          role: { default: 'owner' },
-          ownership: { default: { share: '1/1' } },
-        },
-      }];
+        format: options.format,
+        phases: [{
+          collectionName: 'parcels',
+          schemaSelector: { category: '@property' },
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            category: { default: '@property' },
+          },
+        }, {
+          collectionName: 'parcelships',
+          schemaSelector: undefined,
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+          },
+        }, {
+          collectionName: 'partners',
+          schemaSelector: undefined,
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            relation: { default: ['member'] },
+            idCard: { type: { default: 'natural' } },
+          },
+        }, {
+          collectionName: 'memberships',
+          schemaSelector: { role: 'owner' },
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            role: { default: 'owner' },
+//            parcelId: { formula: 'conductor.phases[1].docs[index].parcelId' },
+//            partnerId: { formula: 'conductor.phases[2].docs[index].idCard.name' },
+            ownership: { default: { share: '1/1' } },
+          },
+        }],
+      };
     }
     case 'transactions': {
       debugAssert(options.format === 'default');
-      return [{
-        collectionName: 'partners',
-        schemaSelector: undefined,
-        options,
-        dictionary: {
-          relation: { default: ['supplier'] },
-          idCard: {
-            type: { default: 'legal' },
-//            name: { label: 'Szállító neve adóigazgatási azonosító száma' }, -> columnMapping
+      return {
+        collectionName: 'transactions',
+        format: options.format,
+        phases: [{
+          collectionName: 'partners',
+          schemaSelector: undefined,
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            relation: { default: ['supplier'] },
+            idCard: {
+              type: { default: 'legal' },
+  //            name: { label: 'Szállító neve adóigazgatási azonosító száma' }, -> columnMapping
+            },
           },
-        },
-      }, {
-        collectionName: 'transactions',
-        schemaSelector: { category: 'bill' },
-        options: _.extend({}, options, { entity: 'bill' }),
-        dictionary: {
-          category: { default: 'bill' },
-          relation: { default: Session.get('activePartnerRelation') },
-          serialId: { formula: "'SZ/SZALL/IMP/' + index" },
-          defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'bill', 'data.relation': Session.get('activePartnerRelation') })._id },
-          partnerId: { formula: 'phases[0].docs[index].idCard.name' },
-          deliveryDate: { formula: 'doc.deliveryDate || doc.issueDate' },
-          dueDate: { formula: 'doc.dueDate || doc.issueDate' },
-          title: { formula: 'doc.title || "---"' },
-          debit: { default: [{ account: '`8' }] },
-          credit: { default: [{ account: '`454' }] },
-          status: { default: 'posted' },
-          postedAt: { formula: 'doc.issueDate' },
-        },
-      }, {
-        collectionName: 'transactions',
-        schemaSelector: { category: 'payment' },
-        options: _.extend({}, options, { entity: 'payment' }),
-        dictionary: {
-          category: { default: 'payment' },
-          relation: { default: Session.get('activePartnerRelation') },
-          serialId: { formula: "'FIZ/SZALL/IMP/' + index" },
-          defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'payment', 'data.relation': Session.get('activePartnerRelation') })._id },
-          partnerId: { formula: 'phases[0].docs[index].idCard.name' },
-//          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
-//          valueDate: { formula: 'doc.paymentDate' },
-//          amount: { label: 'Számla összege' },
-//          amount: { label: 'A számla kiegyenlítésének összege' },
-          debit: { default: [{ account: '`454' }] },
-          credit: { default: [{ account: '`38' }] },
-          status: { default: 'posted' },
-          postedAt: { formula: 'doc.valueDate' },
-        },
-      }];
+        }, {
+          collectionName: 'transactions',
+          schemaSelector: { category: 'bill' },
+          options: _.extend({}, options, { entity: 'bill' }),
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            category: { default: 'bill' },
+            relation: { default: Session.get('activePartnerRelation') },
+            serialId: { formula: "'SZ/SZALL/IMP/' + index" },
+            defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'bill', 'data.relation': Session.get('activePartnerRelation') })._id },
+            partnerId: { formula: 'conductor.phases[0].docs[index].idCard.name' },
+            deliveryDate: { formula: 'doc.deliveryDate || doc.issueDate' },
+            dueDate: { formula: 'doc.dueDate || doc.issueDate' },
+            title: { formula: 'doc.title || "---"' },
+            debit: { default: [{ account: '`8' }] },
+            credit: { default: [{ account: '`454' }] },
+            status: { default: 'posted' },
+            postedAt: { formula: 'doc.issueDate' },
+          },
+        }, {
+          collectionName: 'transactions',
+          schemaSelector: { category: 'payment' },
+          options: _.extend({}, options, { entity: 'payment' }),
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            category: { default: 'payment' },
+            relation: { default: Session.get('activePartnerRelation') },
+            serialId: { formula: "'FIZ/SZALL/IMP/' + index" },
+            defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'payment', 'data.relation': Session.get('activePartnerRelation') })._id },
+            partnerId: { formula: 'conductor.phases[0].docs[index].idCard.name' },
+  //          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
+  //          valueDate: { formula: 'doc.paymentDate' },
+  //          amount: { label: 'Számla összege' },
+  //          amount: { label: 'A számla kiegyenlítésének összege' },
+            debit: { default: [{ account: '`454' }] },
+            credit: { default: [{ account: '`38' }] },
+            status: { default: 'posted' },
+            postedAt: { formula: 'doc.valueDate' },
+          },
+        }],
+      };
     }
     case 'statementEntries': {
       const account = Accounts.findOne({ communityId: options.communityId, code: options.account });
+      const format = account.bank || 'cash';
       const dictionary = {
+        communityId: { default: getActiveCommunityId() },
         account: { default: options.account },
         statementId: { default: options.source },
       };
@@ -179,28 +197,40 @@ function _getPhases(collection, options) {
         }
         default: productionAssert(false, `No protocol for bank ${account.bank}`);
       }
-      return [{
+      return {
         collectionName: 'statementEntries',
-        schemaSelector: undefined,
-        options,
-        dictionary,
-      }];
+        format,
+        phases: [{
+          collectionName: 'statementEntries',
+          schemaSelector: undefined,
+          options,
+          dictionary,
+        }],
+      };
     }
     default: {
       debugAssert(options.format === 'default');
-      return [{
+      return {
         collectionName: collection._name,
-        schemaSelector: undefined,
-        options,
-        dictionary: undefined,
-      }];
+        format: options.format,
+        phases: [{
+          collectionName: collection._name,
+          schemaSelector: undefined,
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+          },
+        }],
+      };
     }
   }
 }
 
 export function getConductor(collection, options) {
-  const phases = _getPhases(collection, options);
+  const conductorRaw = _getConductor(collection, options);
+  const phases = conductorRaw.phases;
   phases.forEach(p => delete p.options.collection);
-  Session.set('conductor', phases);
-  return new ImportConductor(collection._name, options.format, phases);
+  const conductor = ImportConductor.from(conductorRaw);
+  conductor.init();
+  return conductor;
 }

@@ -13,14 +13,15 @@ import './import-dialog.html';
 
 ViewModel.share({
   import: {
-    phaseIndex: -1,
     table: '',
     worksheet: null,
     columnMapping: {},
     saveColumnMapppings: false,
     availableColumns: [],
-    phase() {
-      return this.phaseIndex() >= 0 ? this.templateInstance.data.conductor.phase(this.phaseIndex()) : undefined;
+    getTable() {
+      const instance = this.templateInstance;
+      instance.$('tr:first-child select').remove(); // Need to strip the select boxes from the header row
+      return instance.$('.import-table')[0];
     },
   },
 });
@@ -51,9 +52,9 @@ Template.Import_preview.viewmodel({
     this.saveColumnMapppings(this.checked());
   },
   onCreated(instance) {
-    debugAssert(this.phaseIndex() >= 0);
-    const data = this.templateInstance.data;
-    this.columnMapping(Settings.get(`import.${data.conductor.name()}.${this.phaseIndex()}.columnMapping`) || {});
+    const conductor = instance.data.conductor;
+    debugAssert(conductor.phaseIndex >= 0);
+    this.columnMapping(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`) || {});
   },
   onRendered(instance) {
     const columns = instance.data.columns.filter(c => c.key); // leave out the sperators, like "PARCELS DATA"

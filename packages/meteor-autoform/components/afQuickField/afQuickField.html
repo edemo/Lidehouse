@@ -5,13 +5,13 @@
     {{#if isFieldArray}}
       {{> afArrayField}}
     {{else}}
-      {{#if relation}} <!--### droka extension ###-->
-        <button type="button" class="btn btn-xs btn-default pull-right js-new" data-entity="{{relation}}"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relation}}</button>
-      {{/if}}
       {{#if isHiddenInput}}
         {{! if input type is defined as hidden, we don't render a form group}}
         {{> afFieldInput groupAtts}}
       {{else}}
+        {{#if relation}} <!--### droka extension ###-->
+          <button type="button" class="btn btn-xs btn-default pull-right js-new" data-entity="{{relation}}"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relation}}</button>
+        {{/if}}
         {{> afFormGroup groupAtts}}
       {{/if}}
     {{/if}}

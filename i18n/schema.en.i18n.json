@@ -261,7 +261,7 @@
       "label": "Lead parcel"
     },
     "parcelId": {
-      "label": "Follower parcel"
+      "label": "Parcel"
     }
   },
   "schemaMemberships" : {
