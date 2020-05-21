@@ -51,19 +51,15 @@ const launchNextPhase = function launchNextPhase(instance) {
     btnOK: 'import',
     onOK() {
       const viewmodel = this;
-      if (viewmodel.saveColumnMapppings()) {
-        const mapping = _.extend({}, viewmodel.columnMapping());
-        Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`, mapping);
-      }
-      const editedTable = viewmodel.getTable();
-      const editedSheet = XLSX.utils.table_to_sheet(editedTable /*, { cellDates: true }*/);
+      if (viewmodel.savingEnabled()) viewmodel.savePhase(instance);
       const worksheet = viewmodel.worksheet();
+      const editedSheet = viewmodel.getEditedSheet();
       _.each(worksheet, (cell, key) => {
         if (key.length === 2 && key[1] === '1') { // so if header cell (A1, B1, ..., Z1)
           worksheet[key] = editedSheet[key];
         }
       });
-      const jsons = XLSX.utils.sheet_to_json(worksheet, { /*header: 1,*/ blankRows: false }).map(flatten.unflatten);
+      const jsons = XLSX.utils.sheet_to_json(worksheet, { header: viewmodel.headerRow(), blankRows: false }).map(flatten.unflatten);
       let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
 
       const collection = phase.collection();
@@ -117,11 +113,7 @@ Template.Import_upload.events({
         let data = e.target.result;
         if (!rABS) data = new Uint8Array(data);
         const workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' /*, cellDates: true*/ });
-        const sheetName = workbook.SheetNames[0]; // importing only the first sheet
-        const worksheet = workbook.Sheets[sheetName];
-        instance.viewmodel.worksheet(worksheet);
-        const html = XLSX.utils.sheet_to_html(worksheet, { editable: true });
-        instance.viewmodel.table(html);
+        instance.viewmodel.workbook(workbook);
         Modal.hideAll();
         launchNextPhase(instance);
       };

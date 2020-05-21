@@ -26,17 +26,32 @@
 
 <template name="Import_preview">
     <div class="panel panel-warning">
-      <div class="panel-heading"><i class="fa fa-pencil"></i> {{_ 'Import phase'}} [{{add conductor.phaseIndex 1}}]: {{_ conductor.currentPhase.collectionName}} {{_ 'import'}}</div>
+      <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i> {{_ 'Import phase'}} [{{add conductor.phaseIndex 1}}]: {{_ conductor.currentPhase.collectionName}} {{_ 'import'}}</div>
       <div class="panel-body">
-        {{_ 'Preview'}}<br>
         {{{_ 'importPreviewInstructions'}}}
-        <br><br>
-        <form>
-            <input type="checkbox" {{b "check: checked" }} name="save-transformation" id="save-transformation">
-            <label for="save-transformation">{{_ 'Save column transformations'}}</label>
-            {{>Help_icon name="save-transformation" title=(_ 'saveTransformationsHelp')}}
-        </form>
       </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label text-capitalize" for="sheet">{{_ 'sheet'}}</label>
+                <select id="sheet" name="sheet" {{b 'options: workbook.SheetNames, value: sheetName'}} class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label text-capitalize" for="header-row">{{_ 'header row'}}</label>
+                <select id="header-row" name="header-row" {{b 'options: headerRowOptions, value: headerRow, optionsValue: value, optionsText: label'}} class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-md-4">
+                <label class="control-label text-capitalize">{{_ 'save'}}</label>
+            <div class="form-group">
+                <input type="checkbox" {{b "check: checked" }} name="save-transformation" id="save-transformation">
+                <label for="save-transformation">{{_ 'Save import transformations'}}</label>
+                {{>Help_icon name="save-transformation" title=(_ 'saveTransformationsHelp')}}
+            </div>
+        </div>
     </div>
     <div class="table-responsive">
       <div class="datatable_wrapper">

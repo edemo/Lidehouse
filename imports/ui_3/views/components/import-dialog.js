@@ -4,6 +4,7 @@ import { Blaze } from 'meteor/blaze';
 import { ViewModel } from 'meteor/manuel:viewmodel';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
+import XLSX from 'xlsx';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { doubleScroll } from '/imports/ui_3/lib/double-scroll.js';
@@ -13,15 +14,38 @@ import './import-dialog.html';
 
 ViewModel.share({
   import: {
-    table: '',
-    worksheet: null,
+    workbook: null,
+    sheetName: '',
     columnMapping: {},
-    saveColumnMapppings: false,
+    savingEnabled: false,
     availableColumns: [],
-    getTable() {
+    headerRow: 0,
+    headerRowOptions() {
+      return [
+        { value: -1, label: '---' },
+        { value: 0, label: '1.' },
+        { value: 1, label: '2.' },
+      ];
+    },
+    table() {
+      const html = XLSX.utils.sheet_to_html(this.worksheet(), { editable: true });
+      return html;
+    },
+    worksheet() {
+      return this.workbook().Sheets[this.sheetName()];
+    },
+    getEditedSheet() {
       const instance = this.templateInstance;
       instance.$('tr:first-child select').remove(); // Need to strip the select boxes from the header row
-      return instance.$('.import-table')[0];
+      const editedTable = instance.$('.import-table')[0];
+      const editedSheet = XLSX.utils.table_to_sheet(editedTable, { range: this.headerRow /* ,cellDates: true */ });
+      return editedSheet;
+    },
+    savePhase(instance) {
+      const conductor = instance.data.conductor;
+      Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`, this.columnMapping());
+      Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`, this.headerRow());
+      Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.sheetName`, this.sheetName());
     },
   },
 });
@@ -49,19 +73,32 @@ Template.Import_preview.viewmodel({
   share: 'import',
   checked: false,
   autorun() {
-    this.saveColumnMapppings(this.checked());
+    this.savingEnabled(this.checked());
   },
   onCreated(instance) {
     const conductor = instance.data.conductor;
     debugAssert(conductor.phaseIndex >= 0);
     this.columnMapping(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`) || {});
+    this.headerRow(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`) || 1);
+    this.sheetName(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.sheetName`) || this.workbook().SheetNames[0]);
   },
   onRendered(instance) {
+    const vm = this;
+    instance.autorun(() => {
+      if (vm.table() || vm.headerRow()) { // need to trigger it when table changes
+        Meteor.setTimeout(() => instance.viewmodel.onTableRendered(instance), 1000);
+      }
+    });
+  },
+  onTableRendered(instance) {
     const columns = instance.data.columns.filter(c => c.key); // leave out the sperators, like "PARCELS DATA"
     const validColumnNames = _.without(_.pluck(columns, 'name'), undefined);
     this.availableColumns([].concat(validColumnNames));
     const tableElem = instance.$('table');
     tableElem.addClass('table dataTable display import-table');
+    for (let i = 0; i < this.headerRow(); i++) {
+      instance.$('tr:first-child').remove();
+    }
     const headerRow = instance.$('tr:first-child');
     headerRow.children().each((i, td) => {
       const tdElem = $(td);
