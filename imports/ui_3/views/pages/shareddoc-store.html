@@ -22,19 +22,19 @@
                             <div class="hr-line-dashed"></div-->
                             <h5>{{_ 'Sharedfolders'}}</h5>
                             <ul class="folder-list" style="padding: 0">
-                                {{#each builtinFolders}}
+                                {{#each folder in builtinFolders}}
                                 <li>
-                                    <a href="" data-id={{_id}} class="{{#if (isActive _id)}}text-bold{{/if}}">
-                                        <span class="js-select"><i class="fa {{#if (isActive _id)}}fa-folder-open fa-lg{{else}}fa-folder{{/if}}"></i> {{_ name}}</span>
+                                    <a href="" data-id={{folder._id}} class="{{#if (isActive folder._id)}}text-bold{{/if}}">
+                                        <span class="js-select"><i class="fa {{#if (isActive folder._id)}}fa-folder-open fa-lg{{else}}fa-folder{{/if}}"></i> {{_ folder.name}}</span>
                                     </a>
                                 </li>
                                 {{/each}}
-                                {{#each communityFolders}}
+                                {{#each folder in communityFolders}}
                                 <li>
-                                    <a href="" data-id={{_id}} class="{{#if (isActive _id)}}text-bold{{/if}}">
-                                        <span class="js-select"><i class="fa {{#if (isActive _id)}}fa-folder-open-o fa-lg{{else}}fa-folder-o{{/if}}"></i> {{_ name}}</span>
-                                        {{#if currentUserHasPermission 'shareddocs.upload'}}
-                                            {{#if (isActive _id)}}
+                                    <a href="" data-id={{folder._id}} class="{{#if (isActive folder._id)}}text-bold{{/if}}">
+                                        <span class="js-select"><i class="fa {{#if (isActive folder._id)}}fa-folder-open-o fa-lg{{else}}fa-folder-o{{/if}}"></i> {{_ folder.name}}</span>
+                                        {{#if currentUserHasPermission 'shareddocs.remove' folder}}
+                                            {{#if (isActive folder._id)}}
                                                 <i class="fa fa-trash pull-right js-delete"></i>
                                                 <i class="fa fa-pencil pull-right js-edit"></i>
                                             {{/if}}

@@ -320,7 +320,8 @@ Meteor.users.helpers({
     debugAssert(permission, `No such permission "${permissionName}"`);
     const rolesWithThePermission = permission.roles;
     if (_.contains(rolesWithThePermission, 'null')) return true;
-    if (permission.allowAuthor && doc && doc.creatorId && (doc.creatorId === this._id)) return true;
+    const creatorId = doc?.creatorId || doc.userId; // uploads use userId
+    if (permission.allowAuthor && creatorId && (creatorId === this._id)) return true;
     const entityName = permissionName.split('.')[0];
     const communityId = (entityName === 'communities') ? doc._id : doc.communityId;
     let parcelId;

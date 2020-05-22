@@ -40,7 +40,7 @@ Template.Shareddoc_boxy.helpers({
 });
 
 Template.Shareddoc_boxy.events({
-  'click .js-delete'(event) {  
+  'click .js-delete'(event) {
     const a = $(event.target).closest('div').find('a');
     const _id = a.data('id');
     Modal.confirmAndCall(removeShareddocs, { _id }, {
