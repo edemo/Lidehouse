@@ -806,6 +806,9 @@
     "_": {
       "label": "Partner"
     },
+    "ref": {
+      "label": "Reference id"
+    },
     "relation": {
       "label": "Partner relation",
       "help": "A person can have multiple partner relations with the community. Member includes all owners and officers, so all persons with system permissions.",
@@ -824,7 +827,8 @@
         "label": "Person type",
         "options": {
           "natural": "natural person",
-          "legal": "legal person"
+          "legal": "legal person",
+          "other": "other"
         }
       },
       "name": {

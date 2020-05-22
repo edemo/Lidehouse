@@ -806,6 +806,9 @@
     "_": {
       "label": "Partner"
     },
+    "ref": {
+      "label": "Azonosító"
+    },
     "relation": {
       "label": "Partner viszony",
       "placeholder": "(Válasszon a listából)",
@@ -826,7 +829,8 @@
         "placeholder": "(Válasszon a listából)",
         "options": {
           "natural": "természetes személy",
-          "legal": "jogi személy"
+          "legal": "jogi személy",
+          "other": "egyéb"
         }
       },
       "name": {

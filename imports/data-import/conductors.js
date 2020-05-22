@@ -61,47 +61,119 @@ ImportConductor.from = obj => { Object.setPrototypeOf(obj, ImportConductor.Insta
 function _getConductor(collection, options) {
   switch (collection._name) {
     case 'parcels': {
-      debugAssert(options.format === 'default');
-      return {
-        collectionName: 'parcels',
-        format: options.format,
-        phases: [{
+      options.format = 'ehaz';
+      if (options.format === 'default') {
+        return {
           collectionName: 'parcels',
-          schemaSelector: { category: '@property' },
-          options,
-          dictionary: {
-            communityId: { default: getActiveCommunityId() },
-            category: { default: '@property' },
-          },
-        }, {
-          collectionName: 'parcelships',
-          schemaSelector: undefined,
-          options,
-          dictionary: {
-            communityId: { default: getActiveCommunityId() },
-          },
-        }, {
-          collectionName: 'partners',
-          schemaSelector: undefined,
-          options,
-          dictionary: {
-            communityId: { default: getActiveCommunityId() },
-            relation: { default: ['member'] },
-            idCard: { type: { default: 'natural' } },
-          },
-        }, {
-          collectionName: 'memberships',
-          schemaSelector: { role: 'owner' },
-          options,
-          dictionary: {
-            communityId: { default: getActiveCommunityId() },
-            role: { default: 'owner' },
-//            parcelId: { formula: 'conductor.phases[1].docs[index].parcelId' },
-//            partnerId: { formula: 'conductor.phases[2].docs[index].idCard.name' },
-            ownership: { default: { share: '1/1' } },
-          },
-        }],
-      };
+          format: options.format,
+          phases: [{
+            collectionName: 'parcels',
+            schemaSelector: { category: '@property' },
+            options,
+            dictionary: {
+              communityId: { default: getActiveCommunityId() },
+              category: { default: '@property' },
+            },
+          }, {
+            collectionName: 'parcelships',
+            schemaSelector: undefined,
+            options,
+            dictionary: {
+              communityId: { default: getActiveCommunityId() },
+            },
+          }, {
+            collectionName: 'partners',
+            schemaSelector: undefined,
+            options,
+            dictionary: {
+              communityId: { default: getActiveCommunityId() },
+              relation: { default: ['member'] },
+              idCard: { type: { default: 'natural' } },
+            },
+          }, {
+            collectionName: 'memberships',
+            schemaSelector: { role: 'owner' },
+            options,
+            dictionary: {
+              communityId: { default: getActiveCommunityId() },
+              role: { default: 'owner' },
+  //            parcelId: { formula: 'conductor.phases[1].docs[index].parcelId' },
+  //            partnerId: { formula: 'conductor.phases[2].docs[index].idCard.name' },
+              ownership: { default: { share: '1/1' } },
+            },
+          }],
+        };
+      } else if (options.format === 'ehaz') {
+        return {
+          collectionName: 'parcels',
+          format: options.format,
+          phases: [{
+            collectionName: 'parcels',
+            schemaSelector: { category: '@property' },
+            options,
+            dictionary: {
+              communityId: { default: getActiveCommunityId() },
+              category: { default: '@property' },
+              type: {
+                flat: 'L',
+                parking: 'P',
+                storage: 'T',
+                cellar: 'Q',
+                attic: '?',
+                shop: 'U',
+                office: 'I',
+                other: '-',
+              },
+            },
+          }, {
+            collectionName: 'partners',
+            options,
+            dictionary: {
+              communityId: { default: getActiveCommunityId() },
+              relation: { default: ['member'] },
+              idCard: {
+                type: {
+                  natural: 'T',
+                  legal: 'G',
+                  other: 'E',
+                },
+              },
+            },
+          }, {
+            collectionName: 'partners',
+            options,
+            dictionary: {
+              communityId: { default: getActiveCommunityId() },
+              relation: { default: ['member'] },
+            },
+          }, {
+            collectionName: 'partners',
+            options,
+            dictionary: {
+              communityId: { default: getActiveCommunityId() },
+              relation: { default: ['member'] },
+            },
+          }, {
+            collectionName: 'partners',
+            options,
+            dictionary: {
+              communityId: { default: getActiveCommunityId() },
+              relation: { default: ['member'] },
+            },
+          }, {
+            collectionName: 'memberships',
+            schemaSelector: { role: 'owner' },
+            options,
+            dictionary: {
+              communityId: { default: getActiveCommunityId() },
+              role: { default: 'owner' },
+  //            parcelId: { formula: 'conductor.phases[1].docs[index].parcelId' },
+  //            partnerId: { formula: 'conductor.phases[2].docs[index].idCard.name' },
+              ownership: { default: { share: '1/1' } },
+            },
+          }],
+        };
+      } else { debugAssert(false); return []; }
     }
     case 'transactions': {
       debugAssert(options.format === 'default');

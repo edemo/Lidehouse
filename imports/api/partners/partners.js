@@ -24,7 +24,7 @@ const ContactSchema = new SimpleSchema({
   email: _.extend({ optional: true }, SimpleSchema.Types.Email()),
 });
 
-const idCardTypeValues = ['natural', 'legal'];
+const idCardTypeValues = ['natural', 'legal', 'other'];
 const IdCardSchema = new SimpleSchema({
   type: { type: String, allowedValues: idCardTypeValues },
   name: { type: String, optional: true },
@@ -38,6 +38,7 @@ Partners.relationValues = ['supplier', 'customer', 'member'];
 
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  ref: { type: String, optional: true, autoform: { omit: 'true' } },
   relation: { type: [String], allowedValues: Partners.relationValues, autoform: { type: 'select-checkbox-inline' } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   idCard: { type: IdCardSchema, optional: true },
@@ -46,7 +47,7 @@ Partners.schema = new SimpleSchema({
   taxNo: { type: String, max: 50, optional: true },
 });
 
-Partners.idSet = ['communityId', 'userId', 'idCard.name'];
+Partners.idSet = ['communityId', 'ref', 'userId', 'idCard.name'];
 
 Partners.publicFields = {
   'idCard.address': 0,

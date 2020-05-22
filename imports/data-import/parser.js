@@ -22,13 +22,17 @@ export class Parser {
     switch (typeName) {
       case 'Date': {
         if (cellValue instanceof Date) return cellValue;
-        const d = XLSX.SSF.parse_date_code(cellValue); // XLSX stores date cells as number, and can parse it into its own object format
-        const utc = moment.utc([d.y, d.m - 1, d.d]);
-        if (!utc.isValid()) throw new Meteor.Error('err_invalidData', `Invalid date in import: ${cellValue}`);
+        let utc;
+        if (typeof cellValue === 'number' && (19700101 < cellValue && cellValue < 20991231)) { // ehaz format
+          utc = moment.utc('' + cellValue);
+        } else {
+          const d = XLSX.SSF.parse_date_code(cellValue); // XLSX stores date cells as number, and can parse it into its own object format
+          utc = moment.utc([d.y, d.m - 1, d.d]);
+          if (!utc.isValid()) throw new Meteor.Error('err_invalidData', `Invalid date in import: ${cellValue}`);
+        }
         return utc.toDate();
       }
       case 'Fraction': {
-        debugger;
         if (cellValue instanceof Fraction) return cellValue;
         const fraction = new Fraction(cellValue);
         if (!fraction) throw new Meteor.Error('err_invalidData', `Invalid fraction in import: ${cellValue}`);
@@ -68,9 +72,15 @@ export class Parser {
               check(cellValue, Meteor.Collection.ObjectID);
               return cellValue;
             } catch (err) {
-              const partner = Partners.findOne({ communityId: doc.communityId, 'idCard.name': cellValue });
-              productionAssert(partner, `No partner with this name ${cellValue}`);
-              return partner?._id;
+              if (isNaN(cellValue)) {
+                const partner = Partners.findOne({ communityId: doc.communityId, 'idCard.name': cellValue });
+                productionAssert(partner, `No partner with this name ${cellValue}`);
+                return partner?._id;
+              } else {
+                const partner = Partners.findOne({ communityId: doc.communityId, ref: cellValue });
+                productionAssert(partner, `No partner with this ref ${cellValue}`);
+                return partner?._id;
+              }
             }
           }
           default: return cellValue;

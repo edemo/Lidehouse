@@ -68,11 +68,11 @@ const launchNextPhase = function launchNextPhase(instance) {
       const parser = new Parser(phase.schema());
       console.log(`Parsing ${docs.length} docs`);
       docs.forEach(doc => { parser.parse(doc); });
-      // --- Custom transformation is applied to the docs, that may even change the set of docs
+
       console.log(`Transforming ${docs.length} docs`);
       const transformer = phase.transformer();
-      const tdocs = transformer(docs);
-      // console.log(collection._name, tdocs);
+      const tdocs = transformer(docs); // transformation may even change the set of docs
+      console.log(`Validating ${tdocs.length} docs`);
       tdocs.forEach(doc => {
         collection.simpleSchema(doc).clean(doc);
         collection.simpleSchema(doc).validate(doc);
