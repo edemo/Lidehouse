@@ -60,7 +60,6 @@ Partners.nonModifiableFields = ['communityId', 'userId', 'outstanding'];
 
 
 Meteor.startup(function indexPartners() {
-  // Partners.ensureIndex({ communityId: 1, 'idCard.name': 1 }); should be here, but minmongo indexing does not support 'dot'
   if (Meteor.isServer) {
     Partners._ensureIndex({ 'contact.email': 1 }, { sparse: true });
     Partners._ensureIndex({ 'idCard.identifier': 1 }, { sparse: true });
@@ -120,6 +119,10 @@ Partners.helpers({
   activeRoles(communityId) {
     const Memberships = Mongo.Collection.get('memberships');
     return _.uniq(Memberships.findActive({ communityId, approved: true, partnerId: this._id }).map(m => m.role));
+  },
+  ownerships(communityId) {
+    const Memberships = Mongo.Collection.get('memberships');
+    return Memberships.findActive({ communityId, approved: true, role: 'owner', partnerId: this._id });
   },
   outstandingBills() {
     const Transactions = Mongo.Collection.get('transactions');
