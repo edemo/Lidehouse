@@ -19,14 +19,14 @@ ViewModel.share({
     columnMapping: {},
     savingEnabled: false,
     availableColumns: [],
-    headerRow: 0,
-    headerRowOptions() {
-      return [
-        { value: -1, label: '---' },
-        { value: 0, label: '1.' },
-        { value: 1, label: '2.' },
-      ];
-    },
+//    headerRow: 0,
+//    headerRowOptions() {
+//      return [
+//        { value: -1, label: '---' },
+//        { value: 0, label: '1.' },
+//        { value: 1, label: '2.' },
+//      ];
+//    },
     table() {
       const html = XLSX.utils.sheet_to_html(this.worksheet(), { editable: true });
       return html;
@@ -41,10 +41,20 @@ ViewModel.share({
       const editedSheet = XLSX.utils.table_to_sheet(editedTable, { range: this.headerRow /* ,cellDates: true */ });
       return editedSheet;
     },
+    getImportableSheet() {
+      const worksheet = this.worksheet();
+      const editedSheet = this.getEditedSheet();
+      _.each(worksheet, (cell, key) => {
+        if (key.length === 2 && key[1] === '1') { // so if header cell (A1, B1, ..., Z1)
+          worksheet[key] = editedSheet[key];
+        }
+      });
+      return worksheet;
+    },
     savePhase(instance) {
       const conductor = instance.data.conductor;
       Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`, this.columnMapping());
-      Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`, this.headerRow());
+//      Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`, this.headerRow());
       Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.sheetName`, this.sheetName());
     },
   },
@@ -79,13 +89,13 @@ Template.Import_preview.viewmodel({
     const conductor = instance.data.conductor;
     debugAssert(conductor.phaseIndex >= 0);
     this.columnMapping(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`) || {});
-    this.headerRow(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`) || 1);
+//    this.headerRow(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`) || 1);
     this.sheetName(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.sheetName`) || this.workbook().SheetNames[0]);
   },
   onRendered(instance) {
     const vm = this;
     instance.autorun(() => {
-      if (vm.table() || vm.headerRow()) { // need to trigger it when table changes
+      if (vm.table()) { // need to trigger it when table changes
         Meteor.setTimeout(() => instance.viewmodel.onTableRendered(instance), 1000);
       }
     });
@@ -96,9 +106,9 @@ Template.Import_preview.viewmodel({
     this.availableColumns([].concat(validColumnNames));
     const tableElem = instance.$('table');
     tableElem.addClass('table dataTable display import-table');
-    for (let i = 0; i < this.headerRow(); i++) {
-      instance.$('tr:first-child').remove();
-    }
+//    for (let i = 0; i < this.headerRow(); i++) {
+//      instance.$('tr:first-child').remove();
+//    }
     const headerRow = instance.$('tr:first-child');
     headerRow.children().each((i, td) => {
       const tdElem = $(td);

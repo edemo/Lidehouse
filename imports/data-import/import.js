@@ -52,14 +52,7 @@ const launchNextPhase = function launchNextPhase(instance) {
     onOK() {
       const viewmodel = this;
       if (viewmodel.savingEnabled()) viewmodel.savePhase(instance);
-      const worksheet = viewmodel.worksheet();
-      const editedSheet = viewmodel.getEditedSheet();
-      _.each(worksheet, (cell, key) => {
-        if (key.length === 2 && key[1] === '1') { // so if header cell (A1, B1, ..., Z1)
-          worksheet[key] = editedSheet[key];
-        }
-      });
-      const jsons = XLSX.utils.sheet_to_json(worksheet, { header: viewmodel.headerRow(), blankRows: false }).map(flatten.unflatten);
+      const jsons = XLSX.utils.sheet_to_json(viewmodel.getImportableSheet(), { blankRows: false }).map(flatten.unflatten);
       let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
 
       const collection = phase.collection();
