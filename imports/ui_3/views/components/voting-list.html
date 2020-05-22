@@ -12,7 +12,7 @@
                             <span class="label label-info">{{_ 'schemaTopics.status.announced'}}</span>
                         {{else}}
                             <span class="label label-primary">{{_ 'schemaTopics.status.opened'}}</span>
-                            {{#unless hasVotedIndirect activePartnerId}}
+                            {{#unless hasVoted activePartnerId}}
                                 <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" title={{_ "You have not yet voted"}}></i>
                             {{/unless}}
                         {{/if}}
