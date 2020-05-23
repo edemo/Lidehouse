@@ -282,6 +282,9 @@
     "partnerId": {
       "label": "Személy"
     },
+    "parcelId": {
+      "label": "Albetét"
+    },
     "ownership": {
       "label": "Tulajdon",
       "share": {

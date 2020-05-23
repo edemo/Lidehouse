@@ -64,7 +64,6 @@ export class BatchTester extends ValidatedMethod {
         const neededOperations = { insert: [], update: [], remove: [], noChange: [] };
         if (!args.length) return neededOperations;
         checkPermissions(this.userId, batchUpsertName, { communityId: args[0].communityId });
-
         args.forEach((doc, i) => {
           collection.simpleSchema(doc).clean(doc);
           collection.simpleSchema(doc).validate(doc);
@@ -74,7 +73,8 @@ export class BatchTester extends ValidatedMethod {
             if (fieldValue) selector[fieldName] = fieldValue;
 //            else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
           });
-//          console.log("selector", selector);
+          console.log('selector', selector);
+          if (_.isEmpty(selector)) return;
           const existingDoc = collection.findOne(selector);
           if (!existingDoc) neededOperations.insert.push(i);
           else {
@@ -113,7 +113,7 @@ export class UpsertMethod extends ValidatedMethod {
           if (fieldValue) selector[fieldName] = fieldValue;
 //          else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
         });
-//        console.log("selector", selector);
+        if (_.isEmpty(selector)) return null;
         const existingDoc = collection.findOne(selector);
         if (!existingDoc) {
 //          console.log('No existing doc, so inserting', doc);

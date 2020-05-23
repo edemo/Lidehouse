@@ -99,7 +99,6 @@ function _getConductor(collection, options) {
               role: { default: 'owner' },
   //            parcelId: { formula: 'conductor.phases[1].docs[index].parcelId' },
   //            partnerId: { formula: 'conductor.phases[2].docs[index].idCard.name' },
-              ownership: { default: { share: '1/1' } },
             },
           }],
         };
@@ -169,7 +168,6 @@ function _getConductor(collection, options) {
               role: { default: 'owner' },
   //            parcelId: { formula: 'conductor.phases[1].docs[index].parcelId' },
   //            partnerId: { formula: 'conductor.phases[2].docs[index].idCard.name' },
-              ownership: { default: { share: '1/1' } },
             },
           }],
         };

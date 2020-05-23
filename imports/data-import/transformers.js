@@ -41,6 +41,17 @@ export const Transformers = {
       return tdocs;
     },
   },
+  memberships: {
+    default: (docs, options) => {
+      const tdocs = [];
+      docs.forEach((doc) => {
+        if (!doc.partnerId) return; // When missing the field, it means the parcel is led -> no membership
+        const tdoc = {}; $.extend(true, tdoc, doc);
+        tdocs.push(tdoc);
+      });
+      return tdocs;
+    },
+  },
   transactions: {
     default: (docs, options) => {
       const tdocs = [];

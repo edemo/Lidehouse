@@ -189,7 +189,7 @@ Breakdowns.helpers({
           node.sign = node.sign || node.include.sign;
           if (node.include.children) {
             node.children = node.children || [];
-            node.children = node.children.concat(Object.deepClone(node.include.children));
+            node.children = node.children.concat(Object.stringifyClone(node.include.children));
           }
           delete node.include;
         }

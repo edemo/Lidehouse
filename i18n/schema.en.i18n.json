@@ -282,6 +282,9 @@
     "partnerId": {
       "label": "Person"
     },
+    "parcelId": {
+      "label": "Parcel"
+    },
     "ownership": {
       "label": "Owner",
       "share": {

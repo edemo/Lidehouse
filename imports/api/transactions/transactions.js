@@ -221,9 +221,7 @@ Transactions.helpers({
     return sign * this.amount;
   },
   negator() {
-    const tx = Object.deepClone(this);
-//    const tx = _.extendOwn({}, this); // only available in new underscore version
-//    const tx = {}; $.extend(true, tx, this);
+    const tx = Object.stringifyClone(this);
     Mongo.Collection.stripAdministrativeFields(tx);
     tx.note = 'STORNO ' + tx.serialId;
     tx.amount *= -1;

@@ -120,6 +120,7 @@ Template.Parcels_box.viewmodel({
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
+      this.templateInstance.subscribe('parcelships.inCommunity', { communityId });
     } else {
       this.templateInstance.subscribe('parcels.ofSelf', { communityId });
     }
