@@ -100,6 +100,8 @@ _.isSimpleObject = function isSimpleObject(variable) {
   return Object.prototype.toString.call(variable) === '[object Object]';
 };
 
+_.deepExtend = deepExtend;
+
 let lastTimeCheck;
 
 console.startElapsedTime = function () {

@@ -48,6 +48,9 @@ StatementEntries.helpers({
   isReconciled() {
     return !!this.txId;
   },
+  impliedRelation() {
+    return (this.amount > 0) ? 'customer' : 'supplier'; 
+  },
 });
 
 Meteor.startup(function indexStatements() {

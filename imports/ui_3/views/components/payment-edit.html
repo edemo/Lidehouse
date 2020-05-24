@@ -23,7 +23,9 @@
         <table class="table invoice-table">
             <thead>
                 <tr >
-                    <th>{{_ 'schemaPayments.bills.label'}}</th>
+                    <th>{{_ 'schemaPayments.bills.label'}}
+                      <button type="button" class="btn btn-xs btn-default pull-right js-new" data-entity="bill"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'bill'}}</button>
+                    </th>
                     <th>{{_ 'schemaTransactions.amount.label'}}</th>
                 </tr>
             </thead>

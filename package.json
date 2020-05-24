@@ -88,8 +88,7 @@
       "no-nested-ternary": "warn",
       "no-plusplus": ["error", {
         "allowForLoopAfterthoughts": true
-      }],
-      "yoda": ["warning", "never", { "exceptRange": true }]
+      }]
     },
     "settings": {
       "import/resolver": "meteor"

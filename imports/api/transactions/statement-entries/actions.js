@@ -83,9 +83,12 @@ StatementEntries.actions = {
       const insertTx = {
         // triggers some 'SimpleSchema.clean: filtered out value' because we dont't switch on category
         amount: Math.abs(doc.amount),  // payment
-        lines: [{ quantity: 1, unitPrice: Math.abs(doc.amount) }],  // receipt
+        lines: [{ title: doc.note, quantity: 1, unitPrice: Math.abs(doc.amount) }],  // receipt
         partnerName: doc.name, // receipt
         valueDate: doc.valueDate,
+        issueDate: doc.valueDate, // bill 
+        deliveryDate: doc.valueDate, // bill
+        dueDate: doc.valueDate, // bill
         payAccount: doc.account,  // receipt, payment
         fromAccount: doc.account,  // transfer
         toAccount: doc.account,  // transfer

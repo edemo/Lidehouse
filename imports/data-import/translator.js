@@ -1,7 +1,6 @@
 import { _ } from 'meteor/underscore';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
-import deepExtend from 'deep-extend';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
@@ -34,7 +33,7 @@ export class Translator {
     } else {
       schemaTranslation = [TAPi18n.__(`schema${this.collection._name.capitalize()}`, { returnObjectTrees: true }, 'hu')];
     }
-    this.dictionary = deepExtend({}, ...schemaTranslation, dictionary);
+    this.dictionary = _.deepExtend({}, ...schemaTranslation, dictionary);
   }
 
   __(key) {

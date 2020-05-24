@@ -8,7 +8,8 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
-import { Partners } from './partners.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import './methods.js';
 
 Partners.actions = {
@@ -20,6 +21,9 @@ Partners.actions = {
     run() {
       const activeRelation = Session.get('activePartnerRelation');
       if (activeRelation) _.extend(doc, { relation: [activeRelation] });
+      const statementEntry = StatementEntries._transform(Session.get('modalContext').statementEntry);
+      if (statementEntry) _.deepExtend(doc, { idCard: { name: statementEntry.name }, relation: [statementEntry.impliedRelation()] });
+
       Modal.show('Autoform_modal', {
         id: 'af.partner.insert',
         collection: Partners,

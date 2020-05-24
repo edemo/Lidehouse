@@ -38,7 +38,7 @@ Partners.relationValues = ['supplier', 'customer', 'member'];
 
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  ref: { type: String, optional: true, autoform: { omit: 'true' } },
+  ref: { type: String, optional: true, autoform: { omit: true } },  // only used when importing from external system
   relation: { type: [String], allowedValues: Partners.relationValues, autoform: { type: 'select-checkbox-inline' } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   idCard: { type: IdCardSchema, optional: true },
