@@ -49,7 +49,7 @@ function difference(oldDoc, newDoc) {
   delete modifier.$unset;
   delete modifier.$rename;
 //  console.log('Changes between', oldDoc, newDoc);
-  console.log(modifier);
+//  console.log(modifier);
   return modifier;
 }
 export class BatchTester extends ValidatedMethod {
@@ -73,7 +73,7 @@ export class BatchTester extends ValidatedMethod {
             if (fieldValue) selector[fieldName] = fieldValue;
 //            else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
           });
-          console.log('selector', selector);
+//          console.log('selector', selector);
           if (_.isEmpty(selector)) return;
           const existingDoc = collection.findOne(selector);
           if (!existingDoc) neededOperations.insert.push(i);

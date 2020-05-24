@@ -253,6 +253,21 @@ function _getConductor(collection, options) {
           });
           break;
         }
+        case 'OTP': {
+//            productionAssert(options.account.code === Import.findAccountByNumber(doc['Könyvelési számla']).code, 'Bank account mismatch on bank statement');
+          _.extend(dictionary, {
+            ref: { label: 'Banki tranzakció azonosító' },
+            refType: { label: 'Forgalom típusa' },
+            time: { label: 'Tranzakció időpontja' },
+            valueDate: { label: 'Értéknap' },
+            amount: { label: 'Összeg' },
+            name: { label: 'Ellenoldali név' },
+            contraBAN: { label: 'Ellenoldali számlaszám' },
+            note: { label: 'Közlemény' },
+//            serial: { label: '' },
+          });
+          break;
+        }
         case undefined: {
           productionAssert(account.category === 'cash');
           _.extend(dictionary, {

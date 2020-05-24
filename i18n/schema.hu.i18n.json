@@ -756,6 +756,10 @@
     "_": {
       "label": "Kivonat tétel"
     },
+    "time": {
+      "label": "Tranzakció időpontja",
+      "placeholder": "(pl. 2017-05-06 14:56:04)"
+    },
     "valueDate": {
       "label": "Könyvelési nap",
       "placeholder": "(pl. 2017-05-06)"
@@ -770,15 +774,20 @@
     "name": {
       "label": "Partner neve"
     },
+    "contraBAN": {
+      "label": "Ellenoldali számlaszám"
+    },
     "ref": {
-      "label": "Referencia azonosító",
-      "placeholder": "(pl. tranzakciós szám bankkivonatról)"
+      "label": "Banki tranzakció azonosító"
     },
     "refType": {
-      "label": "Referencia típus"
+      "label": "Banki tranzakció típus"
     },
     "note": {
       "label": "Közlemény"
+    },
+    "serial": {
+      "label": "Sorszám"
     },
     "original": {
       "label": "Eredeti adatok"

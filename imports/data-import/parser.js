@@ -23,13 +23,17 @@ export class Parser {
       case 'Date': {
         if (cellValue instanceof Date) return cellValue;
         let utc;
-        if (typeof cellValue === 'number' && (19700101 < cellValue && cellValue < 20991231)) { // ehaz format
-          utc = moment.utc('' + cellValue);
-        } else {
-          const d = XLSX.SSF.parse_date_code(cellValue); // XLSX stores date cells as number, and can parse it into its own object format
-          utc = moment.utc([d.y, d.m - 1, d.d]);
-          if (!utc.isValid()) throw new Meteor.Error('err_invalidData', `Invalid date in import: ${cellValue}`);
+        if (typeof cellValue === 'string') {
+          utc = moment.utc(cellValue);
+        } else if (typeof cellValue === 'number') {
+          if (19700101 < cellValue && cellValue < 20991231) { // ehaz format
+            utc = moment.utc('' + cellValue);
+          } else {
+            const d = XLSX.SSF.parse_date_code(cellValue); // XLSX stores date cells as number, and can parse it into its own object format
+            utc = moment.utc([d.y, d.m - 1, d.d]);
+          }
         }
+        if (!utc?.isValid()) throw new Meteor.Error('err_invalidData', `Invalid date in import: ${cellValue}`);
         return utc.toDate();
       }
       case 'Fraction': {
