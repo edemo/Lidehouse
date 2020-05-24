@@ -43,25 +43,29 @@ export const update = new ValidatedMethod({
   },
 });
 
-function moneyFlowSign(relation) {
-  switch (relation) {
-    case ('supplier'): return -1;
-    case ('customer'):
-    case ('member'): return +1;
-    default: debugAssert(false, 'No such relation ' + relation); return undefined;
-  }
-}
-
-function checkMatch(entry, transaction) {
+function checkReconcileMatch(entry, transaction) {
   function throwMatchError(mismatch) {
 //    console.log(JSON.stringify(entry));/
 //    console.log(JSON.stringify(transaction));
     throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`);
   }
-  if (!equalWithinRounding(transaction.amount, moneyFlowSign(transaction.relation) * entry.amount)) throwMatchError('amount');
   if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate');
-  if (!_.contains([transaction.payAccount, transaction.toAccount, transaction.fromAccount], entry.account)) throwMatchError('account');
-//  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
+  switch(transaction.category) {
+    case 'payment':
+      if (!equalWithinRounding(transaction.amount, transaction.relationSign() * entry.amount)) throwMatchError('amount');
+      if (transaction.payAccount !== entry.account) throwMatchError('account');
+  //  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
+      break;
+    case 'transfer':
+      if (transaction.toAccount === entry.account) {
+        if (transaction.amount !== entry.amount) throwMatchError('amount');
+      } else if (transaction.fromAccount === entry.account) {
+        if (transaction.amount !== -1 * entry.amount) throwMatchError('amount');
+      } else throwMatchError('account');
+      break;
+    case 'freeTx': break;
+    default: throwMatchError('category');
+  }
 }
 
 export const reconcile = new ValidatedMethod({
@@ -116,7 +120,7 @@ export const reconcile = new ValidatedMethod({
     }
     if (!txId) return undefined;
     const reconciledTx = Transactions.findOne(txId);
-    checkMatch(entry, reconciledTx);
+    checkReconcileMatch(entry, reconciledTx);
     Transactions.update(txId, { $set: { seId: _id } });
     StatementEntries.update(_id, { $set: { txId } });
     return txId;
@@ -147,7 +151,7 @@ export const reconcile = new ValidatedMethod({
     checkPermissions(this.userId, 'statements.reconcile', entry);
     if (!entry.match) throw new Meteor.Error('err_notExists', 'No match provided to reconcile ' + entry._id + ' with');
     const reconciledTx = entry.match._id ? Transactions.findOne(entry.match._id) : Transactions._transform(entry.match);
-    checkMatch(entry, reconciledTx);
+    checkReconcileMatch(entry, reconciledTx);
     if (!reconciledTx._id) {
       reconciledTx._id = Transactions.methods.insert._execute({ userId: this.userId }, reconciledTx);
       Transactions.methods.post._execute({ userId: this.userId }, { _id: reconciledTx._id });

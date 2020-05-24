@@ -20,7 +20,6 @@ Template.Accounting_ledger.viewmodel({
   periodSelected: PeriodBreakdown.lastYearTag(),
   onCreated(instance) {
     instance.autorun(() => {
-      instance.subscribe('accounts.inCommunity', { communityId: this.communityId() });
       instance.subscribe('balances.ofAccounts', { communityId: this.communityId() });
     });
   },

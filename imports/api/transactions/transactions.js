@@ -154,6 +154,11 @@ Transactions.helpers({
     else if (this.relation === 'customer' || this.relation === 'member') return 'debit';
     debugAssert(false, 'No such relation ' + this.relation); return undefined;
   },
+  relationSign() {
+    if (this.relation === 'supplier') return -1;
+    else if (this.relation === 'customer' || this.relation === 'member') return +1;
+    debugAssert(false, 'No such relation ' + this.relation); return undefined;
+  },
   isPosted() {
 //    return !!(this.debit && this.credit && this.complete); // calculateComplete()
     return !!(this.postedAt);
