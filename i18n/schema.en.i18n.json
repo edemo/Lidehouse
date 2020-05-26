@@ -261,7 +261,7 @@
       "label": "Lead parcel"
     },
     "parcelId": {
-      "label": "Follower parcel"
+      "label": "Parcel"
     }
   },
   "schemaMemberships" : {
@@ -281,6 +281,9 @@
     },
     "partnerId": {
       "label": "Person"
+    },
+    "parcelId": {
+      "label": "Parcel"
     },
     "ownership": {
       "label": "Owner",
@@ -753,6 +756,10 @@
     "_": {
       "label": "StatementEntry"
     },
+    "time": {
+      "label": "Time of transaction",
+      "placeholder": "(eg. 2017-05-06 14:56:04)"
+    },
     "valueDate": {
       "label": "Accounting date",
       "placeholder": "(eg. 2017-05-06)"
@@ -767,15 +774,20 @@
     "name": {
       "label": "Partner name"
     },
+    "contraBAN": {
+      "label": "Contra bank account number"
+    },
     "ref": {
-      "label": "Reference id",
-      "placeholder": "(eg. transaction no. from bank statement)"
+      "label": "Bank transaction id"
     },
     "refType": {
-      "label": "Reference type"
+      "label": "Bank transaction type"
     },
     "note": {
       "label": "Note to payee"
+    },
+    "serial": {
+      "label": "Serial"
     },
     "original": {
       "label": "Original data"
@@ -806,6 +818,9 @@
     "_": {
       "label": "Partner"
     },
+    "ref": {
+      "label": "Reference id"
+    },
     "relation": {
       "label": "Partner relation",
       "help": "A person can have multiple partner relations with the community. Member includes all owners and officers, so all persons with system permissions.",
@@ -824,7 +839,8 @@
         "label": "Person type",
         "options": {
           "natural": "natural person",
-          "legal": "legal person"
+          "legal": "legal person",
+          "other": "other"
         }
       },
       "name": {

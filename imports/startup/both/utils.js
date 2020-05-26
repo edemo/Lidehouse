@@ -1,5 +1,7 @@
 /* eslint-disable no-extend-native */
 import { _ } from 'meteor/underscore';
+import { $ } from 'meteor/jquery';
+import deepExtend from 'deep-extend';
 
 // Source: https://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
 Object.getByString = function (object, string) {
@@ -51,6 +53,17 @@ Object.deepEquals = function deepEquals(a, b) {
 
 // Info: https://www.samanthaming.com/tidbits/70-3-ways-to-clone-objects/
 Object.deepClone = function deepClone(obj) {
+  const clone = {}; 
+  $.extend(true, clone, obj);
+  return clone;
+};
+
+Object.deepCloneOwn = function deepCloneOwn(obj) {
+//  return _.extendOwn({}, obj);  // only available in new underscore version
+  return deepExtend({}, obj);
+};
+
+Object.stringifyClone = function stringifyClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 };
 
@@ -86,6 +99,8 @@ _.isDefined = function isDefined(obj) { // underscore did not have this
 _.isSimpleObject = function isSimpleObject(variable) {
   return Object.prototype.toString.call(variable) === '[object Object]';
 };
+
+_.deepExtend = deepExtend;
 
 let lastTimeCheck;
 

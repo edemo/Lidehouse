@@ -57,14 +57,14 @@ const BenefactorshipSchema = new SimpleSchema({
 
 const Ownerships = {};
 Ownerships.schema = new SimpleSchema({
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden', relation: '@property' } },
   ownership: { type: OwnershipSchema },
   role: { type: String, defaultValue: 'owner', autoform: { type: 'hidden', defaultValue: 'owner' } },
 });
 
 const Benefactorships = {};
 Benefactorships.schema = new SimpleSchema({
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden', relation: '@property' } },
   benefactorship: { type: BenefactorshipSchema },
   role: { type: String, defaultValue: 'benefactor', autoform: { type: 'hidden', defaultValue: 'benefactor' } },
 });

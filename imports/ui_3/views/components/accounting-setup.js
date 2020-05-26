@@ -31,7 +31,6 @@ Template.Accounting_setup.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
-      instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
       instance.subscribe('parcels.inCommunity', { communityId });
     });

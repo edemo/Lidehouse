@@ -154,6 +154,11 @@ Transactions.helpers({
     else if (this.relation === 'customer' || this.relation === 'member') return 'debit';
     debugAssert(false, 'No such relation ' + this.relation); return undefined;
   },
+  relationSign() {
+    if (this.relation === 'supplier') return -1;
+    else if (this.relation === 'customer' || this.relation === 'member') return +1;
+    debugAssert(false, 'No such relation ' + this.relation); return undefined;
+  },
   isPosted() {
 //    return !!(this.debit && this.credit && this.complete); // calculateComplete()
     return !!(this.postedAt);
@@ -221,9 +226,7 @@ Transactions.helpers({
     return sign * this.amount;
   },
   negator() {
-    const tx = Object.deepClone(this);
-//    const tx = _.extendOwn({}, this); // only available in new underscore version
-//    const tx = {}; $.extend(true, tx, this);
+    const tx = Object.stringifyClone(this);
     Mongo.Collection.stripAdministrativeFields(tx);
     tx.note = 'STORNO ' + tx.serialId;
     tx.amount *= -1;

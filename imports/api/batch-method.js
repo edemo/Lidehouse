@@ -3,6 +3,8 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import rusdiff from 'rus-diff';
+
 import { checkPermissions } from '/imports/api/method-checks.js';
 
 const batchOperationSchema = new SimpleSchema({
@@ -18,10 +20,10 @@ export class BatchMethod extends ValidatedMethod {
       name: batchMethodName,
       validate: batchOperationSchema.validator({ clean: true }),
       run({ args }) {
+        if (Meteor.isClient) return {}; // Batch methods are not simulated on the client, just executed on the server
 //        console.log("running batch with", args.length, ":", args[0]);
         const userId = this.userId;
 //        checkPermissions(userId, method.name, { communityId });  // Whoever has perm for the method, can do it in batch as well
-        if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
         const results = [];
         const errors = [];
         args.forEach((arg) => {
@@ -42,16 +44,13 @@ export class BatchMethod extends ValidatedMethod {
   }
 }
 
-function hasChanges(newObj, oldObj) {
-//  console.log("check change between", newObj, oldObj)
-  let changes;
-  _.each(newObj, (value, key) => {
-    if (!_.isEqual(value, oldObj[key])) {
-      changes = changes || { $set: {} };
-      changes.$set[key] = value;
-    }
-  });
-  return changes;
+function difference(oldDoc, newDoc) {
+  const modifier = rusdiff.diff(oldDoc, newDoc);
+  delete modifier.$unset;
+  delete modifier.$rename;
+//  console.log('Changes between', oldDoc, newDoc);
+//  console.log(modifier);
+  return modifier;
 }
 export class BatchTester extends ValidatedMethod {
   constructor(collection) {
@@ -61,10 +60,10 @@ export class BatchTester extends ValidatedMethod {
       name: batchTesterName,
       validate: batchOperationSchema.validator({ clean: true }),
       run({ args }) {
-        checkPermissions(this.userId, batchUpsertName, { communityId: args[0].communityId });
 //        if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
-
         const neededOperations = { insert: [], update: [], remove: [], noChange: [] };
+        if (!args.length) return neededOperations;
+        checkPermissions(this.userId, batchUpsertName, { communityId: args[0].communityId });
         args.forEach((doc, i) => {
           collection.simpleSchema(doc).clean(doc);
           collection.simpleSchema(doc).validate(doc);
@@ -72,15 +71,16 @@ export class BatchTester extends ValidatedMethod {
           collection.idSet.forEach((fieldName) => {
             const fieldValue = Object.getByString(doc, fieldName);
             if (fieldValue) selector[fieldName] = fieldValue;
-            else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
+//            else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
           });
-//          console.log("selector", selector);
+//          console.log('selector', selector);
+          if (_.isEmpty(selector)) return;
           const existingDoc = collection.findOne(selector);
           if (!existingDoc) neededOperations.insert.push(i);
           else {
-            const changes = hasChanges(doc, existingDoc);
-            if (changes) {
-              neededOperations.update.push({ _id: existingDoc._id, modifier: changes });
+            const modifier = difference(existingDoc, doc);
+            if (!_.isEmpty(modifier)) {
+              neededOperations.update.push({ _id: existingDoc._id, modifier });
             // console.log(`Field ${hasChanges(doc, existingDoc)} has changed in doc: ${JSON.stringify(existingDoc)}`);
             } else neededOperations.noChange.push(i);
             // Shall we determine also what to remove?
@@ -111,18 +111,20 @@ export class UpsertMethod extends ValidatedMethod {
         collection.idSet.forEach((fieldName) => {
           const fieldValue = Object.getByString(doc, fieldName);
           if (fieldValue) selector[fieldName] = fieldValue;
-          else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
+//          else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
         });
-//        console.log("selector", selector);
+        if (_.isEmpty(selector)) return null;
         const existingDoc = collection.findOne(selector);
         if (!existingDoc) {
 //          console.log('No existing doc, so inserting', doc);
           return collection.methods.insert._execute({ userId }, doc);
-        } else if (hasChanges(doc, existingDoc)) {
-//          console.log(`Field ${hasChanges(doc, existingDoc)} has changed in doc:`, existingDoc);
-          return collection.methods.update._execute({ userId }, { _id: existingDoc._id, modifier: { $set: doc } });
+        } else {
+          const modifier = difference(existingDoc, doc);
+          if (!_.isEmpty(modifier)) {
+            return collection.methods.update._execute({ userId }, { _id: existingDoc._id, modifier });
+          }
+          return null;
         }
-        return null;
       },
     };
     super(options);

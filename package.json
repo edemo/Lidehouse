@@ -61,6 +61,7 @@
       }],
       "object-property-newline": "off",
       "object-curly-newline": "off",
+      "lines-between-class-members": "off",
       "arrow-parens": "off",
       "max-len": ["warn", 150, {
         "ignoreComments": true

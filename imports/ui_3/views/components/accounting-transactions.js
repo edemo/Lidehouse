@@ -46,7 +46,6 @@ Template.Accounting_transactions.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
-      instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
     });
   },

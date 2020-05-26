@@ -25,11 +25,10 @@ Settings.get = function get(name, selector = getDefaultSelector()) {
   return Object.getByString(setting, name);
 };
 
-Settings.ensureExists = function ensureExists(selector = getDefaultSelector()) {
+Settings.set = function set(name, value, selector = getDefaultSelector()) {
   const setting = Settings.findOne(selector);
-  if (setting) return setting;
-  const doc = _.extend({}, selector, { columnMappings: {} });
-  return Settings.insert(doc);
+  const settingId = setting ? setting._id : Settings.insert(selector);
+  Settings.update(settingId, { $set: { [name]: value } });
 };
 
 Settings.allow({

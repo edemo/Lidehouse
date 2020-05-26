@@ -278,11 +278,12 @@
     " Sablont kérhet csak a kijelölt oszlopokra is."
   ],
   "importUploadInstructions": "Feltöltés után egy előnézet lesz látható, ahol még lesz lehetőség módosítani az oszlopneveken, hogy azok megfeleljenek az elvárt oszlop neveknek.",
-  "importPreviewInstructions": ["Importálás előtt még végezhet módosításokat a cellákon.<br>",
-    "A pirossal jelölt oszlopneveket nem ismertük fel, ha szeretné őket importálni, akkor válassza meg, milyen adatként ételmezzük."
-  ],
-  "Save column transformations": "Oszlop értelmezések elmentése",
-  "saveTransformationsHelp":  "Akkor pipálja be, ha szeretné, hogy az oszlop értelmezések, amiket most elvégez, legközelebb automatikusan megtörténjenek.",
+  "importPreviewInstructions":"Az előnézetben pirossal jelölt oszlopneveket nem ismertük fel, ha szeretné őket importálni, akkor válassza meg, milyen adatként ételmezzük.",
+  "Save import transformations": "Munkalap értelmezés elmentése",
+  "saveTransformationsHelp":  "Akkor pipálja be, ha szeretné, hogy a munkalap kiválasztás és oszlop értelmezések, amiket most elvégzett, legközelebb automatikusan megtörténjenek ebben az import lépésben.",
+  "Import phase": "Importálási lépés",
+  "sheet": "munkalap",
+  "header row": "fejléc sora",
 
   "Start new topic": "Új téma indítása",
   "Show more": "Tovább",

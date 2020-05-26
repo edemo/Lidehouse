@@ -7,7 +7,7 @@ SimpleSchema.Types = {
     regEx: SimpleSchema.RegEx.Email,
     custom() {
       if (Meteor.isClient) {
-        if (this.value !== (this.value).toLowerCase()) return 'notAllowed';
+        if (this.value !== this.value?.toLowerCase()) return 'notAllowed';
         return undefined;
       }
       return undefined;

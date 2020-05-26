@@ -261,7 +261,7 @@
       "label": "Vezető albetét"
     },
     "parcelId": {
-      "label": "Kapcsolt albetét"
+      "label": "Albetét"
     }
   },
   "schemaMemberships" : {
@@ -281,6 +281,9 @@
     },
     "partnerId": {
       "label": "Személy"
+    },
+    "parcelId": {
+      "label": "Albetét"
     },
     "ownership": {
       "label": "Tulajdon",
@@ -753,6 +756,10 @@
     "_": {
       "label": "Kivonat tétel"
     },
+    "time": {
+      "label": "Tranzakció időpontja",
+      "placeholder": "(pl. 2017-05-06 14:56:04)"
+    },
     "valueDate": {
       "label": "Könyvelési nap",
       "placeholder": "(pl. 2017-05-06)"
@@ -767,15 +774,20 @@
     "name": {
       "label": "Partner neve"
     },
+    "contraBAN": {
+      "label": "Ellenoldali számlaszám"
+    },
     "ref": {
-      "label": "Referencia azonosító",
-      "placeholder": "(pl. tranzakciós szám bankkivonatról)"
+      "label": "Banki tranzakció azonosító"
     },
     "refType": {
-      "label": "Referencia típus"
+      "label": "Banki tranzakció típus"
     },
     "note": {
       "label": "Közlemény"
+    },
+    "serial": {
+      "label": "Sorszám"
     },
     "original": {
       "label": "Eredeti adatok"
@@ -806,6 +818,9 @@
     "_": {
       "label": "Partner"
     },
+    "ref": {
+      "label": "Azonosító"
+    },
     "relation": {
       "label": "Partner viszony",
       "placeholder": "(Válasszon a listából)",
@@ -826,7 +841,8 @@
         "placeholder": "(Válasszon a listából)",
         "options": {
           "natural": "természetes személy",
-          "legal": "jogi személy"
+          "legal": "jogi személy",
+          "other": "egyéb"
         }
       },
       "name": {

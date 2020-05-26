@@ -20,10 +20,10 @@ Shareddocs.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploade
   if (Meteor.isServer) return true;
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
-  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc);
+  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.remove', doc);
   else if (doc.folderId === 'voting') return user.hasPermission('poll.remove', doc);
   else if (doc.folderId === 'agenda') return user.hasPermission('agendas.remove', doc);
-  else return user.hasPermission('shareddocs.upload', doc);
+  else return user.hasPermission('shareddocs.remove', doc);
 };
 
 // Can be manipulated only through the ShareddocStore interface

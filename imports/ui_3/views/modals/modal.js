@@ -12,16 +12,17 @@ Template.Modal.viewmodel({
 
 Template.Modal.events({
   'click #btn-ok'(event, instance) {
-    if (instance.data.onOK) instance.data.onOK.call(instance.viewmodel);
-  },
-  'click #btn-action'(event, instance) {
-    if (instance.data.onAction) {
+    if (instance.data.onOK) {
       try {
-        instance.data.onAction.call(instance.viewmodel);
+        instance.data.onOK.call(instance.viewmodel);
       } catch (err) { displayError(err); }
     }
   },
   'click #btn-close'(event, instance) {
-    if (instance.data.onClose) instance.data.onClose.call(instance.viewmodel);
+    if (instance.data.onClose) {
+      try {
+        instance.data.onClose.call(instance.viewmodel);
+      } catch (err) { displayError(err); }
+    }
   },
 });
