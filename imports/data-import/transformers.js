@@ -123,4 +123,15 @@ export const Transformers = {
       return tdocs;
     },
   },
+  statementEntries: {
+    default: (docs, options) => {
+      const tdocs = [];
+      docs.forEach((doc) => {
+        if (!doc.ref) return; // When missing this field, this is invalid -- can be the end row (total)
+        const tdoc = {}; $.extend(true, tdoc, doc);
+        tdocs.push(tdoc);
+      });
+      return tdocs;
+    },
+  },
 };

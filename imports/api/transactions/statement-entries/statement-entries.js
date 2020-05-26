@@ -28,7 +28,7 @@ StatementEntries.schema = new SimpleSchema({
   contraBAN: { type: String, max: 100, optional: true },
   note: { type: String, max: 250, optional: true },
   statementId: { type: String, /* regEx: SimpleSchema.RegEx.Id, */ optional: true, autoform: { omit: true } },
-  serial: { type: Number, optional: true },
+  row: { type: Number, optional: true }, // Row number within the statement
   original: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
 //  match: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },

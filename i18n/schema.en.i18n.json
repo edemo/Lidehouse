@@ -786,8 +786,8 @@
     "note": {
       "label": "Note to payee"
     },
-    "serial": {
-      "label": "Serial"
+    "row": {
+      "label": "Statement row"
     },
     "original": {
       "label": "Original data"
