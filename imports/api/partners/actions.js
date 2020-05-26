@@ -102,3 +102,24 @@ Partners.actions = {
 AutoForm.addModalHooks('af.partner.insert');
 AutoForm.addModalHooks('af.partner.update');
 
+AutoForm.addHooks('af.partner.update', {
+  before: {
+    'method-update'(modifier) {
+      const newEmail = modifier.$set && modifier.$set['contact.email'];
+      const originalEmail = this.currentDoc.contact?.email;
+      let userOwnEmail = false;
+      if (!originalEmail && this.currentDoc.userId) {
+        const userEmail = Meteor.users.findOne(this.currentDoc.userId).getPrimaryEmail();
+        userOwnEmail = (userEmail === newEmail);
+      }
+      if ((originalEmail && newEmail !== originalEmail) || !userOwnEmail) {
+        Modal.confirmAndCall(Partners.methods.update, { _id: this.docId, modifier }, {
+          action: 'update partner',
+          message: 'Changing partner email address will unlink user',
+        }, (res) => { if (res) Modal.hideAll(); });
+        return false;
+      }
+      return modifier;
+    },
+  },
+});

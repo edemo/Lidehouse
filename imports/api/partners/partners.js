@@ -160,10 +160,15 @@ if (Meteor.isServer) {
 
   Partners.after.update(function (userId, doc, fieldNames, modifier, options) {
     const Memberships = Mongo.Collection.get('memberships');
-    if (modifier.$set && modifier.$set.userId && modifier.$set.userId !== this.previous.userId) {
-      Memberships.update({ partnerId: doc._id }, { $set: { userId: modifier.$set.userId } }, { selector: { role: doc.role }, multi: true });
-    } else if (this.previous.userId && modifier.$unset && 'userId' in modifier.$unset) {
-      Memberships.update({ partnerId: doc._id }, { $unset: { userId: '' } }, { selector: { role: doc.role }, multi: true });
+    if (modifier.$set?.userId && modifier.$set.userId !== this.previous.userId) {
+      Memberships.find({ partnerId: doc._id }).forEach((membership) => {
+        Memberships.update(membership._id, { $set: { userId: modifier.$set.userId, accepted: false } }, { selector: { role: membership.role } });
+      });
+    } else if (this.previous.userId && modifier.$unset && ('userId' in modifier.$unset)) {
+      Memberships.find({ partnerId: doc._id }).forEach((membership) => {
+        Memberships.update(membership._id, { $unset: { userId: '' } }, { selector: { role: membership.role } });
+        Memberships.update(membership._id, { $set: { accepted: false } }, { selector: { role: membership.role } });
+      });
     }
   });
 }

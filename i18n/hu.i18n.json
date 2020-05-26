@@ -751,6 +751,7 @@
   "Connecting user": "A(z) <strong>'%s'</strong> email című felhasználót kapcsolni fogja a tagsághoz. Ha az illetőnek még nincs felhasználói fiókja a rendszerben, akkor most meghívót fog neki küldeni erre az email címre.",
   "Linking user": "A felhasználót ezzel kapcsolni fogja a tagsághoz. Az új kapott tisztségről az illető értesítő levelet fog kapni.",
   "Reconnecting user": "A felhasználónak ezzel új meghívót fog küldeni ugyanarra az email címre, amivel előzőleg is meghívta. Az új meghívó kiküldésével a régi meghívó automatikusan lejárttá válik.",
+  "Changing partner email address will unlink user": "A partner e-mail címének megváltoztatásával leválasztja a partnert az e-mail címhez tartozó felhasználói fiókról. Biztosan folytatja?",
   "Sending outstandings reminder": "<strong>'%s'</strong> nevű partnernek ezzel egy hátralék emlékeztető emailt fog kiküldeni.",
   "This will publish the current account balances": "Ezzel a jelen pillanatban élő számlaegyenlegek lesznek mostantól láthatóak a tulajdonosok felé mutatott kimutatásokban",
   "This transaction has been already posted before": "Ezt a tranzakciót korábban már könyvelésbe küldte",

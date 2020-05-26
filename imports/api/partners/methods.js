@@ -45,14 +45,10 @@ export const update = new ValidatedMethod({
     if (newContactEmail && newContactEmail !== contactEmail) {
       const partner = Partners.findOne({ _id: { $ne: doc._id }, communityId: doc.communityId, 'contact.email': newContactEmail });
       if (partner) throw new Meteor.Error('err_alreadyExists', `Partner with this email address already exists: ${partner.displayName()}`);
-      if (doc.userId && Meteor.isServer) {
-        if (doc.user().isVerified()) {
-          throw new Meteor.Error('err_permissionDenied', 'The contact email address is not modifiable, it is connected to a user.');
-        } else {
-          if (!modifier.$unset) modifier.$unset = {};
-          modifier.$unset.userId = '';
-          delete modifier.$set.userId;
-        }
+      if (doc.userId && Meteor.isServer && !(!contactEmail && Meteor.users.findOne(doc.userId).getPrimaryEmail() === newContactEmail)) {
+        if (!modifier.$unset) modifier.$unset = {};
+        modifier.$unset.userId = '';
+        delete modifier.$set.userId;
       }
     }
     const result = Partners.update({ _id }, modifier);
