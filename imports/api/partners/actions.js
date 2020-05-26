@@ -2,9 +2,10 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
@@ -21,8 +22,11 @@ Partners.actions = {
     run() {
       const activeRelation = Session.get('activePartnerRelation');
       if (activeRelation) _.extend(doc, { relation: [activeRelation] });
-      const statementEntry = StatementEntries._transform(Session.get('modalContext').statementEntry);
-      if (statementEntry) _.deepExtend(doc, { idCard: { name: statementEntry.name }, relation: [statementEntry.impliedRelation()] });
+      let statementEntry = ModalStack.getVar('statementEntry');
+      if (statementEntry) {
+        statementEntry = StatementEntries._transform(statementEntry);
+        _.deepExtend(doc, { idCard: { name: statementEntry.name }, relation: [statementEntry.impliedRelation()] });
+      }
 
       Modal.show('Autoform_modal', {
         id: 'af.partner.insert',

@@ -7,6 +7,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { equalWithinRounding } from '/imports/api/utils.js';
@@ -24,7 +25,7 @@ export const Payments = {};
 export const chooseBillOfPartner = {
   options() {
     const communityId = Session.get('activeCommunityId');
-    const relation = Session.get('modalContext').txdef.data.relation;
+    const relation = ModalStack.getVar('txdef').data.relation;
     const partnerId = AutoForm.getFieldValue('partnerId');
 //    const amount = AutoForm.getFieldValue('amount');
 //    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
@@ -51,7 +52,7 @@ const extensionSchema = {
   payAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
   remission: { type: Boolean, optional: true },
 };
-_.each(extensionSchema, val => val.autoform = _.extend({}, val.autoform, { readonly() { return !!Session.get('modalContext').statementEntry; } }));
+_.each(extensionSchema, val => val.autoform = _.extend({}, val.autoform, { readonly() { return !!ModalStack.getVar('statementEntry'); } }));
 Payments.extensionSchema = new SimpleSchema(extensionSchema);
 
 const paymentSchema = new SimpleSchema([

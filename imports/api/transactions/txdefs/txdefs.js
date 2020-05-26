@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -102,11 +103,11 @@ Meteor.startup(function attach() {
 Factory.define('txdef', Txdefs, {
 });
 
-export function chooseConteerAccount(flipSide = false) {
+export const chooseConteerAccount = function (flipSide = false) {
   return {
     options() {
       const communityId = Session.get('activeCommunityId');
-      let txdef = Session.get('modalContext').txdef;
+      let txdef = ModalStack.getVar('txdef');
       if (!txdef) return [];
       txdef = Txdefs._transform(txdef); // in the Session they loose their functions
       let side = txdef.conteerSide();
@@ -116,4 +117,4 @@ export function chooseConteerAccount(flipSide = false) {
     },
     firstOption: () => __('Chart of Accounts'),
   };
-}
+};

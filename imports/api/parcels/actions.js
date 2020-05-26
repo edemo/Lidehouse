@@ -4,9 +4,10 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Fraction } from 'fractional';
 import { _ } from 'meteor/jquery';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
@@ -83,7 +84,7 @@ Parcels.actions = {
     })(),
     visible: user.hasPermission('memberships.inCommunity', doc),
     run() {
-      Session.update('modalContext', 'parcelId', doc._id);
+      ModalStack.setVar('parcelId', doc._id);
       Modal.show('Modal', {
         title: `${doc ? doc.display() : __('unknown')} - ${__('occupants')}`,
         body: 'Occupants_box',
@@ -101,7 +102,7 @@ Parcels.actions = {
     color: doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
     visible: user.hasPermission('meters.insert', doc) || user.hasPermission('parcels.details', doc),
     run(event, instance) {
-      Session.update('modalContext', 'parcelId', doc._id);
+      ModalStack.setVar('parcelId', doc._id);
       Modal.show('Modal', {
         title: `${doc ? doc.display() : __('unknown')} - ${__('meters')}`,
         body: 'Meters_box',

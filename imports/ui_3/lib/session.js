@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 
 export function resetSession() {
@@ -5,5 +6,7 @@ export function resetSession() {
     Session.set(key, undefined);
   });
   Session.keys = {};
-  Session.set('modalContext', {});
+  Session.set('modalStack', [{ result: {}, context: {} }]);
 }
+
+Meteor.startup(resetSession);

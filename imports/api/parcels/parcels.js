@@ -9,6 +9,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
@@ -333,28 +334,24 @@ Factory.define('#tag', Parcels, {
 
 // ------------------------------------
 
-export let chooseParcel = () => ({});
-if (Meteor.isClient) {
-  import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-
-  chooseParcel = function (code = '') {
-    return {
-      relation: '#tag',
-      value() {
-        const selfId = AutoForm.getFormId();
-        const value = ModalStack.readResult(selfId, 'af.#tag.insert');
-        return value;
-      },
-      options() {
-        const communityId = Session.get('activeCommunityId');
-        const parcels = Parcels.nodesOf(communityId, code);
-        const options = parcels.map(function option(p) {
-          return { label: p.displayAccount(), value: p.code };
-        });
-        const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
-        return sortedOptions;
-      },
-      firstOption: () => __('Localizers'),
-    };
+export const chooseParcel = function (code = '') {
+  return {
+    relation: '#tag',
+    value() {
+      const selfId = AutoForm.getFormId();
+      const value = ModalStack.readResult(selfId, 'af.#tag.insert');
+      return value;
+    },
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const parcels = Parcels.nodesOf(communityId, code);
+      const options = parcels.map(function option(p) {
+        return { label: p.displayAccount(), value: p.code };
+      });
+      const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+      return sortedOptions;
+    },
+    firstOption: () => __('Localizers'),
   };
-}
+};
+

@@ -37,7 +37,7 @@ Template.Autoform_modal.helpers({
     if (this.title) return this.title;
     const id = afId2details(this.id);
     if (_.contains(Transactions.categoryValues, id.object)) {
-      const txdef = Session.get('modalContext').txdef;
+      const txdef = ModalStack.getVar('txdef');
       id.object = txdef.name;
     }
     if (id.action === 'statusChange') {

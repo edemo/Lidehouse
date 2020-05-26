@@ -1,9 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Parcelships } from './parcelships.js';
@@ -90,7 +91,7 @@ AutoForm.addModalHooks('af.parcelship.insert');
 AutoForm.addModalHooks('af.parcelship.update');
 AutoForm.addHooks('af.parcelship.insert', {
   formToDoc(doc) {
-    doc.parcelId = Session.get('modalContext').parcelId;
+    doc.parcelId = ModalStack.getVar('parcelId');
     //    doc.approved = true;
     return doc;
   },

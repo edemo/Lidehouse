@@ -2,6 +2,8 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { moment } from 'meteor/momentjs:moment';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Clock } from '/imports/utils/clock';
 import { __ } from '/imports/localization/i18n.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
@@ -12,10 +14,10 @@ import './bill-edit.html';
 
 Template.Bill_edit.helpers({
   partnerRelation() {
-    return Session.get('modalContext').txdef.data.relation;
+    return ModalStack.getVar('txdef').data.relation;
   },
   isBill() {
-    return Session.get('modalContext').txdef.category === 'bill';
+    return ModalStack.getVar('txdef').category === 'bill';
   },
   defaultDate() {
     return Clock.currentTime();

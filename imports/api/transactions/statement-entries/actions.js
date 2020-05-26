@@ -4,6 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
@@ -19,7 +20,7 @@ StatementEntries.actions = {
     icon: 'fa fa-plus',
     visible: user.hasPermission('statements.insert', doc),
     run(event, instance) {
-//      Session.update('modalContext', 'account', instance.viewmodel.accountSelected());
+//      ModalStack.setVar('account', instance.viewmodel.accountSelected());
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.insert',
         collection: StatementEntries,
@@ -93,9 +94,9 @@ StatementEntries.actions = {
         fromAccount: doc.account,  // transfer
         toAccount: doc.account,  // transfer
       };
-      Session.update('modalContext', 'txdef', options.txdef);
-      Session.update('modalContext', 'statementEntry', doc);
-      Session.update('modalContext', 'insertTx', insertTx);
+      ModalStack.setVar('txdef', options.txdef);
+      ModalStack.setVar('statementEntry', doc);
+      ModalStack.setVar('insertTx', insertTx);
       Modal.show('Autoform_modal', {
         title: `${__('Reconciliation')} >> ${__(options.txdef.name)}`,
         id: 'af.statementEntry.reconcile',
@@ -144,7 +145,7 @@ AutoForm.addModalHooks('af.statementEntry.reconcile');
 
 AutoForm.addHooks('af.statementEntry.insert', {
   docToForm(doc) {
-//    doc.account = Session.get('modalContext').account;
+//    doc.account = ModalStack.getVar('account');
     return doc;
   },
 });
@@ -166,7 +167,7 @@ AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.insert', 'af.sta
 
 AutoForm.addHooks('af.statementEntry.reconcile', {
   formToDoc(doc) {
-    doc._id = Session.get('modalContext').statementEntry._id;
+    doc._id = ModalStack.getVar('statementEntry')._id;
     return doc;
   },
 });

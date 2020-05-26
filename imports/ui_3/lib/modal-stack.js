@@ -1,9 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
-import { $ } from 'meteor/jquery';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
+import { $ } from 'meteor/jquery';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 // This is how we did it, before multi modals
 export function runInNewModal(toRun) {
@@ -11,54 +10,75 @@ export function runInNewModal(toRun) {
   Modal.hide();
 }
 
-// For storing multiple key-values within a single session var 
-// (BEWARE infinite reactive update loops -> Never call it from within an autorun!!!)
-Session.update = function update(sessionVarName, key, value) {
-  const sessionVar = Session.get(sessionVarName) || {};
-  sessionVar[key] = value;
-  Session.set(sessionVarName, sessionVar);
-};
+export let ModalStack = {};
 
-// --- --- --- --- --- --- --- --- --- --- --- --- ---
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
 
-// Set up peppelg:bootstrap-3-modal to allow multiple modals
-Modal.allowMultiple = true;
+  // Set up peppelg:bootstrap-3-modal to allow multiple modals
+  Modal.allowMultiple = true;
 
-Meteor.startup(() => Session.set('modalContext', {}));  // init to empty
+  // ModalStack data structure:
+  // [{ id:'af.object.action', result: { id1: result1, id2: result2 } }]
 
-// ModalStack data structure:
-// [{ id:'af.object.action', result: { id1: result1, id2: result2 } }]
-
-export const ModalStack = {
-  push(dataId) {
-    if (!Session.get('modalStack')) Session.set('modalStack', []);
-    const modalStack = Session.get('modalStack');
-    modalStack.push({ id: dataId, result: {} });
-    Session.set('modalStack', modalStack);
-  },
-  pop(dataId) {
-    const modalStack = Session.get('modalStack');
-    const topModal = modalStack.pop();
-    debugAssert((!topModal.id && !dataId) || topModal.id === dataId);
-    Session.set('modalStack', modalStack);
-    if (modalStack.length > 0) $('body').addClass('modal-open');
-    else Session.set('modalContext', {}); // clean context up after last modal
-    // Modal.hide();  // not necessary
-  },
-  active() {
-    const modalStack = Session.get('modalStack');
-    return _.last(modalStack);
-  },
-  recordResult(afId, result) {
-    const modalStack = Session.get('modalStack');
-    if (modalStack.length <= 1) return;   // If this was the bottomest modal, no need to pass on the result, we can clean up
-    modalStack[modalStack.length - 2].result[afId] = result;
-    Session.set('modalStack', modalStack);
-  },
-  readResult(ownId, afId) {
-    const modalStack = Session.get('modalStack');
-    let ownModal = {};
-    ownModal = _.find(modalStack, modal => (modal.id === ownId));
-    return ownModal && ownModal.result[afId];
-  },
-};
+  ModalStack = {
+    push(dataId) {
+      const modalStack = Session.get('modalStack');
+      console.log('before push:', modalStack);
+      modalStack.push({ id: dataId, result: {}, context: {} });
+      console.log('after push:', modalStack);
+      Session.set('modalStack', modalStack);
+    },
+    pop(dataId) {
+      const modalStack = Session.get('modalStack');
+      console.log('before pop:', modalStack);
+      const topModal = modalStack.pop();
+      debugAssert((!topModal.id && !dataId) || topModal.id === dataId);
+      console.log('after pop:', modalStack);
+      Session.set('modalStack', modalStack);
+      if (modalStack.length > 1) $('body').addClass('modal-open');
+      else modalStack[0] = { result: {}, context: {} }; // clean context up after last modal
+      // Modal.hide();  // not necessary
+    },
+    active() {
+      const modalStack = Session.get('modalStack');
+      return (modalStack.length > 1) && _.last(modalStack);
+    },
+    height() {
+      const modalStack = Session.get('modalStack');
+      return modalStack.length - 1;
+    },
+    recordResult(afId, result) {
+      const modalStack = Session.get('modalStack');
+      if (modalStack.length <= 1) return; // If there is no modal, no need to pass on the result
+      modalStack[modalStack.length - 2].result[afId] = result;
+      Session.set('modalStack', modalStack);
+    },
+    readResult(ownId, afId) {
+      const modalStack = Session.get('modalStack');
+      console.log('before read', modalStack);
+      let ownModal = {};
+      ownModal = _.find(modalStack, modal => (modal.id === ownId));
+      console.log('ownModal:', ownModal);
+      console.log('returns:', ownModal?.result[afId]);
+      return ownModal?.result[afId];
+    },
+    setVar(key, value) { // Should not call this within an autorun - would cause infinite loop
+      const modalStack = Session.get('modalStack');
+      console.log('before set', modalStack);
+      console.log('set value', value);
+      _.last(modalStack).context[key] = value;
+      console.log('after set', modalStack);
+      Session.set('modalStack', modalStack);
+    },
+    getVar(key) {
+      const modalStack = Session.get('modalStack');
+      console.log('before get', modalStack);
+      for (let i = modalStack.length - 1; i >= 0; i--) {
+        const value = modalStack[i].context[key];
+        if (value) return value;
+      }
+      return undefined;
+    },
+  };
+}

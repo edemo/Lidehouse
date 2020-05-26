@@ -4,6 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId, getActivePartnerId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
@@ -15,7 +16,7 @@ import './entities.js';
 import './methods.js';
 
 function fillMissingOptions(options) {
-  const mcTxdef = Session.get('modalContext').txdef;
+  const mcTxdef = ModalStack.getVar('txdef');
   if (mcTxdef && !options.txdef) options.txdef = mcTxdef; // This happens when new tx action is called from within statementEntry match action
     // TODO: Refactor. - entity data may come from so many places its confusing (options.entity, options.txdef, modalContext.txdef)
   if (typeof options.entity === 'string') options.entity = Transactions.entities[options.txdef.category];
@@ -30,9 +31,9 @@ Transactions.actions = {
     visible: user.hasPermission('transactions.insert', doc),
     run() {
       fillMissingOptions(options);
-      Session.update('modalContext', 'txdef', options.txdef);
+      ModalStack.setVar('txdef', options.txdef);
       const entity = options.entity;
-      const insertTx = Session.get('modalContext').insertTx;
+      const insertTx = ModalStack.getVar('insertTx');
       doc = _.extend(defaultNewDoc(), insertTx, doc);
       Modal.show('Autoform_modal', {
         body: entity.editForm,
@@ -64,7 +65,7 @@ Transactions.actions = {
     visible: doc && (user.hasPermission('transactions.inCommunity', doc) || getActivePartnerId() === doc.partnerId),
     run() {
       const entity = Transactions.entities[doc.entityName()];
-      Session.update('modalContext', 'txdef', doc.txdef());
+      ModalStack.setVar('txdef', doc.txdef());
       Modal.show('Autoform_modal', {
         body: entity.viewForm,
         bodyContext: { doc },
@@ -87,7 +88,7 @@ Transactions.actions = {
       && user.hasPermission('transactions.update', doc),
     run() {
       const entity = Transactions.entities[doc.entityName()];
-      Session.update('modalContext', 'txdef', doc.txdef());
+      ModalStack.setVar('txdef', doc.txdef());
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -161,9 +162,9 @@ Transactions.actions = {
     visible: doc && (doc.status === 'posted') && (doc.category === 'bill') && doc.outstanding
       && user.hasPermission('transactions.insert', doc),
     run() {
-      Session.update('modalContext', 'billId', doc._id);
+      ModalStack.setVar('billId', doc._id);
       const txdef = Txdefs.findOne({ communityId: doc.communityId, category: 'payment', 'data.relation': doc.relation });
-      Session.update('modalContext', 'txdef', txdef);
+      ModalStack.setVar('txdef', txdef);
       const insertOptions = _.extend({}, options, { entity: Transactions.entities.payment });
       const insertTx = {
         category: 'payment',
@@ -215,17 +216,17 @@ Transactions.categoryValues.forEach(category => {
       return doc;
     },
     formToDoc(doc) {
-      const modalContext = Session.get('modalContext');
       doc.category = category;
-      const txdef = modalContext.txdef;
+      const txdef = ModalStack.getVar('txdef');
       doc.defId = txdef._id;
       _.each(txdef.data, (value, key) => doc[key] = value);
       if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
       } else if (category === 'payment') {
         doc.bills = doc.bills || [];
-        if (!doc.bills.length && modalContext.billId) {
-          doc.bills = [{ id: modalContext.billId, amount: doc.amount }];
+        const modalStackBillId = ModalStack.getVar('billId');
+        if (!doc.bills.length && modalStackBillId) {
+          doc.bills = [{ id: modalStackBillId, amount: doc.amount }];
         }
         const billId = doc.bills[0].id;
         const bill = Transactions.findOne(billId);

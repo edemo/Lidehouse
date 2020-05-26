@@ -73,7 +73,7 @@ Template.Accounting_ledger.events({
   },
   'click .js-journals'(event, instance) {
     const communityId = instance.viewmodel.communityId();
-      //    Session.update('modalContext', 'parcelId', doc._id);
+    // ModalStack.setVar('parcelId', doc._id);
     Modal.show('Modal', {
       title: 'Teljes journal lista',
       body: 'Journals_table',

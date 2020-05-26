@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
 import { __ } from '/imports/localization/i18n.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
@@ -75,7 +76,7 @@ Meters.actions = {
     color: doc.lastReadingColor(),
     visible: user.hasPermission('meters.registerReading', doc),
     run() {
-      Session.update('modalContext', 'meterId', doc._id);
+      ModalStack.setVar('meterId', doc._id);
       Modal.show('Autoform_modal', {
         id: 'af.meter.registerReading',
         schema: Meters.registerReadingSchema,
@@ -120,7 +121,7 @@ AutoForm.addModalHooks('af.meter.update');
 AutoForm.addModalHooks('af.meter.registerReading');
 AutoForm.addHooks('af.meter.insert', {
   formToDoc(doc) {
-    doc.parcelId = Session.get('modalContext').parcelId;
+    doc.parcelId = ModalStack.getVar('parcelId');
     //    doc.approved = true;
     return doc;
   },
@@ -133,7 +134,7 @@ AutoForm.addHooks('af.meter.update', {
 });
 AutoForm.addHooks('af.meter.registerReading', {
   formToDoc(doc) {
-    doc._id = Session.get('modalContext').meterId;
+    doc._id = ModalStack.getVar('meterId');
     return doc;
   },
 });

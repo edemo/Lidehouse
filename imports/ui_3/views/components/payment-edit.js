@@ -2,8 +2,8 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { moment } from 'meteor/momentjs:moment';
-import { Clock } from '/imports/utils/clock';
-import { __ } from '/imports/localization/i18n.js';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
 // The autoform needs to see these, to handle new events on it
 import '/imports/api/partners/actions.js';
@@ -15,7 +15,7 @@ import './payment-edit.html';
 
 Template.Payment_edit.viewmodel({
   partnerRelation() {
-    return Session.get('modalContext').txdef.data.relation;
+    return ModalStack.getVar('txdef').data.relation;
   },
   allocatedAmount() {
     let allocated = 0;
@@ -32,7 +32,7 @@ Template.Payment_edit.viewmodel({
 
 Template.Payment_edit.events({
   'click .js-new'(event, instance) {
-    const paymentDef = Session.get('modalContext').txdef;
+    const paymentDef = ModalStack.getVar('txdef');
     const billDef = Txdefs.findOne({ communityId: paymentDef.communityId, category: 'bill', 'data.relation': paymentDef.data.relation });
     const doc = {
       relation: AutoForm.getFieldValue('relation'),

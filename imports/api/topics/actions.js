@@ -4,9 +4,10 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { _ } from 'meteor/underscore';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -147,8 +148,8 @@ Topics.actions = {
       && doc && doc.possibleNextStatuses().map(status => Topics.actions.statusChange({ status }, doc, user)),
     run() {
       const newStatus = options.status;
-      Session.update('modalContext', 'topicId', doc._id);
-      Session.update('modalContext', 'status', newStatus.name);
+      ModalStack.setVar('topicId', doc._id);
+      ModalStack.setVar('status', newStatus.name);
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.statusChange`,
         description: newStatus.message && newStatus.message(options, doc),
@@ -226,9 +227,9 @@ _.each(Topics.entities, (entity, entityName) => {
 
   AutoForm.addHooks(`af.${entityName}.statusChange`, {
     formToDoc(doc) {
-      doc.topicId = Session.get('modalContext').topicId;
+      doc.topicId = ModalStack.getVar('topicId');
       doc.category = 'statusChange'; // `statusChange.${status}`;
-      doc.status = Session.get('modalContext').status;
+      doc.status = ModalStack.getVar('status');
       //  const topic = Topics.findOne(doc.topicId);
       doc.dataUpdate = doc['ticket'] || {}; // can use topic.category instrad of ticket, if other than tickets have data too
       delete doc['ticket'];

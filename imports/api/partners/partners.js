@@ -7,6 +7,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
@@ -221,29 +222,24 @@ Factory.define('member', Partners, {
 
 // ------------------------------------
 
-export let choosePartner = {};
-if (Meteor.isClient) {
-  import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-
-  choosePartner = {
-    relation: 'partner',
-    value() {
-      const selfId = AutoForm.getFormId();
-      const value = ModalStack.readResult(selfId, 'af.partner.insert');
-      return value;
-    },
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const community = Communities.findOne(communityId);
-      const txdef = Session.get('modalContext').txdef;
-      const relation = (txdef && txdef.data.relation) || Session.get('activePartnerRelation');
-      const partners = Partners.find({ communityId, relation });
-      const options = partners.map(function option(p) {
-        return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
-      });
-      const sortedOptions = options.sort((a, b) => a.label.localeCompare(b.label, community.settings.language, { sensitivity: 'accent' }));
-      return sortedOptions;
-    },
-    firstOption: () => __('(Select one)'),
-  };
-}
+export const choosePartner = {
+  relation: 'partner',
+  value() {
+    const selfId = AutoForm.getFormId();
+    const value = ModalStack.readResult(selfId, 'af.partner.insert');
+    return value;
+  },
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    const community = Communities.findOne(communityId);
+    const txdef = ModalStack.getVar('txdef');
+    const relation = (txdef && txdef.data.relation) || Session.get('activePartnerRelation');
+    const partners = Partners.find({ communityId, relation });
+    const options = partners.map(function option(p) {
+      return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
+    });
+    const sortedOptions = options.sort((a, b) => a.label.localeCompare(b.label, community.settings.language, { sensitivity: 'accent' }));
+    return sortedOptions;
+  },
+  firstOption: () => __('(Select one)'),
+};

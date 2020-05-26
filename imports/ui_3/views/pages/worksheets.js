@@ -7,6 +7,8 @@ import { ReactiveDict } from 'meteor/reactive-dict';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { _ } from 'meteor/underscore';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
@@ -39,7 +41,7 @@ Template.Worksheets.onCreated(function onCreated() {
 });
 
 Template.Worksheets.onDestroyed(function onDestroyed() {
-  Session.update('modalContext', 'expectedStart', undefined);
+  ModalStack.setVar('expectedStart', undefined);
 });
 
 Template.Worksheets.viewmodel({
@@ -106,7 +108,7 @@ Template.Worksheets.viewmodel({
         ContextMenu.show(event, contextObj, viewmodel);
       },
       dayClick(date, jsEvent, view) {
-        Session.update('modalContext', 'expectedStart', date.toDate());
+        ModalStack.setVar('expectedStart', date.toDate());
         event.stopPropagation();
         const contextObj = {
           template: 'New_Ticket',

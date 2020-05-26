@@ -4,7 +4,7 @@ import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
-import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Clock } from '/imports/utils/clock.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { chooseParcel } from '/imports/api/parcels/parcels.js';
@@ -13,8 +13,6 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { choosePartner } from '/imports/api/partners/partners.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 // import { readableId } from '/imports/api/readable-id.js';
-
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const Tickets = {};
 
@@ -33,7 +31,7 @@ Tickets.extensionRawSchema = {
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true /* TODO: Select from tx list */ },
 
   expectedCost: { type: Number, decimal: true, optional: true },
-  expectedStart: { type: Date, optional: true, autoform: { defaultValue: () => Session.get('modalContext').expectedStart } },
+  expectedStart: { type: Date, optional: true, autoform: { defaultValue: () => ModalStack.getVar('expectedStart') } },
   expectedFinish: { type: Date, optional: true },
   expectedContinue: { type: Date, optional: true },
   waitingFor: { type: String, optional: true },
