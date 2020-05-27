@@ -518,17 +518,25 @@ if (Meteor.isServer) {
         Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
         let membership = Memberships.findOne(membershipId);
         let partner = Partners.findOne(partnerId);
-        chai.assert.equal(membership.userId, userId);
         chai.assert.equal(partner.userId, userId);
+        chai.assert.equal(membership.userId, userId);
         chai.assert.equal(membership.partner().primaryEmail(), user.getPrimaryEmail());
+
+        Partners.methods.update._execute({ userId: Fixture.demoManagerId },
+          { _id: partnerId, modifier: { $set: { 'contact.address': '1111 Somewherecity' } } });
+        membership = Memberships.findOne(membershipId);
+        partner = Partners.findOne(partnerId);
+        chai.assert.equal(membership.partnerId, partnerId);
+        chai.assert.equal(partner.userId, userId);
+        chai.assert.equal(membership.userId, userId);
 
         Partners.methods.update._execute({ userId: Fixture.demoManagerId },
           { _id: partnerId, modifier: { $set: { 'contact.email': 'othermail@demotest.hu' } } });
         membership = Memberships.findOne(membershipId);
         partner = Partners.findOne(partnerId);
         chai.assert.equal(membership.partnerId, partnerId);
-        chai.assert.isUndefined(membership.userId);
         chai.assert.isUndefined(partner.userId);
+        chai.assert.isUndefined(membership.userId);
 
         Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
         Partners.remove(partnerId);

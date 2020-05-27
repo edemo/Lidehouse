@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
+import { isFieldDeleted } from '/imports/api/utils.js';
 import { checkNoOutstanding } from '/imports/api/behaviours/accounting-location.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { sendOutstandingsEmail } from '/imports/email/outstandings-send.js';
@@ -12,6 +13,19 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Partners } from './partners.js';
 
+
+export function userUnlinkNeeded(currentDoc, modifier) {
+  const newEmail = modifier.$set?.['contact.email'];
+  if (currentDoc.userId) {
+    if (newEmail && newEmail !== currentDoc.contact?.email) {
+      const currentUser = Meteor.users.findOne(currentDoc.userId);
+      return !currentUser.hasThisEmail(newEmail);
+    } else if (isFieldDeleted(currentDoc, modifier, 'contact.email')) {
+      return true;
+    }
+  }
+  return false;
+}
 
 export const insert = new ValidatedMethod({
   name: 'partners.insert',
@@ -40,16 +54,15 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Partners, _id);
     checkModifier(doc, modifier, Partners.nonModifiableFields, true);
     checkPermissions(this.userId, 'partners.update', doc);
-    const newContactEmail = modifier.$set['contact.email'];
-    const contactEmail = doc.contact && doc.contact.email;
-    if (newContactEmail && newContactEmail !== contactEmail) {
+    const newContactEmail = modifier.$set?.['contact.email'];
+    if (newContactEmail && newContactEmail !== doc.contact?.email) {
       const partner = Partners.findOne({ _id: { $ne: doc._id }, communityId: doc.communityId, 'contact.email': newContactEmail });
       if (partner) throw new Meteor.Error('err_alreadyExists', `Partner with this email address already exists: ${partner.displayName()}`);
-      if (doc.userId && Meteor.isServer && !(!contactEmail && Meteor.users.findOne(doc.userId).getPrimaryEmail() === newContactEmail)) {
-        if (!modifier.$unset) modifier.$unset = {};
-        modifier.$unset.userId = '';
-        delete modifier.$set.userId;
-      }
+    }
+    if (Meteor.isServer && userUnlinkNeeded(doc, modifier)) {
+      if (!modifier.$unset) modifier.$unset = {};
+      modifier.$unset.userId = '';
+      delete modifier.$set.userId;
     }
     const result = Partners.update({ _id }, modifier);
     return result;

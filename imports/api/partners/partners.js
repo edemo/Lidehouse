@@ -5,6 +5,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
+import rusdiff from 'rus-diff';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -161,15 +162,9 @@ if (Meteor.isServer) {
 
   Partners.after.update(function (userId, doc, fieldNames, modifier, options) {
     const Memberships = Mongo.Collection.get('memberships');
-    if (modifier.$set?.userId && modifier.$set.userId !== this.previous.userId) {
-      Memberships.find({ partnerId: doc._id }).forEach((membership) => {
-        Memberships.update(membership._id, { $set: { userId: modifier.$set.userId, accepted: false } }, { selector: { role: membership.role } });
-      });
-    } else if (this.previous.userId && modifier.$unset && ('userId' in modifier.$unset)) {
-      Memberships.find({ partnerId: doc._id }).forEach((membership) => {
-        Memberships.update(membership._id, { $unset: { userId: '' } }, { selector: { role: membership.role } });
-        Memberships.update(membership._id, { $set: { accepted: false } }, { selector: { role: membership.role } });
-      });
+    if (this.previous.userId !== doc.userId) {
+      const diff = rusdiff.diff(_.pick(this.previous, 'userId'), _.extend(_.pick(doc, 'userId'), { accepted: false }));
+      Memberships.update({ partnerId: doc._id }, diff, { selector: { role: 'owner' }, multi: true });
     }
   });
 }

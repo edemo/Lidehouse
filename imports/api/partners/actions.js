@@ -9,6 +9,7 @@ import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { userUnlinkNeeded }from '/imports/api/partners/methods.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import './methods.js';
 
@@ -109,14 +110,7 @@ AutoForm.addModalHooks('af.partner.update');
 AutoForm.addHooks('af.partner.update', {
   before: {
     'method-update'(modifier) {
-      const newEmail = modifier.$set && modifier.$set['contact.email'];
-      const originalEmail = this.currentDoc.contact?.email;
-      let userOwnEmail = false;
-      if (!originalEmail && this.currentDoc.userId) {
-        const userEmail = Meteor.users.findOne(this.currentDoc.userId).getPrimaryEmail();
-        userOwnEmail = (userEmail === newEmail);
-      }
-      if ((originalEmail && newEmail !== originalEmail) || !userOwnEmail) {
+      if (userUnlinkNeeded(this.currentDoc, modifier)) {
         Modal.confirmAndCall(Partners.methods.update, { _id: this.docId, modifier }, {
           action: 'update partner',
           message: 'Changing partner email address will unlink user',
