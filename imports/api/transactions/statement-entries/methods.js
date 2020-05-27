@@ -87,7 +87,7 @@ export const reconcile = new ValidatedMethod({
       const matchingBill = Transactions.findOne({ communityId: entry.communityId, serialId });
       //console.log('Matching bill:', matchingBill);
       if (!matchingBill) return;
-      const adjustedEntryAmount = moneyFlowSign(matchingBill.relation) * entry.amount;
+      const adjustedEntryAmount = matchingBill.relationSign() * entry.amount;
       if (equalWithinRounding(matchingBill.outstanding, adjustedEntryAmount)) {
 /*
 //      console.log("Looking for partner", entry.name, entry.communityId);

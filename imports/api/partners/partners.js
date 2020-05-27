@@ -5,6 +5,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
+import rusdiff from 'rus-diff';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
@@ -162,10 +163,9 @@ if (Meteor.isServer) {
 
   Partners.after.update(function (userId, doc, fieldNames, modifier, options) {
     const Memberships = Mongo.Collection.get('memberships');
-    if (modifier.$set && modifier.$set.userId && modifier.$set.userId !== this.previous.userId) {
-      Memberships.update({ partnerId: doc._id }, { $set: { userId: modifier.$set.userId } }, { selector: { role: doc.role }, multi: true });
-    } else if (this.previous.userId && modifier.$unset && 'userId' in modifier.$unset) {
-      Memberships.update({ partnerId: doc._id }, { $unset: { userId: '' } }, { selector: { role: doc.role }, multi: true });
+    if (this.previous.userId !== doc.userId) {
+      const diff = rusdiff.diff(_.pick(this.previous, 'userId'), _.extend(_.pick(doc, 'userId'), { accepted: false }));
+      Memberships.update({ partnerId: doc._id }, diff, { selector: { role: 'owner' }, multi: true });
     }
   });
 }

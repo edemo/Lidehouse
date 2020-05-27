@@ -10,6 +10,7 @@ import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { userUnlinkNeeded }from '/imports/api/partners/methods.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import './methods.js';
 
@@ -110,3 +111,17 @@ Partners.actions = {
 AutoForm.addModalHooks('af.partner.insert');
 AutoForm.addModalHooks('af.partner.update');
 
+AutoForm.addHooks('af.partner.update', {
+  before: {
+    'method-update'(modifier) {
+      if (userUnlinkNeeded(this.currentDoc, modifier)) {
+        Modal.confirmAndCall(Partners.methods.update, { _id: this.docId, modifier }, {
+          action: 'update partner',
+          message: 'Changing partner email address will unlink user',
+        }, (res) => { if (res) Modal.hideAll(); });
+        return false;
+      }
+      return modifier;
+    },
+  },
+});

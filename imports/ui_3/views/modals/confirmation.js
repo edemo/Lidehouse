@@ -38,12 +38,12 @@ Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options, cal
         } else {
           Modal.hide();
           displayMessage('success', options.notification || translatedDoneMessage);
-          if (callback) callback();
+          if (callback) callback(true);
         }
       });
     },
     onCancel() {
-      if (callback) callback();
+      if (callback) callback(false);
     },
   }));
 };
