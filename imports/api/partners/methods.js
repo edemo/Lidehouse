@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import rusdiff from 'rus-diff';
 
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { checkNoOutstanding } from '/imports/api/behaviours/accounting-location.js';
@@ -12,6 +13,22 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Partners } from './partners.js';
 
+
+export function userUnlinkNeeded(currentDoc, modifier) {
+  if (currentDoc.userId) {
+    const newDoc = rusdiff.clone(currentDoc);
+    rusdiff.apply(newDoc, modifier);
+    const oldEmail = currentDoc.contact?.email;
+    const newEmail = newDoc.contact?.email;
+    if (newEmail && newEmail !== oldEmail) {
+      const currentUser = Meteor.users.findOne(currentDoc.userId);
+      return !currentUser.hasThisEmail(newEmail);
+    } else if (!newEmail && oldEmail) {
+      return true;
+    }
+  }
+  return false;
+}
 
 export const insert = new ValidatedMethod({
   name: 'partners.insert',
@@ -40,20 +57,15 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Partners, _id);
     checkModifier(doc, modifier, Partners.nonModifiableFields, true);
     checkPermissions(this.userId, 'partners.update', doc);
-    const newContactEmail = modifier.$set['contact.email'];
-    const contactEmail = doc.contact && doc.contact.email;
-    if (newContactEmail && newContactEmail !== contactEmail) {
+    const newContactEmail = modifier.$set?.['contact.email'];
+    if (newContactEmail && newContactEmail !== doc.contact?.email) {
       const partner = Partners.findOne({ _id: { $ne: doc._id }, communityId: doc.communityId, 'contact.email': newContactEmail });
       if (partner) throw new Meteor.Error('err_alreadyExists', `Partner with this email address already exists: ${partner.displayName()}`);
-      if (doc.userId && Meteor.isServer) {
-        if (doc.user().isVerified()) {
-          throw new Meteor.Error('err_permissionDenied', 'The contact email address is not modifiable, it is connected to a user.');
-        } else {
-          if (!modifier.$unset) modifier.$unset = {};
-          modifier.$unset.userId = '';
-          delete modifier.$set.userId;
-        }
-      }
+    }
+    if (Meteor.isServer && userUnlinkNeeded(doc, modifier)) {
+      if (!modifier.$unset) modifier.$unset = {};
+      modifier.$unset.userId = '';
+      delete modifier.$set.userId;
     }
     const result = Partners.update({ _id }, modifier);
     return result;

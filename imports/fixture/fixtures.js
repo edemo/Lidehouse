@@ -291,6 +291,7 @@ export function insertUnittestFixture(lang) {
 
   return {
     demoCommunityId,
+    otherCommunityId,
     demoUserId,
     demoAdminId,
     demoManagerId,

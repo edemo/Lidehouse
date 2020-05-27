@@ -249,6 +249,9 @@ Meteor.users.helpers({
     this.emails[0].verified = false;
     // TODO: A verification email has to be sent to the user now
   },
+  hasThisEmail(address) {
+    return !!_.find(this.emails, e => e.address === address);
+  },
   isDemo() {
     return this.getPrimaryEmail() && this.getPrimaryEmail().includes('demouser@demo');
   },

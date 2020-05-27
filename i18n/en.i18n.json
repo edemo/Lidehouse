@@ -87,6 +87,7 @@
   "No permission to upload": "You have no permission to upload documents, please ask the community manager's help",
   "Remove not possible after posting": "NOTICE: Transaction cannot be removed, because it has been already posted. If you press OK, a storno transaction will be created.",
   "This operation will be performed on many documents": "If you approve, this operation will be performed on <strong>%s selected documents</strong> at once",
+  "Changing partner email address will unlink user": "By changing the partner's email address you are disconnecting them from the user account. Are you sure to continue?",
 
     // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",

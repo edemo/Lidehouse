@@ -23,6 +23,8 @@ if (Meteor.isServer) {
 
   let Fixture;
   let parcelId;
+  let partnerId;
+  let managerInsertsOwner;
 
   describe('person', function () {
     this.timeout(150000);
@@ -40,6 +42,17 @@ if (Meteor.isServer) {
         type: 'flat',
       });
       sinon.resetHistory();     // Clearing emails sent during fixture initialization
+
+      managerInsertsOwner = function () {
+        return Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+          communityId: Fixture.demoCommunityId,
+          approved: true,
+          partnerId,
+          role: 'owner',
+          parcelId,
+          ownership: { share: new Fraction(1, 1) },
+        });
+      };
     });
 
     describe('onboarding', function () {
@@ -54,7 +67,6 @@ if (Meteor.isServer) {
 
       describe('Scenario A1: Person creates user account, submits join community request', function () {
         let membershipId;
-        let partnerId;
         let userId;
         after(function () {
           Memberships.remove(membershipId);
@@ -63,7 +75,7 @@ if (Meteor.isServer) {
         });
 
         it('[1] user creates an account for himself', function (done) {
-          userId = Accounts.createUser({ email: 'newuser@honline.hu', password: 'password' });
+          userId = Accounts.createUser({ email: 'newuser@demotest.hu', password: 'password' });
           Meteor.users.methods.update._execute({ userId }, { _id: userId, modifier: { $set: { profile: { firstName: 'Jimmy', lastName: 'Boyy' } } } });
           done();
         });
@@ -75,7 +87,7 @@ if (Meteor.isServer) {
               relation: ['member'],
               userId,
               idCard: { type: 'natural', name: 'Mr New' },
-              contact: { email: 'newuser@honline.hu' },
+              contact: { email: 'newuser@demotest.hu' },
             });*/
             Memberships.methods.insert._execute({ userId }, {   // he is not admin/manager
               communityId: Fixture.demoCommunityId,
@@ -95,7 +107,7 @@ if (Meteor.isServer) {
             relation: ['member'],
             userId,
             idCard: { type: 'natural', name: 'Mr New' },
-            contact: { email: 'newuser@honline.hu' },
+            contact: { email: 'newuser@demotest.hu' },
           });*/
           membershipId = Memberships.methods.insert._execute({ userId }, {
             communityId: Fixture.demoCommunityId,
@@ -171,7 +183,6 @@ if (Meteor.isServer) {
 
       describe('Scenario A2: Person creates user account, admin adds him to the community', function () {
         let membershipId;
-        let partnerId;
         let userId;
         after(function () {
           Memberships.remove(membershipId);
@@ -180,7 +191,7 @@ if (Meteor.isServer) {
         });
         
         it('[1] user creates an account for himself', function (done) {
-          userId = Accounts.createUser({ email: 'newuser@honline.hu', password: 'password' });
+          userId = Accounts.createUser({ email: 'newuser@demotest.hu', password: 'password' });
           done();
         });
 
@@ -212,7 +223,6 @@ if (Meteor.isServer) {
 
       describe('Scenario B1: manager links person, who will never be a user', function () {
         let membershipId;
-        let partnerId;
         after(function () {
           Memberships.remove(membershipId);
           Partners.remove(partnerId);
@@ -225,14 +235,7 @@ if (Meteor.isServer) {
             idCard: { type: 'natural', name: 'Jim', identifier: 'JIMS_ID_NUMBER' },
             contact: { phone: '+3630 3334445' },
           });
-          membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
-            communityId: Fixture.demoCommunityId,
-            approved: true,
-            partnerId,
-            role: 'owner',
-            parcelId,
-            ownership: { share: new Fraction(1, 1) },
-          });
+          membershipId = managerInsertsOwner();
 
           const membership = Memberships.findOne(membershipId);
           chai.assert.equal(membership.partner().id(), 'JIMS_ID_NUMBER');
@@ -250,7 +253,6 @@ if (Meteor.isServer) {
 
       describe('Scenario B2: manager links person, who is not yet a user, but will be', function () {
         let membershipId, membershipId2, membershipId3;
-        let partnerId;
         let userId, user;
         after(function () {
           Memberships.remove(membershipId);
@@ -267,7 +269,7 @@ if (Meteor.isServer) {
               relation: ['member'],
               userId: Fixture.demoUserId,
               idCard: { type: 'natural', name: 'Jim' },
-              contact: { name: 'Jimmy', email: 'jim@honline.hu' }, // mismatched contact email supplied
+              contact: { name: 'Jimmy', email: 'jim@demotest.hu' }, // mismatched contact email supplied
             });
             Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
               communityId: Fixture.demoCommunityId,
@@ -287,16 +289,9 @@ if (Meteor.isServer) {
             communityId: Fixture.demoCommunityId,
             relation: ['member'],
             idCard: { type: 'natural', name: 'Jim' },
-            contact: { email: 'jim@honline.hu' },
+            contact: { email: 'jim@demotest.hu' },
           });
-          membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
-            communityId: Fixture.demoCommunityId,
-            approved: true,
-            partnerId,
-            role: 'owner',
-            parcelId,
-            ownership: { share: new Fraction(1, 1) },
-          });
+          membershipId = managerInsertsOwner();
 
           let membership = Memberships.findOne(membershipId);
           chai.assert.isUndefined(membership.partner().userId);
@@ -416,29 +411,23 @@ if (Meteor.isServer) {
 
       describe('Scenario B3: manager links person, who is already a user', function () {
         let alreadyUserId;
+        let membershipId;
         before(function () {
-          alreadyUserId = Accounts.createUser({ email: 'alreadyuser@honline.hu', password: 'password' });
+          alreadyUserId = Accounts.createUser({ email: 'alreadyuser@demotest.hu', password: 'password' });
         });
         after(function () {
           Meteor.users.remove(alreadyUserId);
         });
 
         it('B3a: creating membership and linking in same step', function (done) {
-          const partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+          partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
             relation: ['member'],
             userId: alreadyUserId, // immediately link him
             idCard: { type: 'natural', name: 'Mr Already' },
             // no contact email
           });
-          const membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
-            communityId: Fixture.demoCommunityId,
-            approved: true,
-            partnerId,
-            role: 'owner',
-            parcelId,
-            ownership: { share: new Fraction(1, 1) },
-          });
+          membershipId = managerInsertsOwner();
 
           const membership = Memberships.findOne(membershipId);
           const alreadyUser = Meteor.users.findOne(alreadyUserId);
@@ -451,45 +440,56 @@ if (Meteor.isServer) {
         });
 
         it('B3x: cannot link partner if an other partner exists connected to user with same email', function (done) {
-          const partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+          partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
             relation: ['member'],
             idCard: { type: 'natural', name: 'New Already' },
-            contact: { email: 'alreadyuser@honline.hu' },
+            contact: { email: 'alreadyuser@demotest.hu' },
           });
-          const membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
-            communityId: Fixture.demoCommunityId,
-            approved: true,
-            partnerId,
-            role: 'owner',
-            parcelId,
-            ownership: { share: new Fraction(1, 1) },
-          });
+          membershipId = managerInsertsOwner();
           chai.assert.throws(() => {
             Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
           }, 'err_sanityCheckFailed');
 
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
-          Partners.remove({});
+          Partners.remove(partnerId);
+          Partners.remove({ userId: alreadyUserId });
+          done();
+        });
+
+        it('B3y: can link partner if partner in other community exists connected to user with same email', function (done) {
+          // insert Partner in other community
+          Partners.methods.insert._execute({ userId: Fixture.dummyUsers[3] }, {
+            communityId: Fixture.otherCommunityId,
+            relation: ['member'],
+            contact: { email: 'alreadyuser@demotest.hu' },
+            userId: alreadyUserId,
+          });
+          partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            relation: ['member'],
+            contact: { email: 'alreadyuser@demotest.hu' },
+          });
+          membershipId = managerInsertsOwner();
+          Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          const membership = Memberships.findOne(membershipId);
+          chai.assert.equal(membership.userId, alreadyUserId);
+          chai.assert.equal(membership.partner().id(), alreadyUserId);
+
+          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Partners.remove(partnerId);
           done();
         });
 
         it('B3b: creating membership and linking in two steps', function (done) {
-          const partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+          partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
             relation: ['member'],
             // no userId yet
             idCard: { type: 'natural', name: 'Mr Already' },
-            contact: { name: 'Already User', email: 'alreadyuser@honline.hu' },
+            contact: { name: 'Already User', email: 'alreadyuser@demotest.hu' },
           });
-          const membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
-            communityId: Fixture.demoCommunityId,
-            approved: true,
-            partnerId,
-            role: 'owner',
-            parcelId,
-            ownership: { share: new Fraction(1, 1) },
-          });
+          membershipId = managerInsertsOwner();
           Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
 
           const membership = Memberships.findOne(membershipId);
@@ -497,10 +497,50 @@ if (Meteor.isServer) {
           chai.assert.equal(membership.partner().id(), alreadyUserId);
           chai.assert.equal(membership.partner().primaryEmail(), alreadyUser.getPrimaryEmail());
 
+          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
           Partners.remove(partnerId);
-          Memberships.remove(membershipId);
           done();
         });
+      });
+    });
+
+    describe('general operation', function () {
+      it("unlinks user if partner's email address is changed", function (done) {
+        const userId = Accounts.createUser({ email: 'user@demotest.hu', password: 'password' });
+        const user = (Meteor.users.findOne(userId));
+        partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+          communityId: Fixture.demoCommunityId,
+          relation: ['member'],
+          idCard: { type: 'natural', name: 'Fred' },
+          contact: { email: 'user@demotest.hu' },
+        });
+        const membershipId = managerInsertsOwner();
+        Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+        let membership = Memberships.findOne(membershipId);
+        let partner = Partners.findOne(partnerId);
+        chai.assert.equal(partner.userId, userId);
+        chai.assert.equal(membership.userId, userId);
+        chai.assert.equal(membership.partner().primaryEmail(), user.getPrimaryEmail());
+
+        Partners.methods.update._execute({ userId: Fixture.demoManagerId },
+          { _id: partnerId, modifier: { $set: { 'contact.address': '1111 Somewherecity' } } });
+        membership = Memberships.findOne(membershipId);
+        partner = Partners.findOne(partnerId);
+        chai.assert.equal(membership.partnerId, partnerId);
+        chai.assert.equal(partner.userId, userId);
+        chai.assert.equal(membership.userId, userId);
+
+        Partners.methods.update._execute({ userId: Fixture.demoManagerId },
+          { _id: partnerId, modifier: { $set: { 'contact.email': 'othermail@demotest.hu' } } });
+        membership = Memberships.findOne(membershipId);
+        partner = Partners.findOne(partnerId);
+        chai.assert.equal(membership.partnerId, partnerId);
+        chai.assert.isUndefined(partner.userId);
+        chai.assert.isUndefined(membership.userId);
+
+        Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+        Partners.remove(partnerId);
+        done();
       });
     });
   });
