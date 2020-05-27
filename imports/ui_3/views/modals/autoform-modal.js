@@ -6,11 +6,12 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import { _ } from 'meteor/underscore';
 
-import { Transactions } from '/imports/api/transactions/transactions.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import './autoform-modal.html';
 
 // How to instantiate an Autoform_modal window: Modal.show('Autoform_modal', afOptions)
@@ -37,7 +38,8 @@ Template.Autoform_modal.helpers({
     if (this.title) return this.title;
     const id = afId2details(this.id);
     if (_.contains(Transactions.categoryValues, id.object)) {
-      const txdef = ModalStack.getVar('txdef');
+      const defId = Template.instance().data.doc.defId;
+      const txdef = Txdefs.findOne(defId);
       id.object = txdef.name;
     }
     if (id.action === 'statusChange') {

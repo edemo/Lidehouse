@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
@@ -89,6 +90,14 @@ Txdefs.helpers({
   subscribe() {
     //??
   },
+  correspondingBillDef() {
+    debugAssert(this.category === 'payment');
+    return Txdefs.findOne({ communityId: this.communityId, category: 'bill', 'data.relation': this.data.relation });
+  },
+  correspondingPaymentDef() {
+    debugAssert(this.category === 'bill');
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.data.relation });
+  },
 });
 
 Txdefs.attachSchema(Txdefs.schema);
@@ -107,9 +116,10 @@ export const chooseConteerAccount = function (flipSide = false) {
   return {
     options() {
       const communityId = Session.get('activeCommunityId');
-      let txdef = ModalStack.getVar('txdef');
-      if (!txdef) return [];
-      txdef = Txdefs._transform(txdef); // in the Session they loose their functions
+      const formId = ModalStack.active().id;
+      const defId = AutoForm.getFieldValue('defId', formId);
+      if (!defId) return [];
+      const txdef = Txdefs.findOne(defId);
       let side = txdef.conteerSide();
       if (flipSide) side = Transactions.oppositeSide(side);
       const codes = txdef[side];

@@ -15,7 +15,7 @@ import './payment-edit.html';
 
 Template.Payment_edit.viewmodel({
   partnerRelation() {
-    return ModalStack.getVar('txdef').data.relation;
+    return this.templateInstance.data.relation;
   },
   allocatedAmount() {
     let allocated = 0;
@@ -31,9 +31,9 @@ Template.Payment_edit.viewmodel({
 });
 
 Template.Payment_edit.events({
-  'click .js-new'(event, instance) {
-    const paymentDef = ModalStack.getVar('txdef');
-    const billDef = Txdefs.findOne({ communityId: paymentDef.communityId, category: 'bill', 'data.relation': paymentDef.data.relation });
+  'click .js-new[data-entity="bill"]'(event, instance) {
+    const paymentDef = instance.data.doc.txdef();
+    const billDef = paymentDef.correspondingBillDef();
     const doc = {
       relation: AutoForm.getFieldValue('relation'),
       partnerId: AutoForm.getFieldValue('partnerId'),

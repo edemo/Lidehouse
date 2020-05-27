@@ -81,22 +81,8 @@ StatementEntries.actions = {
     subActions: !options.txdef && Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
       .map(txdef => StatementEntries.actions.reconcile({ txdef }, doc, user)),
     run() {
-      const insertTx = {
-        // triggers some 'SimpleSchema.clean: filtered out value' because we dont't switch on category
-        amount: Math.abs(doc.amount),  // payment
-        lines: [{ title: doc.note, quantity: 1, unitPrice: Math.abs(doc.amount) }],  // receipt
-        partnerName: doc.name, // receipt
-        valueDate: doc.valueDate,
-        issueDate: doc.valueDate, // bill 
-        deliveryDate: doc.valueDate, // bill
-        dueDate: doc.valueDate, // bill
-        payAccount: doc.account,  // receipt, payment
-        fromAccount: doc.account,  // transfer
-        toAccount: doc.account,  // transfer
-      };
       ModalStack.setVar('txdef', options.txdef);
       ModalStack.setVar('statementEntry', doc);
-      ModalStack.setVar('insertTx', insertTx);
       Modal.show('Autoform_modal', {
         title: `${__('Reconciliation')} >> ${__(options.txdef.name)}`,
         id: 'af.statementEntry.reconcile',

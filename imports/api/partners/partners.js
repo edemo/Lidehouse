@@ -232,8 +232,7 @@ export const choosePartner = {
   options() {
     const communityId = Session.get('activeCommunityId');
     const community = Communities.findOne(communityId);
-    const txdef = ModalStack.getVar('txdef');
-    const relation = (txdef && txdef.data.relation) || Session.get('activePartnerRelation');
+    const relation = AutoForm.getFieldValue('relation') || Session.get('activePartnerRelation');
     const partners = Partners.find({ communityId, relation });
     const options = partners.map(function option(p) {
       return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };

@@ -24,17 +24,17 @@ if (Meteor.isClient) {
   ModalStack = {
     push(dataId) {
       const modalStack = Session.get('modalStack');
-      console.log('before push:', modalStack);
+      // console.log('before push:', modalStack);
       modalStack.push({ id: dataId, result: {}, context: {} });
-      console.log('after push:', modalStack);
+      // console.log('after push:', modalStack);
       Session.set('modalStack', modalStack);
     },
     pop(dataId) {
       const modalStack = Session.get('modalStack');
-      console.log('before pop:', modalStack);
+      // console.log('before pop:', modalStack);
       const topModal = modalStack.pop();
       debugAssert((!topModal.id && !dataId) || topModal.id === dataId);
-      console.log('after pop:', modalStack);
+      // console.log('after pop:', modalStack);
       Session.set('modalStack', modalStack);
       if (modalStack.length > 1) $('body').addClass('modal-open');
       else modalStack[0] = { result: {}, context: {} }; // clean context up after last modal
@@ -56,24 +56,24 @@ if (Meteor.isClient) {
     },
     readResult(ownId, afId) {
       const modalStack = Session.get('modalStack');
-      console.log('before read', modalStack);
+      // console.log('before read', modalStack);
       let ownModal = {};
       ownModal = _.find(modalStack, modal => (modal.id === ownId));
-      console.log('ownModal:', ownModal);
-      console.log('returns:', ownModal?.result[afId]);
+      // console.log('ownModal:', ownModal);
+      // console.log('returns:', ownModal?.result[afId]);
       return ownModal?.result[afId];
     },
     setVar(key, value) { // Should not call this within an autorun - would cause infinite loop
       const modalStack = Session.get('modalStack');
-      console.log('before set', modalStack);
-      console.log('set value', value);
+      // console.log('before set', modalStack);
+      // console.log('set value', value);
       _.last(modalStack).context[key] = value;
-      console.log('after set', modalStack);
+      // console.log('after set', modalStack);
       Session.set('modalStack', modalStack);
     },
     getVar(key) {
       const modalStack = Session.get('modalStack');
-      console.log('before get', modalStack);
+      // console.log('before get', modalStack);
       for (let i = modalStack.length - 1; i >= 0; i--) {
         const value = modalStack[i].context[key];
         if (value) return value;

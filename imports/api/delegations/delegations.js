@@ -25,8 +25,7 @@ Delegations.scopeValues = ['community', 'agenda', 'topic'];
 const chooseScopeObject = {
   options() {
     const user = Meteor.user();
-    const scope = AutoForm.getFieldValue('scope', 'af.delegation.insert')
-              || AutoForm.getFieldValue('scope', 'af.delegation.update');
+    const scope = AutoForm.getFieldValue('scope');
     if (!scope) return [{ label: __('schemaDelegations.scopeObjectId.placeholder'), value: 'none' }];
     let scopeSet;
     if (scope === 'community') scopeSet = user.communities();

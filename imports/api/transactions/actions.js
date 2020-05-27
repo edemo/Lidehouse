@@ -15,11 +15,10 @@ import '/imports/ui_3/views/components/transaction-view.js';
 import './entities.js';
 import './methods.js';
 
-function fillMissingOptions(options) {
+function fillMissingOptions(options, doc) {
   const mcTxdef = ModalStack.getVar('txdef');
   if (mcTxdef && !options.txdef) options.txdef = mcTxdef; // This happens when new tx action is called from within statementEntry match action
-    // TODO: Refactor. - entity data may come from so many places its confusing (options.entity, options.txdef, modalContext.txdef)
-  if (typeof options.entity === 'string') options.entity = Transactions.entities[options.txdef.category];
+  if (typeof options.entity === 'string') options.entity = Transactions.entities[options.entity];
   if (options.txdef && !options.entity) options.entity = Transactions.entities[options.txdef.category];
   debugAssert(options.entity && options.txdef, 'Either entity or txdef needs to come in the options');
 }
@@ -31,10 +30,31 @@ Transactions.actions = {
     visible: user.hasPermission('transactions.insert', doc),
     run() {
       fillMissingOptions(options);
-      ModalStack.setVar('txdef', options.txdef);
       const entity = options.entity;
-      const insertTx = ModalStack.getVar('insertTx');
-      doc = _.extend(defaultNewDoc(), insertTx, doc);
+      doc = _.extend(defaultNewDoc(), doc);
+      doc.category = entity.name;
+      doc.defId = options.txdef._id;
+      _.each(options.txdef.data, (value, key) => doc[key] = value); // set doc.relation, etc
+      let statementEntry = ModalStack.getVar('statementEntry');
+      if (statementEntry) {
+        // statementEntry = StatementEntries._transform(statementEntry);
+        _.deepExtend(doc, {
+          // triggers some 'SimpleSchema.clean: filtered out value' because we dont't switch on category
+          amount: Math.abs(statementEntry.amount), // payment
+          lines: [{ title: statementEntry.note, quantity: 1, unitPrice: Math.abs(statementEntry.amount) }], // receipt
+          partnerName: statementEntry.name, // receipt
+          valueDate: statementEntry.valueDate,
+          issueDate: statementEntry.valueDate, // bill
+          deliveryDate: statementEntry.valueDate, // bill
+          dueDate: statementEntry.valueDate, // bill
+          payAccount: statementEntry.account, // receipt, payment
+          fromAccount: statementEntry.account, // transfer
+          toAccount: statementEntry.account, // transfer
+        });
+      }
+      console.log("doc:", doc);
+      doc = Transactions._transform(doc);
+
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -65,7 +85,6 @@ Transactions.actions = {
     visible: doc && (user.hasPermission('transactions.inCommunity', doc) || getActivePartnerId() === doc.partnerId),
     run() {
       const entity = Transactions.entities[doc.entityName()];
-      ModalStack.setVar('txdef', doc.txdef());
       Modal.show('Autoform_modal', {
         body: entity.viewForm,
         bodyContext: { doc },
@@ -88,7 +107,6 @@ Transactions.actions = {
       && user.hasPermission('transactions.update', doc),
     run() {
       const entity = Transactions.entities[doc.entityName()];
-      ModalStack.setVar('txdef', doc.txdef());
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -164,9 +182,8 @@ Transactions.actions = {
     run() {
       ModalStack.setVar('billId', doc._id);
       const txdef = Txdefs.findOne({ communityId: doc.communityId, category: 'payment', 'data.relation': doc.relation });
-      ModalStack.setVar('txdef', txdef);
-      const insertOptions = _.extend({}, options, { entity: Transactions.entities.payment });
-      const insertTx = {
+      const paymentOptions = _.extend({}, options, { entity: Transactions.entities.payment, txdef });
+      const paymentTx = {
         category: 'payment',
         defId: txdef._id,
         valueDate: new Date(),
@@ -178,7 +195,8 @@ Transactions.actions = {
         amount: doc.amount,
         bills: [{ id: doc._id, amount: doc.amount }],
       };
-      Transactions.actions.new(insertOptions, insertTx).run();
+//      const paymentDoc = Transactions._transform(paymentTx);
+      Transactions.actions.new(paymentOptions, paymentTx).run();
     },
   }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
@@ -217,9 +235,6 @@ Transactions.categoryValues.forEach(category => {
     },
     formToDoc(doc) {
       doc.category = category;
-      const txdef = ModalStack.getVar('txdef');
-      doc.defId = txdef._id;
-      _.each(txdef.data, (value, key) => doc[key] = value);
       if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
       } else if (category === 'payment') {

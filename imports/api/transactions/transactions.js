@@ -40,10 +40,10 @@ Transactions.entrySchema = new SimpleSchema([
 
 Transactions.coreSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  category: { type: String, allowedValues: Transactions.categoryValues, autoform: { omit: true } },
+  category: { type: String, allowedValues: Transactions.categoryValues, autoform: { type: 'hidden' } },
   valueDate: { type: Date },
   amount: { type: Number, decimal: true },
-  defId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  defId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
 //  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
 //  year: { type: Number, optional: true, autoform: { omit: true },
@@ -54,13 +54,13 @@ Transactions.coreSchema = {
 //  },
   status: { type: String, defaultValue: 'draft', allowedValues: ['draft', 'posted', 'void'], autoform: { omit: true } },
   postedAt: { type: Date, optional: true, autoform: { omit: true } },
-  seId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  seId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
 };
 
 Transactions.partnerSchema = new SimpleSchema({
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
+  relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
-  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract }, // ?? overriding LocationTags
 });
 

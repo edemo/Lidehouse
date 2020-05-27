@@ -14,10 +14,10 @@ import './bill-edit.html';
 
 Template.Bill_edit.helpers({
   partnerRelation() {
-    return ModalStack.getVar('txdef').data.relation;
+    return this.doc.relation;
   },
   isBill() {
-    return ModalStack.getVar('txdef').category === 'bill';
+    return this.doc.category === 'bill';
   },
   defaultDate() {
     return Clock.currentTime();

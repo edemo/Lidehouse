@@ -25,7 +25,7 @@ export const Payments = {};
 export const chooseBillOfPartner = {
   options() {
     const communityId = Session.get('activeCommunityId');
-    const relation = ModalStack.getVar('txdef').data.relation;
+    const relation = AutoForm.getFieldValue('relation');
     const partnerId = AutoForm.getFieldValue('partnerId');
 //    const amount = AutoForm.getFieldValue('amount');
 //    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
