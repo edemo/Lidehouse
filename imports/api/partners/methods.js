@@ -2,9 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import rusdiff from 'rus-diff';
 
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { isFieldDeleted } from '/imports/api/utils.js';
 import { checkNoOutstanding } from '/imports/api/behaviours/accounting-location.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { sendOutstandingsEmail } from '/imports/email/outstandings-send.js';
@@ -15,12 +15,15 @@ import { Partners } from './partners.js';
 
 
 export function userUnlinkNeeded(currentDoc, modifier) {
-  const newEmail = modifier.$set?.['contact.email'];
   if (currentDoc.userId) {
-    if (newEmail && newEmail !== currentDoc.contact?.email) {
+    const newDoc = rusdiff.clone(currentDoc);
+    rusdiff.apply(newDoc, modifier);
+    const oldEmail = currentDoc.contact?.email;
+    const newEmail = newDoc.contact?.email;
+    if (newEmail && newEmail !== oldEmail) {
       const currentUser = Meteor.users.findOne(currentDoc.userId);
       return !currentUser.hasThisEmail(newEmail);
-    } else if (isFieldDeleted(currentDoc, modifier, 'contact.email')) {
+    } else if (!newEmail && oldEmail) {
       return true;
     }
   }
