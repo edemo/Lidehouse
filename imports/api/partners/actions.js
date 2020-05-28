@@ -6,6 +6,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
@@ -104,6 +105,10 @@ Partners.actions = {
       });
     },
   }),
+};
+
+Partners.batchActions = {
+  delete: new BatchAction(Partners.actions.delete, Partners.methods.batch.remove),
 };
 
 //-------------------------------------------------------

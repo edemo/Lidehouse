@@ -91,7 +91,7 @@ Comments.actions = {
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',
-    visible: doc && user.hasPermission(`${doc.entityName()}.remove`, doc),
+    visible: doc?.entityName && user.hasPermission(`${doc.entityName()}.remove`, doc),
     run() {
       Modal.confirmAndCall(Comments.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,

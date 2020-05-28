@@ -12,6 +12,7 @@ import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
@@ -194,7 +195,7 @@ Topics.actions = {
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',
-    visible: user.hasPermission(`${doc.entityName()}.remove`, doc),
+    visible: doc?.entityName && user.hasPermission(`${doc.entityName()}.remove`, doc),
     run() {
       Modal.confirmAndCall(Topics.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,
@@ -202,6 +203,10 @@ Topics.actions = {
       });
     },
   }),
+};
+
+Topics.batchActions = {
+  delete: new BatchAction(Topics.actions.delete, Topics.methods.batch.remove),
 };
 
 //-------------------------------------------------------

@@ -237,6 +237,7 @@ Template.Worksheets.viewmodel({
         searching: false,
         paging: false,
         ...DatatablesExportButtons,
+        ...DatatablesSelectButtons(Topics),
       };
     };
   },

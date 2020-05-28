@@ -11,7 +11,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Fraction } from 'fractional';
 
-import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { __ } from '/imports/localization/i18n.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { leaderRoles, nonLeaderRoles, officerRoles, rolesPriorities } from '/imports/api/permissions/roles.js';
@@ -144,6 +144,7 @@ Template.Parcels_box.viewmodel({
             lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
             pageLength: 25,
             ...DatatablesExportButtons,
+            ...DatatablesSelectButtons(Parcels),
           };
         };
       },
