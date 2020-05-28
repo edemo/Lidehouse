@@ -644,7 +644,7 @@
       "label": "Category"
     },
     "defId": {
-      "label": "Type"
+      "label": "Transaction type"
     },
     "status": {
       "label": "Status",

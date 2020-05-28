@@ -1,6 +1,11 @@
 <template name="Payment_edit">
     <div class="row">
-            {{> afQuickField name="communityId" type="hidden"}} <!-- hidden, needed for autoform doc data -->
+        <!-- hidden, needed for autoform doc data -->
+        {{> afQuickField name="communityId" type="hidden"}}
+        {{> afQuickField name="category" type="hidden"}}
+        {{> afQuickField name="defId" type="hidden"}}
+        {{> afQuickField name="relation" type="hidden"}}
+        <!-- hidden, needed for autoform doc data -->
         <div class="col-sm-12 col-md-6 pull-right">
             {{#if doc.serialId}}
                 <h4>{{_ doc.txdef.name}}:

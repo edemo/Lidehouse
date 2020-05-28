@@ -52,7 +52,6 @@ Transactions.actions = {
           toAccount: statementEntry.account, // transfer
         });
       }
-      console.log("doc:", doc);
       doc = Transactions._transform(doc);
 
       Modal.show('Autoform_modal', {
@@ -60,7 +59,7 @@ Transactions.actions = {
         bodyContext: { doc },
         // --- --- --- ---
         id: `af.${entity.name}.insert`,
-        schema: Transactions.simpleSchema({ category: entity.name }),
+        collection: Transactions.simpleSchema(doc),
         fields: entity.fields,
         omitFields: entity.omitFields && entity.omitFields(),
         doc,
@@ -234,7 +233,7 @@ Transactions.categoryValues.forEach(category => {
       return doc;
     },
     formToDoc(doc) {
-      doc.category = category;
+      console.log("doc in af:", doc);
       if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
       } else if (category === 'payment') {
