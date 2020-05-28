@@ -146,19 +146,20 @@ if (Meteor.isServer) {
         header = { communityId, userId, category: 'ticket', status: 'reported', ticket: { type: 'issue', urgency: 'normal' } };
       });
 
-      it('when inerting multiple, and one has error, the rest is inserted', function (done) {
-        topic1 = { ...header, serial: 1, title: 'First', text: '-' };
-        topic2 = { communityId, category: 'INVALID', title: 'Second', text: '-' };
-        topic3 = { ...header, serial: 3, title: 'Third', text: '-' };
+      it('when upserting multiple, and one has error, the rest is upserted', function (done) {
+        topic1 = { ...header, serial: 1, title: 'FIRST', text: '-' };
+        topic2 = { communityId, category: 'INVALID', title: 'SECOND', text: '-' };
+        topic3 = { ...header, serial: 3, title: 'THIRD', text: '-' };
         const params = { args: [topic1, topic2, topic3] };
 
-//        const ret = Topics.methods.batch.insert._execute({ userId }, params);
-        const ret = Topics.methods.batch.upsert._execute({ userId }, params);
-        chai.assert.equal(ret.errors.length, 1);
-        chai.assert.equal(ret.results.length, 2);
-        doc1 = Topics.findOne({ title: 'First' });
-        doc2 = Topics.findOne({ title: 'Second' });
-        doc3 = Topics.findOne({ title: 'Third' });
+        chai.assert.throws(() => {
+          const ret = Topics.methods.batch.upsert._execute({ userId }, params);
+        }, 'INVALID is not an allowed value [validation-error]');
+//        chai.assert.equal(ret.errors.length, 1);
+//        chai.assert.equal(ret.results.length, 2);
+        doc1 = Topics.findOne({ title: 'FIRST' });
+        doc2 = Topics.findOne({ title: 'SECOND' });
+        doc3 = Topics.findOne({ title: 'THIRD' });
         chai.assert.isDefined(doc1);
         chai.assert.isUndefined(doc2);
         chai.assert.isDefined(doc3);
