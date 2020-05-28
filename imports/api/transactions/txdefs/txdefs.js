@@ -116,8 +116,7 @@ export const chooseConteerAccount = function (flipSide = false) {
   return {
     options() {
       const communityId = Session.get('activeCommunityId');
-      const formId = ModalStack.active().id;
-      const defId = AutoForm.getFieldValue('defId', formId);
+      const defId = AutoForm.getFieldValue('defId');
       if (!defId) return [];
       const txdef = Txdefs.findOne(defId);
       let side = txdef.conteerSide();
