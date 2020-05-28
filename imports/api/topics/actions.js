@@ -11,7 +11,7 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { handleError } from '/imports/ui_3/lib/errors.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Topics } from '/imports/api/topics/topics.js';

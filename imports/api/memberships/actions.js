@@ -7,7 +7,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Memberships } from './memberships';

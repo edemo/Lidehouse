@@ -6,7 +6,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { __ } from '/imports/localization/i18n.js';
-import { displayMessage, displayError, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
+import { displayError, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/comments/methods.js';
 import '/imports/api/comments/actions.js';

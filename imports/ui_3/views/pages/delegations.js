@@ -6,7 +6,6 @@ import { Template } from 'meteor/templating';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';
-import { onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import '/imports/api/delegations/actions.js';

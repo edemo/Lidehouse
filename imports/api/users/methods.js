@@ -80,7 +80,7 @@ export const updateMyLastSeen = new ValidatedMethod({
 });
  
 if (Meteor.isClient) {
-  import { displayMessage, handleError } from '/imports/ui_3/lib/errors.js';
+  import { handleError } from '/imports/ui_3/lib/errors.js';
 
   Meteor.users.helpers({
     hasNowSeen(topicId) {
