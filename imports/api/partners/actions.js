@@ -18,6 +18,7 @@ import './methods.js';
 Partners.actions = {
   new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
+    label: `${__('new') + ' ' + __('partner')}`,
     icon: 'fa fa-plus',
     color: 'primary',
     visible: user.hasPermission('partners.insert', doc),

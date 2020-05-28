@@ -9,7 +9,8 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
-import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
+import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -71,6 +72,8 @@ Template.Accounting_setup.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       paging: false,
       info: false,
+      ...DatatablesExportButtons,
+      ...DatatablesSelectButtons(Accounts),
     });
   },
   localizersTableDataFn(tab) {
@@ -89,6 +92,8 @@ Template.Accounting_setup.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       paging: false,
       info: false,
+      ...DatatablesExportButtons,
+      ...DatatablesSelectButtons(Parcels),
     });
   },
   optionsOf(accountCode) {

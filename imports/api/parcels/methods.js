@@ -8,9 +8,9 @@ import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/i
 import { checkNoOutstanding } from '/imports/api/behaviours/accounting-location.js';
 import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from './parcels.js';
-import { Memberships } from '../memberships/memberships.js';
-import { crudBatchOps } from '../batch-method.js';
 
 function checkCommunityParcelsSanity(communityId, parcels) {
   if (Meteor.isClient) return;
