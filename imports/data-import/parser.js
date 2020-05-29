@@ -87,7 +87,7 @@ export class Parser {
               }
             }
           }
-          default: return cellValue;
+          default: return cellValue.toString();
         }
       }
       case 'Object':
