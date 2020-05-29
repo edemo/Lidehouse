@@ -56,7 +56,7 @@ Parcels.baseSchema = new SimpleSchema({
 });
 
 Parcels.physicalSchema = new SimpleSchema({
-  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues, 'schemaParcels.type.') },
+  type: { type: String, max: 25, optional: true },
   building: { type: String, max: 25, optional: true },
   floor: { type: String, max: 25, optional: true },
   door: { type: String, max: 25, optional: true },
@@ -159,7 +159,7 @@ Parcels.helpers({
     return this.payerMembership().partner();
   },
   display() {
-    return `${this.ref || '?'} (${this.location()}) ${__('schemaParcels.type.' + this.type)}`;
+    return `${this.ref || '?'} (${this.location()}) ${this.type}`;
   },
   displayName() {
     return this.location() || __(this.ref);

@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Migrations } from 'meteor/percolate:migrations';
 import { moment } from 'meteor/momentjs:moment';
+import { TAPi18n } from 'meteor/tap:i18n';
 
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -23,6 +24,8 @@ import { StatementEntries } from '/imports/api/transactions/statement-entries/st
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
+
 import '/imports/api/transactions/accounts/template.js';
 
 const keepOrderSort = { sort: { updatedAt: 1 } };   // use this to keep updatedAt order intact
@@ -441,6 +444,25 @@ Migrations.add({
       const lastSeens = user.lastSeens;
       Notifications.insert({ userId: user._id, lastSeens }, { validate: false });
       Meteor.users.update(user._id, { $unset: { lastSeens: '' } }, { validate: false });
+    });
+  },
+});
+
+Migrations.add({
+  version: 25,
+  name: 'Parcel.type and Membership.rank becomes simple text field',
+  up() {
+    Parcels.find({ type: { $exists: true } }).forEach((p) => {
+      const language = p.community().settings.language;
+      const type = TAPi18n.__(`schemaParcels.type.${p.type}`, {}, language);
+      Parcels.update(p._id, { $set: { type } }, { selector: { category: '@property' } }, { validate: false });
+    });
+    officerRoles.forEach(role => {
+      Memberships.find({ role, rank: { $exists: true } }).forEach((m) => {
+        const language = m.community().settings.language;
+        const rank = TAPi18n.__(`schemaMemberships.rank.${m.rank}`, {}, language);
+        Memberships.update(m._id, { $set: { rank } }, { selector: { role } }, { validate: false });
+      });
     });
   },
 });

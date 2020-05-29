@@ -71,7 +71,7 @@ Benefactorships.schema = new SimpleSchema({
 
 const Officerships = {};
 Officerships.schema = new SimpleSchema({
-  rank: { type: String, optional: true, allowedValues: rankValues, autoform: autoformOptions(rankValues, 'schemaMemberships.rank.') },
+  rank: { type: String, max: 25, optional: true },
 });
 
 const Delegateships = {};
