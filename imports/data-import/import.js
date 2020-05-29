@@ -43,8 +43,9 @@ const launchNextPhase = function launchNextPhase(instance) {
     Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
     return;
   }
+  const collection = phase.collection();
   Modal.show('Modal', {
-    title: 'importing data',
+    title: __('importing data', __(collection._name)),
     body: 'Import_preview',
     bodyContext: instance.data,
     size: 'lg',
@@ -55,7 +56,6 @@ const launchNextPhase = function launchNextPhase(instance) {
       const jsons = XLSX.utils.sheet_to_json(viewmodel.getImportableSheet(), { blankRows: false }).map(flatten.unflatten);
       let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
 
-      const collection = phase.collection();
       console.log(`Importing into ${collection._name}`);
 //      if (options && options.multipleDocsPerLine) docs = singlify(docs);
       const translator = phase.translator();
@@ -118,13 +118,13 @@ Template.Import_upload.events({
 
 Template.Import_upload.events({
   'click button[name=download]'(event, instance) {
-    const selected = instance.viewmodel.selected();
+    const selectedColumns = instance.viewmodel.selectedColumns();
     const columns = instance.parent().data.columns;
     const wb = XLSX.utils.book_new();
     const ws_data = [[], []]; // eslint-disable-line camelcase
     columns.forEach((colDef) => {
       if (!colDef.key) return;
-      if (selected.length && !_.contains(selected, colDef.name)) return;
+      if (selectedColumns.length && !_.contains(selectedColumns, colDef.name)) return;
       ws_data[0].push(colDef.name);
       ws_data[1].push(colDef.example);
     });
@@ -171,7 +171,7 @@ export function importCollectionFromFile(mainCollection, options = {}) {
 
 
   Modal.show('Modal', {
-    title: 'importing data',
+    title: __('importing data', __(mainCollection._name)),
     body: 'Import_upload',
     bodyContext: { collection: mainCollection, options, conductor, columns },
     size: 'lg',

@@ -58,129 +58,191 @@ export class ImportConductor {
 ImportConductor.Instance = new ImportConductor();
 ImportConductor.from = obj => { Object.setPrototypeOf(obj, ImportConductor.Instance); return obj; };
 
-function _getConductor(collection, options) {
-  switch (collection._name) {
-    case 'parcels': {
-      options.format = 'ehaz';
-      if (options.format === 'default') {
-        return {
-          collectionName: 'parcels',
-          format: options.format,
-          phases: [{
-            collectionName: 'parcels',
-            schemaSelector: { category: '@property' },
-            options,
-            dictionary: {
-              communityId: { default: getActiveCommunityId() },
-              category: { default: '@property' },
-            },
-          }, {
-            collectionName: 'parcelships',
-            schemaSelector: undefined,
-            options,
-            dictionary: {
-              communityId: { default: getActiveCommunityId() },
-            },
-          }, {
-            collectionName: 'partners',
-            schemaSelector: undefined,
-            options,
-            dictionary: {
-              communityId: { default: getActiveCommunityId() },
-              relation: { default: ['member'] },
-              idCard: { type: { default: 'natural' } },
-            },
-          }, {
-            collectionName: 'memberships',
-            schemaSelector: { role: 'owner' },
-            options,
-            dictionary: {
-              communityId: { default: getActiveCommunityId() },
-              role: { default: 'owner' },
-  //            parcelId: { formula: 'conductor.phases[1].docs[index].parcelId' },
-  //            partnerId: { formula: 'conductor.phases[2].docs[index].idCard.name' },
-            },
-          }],
-        };
-      } else if (options.format === 'ehaz') {
-        return {
-          collectionName: 'parcels',
-          format: options.format,
-          phases: [{
-            collectionName: 'parcels',
-            schemaSelector: { category: '@property' },
-            options,
-            dictionary: {
-              communityId: { default: getActiveCommunityId() },
-              category: { default: '@property' },
-              type: {
-                flat: 'L',
-                parking: 'P',
-                storage: 'T',
-                cellar: 'Q',
-                attic: '?',
-                shop: 'U',
-                office: 'I',
-                other: '-',
-              },
-            },
-          }, {
-            collectionName: 'partners',
-            options,
-            dictionary: {
-              communityId: { default: getActiveCommunityId() },
-              relation: { default: ['member'] },
-              idCard: {
-                type: {
-                  natural: 'T',
-                  legal: 'G',
-                  other: 'E',
-                },
-              },
-            },
-          }, {
-            collectionName: 'partners',
-            options,
-            dictionary: {
-              communityId: { default: getActiveCommunityId() },
-              relation: { default: ['member'] },
-            },
-          }, {
-            collectionName: 'partners',
-            options,
-            dictionary: {
-              communityId: { default: getActiveCommunityId() },
-              relation: { default: ['member'] },
-            },
-          }, {
-            collectionName: 'partners',
-            options,
-            dictionary: {
-              communityId: { default: getActiveCommunityId() },
-              relation: { default: ['member'] },
-            },
-          }, {
-            collectionName: 'memberships',
-            schemaSelector: { role: 'owner' },
-            options,
-            dictionary: {
-              communityId: { default: getActiveCommunityId() },
-              role: { default: 'owner' },
-  //            parcelId: { formula: 'conductor.phases[1].docs[index].parcelId' },
-  //            partnerId: { formula: 'conductor.phases[2].docs[index].idCard.name' },
-            },
-          }],
-        };
-      } else { debugAssert(false); return []; }
-    }
-    case 'transactions': {
-      debugAssert(options.format === 'default');
+export const Conductors = {
+  parcels: {
+    default(options) {
       return {
-        collectionName: 'transactions',
-        format: options.format,
+        collectionName: 'parcels',
+        format: 'default',
+        phases: [{
+          collectionName: 'parcels',
+          schemaSelector: { category: '@property' },
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            category: { default: '@property' },
+          },
+        }],
+      };
+    },
+    marina(options) {
+      return {
+        collectionName: 'parcels',
+        format: 'marina',
+        phases: [{
+          collectionName: 'parcels',
+          schemaSelector: { category: '@property' },
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            category: { default: '@property' },
+          },
+        }, {
+          collectionName: 'parcelships',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+          },
+        }, {
+          collectionName: 'partners',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            relation: { default: ['member'] },
+            idCard: { type: { default: 'natural' } },
+          },
+        }, {
+          collectionName: 'memberships',
+          schemaSelector: { role: 'owner' },
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            role: { default: 'owner' },
+          },
+        }],
+      };
+    },
+    ehaz(options) {
+      return {
+        collectionName: 'parcels',
+        format: 'ehaz',
+        phases: [{
+          collectionName: 'parcels',
+          schemaSelector: { category: '@property' },
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            category: { default: '@property' },
+            type: {
+              flat: 'L',
+              parking: 'P',
+              storage: 'T',
+              cellar: 'Q',
+              attic: '?',
+              shop: 'U',
+              office: 'I',
+              other: '-',
+            },
+          },
+        }, {
+          collectionName: 'partners',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            relation: { default: ['member'] },
+            idCard: {
+              type: {
+                natural: 'T',
+                legal: 'G',
+                other: 'E',
+              },
+            },
+          },
+        }, {
+          collectionName: 'partners',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            relation: { default: ['member'] },
+          },
+        }, {
+          collectionName: 'partners',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            relation: { default: ['member'] },
+          },
+        }, {
+          collectionName: 'partners',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            relation: { default: ['member'] },
+          },
+        }, {
+          collectionName: 'memberships',
+          schemaSelector: { role: 'owner' },
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            role: { default: 'owner' },
+//            parcelId: { formula: 'conductor.phases[1].docs[index].parcelId' },
+//            partnerId: { formula: 'conductor.phases[2].docs[index].idCard.name' },
+          },
+        }],
+      };
+    },
+  },
+  memberships: {
+    default(options) {
+      return {
+        collectionName: 'memberships',
+        format: 'default',
+        phases: [{
+          collectionName: 'memberships',
+          schemaSelector: { role: 'owner' },
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            role: { default: 'owner' },
+          },
+        }, {
+          collectionName: 'parcelships',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+          },
+        }],
+      };
+    },
+  },
+  partners: {
+    default(options) {
+      return {
+        collectionName: 'partners',
+        format: 'default',
         phases: [{
           collectionName: 'partners',
-          schemaSelector: undefined,
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+          },
+        }],
+      };
+    },
+  },
+  meters: {
+    default(options) {
+      return {
+        collectionName: 'meters',
+        format: 'default',
+        phases: [{
+          collectionName: 'meters',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+          },
+        }],
+      };
+    },
+  },
+  transactions: {
+    marina(options) {
+      return {
+        collectionName: 'transactions',
+        format: 'marina',
+        phases: [{
+          collectionName: 'partners',
           options,
           dictionary: {
             communityId: { default: getActiveCommunityId() },
@@ -231,8 +293,10 @@ function _getConductor(collection, options) {
           },
         }],
       };
-    }
-    case 'statementEntries': {
+    },
+  },
+  statementEntries: {
+    default(options) {
       const account = Accounts.findOne({ communityId: options.communityId, code: options.account });
       const format = account.bank || 'cash';
       const dictionary = {
@@ -240,7 +304,7 @@ function _getConductor(collection, options) {
         account: { default: options.account },
         statementId: { default: options.source },
       };
-      switch (account.bank) {
+      switch (format) {
         case 'K&H': {
 //            productionAssert(options.account.code === Import.findAccountByNumber(doc['Könyvelési számla']).code, 'Bank account mismatch on bank statement');
           _.extend(dictionary, {
@@ -268,7 +332,7 @@ function _getConductor(collection, options) {
           });
           break;
         }
-        case undefined: {
+        case 'cash': {
           productionAssert(account.category === 'cash');
           _.extend(dictionary, {
             ref: { label: 'Sorszám' },
@@ -284,35 +348,19 @@ function _getConductor(collection, options) {
       }
       return {
         collectionName: 'statementEntries',
-        format,
+        format: 'default',
         phases: [{
           collectionName: 'statementEntries',
-          schemaSelector: undefined,
           options,
           dictionary,
         }],
       };
-    }
-    default: {
-      debugAssert(options.format === 'default');
-      return {
-        collectionName: collection._name,
-        format: options.format,
-        phases: [{
-          collectionName: collection._name,
-          schemaSelector: undefined,
-          options,
-          dictionary: {
-            communityId: { default: getActiveCommunityId() },
-          },
-        }],
-      };
-    }
-  }
-}
+    },
+  },
+};
 
 export function getConductor(collection, options) {
-  const conductorRaw = _getConductor(collection, options);
+  const conductorRaw = Conductors[collection._name]?.[options.format](options);
   const phases = conductorRaw.phases;
   phases.forEach(p => delete p.options.collection);
   const conductor = ImportConductor.from(conductorRaw);

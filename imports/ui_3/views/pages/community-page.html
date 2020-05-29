@@ -110,6 +110,7 @@
         <div class="pull-right">
             {{>Action_buttons_group collection='memberships' actions='new' size='md' options=(obj '{ "entity": ["ownership","benefactorship"] }')}}
             {{>Action_buttons_group collection='parcelships' actions='new' size='md'}}
+            {{>Action_buttons_group collection='memberships' actions='import' size='md'}}
         </div>
         <p>
             {{_ "Click person's name to see contact info"}}
@@ -153,8 +154,7 @@
         <h2>{{_ 'meters'}}</h2>
         {{#if or (currentUserHasPermission 'meters.insert' communityIdObject) (currentUserHasPermission 'parcels.details' communityIdObject)}}
         <div class="btn-group pull-right">
-            <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'meter'}}</strong></button>
-            <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
+            {{>Action_buttons_group collection='meters' actions='new,import' size='md'}}
         </div>
         {{/if}}
         <p>

@@ -234,10 +234,6 @@ Template.Occupants_box.events({
   },
 });
 
-Template.Meters_box.events({
-...(actionHandlers(Meters, 'new')),
-});
-
 Template.Parcels_box.events({
   'click .parcels .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
