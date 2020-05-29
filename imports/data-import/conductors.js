@@ -3,6 +3,7 @@ import { _ } from 'meteor/underscore';
 import { Session } from 'meteor/session';
 import { Mongo } from 'meteor/mongo';
 
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -14,6 +15,7 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Translator } from './translator.js';
+import { Parser } from './parser.js';
 import { Transformers } from './transformers.js';
 
 // Multiple collections can be imported with one import command
@@ -31,6 +33,9 @@ export class ImportPhase {
     translator.conductor = this.conductor;
     return translator;
   }
+  parser() {
+    return new Parser(this.schema());
+  }
   transformer() {
     return Transformers[this.collectionName]?.[this.options?.transformer || 'default']
       || (docs => docs.map(doc => Object.deepClone(doc)));
@@ -44,6 +49,41 @@ export class ImportConductor {
     this.phases.forEach(p => { p.conductor = this; ImportPhase.from(p); });
     this.name = `${this.collectionName}#${this.format}`;
     this.phaseIndex = -1;
+  }
+  possibleColumnsListing() {
+    const columns = [{ display: __('importColumnsInstructions') }];
+    this.phases.forEach((phase, phaseIndex) => {
+      const translator = phase.translator();
+      columns.push({ name: phaseIndex, display: `${translator.__('_')} ${__('data')}`.toUpperCase() });
+      _.each(phase.schema()._schema, (value, key) => {
+        const split = key.split('.');
+        if (_.contains(['Array', 'Object'], value.type.name)) return;
+        if (value.autoform && (value.autoform.omit || value.autoform.readonly || _.contains(['hidden'], value.autoform.type))) return;
+        if (_.contains(split, '$')) return;
+        if (_.contains(split, 'activeTime')) return;
+        if (_.contains(phase.omitFields, key)) return;
+        if (!value.label) return;
+        const name = translator.__(key);
+        const example = translator.example(key, value);
+        const display = `[${name}]${value.optional ? '' : '(*)'}: ${value.type.name} ${example}`;
+        columns.push({ key, name, example, display });
+      });
+      _.each(phase.translator().dictionary, (value, key) => {
+        if (value.depends) {
+          const i = columns.findIndex(c => c.key === key);
+          if (i >= 0) columns.splice(i, 1);
+          value.depends.forEach(name => {
+            if (columns.find(c => c.name === name)) return;
+            const display = `[${name}](*)`;
+            columns.push({ key: name, name, example: '', display });
+          });
+        }
+      });
+    });
+    return columns;
+  }
+  possibleColumns() {
+    return this.possibleColumnsListing().filter(c => c.key); // leave out the sperators, like "PARCELS DATA"
   }
   nextPhase() {
     this.phaseIndex += 1;
@@ -216,6 +256,8 @@ export const Conductors = {
           options,
           dictionary: {
             communityId: { default: getActiveCommunityId() },
+            relation: { default: ['member'] },
+            idCard: { type: { default: 'natural' } },
           },
         }],
       };
@@ -297,62 +339,73 @@ export const Conductors = {
   },
   statementEntries: {
     default(options) {
-      const account = Accounts.findOne({ communityId: options.communityId, code: options.account });
-      const format = account.bank || 'cash';
-      const dictionary = {
-        communityId: { default: getActiveCommunityId() },
-        account: { default: options.account },
-        statementId: { default: options.source },
-      };
-      switch (format) {
-        case 'K&H': {
-//            productionAssert(options.account.code === Import.findAccountByNumber(doc['Könyvelési számla']).code, 'Bank account mismatch on bank statement');
-          _.extend(dictionary, {
-            ref: { label: 'Tranzakció azonosító' },
-            refType: { label: 'Típus' },
-            valueDate: { label: 'Könyvelés dátuma' },
-            amount: { label: 'Összeg' },
-            name: { label: 'Partner elnevezése' },
-            note: { label: 'Közlemény' },
-          });
-          break;
-        }
-        case 'OTP': {
-//            productionAssert(options.account.code === Import.findAccountByNumber(doc['Könyvelési számla']).code, 'Bank account mismatch on bank statement');
-          _.extend(dictionary, {
-            ref: { label: 'Banki tranzakció azonosító' },
-            refType: { label: 'Forgalom típusa' },
-            time: { label: 'Tranzakció időpontja' },
-            valueDate: { label: 'Értéknap' },
-            amount: { label: 'Összeg' },
-            name: { label: 'Ellenoldali név' },
-            contraBAN: { label: 'Ellenoldali számlaszám' },
-            note: { label: 'Közlemény' },
-//            serial: { label: '' },
-          });
-          break;
-        }
-        case 'cash': {
-          productionAssert(account.category === 'cash');
-          _.extend(dictionary, {
-            ref: { label: 'Sorszám' },
-            refType: { depends: ['Bevétel', 'Kiadás'], formula: "(doc['Bevétel'] && 'Bevétel') || (doc['Kiadás'] && 'Kiadás')" },
-            valueDate: { label: 'Dátum' },
-            amount: { depends: ['Bevétel', 'Kiadás'], formula: "doc['Bevétel'] || (doc['Kiadás'] * -1)" },
-            name: { label: 'Név' },
-            note: { label: 'Bizonylatszám (1)' },
-          });
-          break;
-        }
-        default: productionAssert(false, `No protocol for bank ${account.bank}`);
-      }
       return {
         collectionName: 'statementEntries',
         format: 'default',
         phases: [{
           collectionName: 'statementEntries',
           options,
-          dictionary,
+          dictionary: options.dictionary,
+        }],
+      };
+    },
+    'K&H'(options) {
+      _.extend(options.dictionary, {
+        ref: { label: 'Tranzakció azonosító' },
+        refType: { label: 'Típus' },
+        valueDate: { label: 'Könyvelés dátuma' },
+        amount: { label: 'Összeg' },
+        name: { label: 'Partner elnevezése' },
+        note: { label: 'Közlemény' },
+      });
+      return {
+        collectionName: 'statementEntries',
+        format: 'K&H',
+        phases: [{
+          collectionName: 'statementEntries',
+          options,
+          dictionary: options.dictionary,
+        }],
+      };
+    },
+    'OTP'(options) {
+      _.extend(options.dictionary, {
+        ref: { label: 'Banki tranzakció azonosító' },
+        refType: { label: 'Forgalom típusa' },
+        time: { label: 'Tranzakció időpontja' },
+        valueDate: { label: 'Értéknap' },
+        amount: { label: 'Összeg' },
+        name: { label: 'Ellenoldali név' },
+        contraBAN: { label: 'Ellenoldali számlaszám' },
+        note: { label: 'Közlemény' },
+//            serial: { label: '' },
+      });
+      return {
+        collectionName: 'statementEntries',
+        format: 'OTP',
+        phases: [{
+          collectionName: 'statementEntries',
+          options,
+          dictionary: options.dictionary,
+        }],
+      };
+    },
+    'CR'(options) {
+      _.extend(options.dictionary, {
+        ref: { label: 'Sorszám' },
+        refType: { depends: ['Bevétel', 'Kiadás'], formula: "(doc['Bevétel'] && 'Bevétel') || (doc['Kiadás'] && 'Kiadás')" },
+        valueDate: { label: 'Dátum' },
+        amount: { depends: ['Bevétel', 'Kiadás'], formula: "doc['Bevétel'] || (doc['Kiadás'] * -1)" },
+        name: { label: 'Név' },
+        note: { label: 'Bizonylatszám (1)' },
+      });
+      return {
+        collectionName: 'statementEntries',
+        format: 'CR',
+        phases: [{
+          collectionName: 'statementEntries',
+          options,
+          dictionary: options.dictionary,
         }],
       };
     },

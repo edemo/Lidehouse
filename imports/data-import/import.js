@@ -8,17 +8,11 @@ import { UploadFS } from 'meteor/jalik:ufs';
 import XLSX from 'xlsx';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
-import { displayError } from '/imports/ui_3/lib/errors.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+// import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/readmore.js';
 import '/imports/ui_3/views/components/import-dialog.js';
 import { __ } from '/imports/localization/i18n.js';
-import { Settings } from '/imports/api/settings/settings.js';
-import { Translator } from './translator.js';
-import { Parser } from './parser.js';
-import { Transformers } from './transformers.js';
-import { getConductor } from './conductors.js';
 
 const rABS = true;
 
@@ -34,10 +28,10 @@ function singlify(jsons) {
   return tjsons;
 }
 
-const launchNextPhase = function launchNextPhase(instance) {
+const launchNextPhase = function launchNextPhase(vm) {
   const userId = Meteor.userId();
-  const communityId = getActiveCommunityId();
-  const conductor = instance.data.conductor;
+//  const communityId = getActiveCommunityId();
+  const conductor = vm.conductor();
   const phase = conductor.nextPhase();
   if (!phase) { // Import cycle ended - can close import dialog here
     Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
@@ -47,12 +41,12 @@ const launchNextPhase = function launchNextPhase(instance) {
   Modal.show('Modal', {
     title: __('importing data', __(collection._name)),
     body: 'Import_preview',
-    bodyContext: instance.data,
+    bodyContext: {},
     size: 'lg',
     btnOK: 'import',
     onOK() {
       const viewmodel = this;
-      if (viewmodel.savingEnabled()) viewmodel.savePhase(instance);
+      if (viewmodel.savingEnabled()) viewmodel.savePhase();
       const jsons = XLSX.utils.sheet_to_json(viewmodel.getImportableSheet(), { blankRows: false }).map(flatten.unflatten);
       let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
 
@@ -65,7 +59,7 @@ const launchNextPhase = function launchNextPhase(instance) {
         console.log(`Applying defaults to ${docs.length} docs`);
         translator.applyDefaults(docs);
       }
-      const parser = new Parser(phase.schema());
+      const parser = phase.parser();
       console.log(`Parsing ${docs.length} docs`);
       docs.forEach(doc => { parser.parse(doc); });
 
@@ -92,7 +86,7 @@ const launchNextPhase = function launchNextPhase(instance) {
         body: 'Readmore',
         bodyContext: JSON.stringify(neededOps, null, 2),
       }, () => {
-        launchNextPhase(instance);
+        launchNextPhase(viewmodel);
       });
     },
   });
@@ -107,8 +101,9 @@ Template.Import_upload.events({
         if (!rABS) data = new Uint8Array(data);
         const workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' /*, cellDates: true*/ });
         instance.viewmodel.workbook(workbook);
+        instance.viewmodel.conductor(instance.viewmodel.potentialConductor());
         Modal.hideAll();
-        launchNextPhase(instance);
+        launchNextPhase(instance.viewmodel);
       };
       if (rABS) reader.readAsBinaryString(file);
       else reader.readAsArrayBuffer(file);
@@ -119,10 +114,10 @@ Template.Import_upload.events({
 Template.Import_upload.events({
   'click button[name=download]'(event, instance) {
     const selectedColumns = instance.viewmodel.selectedColumns();
-    const columns = instance.parent().data.columns;
+    const possibleColumns = instance.viewmodel.conductor().possibleColumns();
     const wb = XLSX.utils.book_new();
     const ws_data = [[], []]; // eslint-disable-line camelcase
-    columns.forEach((colDef) => {
+    possibleColumns.forEach((colDef) => {
       if (!colDef.key) return;
       if (selectedColumns.length && !_.contains(selectedColumns, colDef.name)) return;
       ws_data[0].push(colDef.name);
@@ -131,49 +126,16 @@ Template.Import_upload.events({
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     const ws_name = __('template'); // eslint-disable-line camelcase
     XLSX.utils.book_append_sheet(wb, ws, ws_name);
-    XLSX.writeFile(wb, `honline-${__('template')}-${__(instance.parent().data.collection._name)}.xls`);
+    XLSX.writeFile(wb, `honline-${__('template')}-${__(instance.data.collection._name)}.xls`);
   },
 });
 
 
 export function importCollectionFromFile(mainCollection, options = {}) {
-  options.format = options.format || 'default';
-  const conductor = getConductor(mainCollection, options);
-  const columns = [{ display: __('importColumnsInstructions') }];
-  conductor.phases.forEach((phase, phaseIndex) => {
-    const translator = phase.translator();
-    columns.push({ name: phaseIndex, display: `${translator.__('_')} ${__('data')}`.toUpperCase() });
-    _.each(phase.schema()._schema, (value, key) => {
-      const split = key.split('.');
-      if (_.contains(['Array', 'Object'], value.type.name)) return;
-      if (value.autoform && (value.autoform.omit || value.autoform.readonly || _.contains(['hidden'], value.autoform.type))) return;
-      if (_.contains(split, '$')) return;
-      if (_.contains(split, 'activeTime')) return;
-      if (_.contains(phase.omitFields, key)) return;
-      if (!value.label) return;
-      const name = translator.__(key);
-      const example = translator.example(key, value);
-      const display = `[${name}]${value.optional ? '' : '(*)'}: ${value.type.name} ${example}`;
-      columns.push({ key, name, example, display });
-    });
-    _.each(phase.translator().dictionary, (value, key) => {
-      if (value.depends) {
-        const i = columns.findIndex(c => c.key === key);
-        if (i >= 0) columns.splice(i, 1);
-        value.depends.forEach(name => {
-          if (columns.find(c => c.name === name)) return;
-          const display = `[${name}](*)`;
-          columns.push({ key: name, name, example: '', display });
-        });
-      }
-    });
-  });
-
-
   Modal.show('Modal', {
     title: __('importing data', __(mainCollection._name)),
     body: 'Import_upload',
-    bodyContext: { collection: mainCollection, options, conductor, columns },
+    bodyContext: { collection: mainCollection, options },
     size: 'lg',
   });
 }

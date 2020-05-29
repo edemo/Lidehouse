@@ -40,7 +40,7 @@ Accounts.bankExtensionSchema = new SimpleSchema({
   primary: { type: Boolean, optional: true },
   bank: { type: String, max: 100, optional: true },
   BAN: { type: String, max: 100, optional: true },  // Bank Account Number
-  sync: { type: String, defaultValue: 'none', allowedValues: Accounts.syncValues, autoform: _.extend({ value: 'none' }, autoformOptions(Accounts.syncValues, 'schemaAccounts.sync.')) },
+//  sync: { type: String, defaultValue: 'none', allowedValues: Accounts.syncValues, autoform: _.extend({ value: 'none' }, autoformOptions(Accounts.syncValues, 'schemaAccounts.sync.')) },
 //  protocol: { type: String, optional: true },
 });
 
