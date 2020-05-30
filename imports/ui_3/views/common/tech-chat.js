@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Rooms } from '/imports/api/topics/rooms/rooms.js';
@@ -12,7 +13,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import './tech-chat.html';
 
 function getMyTechSupportRoom() {
-  const communityId = Session.get('activeCommunityId');
+  const communityId = ModalStack.getVar('communityId');
   return Topics.findOne({ communityId, category: 'room', title: 'tech support' });
 }
 
@@ -78,7 +79,7 @@ Template.Tech_chat.events({
   'click .small-chat-box .js-send'(event, instance) {
     const textarea = instance.find('input');
     const text = textarea.value;
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const community = Communities.findOne(communityId);
     const room = getMyTechSupportRoom();
     let roomId;

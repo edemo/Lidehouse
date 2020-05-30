@@ -53,7 +53,7 @@ Object.deepEquals = function deepEquals(a, b) {
 
 // Info: https://www.samanthaming.com/tidbits/70-3-ways-to-clone-objects/
 Object.deepClone = function deepClone(obj) {
-  const clone = {}; 
+  const clone = {};
   $.extend(true, clone, obj);
   return clone;
 };

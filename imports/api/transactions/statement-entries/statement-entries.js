@@ -12,8 +12,6 @@ import { __ } from '/imports/localization/i18n.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
-
 export const StatementEntries = new Mongo.Collection('statementEntries');
 
 StatementEntries.schema = new SimpleSchema({
@@ -83,7 +81,7 @@ export const chooseTransaction = {
     return ModalStack.readResult(selfId, `af.${category}.insert`);
   },
   options() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const txdef = ModalStack.getVar('txdef');
     const txs = Transactions.find({ communityId, defId: txdef._id, seId: { $exists: false } });
     const options = txs.map(tx => ({ label: tx.serialId, value: tx._id }));

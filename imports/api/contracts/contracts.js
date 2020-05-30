@@ -6,13 +6,12 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Topics } from '/imports/api/topics/topics.js';
-
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const Contracts = new Mongo.Collection('contracts');
 
@@ -45,27 +44,22 @@ Meteor.startup(function attach() {
   Contracts.simpleSchema().i18n('schemaActivePeriod');
 });
 
-export let chooseContract = {};
-if (Meteor.isClient) {
-  import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-
-  chooseContract = {
-    relation: 'contract',
-    value() {
-      const selfId = AutoForm.getFormId();
-      return ModalStack.readResult(selfId, 'af.contract.insert');
-    },
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const contracts = Contracts.find({ communityId });
-      const options = contracts.map(function option(c) {
-        return { label: c.title, value: c._id };
-      });
-      return options;
-    },
-    firstOption: () => __('(Select one)'),
-  };
-}
+export const chooseContract = {
+  relation: 'contract',
+  value() {
+    const selfId = AutoForm.getFormId();
+    return ModalStack.readResult(selfId, 'af.contract.insert');
+  },
+  options() {
+    const communityId = ModalStack.getVar('communityId');
+    const contracts = Contracts.find({ communityId });
+    const options = contracts.map(function option(c) {
+      return { label: c.title, value: c._id };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};
 
 Factory.define('contract', Contracts, {
   title: () => `Contract with ${faker.random.word()}`,

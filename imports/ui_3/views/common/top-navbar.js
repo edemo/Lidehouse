@@ -5,11 +5,12 @@ import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/actions.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { resetSession } from '/imports/ui_3/lib/session.js';
+import { resetSession } from '/imports/startup/client/session.js';
 import '/imports/api/users/users.js';
 import '/imports/ui_3/views/components/badge.js';
 import './right-sidebar.js';
@@ -57,7 +58,7 @@ Template.Top_navbar.helpers({
     return Meteor.user().communities();
   },
   unseenEventsCount(roomTitle) {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const userId = Meteor.userId();
     const rooms = Topics.find({ communityId, category: 'room', title: roomTitle });
     let count = 0;
@@ -126,7 +127,7 @@ Template.Top_navbar.events({
   'click .js-switch-community'() {
     const newCommunityId = this._id;
     const newCommunity = Communities.findOne(newCommunityId);
-    Session.set('activeCommunityId', newCommunityId);
+    ModalStack.setVar('communityId', newCommunityId);
     displayMessage('success', `${newCommunity.name} ${__('selected')}`);
   },
   'click .js-new.community'() {

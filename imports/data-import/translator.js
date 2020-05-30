@@ -1,5 +1,4 @@
 import { _ } from 'meteor/underscore';
-import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 
 import { __ } from '/imports/localization/i18n.js';
@@ -95,7 +94,7 @@ export class Translator {
           }
         });
       }
-      const original = Object.deepClone(doc);
+      const original = Object.deepCloneOwn(doc);
       reverseObject(doc);
       if (this.options.keepOriginals) tdoc.original = original;
       return tdoc;

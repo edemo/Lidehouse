@@ -125,7 +125,7 @@ StatementEntries.actions = {
 };
 
 StatementEntries.dummyDoc = {
-  communityId: getActiveCommunityId(),
+  communityId: getActiveCommunityId,
   isReconciled() { return false; },
 };
 

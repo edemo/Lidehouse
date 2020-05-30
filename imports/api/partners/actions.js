@@ -23,7 +23,7 @@ Partners.actions = {
     color: 'primary',
     visible: user.hasPermission('partners.insert', doc),
     run() {
-      const activeRelation = Session.get('activePartnerRelation');
+      const activeRelation = ModalStack.getVar('relation');
       if (activeRelation) _.extend(doc, { relation: [activeRelation] });
       let statementEntry = ModalStack.getVar('statementEntry');
       if (statementEntry) {
@@ -83,7 +83,7 @@ Partners.actions = {
     name: 'remindOutstandings',
     color: doc.mostOverdueDaysColor(),
     icon: 'fa fa-exclamation',
-    visible: user.hasPermission('partners.remindOutstandings', doc) && (Session.get('activePartnerRelation') !== 'supplier') && doc.mostOverdueDays(),
+    visible: user.hasPermission('partners.remindOutstandings', doc) && (ModalStack.getVar('relation') !== 'supplier') && doc.mostOverdueDays(),
     run() {
       if ((!doc.contact || !doc.contact.email) && !doc.userId) {
         displayMessage('warning', 'No contact email set for this partner');

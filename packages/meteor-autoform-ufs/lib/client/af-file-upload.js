@@ -78,7 +78,7 @@ Template.afFileUpload.events({
         name: file.name,
         size: file.size,
         type: file.type,
-        communityId: Session.get('activeCommunityId'),
+        communityId: Session.get('modalStack')[0].context.communityId,
         userId: Meteor.userId(),
       };
 

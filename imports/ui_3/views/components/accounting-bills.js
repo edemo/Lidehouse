@@ -8,7 +8,7 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { Session } from 'meteor/session';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
 import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
@@ -49,10 +49,10 @@ Template.Accounting_bills.viewmodel({
     });
   },
   autorun() {
-    Session.set('activePartnerRelation', this.activePartnerRelation());
+    ModalStack.setVar('relation', this.activePartnerRelation());
   },
   communityId() {
-    return Session.get('activeCommunityId');
+    return ModalStack.getVar('communityId');
   },
   hasFilters() {
     return (this.unreconciledOnly() === false);

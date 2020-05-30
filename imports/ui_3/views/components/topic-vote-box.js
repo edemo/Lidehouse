@@ -1,9 +1,9 @@
 /* globals document Waypoint */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/actions.js';
@@ -23,7 +23,7 @@ const notVotedColor = '#dedede';
 
 Template.Topic_vote_body.onCreated(function voteboxOnCreated() {
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const topicId = this.data._id;
     this.subscribe('shareddocs.ofTopic', { communityId, topicId });
   });

@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
@@ -20,7 +21,7 @@ Template.Vote_topics.viewmodel({
   searchText: '',
   onCreated(instance) {
     instance.autorun(() => {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       instance.subscribe('agendas.inCommunity', { communityId });
       instance.subscribe('topics.list', { communityId, category: 'vote' });
     });
@@ -29,7 +30,7 @@ Template.Vote_topics.viewmodel({
     return this.activesOnly() && 'active';
   },
   voteTopics() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const selector = { communityId, category: 'vote' };
     if (this.activesOnly()) selector.status = 'opened';
     let topicsList = Topics.find(selector, { sort: { createdAt: -1 } }).fetch();

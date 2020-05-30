@@ -1,5 +1,6 @@
 /* eslint-disable import/imports-first */
 
+import './session.js';
 import './language.js';
 import './redirections.js';
 import './autoform-config.js';

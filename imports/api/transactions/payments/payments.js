@@ -18,13 +18,11 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
-
 export const Payments = {};
 
 export const chooseBillOfPartner = {
   options() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const relation = AutoForm.getFieldValue('relation');
     const partnerId = AutoForm.getFieldValue('partnerId');
 //    const amount = AutoForm.getFieldValue('amount');

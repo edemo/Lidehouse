@@ -1,11 +1,12 @@
 /* eslint-disable max-classes-per-file */
+import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
-import { Session } from 'meteor/session';
 import { Mongo } from 'meteor/mongo';
 
 import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
@@ -19,7 +20,6 @@ import { Parser } from './parser.js';
 import { Transformers } from './transformers.js';
 
 // Multiple collections can be imported with one import command
-
 export class ImportPhase {
   collection() {
     return Mongo.Collection.get(this.collectionName);
@@ -38,7 +38,7 @@ export class ImportPhase {
   }
   transformer() {
     return Transformers[this.collectionName]?.[this.options?.transformer || 'default']
-      || (docs => docs.map(doc => Object.deepClone(doc)));
+      || (docs => docs.map(doc => Object.deepCloneOwn(doc)));
   }
 }
 ImportPhase.Instance = new ImportPhase();
@@ -301,9 +301,9 @@ export const Conductors = {
           dictionary: {
             communityId: { default: getActiveCommunityId() },
             category: { default: 'bill' },
-            relation: { default: Session.get('activePartnerRelation') },
+            relation: { default: ModalStack.getVar('relation') },
             serialId: { depends: ['Azonosító'], formula: "'SZ/SZALL/' + doc['Azonosító']" },
-            defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'bill', 'data.relation': Session.get('activePartnerRelation') })._id },
+            defId: { default: Txdefs.findOne({ communityId: getActiveCommunityId(), category: 'bill', 'data.relation': ModalStack.getVar('relation') })._id },
 //            partnerId: { formula: 'conductor.phases[0].docs[index].idCard.name' },
             deliveryDate: { formula: 'doc.deliveryDate || doc.issueDate' },
             dueDate: { formula: 'doc.dueDate || doc.issueDate' },
@@ -320,9 +320,9 @@ export const Conductors = {
           dictionary: {
             communityId: { default: getActiveCommunityId() },
             category: { default: 'payment' },
-            relation: { default: Session.get('activePartnerRelation') },
+            relation: { default: ModalStack.getVar('relation') },
             serialId: { depends: ['Azonosító'], formula: "'FIZ/SZALL/' + doc['Azonosító']" },
-            defId: { default: Txdefs.findOne({ communityId: Session.get('activeCommunityId'), category: 'payment', 'data.relation': Session.get('activePartnerRelation') })._id },
+            defId: { default: Txdefs.findOne({ communityId: getActiveCommunityId(), category: 'payment', 'data.relation': ModalStack.getVar('relation') })._id },
   //          partnerId: { formula: 'conductor.phases[0].docs[index].idCard.name' },
   //          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
   //          valueDate: { formula: 'doc.paymentDate' },

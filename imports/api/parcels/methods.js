@@ -4,7 +4,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkUnique, checkModifier, checkPermissions, } from '/imports/api/method-checks.js';
 import { checkNoOutstanding } from '/imports/api/behaviours/accounting-location.js';
 import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -33,9 +33,9 @@ export const insert = new ValidatedMethod({
       if (doc.ref === 'auto') doc.ref = 'A' + doc.serial.toString().padStart(3, '0');
     }
     if (doc.ref) {
-      checkNotExists(Parcels, { communityId: doc.communityId, ref: doc.ref });
       doc = ParcelRefFormat.extractFieldsFromRef(community.settings.parcelRefFormat, doc);
     }
+    checkUnique(Parcels, doc);
     if (!doc.approved) {
       // Nothing to check. Things will be checked when it gets approved by community admin/manager.
       if (!community.needsJoinApproval()) doc.approved = true;
@@ -62,12 +62,13 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Parcels, _id);
     checkModifier(doc, modifier, ['communityId'], true);
-    checkNotExists(Parcels, { _id: { $ne: doc._id }, communityId: doc.communityId, ref: modifier.$set.ref });
     checkPermissions(this.userId, 'parcels.update', doc);
 
     const ParcelsStage = Parcels.Stage();
     const result = ParcelsStage.update({ _id }, modifier, { selector: doc });
-    checkCommunityParcelsSanity(doc.communityId, ParcelsStage);
+    const newDoc = Parcels.findOne(_id);
+    checkUnique(ParcelsStage, newDoc);
+    checkCommunityParcelsSanity(newDoc.communityId, ParcelsStage);
     ParcelsStage.commit();
 
     return result;

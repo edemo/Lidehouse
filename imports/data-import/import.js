@@ -8,6 +8,7 @@ import { UploadFS } from 'meteor/jalik:ufs';
 import XLSX from 'xlsx';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { digestImportJsons } from '/imports/data-import/digest.js';
 // import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/readmore.js';
@@ -48,48 +49,14 @@ const launchNextPhase = function launchNextPhase(vm) {
       const viewmodel = this;
       if (viewmodel.savingEnabled()) viewmodel.savePhase();
       const jsons = XLSX.utils.sheet_to_json(viewmodel.getImportableSheet(), { blankRows: false }).map(flatten.unflatten);
-      let docs = jsons; // .map(j => { const j2 = {}; $.extend(true, j2, j); return j2; }); // deep copy
+      const digest = digestImportJsons(jsons, phase);
+      phase.docs = digest.docs;
 
-      console.log(`Importing into ${collection._name}`);
-//      if (options && options.multipleDocsPerLine) docs = singlify(docs);
-      const translator = phase.translator();
-      if (translator) {
-        console.log(`Tranlsating ${docs.length} docs`);
-        docs = translator.reverse(docs);
-        console.log(`Applying defaults to ${docs.length} docs`);
-        translator.applyDefaults(docs);
-      }
-      
-      const parser = phase.parser();
-      console.log(`Parsing ${docs.length} docs`);
-      const parsingErrors = [];
-      function bundle(array, fieldName) {
-        let result = '';
-        array.forEach((elem, index) => { result += `[${index}] ${elem[fieldName]} `; });
-        return result;
-      }
-      docs.forEach(doc => {
-        try {
-          parser.parse(doc);
-        } catch (err) {
-          parsingErrors.push(err);
-        }
-      });
-      if (parsingErrors.length) throw new Meteor.Error(bundle(parsingErrors, 'error'), bundle(parsingErrors, 'reason'), bundle(parsingErrors, 'details'));
+      console.log(`Calling batch test on ${digest.tdocs.length} docs`);
+      const neededOps = collection.methods.batch.test._execute({ userId }, { args: digest.tdocs });
+      const tdocsToUpsert = _.reject(digest.tdocs, (d, i) => _.contains(neededOps.noChange, i));
 
-      console.log(`Transforming ${docs.length} docs`);
-      const transformer = phase.transformer();
-      const tdocs = transformer(docs); // transformation may even change the set of docs
-      console.log(`Validating ${tdocs.length} docs`);
-      tdocs.forEach(doc => {
-        collection.simpleSchema(doc).clean(doc);
-        collection.simpleSchema(doc).validate(doc);
-      });
-      phase.docs = tdocs;
-
-      console.log(`Calling batch test on ${tdocs.length} docs`);
-      const neededOps = collection.methods.batch.test._execute({ userId }, { args: tdocs });
-      const tdocsToUpsert = _.reject(tdocs, (d, i) => _.contains(neededOps.noChange, i));
+      console.log(`Calling batch upsert on ${tdocsToUpsert.length} docs`);
       Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocsToUpsert }, {
         action: __('import data', { collection: __(collection._name) }),
         message: __('This operation will do the following') + '<br>'

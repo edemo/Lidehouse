@@ -21,9 +21,7 @@ export function checkExists(collection, predicate) {
   // Checks that a *collection* already contains a doc with given *objectId*
   const object = collection.findOne(predicate);
   if (!object) {
-    throw new Meteor.Error('err_notExists', 'No such object',
-      `Collection: ${collection._name}, predicate: ${predicate}`
-    );
+    throw new Meteor.Error('err_notExists', 'No such object', `${collection._name}: ${predicate}`);
   }
   return object;
 }
@@ -32,18 +30,25 @@ export function checkNotExists(collection, predicate) {
   // Checks that a *collection* does not yet contain a doc with given *objectId*
   const object = collection.findOne(predicate);
   if (object) {
-    throw new Meteor.Error('err_alreadyExists', 'Already has such object',
-      `Collection: ${collection._name}, predicate: ${JSON.stringify(predicate)}` 
-    );
+    console.log('Already has such object', collection._name, JSON.stringify(predicate), JSON.stringify(object));
+    throw new Meteor.Error('err_alreadyExists', 'Already has such object', `${collection._name}: ${JSON.stringify(predicate)}`);
   }
+}
+
+export function checkUnique(collection, doc) {
+  console.log('checkUnique', doc);
+//  console.log('from:', collection.find({}).fetch());
+  const selector = _.pick(doc, ...collection.idSet);
+  selector._id = { $ne: doc._id }; // in case doc is already in the collection when we check (after stage update)
+  checkNotExists(collection, selector);
 }
 
 export function checkPermissions(userId, permissionName, doc) {
   // Checks that *user* has *permission* in given *community* to perform things on given *object*
   const user = Meteor.users.findOneOrNull(userId);
   if (!user.hasPermission(permissionName, doc)) {
-    throw new Meteor.Error('err_permissionDenied',
-      `No permission to perform this activity: ${permissionName}, userId: ${userId}, doc: ${JSON.stringify(doc)}`);
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `${permissionName}, ${userId}, ${JSON.stringify(doc)}`);
   }
 }
 
@@ -54,8 +59,8 @@ export function checkPermissionsWithApprove(userId, permissionName, doc) {
   } else if (user.hasPermission(permissionName + '.unapproved', doc)) {
     doc.approved = false;
   } else {
-    throw new Meteor.Error('err_permissionDenied',
-      `No permission to perform this activity: ${permissionName}, userId: ${userId}, doc: ${JSON.stringify(doc)}`);
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `${permissionName}, ${userId}, ${JSON.stringify(doc)}`);
   }
 }
 
@@ -78,29 +83,29 @@ export function checkModifier(object, modifier, modifiableFields, exclude = fals
   modifiedFields.forEach((mf) => {
     if ((exclude && _.contains(modifiableFields, mf) && !_.isEqual(Object.getByString(object, mf), modifier.$set[mf]))
       || (!exclude && !_.contains(modifiableFields, mf) && !_.isEqual(Object.getByString(object, mf), modifier.$set[mf]))) {
-      throw new Meteor.Error('err_permissionDenied',
-        `Field is not modifiable, Field: ${mf}\n Modifier: ${JSON.stringify(modifier)}\n Object: ${JSON.stringify(object)}`);
+      throw new Meteor.Error('err_permissionDenied', 'Field is not modifiable',
+        `Field: ${mf}\n Modifier: ${JSON.stringify(modifier)}\n Object: ${JSON.stringify(object)}`);
     }
   });
 }
 
 export function checkPermissionsToUpload(userId, collection, doc) {
   if (!collection.hasPermissionToUpload(userId, doc)) {
-    throw new Meteor.Error('err_permissionDenied',
-      `No permission to perform this activity: ${"Upload"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `${'Upload'}, ${userId}, ${JSON.stringify(doc)}`);
   }
 }
 
 export function checkPermissionsToRemoveUploaded(userId, collection, doc) {
   if (!collection.hasPermissionToRemoveUploaded(userId, doc)) {
-    throw new Meteor.Error('err_permissionDenied',
-      `No permission to perform this activity: ${"Remove"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `${'Remove upload'}, ${userId}, ${JSON.stringify(doc)}`);
   }
 }
 
 export function checkNeededStatus(status, doc) {
   if (status !== doc.status) {
-    throw new Meteor.Error('err_permissionDenied',
-      `No permission to perform this activity in this status: ${doc.status}, needed status: ${status}`);
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity in this status',
+      `Status: ${doc.status}, needed status: ${status}`);
   }
 }

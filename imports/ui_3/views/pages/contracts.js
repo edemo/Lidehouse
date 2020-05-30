@@ -1,10 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { AutoForm } from 'meteor/aldeed:autoform';
 import { $ } from 'meteor/jquery';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -22,13 +20,13 @@ Template.Contracts.viewmodel({
   activePartnerRelation: 'supplier',
   onCreated(instance) {
     instance.autorun(() => {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
     });
   },
   autorun() {
-    Session.set('activePartnerRelation', this.activePartnerRelation());
+    ModalStack.setVar('rRelation', this.activePartnerRelation());
   },
   relationValues() {
     return Contracts.relationValues;
@@ -37,8 +35,8 @@ Template.Contracts.viewmodel({
     return (this.activePartnerRelation() === partnerRelation) && 'btn-primary active';
   },
   contracts() {
-    const communityId = Session.get('activeCommunityId');
-    const relation = Session.get('activePartnerRelation');
+    const communityId = ModalStack.getVar('communityId');
+    const relation = ModalStack.getVar('relation');
     return Contracts.find({ communityId, relation });
   },
   ticketStatuses() {

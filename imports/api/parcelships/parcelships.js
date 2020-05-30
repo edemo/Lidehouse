@@ -5,19 +5,18 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const Parcelships = new Mongo.Collection('parcelships');
 
 const chooseProperty = {
   relation: '@property',
   options() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { ref: 1 } });
     const options = parcels.map(function option(p) {
       return { label: p.ref, value: p._id };

@@ -212,7 +212,7 @@ Transactions.actions = {
 };
 
 Transactions.dummyDoc = {
-  communityId: getActiveCommunityId(),
+  communityId: getActiveCommunityId,
   isPosted() { return false; },
   isReconciled() { return false; },
 };

@@ -2,7 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+
 import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
@@ -73,9 +75,9 @@ ParcelBillings.actions = {
     icon: 'fa fa-calendar-plus-o',
     visible: user.hasPermission('parcelBillings.apply', doc),
     run() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       const billing = doc || ParcelBillings.findOne({ communityId, active: true });
-      Session.set('activeParcelBillingId', doc && doc._id);
+      ModalStack.setVar('parcelBillingId', doc && doc._id);
       Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.apply',
         description: `${__('schemaParcelBillings.lastAppliedAt.label')} > ${Render.formatDate(billing.lastAppliedAt().date)}`,

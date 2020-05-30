@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { getActivePartnerId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
@@ -16,7 +17,7 @@ Delegations.actions = {
     icon: 'fa fa-plus',
     visible: user.hasPermission('delegations.insert', doc),
     run() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       const omitFields = user.hasPermission('delegations.forOthers', { communityId }) ? [] : ['sourceId'];
       Modal.show('Autoform_modal', {
         id: 'af.delegation.insert',
@@ -47,7 +48,7 @@ Delegations.actions = {
     visible: user._id === doc.sourceUserId() || user._id === doc.targetUserId()
       || user.hasPermission('delegations.remove', doc),
     run() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       const omitFields = user.hasPermission('delegations.forOthers', { communityId }) ? [] : ['sourceId'];
       Modal.show('Autoform_modal', {
         id: 'af.delegation.update',

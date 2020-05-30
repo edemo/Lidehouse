@@ -43,7 +43,7 @@ Template.Forum_topics.viewmodel({
     return this.show()[group] && 'btn-primary active';
   },
   selector() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const selector = { communityId, category: 'forum' };
     const show = this.show();
     if (show.archived) {

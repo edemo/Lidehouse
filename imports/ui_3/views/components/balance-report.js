@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { numeral } from 'meteor/numeral:numeral';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
@@ -9,7 +9,7 @@ import './balance-report.html';
 
 Template.Balance_report.onCreated(function onCreated() {
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     this.subscribe('balances.ofAccounts', { communityId });
   });
 });
@@ -17,14 +17,14 @@ Template.Balance_report.onCreated(function onCreated() {
 Template.Balance_report.helpers({
   balance(account, tag) {
     return Balances.get({
-      communityId: Session.get('activeCommunityId'),
+      communityId: ModalStack.getVar('communityId'),
       account: account.code,
       tag,
     }).displayTotal();
   },
   hasActivity(account) {
     return !!Balances.findOne({
-      communityId: Session.get('activeCommunityId'),
+      communityId: ModalStack.getVar('communityId'),
       account: new RegExp('^' + account.code),
     });
   },

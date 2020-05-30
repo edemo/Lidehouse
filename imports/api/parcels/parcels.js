@@ -24,8 +24,6 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships';
 import { ActiveTimeMachine } from '../behaviours/active-time-machine';
 
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
-
 export const Parcels = new Mongo.Collection('parcels');
 
 Parcels.categoryValues = ['@property', '@common', '@group', '#tag'];
@@ -234,7 +232,7 @@ _.extend(Parcels, {
   chooseSubNode(code, leafsOnly) {
     return {
       options() {
-        const communityId = Session.get('activeCommunityId');
+        const communityId = ModalStack.getVar('communityId');
         return Parcels.nodeOptionsOf(communityId, code, leafsOnly);
       },
       firstOption: false,
@@ -242,14 +240,14 @@ _.extend(Parcels, {
   },
   choosePhysical: {
     options() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       return Parcels.nodeOptionsOf(communityId, '@', false);
     },
     firstOption: () => __('(Select one)'),
   },
   chooseNode: {
     options() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       return Parcels.nodeOptionsOf(communityId, '', false);
     },
     firstOption: () => __('(Select one)'),
@@ -343,7 +341,7 @@ export const chooseParcel = function (code = '') {
       return value;
     },
     options() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       const parcels = Parcels.nodesOf(communityId, code);
       const options = parcels.map(function option(p) {
         return { label: p.displayAccount(), value: p.code };

@@ -1,17 +1,17 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
 import './meters-widget.html';
 
 Template.Meters_widget.viewmodel({
   autorun() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     this.templateInstance.subscribe('parcels.ofSelf', { communityId });
   },
   ownedParcels() {
     const user = Meteor.user();
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     if (!user || !communityId) return [];
     return user.ownedParcels(communityId);
   },
