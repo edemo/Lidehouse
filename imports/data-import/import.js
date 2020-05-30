@@ -59,9 +59,23 @@ const launchNextPhase = function launchNextPhase(vm) {
         console.log(`Applying defaults to ${docs.length} docs`);
         translator.applyDefaults(docs);
       }
+      
       const parser = phase.parser();
       console.log(`Parsing ${docs.length} docs`);
-      docs.forEach(doc => { parser.parse(doc); });
+      const parsingErrors = [];
+      function bundle(array, fieldName) {
+        let result = '';
+        array.forEach((elem, index) => { result += `[${index}] ${elem[fieldName]} `; });
+        return result;
+      }
+      docs.forEach(doc => {
+        try {
+          parser.parse(doc);
+        } catch (err) {
+          parsingErrors.push(err);
+        }
+      });
+      if (parsingErrors.length) throw new Meteor.Error(bundle(parsingErrors, 'error'), bundle(parsingErrors, 'reason'), bundle(parsingErrors, 'details'));
 
       console.log(`Transforming ${docs.length} docs`);
       const transformer = phase.transformer();
