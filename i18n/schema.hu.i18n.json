@@ -664,7 +664,7 @@
       "label": "Sorszám"
     },
     "serialId": {
-      "label": "azonosító"
+      "label": "Egyedi azonosító"
     },
     "createdAt": {
       "label": "Rögzítés ideje",
@@ -681,7 +681,7 @@
       "label": "Szerződés"
     },
     "partnerName": {
-      "label": "Partner",
+      "label": "Partner neve",
       "placeholder": "(pl. Kulcslyuk kft)"
     },
     "sourceId": {

@@ -664,7 +664,7 @@
       "label": "Serial"
     },
     "serialId": {
-      "label": "identifier"
+      "label": "Unique id"
     },
     "createdAt": {
       "label": "Register date",
@@ -681,7 +681,7 @@
       "label": "Contract"
     },
     "partnerName": {
-      "label": "Partner",
+      "label": "Partner name",
       "placeholder": "(eg. Super Clean Inc)"
     },
     "sourceId": {
