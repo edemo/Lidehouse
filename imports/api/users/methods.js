@@ -103,6 +103,18 @@ if (Meteor.isClient) {
   });
 }
 
+export function mergeLastSeen(user, topicId, destinationId, seenType) {
+  const lastSeens = user.lastSeens();
+  if (!seenType) seenType = Meteor.users.SEEN_BY.EYES;
+  for (let i = seenType; i <= Meteor.users.SEEN_BY.NOTI; i++) {
+    const movingTopicTimestamp = lastSeens[i][topicId]?.timestamp;
+    const destinationTimestamp = lastSeens[i][destinationId]?.timestamp || 0;
+    if (movingTopicTimestamp && movingTopicTimestamp > destinationTimestamp) {
+      const lastSeenInfo = { timestamp: movingTopicTimestamp };
+      updateMyLastSeen._execute({ userId: user._id }, { topicId: destinationId, lastSeenInfo, seenType: i });
+    }
+  }
+}
+
 Meteor.users.methods = Meteor.users.methods || {};
 _.extend(Meteor.users.methods, { update, remove, updateMyLastSeen });
-

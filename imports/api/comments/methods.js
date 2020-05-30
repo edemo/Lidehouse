@@ -6,8 +6,9 @@ import { _ } from 'meteor/underscore';
 
 import { Comments } from './comments.js';
 import { Topics } from '../topics/topics.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { checkExists, checkPermissions, checkModifier } from '../method-checks';
-import { updateMyLastSeen } from '/imports/api/users/methods.js';
+import { updateMyLastSeen, mergeLastSeen } from '/imports/api/users/methods.js';
 
 export const insert = new ValidatedMethod({
   name: 'comments.insert',
@@ -55,6 +56,12 @@ export const move = new ValidatedMethod({
     checkPermissions(this.userId, 'comment.move', doc);
 
     Comments.update(_id, { $set: { topicId: destinationId } });
+    if (Meteor.isServer) {
+      const community = Communities.findOne(doc.communityId);
+      community.users().forEach((user) => {
+        mergeLastSeen(user, doc.topicId, destinationId);
+      });
+    }
   },
 });
 

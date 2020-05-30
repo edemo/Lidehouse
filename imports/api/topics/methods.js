@@ -16,7 +16,7 @@ import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
 import './tickets/tickets.js';
-import { updateMyLastSeen } from '/imports/api/users/methods.js';
+import { updateMyLastSeen, mergeLastSeen } from '/imports/api/users/methods.js';
 import './rooms/rooms.js';
 import './feedbacks/feedbacks.js';
 import { autoOpen } from './votings/methods.js';
@@ -71,6 +71,12 @@ export const move = new ValidatedMethod({
       Comments.update(comment._id, { $set: { topicId: destinationId } });
     });
     Topics.remove(_id);
+    if (Meteor.isServer) {
+      const community = Communities.findOne(doc.communityId);
+      community.users().forEach((user) => {
+        mergeLastSeen(user, doc._id, destinationId);
+      });
+    }
   },
 });
 

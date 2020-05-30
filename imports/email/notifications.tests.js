@@ -167,6 +167,32 @@ if (Meteor.isServer) {
         sinon.assert.calledOnce(EmailSender.send);
       });
 
+      it('Doesnt send email when seen comments are moved to other topic', function () {
+        const otherTopicId = Fixture.builder.create('forum', { creatorId: ownerWithNotiFrequent._id });
+        processNotifications('daily');
+        sinon.resetHistory();
+        const commentId = Fixture.builder.create('comment', { topicId: otherTopicId, creatorId: ownerWithNotiNever._id, text: 'New hello' });
+        processNotifications('frequent');
+        sinon.assert.calledOnce(EmailSender.send);
+        const emailData = EmailSender.send.getCall(0).args[0];
+        chai.assert.equal(emailData.data.user._id, ownerWithNotiFrequent._id);
+        chai.assert.equal(emailData.data.topicsToDisplay.length, 1);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].topic._id, otherTopicId);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments.length, 1);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments[0].text, 'New hello');
+        Comments.methods.move._execute({ userId: Fixture.demoAdminId }, { _id: commentId, destinationId: topicId });
+        processNotifications('frequent');
+        sinon.assert.calledOnce(EmailSender.send);
+        processNotifications('daily');
+        sinon.assert.calledThrice(EmailSender.send);
+        const emailDataDaily = EmailSender.send.getCall(1).args[0];
+        chai.assert.equal(emailDataDaily.data.user._id, ownerWithNotiDaily._id);
+        chai.assert.equal(emailDataDaily.data.topicsToDisplay.length, 1);
+        chai.assert.equal(emailDataDaily.data.topicsToDisplay[0].topic._id, topicId);
+        chai.assert.equal(emailDataDaily.data.topicsToDisplay[0].unseenComments.length, 1);
+        chai.assert.equal(emailDataDaily.data.topicsToDisplay[0].unseenComments[0].text, 'New hello');
+      });
+
       it('Doesnt email other communites comment', function () {
         // TODO
       });
