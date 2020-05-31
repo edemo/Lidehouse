@@ -70,6 +70,9 @@ const launchNextPhase = function launchNextPhase(vm) {
         launchNextPhase(viewmodel);
       });
     },
+  }, {  // don't close this modal, when clicking outside
+    backdrop: 'static',
+    keyboard: false,
   });
 };
 
