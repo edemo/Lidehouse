@@ -192,7 +192,7 @@ Transactions.actions = {
         membershipId: doc.membershipId,
         contractId: doc.contractId,
         amount: doc.amount,
-        bills: [{ id: doc._id, amount: doc.amount }],
+        bills: [{ id: doc._id, amount: doc.outstanding }],
       };
 //      const paymentDoc = Transactions._transform(paymentTx);
       Transactions.actions.new(paymentOptions, paymentTx).run();

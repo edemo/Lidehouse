@@ -41,6 +41,7 @@
                     <th>{{_ 'schemaPayments.bills.label'}}
                       <button type="button" class="btn btn-xs btn-default pull-right js-new" data-entity="bill"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'bill'}}</button>
                     </th>
+                    <th></th>
                     <th>{{_ 'schemaTransactions.amount.label'}}</th>
                 </tr>
             </thead>
@@ -49,17 +50,20 @@
                 <!--{{#if notNullLine this}}-->
                 <tr class='js-autofill'>
                     <td>{{> afFormGroup name=this.current.id}}</td>
+                    <td data-line="{{this.name}}">
+                      <button type="button" class="btn btn-default js-full-amount"><i class="fa fa-arrow-right"></i> {{_ 'Full'}}</button>
+                    </td>
                     <td>{{> afFormGroup name=this.current.amount}}</td>
                     <td class="text-left">
                       <button type="button" class="btn btn-info autoform-remove-item">
                           <i class="fa fa-trash"></i>
                       </button>
-                    </td>                       
+                    </td>
                 </tr>
                 {{/afEachArrayItem}}
                 <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="bills">
                     <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
-                </button>                  
+                </button>
             </tbody>
         </table>
     </div>

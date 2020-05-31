@@ -572,6 +572,7 @@
   "issuer": "kiállító",
   "receiver": "vevő",
   "Insert bill": "Számla rögzítése",
+  "Full": "Teljes",
 
   // docstore
   "Show": "Listázva",
