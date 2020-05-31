@@ -4,27 +4,13 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
+import { _ } from 'meteor/underscore';
 
-import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { __ } from '/imports/localization/i18n.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Parcels, chooseProperty } from '/imports/api/parcels/parcels.js';
 
 export const Parcelships = new Mongo.Collection('parcelships');
-
-const chooseProperty = {
-  relation: '@property',
-  options() {
-    const communityId = ModalStack.getVar('communityId');
-    const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { ref: 1 } });
-    const options = parcels.map(function option(p) {
-      return { label: p.ref, value: p._id };
-    });
-    return options;
-  },
-  firstOption: () => __('(Select one)'),
-};
 
 Parcelships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },

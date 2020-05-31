@@ -280,7 +280,7 @@
       "substitute": "substitute"
     },
     "partnerId": {
-      "label": "Person"
+      "label": "Partner"
     },
     "parcelId": {
       "label": "Parcel"

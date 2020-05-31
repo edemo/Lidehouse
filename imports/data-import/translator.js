@@ -47,10 +47,12 @@ export class Translator {
 
   example(key, schema) {
     if (schema.autoform && schema.autoform.placeholder) return schema.autoform.placeholder();
-    if (schema.allowedValues) {
+    const allowedValues = (typeof schema.allowedValues === 'function') ? schema.allowedValues() : schema.allowedValues;
+    if (allowedValues) {
       let result = '(';
-      schema.allowedValues.forEach((val, i) => {
+      allowedValues.forEach((val, i) => {
         result += __(`schema${this.collection._name.capitalize()}.${key}.options.${val}`);
+        // FIX:        result += this.dictionary[key].options[val];
         if (i < schema.allowedValues.length - 1) result += '/';
       });
       result += ')';

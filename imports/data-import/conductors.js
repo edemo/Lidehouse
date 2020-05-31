@@ -58,7 +58,7 @@ export class ImportConductor {
       _.each(phase.schema()._schema, (value, key) => {
         const split = key.split('.');
         if (_.contains(['Array', 'Object'], value.type.name)) return;
-        if (value.autoform && (value.autoform.omit || value.autoform.readonly || _.contains(['hidden'], value.autoform.type))) return;
+        if (value.autoform && (value.autoform.omit || value.autoform.readonly /*|| _.contains(['hidden'], value.autoform.type)*/)) return;
         if (_.contains(split, '$')) return;
         if (_.contains(split, 'activeTime')) return;
         if (_.contains(phase.omitFields, key)) return;
@@ -279,6 +279,31 @@ export const Conductors = {
     },
   },
   transactions: {
+    default(options) {
+      return {
+        collectionName: 'transactions',
+        format: 'default',
+        phases: [{
+          collectionName: 'transactions',
+          schemaSelector: { category: 'bill' },
+          options: _.extend({}, options, { entity: 'bill' }),
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            category: { default: 'bill' },
+            relation: { default: ModalStack.getVar('relation') },
+            serialId: { depends: ['Azonosító'], formula: "'SZ/SZALL/' + doc['Azonosító']" },
+            defId: { default: Txdefs.findOne({ communityId: getActiveCommunityId(), category: 'bill', 'data.relation': ModalStack.getVar('relation') })._id },
+            deliveryDate: { formula: 'doc.deliveryDate || doc.issueDate' },
+            dueDate: { formula: 'doc.dueDate || doc.issueDate' },
+            title: { formula: 'doc.title || "---"' },
+            debit: { default: [{ account: '`8' }] },
+            credit: { default: [{ account: '`454' }] },
+            status: { default: 'posted' },
+            postedAt: { formula: 'doc.issueDate' },
+          },
+        }],
+      };
+    },
     marina(options) {
       return {
         collectionName: 'transactions',

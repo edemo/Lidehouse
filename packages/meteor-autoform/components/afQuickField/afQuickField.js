@@ -34,7 +34,7 @@ Template.afQuickField.helpers({
   //### droka extension ###//
   relation: function relation() {
     var c = AutoForm.Utility.getComponentContext(this, "afQuickField");
-    return c.atts.relation;
+    return !c.atts.disabled && c.atts.relation;
   },
 });
 

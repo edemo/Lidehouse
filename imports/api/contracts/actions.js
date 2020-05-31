@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 
-import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';

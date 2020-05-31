@@ -20,8 +20,6 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
 import { Meters } from '/imports/api/meters/meters.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Parcelships } from '/imports/api/parcelships/parcelships';
 import { ActiveTimeMachine } from '../behaviours/active-time-machine';
 
 export const Parcels = new Mongo.Collection('parcels');
@@ -96,6 +94,7 @@ Parcels.helpers({
     return this.category;
   },
   leadParcelId() {
+    const Parcelships = Mongo.Collection.get('parcelships');
     if (ActiveTimeMachine.isSimulating()) {
       const parcelship = Parcelships.findOneActive({ parcelId: this._id });
       return parcelship ? parcelship.leadParcelId : this._id; // if can't find your lead parcel, lead yourself
@@ -117,6 +116,7 @@ Parcels.helpers({
     return (leadRef && leadRef !== this.ref); // comparing the ref is quicker than the id, because the ref is cached
   },
   followers() {
+    const Parcelships = Mongo.Collection.get('parcelships');
     if (ActiveTimeMachine.isSimulating()) {
       const followerParcelIds = Parcelships.findActive({ leadParcelId: this._id }).map(ps => ps.parcelId);
       return Parcels.find({ _id: { $in: _.without(followerParcelIds, this._id) } });
@@ -137,12 +137,15 @@ Parcels.helpers({
     return _.last(this.meters().fetch().sort(m => m.lastReading().date.getTime()));
   },
   occupants() {
+    const Memberships = Mongo.Collection.get('memberships');
     return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId() });
   },
   owners() {
+    const Memberships = Mongo.Collection.get('memberships');
     return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId(), role: 'owner' });
   },
   representors() {
+    const Memberships = Mongo.Collection.get('memberships');
     return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId(), role: 'owner', 'ownership.representor': true });
   },
   representor() {
@@ -353,3 +356,15 @@ export const chooseParcel = function (code = '') {
   };
 };
 
+export const chooseProperty = {
+  relation: '@property',
+  options() {
+    const communityId = ModalStack.getVar('communityId');
+    const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { ref: 1 } });
+    const options = parcels.map(function option(p) {
+      return { label: p.ref, value: p._id };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};
