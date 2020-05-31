@@ -67,6 +67,15 @@ Object.stringifyClone = function stringifyClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 };
 
+Object.cleanUndefined = function cleanUndefined(obj) {
+  Object.keys(obj).forEach(key => {
+    if (typeof obj[key] === 'undefined') {
+      delete obj[key];
+    }
+  });
+  return obj;
+};
+
 String.prototype.forEachChar = function forEachChar(func) {
   for (let i = 0; i < this.length; i++) {
     func(this.charAt(i));
