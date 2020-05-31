@@ -127,7 +127,7 @@ Template.Top_navbar.events({
   'click .js-switch-community'() {
     const newCommunityId = this._id;
     const newCommunity = Communities.findOne(newCommunityId);
-    ModalStack.setVar('communityId', newCommunityId);
+    ModalStack.setVar('communityId', newCommunityId, true);
     displayMessage('success', `${newCommunity.name} ${__('selected')}`);
   },
   'click .js-new.community'() {

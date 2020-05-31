@@ -29,7 +29,7 @@ import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './worksheets.html';
 
 Template.Worksheets.onCreated(function onCreated() {
-  ModalStack.setVar('relation', 'supplier');
+  ModalStack.setVar('relation', 'supplier', true);
   this.getCommunityId = () => FlowRouter.getParam('_cid') || ModalStack.getVar('communityId');
   this.autorun(() => {
     const communityId = this.getCommunityId();

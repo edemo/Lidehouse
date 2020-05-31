@@ -153,7 +153,7 @@ Template.Parcels_box.viewmodel({
 
 Template.Community_page.viewmodel({
   onCreated() {
-    ModalStack.setVar('relation', 'member');
+    ModalStack.setVar('relation', 'member', true);
   },
   onRendered() {
     // Add slimscroll to element

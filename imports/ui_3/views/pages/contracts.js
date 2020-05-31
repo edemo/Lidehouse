@@ -26,7 +26,7 @@ Template.Contracts.viewmodel({
     });
   },
   autorun() {
-    ModalStack.setVar('rRelation', this.activePartnerRelation());
+    ModalStack.setVar('relation', this.activePartnerRelation(), true);
   },
   relationValues() {
     return Contracts.relationValues;

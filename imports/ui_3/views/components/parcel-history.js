@@ -17,7 +17,7 @@ Template.Parcel_history.viewmodel({
   parcelSelected: '',
   status: 'Reconciled',
   onCreated(instance) {
-    ModalStack.setVar('relation', 'member');
+    ModalStack.setVar('relation', 'member', true);
     instance.autorun(() => {
       if (this.partnerSelected()) {
         instance.subscribe('transactions.byPartner', this.subscribeParams());

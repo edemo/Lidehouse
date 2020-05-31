@@ -12,7 +12,7 @@ export function autosetActiveCommunity() {
     const communities = user.communities();
     if (communities.count() > 0) {
       const activeCommunity = communities.fetch()[0];
-      ModalStack.setVar('communityId', activeCommunity._id);
+      ModalStack.setVar('communityId', activeCommunity._id, true);
     }
   }
 }

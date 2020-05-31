@@ -17,7 +17,7 @@ Template.Tickets.viewmodel({
   filterCreatedBy: null,
   searchText: '',
   onCreated(instance) {
-    ModalStack.setVar('relation', 'supplier');
+    ModalStack.setVar('relation', 'supplier', true);
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       instance.subscribe('topics.list', { communityId, category: 'ticket' });

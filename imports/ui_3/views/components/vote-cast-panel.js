@@ -21,7 +21,7 @@ import { createEnvelope } from './envelope.js';
 
 
 function castVoteBasedOnPermission(topicId, castedVote, callback) {
-  ModalStack.setVar('relation', 'member');
+  ModalStack.setVar('relation', 'member', true);
   const community = getActiveCommunity();
   const communityId = community._id;
   if (Meteor.user().hasPermission('vote.castForOthers', { communityId }) && community.hasLiveAssembly()) {

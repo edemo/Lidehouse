@@ -24,6 +24,7 @@ if (Meteor.isClient) {
   // [{ id:'af.object.action', result: { id1: result1, id2: result2 } }]
 
   ModalStack = {
+    contextForTheNext: {},
     get() {
       let modalStack = Session.get('modalStack');
       if (!modalStack) {
@@ -35,9 +36,10 @@ if (Meteor.isClient) {
     push(dataId) { // called upon Modal.show();
       const modalStack = ModalStack.get();
       // console.log('before push:', modalStack);
-      modalStack.push({ id: dataId, result: {}, context: {} });
+      modalStack.push({ id: dataId, result: {}, context: ModalStack.contextForTheNext });
       // console.log('after push:', modalStack);
       Session.set('modalStack', modalStack);
+      ModalStack.contextForTheNext = {};
     },
     pop(dataId) { // called upon Modal.hide();
       const modalStack = ModalStack.get();
@@ -47,13 +49,6 @@ if (Meteor.isClient) {
       // console.log('after pop:', modalStack);
       Session.set('modalStack', modalStack);
       if (modalStack.length > 1) $('body').addClass('modal-open');
-      else {
-        // modalStack[0] = { result: {}, context: {} }; // clean context up after last modal
-        // Certain fields need to be reset whan Modal closes - TODO: use an option in setVar (keep = true)
-        const varsToKeepOnClose = ['communityId', 'relation', 'txdef'];
-        modalStack[0].context = _.pick(modalStack[0].context, ...varsToKeepOnClose);
-        Session.set('modalStack', modalStack);
-      }
     },
     active() {
       const modalStack = ModalStack.get();
@@ -78,13 +73,17 @@ if (Meteor.isClient) {
       // console.log('returns:', ownModal?.result[afId]);
       return ownModal?.result[afId];
     },
-    setVar(key, value) { // Should not call this within an autorun - would cause infinite loop
+    setVar(key, value, keep = false) { // Should not call this within an autorun - would cause infinite loop
       const modalStack = ModalStack.get();
       // console.log('before set', modalStack);
       // console.log('set value', value);
-      _.last(modalStack).context[key] = value;
+      if (keep) { // keep sets it for this level
+        _.last(modalStack).context[key] = value;
+        Session.set('modalStack', modalStack);
+      } else { // no keep sets it only for the next level
+        ModalStack.contextForTheNext[key] = value;
+      }
       // console.log('after set', modalStack);
-      Session.set('modalStack', modalStack);
     },
     getVar(key) {
       const modalStack = ModalStack.get();

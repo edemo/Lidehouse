@@ -49,7 +49,7 @@ Template.Accounting_bills.viewmodel({
     });
   },
   autorun() {
-    ModalStack.setVar('relation', this.activePartnerRelation());
+    ModalStack.setVar('relation', this.activePartnerRelation(), true);
   },
   communityId() {
     return ModalStack.getVar('communityId');
