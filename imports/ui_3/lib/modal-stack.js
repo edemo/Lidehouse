@@ -32,14 +32,14 @@ if (Meteor.isClient) {
       }
       return modalStack;
     },
-    push(dataId) {
+    push(dataId) { // called upon Modal.show();
       const modalStack = ModalStack.get();
       // console.log('before push:', modalStack);
       modalStack.push({ id: dataId, result: {}, context: {} });
       // console.log('after push:', modalStack);
       Session.set('modalStack', modalStack);
     },
-    pop(dataId) {
+    pop(dataId) { // called upon Modal.hide();
       const modalStack = ModalStack.get();
       // console.log('before pop:', modalStack);
       const topModal = modalStack.pop();
@@ -47,8 +47,13 @@ if (Meteor.isClient) {
       // console.log('after pop:', modalStack);
       Session.set('modalStack', modalStack);
       if (modalStack.length > 1) $('body').addClass('modal-open');
-//      else modalStack[0] = { result: {}, context: {} }; // clean context up after last modal
-      // Modal.hide();  // not necessary
+      else {
+        // modalStack[0] = { result: {}, context: {} }; // clean context up after last modal
+        // Certain fields need to be reset whan Modal closes - TODO: use an option in setVar (keep = true)
+        const varsToKeepOnClose = ['communityId', 'relation', 'txdef'];
+        modalStack[0].context = _.pick(modalStack[0].context, ...varsToKeepOnClose);
+        Session.set('modalStack', modalStack);
+      }
     },
     active() {
       const modalStack = ModalStack.get();

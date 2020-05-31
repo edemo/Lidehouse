@@ -28,6 +28,17 @@ Template.Payment_edit.viewmodel({
   unallocatedAmount() {
     return AutoForm.getFieldValue('amount') - this.allocatedAmount();
   },
+  reconciling() {
+    return ModalStack.getVar('statementEntry');
+  },
+  originalStatementEntry() {
+    const original = ModalStack.getVar('statementEntry')?.original;
+    const jsonText = JSON.stringify(original || {}, null, 2);
+    return jsonText.trim().substr(3, jsonText.length - 5).trim();
+  },
+  hiddenWhenReconciling() {
+    return this.reconciling() && 'hidden';
+  },
 });
 
 Template.Payment_edit.events({

@@ -6,28 +6,38 @@
         {{> afQuickField name="defId" type="hidden"}}
         {{> afQuickField name="relation" type="hidden"}}
         <!-- hidden, needed for autoform doc data -->
-        <div class="col-sm-12 col-md-6 pull-right">
+        <div class="col-sm-6 col-md-4 pull-right">
             {{#if doc.serialId}}
                 <h4>{{_ doc.txdef.name}}:
                 <span class="text-navy">{{doc.serialId}}</span></h4>
             {{/if}}
-            <h5>{{_ 'partner'}}:</h5>
             <address>
                 {{> afQuickField name="partnerId"}}
+              {{#unless (equals doc.partner.relation 'member') }}
                 {{> afQuickField name="contractId"}}
+              {{/unless}}
             </address>
             <p>
-                <span>{{> afQuickField name="valueDate"}}</span>
-                <span>{{> afQuickField name="payAccount"}}</span>
-                <span>{{> afQuickField name="amount"}}</span>
+                <span>{{> afQuickField name="valueDate" type=hiddenWhenReconciling}}</span>
+                <span>{{> afQuickField name="payAccount" type=hiddenWhenReconciling}}</span>
+                <span>{{> afQuickField name="amount" type=hiddenWhenReconciling}}</span>
             </p>
         </div>
+        {{#if reconciling}}
+        <div class="col-sm-6 col-md-7">
+            <div class="form-group">
+                <label for="original">Eredeti kivonat adatok</label>
+                <textarea rows="8" name="original" id="original" data-schema-key="original" readonly="" class="form-control">
+                   {{originalStatementEntry}}
+                </textarea>
+            </div>
+        </div>
+        {{/if}}
     </div>
-
     <div class="table-responsive m-t">
         <table class="table invoice-table">
             <thead>
-                <tr >
+                <tr>
                     <th>{{_ 'schemaPayments.bills.label'}}
                       <button type="button" class="btn btn-xs btn-default pull-right js-new" data-entity="bill"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'bill'}}</button>
                     </th>
