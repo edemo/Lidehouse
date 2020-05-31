@@ -269,7 +269,21 @@
       "label": "Membership"
     },
     "role": {
-      "label": "Role"
+      "label": "Role",
+      "options": {
+        "admin": "admin",
+        "manager": "manager",
+        "board": "board member",
+        "owner": "owner",
+        "benefactor": "benefactor",
+        "moderator": "moderator",
+        "accountant": "accountant",
+        "treasurer": "treasurer",
+        "overseer": "overseer",
+        "delegate": "delegate",
+        "maintainer": "maintainer",
+        "guest": "guest"
+      }
     },
     "rank": {
       "label": "Rank extension",
@@ -641,7 +655,16 @@
       "label": "Transaction"
     },
     "category": {
-      "label": "Category"
+      "label": "Category",
+      "options": {
+        "bill": "bill",
+        "payment": "bill payment",
+        "remission": "bill remission",
+        "receipt": "receipt",
+        "transfer": "transfer",
+        "opening": "opening",
+        "freeTx": "free transaction"
+      }
     },
     "defId": {
       "label": "Transaction type"

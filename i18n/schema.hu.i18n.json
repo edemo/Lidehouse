@@ -269,7 +269,21 @@
       "label": "Tagság"
     },
     "role": {
-      "label": "Tisztség"
+      "label": "Tisztség",
+      "options": {
+        "admin": "admin",
+        "manager": "közös képviselő",
+        "board": "intéző",
+        "owner": "tulajdonos",
+        "benefactor": "használó",
+        "moderator": "moderátor",
+        "accountant": "könyvelő",
+        "treasurer": "pénztáros",
+        "overseer": "számvizsgáló",
+        "delegate": "meghatalmazott",
+        "maintainer": "gondnok",
+        "guest": "vendég"
+      }
     },
     "rank": {
       "label": "Kiegészítő titulus",
@@ -641,7 +655,16 @@
       "label": "Tranzakció"
     },
     "category": {
-      "label": "Kategória"
+      "label": "Kategória",
+      "options": {
+        "bill": "számla",
+        "payment": "számla teljesítés",
+        "remission": "számla elengedés",
+        "receipt": "nyugta",
+        "transfer": "átvezetés",
+        "opening": "nyitó",
+        "freeTx": "könyvelési tranzakció"
+      }
     },
     "defId": {
       "label": "Tranzakció típus"

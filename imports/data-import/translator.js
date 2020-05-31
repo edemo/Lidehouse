@@ -51,9 +51,8 @@ export class Translator {
     if (allowedValues) {
       let result = '(';
       allowedValues.forEach((val, i) => {
-        result += __(`schema${this.collection._name.capitalize()}.${key}.options.${val}`);
-        // FIX:        result += this.dictionary[key].options[val];
-        if (i < schema.allowedValues.length - 1) result += '/';
+        result += this.dictionary[key]?.options?.[val];
+        if (i < allowedValues.length - 1) result += '/';
       });
       result += ')';
       return result;
