@@ -59,7 +59,7 @@ Transactions.actions = {
         bodyContext: { doc },
         // --- --- --- ---
         id: `af.${entity.name}.insert`,
-        collection: Transactions.simpleSchema(doc),
+        schema: Transactions.simpleSchema(doc),
         fields: entity.fields,
         omitFields: entity.omitFields && entity.omitFields(),
         doc,
@@ -233,7 +233,6 @@ Transactions.categoryValues.forEach(category => {
       return doc;
     },
     formToDoc(doc) {
-      console.log("doc in af:", doc);
       if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
       } else if (category === 'payment') {
