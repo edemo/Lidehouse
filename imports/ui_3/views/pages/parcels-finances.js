@@ -22,7 +22,7 @@ import '/imports/ui_3/views/components/balance-report.js';
 import './parcels-finances.html';
 
 Template.Parcels_finances.viewmodel({
-  showAllParcels: false,
+  showAllParcels: true,
   onCreated(instance) {
     const self = this;
     instance.autorun(() => {
