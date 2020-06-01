@@ -117,7 +117,7 @@ Parcels.actions = {
   }),
   finances: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'finances',
-    icon: 'fa fa-money',
+    icon: 'fa fa-eye',
     visible: user.hasPermission('parcels.inCommunity', doc),
     href: '#view-target',
     run(event, instance) {

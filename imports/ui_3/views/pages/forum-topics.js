@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { handleError } from '/imports/ui_3/lib/errors';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/actions.js';

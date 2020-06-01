@@ -42,7 +42,7 @@
                   <!--td></td-->
                   <!--td></td-->
                   <td>{{_ 'Balance'}}</td>
-                  <td></td>
+                  <!--td></td-->
               </tr>
               {{#each tx in transactions}}
               <tr>
@@ -54,7 +54,7 @@
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
                   <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
                   <td><strong>{{displayMoney tx.total}}</strong></td>
-                  <td>{{{checkmarkBoolean entry.transaction.isReconciled}}}</td>
+                  <!--td>{{{checkmarkBoolean entry.transaction.isReconciled}}}</td-->
               </tr>
               {{/each}}
             </tbody>
