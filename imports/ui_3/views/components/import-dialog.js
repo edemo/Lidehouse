@@ -6,9 +6,11 @@ import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 import XLSX from 'xlsx';
 
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { doubleScroll } from '/imports/ui_3/lib/double-scroll.js';
 import { Settings } from '/imports/api/settings/settings.js';
+import { Conductors, getConductor } from '/imports/data-import/conductors.js';
 import '/imports/ui_3/views/blocks/help-icon.js';
 import './import-dialog.html';
 
@@ -19,6 +21,7 @@ ViewModel.share({
     columnMapping: {},
     savingEnabled: false,
     availableColumns: [],
+    conductor: null,
 //    headerRow: 0,
 //    headerRowOptions() {
 //      return [
@@ -51,8 +54,8 @@ ViewModel.share({
       });
       return worksheet;
     },
-    savePhase(instance) {
-      const conductor = instance.data.conductor;
+    savePhase() {
+      const conductor = this.conductor();
       Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`, this.columnMapping());
 //      Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`, this.headerRow());
       Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.sheetName`, this.sheetName());
@@ -64,8 +67,24 @@ ViewModel.share({
 
 Template.Import_upload.viewmodel({
   share: 'import',
+  format: '',
   viewColumns: false,
-  selected: [],
+  selectedColumns: [],
+  onCreated() {
+    this.format(this.templateInstance.data.options.format || 'default');
+  },
+  collection() {
+    return this.templateInstance.data.collection;
+  },
+  availableFormats() {
+    const formats = Object.keys(Conductors[this.collection()._name]);
+    return formats.map(k => ({ value: k, label: __(k) }));
+  },
+  potentialConductor() {
+    const options = _.extend(this.templateInstance.data.options, { format: this.format() });
+    const conductor = getConductor(this.collection(), options);
+    return conductor;
+  },
 });
 
 Template.Import_upload.events({
@@ -86,7 +105,7 @@ Template.Import_preview.viewmodel({
     this.savingEnabled(this.checked());
   },
   onCreated(instance) {
-    const conductor = instance.data.conductor;
+    const conductor = this.conductor();
     debugAssert(conductor.phaseIndex >= 0);
     this.columnMapping(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`) || {});
 //    this.headerRow(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`) || 1);
@@ -101,8 +120,8 @@ Template.Import_preview.viewmodel({
     });
   },
   onTableRendered(instance) {
-    const columns = instance.data.columns.filter(c => c.key); // leave out the sperators, like "PARCELS DATA"
-    const validColumnNames = _.without(_.pluck(columns, 'name'), undefined);
+    const possibleColumns = this.conductor().possibleColumns();
+    const validColumnNames = _.without(_.pluck(possibleColumns, 'name'), undefined);
     this.availableColumns([].concat(validColumnNames));
     const tableElem = instance.$('table');
     tableElem.addClass('table dataTable display import-table');

@@ -24,7 +24,7 @@ const colorDelegatedToMe = '#b5b8cf';
 const colorOthers = '#dedede';
 
 Template.Delegations.onCreated(function onCreated() {
-  Session.set('activePartnerRelation', 'member');
+  ModalStack.setVar('relation', 'member', true);
   this.autorun(() => {
     const communityId = getActiveCommunityId();
     this.subscribe('parcels.ofSelf', { communityId });

@@ -126,6 +126,9 @@
   // account
   "Localizer": "Accounting location",
 
+  // import
+  "importing data": "importing %s data",
+
   // Notifications
   "Join request submitted": "Join request submitted to community %s",
   "Join request notification": "Your join request needs to be approved by the managers. Until your request becomes approved, you will not be able to see data and interact with the community.",

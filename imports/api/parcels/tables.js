@@ -74,7 +74,6 @@ const parcelColumns = [
   { data: 'leadRef', title: __('schemaParcels.leadParcelId.label') },
   { data: 'location()', title: __('schemaParcels.location.label') },
   { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
-  { data: 'lot', title: __('schemaParcels.lot.label') },
   { data: 'area', title: 'm2' },
 //  { data: 'share()', title: __('schemaParcels.units.label') },
   { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },

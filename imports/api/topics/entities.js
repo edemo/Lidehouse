@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Topics } from './topics.js';
 import { Votings } from './votings/votings.js';
 import { Tickets } from './tickets/tickets.js';
@@ -40,7 +41,7 @@ Topics.entities = {
     schema: Topics.simpleSchema({ category: 'ticket' }),
     inputFields: IssueProto.inputFields(),
     implicitFields: {
-      communityId: () => Session.get('activeCommunityId'),
+      communityId: () => ModalStack.getVar('communityId'),
       category: 'ticket',
       'ticket.type': 'issue',
         // TODO: if modalContext has contract, here we could launch this issue in scheduled state
@@ -52,7 +53,7 @@ Topics.entities = {
     formType: 'normal',
     inputFields: MaintenanceProto.inputFields().concat(['moreDates']),
     implicitFields: {
-      communityId: () => Session.get('activeCommunityId'),
+      communityId: () => ModalStack.getVar('communityId'),
       category: 'ticket',
       'ticket.type': 'maintenance',
     },
@@ -62,7 +63,7 @@ Topics.entities = {
     schema: Topics.simpleSchema({ category: 'ticket' }),
     inputFields: UpgradeProto.inputFields(),
     implicitFields: {
-      communityId: () => Session.get('activeCommunityId'),
+      communityId: () => ModalStack.getVar('communityId'),
       category: 'ticket',
       'ticket.type': 'upgrade',
         // TODO: if modalContext has contract, here we could launch this issue in scheduled state

@@ -9,13 +9,13 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 const AutoForm = (Meteor.isClient) ? require('meteor/aldeed:autoform').AutoForm : { getFieldValue: () => undefined };
 
 export const Delegations = new Mongo.Collection('delegations');
@@ -30,7 +30,7 @@ const chooseScopeObject = {
     let scopeSet;
     if (scope === 'community') scopeSet = user.communities();
     else {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       if (scope === 'agenda') scopeSet = Agendas.find({ communityId });
       if (scope === 'topic') scopeSet = Topics.find({ communityId, category: 'vote', closed: false });
     }

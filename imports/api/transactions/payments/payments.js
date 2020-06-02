@@ -18,19 +18,18 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
-
 export const Payments = {};
 
 export const chooseBillOfPartner = {
   options() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const relation = AutoForm.getFieldValue('relation');
     const partnerId = AutoForm.getFieldValue('partnerId');
 //    const amount = AutoForm.getFieldValue('amount');
 //    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
 //    const billByProximity = _.sortBy(bills.fetch(), b => (b.oustanding - amount));
-    const bills = Transactions.find({ communityId, category: 'bill', relation, partnerId }, { sort: { createdAt: -1 } });
+    const selector = { communityId, category: 'bill', relation, partnerId };
+    const bills = Transactions.find(Object.cleanUndefined(selector), { sort: { createdAt: -1 } });
     const options = bills.map(function option(bill) {
       return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}/${bill.amount}`, value: bill._id };
     });

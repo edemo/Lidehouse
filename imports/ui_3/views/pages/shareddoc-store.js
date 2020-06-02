@@ -1,9 +1,9 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
@@ -21,7 +21,7 @@ Template.Shareddoc_store.viewmodel({
   activeFolderId: 'main',
   onCreated(instance) {
     instance.autorun(() => {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       if (communityId) {
         instance.subscribe('sharedfolders.ofCommunity', { communityId });
         instance.subscribe('shareddocs.ofCommunity', { communityId });
@@ -29,7 +29,7 @@ Template.Shareddoc_store.viewmodel({
     });
   },
   storeHasDocuments() {
-    const activeCommunityId = Session.get('activeCommunityId');
+    const activeCommunityId = ModalStack.getVar('communityId');
     if (!activeCommunityId) return false;
     return Shareddocs.find({ communityId: activeCommunityId }).count() > 0;
   },
@@ -37,7 +37,7 @@ Template.Shareddoc_store.viewmodel({
     return Sharedfolders.find({ communityId: null });
   },
   communityFolders() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     return Sharedfolders.find({ communityId });
   },
   isActive(folderId) {
@@ -48,7 +48,7 @@ Template.Shareddoc_store.viewmodel({
     return Sharedfolders.findOne(id);
   },
   shareddocs() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const folderId = this.activeFolderId();
     if (!communityId || !folderId) return [];
     let containedFiles;
@@ -74,7 +74,7 @@ Template.Shareddoc_store.events({
     const button = $(event.target.closest('button'));
     if (button.hasClass('disabled')) return;
     Shareddocs.upload({
-      communityId: Session.get('activeCommunityId'),
+      communityId: ModalStack.getVar('communityId'),
       folderId: Template.instance().viewmodel.activeFolderId(),
     });
   },

@@ -2,14 +2,15 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
-import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -36,7 +37,7 @@ Template.Accounting_setup.viewmodel({
     });
   },
   communityId() {
-    return Session.get('activeCommunityId');
+    return ModalStack.getVar('communityId');
   },
   noAccountsDefined() {
     return !Accounts.findOne({ communityId: this.communityId() });
@@ -71,6 +72,8 @@ Template.Accounting_setup.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       paging: false,
       info: false,
+      ...DatatablesExportButtons,
+      ...DatatablesSelectButtons(Accounts),
     });
   },
   localizersTableDataFn(tab) {
@@ -89,6 +92,8 @@ Template.Accounting_setup.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       paging: false,
       info: false,
+      ...DatatablesExportButtons,
+      ...DatatablesSelectButtons(Parcels),
     });
   },
   optionsOf(accountCode) {
@@ -98,7 +103,7 @@ Template.Accounting_setup.viewmodel({
 
 Template.Accounting_setup.events({
   'click #coa .js-clone'(event, instance) {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     Transactions.methods.cloneAccountingTemplates.call({ communityId }, handleError);
   },
   'click .js-import'(event, instance) {

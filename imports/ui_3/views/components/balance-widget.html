@@ -1,6 +1,6 @@
 <template name="Balance_widget">
     {{#if Template.subscriptionsReady}}
-    {{#if (currentUser.hasRole 'owner' (fromSession 'activeCommunityId')) }}
+    {{#if (currentUser.hasRole 'owner' activeCommunityId) }}
     {{#let bal=balance}}
     <a href="{{pathFor 'Parcels finances'}}">
         <div id="balance-widget-top" class="widget style1 {{colorClass bal}}">

@@ -1,16 +1,17 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
 import { ReactiveDatatable } from 'meteor/ephemer:reactive-datatables';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
 import { displayLocalizer, displayTicketType, displayStatus, displayUrgency } from '/imports/ui_3/helpers/api-display.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
 export function ticketColumns() {
-  const communityId = Session.get('activeCommunityId');
+  const communityId = ModalStack.getVar('communityId');
   return [
     { data: 'serialId', title: __('schemaTickets.id.label') },
     { data: '_id', title: __('schemaTickets.title.label'), render: Render.displayTitle },

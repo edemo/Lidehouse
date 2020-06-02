@@ -17,6 +17,7 @@ Parcelships.actions = {
     label: __('new') + ' ' + __('parcelship'),
     visible: user.hasPermission('parcelships.insert', doc),
     run() {
+      doc.parcelId = ModalStack.getVar('parcelId');
       Modal.show('Autoform_modal', {
         id: 'af.parcelship.insert',
         collection: Parcelships,
@@ -91,7 +92,6 @@ AutoForm.addModalHooks('af.parcelship.insert');
 AutoForm.addModalHooks('af.parcelship.update');
 AutoForm.addHooks('af.parcelship.insert', {
   formToDoc(doc) {
-    doc.parcelId = ModalStack.getVar('parcelId');
     //    doc.approved = true;
     return doc;
   },

@@ -13,7 +13,7 @@ Transactions.entities = {
     name: 'payment',
     viewForm: 'Payment_view',
     editForm: 'Payment_edit',
-    size: 'md',
+    size: 'lg',
   },
   barter: {
     name: 'barter',

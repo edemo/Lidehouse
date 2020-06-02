@@ -5,12 +5,12 @@ import { Tracker } from 'meteor/tracker';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 
-import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Fraction } from 'fractional';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { __ } from '/imports/localization/i18n.js';
 import { leaderRoles, nonLeaderRoles, officerRoles, rolesPriorities } from '/imports/api/permissions/roles.js';
@@ -153,7 +153,7 @@ Template.Parcels_box.viewmodel({
 
 Template.Community_page.viewmodel({
   onCreated() {
-    Session.set('activePartnerRelation', 'member');
+    ModalStack.setVar('relation', 'member', true);
   },
   onRendered() {
     // Add slimscroll to element
@@ -232,10 +232,6 @@ Template.Occupants_box.events({
     const parcel = Parcels.findOne(id);
     Parcels.actions.occupants({}, parcel).run();
   },
-});
-
-Template.Meters_box.events({
-...(actionHandlers(Meters, 'new')),
 });
 
 Template.Parcels_box.events({

@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 import rusdiff from 'rus-diff';
 
 import { debugAssert } from '/imports/utils/assert.js';
+import { newBundledErrors } from '/imports/utils/errors.js';
 import { checkPermissions } from '/imports/api/method-checks.js';
 
 const batchOperationSchema = new SimpleSchema({
@@ -34,11 +35,11 @@ export class BatchMethod extends ValidatedMethod {
             results.push(res);
           } catch (err) {
             if (err.error === 'err_permissionDenied') throw err; // The batch method continues exectuing even after an error. Just collects all errors on the way/            console.log("error in batch call", err);
-            // console.log(err);
+            console.log(err);
             errors.push(err);
           }
         });
-        if (errors.length) throw new Meteor.Error(errors[0].error, errors[0].reason, `success:${results.length} error: ${errors.length}`);
+        if (errors.length) throw newBundledErrors(errors);
         else return results;
       },
     };

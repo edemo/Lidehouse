@@ -1,8 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
-import { $ } from 'meteor/jquery';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -22,7 +21,7 @@ Template.New_forum_topic.events({
   'click .js-attach'(event, instance) {
     const vm = instance.viewmodel;
     const doc = {
-      communityId: Session.get('activeCommunityId'),
+      communityId: ModalStack.getVar('communityId'),
       category: 'forum',
       title: vm.titleValue() || vm.textValue().substring(0, 25) + '...',
       text: vm.textValue(),
@@ -36,7 +35,7 @@ Template.New_forum_topic.events({
   'click .js-send'(event, instance) {
     const vm = instance.viewmodel;
     Topics.methods.insert.call({
-      communityId: Session.get('activeCommunityId'),
+      communityId: ModalStack.getVar('communityId'),
       category: 'forum',
       title: vm.titleValue() || vm.textValue().substring(0, 25) + '...',
       text: vm.textValue(),

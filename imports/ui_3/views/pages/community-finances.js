@@ -4,8 +4,9 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
-import { __ } from '/imports/localization/i18n.js';
 
+import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { monthTags, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
@@ -103,7 +104,7 @@ Template.Disclaimer.helpers({
 Template.Community_finances.viewmodel({
   displayBankBalancesFrom: Meteor.settings.public.deployment === 'marina' ? 'C' : 'T',
   accountToView: '`382',
-  communityId() { return Session.get('activeCommunityId'); },
+  communityId() { return ModalStack.getVar('communityId'); },
   community() { return Communities.findOne(this.communityId()); },
   startTag: 'T-2019-01',
   endTag: PeriodBreakdown.currentMonthTag(),
@@ -269,7 +270,7 @@ Template.Community_finances.viewmodel({
     return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK'];
   },
 //  breakdown(name) {
-//    return Breakdowns.findOneByName(name, Session.get('activeCommunityId'));
+//    return Breakdowns.findOneByName(name, ModalStack.getVar('communityId'));
 //  },
   totalTag() {
     return ['T'];

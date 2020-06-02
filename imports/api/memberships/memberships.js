@@ -7,6 +7,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 import '/imports/startup/both/fractional.js';  // TODO: should be automatic, but not included in tests
 import { Factory } from 'meteor/dburles:factory';
+import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -17,7 +18,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Parcels, chooseProperty } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
 export const Memberships = new Mongo.Collection('memberships');

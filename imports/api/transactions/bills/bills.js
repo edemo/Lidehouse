@@ -8,6 +8,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -18,13 +19,11 @@ import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
-
 export const Bills = {};
 
 export const choosePayment = {
   options() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const payments = Transactions.find({ communityId, category: 'payment', seId: { $exists: false } });
     const options = payments.map(function option(payment) {
       return { label: `${payment.partner()} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note || ''}`, value: payment._id };
@@ -197,7 +196,7 @@ Factory.define('bill', Transactions, {
 
 export const chooseBill = {
   options() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const bills = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
     const options = bills.map(function option(bill) {
       return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };

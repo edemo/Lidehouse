@@ -2,11 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 
-
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
+import { BatchAction } from '/imports/api/batch-action.js';
 import { Accounts } from './accounts.js';
 import './entities.js';
 import './methods.js';
@@ -77,6 +77,10 @@ Accounts.actions = {
       });
     },
   }),
+};
+
+Accounts.batchActions = {
+  delete: new BatchAction(Accounts.actions.delete, Accounts.methods.batch.remove),
 };
 
 //-----------------------------------------------

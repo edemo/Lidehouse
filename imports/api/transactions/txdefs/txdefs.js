@@ -13,8 +13,6 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
-
 export const Txdefs = new Mongo.Collection('txdefs');
 
 Txdefs.define = function define(doc) {
@@ -115,7 +113,7 @@ Factory.define('txdef', Txdefs, {
 export const chooseConteerAccount = function (flipSide = false) {
   return {
     options() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       const defId = AutoForm.getFieldValue('defId');
       if (!defId) return [];
       const txdef = Txdefs.findOne(defId);

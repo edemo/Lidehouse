@@ -16,8 +16,6 @@ import { AccountingLocation } from '/imports/api/behaviours/accounting-location.
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
-
 export const Partners = new Mongo.Collection('partners');
 
 const ContactSchema = new SimpleSchema({
@@ -230,9 +228,9 @@ export const choosePartner = {
     return value;
   },
   options() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const community = Communities.findOne(communityId);
-    const relation = AutoForm.getFieldValue('relation') || Session.get('activePartnerRelation');
+    const relation = AutoForm.getFieldValue('relation') || ModalStack.getVar('relation');
     const partners = Partners.find({ communityId, relation });
     const options = partners.map(function option(p) {
       return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };

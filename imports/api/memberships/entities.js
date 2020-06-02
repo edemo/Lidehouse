@@ -26,17 +26,11 @@ Memberships.entities = {
     name: 'ownership',
     schema: transformSchemaForUI(Memberships.simpleSchema({ role: 'owner' })),
     modifiableFields: ['partnerId', 'ownership'],
-    implicitFields: {
-      parcelId: () => ModalStack.getVar('parcelId'),
-    },
   },
   benefactorship: {
     name: 'benefactorship',
     schema: transformSchemaForUI(Memberships.simpleSchema({ role: 'benefactor' })),
     modifiableFields: ['partnerId', 'benefactorship'],
-    implicitFields: {
-      parcelId: () => ModalStack.getVar('parcelId'),
-    },
   },
   delegate: {
     name: 'delegate',

@@ -2,19 +2,25 @@
     <div class="panel panel-info">
       <div class="panel-heading"><i class="fa fa-file"></i> {{_ 'Uploading'}}</div>
       <div class="panel-body">
-        <div class="pull-right">
-            <button name="download" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> {{_ 'Download template'}}</button>
-        </div>
-        {{_ 'Importable columns'}}: 
-        {{#if viewColumns}}
-            <select multiple style="position:fixed" size="6" {{b "options: columns, optionsValue: name, optionsText: display, value: selected"}} ></select>
-        {{else}}
-          <a href="" id="view-columns" class="text-capitalize"><u>{{_ 'view'}}</u><b class="caret"></b></a>
-        {{/if}}
-        <br><br><br>
-        {{{_ 'importUploadInstructions'}}}<br>
+          {{#if (equals format 'default')}}
+              <div class="pull-right">
+                  <button name="download" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> {{_ 'Download template'}}</button>
+              </div>
+          {{/if}}
+          {{_ 'Import format'}}: 
+          <select name="format" {{b "options: availableFormats, optionsValue: value, optionsText: label, value: format"}} ></select>
+          <br><br>
+          {{_ 'Importable columns'}}: 
+          {{#if viewColumns}}
+              <select multiple style="position:fixed" size="6" {{b "options: potentialConductor.possibleColumnsListing, optionsValue: name, optionsText: display, value: selectedColumns"}} ></select>
+          {{else}}
+              <a href="" id="view-columns" class="text-capitalize"><u>{{_ 'view'}}</u><b class="caret"></b></a>
+          {{/if}}
+          <br><br><br>
+          {{{_ 'importUploadInstructions'}}}<br>
       </div>
     </div>
+    {{#if format}}
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
             <div class="align-center">
@@ -22,6 +28,7 @@
             </div>
         </div>
     </div>
+    {{/if}}
 </template>
 
 <template name="Import_preview">

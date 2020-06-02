@@ -42,19 +42,19 @@
                   <!--td></td-->
                   <!--td></td-->
                   <td>{{_ 'Balance'}}</td>
-                  <td></td>
+                  <!--td></td-->
               </tr>
               {{#each tx in transactions}}
               <tr>
                   <td>{{displayDate tx.valueDate}}</td>
-                  <td class="text-capitalize"><a href="{{pathFor 'Transaction show' _txid=tx._id}}">{{tx.displayInHistory}}</a></td>
+                  <td class="text-capitalize"><!--a href="{{pathFor 'Transaction show' _txid=tx._id}}"-->{{tx.displayInHistory}}<!--/a--></td>
                   <td>{{>Action_buttons_group collection='transactions' actions='view' doc=tx size='sm'}}</td>
                   <td><span class="text-navy">{{tx.serialId}}</span></td>
                   <td class="{{negativeClass tx}}">{{displayMoney tx.subjectiveAmount}}</td>
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
                   <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
                   <td><strong>{{displayMoney tx.total}}</strong></td>
-                  <td>{{{checkmarkBoolean entry.transaction.isReconciled}}}</td>
+                  <!--td>{{{checkmarkBoolean entry.transaction.isReconciled}}}</td-->
               </tr>
               {{/each}}
             </tbody>

@@ -5,8 +5,8 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { $ } from 'meteor/jquery';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { remove as removeUser } from '/imports/api/users/methods.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -24,7 +24,7 @@ Template.Profile_form.viewmodel({
       Session.set('personMismatchWarningWasShown', true);
       const userName = Meteor.user().fullName() || Meteor.user().profile.firstName || Meteor.user().profile.lastName ;
       const personName = Meteor.user().displayOfficialName();
-      const communityName = Communities.findOne(Session.get('activeCommunityId')).name;
+      const communityName = Communities.findOne(ModalStack.getVar('communityId')).name;
       const modalContext = {
         title: __('Name mismatch'),
         text: __('Name mismatch notification', { personName, userName, communityName } ),

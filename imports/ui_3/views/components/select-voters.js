@@ -1,9 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -12,7 +13,7 @@ import './select-voters.html';
 
 Template.Select_voters.onCreated(function selectVotersOnCreated() {
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     this.subscribe('parcels.inCommunity', { communityId });
   });
 });
@@ -33,7 +34,7 @@ Template.Select_voters.viewmodel({
     const castedVote = this.castedVote();
     const chooseVoter = {
       options() {
-        const communityId = Session.get('activeCommunityId');
+        const communityId = ModalStack.getVar('communityId');
         const community = Communities.findOne(communityId);
         const partners = Partners.find({ communityId, relation: 'member' }).fetch();
         const owners = partners.filter(p => p.ownerships(communityId).fetch().filter(m => m.votingUnits() > 0).count() > 0);

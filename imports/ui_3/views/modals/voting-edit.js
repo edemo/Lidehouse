@@ -6,7 +6,8 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
-import { __ } from '/imports/localization/i18n.js';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { afId2details } from '/imports/ui_3/views/modals/autoform-modal.js';
 import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -41,7 +42,7 @@ Template.Voting_edit.onCreated(function () {
     if (newChoices) instance.choices.set(newChoices);
   });
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const topicId = getTopicId();
     this.subscribe('shareddocs.ofTopic', { communityId, topicId });
   });
@@ -62,7 +63,7 @@ Template.Voting_edit.helpers({
     return moment().add(15, 'day').toDate();
   },
   agendaOptions() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const agendas = Agendas.find({ communityId });
     return agendas.map(function option(a) { return { label: a.title, value: a._id }; });
   },
@@ -107,7 +108,7 @@ Template.Voting_edit.events({
   'click .js-upload'(event) {
     const topicId = getTopicId();
     Shareddocs.upload({
-      communityId: Session.get('activeCommunityId'),
+      communityId: ModalStack.getVar('communityId'),
       folderId: 'voting',
       topicId,
     });

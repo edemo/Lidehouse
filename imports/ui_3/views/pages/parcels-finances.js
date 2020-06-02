@@ -5,8 +5,9 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { moment } from 'meteor/momentjs:moment';
-
 import { Session } from 'meteor/session';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { parcelFinancesColumns } from '/imports/api/parcels/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -21,11 +22,11 @@ import '/imports/ui_3/views/components/balance-report.js';
 import './parcels-finances.html';
 
 Template.Parcels_finances.viewmodel({
-  showAllParcels: false,
+  showAllParcels: true,
   onCreated(instance) {
     const self = this;
     instance.autorun(() => {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('parcelships.inCommunity', { communityId });
       if (Meteor.userOrNull().hasPermission('transactions.inCommunity', { communityId })) {
@@ -46,13 +47,13 @@ Template.Parcels_finances.viewmodel({
     return Session.get('parcelToView');
   },
   myLeadParcels() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const user = Meteor.user();
     if (!user || !communityId) return [];
     return user.ownedLeadParcels(communityId);
   },
   parcelChoices() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const parcels = Meteor.userOrNull().hasPermission('balances.ofLocalizers', { communityId }) ?
       Parcels.find({ communityId, category: '@property', approved: true }).fetch().filter(p => !p.isLed()) : this.myLeadParcels();
     return parcels.map((parcel) => {
@@ -70,7 +71,7 @@ Template.Parcels_finances.viewmodel({
     return moment().format('YYYY-MM-DD');
   },
   parcelFinancesTableDataFn() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     return () => Parcels.find({ communityId, category: '@property' }).fetch().filter(p => !p.isLed());
   },
   parcelFinancesOptionsFn() {

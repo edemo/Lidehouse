@@ -10,6 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
@@ -18,8 +19,6 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { displayMoney } from '/imports/ui_3/helpers/utils.js';
-
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
@@ -71,8 +70,8 @@ ParcelBillings.schema = new SimpleSchema({
 
 const chooseParcelBilling = {
   options() {
-    const communityId = Session.get('activeCommunityId');
-    const activeParcelBillingId = Session.get('activeParcelBillingId');
+    const communityId = ModalStack.getVar('communityId');
+    const activeParcelBillingId = ModalStack.getVar('parcelBillingId');
     const parcelBillings = activeParcelBillingId
       ? ParcelBillings.find(activeParcelBillingId)
       : ParcelBillings.findActive({ communityId });
@@ -87,7 +86,7 @@ const chooseParcelBilling = {
 function chooseParcelBillingLocalizer() {
   return _.extend(Parcels.chooseSubNode('@'), {
     value: () => {
-      const activeParcelBillingId = Session.get('activeParcelBillingId');
+      const activeParcelBillingId = ModalStack.getVar('parcelBillingId');
       const localizer = activeParcelBillingId
         ? ParcelBillings.findOne(activeParcelBillingId).localizer
         : '@';
