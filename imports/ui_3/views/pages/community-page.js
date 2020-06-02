@@ -108,9 +108,10 @@ Template.Parcels_box.viewmodel({
     const user = Meteor.user();
     const communityId = this.templateInstance.data.communityId();
     const community = this.templateInstance.data.community();
+    const flat = TAPi18n.__(`schemaParcels.type.flat`, {}, community.settings.language)
     const showAllParcelsDefault = (
       (user && user.hasPermission('parcels.insert', { communityId }))
-      || (community && community.parcels.flat <= 80)
+      || (community && community.parcels[flat] <= 80)
     );
     this.showAllParcels(!!showAllParcelsDefault);
   },

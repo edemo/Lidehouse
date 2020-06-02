@@ -452,16 +452,26 @@ Migrations.add({
   version: 25,
   name: 'Parcel.type and Membership.rank becomes simple text field',
   up() {
-    Parcels.find({ type: { $exists: true } }).forEach((p) => {
-      const language = p.community().settings.language;
-      const type = TAPi18n.__(`schemaParcels.type.${p.type}`, {}, language);
-      Parcels.update(p._id, { $set: { type } }, { selector: { category: '@property' } }, { validate: false });
-    });
-    officerRoles.forEach(role => {
-      Memberships.find({ role, rank: { $exists: true } }).forEach((m) => {
-        const language = m.community().settings.language;
-        const rank = TAPi18n.__(`schemaMemberships.rank.${m.rank}`, {}, language);
-        Memberships.update(m._id, { $set: { rank } }, { selector: { role } }, { validate: false });
+    Communities.find().forEach((c) => {
+      const language = c.settings.language;
+      const parcelTypes = Object.keys(c.parcels);
+
+      Parcels.find({ communityId: c._id, type: { $exists: true } }).forEach((p) => {
+        const type = TAPi18n.__(`schemaParcels.type.${p.type}`, {}, language);
+        Parcels.update(p._id, { $set: { type } }, { selector: { category: '@property' } }, { validate: false });
+      });
+
+      // removing old parcel types
+      parcelTypes.forEach((pt) => {
+        const key = `parcels.${pt}`;
+        Communities.update(c._id, { $unset: { [key]: '' } });
+      });
+
+      officerRoles.forEach(role => {
+        Memberships.find({ communityId: c._id, role, rank: { $exists: true } }).forEach((m) => {
+          const rank = TAPi18n.__(`schemaMemberships.rank.${m.rank}`, {}, language);
+          Memberships.update(m._id, { $set: { rank } }, { selector: { role } }, { validate: false });
+        });
       });
     });
   },
