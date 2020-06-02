@@ -1,13 +1,12 @@
 /* globals document */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
-import { ReactiveDict } from 'meteor/reactive-dict';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -22,7 +21,7 @@ import { createEnvelope } from './envelope.js';
 
 
 function castVoteBasedOnPermission(topicId, castedVote, callback) {
-  Session.set('activePartnerRelation', 'member');
+  ModalStack.setVar('relation', 'member', true);
   const community = getActiveCommunity();
   const communityId = community._id;
   if (Meteor.user().hasPermission('vote.castForOthers', { communityId }) && community.hasLiveAssembly()) {

@@ -3,11 +3,12 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Memberships } from './memberships';
@@ -25,6 +26,7 @@ Memberships.actions = {
     subActions: options.splitable() && options.split().map(opts => Memberships.actions.new(opts.fetch(), doc, user)),
     run() {
       const entity = options.entity;
+      doc.parcelId = ModalStack.getVar('parcelId');
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.insert`,
         schema: entity.schema,
@@ -111,7 +113,7 @@ Memberships.actions = {
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',
-    visible: user.hasPermission(`${doc.entityName()}.remove`, doc),
+    visible: doc?.entityName && user.hasPermission(`${doc.entityName()}.remove`, doc),
     run() {
       Modal.confirmAndCall(Memberships.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,
@@ -131,9 +133,6 @@ _.each(Memberships.entities, (entity, entityName) => {
 
   AutoForm.addHooks(`af.${entityName}.insert`, {
     formToDoc(doc) {
-      _.each(entity.implicitFields, (value, key) => {
-        doc[key] = (typeof value === 'function') ? value() : value;
-      });
       return doc;
     },
   });

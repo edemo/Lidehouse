@@ -7,12 +7,11 @@ import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
-
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const Accounts = new Mongo.Collection('accounts');
 
@@ -40,7 +39,7 @@ Accounts.bankExtensionSchema = new SimpleSchema({
   primary: { type: Boolean, optional: true },
   bank: { type: String, max: 100, optional: true },
   BAN: { type: String, max: 100, optional: true },  // Bank Account Number
-  sync: { type: String, defaultValue: 'none', allowedValues: Accounts.syncValues, autoform: _.extend({ value: 'none' }, autoformOptions(Accounts.syncValues, 'schemaAccounts.sync.')) },
+//  sync: { type: String, defaultValue: 'none', allowedValues: Accounts.syncValues, autoform: _.extend({ value: 'none' }, autoformOptions(Accounts.syncValues, 'schemaAccounts.sync.')) },
 //  protocol: { type: String, optional: true },
 });
 
@@ -121,7 +120,7 @@ _.extend(Accounts, {
   chooseSubNode(code, leafsOnly) {
     return {
       options() {
-        const communityId = Session.get('activeCommunityId');
+        const communityId = ModalStack.getVar('communityId');
         return Accounts.nodeOptionsOf(communityId, code, leafsOnly);
       },
       firstOption: false,
@@ -129,14 +128,14 @@ _.extend(Accounts, {
   },
   chooseNode: {
     options() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       return Accounts.nodeOptionsOf(communityId, '`', false);
     },
     firstOption: () => __('(Select one)'),
   },
   choosePayinType: {
     options() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       const members = Accounts.getByName('Members', communityId);
       const options = Accounts.nodeOptionsOf(communityId, members.code, true);
       options.forEach(o => {

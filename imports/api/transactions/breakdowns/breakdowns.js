@@ -6,11 +6,10 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const Breakdowns = new Mongo.Collection('breakdowns');
 
@@ -42,7 +41,7 @@ Breakdowns.name2code = function name2code(breakdownName, nodeName, communityId) 
 
 export const chooseBreakdown = {
   options() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     return Breakdowns.find({ communityId }).map(function option(breakdown) {
       return { label: breakdown.name, value: breakdown.name };
     });
@@ -53,7 +52,7 @@ export const chooseBreakdown = {
 export function chooseSubAccount(brk, nodeCode, leafsOnly = true) {
   return {
     options() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       const breakdown = Breakdowns.findOneByName(brk, communityId);
       return breakdown.nodeOptionsOf(nodeCode, leafsOnly);
     },

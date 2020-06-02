@@ -6,6 +6,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/data-import/import.js';
@@ -17,17 +18,17 @@ import './methods.js';
 Partners.actions = {
   new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
+    label: `${__('new') + ' ' + __('partner')}`,
     icon: 'fa fa-plus',
     color: 'primary',
     visible: user.hasPermission('partners.insert', doc),
     run() {
-      const activeRelation = Session.get('activePartnerRelation');
+      const activeRelation = ModalStack.getVar('relation');
       if (activeRelation) _.extend(doc, { relation: [activeRelation] });
-      let statementEntry = ModalStack.getVar('statementEntry');
-      if (statementEntry) {
-        statementEntry = StatementEntries._transform(statementEntry);
-        _.deepExtend(doc, { idCard: { name: statementEntry.name }, relation: [statementEntry.impliedRelation()] });
-      }
+      const activeTxdef = ModalStack.getVar('txdef');
+      if (activeTxdef)  _.extend(doc, { relation: [activeTxdef.data.relation] });
+      const statementEntry = ModalStack.getVar('statementEntry');
+      if (statementEntry) _.deepExtend(doc, { idCard: { name: statementEntry.name } });
 
       Modal.show('Autoform_modal', {
         id: 'af.partner.insert',
@@ -81,7 +82,7 @@ Partners.actions = {
     name: 'remindOutstandings',
     color: doc.mostOverdueDaysColor(),
     icon: 'fa fa-exclamation',
-    visible: user.hasPermission('partners.remindOutstandings', doc) && (Session.get('activePartnerRelation') !== 'supplier') && doc.mostOverdueDays(),
+    visible: user.hasPermission('partners.remindOutstandings', doc) && (ModalStack.getVar('relation') !== 'supplier') && doc.mostOverdueDays(),
     run() {
       if ((!doc.contact || !doc.contact.email) && !doc.userId) {
         displayMessage('warning', 'No contact email set for this partner');
@@ -104,6 +105,10 @@ Partners.actions = {
       });
     },
   }),
+};
+
+Partners.batchActions = {
+  delete: new BatchAction(Partners.actions.delete, Partners.methods.batch.remove),
 };
 
 //-------------------------------------------------------

@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import './account-history.html';
 
@@ -34,7 +34,7 @@ Template.Account_history.viewmodel({
     },
   ],
   subscribeParams() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const selector = {
       communityId,
       begin: new Date(this.beginDate()),

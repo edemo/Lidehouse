@@ -5,6 +5,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
 import { __ } from '/imports/localization/i18n.js';
+import { importCollectionFromFile } from '/imports/data-import/import.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Meters } from './meters.js';
 import './methods.js';
@@ -12,7 +13,9 @@ import './methods.js';
 Meters.actions = {
   new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'new',
+    label: __('new') + ' ' + __('meter'),
     icon: 'fa fa-plus',
+    color: 'primary',
     visible: user.hasPermission('meters.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
@@ -24,6 +27,12 @@ Meters.actions = {
         meteormethod: 'meters.insert',
       });
     },
+  }),
+  import: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'import',
+    icon: 'fa fa-upload',
+    visible: user.hasPermission('meters.upsert', doc),
+    run: () => importCollectionFromFile(Meters),
   }),
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',

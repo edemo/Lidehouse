@@ -118,12 +118,12 @@ export const HouseTranslation = {
         "#tag": "Hashtag"
       },
       "serial": {
-        "label": "Serial no.",
+        "label": "Parcel serial",
         "placeholder": "(eg. 34)",
         "help": "The serial number of the property. An integer that grows, and lets you sort your list."
       },
       "ref": {
-        "label": "Reference",
+        "label": "Parcel reference",
         "placeholder": "(eg. B405 or II/4)",
         "help": "An abritrary but unique reference within the community"
       },
@@ -329,12 +329,12 @@ export const HouseTranslation = {
         "#tag": "Elszámolási egység"
       },
       "serial": {
-        "label": "Sorszám",
+        "label": "Albetét sorszám",
         "placeholder": "(pl. 34)",
         "help": "Egyedi sorszám, mely segít sorba rendezni a helyeinket. A helyrajzi szám utolsó száma például kíválóan alkalmas erre."
       },
       "ref": {
-        "label": "Albetét",
+        "label": "Albetét azonosító",
         "placeholder": "(pl. B405 vagy II/4)",
         "help": "Egyedi név, mellyel hivatkozni lehet erre a helyre"
       },

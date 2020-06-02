@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
-import { ReactiveVar } from 'meteor/reactive-var';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { _ } from 'meteor/underscore';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { leaderRoles } from '/imports/api/permissions/roles.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Rooms } from '/imports/api/topics/rooms/rooms.js';
@@ -14,7 +14,7 @@ import './members-panel.html';
 const MEMBERS_TO_SHOW = 10;
 
 Template.Members_panel.onCreated(function onCreated() {
-//  const communityId = Session.get('activeCommunityId');
+//  const communityId = ModalStack.getVar('communityId');
 //  const manager = Memberships.findOneActive({ communityId, role: 'manager' });
 //  if (manager) Session.set('messengerPartnerId', manager.userId);
 });
@@ -25,7 +25,7 @@ Template.Members_panel.onRendered(function onRendered() {
 Template.Members_panel.viewmodel({
   tooManyMembers: false,
   leaders() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const partnerSearch = Session.get('messengerPartnerSearch');
     let managers = Memberships.findActive({ communityId, role: { $in: leaderRoles }, userId: { $exists: true, $ne: Meteor.userId() } }).fetch();
     managers = _.uniq(managers, false, m => m.userId);
@@ -35,7 +35,7 @@ Template.Members_panel.viewmodel({
     return managers;
   },
   members() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const partnerSearch = Session.get('messengerPartnerSearch');
     let nonManagers = Memberships.findActive({ communityId, role: { $not: { $in: leaderRoles } }, userId: { $exists: true, $ne: Meteor.userId() } }).fetch();
     nonManagers = _.uniq(nonManagers, false, m => m.userId);

@@ -5,6 +5,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import rusdiff from 'rus-diff';
 
+import { debugAssert } from '/imports/utils/assert.js';
+import { newBundledErrors } from '/imports/utils/errors.js';
 import { checkPermissions } from '/imports/api/method-checks.js';
 
 const batchOperationSchema = new SimpleSchema({
@@ -32,12 +34,13 @@ export class BatchMethod extends ValidatedMethod {
 //            console.log("successful batch call", arg);
             results.push(res);
           } catch (err) {
-            if (err.error === 'err_permissionDenied') throw err;  // The batch method continues exectuing even after an error. Just collects all errors on the way/            console.log("error in batch call", err);
+            if (err.error === 'err_permissionDenied') throw err; // The batch method continues exectuing even after an error. Just collects all errors on the way/            console.log("error in batch call", err);
             console.log(err);
             errors.push(err);
           }
         });
-        return { errors, results };
+        if (errors.length) throw newBundledErrors(errors);
+        else return results;
       },
     };
     super(options);
@@ -60,7 +63,7 @@ export class BatchTester extends ValidatedMethod {
       name: batchTesterName,
       validate: batchOperationSchema.validator({ clean: true }),
       run({ args }) {
-//        if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
+        debugAssert(Meteor.isClient || Meteor.isTest); // Batch testers are only simulated on the client
         const neededOperations = { insert: [], update: [], remove: [], noChange: [] };
         if (!args.length) return neededOperations;
         checkPermissions(this.userId, batchUpsertName, { communityId: args[0].communityId });

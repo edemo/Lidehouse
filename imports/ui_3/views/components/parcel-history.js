@@ -4,8 +4,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -18,7 +17,7 @@ Template.Parcel_history.viewmodel({
   parcelSelected: '',
   status: 'Reconciled',
   onCreated(instance) {
-    Session.set('activePartnerRelation', 'member');
+    ModalStack.setVar('relation', 'member', true);
     instance.autorun(() => {
       if (this.partnerSelected()) {
         instance.subscribe('transactions.byPartner', this.subscribeParams());
@@ -37,7 +36,7 @@ Template.Parcel_history.viewmodel({
     },
   ],
   communityId() {
-    return Session.get('activeCommunityId');
+    return ModalStack.getVar('communityId');
   },
   partnerSelected() {
     const parcelId = this.parcelSelected();

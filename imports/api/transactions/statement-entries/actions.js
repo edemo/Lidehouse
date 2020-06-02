@@ -40,7 +40,18 @@ StatementEntries.actions = {
     icon: 'fa fa-upload',
     visible: user.hasPermission('statements.upsert', doc),
     run(event, instance) {
-      importCollectionFromFile(StatementEntries, { keepOriginals: true, communityId: getActiveCommunityId(), account: instance.viewmodel.accountSelected() });
+      const accountCode = instance.viewmodel.accountSelected();
+      const account = Accounts.findOne({ communityId: getActiveCommunityId(), code: accountCode });
+      const format = (account.category === 'bank' && account.bank) || (account.category === 'cash' && 'CR') || 'default';
+      importCollectionFromFile(StatementEntries, {
+        format,
+        keepOriginals: true,
+        dictionary: {
+          communityId: { default: getActiveCommunityId() },
+          account: { default: accountCode },
+          statementId: { default: undefined },
+        },
+      });
     },
   }),
   view: (options, doc, user = Meteor.userOrNull()) => ({
@@ -114,7 +125,7 @@ StatementEntries.actions = {
 };
 
 StatementEntries.dummyDoc = {
-  communityId: getActiveCommunityId(),
+  communityId: getActiveCommunityId,
   isReconciled() { return false; },
 };
 

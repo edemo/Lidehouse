@@ -52,7 +52,6 @@ Transactions.actions = {
           toAccount: statementEntry.account, // transfer
         });
       }
-      console.log("doc:", doc);
       doc = Transactions._transform(doc);
 
       Modal.show('Autoform_modal', {
@@ -60,7 +59,7 @@ Transactions.actions = {
         bodyContext: { doc },
         // --- --- --- ---
         id: `af.${entity.name}.insert`,
-        schema: Transactions.simpleSchema({ category: entity.name }),
+        schema: Transactions.simpleSchema(doc),
         fields: entity.fields,
         omitFields: entity.omitFields && entity.omitFields(),
         doc,
@@ -193,7 +192,7 @@ Transactions.actions = {
         membershipId: doc.membershipId,
         contractId: doc.contractId,
         amount: doc.amount,
-        bills: [{ id: doc._id, amount: doc.amount }],
+        bills: [{ id: doc._id, amount: doc.outstanding }],
       };
 //      const paymentDoc = Transactions._transform(paymentTx);
       Transactions.actions.new(paymentOptions, paymentTx).run();
@@ -213,7 +212,7 @@ Transactions.actions = {
 };
 
 Transactions.dummyDoc = {
-  communityId: getActiveCommunityId(),
+  communityId: getActiveCommunityId,
   isPosted() { return false; },
   isReconciled() { return false; },
 };
@@ -234,7 +233,6 @@ Transactions.categoryValues.forEach(category => {
       return doc;
     },
     formToDoc(doc) {
-      doc.category = category;
       if (category === 'bill' || category === 'receipt') {
         doc.lines = _.without(doc.lines, undefined);
       } else if (category === 'payment') {

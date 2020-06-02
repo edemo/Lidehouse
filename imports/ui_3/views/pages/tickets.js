@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { moment } from 'meteor/momentjs:moment';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/actions.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
@@ -17,9 +17,9 @@ Template.Tickets.viewmodel({
   filterCreatedBy: null,
   searchText: '',
   onCreated(instance) {
-    Session.set('activePartnerRelation', 'supplier');
+    ModalStack.setVar('relation', 'supplier', true);
     instance.autorun(() => {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       instance.subscribe('topics.list', { communityId, category: 'ticket' });
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
@@ -38,7 +38,7 @@ Template.Tickets.viewmodel({
     return this.filterCreatedBy() && 'active';
   },
   tickets() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const selector = { communityId, category: 'ticket', 'ticket.type': 'issue' };
     if (this.activesOnly()) selector.status = { $ne: 'closed' };
     if (this.filterCreatedBy()) selector.creatorId = this.filterCreatedBy();
@@ -52,7 +52,7 @@ Template.Tickets.viewmodel({
     return topicsList;
   },
   recentTickets() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     return Topics.find({ communityId, category: 'ticket', 'ticket.type': 'issue',
       createdAt: { $gt: moment().subtract(2, 'week').toDate() },
     }, { sort: { createdAt: -1 } });

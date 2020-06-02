@@ -8,5 +8,3 @@ export function resetSession() {
   Session.keys = {};
   Session.set('modalStack', [{ result: {}, context: {} }]);
 }
-
-Meteor.startup(resetSession);

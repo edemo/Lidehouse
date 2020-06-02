@@ -1,11 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 
-
-import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/components/context-menu.js';
 import { autosetActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 
@@ -25,9 +22,9 @@ Template.Main_layout.onCreated(function() {
   // Subscriptions
   // We run this in autorun, so when a new User logs in, the subscription changes
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
-    this.subscribe('communities.byId', { _id: Session.get('activeCommunityId') });
+    this.subscribe('communities.byId', { _id: ModalStack.getVar('communityId') });
     this.subscribe('delegations.toUser', { communityId });
     this.subscribe('delegations.fromUser', { communityId });
     this.subscribe('topics.active', { communityId });
@@ -40,21 +37,21 @@ Template.Main_layout.onCreated(function() {
   });
   // We run this in autorun, so when User switches his community, the subscription changes
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     if (communityId) {
       this.subscribe('memberships.inCommunity', { communityId });
       this.subscribe('partners.inCommunity', { communityId });
     }
   });
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     this.subscribe('agendas.inCommunity', { communityId });
     // We need all the room topics and their comments for the counter badge
     this.subscribe('topics.roomsOfUser', { communityId, userId: Meteor.userId() });
   });
   this.autorun(() => {
     const user = Meteor.userOrNull();
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     if (user.hasPermission('delegations.inCommunity', { communityId })) {
       this.subscribe('delegations.inCommunity', { communityId });
     }

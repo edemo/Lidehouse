@@ -9,6 +9,9 @@ function CollectionStage(collection) {
   this._fresh._transform = collection._transform;
   this._trash = []; // ids only
   this._operations = [];
+  // some of the api needs to be copied over
+  this._name = collection._name + '_stage';
+  this.idSet = collection.idSet;
 }
 
 // Must be able to call findActive and other static helpers on the Stage

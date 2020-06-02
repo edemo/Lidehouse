@@ -1,16 +1,11 @@
 /* globals document */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
-import { AutoForm } from 'meteor/aldeed:autoform';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
 import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
-import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';

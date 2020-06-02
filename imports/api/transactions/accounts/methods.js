@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Accounts } from './accounts.js';
 
 export const insert = new ValidatedMethod({
@@ -49,3 +50,4 @@ export const remove = new ValidatedMethod({
 
 Accounts.methods = Accounts.methods || {};
 _.extend(Accounts.methods, { insert, update, remove });
+_.extend(Accounts.methods, crudBatchOps(Accounts));

@@ -2,7 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { autosetActiveCommunity } from '/imports/ui_3/lib/active-community.js'
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { autosetActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 
 import './root-redirector.html';
 
@@ -14,7 +15,7 @@ Template.app_rootRedirector.onCreated(() => {
     });
     Template.instance().autorun(() => {
       if (Template.instance().subscriptionsReady()) {
-        if (Session.get('activeCommunityId')) {
+        if (ModalStack.getVar('communityId')) {
           FlowRouter.go('Board');
         } else {
           FlowRouter.go('Communities list');

@@ -54,41 +54,63 @@
       "import/prefer-default-export": "off",
       "import/no-absolute-path": "off",
       "import/extensions": "off",
+      "no-multi-spaces": "off",
       "no-underscore-dangle": "off",
       "no-else-return": "off",
-      "object-shorthand": ["error", "always", {
-        "avoidQuotes": false
-      }],
+      "object-shorthand": [
+        "error",
+        "always",
+        {
+          "avoidQuotes": false
+        }
+      ],
       "object-property-newline": "off",
       "object-curly-newline": "off",
       "lines-between-class-members": "off",
       "arrow-parens": "off",
-      "max-len": ["warn", 150, {
-        "ignoreComments": true
-      }],
-      "indent": ["warn", 2, {
-        "ignoreComments": true,
-        "SwitchCase": 1
-      }],
-      "meteor/eventmap-params": ["error", {
-        "eventParamName": "event",
-        "templateInstanceParamName": "instance"
-      }],
+      "max-len": [
+        "warn",
+        150,
+        {
+          "ignoreComments": true
+        }
+      ],
+      "indent": [
+        "warn",
+        2,
+        {
+          "ignoreComments": true,
+          "SwitchCase": 1
+        }
+      ],
+      "meteor/eventmap-params": [
+        "error",
+        {
+          "eventParamName": "event",
+          "templateInstanceParamName": "instance"
+        }
+      ],
       "meteor/template-names": "off",
       "meteor/no-session": "off",
       "prefer-template": "off",
       "prefer-arrow-callback": "off",
       "prefer-destructuring": "off",
-      "no-param-reassign": ["error", {
-        "props": false
-      }],
+      "no-param-reassign": [
+        "error",
+        {
+          "props": false
+        }
+      ],
       "no-return-assign": "warn",
       "no-useless-concat": "warn",
       "no-unused-vars": "warn",
       "no-nested-ternary": "warn",
-      "no-plusplus": ["error", {
-        "allowForLoopAfterthoughts": true
-      }]
+      "no-plusplus": [
+        "error",
+        {
+          "allowForLoopAfterthoughts": true
+        }
+      ]
     },
     "settings": {
       "import/resolver": "meteor"

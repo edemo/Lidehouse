@@ -16,11 +16,11 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 
 export function parcelColumns() {
   return [
+    { data: 'serial', title: __('schemaParcels.serial.label') },
     { data: 'ref', title: __('schemaParcels.ref.label') },
     { data: 'leadRef', title: __('schemaParcels.leadRef.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translateWithScope('schemaParcels.type') },
-    { data: 'lot', title: __('schemaParcels.lot.label') },
     { data: 'area', title: __('schemaParcels.area.label') },
     { data: 'units', title: __('schemaParcels.units.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
@@ -73,7 +73,6 @@ const parcelColumns = [
   { data: 'leadRef', title: __('schemaParcels.leadParcelId.label') },
   { data: 'location()', title: __('schemaParcels.location.label') },
   { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
-  { data: 'lot', title: __('schemaParcels.lot.label') },
   { data: 'area', title: 'm2' },
 //  { data: 'share()', title: __('schemaParcels.units.label') },
   { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },

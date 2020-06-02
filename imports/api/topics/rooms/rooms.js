@@ -3,19 +3,19 @@ import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
 import { debugAssert } from '/imports/utils/assert.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Topics } from '../topics.js';
 
 export const Rooms = {};    // a bunch of static helpers
 
 if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
   import { FlowRouter } from 'meteor/kadira:flow-router';
   import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 
   Rooms.getRoom = function getRoom(roomType, otherUserId) {
     if (!roomType || !otherUserId) return undefined;
     const userId = Meteor.userId();
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     if (roomType === 'private chat') {
       return Topics.findOne({ communityId, category: 'room', title: 'private chat', participantIds: { $size: 2, $all: [userId, otherUserId] } });
     } else if (roomType === 'tech support') {
@@ -32,7 +32,7 @@ if (Meteor.isClient) {
       FlowRouter.go('Room show', { _rid: room._id });
     } else {
       Meteor.call('topics.insert', {
-        communityId: Session.get('activeCommunityId'),
+        communityId: ModalStack.getVar('communityId'),
         participantIds: [Meteor.userId(), otherUserId],
         category: 'room',
         title: roomType,

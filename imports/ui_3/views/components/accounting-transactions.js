@@ -1,18 +1,14 @@
 /* globals document */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
-import { AutoForm } from 'meteor/aldeed:autoform';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
-import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
-import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
+import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -50,11 +46,11 @@ Template.Accounting_transactions.viewmodel({
     });
   },
   communityId() {
-    return Session.get('activeCommunityId');
+    return ModalStack.getVar('communityId');
   },
   autorun: [
     function setTxdefOptions() {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = ModalStack.getVar('communityId');
       const txdefOptions = [{ value: '', label: __('All') }];
       Txdefs.find({ communityId }).map(function (def) {
         txdefOptions.push({ value: def._id, label: __(def.name) });
@@ -86,7 +82,7 @@ Template.Accounting_transactions.viewmodel({
     },
   ],
   txdefs() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const txdefs = Txdefs.find({ communityId }).fetch().filter(c => c.isAccountantTx());
     return txdefs;
   },
@@ -119,6 +115,7 @@ Template.Accounting_transactions.viewmodel({
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       ...DatatablesExportButtons,
+      ...DatatablesSelectButtons(Transactions),
     });
   },
 });

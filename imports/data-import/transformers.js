@@ -73,8 +73,13 @@ export const Transformers = {
           const paymentId = doc.serialId;
           const split = paymentId.split('/'); split[0] = 'SZ';
           const billId = split.join('/');
+          const bill = Transactions.findOne({ serialId: billId });
+          if (!bill) {
+            console.error('No bill found for payment', paymentId);
+            return;
+          }
           tdoc.bills = [{
-            id: Transactions.findOne({ serialId: billId })._id,
+            id: bill._id,
             amount: doc.amount,
           }];
           tdoc.payAccount = doc.credit[0].account;

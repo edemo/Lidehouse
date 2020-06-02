@@ -5,15 +5,14 @@ import { Tracker } from 'meteor/tracker';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 
-import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Fraction } from 'fractional';
 
-import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { __ } from '/imports/localization/i18n.js';
-import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { leaderRoles, nonLeaderRoles, officerRoles, rolesPriorities } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/actions.js';
@@ -144,6 +143,7 @@ Template.Parcels_box.viewmodel({
             lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
             pageLength: 25,
             ...DatatablesExportButtons,
+            ...DatatablesSelectButtons(Parcels),
           };
         };
       },
@@ -153,7 +153,7 @@ Template.Parcels_box.viewmodel({
 
 Template.Community_page.viewmodel({
   onCreated() {
-    Session.set('activePartnerRelation', 'member');
+    ModalStack.setVar('relation', 'member', true);
   },
   onRendered() {
     // Add slimscroll to element
@@ -232,10 +232,6 @@ Template.Occupants_box.events({
     const parcel = Parcels.findOne(id);
     Parcels.actions.occupants({}, parcel).run();
   },
-});
-
-Template.Meters_box.events({
-...(actionHandlers(Meters, 'new')),
 });
 
 Template.Parcels_box.events({

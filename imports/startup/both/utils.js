@@ -53,7 +53,7 @@ Object.deepEquals = function deepEquals(a, b) {
 
 // Info: https://www.samanthaming.com/tidbits/70-3-ways-to-clone-objects/
 Object.deepClone = function deepClone(obj) {
-  const clone = {}; 
+  const clone = {};
   $.extend(true, clone, obj);
   return clone;
 };
@@ -65,6 +65,15 @@ Object.deepCloneOwn = function deepCloneOwn(obj) {
 
 Object.stringifyClone = function stringifyClone(obj) {
   return JSON.parse(JSON.stringify(obj));
+};
+
+Object.cleanUndefined = function cleanUndefined(obj) {
+  Object.keys(obj).forEach(key => {
+    if (typeof obj[key] === 'undefined') {
+      delete obj[key];
+    }
+  });
+  return obj;
 };
 
 String.prototype.forEachChar = function forEachChar(func) {

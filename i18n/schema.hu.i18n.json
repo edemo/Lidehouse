@@ -269,7 +269,21 @@
       "label": "Tagság"
     },
     "role": {
-      "label": "Tisztség"
+      "label": "Tisztség",
+      "options": {
+        "admin": "admin",
+        "manager": "közös képviselő",
+        "board": "intéző",
+        "owner": "tulajdonos",
+        "benefactor": "használó",
+        "moderator": "moderátor",
+        "accountant": "könyvelő",
+        "treasurer": "pénztáros",
+        "overseer": "számvizsgáló",
+        "delegate": "meghatalmazott",
+        "maintainer": "gondnok",
+        "guest": "vendég"
+      }
     },
     "rank": {
       "label": "Kiegészítő titulus",
@@ -280,7 +294,7 @@
       "substitute": "helyettes"
     },
     "partnerId": {
-      "label": "Személy"
+      "label": "Partner"
     },
     "parcelId": {
       "label": "Albetét"
@@ -641,10 +655,19 @@
       "label": "Tranzakció"
     },
     "category": {
-      "label": "Kategória"
+      "label": "Kategória",
+      "options": {
+        "bill": "számla",
+        "payment": "számla teljesítés",
+        "remission": "számla elengedés",
+        "receipt": "nyugta",
+        "transfer": "átvezetés",
+        "opening": "nyitó",
+        "freeTx": "könyvelési tranzakció"
+      }
     },
     "defId": {
-      "label": "Típus"
+      "label": "Tranzakció típus"
     },
     "status": {
       "label": "Státusz",
@@ -664,7 +687,7 @@
       "label": "Sorszám"
     },
     "serialId": {
-      "label": "azonosító"
+      "label": "Egyedi azonosító"
     },
     "createdAt": {
       "label": "Rögzítés ideje",
@@ -681,7 +704,7 @@
       "label": "Szerződés"
     },
     "partnerName": {
-      "label": "Partner",
+      "label": "Partner neve",
       "placeholder": "(pl. Kulcslyuk kft)"
     },
     "sourceId": {

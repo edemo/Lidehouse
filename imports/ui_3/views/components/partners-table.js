@@ -7,7 +7,7 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { Partners } from '/imports/api/partners/partners.js';
 import { partnersColumns } from '/imports/api/partners/tables.js';
-import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 
 import './partners-table.html';
 
@@ -28,6 +28,7 @@ Template.Partners_table.viewmodel({
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
       ...DatatablesExportButtons,
+      ...DatatablesSelectButtons(Partners),
     });
   },
 });

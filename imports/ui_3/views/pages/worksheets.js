@@ -29,8 +29,8 @@ import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './worksheets.html';
 
 Template.Worksheets.onCreated(function onCreated() {
-  Session.set('activePartnerRelation', 'supplier');
-  this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
+  ModalStack.setVar('relation', 'supplier', true);
+  this.getCommunityId = () => FlowRouter.getParam('_cid') || ModalStack.getVar('communityId');
   this.autorun(() => {
     const communityId = this.getCommunityId();
     this.subscribe('communities.byId', { _id: communityId });
@@ -179,7 +179,7 @@ Template.Worksheets.viewmodel({
     return selected.includes(elem) && 'active';
   },
   recentTickets() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const recentTickets = [];
     const allTickets = Topics.find({ communityId, category: 'ticket',
       $or: [{ status: { $ne: 'closed' } }, { createdAt: { $gt: moment().subtract(1, 'week').toDate() } }],
@@ -190,7 +190,7 @@ Template.Worksheets.viewmodel({
     return recentTickets;
   },
   filterSelector() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = ModalStack.getVar('communityId');
     const ticketStatusSelected = this.ticketStatusSelected();
     const ticketTypeSelected = this.ticketTypeSelected();
     const ticketUrgencySelected = this.ticketUrgencySelected();
@@ -237,6 +237,7 @@ Template.Worksheets.viewmodel({
         searching: false,
         paging: false,
         ...DatatablesExportButtons,
+        ...DatatablesSelectButtons(Topics),
       };
     };
   },

@@ -270,7 +270,9 @@
   "insertion": "felvitele",
 
   // import
-  "importing data": "adatok importálása",
+  "importing data": "%s adatok importálása",
+  "Import format": "Import formátum",
+  "default": "alapértelmezett",
   "Importable columns": "Importálható oszlopok",
   "template": "sablon",
   "Download template": "Sablon letöltése",
@@ -570,6 +572,7 @@
   "issuer": "kiállító",
   "receiver": "vevő",
   "Insert bill": "Számla rögzítése",
+  "Full": "Teljes",
 
   // docstore
   "Show": "Listázva",

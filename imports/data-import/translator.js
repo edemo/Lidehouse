@@ -1,5 +1,4 @@
 import { _ } from 'meteor/underscore';
-import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 
 import { __ } from '/imports/localization/i18n.js';
@@ -48,11 +47,12 @@ export class Translator {
 
   example(key, schema) {
     if (schema.autoform && schema.autoform.placeholder) return schema.autoform.placeholder();
-    if (schema.allowedValues) {
+    const allowedValues = (typeof schema.allowedValues === 'function') ? schema.allowedValues() : schema.allowedValues;
+    if (allowedValues) {
       let result = '(';
-      schema.allowedValues.forEach((val, i) => {
-        result += __(`schema${this.collection._name.capitalize()}.${key}.options.${val}`);
-        if (i < schema.allowedValues.length - 1) result += '/';
+      allowedValues.forEach((val, i) => {
+        result += this.dictionary[key]?.options?.[val];
+        if (i < allowedValues.length - 1) result += '/';
       });
       result += ')';
       return result;
@@ -95,7 +95,7 @@ export class Translator {
           }
         });
       }
-      const original = Object.deepClone(doc);
+      const original = Object.deepCloneOwn(doc);
       reverseObject(doc);
       if (this.options.keepOriginals) tdoc.original = original;
       return tdoc;
