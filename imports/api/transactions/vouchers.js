@@ -3,7 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { autoformOptions, imageUpload } from '/imports/utils/autoform.js';
+import { allowedOptions, imageUpload } from '/imports/utils/autoform.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 export const Vouchers = new Mongo.Collection('vouchers');

@@ -58,7 +58,7 @@
                     {{#if (equals comment.category 'statusChange')}}
                         {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
                         {{_ 'changed the status'}}: <span class="label {{eventStatusObject.color}}">
-                           {{_ (concat 'schemaTopics.status.' comment.status)}}
+                           {{_ (concat 'schemaTopics.status.options' comment.status)}}
                         </span><br>
                         {{/let}}
                         {{#if (equals comment.topic.category 'ticket')}}

@@ -17,7 +17,7 @@ import { Meters } from '/imports/api/meters/meters.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
 import { displayMoney } from '/imports/ui_3/helpers/utils.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
@@ -32,12 +32,12 @@ ParcelBillings.chargeSchema = new SimpleSchema({
 });
 
 ParcelBillings.consumptionSchema = new SimpleSchema({
-  service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
+  service: { type: String, allowedValues: Meters.serviceValues, autoform: allowedOptions() },
   charges: { type: [ParcelBillings.chargeSchema] },
 });
 
 ParcelBillings.projectionSchema = new SimpleSchema({
-  base: { type: String, allowedValues: ParcelBillings.projectionBaseValues, autoform: autoformOptions(ParcelBillings.projectionBaseValues) },
+  base: { type: String, allowedValues: ParcelBillings.projectionBaseValues, autoform: allowedOptions() },
   unitPrice: { type: Number, decimal: true },
 });
 
@@ -62,7 +62,7 @@ ParcelBillings.schema = new SimpleSchema({
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
   digit: { type: String, autoform: Accounts.choosePayinType },
   localizer: { type: String, autoform: Parcels.choosePhysical },
-  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: _.extend({}, autoformOptions(Parcels.typeValues, 'schemaParcels.type.'), { firstOption: () => __('All') }) },
+  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: { firstOption: () => __('All') } },
   group: { type: String, optional: true, autoform: selectFromExistingGroups },
   note: { type: String, optional: true },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },

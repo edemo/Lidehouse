@@ -68,7 +68,7 @@
 
 <template name="StatusChange">
     {{#let eventStatusObject = (this.topic.statusObject this.status)}}
-    {{_ 'changed the status'}}: <span class="label label-{{eventStatusObject.color}}">{{_ (concat 'schemaTopics.status.' this.status)}}</span><!--<strong>{{_ this.status}}</strong>--><br>
+    {{_ 'changed the status'}}: <span class="label label-{{eventStatusObject.color}}">{{_ (concat 'schemaTopics.status.options' this.status)}}</span><!--<strong>{{_ this.status}}</strong>--><br>
     {{#if this.text}}
     <span><!--{{_ 'schemaTickets.text.label'}}:--> {{this.text}}</span><br>
     {{/if}}

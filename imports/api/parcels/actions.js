@@ -26,7 +26,7 @@ Parcels.actions = {
     icon: 'fa fa-plus',
     color: 'primary',
     label: (options.splitable() ? `${__('new') + ' ' + __('parcel')}`
-      : `${__('new')} ${__('schemaParcels.category.' + options.entity.name)}`),
+      : `${__('new')} ${__('schemaParcels.category.options.' + options.entity.name)}`),
     visible: user.hasPermission('parcels.insert', doc),
     subActions: options.splitable() && options.split().map(opts => Parcels.actions.new(opts.fetch(), doc, user)),
     run() {

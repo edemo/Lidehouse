@@ -12,7 +12,7 @@ import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
 import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';

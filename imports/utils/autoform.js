@@ -2,10 +2,14 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
-import { Attachments } from '/imports/api/attachments/attachments.js';
-import { AttachmentsStore } from '/imports/api//attachments/attachments-store.js';
-
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+
+export const allowedOptions = function allowedOptions() {
+  // Here the autoform-i18n options are being used, which are the translated values of the allowedOptions()
+  return {
+    firstOption: () => __('(Select one)'),
+  };
+};
 
 export const autoformOptions = function autoformOptions(values, i18Path = '') {
   return {

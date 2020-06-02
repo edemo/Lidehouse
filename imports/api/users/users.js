@@ -9,7 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions, imageUpload } from '/imports/utils/autoform.js';
+import { allowedOptions, imageUpload } from '/imports/utils/autoform.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -91,8 +91,8 @@ const levelValues = ['never', 'high', 'medium', 'low'];
 const UserSettingsSchema = new SimpleSchema({
   language: { type: String, allowedValues: availableLanguages, defaultValue: 'en', autoform: { firstOption: false } },
   delegatee: { type: Boolean, defaultValue: true },
-  notiFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'never', autoform: autoformOptions(frequencyValues, 'schemaUsers.settings.notiFrequency.') },
-//  notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: autoformOptions(levelValues, 'schemaUsers.settings.notiLevel.') },
+  notiFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'never', autoform: allowedOptions() },
+//  notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: allowedOptions() },
   newsletter: { type: Boolean, defaultValue: false },
 });
 

@@ -12,7 +12,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
@@ -53,7 +53,7 @@ const OwnershipSchema = new SimpleSchema({
 
 const benefactorTypeValues = ['rental', 'favor', 'right'];
 const BenefactorshipSchema = new SimpleSchema({
-  type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues, 'schemaMemberships.benefactorship.type.') },
+  type: { type: String, allowedValues: benefactorTypeValues, autoform: allowedOptions() },
 });
 
 const Ownerships = {};
@@ -72,7 +72,7 @@ Benefactorships.schema = new SimpleSchema({
 
 const Officerships = {};
 Officerships.schema = new SimpleSchema({
-  rank: { type: String, optional: true, allowedValues: rankValues, autoform: autoformOptions(rankValues, 'schemaMemberships.rank.') },
+  rank: { type: String, optional: true, allowedValues: rankValues, autoform: allowedOptions() },
 });
 
 const Delegateships = {};

@@ -5,7 +5,7 @@
         <div class="letter-content">
           <div class="row">
             <div class="voting-instructions col-xs-12 text-center {{#if envelopeIsClosed}}text-muted{{else}}{{/if}}">
-              {{{_ 'This is a voting type' (_ (concat 'schemaVotings.vote.type.' topic.vote.type)) }}}
+              {{{_ 'This is a voting type' (_ (concat 'schemaVotings.vote.type.options.' topic.vote.type)) }}}
               - <i class='fa fa-question-circle'></i>
               {{{_ (concat 'votingInstructions.' topic.vote.type)}}}
             </div>

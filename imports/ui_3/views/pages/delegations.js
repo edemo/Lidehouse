@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId, getActivePartnerId } from '/imports/ui_3/lib/active-community.js';

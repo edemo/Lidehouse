@@ -11,7 +11,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -52,7 +52,7 @@ Parcels.baseSchema = new SimpleSchema({
 });
 
 Parcels.physicalSchema = new SimpleSchema({
-  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues, 'schemaParcels.type.') },
+  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: allowedOptions() },
   building: { type: String, max: 25, optional: true },
   floor: { type: String, max: 25, optional: true },
   door: { type: String, max: 25, optional: true },
@@ -160,7 +160,7 @@ Parcels.helpers({
     return this.payerMembership().partner();
   },
   display() {
-    return `${this.ref || '?'} (${this.location()}) ${__('schemaParcels.type.' + this.type)}`;
+    return `${this.ref || '?'} (${this.location()}) ${__('schemaParcels.type.options.' + this.type)}`;
   },
   displayName() {
     return this.location() || __(this.ref);

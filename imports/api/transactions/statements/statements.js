@@ -6,19 +6,19 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 export const Statements = new Mongo.Collection('statements');
 
-Statements.supportedBanks = ['K&H'];
+Statements.supportedBanks = ['OTP', 'K&H'];
 
 Statements.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   account: { type: String },
-  bank: { type: String, allowedValues: Statements.supportedBanks, autoform: autoformOptions(Statements.supportedBanks) },
+  bank: { type: String, allowedValues: Statements.supportedBanks, autoform: allowedOptions() },
   startDate: { type: Date },
   startBalance: { type: Number },
   endDate: { type: Date },
