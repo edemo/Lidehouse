@@ -34,10 +34,7 @@ const launchNextPhase = function launchNextPhase(vm) {
 //  const communityId = getActiveCommunityId();
   const conductor = vm.conductor();
   const phase = conductor.nextPhase();
-  if (!phase) { // Import cycle ended - can close import dialog here
-    Meteor.setTimeout(() => $('.modal').modal('hide'), 500);
-    return;
-  }
+  if (!phase) return; // Import cycle ended
   const collection = phase.collection();
   Modal.show('Modal', {
     title: __('importing data', __(collection._name)),
@@ -86,7 +83,7 @@ Template.Import_upload.events({
         const workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' /*, cellDates: true*/ });
         instance.viewmodel.workbook(workbook);
         instance.viewmodel.conductor(instance.viewmodel.potentialConductor());
-        Modal.hideAll();
+        Modal.hide();
         launchNextPhase(instance.viewmodel);
       };
       if (rABS) reader.readAsBinaryString(file);
