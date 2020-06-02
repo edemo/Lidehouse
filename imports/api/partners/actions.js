@@ -123,7 +123,7 @@ AutoForm.addHooks('af.partner.update', {
         Modal.confirmAndCall(Partners.methods.update, { _id: this.docId, modifier }, {
           action: 'update partner',
           message: 'Changing partner email address will unlink user',
-        }, (res) => { if (res) Modal.hideAll(); });
+        }, (res) => { if (res) Modal.hide(this.template.parent()); });
         return false;
       }
       return modifier;
