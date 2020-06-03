@@ -107,11 +107,9 @@ Template.Parcels_box.viewmodel({
   onCreated() {
     const user = Meteor.user();
     const communityId = this.templateInstance.data.communityId();
-    const community = this.templateInstance.data.community();
-    const flat = TAPi18n.__(`schemaParcels.type.flat`, {}, community.settings.language)
+    const parcelsCount = Parcels.find({ communityId, leadRef: { $exists: false } }).count();
     const showAllParcelsDefault = (
-      (user && user.hasPermission('parcels.insert', { communityId }))
-      || (community && community.parcels[flat] <= 80)
+      (user?.hasPermission('parcels.insert', { communityId })) || (parcelsCount <= 80)
     );
     this.showAllParcels(!!showAllParcelsDefault);
   },
