@@ -22,6 +22,8 @@ import './import-dialog.html';
 
 const rABS = true;
 
+const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVXYZ';
+
 const launchNextPhase = function launchNextPhase(vm) {
   const userId = Meteor.userId();
 //  const communityId = getActiveCommunityId();
@@ -227,9 +229,11 @@ Template.Import_preview.viewmodel({
     headerRow.children().each((i, td) => {
       const tdElem = $(td);
       const _columnName = td.innerText;
+      const L = ALPHABET.charAt(i);
+      const _originalColumnName = this.worksheet()[L + '1']?.w;
       tdElem.empty();
       Blaze.renderWithData(Template.Import_header_cell,
-        { _columnName, columns: validColumnNames }, td,
+        { _originalColumnName, _columnName, columns: validColumnNames }, td,
       );
     });
     Meteor.setTimeout(function () { doubleScroll(tableElem); }, 1000);
@@ -249,8 +253,10 @@ Template.Import_header_cell.viewmodel({
   share: 'import',
   columnName: '',
   onCreated(instance) {
-    const mappedName = this.columnMapping()[instance.data._columnName];
-    this.columnName(mappedName || instance.data._columnName);
+    const visibleComunName = (instance.data._originalColumnName
+      && this.columnMapping()[instance.data._originalColumnName])
+      || instance.data._columnName;
+    this.columnName(visibleComunName);
   },
   onRendered(instance) {
     const viewmodel = this;
@@ -273,7 +279,7 @@ Template.Import_header_cell.events({
   'change select'(event, instance) {
     const selected = event.target.selectedOptions[0].value;
     instance.viewmodel.columnName(selected);
-    instance.viewmodel.columnMapping()[instance.data._columnName] = selected;
+    instance.viewmodel.columnMapping()[instance.data._originalColumnName] = selected;
 //    Blaze.remove(instance.view);  should remove somewhere
   },
 });
