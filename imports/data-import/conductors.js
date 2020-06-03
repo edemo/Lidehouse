@@ -438,6 +438,22 @@ export const Conductors = {
       };
     },
   },
+  balances: {
+    default(options) {
+      return {
+        collectionName: 'balances',
+        format: 'default',
+        phases: [{
+          collectionName: 'balances',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+//            date: { label: 'Dátum' },
+          },
+        }],
+      };
+    },
+  },
 };
 
 export function getConductor(collection, options) {
