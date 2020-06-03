@@ -43,6 +43,7 @@ Topics.baseSchema = new SimpleSchema({
 //  shareddocs: { type: Array, optional: true },
 //  'shareddocs.$': { type: String, optional: true, autoform: documentUpload() },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
+  movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id },
 });
 
 Topics.extensionSchemas.news = new SimpleSchema({
@@ -72,6 +73,7 @@ Topics.publicFields = {
   likes: 1,
   flags: 1,
   commentCounter: 1,
+  movedTo: 1,
   revision: 1,
   status: 1,
   serial: 1,

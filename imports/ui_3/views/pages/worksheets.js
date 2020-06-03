@@ -13,7 +13,7 @@ import { _ } from 'meteor/underscore';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { currentUserLanguage } from '/imports/startup/client/language.js';
-import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/actions.js';
 import '/imports/api/topics/tickets/actions.js';

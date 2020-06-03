@@ -62,6 +62,7 @@ export const move = new ValidatedMethod({
   }).validator(),
   run({ _id, destinationId }) {
     const doc = checkExists(Topics, _id);
+    if (doc.category !== 'forum') throw new Meteor.Error('err_permissionDenied', 'Only forum topic may be moved.');
     checkPermissions(this.userId, 'comment.move', doc);
     Comments.direct.insert(_.extend({}, doc, {
       category: 'comment',
@@ -70,7 +71,7 @@ export const move = new ValidatedMethod({
     doc.comments().forEach((comment) => {
       Comments.update(comment._id, { $set: { topicId: destinationId } });
     });
-    Topics.remove(_id);
+    Topics.update(_id, { $set: { movedTo: destinationId, status: 'deleted' } }, { selector: { category: doc.category } });
     if (Meteor.isServer) {
       const community = Communities.findOne(doc.communityId);
       community.users().forEach((user) => {

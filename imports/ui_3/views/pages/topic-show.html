@@ -2,7 +2,10 @@
     {{#if Template.subscriptionsReady}}
         {{#if topic}}
             {{#if (equals topic.category 'news')}}
-            {{> app_rootRedirector}}
+                {{> app_rootRedirector}}
+            {{else if topic.movedTo}}
+                {{_ 'This topic has been merged with an other one, you will be redirected'}}
+                {{redirectToDestination topic.movedTo}}
             {{else}}
             {{#with topic}}
             <!-- Page heading -->

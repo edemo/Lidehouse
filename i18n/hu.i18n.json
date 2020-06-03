@@ -364,6 +364,7 @@
   "View previous comments": "Korábbi %s hozzászólás megtekintése",
   "Unread": "Olvasatlan",
   "Todo": "Tennivaló",
+  "This topic has been merged with an other one, you will be redirected": "Ez a téma egyesítésre került egy másikkal, átirányítás folyamatban.",
 
   // voting
   "choice": "választási lehetőség",
