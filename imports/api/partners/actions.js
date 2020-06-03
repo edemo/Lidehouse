@@ -9,7 +9,7 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { displayMessage } from '/imports/ui_3/lib/errors.js';
-import { importCollectionFromFile } from '/imports/data-import/import.js';
+import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { userUnlinkNeeded }from '/imports/api/partners/methods.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';

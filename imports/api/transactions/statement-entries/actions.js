@@ -7,7 +7,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
-import { importCollectionFromFile } from '/imports/data-import/import.js';
+import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';

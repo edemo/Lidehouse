@@ -22,7 +22,7 @@ import { accountColumns } from '/imports/api/transactions/accounts/tables.js';
 import { localizerColumns } from '/imports/api/parcels/tables.js';
 import '/imports/api/transactions/accounts/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
-import { importCollectionFromFile } from '/imports/data-import/import.js';
+import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import '/imports/api/transactions/txdefs/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';

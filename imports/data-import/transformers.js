@@ -14,6 +14,18 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Parser } from './parser.js';
 
+function singlify(jsons) {
+  const tjsons = [];
+  jsons.forEach(json => {
+    _.each(json, (value, key) => {
+      if (key.indexOf('(') !== -1) {
+        // TODO
+      }
+    });
+  });
+  return tjsons;
+}
+
 function flattenBankAccountNumber(BAN) {
   return BAN.trim().split('-').join();
 }

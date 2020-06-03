@@ -94,6 +94,9 @@ export class ImportConductor {
     const phase = this.phases[this.phaseIndex];
     return phase;
   }
+  morePhasesToCome() {
+    return !!this.phases[this.phaseIndex + 1];
+  }
 }
 ImportConductor.Instance = new ImportConductor();
 ImportConductor.from = obj => { Object.setPrototypeOf(obj, ImportConductor.Instance); return obj; };

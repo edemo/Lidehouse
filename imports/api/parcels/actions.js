@@ -11,7 +11,7 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
-import { importCollectionFromFile } from '/imports/data-import/import.js';
+import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
