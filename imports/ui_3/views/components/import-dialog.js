@@ -85,7 +85,7 @@ ViewModel.share({
     sheetName: '',
     columnMapping: {},
     savingEnabled: false,
-    availableColumns: [],
+    usedColumns: [],
     conductor: null,
 //    headerRow: 0,
 //    headerRowOptions() {
@@ -95,6 +95,12 @@ ViewModel.share({
 //        { value: 1, label: '2.' },
 //      ];
 //    },
+    possibleColumns() {
+      return _.without(_.pluck(this.conductor().possibleColumns(), 'name'), undefined);
+    },
+    availableColumns() {
+      return _.without(this.possibleColumns(), ...this.usedColumns());
+    },
     table() {
       const html = XLSX.utils.sheet_to_html(this.worksheet(), { editable: true });
       return html;
@@ -161,7 +167,7 @@ Template.Import_upload.events({
   },
   'click button[name=download]'(event, instance) {
     const selectedColumns = instance.viewmodel.selectedColumns();
-    const possibleColumns = instance.viewmodel.conductor().possibleColumns();
+    const possibleColumns = instance.viewmodel.possibleColumns();
     const wb = XLSX.utils.book_new();
     const ws_data = [[], []]; // eslint-disable-line camelcase
     possibleColumns.forEach((colDef) => {
@@ -184,6 +190,7 @@ Template.Import_upload.events({
         const workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' /*, cellDates: true*/ });
         instance.viewmodel.workbook(workbook);
         instance.viewmodel.conductor(instance.viewmodel.potentialConductor());
+        instance.viewmodel.usedColumns([]);
         Modal.hide();
         launchNextPhase(instance.viewmodel);
       };
@@ -217,9 +224,6 @@ Template.Import_preview.viewmodel({
     });
   },
   onTableRendered(instance) {
-    const possibleColumns = this.conductor().possibleColumns();
-    const validColumnNames = _.without(_.pluck(possibleColumns, 'name'), undefined);
-    this.availableColumns([].concat(validColumnNames));
     const tableElem = instance.$('table');
     tableElem.addClass('table dataTable display import-table');
 //    for (let i = 0; i < this.headerRow(); i++) {
@@ -233,7 +237,7 @@ Template.Import_preview.viewmodel({
       const _originalColumnName = this.worksheet()[L + '1']?.w;
       tdElem.empty();
       Blaze.renderWithData(Template.Import_header_cell,
-        { _originalColumnName, _columnName, columns: validColumnNames }, td,
+        { _originalColumnName, _columnName }, td,
       );
     });
     Meteor.setTimeout(function () { doubleScroll(tableElem); }, 1000);
@@ -256,29 +260,29 @@ Template.Import_header_cell.viewmodel({
     const visibleComunName = (instance.data._originalColumnName
       && this.columnMapping()[instance.data._originalColumnName])
       || instance.data._columnName;
-    this.columnName(visibleComunName);
+    this.changeColumnName(visibleComunName);
   },
   onRendered(instance) {
     const viewmodel = this;
     instance.find('span').addEventListener('input', function() { viewmodel.textChanged(); }, false);
   },
-  autorun() {
-    if (_.contains(this.availableColumns(), this.columnName())) {
-      this.availableColumns(_.without(this.availableColumns(), this.columnName()));
-    }
+  changeColumnName(newName) {
+    this.usedColumns(_.without(this.usedColumns(), this.columnName()));
+    this.columnName(newName);
+    this.usedColumns().push(this.columnName());
   },
-  textChanged() {
-    this.columnName(this.templateInstance.$('span')[0].innerText);
+  textChanged(e) {
+    this.changeColumnName(this.templateInstance.$('span')[0].innerText);
   },
   isValidColumn() {
-    return _.contains(this.templateInstance.data.columns, this.columnName());
+    return _.contains(this.possibleColumns(), this.columnName());
   },
 });
 
 Template.Import_header_cell.events({
   'change select'(event, instance) {
     const selected = event.target.selectedOptions[0].value;
-    instance.viewmodel.columnName(selected);
+    instance.viewmodel.changeColumnName(selected);
     instance.viewmodel.columnMapping()[instance.data._originalColumnName] = selected;
 //    Blaze.remove(instance.view);  should remove somewhere
   },
