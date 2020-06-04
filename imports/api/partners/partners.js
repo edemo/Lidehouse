@@ -14,7 +14,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
 
 export const Partners = new Mongo.Collection('partners');
 
@@ -26,7 +26,7 @@ const ContactSchema = new SimpleSchema({
 
 const idCardTypeValues = ['natural', 'legal', 'other'];
 const IdCardSchema = new SimpleSchema({
-  type: { type: String, allowedValues: idCardTypeValues },
+  type: { type: String, allowedValues: idCardTypeValues, autoform: allowedOptions() },
   name: { type: String, optional: true },
   address: { type: String, optional: true },
   identifier: { type: String, optional: true }, // cegjegyzek szam vagy szig szam - unique!!!

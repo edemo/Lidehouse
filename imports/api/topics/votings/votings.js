@@ -14,7 +14,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
+import { allowedOptions, autoformOptions, noUpdate } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Partners } from '../../partners/partners';
@@ -44,16 +44,16 @@ Votings.voteTypes = {
 };
 Votings.voteTypeValues = Object.keys(Votings.voteTypes);
 
-function currentUsersPossibleEffectValues() {
+function possibleEffectValues() {
   const user = Meteor.user();
   if (!user.hasPermission('vote.insert', { communityId: getActiveCommunityId() })) return ['poll'];
   return Votings.voteEffectValues;
 }
 
 Votings.voteSchema = new SimpleSchema({
-  procedure: { type: String, allowedValues: Votings.voteProcedureValues, autoform: { ...autoformOptions(Votings.voteProcedureValues, 'schemaVotings.vote.procedure.'), ...noUpdate } },
-  effect: { type: String, allowedValues: Votings.voteEffectValues, autoform: { ...autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.'), ...noUpdate } },
-  type: { type: String, allowedValues: Votings.voteTypeValues, autoform: { ...autoformOptions(Votings.voteTypeValues, 'schemaVotings.vote.type.'), ...noUpdate } },
+  procedure: { type: String, allowedValues: Votings.voteProcedureValues, autoform: { ...allowedOptions(), ...noUpdate } },
+  effect: { type: String, allowedValues: possibleEffectValues, autoform: { ...autoformOptions(possibleEffectValues, 'schemaVotings.vote.effect.options.'), ...noUpdate } },
+  type: { type: String, allowedValues: Votings.voteTypeValues, autoform: { ...allowedOptions(), ...noUpdate } },
   choices: {
     type: Array,
     autoValue() {

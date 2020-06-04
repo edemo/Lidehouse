@@ -94,6 +94,9 @@ export class ImportConductor {
     const phase = this.phases[this.phaseIndex];
     return phase;
   }
+  morePhasesToCome() {
+    return !!this.phases[this.phaseIndex + 1];
+  }
 }
 ImportConductor.Instance = new ImportConductor();
 ImportConductor.from = obj => { Object.setPrototypeOf(obj, ImportConductor.Instance); return obj; };
@@ -431,6 +434,22 @@ export const Conductors = {
           collectionName: 'statementEntries',
           options,
           dictionary: options.dictionary,
+        }],
+      };
+    },
+  },
+  balances: {
+    default(options) {
+      return {
+        collectionName: 'balances',
+        format: 'default',
+        phases: [{
+          collectionName: 'balances',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+//            date: { label: 'Dátum' },
+          },
         }],
       };
     },

@@ -29,14 +29,15 @@ export function details2afId(details) {
   return `af.${details.object}.${details.action}`;
 }
 
-Template.Autoform_modal.onCreated(function () {
-  Session.set('autoformType', this.data.type);
-});
-
-Template.Autoform_modal.helpers({
+Template.Autoform_modal.viewmodel({
+  showDebugInfo: false,
+  onCreated(instance) {
+    Session.set('autoformType', instance.data.type);
+  },
   title() {
-    if (this.title) return this.title;
-    const id = afId2details(this.id);
+    const data = this.templateInstance.data;
+    if (data.title) return data.title;
+    const id = afId2details(data.id);
     if (_.contains(Transactions.categoryValues, id.object)) {
       const defId = Template.instance().data.doc.defId;
       const txdef = Txdefs.findOne(defId);
@@ -52,8 +53,14 @@ Template.Autoform_modal.helpers({
     else return __(id.object) + ' ' + __(id.action);
   },
   debugInfo() {
-    if (Meteor.isDevelopment && this.doc) return ` [${this.doc._id}]`;
-    return '';
+    const data = this.templateInstance.data;
+    return data?.doc?._id;
+  },
+});
+
+Template.Autoform_modal.events({
+  'click .fa-info'(event, instance) {
+    instance.viewmodel.showDebugInfo(true);
   },
 });
 

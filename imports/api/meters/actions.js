@@ -5,7 +5,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
 import { __ } from '/imports/localization/i18n.js';
-import { importCollectionFromFile } from '/imports/data-import/import.js';
+import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Meters } from './meters.js';
 import './methods.js';

@@ -9,7 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 
@@ -22,7 +22,7 @@ Accounts.syncValues = ['none', 'manual', 'auto'];
 
 Accounts.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  category: { type: String, allowedValues: Accounts.categoryValues, autoform: autoformOptions(Accounts.categoryValues, 'schemaAccounts.category.') },
+  category: { type: String, allowedValues: Accounts.categoryValues, autoform: allowedOptions() },
   name: { type: String, max: 100 },
   code: { type: String, max: 25 },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
@@ -39,7 +39,7 @@ Accounts.bankExtensionSchema = new SimpleSchema({
   primary: { type: Boolean, optional: true },
   bank: { type: String, max: 100, optional: true },
   BAN: { type: String, max: 100, optional: true },  // Bank Account Number
-//  sync: { type: String, defaultValue: 'none', allowedValues: Accounts.syncValues, autoform: _.extend({ value: 'none' }, autoformOptions(Accounts.syncValues, 'schemaAccounts.sync.')) },
+//  sync: { type: String, defaultValue: 'none', allowedValues: Accounts.syncValues, autoform: _.extend({ value: 'none' }, autoformOptions) },
 //  protocol: { type: String, optional: true },
 });
 

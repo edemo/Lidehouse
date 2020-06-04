@@ -33,7 +33,12 @@
 
 <template name="Import_preview">
     <div class="panel panel-warning">
-      <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i> {{_ 'Import phase'}} [{{add conductor.phaseIndex 1}}]: {{_ conductor.currentPhase.collectionName}} {{_ 'import'}}</div>
+      <div class="panel-heading">
+        <i class="fa fa-arrow-circle-right"></i> {{_ 'Import phase'}} [{{add conductor.phaseIndex 1}}]: {{_ conductor.currentPhase.collectionName}} {{_ 'import'}}
+        {{#if conductor.morePhasesToCome}}
+        <button class="btn btn-xs btn-default text-capitalze pull-right js-skip"><i class="fa fa-fast-forward"></i> {{_ "skip"}}</button>
+        {{/if}}
+      </div>
       <div class="panel-body">
         {{{_ 'importPreviewInstructions'}}}
       </div>

@@ -241,6 +241,7 @@
   "View details": "Részletes nyomtatható nézet",
   "Print bill": "Számla nyomtatása",
   "print": "nyomtatás",
+  "skip": "átugrás",
 
   "link": "Kapcsolás",
   "join": "Csatlakozás",
@@ -744,6 +745,7 @@
   "close vote": "lezárja a szavazást",
   "publish balances": "publikálja az aktuális egyenlegeket",
   "import data": "importálja a(z) __collection__ adatokat",
+  "update partner": "megváltoztatja a partner adatokat",
 
   "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",

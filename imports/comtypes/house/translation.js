@@ -101,8 +101,10 @@ export const HouseTranslation = {
         "accountingMethod": {
           "label": "Accounting method",
           "help": "Depending on this, the accounting transactions are generated differently from bills and payments. Never change this setting during the fiscal year.",
-          "accrual": "Accrual",
-          "cash": 'Cash'
+          "options": {
+            "accrual": "Accrual",
+            "cash": 'Cash'
+          }
         }
       }
     },
@@ -112,10 +114,12 @@ export const HouseTranslation = {
       },
       "category": {
         "label": "Category",
-        "@property": "Property",
-        "@common": "Common area",
-        "@group": "Group",
-        "#tag": "Hashtag"
+        "options": {
+          "@property": "Property",
+          "@common": "Common area",
+          "@group": "Group",
+          "#tag": "Hashtag"
+        }
       },
       "serial": {
         "label": "Parcel serial",
@@ -155,14 +159,16 @@ export const HouseTranslation = {
       "type": {
         "label": "Type",
         "placeholder": "(eg. Apartment)",
-        "flat": "Apartment",
-        "parking": "Parking",
-        "storage": "Storage",
-        "cellar": "Cellar",
-        "attic": "Attic",
-        "shop": "Shop",
-        "office": "Office",
-        "other": "Other"
+        "options": {
+          "flat": "Apartment",
+          "parking": "Parking",
+          "storage": "Storage",
+          "cellar": "Cellar",
+          "attic": "Attic",
+          "shop": "Shop",
+          "office": "Office",
+          "other": "Other"
+        }
       },
       "group": {
         "label": "Group",
@@ -312,8 +318,10 @@ export const HouseTranslation = {
         "accountingMethod": {
           "label": "Könyvelési mód",
           "help": "A könyvelési mód - egyszeres (pénzforgalmi) vagy kettős - határozza meg mikor jönnek létre könyvelési tranzakciók a számlákból (befogadáskor vagy kifizetéskor). A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",
-          "accrual": "Kettős könyvvitel",
-          "cash": "Egyszeres (pénzforgalmi) könyvvitel"
+          "options": {
+            "accrual": "Kettős könyvvitel",
+            "cash": "Egyszeres (pénzforgalmi) könyvvitel"
+          }
         }
       }
     },
@@ -323,10 +331,12 @@ export const HouseTranslation = {
       },
       "category": {
         "label": "Kategória",
-        "@property": "Albetét",
-        "@common": "Közös tulajdon",
-        "@group": "Gyűjtő",
-        "#tag": "Elszámolási egység"
+        "options": {
+          "@property": "Albetét",
+          "@common": "Közös tulajdon",
+          "@group": "Gyűjtő",
+          "#tag": "Elszámolási egység"
+        }
       },
       "serial": {
         "label": "Albetét sorszám",
@@ -366,14 +376,16 @@ export const HouseTranslation = {
       "type": {
         "label": "Típus",
         "placeholder": "(pl. Lakás)",
-        "flat": "Lakás",
-        "parking": "Parkoló",
-        "storage": "Tároló",
-        "cellar": "Pince",
-        "attic": "Padlás",
-        "shop": "Üzlet",
-        "office": "Iroda",
-        "other": "Egyéb"
+        "options": {
+          "flat": "Lakás",
+          "parking": "Parkoló",
+          "storage": "Tároló",
+          "cellar": "Pince",
+          "attic": "Padlás",
+          "shop": "Üzlet",
+          "office": "Iroda",
+          "other": "Egyéb"
+        }
       },
       "group": {
         "label": "Csoport",

@@ -33,16 +33,18 @@
   "schemaAccounts": {
     "category": {
       "label": "Account category",
-      "asset": "Asset",
-      "liability": "Liability",
-      "equity": "Equity",
-      "income": "Income",
-      "expense": "Expense",
-      "technical": "Technical",
-      "payable": "Payable",
-      "receivable": "Receivable",
-      "bank": "Bank",
-      "cash": "Cash"
+      "options": {
+        "asset": "Asset",
+        "liability": "Liability",
+        "equity": "Equity",
+        "income": "Income",
+        "expense": "Expense",
+        "technical": "Technical",
+        "payable": "Payable",
+        "receivable": "Receivable",
+        "bank": "Bank",
+        "cash": "Cash"
+      }
     },
     "name": {
       "label": "Name",
@@ -63,9 +65,11 @@
     },
     "sync": {
       "label": "Bank statement uploading",
-      "none": "None",
-      "manual": "Manual",
-      "auto": "Automatic"
+      "options": {
+        "none": "None",
+        "manual": "Manual",
+        "auto": "Automatic"
+      }
     },
     "protocol": {
       "label": "Bank protocol (if uploading)"
@@ -140,17 +144,21 @@
       },
       "notiFrequency": {
         "label": "Email notification frequency about the events in the community",
-        "never": "Never",
-        "weekly": "Once a week maximum",
-        "daily": "Once a day maximum",
-        "frequent": "Several times a day"
+        "options": {
+          "never": "Never",
+          "weekly": "Once a week maximum",
+          "daily": "Once a day maximum",
+          "frequent": "Several times a day"
+        }
       },
       "notiLevel": {
         "label": "Email notifications I'd like about these types of events in the community",
-        "never": "Nothing",
-        "high": "Most important events only (votings, messages, newsboard)",
-        "medium": "Every new topic created, but not the comments",
-        "low": "Every new comment and status update on topics"
+        "options": {
+          "never": "Nothing",
+          "high": "Most important events only (votings, messages, newsboard)",
+          "medium": "Every new topic created, but not the comments",
+          "low": "Every new comment and status update on topics"
+        }
       },
       "newsletter": {
         "label": "I would like to receive the newsletter about the application"
@@ -160,12 +168,14 @@
   "schemaMeters" : {
     "service": {
       "label": "Service",
-      "coldWater": "Cold water",
-      "hotWater": "Hot water",
-      "electricity": "Electricity",
-      "gas": "Gas",
-      "heating": "Heating",
-      "cooling": "Cooling"
+      "options": {
+        "coldWater": "Cold water",
+        "hotWater": "Hot water",
+        "electricity": "Electricity",
+        "gas": "Gas",
+        "heating": "Heating",
+        "cooling": "Cooling"
+      }
     },
     "identifier": {
       "label": "Serial number"
@@ -288,10 +298,12 @@
     "rank": {
       "label": "Rank extension",
       "help": "Usually not necessary. It has no effect on the permissions, but it may help to slightly differentiate between the roles on the officers page.",
-      "chairman": "chairman",
-      "lead": "lead",
-      "assistant": "assistant",
-      "substitute": "substitute"
+      "options": {
+        "chairman": "chairman",
+        "lead": "lead",
+        "assistant": "assistant",
+        "substitute": "substitute"
+      }
     },
     "partnerId": {
       "label": "Partner"
@@ -314,9 +326,11 @@
       "label": "Benefactor",
       "type": {
         "label": "Type",
-        "rental": "Rental",
-        "favor": "Favor",
-        "right": "Right"
+        "options": {
+          "rental": "Rental",
+          "favor": "Favor",
+          "right": "Right"
+        }
       }
     }
   },
@@ -332,9 +346,11 @@
     "scope": {
       "label": "Scope of Delegation",
       "placeholder": "(pl. Community issues)",
-      "community": "all issues of the community",
-      "agenda": "issues in a certain agenda",
-      "topic": "one specific issue"
+      "options": {
+        "community": "all issues of the community",
+        "agenda": "issues in a certain agenda",
+        "topic": "one specific issue"
+      }
     },
     "scopeObjectId": {
       "label": "Object of delegation",
@@ -369,13 +385,15 @@
   "schemaTopics": {
     "category": {
       "label": "Category",
-      "general": "topic",
-      "forum": "forum topic",
-      "vote": "voting",
-      "news": "news post",
-      "ticket": "error ticket",
-      "room": "room",
-      "feedback": "feedback"
+      "options": {
+        "general": "topic",
+        "forum": "forum topic",
+        "vote": "voting",
+        "news": "news post",
+        "ticket": "error ticket",
+        "room": "room",
+        "feedback": "feedback"
+      }
     },
     "title": {
       "label": "Title",
@@ -401,19 +419,21 @@
     },
     "status": {
       "label": "Status",
-      "announced": "Announced",
-      "opened": "Opened",
-      "scheduled": "Scheduled",
-      "reported": "Reported",
-      "confirmed": "Planned",
-      "toApprove": "To approve",
-      "toVote": "To vote on",
-      "progressing": "Progressing",
-      "suspended": "Suspended",
-      "finished": "Done",
-      "votingFinished": "Voting finished",
-      "closed": "Closed",
-      "deleted": "Deleted"
+      "options": {
+        "announced": "Announced",
+        "opened": "Opened",
+        "scheduled": "Scheduled",
+        "reported": "Reported",
+        "confirmed": "Planned",
+        "toApprove": "To approve",
+        "toVote": "To vote on",
+        "progressing": "Progressing",
+        "suspended": "Suspended",
+        "finished": "Done",
+        "votingFinished": "Voting finished",
+        "closed": "Closed",
+        "deleted": "Deleted"
+      }
     },
     "closed": {
       "label": "Closed"
@@ -447,24 +467,30 @@
       },
       "procedure": {
         "label": "Voting procedure",
-        "online": "Online",
-        "meeting": "Owner's meeting",
-         "help": "There is no owner's meeting at the end of online voting."
+         "help": "There is no owner's meeting at the end of online voting.",
+        "options": {
+          "online": "Online",
+          "meeting": "Owner's meeting"
+        }
       },
       "effect": {
         "label": "Voting effect",
-        "poll": "Poll",
-        "legal": "Legal power",
-        "help": "Poll does not have a legal effect, it is a preparation for a legal voting or survey on opinions."
+        "help": "Poll does not have a legal effect, it is a preparation for a legal voting or survey on opinions.",
+        "options": {
+          "poll": "Poll",
+          "legal": "Legal power"
+        }
       },
       "type": {
         "label": "Voting type",
-        "yesno": "Yes-no",
-        "choose": "Simple selection",
-        "preferential": "Rank choices by preference",
-        "petition": "Petition",
-        "multiChoose": "Multiple choice",
-        "help": "Choose the optimal type for the decision."
+        "help": "Choose the optimal type for the decision.",
+        "options": {
+          "yesno": "Yes-no",
+          "choose": "Simple selection",
+          "preferential": "Rank choices by preference",
+          "petition": "Petition",
+          "multiChoose": "Multiple choice"
+        }
       },
       "voters": {
         "label": "Voters"
@@ -494,15 +520,19 @@
       "label": "Ticket data",
       "type": {
         "label": "Type",
-        "issue": "Issue",
-        "upgrade": "Upgrade",
-        "maintenance": "Maintenance"
+        "options": {
+          "issue": "Issue",
+          "upgrade": "Upgrade",
+          "maintenance": "Maintenance"
+        }
       },
       "urgency": {
         "label": "Urgency",
-        "high": "High",
-        "normal": "Normal",
-        "low": "Low"
+        "options": {
+          "high": "High",
+          "normal": "Normal",
+          "low": "Low"
+        }
       },
       "localizer": {
         "label": "Location"
@@ -512,10 +542,12 @@
       },
       "chargeType": {
         "label": "Charge type",
-        "oneoff": "One-off",
-        "lumpsum": "Lump sum contract",
-        "warranty": "Under warranty",
-        "insurance": "Covered by insurance"
+        "options": {
+          "oneoff": "One-off",
+          "lumpsum": "Lump sum contract",
+          "warranty": "Under warranty",
+          "insurance": "Covered by insurance"
+        }
       },
       "contractId" : {
         "label": "Contract"
@@ -671,9 +703,11 @@
     },
     "status": {
       "label": "Status",
-      "draft": "Draft",
-      "posted": "Posted",
-      "void": "Void"
+      "options": {
+        "draft": "Draft",
+        "posted": "Posted",
+        "void": "Void"
+      }
     },
     "valueDate": {
       "label": "Accounting date",
@@ -914,9 +948,11 @@
   "schemaBills": {
     "relation": {
       "label": "Relation",
-      "supplier": "Bill",
-      "customer": "Invoice",
-      "member": "Contribution"      
+      "options": {
+        "supplier": "Bill",
+        "customer": "Invoice",
+        "member": "Contribution"      
+      }
     },
     "issueDate": {
       "label": "Issue date",

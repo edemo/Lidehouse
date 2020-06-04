@@ -8,7 +8,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { autoformOptions, imageUpload, noUpdate } from '/imports/utils/autoform.js';
+import { allowedOptions, imageUpload, noUpdate } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
@@ -35,7 +35,7 @@ Meters.unapprovedReadingSchema = new SimpleSchema({
 Meters.billingSchema = new SimpleSchema({
   date: { type: Date },
   value: { type: Number, decimal: true },
-//  type: { type: String, allowedValues: Meters.billingTypeValues, autoform: autoformOptions(Meters.billingTypeValues) },
+//  type: { type: String, allowedValues: Meters.billingTypeValues, autoform: allowedOptions() },
 //  readingId: { type: Number },   // pointer // if not present, it is an estimation
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
@@ -44,7 +44,7 @@ Meters.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   identifier: { type: String },
-  service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
+  service: { type: String, allowedValues: Meters.serviceValues, autoform: allowedOptions() },
   uom: { type: String, max: 15 },
   decimals: { type: Number, defaultValue: 3, max: 10, autoform: { autoValue: 3 } }, // how many decimals the readings accept and display
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
