@@ -62,7 +62,16 @@ ParcelBillings.schema = new SimpleSchema({
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
   digit: { type: String, autoform: Accounts.choosePayinType },
   localizer: { type: String, autoform: Parcels.choosePhysical },
-  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: { firstOption: () => __('All') } },
+  type: { type: String, optional: true,
+    autoform: {
+      options() {
+        const communityId = getActiveCommunityId();
+        const parcelTypes = Communities.findOne(communityId).parcelTypeValues();
+        return parcelTypes.map(function option(pt) { return { label: pt, value: pt }; });
+      },
+      firstOption: () => __('All'),
+    },
+  },
   group: { type: String, optional: true, autoform: selectFromExistingGroups },
   note: { type: String, optional: true },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },

@@ -62,6 +62,9 @@ Meteor.startup(function indexCommunities() {
 });
 
 Communities.helpers({
+  parcelTypeValues() {
+    return Object.keys(this.parcels);
+  },
   nextAvailableSerial() {
     const serials = _.pluck(Parcels.find({ communityId: this._id, category: '@property' }).fetch(), 'serial');
     const maxSerial = serials.length ? Math.max(...serials) : 0;
