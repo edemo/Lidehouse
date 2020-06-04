@@ -52,7 +52,7 @@ function possibleEffectValues() {
 
 Votings.voteSchema = new SimpleSchema({
   procedure: { type: String, allowedValues: Votings.voteProcedureValues, autoform: { ...allowedOptions(), ...noUpdate } },
-  effect: { type: String, allowedValues: possibleEffectValues, autoform: { ...autoformOptions(possibleEffectValues, 'schemaVotings.vote.effect.options.'), ...noUpdate } },
+  effect: { type: String, allowedValues: Votings.voteEffectValues, autoform: { ...autoformOptions(possibleEffectValues, 'schemaVotings.vote.effect.options.'), ...noUpdate } },
   type: { type: String, allowedValues: Votings.voteTypeValues, autoform: { ...allowedOptions(), ...noUpdate } },
   choices: {
     type: Array,
