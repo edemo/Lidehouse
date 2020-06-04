@@ -17,7 +17,7 @@ import { Meters } from '/imports/api/meters/meters.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
 import { displayMoney } from '/imports/ui_3/helpers/utils.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
@@ -32,12 +32,12 @@ ParcelBillings.chargeSchema = new SimpleSchema({
 });
 
 ParcelBillings.consumptionSchema = new SimpleSchema({
-  service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
+  service: { type: String, allowedValues: Meters.serviceValues, autoform: allowedOptions() },
   charges: { type: [ParcelBillings.chargeSchema] },
 });
 
 ParcelBillings.projectionSchema = new SimpleSchema({
-  base: { type: String, allowedValues: ParcelBillings.projectionBaseValues, autoform: autoformOptions(ParcelBillings.projectionBaseValues) },
+  base: { type: String, allowedValues: ParcelBillings.projectionBaseValues, autoform: allowedOptions() },
   unitPrice: { type: Number, decimal: true },
 });
 

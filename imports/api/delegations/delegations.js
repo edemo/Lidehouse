@@ -7,7 +7,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
@@ -60,7 +60,7 @@ Delegations.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { type: 'hidden' } },
   sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: _.omit(choosePartner, ['relation', 'value']) },
   targetId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
-  scope: { type: String, allowedValues: Delegations.scopeValues, autoform: autoformOptions(Delegations.scopeValues, 'schemaDelegations.scope.') },
+  scope: { type: String, allowedValues: Delegations.scopeValues, autoform: allowedOptions() },
   scopeObjectId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseScopeObject },
   sourcePersonId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for sourceId (partner)
   targetPersonId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for targetId (partner)

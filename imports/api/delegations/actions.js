@@ -97,9 +97,4 @@ AutoForm.addHooks('af.delegation.insert', {
     }
     displayError(error);
   },
-  onSuccess() {
-    Modal.hideAll();
-    // TODO: should call our generic onSuccess here
-    displayMessage('success', __('delegation') + ' ' + __('actionDone_insert'));
-  },
 }, true);

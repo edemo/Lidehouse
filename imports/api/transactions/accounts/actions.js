@@ -17,7 +17,7 @@ Accounts.actions = {
     icon: 'fa fa-plus',
     color: 'primary',
     label: `${__('new')}  ${__(options.entity.name)}`,
-//    label: (Array.isArray(options.entity) ? `${__('new')}  ${__('simpleAccount')}` : `${__('new')} ${__(/*'schemaAccounts.category.' + */options.entity.name)}`),
+//    label: (Array.isArray(options.entity) ? `${__('new')}  ${__('simpleAccount')}` : `${__('new')} ${__(/*'schemaAccounts.category.options.' + */options.entity.name)}`),
     visible: user.hasPermission('accounts.insert', doc),
 //    subActions: options => Array.isArray(options.entity) && options.entity.length,
 //    subActionsOptions: (options, doc) => options.entity.map(entity => ({ entity })),

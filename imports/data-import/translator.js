@@ -77,7 +77,7 @@ export class Translator {
             if (typeof fieldValue === 'undefined') return undefined;
             if (typeof fieldValue !== 'string') return fieldValue;
             const trimFieldValue = fieldValue.trim();
-            return (dictionary && _.findKey(dictionary[enFieldName], k => sameString(trimFieldValue, dictionary[enFieldName][k])))
+            return _.findKey(dictionary?.[enFieldName]?.options, k => sameString(trimFieldValue, dictionary[enFieldName].options[k]))
               || trimFieldValue;
           }
           if (_.isSimpleObject(fieldValue)) {

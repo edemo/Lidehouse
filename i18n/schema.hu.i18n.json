@@ -33,16 +33,18 @@
   "schemaAccounts": {
     "category": {
       "label": "Számla típus",
-      "asset": "Eszköz",
-      "liability": "Forrás",
-      "equity": "Saját tőke",
-      "income": "Bevétel",
-      "expense": "Kiadás",
-      "technical": "Technikai",
-      "payable": "Tartozás",
-      "receivable": "Követelés",
-      "bank": "Bank",
-      "cash": "Pénztár"
+      "options": {
+        "asset": "Eszköz",
+        "liability": "Forrás",
+        "equity": "Saját tőke",
+        "income": "Bevétel",
+        "expense": "Kiadás",
+        "technical": "Technikai",
+        "payable": "Tartozás",
+        "receivable": "Követelés",
+        "bank": "Bank",
+        "cash": "Pénztár"
+      }
     },
     "name": {
       "label": "Elnevezése",
@@ -63,9 +65,11 @@
     },
     "sync": {
       "label": "Bankkivonatok feltöltése",
-      "none": "Nincs",
-      "manual": "Manuális",
-      "auto": "Automatikus"
+      "options": {
+        "none": "Nincs",
+        "manual": "Manuális",
+        "auto": "Automatikus"
+      }
     },
     "protocol": {
       "label": "Bank protokol (ha van kivonat feltöltés)"
@@ -140,17 +144,21 @@
       },
       "notiFrequency": {
         "label": "Email értesítések gyakorisága a házban történő eseményekről",
-        "never": "Soha",
-        "weekly": "Hetente legfeljebb egyszer",
-        "daily": "Naponta legfeljebb egyszer",
-        "frequent": "Naponta akár töbször is"
+        "options": {
+          "never": "Soha",
+          "weekly": "Hetente legfeljebb egyszer",
+          "daily": "Naponta legfeljebb egyszer",
+          "frequent": "Naponta akár töbször is"
+        }
       },
       "notiLevel": {
         "label": "Email értesítéseket mely eseményekről kérek a házban",
-        "never": "Semmiről",
-        "high": "Csak a legfontosabbakról (szavazások, üzenetek, faliújság)",
-        "medium": "Minden új felvetett témáról, de a hozzászólásokról nem",
-        "low": "Minden témáról, hozzászólásról és téma változásról"
+        "options": {
+          "never": "Semmiről",
+          "high": "Csak a legfontosabbakról (szavazások, üzenetek, faliújság)",
+          "medium": "Minden új felvetett témáról, de a hozzászólásokról nem",
+          "low": "Minden témáról, hozzászólásról és téma változásról"
+        }
       },
       "newsletter": {
         "label": "Szeretnék feliratkozni az applikációval kapcsolatos hírlevélre"
@@ -160,12 +168,14 @@
   "schemaMeters" : {
     "service": {
       "label": "Szolgáltatás",
-      "coldWater": "Hideg víz",
-      "hotWater": "Meleg víz",
-      "electricity": "Áram",
-      "gas": "Gáz",
-      "heating": "Fűtés",
-      "cooling": "Hűtés"
+      "options": {
+        "coldWater": "Hideg víz",
+        "hotWater": "Meleg víz",
+        "electricity": "Áram",
+        "gas": "Gáz",
+        "heating": "Fűtés",
+        "cooling": "Hűtés"
+      }
     },
     "identifier": {
       "label": "Gyári azonosító"
@@ -288,10 +298,12 @@
     "rank": {
       "label": "Kiegészítő titulus",
       "help": "Általában nincs rá szükség. A jogosultságokat nem befolyásolja, csak segíthet árnyalni a személy szerepkörét a tisztség listában.",
-      "chairman": "elnök",
-      "lead": "vezető",
-      "assistant": "asszisztens",
-      "substitute": "helyettes"
+      "options": {
+        "chairman": "elnök",
+        "lead": "vezető",
+        "assistant": "asszisztens",
+        "substitute": "helyettes"
+      }
     },
     "partnerId": {
       "label": "Partner"
@@ -314,9 +326,11 @@
       "label": "Használat",
       "type": {
         "label": "Típus",
-        "rental": "Bérlet",
-        "favor": "Szívességi használat",
-        "right": "Haszonélvezeti jog"
+        "options": {
+          "rental": "Bérlet",
+          "favor": "Szívességi használat",
+          "right": "Haszonélvezeti jog"
+        }
       }
     }
   },
@@ -332,9 +346,11 @@
     "scope": {
       "label": "Meghatalmazás köre",
       "placeholder": "(pl. Ház ügyei)",
-      "community": "a ház ügyeire",
-      "agenda": "egy közgyűlés ügyeire",
-      "topic": "egyetlen ügyre"
+      "options": {
+        "community": "a ház ügyeire",
+        "agenda": "egy közgyűlés ügyeire",
+        "topic": "egyetlen ügyre"
+      }
     },
     "scopeObjectId": {
       "label": "Meghatalmazás kör célpontja",
@@ -369,13 +385,15 @@
   "schemaTopics": {
     "category": {
       "label": "Kategória",
-      "general": "téma",
-      "forum": "fórum téma",
-      "vote": "szavazás",
-      "news": "hirdetmény",
-      "ticket": "hibajegy",
-      "room": "szoba",
-      "feedback": "visszajelzés"
+      "options": {
+        "general": "téma",
+        "forum": "fórum téma",
+        "vote": "szavazás",
+        "news": "hirdetmény",
+        "ticket": "hibajegy",
+        "room": "szoba",
+        "feedback": "visszajelzés"
+      }
     },
     "title": {
       "label": "Cím",
@@ -401,19 +419,21 @@
     },
     "status": {
       "label": "Státusz",
-      "announced": "Kitűzve",
-      "opened": "Nyitott",
-      "scheduled": "Ütemezve",
-      "reported": "Bejelentve",
-      "confirmed": "Betervezve",
-      "toApprove": "Jóváhagyásra",
-      "toVote": "Megszavazásra",
-      "progressing": "Folyamatban",
-      "suspended": "Felfüggesztve",
-      "finished": "Elvégezve",
-      "votingFinished": "Szavazás lezárva",
-      "closed": "Lezárt",
-      "deleted": "Törölt"
+      "options": {
+        "announced": "Kitűzve",
+        "opened": "Nyitott",
+        "scheduled": "Ütemezve",
+        "reported": "Bejelentve",
+        "confirmed": "Betervezve",
+        "toApprove": "Jóváhagyásra",
+        "toVote": "Megszavazásra",
+        "progressing": "Folyamatban",
+        "suspended": "Felfüggesztve",
+        "finished": "Elvégezve",
+        "votingFinished": "Szavazás lezárva",
+        "closed": "Lezárt",
+        "deleted": "Törölt"
+      }
     },
     "closed": {
       "label": "Lezárt"
@@ -447,24 +467,30 @@
       },
       "procedure": {
         "label": "Szavazás menete",
-        "online": "Írásos",
-        "meeting": "Közgyűlési",
-        "help": "Az írásos szavazás esetén nincs közgyűlés a szavazás végén."
+        "help": "Az írásos szavazás esetén nincs közgyűlés a szavazás végén.",
+        "options": {
+          "online": "Írásos",
+          "meeting": "Közgyűlési"
+        }
       },
       "effect": {
         "label": "Szavazás hatása",
-        "poll": "Közvéleménykutatás",
-        "legal": "Jogerős szavazás",
-        "help": "A közvéleménykutató szavazásnak nincsen jogi következménye, nem eredményez jogerős határozatot, csak előkészít egy későbbi jogerős szavazást, vagy felméri az álláspontokat."
+        "help": "A közvéleménykutató szavazásnak nincsen jogi következménye, nem eredményez jogerős határozatot, csak előkészít egy későbbi jogerős szavazást, vagy felméri az álláspontokat.",
+        "options": {
+          "poll": "Közvéleménykutatás",
+          "legal": "Jogerős szavazás"
+        }
       },
       "type": {
         "label": "Szavazás típusa",
-        "yesno": "Igen-nem",
-        "choose": "Egyszerű választásos",
-        "preferential": "Preferencia szerint sorba rendező",
-        "petition": "Támogatásgyűjtő",
-        "multiChoose": "Több választási lehetőséges",
-        "help": "A szavazás típusát célszerű jól megválasztani, hogy a közösség számára optimális döntés születhessen."
+        "help": "A szavazás típusát célszerű jól megválasztani, hogy a közösség számára optimális döntés születhessen.",
+        "options": {
+          "yesno": "Igen-nem",
+          "choose": "Egyszerű választásos",
+          "preferential": "Preferencia szerint sorba rendező",
+          "petition": "Támogatásgyűjtő",
+          "multiChoose": "Több választási lehetőséges"
+        }
       },
       "voters": {
         "label": "Szavazatot leadók"
@@ -494,15 +520,19 @@
       "label": "Hibajegy adatok",
       "type": {
         "label": "Típus",
-        "issue": "Hiba",
-        "upgrade": "Felújítás",
-        "maintenance": "Karbantartás"
+        "options": {
+          "issue": "Hiba",
+          "upgrade": "Felújítás",
+          "maintenance": "Karbantartás"
+        }
       },
       "urgency": {
         "label": "Sürgősség",
-        "high": "sürgős",
-        "normal": "közepes",
-        "low": "alacsony"
+        "options": {
+          "high": "sürgős",
+          "normal": "közepes",
+          "low": "alacsony"
+        }
       },
       "localizer": {
         "label": "Hiba helye"
@@ -512,10 +542,12 @@
       },
       "chargeType": {
         "label": "Költség vonzat",
-        "oneoff": "Egyedi megrendelés",
-        "lumpsum": "Átalánydíjas",
-        "warranty": "Garanciális",
-        "insurance": "Biztosító fizeti"
+        "options" : {
+          "oneoff": "Egyedi megrendelés",
+          "lumpsum": "Átalánydíjas",
+          "warranty": "Garanciális",
+          "insurance": "Biztosító fizeti"
+        }
       },
       "contractId" : {
         "label": "Szerződés"
@@ -671,9 +703,11 @@
     },
     "status": {
       "label": "Státusz",
-      "draft": "Könyveletlen",
-      "posted": "Könyvelt",
-      "void": "Sztornózott"
+      "options": {
+        "draft": "Könyveletlen",
+        "posted": "Könyvelt",
+        "void": "Sztornózott"
+      }
     },
     "valueDate": {
       "label": "Értéknap",
@@ -916,9 +950,11 @@
   "schemaBills": {
     "relation": {
       "label": "Oldal",
-      "supplier": "Bejövő számla",
-      "customer": "Kimenő számla",
-      "member": "Előírás"      
+      "options": {
+        "supplier": "Bejövő számla",
+        "customer": "Kimenő számla",
+        "member": "Előírás"
+      }
     },
     "issueDate": {
       "label": "Számla kelte",

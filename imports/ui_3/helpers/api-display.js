@@ -32,7 +32,7 @@ export function checkmarkBoolean(bool) {
 
 export function displayMeterService(name) {
   if (!name) return '';
-  return label(__('schemaMeters.service.' + name), 'default');
+  return label(__('schemaMeters.service.options.' + name), 'default');
 }
 
 export function displayReading(value) {
@@ -84,7 +84,7 @@ export function displayAccountSpecification(aspec) {
 
 export function displayTicketType(name) {
   if (!name) return '';
-  return label(__('schemaTickets.ticket.type.' + name), 'default');
+  return label(__('schemaTickets.ticket.type.options.' + name), 'default');
 }
 
 export function displayStatus(name) {
@@ -94,7 +94,7 @@ export function displayStatus(name) {
     const statusObject = Topics.categories[cat].statuses[name];
     if (statusObject) color = statusObject.color;
   });
-  return label(__('schemaTopics.status.' + name), color);
+  return label(__('schemaTopics.status.options.' + name), color);
 }
 
 export function displayTxStatus(name) {
@@ -106,18 +106,18 @@ export function displayTxStatus(name) {
     case 'void': color = 'danger'; break;
     default: debugAssert(false); return undefined;
   }
-  return label(__('schemaTransactions.status.' + name), color);
+  return label(__('schemaTransactions.status.options.' + name), color);
 }
 
 export function displayUrgency(name) {
   if (!name) return '';
   const color = Tickets.urgencyColors[name];
-  return label(__('schemaTickets.ticket.urgency.' + name), color);
+  return label(__('schemaTickets.ticket.urgency.options' + name), color);
 }
 
 export function displayChargeType(name) {
   if (!name) return '';
-  return label(__('schemaTickets.ticket.chargeType.' + name), 'default');
+  return label(__('schemaTickets.ticket.chargeType.options' + name), 'default');
 }
 
 const Renderers = {

@@ -14,6 +14,18 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Parser } from './parser.js';
 
+function singlify(jsons) {
+  const tjsons = [];
+  jsons.forEach(json => {
+    _.each(json, (value, key) => {
+      if (key.indexOf('(') !== -1) {
+        // TODO
+      }
+    });
+  });
+  return tjsons;
+}
+
 function flattenBankAccountNumber(BAN) {
   return BAN.trim().split('-').join();
 }
@@ -102,16 +114,19 @@ export const Transformers = {
     //  '`383', name: 'Megtakarítási számla' },
     //  '`384', name: 'Fundamenta' },
         tdocs.push({
+          communityId: doc.communityId,
           account: '`381',
           tag,
           debit: number("Pénztár"),
         });
         tdocs.push({
+          communityId: doc.communityId,
           account: '`382',
           tag,
           debit: number("K&H üzemeltetési számla"),
         });
         tdocs.push({
+          communityId: doc.communityId,
           account: '`383',
           tag,
           debit: number("K&H felújítási számla") + number("K&H megtakarítási számla"),
@@ -120,6 +135,7 @@ export const Transformers = {
         let fundamentaBalance = 0;
         fundamentaAccountNames.forEach(key => fundamentaBalance += number(key));
         tdocs.push({
+          communityId: doc.communityId,
           account: '`384',
           tag,
           debit: fundamentaBalance,

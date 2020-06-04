@@ -7,7 +7,7 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
-import { autoformOptions, imageUpload } from '/imports/utils/autoform.js';
+import { allowedOptions, imageUpload } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -29,7 +29,7 @@ Communities.settingsSchema = new SimpleSchema({
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   parcelRefFormat: { type: String, optional: true },
   topicAgeDays: { type: Number, decimal: true, defaultValue: 90 },
-  accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: autoformOptions(Communities.accountingMethods, 'schemaCommunities.settings.accountingMethod.'), defaultValue: 'accrual' },
+  accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions(), defaultValue: 'accrual' },
 });
 
 Communities.schema = new SimpleSchema([{
