@@ -297,7 +297,8 @@
     },
     "rank": {
       "label": "Kiegészítő titulus",
-      "help": "Általában nincs rá szükség. A jogosultságokat nem befolyásolja, csak segíthet árnyalni a személy szerepkörét a tisztség listában.",
+      "placeholder": "(pl. elnök vagy helyettes)",
+      "help": "Általában nincs rá szükség. A jogosultságokat nem befolyásolja. Csak egy szócska, ami segíthet árnyalni a személy szerepkörét a nyilvános tisztség listában.",
       "options": {
         "chairman": "elnök",
         "lead": "vezető",
