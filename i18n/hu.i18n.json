@@ -630,6 +630,9 @@
   "Registered units cannot exceed totalunits of community": "A ház albetétjeinek tulajdonrésze nem haladja meg a megadott össz tulajdont",
   "No contact email set for this partner": "Ehhez a partnerhez nincs megadva kapcsolati email cím",
   "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közös képviselő segítségét.",
+  "err_notAllowed": "Nem megengedett érték",
+  "There is already a newer reading": "Van már ennél későbbi dátumú leolvasás rögzítve",
+  "There is already a higher reading": "Van már ennél magasabb értékű leolvasás rögzítve",
 
   "logout": "kilépés",
   "login": "belépés",
