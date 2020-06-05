@@ -17,14 +17,14 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 export const Meters = new Mongo.Collection('meters');
 
 Meters.readingSchema = new SimpleSchema({
-  date: { type: Date },
+  date: { type: Date, autoform: { type: 'datetime-local', value: new Date() } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
   approved: { type: Boolean, optional: true, autoform: { omit: true }, defaultValue: true },
 });
 
 Meters.unapprovedReadingSchema = new SimpleSchema({
-  date: { type: Date, autoValue: Clock.currentDate, autoform: { value: new Date(), readonly: true } },
+  date: { type: Date, autoValue: Clock.currentDate, autoform: { type: 'datetime-local', value: new Date(), readonly: true } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
 });
@@ -129,7 +129,3 @@ Factory.define('meter', Meters, {
   service: 'heating',
   uom: 'kW',
 });
-
-export function chooseService() {
-  
-}
