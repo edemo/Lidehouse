@@ -215,14 +215,14 @@ export function insertDemoHouse(lang, demoOrTest) {
     if (_.contains([0, 2, 3, 5, 6, 8, 9, 10, 11, 12], i)) {
       builder.create('meter', {
         parcelId,
-        service: 'coldWater',
+        service: __('schemaMeters.service.coldWater'),
         uom: 'm3',
       });
     }
     if (i <= 10) {
       builder.create('meter', {
         parcelId,
-        service: 'heating',
+        service: __('schemaMeters.service.heating'),
         uom: 'kJ',
       });
     }
@@ -947,7 +947,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   parcelBillingIds.push(builder.insert(ParcelBillings, '', {
     title: 'Hidegvíz előírás',
     consumption: {
-      service: 'coldWater',
+      service: __('schemaMeters.service.coldWater'),
       charges: [{
         uom: 'm3',
         unitPrice: 650,
@@ -964,7 +964,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   parcelBillingIds.push(builder.insert(ParcelBillings, '', {
     title: 'Fűtési díj előírás',
     consumption: {
-      service: 'heating',
+      service: __('schemaMeters.service.heating'),
       charges: [{
         uom: 'kJ',
         unitPrice: 120,
@@ -1337,8 +1337,8 @@ Meteor.methods({
         const demoMembership = Memberships.findOne(demoMembershipId);
 
         Clock.starts(2, 'year', 'ago');
-        const waterMeterId = builder.create('meter', { parcelId: demoParcelId, service: 'coldWater', uom: 'm3' });
-        const heatingMeterId = builder.create('meter', { parcelId: demoParcelId, service: 'heating', uom: 'kJ' });
+        const waterMeterId = builder.create('meter', { parcelId: demoParcelId, service: __('schemaMeters.service.coldWater'), uom: 'm3' });
+        const heatingMeterId = builder.create('meter', { parcelId: demoParcelId, service: __('schemaMeters.service.heating'), uom: 'kJ' });
         Clock.starts(14, 'month', 'ago');
         builder.execute(Meters.methods.registerReading, { _id: waterMeterId,
           reading: { date: Clock.currentTime(), value: 5 } });
