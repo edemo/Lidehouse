@@ -158,7 +158,7 @@ export const HouseTranslation = {
       },
       "type": {
         "label": "Type",
-        "placeholder": "(eg. Apartment)",
+        "placeholder": "(eg. Apartment or Storage)",
         "flat": "Apartment",
         "parking": "Parking",
         "storage": "Storage",
@@ -373,7 +373,7 @@ export const HouseTranslation = {
       },
       "type": {
         "label": "Típus",
-        "placeholder": "(pl. Lakás)",
+        "placeholder": "(pl. Lakás vagy Tároló",
         "flat": "Lakás",
         "parking": "Parkoló",
         "storage": "Tároló",

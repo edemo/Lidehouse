@@ -14,12 +14,14 @@ import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Meters } from '/imports/api/meters/meters.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
@@ -472,6 +474,26 @@ Migrations.add({
           const rank = TAPi18n.__(`schemaMemberships.rank.${m.rank}`, {}, language);
           Memberships.update(m._id, { $set: { rank } }, { selector: { role }, validate: false });
         });
+      });
+    });
+  },
+});
+
+Migrations.add({
+  version: 26,
+  name: 'Meters.service becomes simple text field',
+  up() {
+    Communities.find().forEach((c) => {
+      const language = c.settings.language;
+      Meters.find({ communityId: c._id }).forEach((m) => {
+        const service = TAPi18n.__(`schemaMeters.service.${m.service}`, {}, language);
+        Meters.update(m._id, { $set: { service } }, { validate: false });
+      });
+      ParcelBillings.find({ communityId: c._id }).forEach((pb) => {
+        if (pb?.consumption?.service) {
+          const service = TAPi18n.__(`schemaMeters.service.${pb.consumption.service}`, {}, language);
+          ParcelBillings.update(pb._id, { $set: { 'consumption.service': service } }, { validate: false });
+        }
       });
     });
   },

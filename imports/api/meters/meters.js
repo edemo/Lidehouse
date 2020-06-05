@@ -16,8 +16,6 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 
 export const Meters = new Mongo.Collection('meters');
 
-Meters.serviceValues = ['coldWater', 'hotWater', 'electricity', 'gas', 'heating', 'cooling'];
-
 Meters.readingSchema = new SimpleSchema({
   date: { type: Date },
   value: { type: Number, decimal: true },
@@ -44,7 +42,7 @@ Meters.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   identifier: { type: String },
-  service: { type: String, allowedValues: Meters.serviceValues, autoform: allowedOptions() },
+  service: { type: String, max: 25 },
   uom: { type: String, max: 15 },
   decimals: { type: Number, defaultValue: 3, max: 10, autoform: { autoValue: 3 } }, // how many decimals the readings accept and display
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
@@ -131,3 +129,7 @@ Factory.define('meter', Meters, {
   service: 'heating',
   uom: 'kW',
 });
+
+export function chooseService() {
+  
+}

@@ -168,14 +168,13 @@
   "schemaMeters" : {
     "service": {
       "label": "Service",
-      "options": {
-        "coldWater": "Cold water",
-        "hotWater": "Hot water",
-        "electricity": "Electricity",
-        "gas": "Gas",
-        "heating": "Heating",
-        "cooling": "Cooling"
-      }
+      "placeholder": "(eg. Cold water or Heating)",
+      "coldWater": "Cold water",
+      "hotWater": "Hot water",
+      "electricity": "Electricity",
+      "gas": "Gas",
+      "heating": "Heating",
+      "cooling": "Cooling"
     },
     "identifier": {
       "label": "Serial number"
@@ -1121,7 +1120,13 @@
       "label": "Projection basis (where no meter installed)",
       "base": {
         "help": "Fill this if you would like to bill based on projection in places where a meter is not available.",
-        "label": "Projection base"
+        "label": "Projection base",
+        "options": {
+          "absolute": "absolute ($)",
+          "area": "area (/m2)",
+          "volume": "volume (/m3)",
+          "habitants": "habitants (/person)"
+        }
       },
       "unitPrice": {
         "label": "Unit price of projection",

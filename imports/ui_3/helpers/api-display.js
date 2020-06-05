@@ -32,7 +32,7 @@ export function checkmarkBoolean(bool) {
 
 export function displayMeterService(name) {
   if (!name) return '';
-  return label(__('schemaMeters.service.options.' + name), 'default');
+  return label(name, 'default');
 }
 
 export function displayReading(value) {
