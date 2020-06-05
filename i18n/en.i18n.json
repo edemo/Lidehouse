@@ -54,6 +54,7 @@
   "err_unableToRemove": "Object cannot be deleted",
   "err_otherPartyNotAllowed": "No permission by other party",
   "err_sanityCheckFailed": "Data input is invalid",
+  "err_notAllowed": "Value is not allowed",
   "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
 
   "youNeedToSaveYourChanges": "Your changes only take effect once you press the Save button at the bottom",
