@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Migrations } from 'meteor/percolate:migrations';
 import { moment } from 'meteor/momentjs:moment';
+import { TAPi18n } from 'meteor/tap:i18n';
 
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -13,16 +14,20 @@ import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Meters } from '/imports/api/meters/meters.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
+
 import '/imports/api/transactions/accounts/template.js';
 
 const keepOrderSort = { sort: { updatedAt: 1 } };   // use this to keep updatedAt order intact
@@ -441,6 +446,55 @@ Migrations.add({
       const lastSeens = user.lastSeens;
       Notifications.insert({ userId: user._id, lastSeens }, { validate: false });
       Meteor.users.update(user._id, { $unset: { lastSeens: '' } }, { validate: false });
+    });
+  },
+});
+
+Migrations.add({
+  version: 25,
+  name: 'Parcel.type and Membership.rank becomes simple text field',
+  up() {
+    Communities.find().forEach((c) => {
+      const language = c.settings.language;
+      const parcelTypes = Object.keys(c.parcels);
+
+      Parcels.find({ communityId: c._id, type: { $exists: true } }).forEach((p) => {
+        const type = TAPi18n.__(`schemaParcels.type.${p.type}`, {}, language);
+        Parcels.update(p._id, { $set: { type } }, { selector: { category: '@property' }, validate: false });
+      });
+
+      // removing old parcel types
+      parcelTypes.forEach((pt) => {
+        const key = `parcels.${pt}`;
+        Communities.update(c._id, { $unset: { [key]: '' } });
+      });
+
+      officerRoles.forEach(role => {
+        Memberships.find({ communityId: c._id, role, rank: { $exists: true } }).forEach((m) => {
+          const rank = TAPi18n.__(`schemaMemberships.rank.${m.rank}`, {}, language);
+          Memberships.update(m._id, { $set: { rank } }, { selector: { role }, validate: false });
+        });
+      });
+    });
+  },
+});
+
+Migrations.add({
+  version: 26,
+  name: 'Meters.service becomes simple text field',
+  up() {
+    Communities.find().forEach((c) => {
+      const language = c.settings.language;
+      Meters.find({ communityId: c._id }).forEach((m) => {
+        const service = TAPi18n.__(`schemaMeters.service.${m.service}`, {}, language);
+        Meters.update(m._id, { $set: { service } }, { validate: false });
+      });
+      ParcelBillings.find({ communityId: c._id }).forEach((pb) => {
+        if (pb?.consumption?.service) {
+          const service = TAPi18n.__(`schemaMeters.service.${pb.consumption.service}`, {}, language);
+          ParcelBillings.update(pb._id, { $set: { 'consumption.service': service } }, { validate: false });
+        }
+      });
     });
   },
 });

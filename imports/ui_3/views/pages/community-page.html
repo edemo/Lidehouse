@@ -10,7 +10,7 @@
                             {{>Action_buttons_group collection='partners' doc=doc.partner actions='view,edit' size='sm'}}
                         </td>
                         <td><span class="label label-plain">{{_ doc.role}}</span> 
-                            {{#if doc.rank}}<span class="label label-plain">{{_ (concat 'schemaMemberships.rank.options.' doc.rank)}}</span>{{/if}}
+                            {{#if doc.rank}}<span class="label label-plain">{{doc.rank}}</span>{{/if}}
                         </td>
                         <td class="nowrap">
                             {{#if doc.partner.user.profile.publicEmail}}
@@ -78,7 +78,7 @@
                             </td>
                             {{/if}}
                             {{#if equals entity 'benefactorship'}}
-                            <td><span class="label label-plain">{{_ (concat 'schemaMemberships.benefactorship.type.' doc.benefactorship.type)}}</span></td>
+                            <td><span class="label label-plain">{{_ (concat 'schemaMemberships.benefactorship.type.options.' doc.benefactorship.type)}}</span></td>
                             {{/if}}
                         <td class="text-right">
                             {{>Action_buttons_group collection='memberships' doc=doc actions='edit,invite,delete' size='lg'}}
@@ -249,7 +249,7 @@
                             <tr>
                                 {{#each parcelTypesWithCount}}
                                 <td>
-                                    <h5><strong>{{this.count}}</strong> {{_ (concat 'schemaParcels.type.options.' this.type)}}</h5>
+                                    <h5><strong>{{this.count}}</strong> {{this.type}}</h5>
                                 </td>
                                 {{/each}}
                             </tr>

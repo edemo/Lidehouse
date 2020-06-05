@@ -91,7 +91,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 489,
     floor: __('demo.groundCode'),
     door: '01',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 55,
     volume: 176,
     habitants: 2,
@@ -100,7 +100,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 427,
     floor: __('demo.groundCode'),
     door: '02',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 48,
     volume: 153.6,
     habitants: 2,
@@ -109,7 +109,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 587,
     floor: '1',
     door: '03',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 66,
     volume: 184.8,
     habitants: 3,
@@ -118,7 +118,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 622,
     floor: '1',
     door: '04',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 70,
     volume: 196,
     habitants: 1,
@@ -127,7 +127,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 587,
     floor: '2',
     door: '05',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 66,
     volume: 184.8,
     habitants: 3,
@@ -136,7 +136,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 622,
     floor: '2',
     door: '06',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 70,
     volume: 196,
     habitants: 4,
@@ -145,7 +145,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 587,
     floor: '3',
     door: '07',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 66,
     volume: 184.8,
     habitants: 2,
@@ -154,7 +154,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 622,
     floor: '3',
     door: '08',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 70,
     volume: 196,
     habitants: 2,
@@ -163,7 +163,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 587,
     floor: '4',
     door: '09',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 66,
     volume: 184.8,
     habitants: 2,
@@ -172,7 +172,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 622,
     floor: '4',
     door: '10',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 70,
     volume: 196,
     habitants: 3,
@@ -181,7 +181,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 996,
     floor: __('demo.atticCode'),
     door: '11',
-    type: 'flat',
+    type: __('schemaParcels.type.flat'),
     area: 112,
     habitants: 5,
   });
@@ -189,7 +189,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 444,
     floor: __('demo.cellarCode'),
     door: '01',
-    type: 'cellar',
+    type: __('schemaParcels.type.cellar'),
     area: 50,
     habitants: 1,
   });
@@ -197,7 +197,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 613,
     floor: __('demo.cellarCode'),
     door: '02',
-    type: 'cellar',
+    type: __('schemaParcels.type.cellar'),
     area: 69,
     habitants: 1,
   });
@@ -205,7 +205,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     units: 196,
     floor: __('demo.groundCode'),
     door: '00',
-    type: 'shop',
+    type: __('schemaParcels.type.shop'),
     area: 22,
     habitants: 1,
   });
@@ -215,14 +215,14 @@ export function insertDemoHouse(lang, demoOrTest) {
     if (_.contains([0, 2, 3, 5, 6, 8, 9, 10, 11, 12], i)) {
       builder.create('meter', {
         parcelId,
-        service: 'coldWater',
+        service: __('schemaMeters.service.coldWater'),
         uom: 'm3',
       });
     }
     if (i <= 10) {
       builder.create('meter', {
         parcelId,
-        service: 'heating',
+        service: __('schemaMeters.service.heating'),
         uom: 'kJ',
       });
     }
@@ -236,7 +236,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       case 2: builder.createMembership(dummyUserId, 'maintainer'); break;
       case 3: builder.createMembership(dummyUserId, 'accountant'); break;
       case 5: builder.createMembership(dummyUserId, 'treasurer'); break;
-      case 4: builder.createMembership(dummyUserId, 'overseer', { rank: 'chairman' }); break;
+      case 4: builder.createMembership(dummyUserId, 'overseer', { rank: __('schemaMemberships.rank.chairman') }); break;
       case 10: builder.createMembership(dummyUserId, 'overseer'); break;
       case 16: builder.createMembership(dummyUserId, 'overseer'); break;
       default: break;
@@ -947,7 +947,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   parcelBillingIds.push(builder.insert(ParcelBillings, '', {
     title: 'Hidegvíz előírás',
     consumption: {
-      service: 'coldWater',
+      service: __('schemaMeters.service.coldWater'),
       charges: [{
         uom: 'm3',
         unitPrice: 650,
@@ -964,7 +964,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   parcelBillingIds.push(builder.insert(ParcelBillings, '', {
     title: 'Fűtési díj előírás',
     consumption: {
-      service: 'heating',
+      service: __('schemaMeters.service.heating'),
       charges: [{
         uom: 'kJ',
         unitPrice: 120,
@@ -1325,7 +1325,7 @@ Meteor.methods({
           units: 100,
           floor: '5',
           door: counter.toString(),
-          type: 'flat',
+          type: __('schemaParcels.type.flat'),
           area: 25,
         });
         const demoUserId = builder.createDemoUser(demoParcelId);
@@ -1337,8 +1337,8 @@ Meteor.methods({
         const demoMembership = Memberships.findOne(demoMembershipId);
 
         Clock.starts(2, 'year', 'ago');
-        const waterMeterId = builder.create('meter', { parcelId: demoParcelId, service: 'coldWater', uom: 'm3' });
-        const heatingMeterId = builder.create('meter', { parcelId: demoParcelId, service: 'heating', uom: 'kJ' });
+        const waterMeterId = builder.create('meter', { parcelId: demoParcelId, service: __('schemaMeters.service.coldWater'), uom: 'm3' });
+        const heatingMeterId = builder.create('meter', { parcelId: demoParcelId, service: __('schemaMeters.service.heating'), uom: 'kJ' });
         Clock.starts(14, 'month', 'ago');
         builder.execute(Meters.methods.registerReading, { _id: waterMeterId,
           reading: { date: Clock.currentTime(), value: 5 } });

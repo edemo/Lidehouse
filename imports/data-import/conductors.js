@@ -167,14 +167,14 @@ export const Conductors = {
             communityId: { default: getActiveCommunityId() },
             category: { default: '@property' },
             type: {
-              flat: 'L',
-              parking: 'P',
-              storage: 'T',
-              cellar: 'Q',
-              attic: '?',
-              shop: 'U',
-              office: 'I',
-              other: '-',
+              options: {
+                Lakás: 'L',
+                Parkoló: 'P',
+                Tároló: 'T',
+                Pince: 'Q',
+                Üzlet: 'U',
+                Iroda: 'I',
+              },
             },
           },
         }, {
@@ -185,9 +185,11 @@ export const Conductors = {
             relation: { default: ['member'] },
             idCard: {
               type: {
-                natural: 'T',
-                legal: 'G',
-                other: 'E',
+                options: {
+                  natural: 'T',
+                  legal: 'G',
+                  other: 'E',
+                },
               },
             },
           },

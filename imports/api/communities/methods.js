@@ -6,6 +6,7 @@ import { Random } from 'meteor/random';
 import { Accounts as UserAccounts } from 'meteor/accounts-base';
 import { moment } from 'meteor/momentjs:moment';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
+import { TAPi18n } from 'meteor/tap:i18n';
 
 import { Log } from '/imports/utils/log.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
@@ -44,7 +45,7 @@ export const create = new ValidatedMethod({
     checkRegisteredUser(this.userId);
     checkNotExists(Communities, { name: doc.name });
     const communityId = Communities.insert(doc);
-    
+
     // The user creating the community, becomes the first 'admin' of it.
     Memberships.insert({ communityId, userId: this.userId, role: 'admin', approved: true, accepted: true });
     return communityId;
@@ -86,13 +87,15 @@ const launch = new ValidatedMethod({
 
     const communityId = Communities.insert(community);
     const communityDoc = Communities.findOne(communityId);
+    const language = community.settings.language;
     Log.info(`Sandbox community ${community.name}(${communityId}) created by ${admin.email}}`);
-    const userId = UserAccounts.createUser({ email: admin.email, password: Random.id(8), language: community.settings.language });
+    const userId = UserAccounts.createUser({ email: admin.email, password: Random.id(8), language });
     const { token } = UserAccounts.generateResetToken(userId, admin.email, 'enrollAccount', {});
     const enrollUrl = UserAccounts.urls.enrollAccount(token);
 
     Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });
-    const parcelId = Parcels.insert({ communityId, category: '@property', approved: true, serial: 1, ref: 'A001', units: 100, type: 'flat' });
+    const type = TAPi18n.__('schemaParcels.type.flat', {}, language);
+    const parcelId = Parcels.insert({ communityId, category: '@property', approved: true, serial: 1, ref: 'A001', units: 100, type });
     Memberships.insert({ communityId, userId, parcelId, approved: true, accepted: true,
       role: 'owner', ownership: { share: new Fraction(1) },
     });

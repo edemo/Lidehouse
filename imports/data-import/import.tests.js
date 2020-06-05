@@ -18,7 +18,7 @@ import { digestImportJsons } from '/imports/data-import/digest.js';
 if (Meteor.isServer) {
   let Fixture;
 
-  describe.only('import', function () {
+  describe('import', function () {
     this.timeout(150000);
     before(function () {
       Fixture = freshFixture();

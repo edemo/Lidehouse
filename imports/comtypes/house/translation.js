@@ -158,17 +158,15 @@ export const HouseTranslation = {
       },
       "type": {
         "label": "Type",
-        "placeholder": "(eg. Apartment)",
-        "options": {
-          "flat": "Apartment",
-          "parking": "Parking",
-          "storage": "Storage",
-          "cellar": "Cellar",
-          "attic": "Attic",
-          "shop": "Shop",
-          "office": "Office",
-          "other": "Other"
-        }
+        "placeholder": "(eg. Apartment or Storage)",
+        "flat": "Apartment",
+        "parking": "Parking",
+        "storage": "Storage",
+        "cellar": "Cellar",
+        "attic": "Attic",
+        "shop": "Shop",
+        "office": "Office",
+        "other": "Other"
       },
       "group": {
         "label": "Group",
@@ -375,17 +373,15 @@ export const HouseTranslation = {
       },
       "type": {
         "label": "Típus",
-        "placeholder": "(pl. Lakás)",
-        "options": {
-          "flat": "Lakás",
-          "parking": "Parkoló",
-          "storage": "Tároló",
-          "cellar": "Pince",
-          "attic": "Padlás",
-          "shop": "Üzlet",
-          "office": "Iroda",
-          "other": "Egyéb"
-        }
+        "placeholder": "(pl. Lakás vagy Tároló",
+        "flat": "Lakás",
+        "parking": "Parkoló",
+        "storage": "Tároló",
+        "cellar": "Pince",
+        "attic": "Padlás",
+        "shop": "Üzlet",
+        "office": "Iroda",
+        "other": "Egyéb"
       },
       "group": {
         "label": "Csoport",

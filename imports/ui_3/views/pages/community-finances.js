@@ -96,8 +96,8 @@ const minusColors = [
 
 Template.Disclaimer.helpers({
   publishDate() {
-    const publishedBalance = Balances.findOne({ tag: 'T' });
-    return publishedBalance ? publishedBalance.updatedAt : new Date('2000-01-01');
+    const publishedBalance = Balances.findOne({ tag: 'T' }, { sort: { updatedAt: -1 } });
+    return publishedBalance?.updatedAt || new Date('2000-01-01');
   },
 });
 

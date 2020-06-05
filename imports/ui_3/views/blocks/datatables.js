@@ -75,6 +75,9 @@ export function DatatablesSelectButtons(collection) {
     buttons: [
       { extend: 'selectAll',
         text: () => __('Select all'),
+        action(e, dt, button, config) {
+          dt.rows({ search: 'applied' }).select();
+        },
       },
       { extend: 'selectNone',
         text: () => __('Select none'),

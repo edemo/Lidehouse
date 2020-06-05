@@ -18,9 +18,9 @@ export const ParcelRefFormat = {
         break;
       case '[bPT]fdd':
         switch (doc.type) {
-          case 'parking': ref = 'P' + doc.door; break;
-          case 'storage': ref = 'T' + doc.door; break;
-          case 'flat':
+          case 'Parkoló': ref = 'P' + doc.door; break;
+          case 'Tároló': ref = 'T' + doc.door; break;
+          case 'Lakás':
             ref += doc.building;
             ref += doc.floor;
             ref += doc.door;
@@ -48,11 +48,11 @@ export const ParcelRefFormat = {
         break;
       case '[bPT]fdd': // K704 means K building, 7th floor, 04 door -- P235 means parking space no. 235
         switch (ref[0]) {
-          case 'P': extract.type = 'parking'; extract.door = ref.substring(1); break;
-          case 'T': extract.type = 'storage'; extract.door = ref.substring(1); break;
-          default: extract.type = 'flat';
+          case 'P': extract.type = 'Parkoló'; extract.door = ref.substring(1); break;
+          case 'T': extract.type = 'Tároló'; extract.door = ref.substring(1); break;
+          default: extract.type = 'Lakás';
         }
-        if (extract.type === 'flat' && ref.length === 4) {
+        if (extract.type === 'Lakás' && ref.length === 4) {
           extract.building = ref[0];
           extract.floor = ref[1];
           extract.door = ref[2] + ref[3];
@@ -61,7 +61,7 @@ export const ParcelRefFormat = {
       case 'F/D':    // IV/6 means, IV floor, 6 door
         const splitted = ref.split('/');
         productionAssert(splitted.length === 2, `Invalid parcel ref: ${ref}`);
-        extract.type = 'flat';
+        extract.type = 'Lakás';
         extract.floor = splitted[0];
         extract.door = splitted[1];
         break;

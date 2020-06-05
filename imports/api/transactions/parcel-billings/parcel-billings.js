@@ -25,6 +25,35 @@ export const ParcelBillings = new Mongo.Collection('parcelBillings');
 ParcelBillings.projectionBaseValues = ['absolute', 'area', 'volume', 'habitants'];
 //ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
+const chooseFromExistingParcelTypes = {
+  options() {
+    const communityId = getActiveCommunityId();
+    const parcelTypes = Communities.findOne(communityId).parcelTypeValues();
+    return parcelTypes?.map(pt => ({ label: pt, value: pt })) || [];
+  },
+  firstOption: () => __('All'),
+};
+
+const chooseFromExistingGroups = {
+  options() {
+    const parcels = Parcels.find({ communityId: getActiveCommunityId() }).fetch();
+    const groups = _.without(_.uniq(_.pluck(parcels, 'group')), undefined);
+    return groups?.map(g => ({ label: g, value: g })) || [];
+  },
+  firstOption: () => __('All'),
+};
+
+const chooseFromExistingServiceValues = {
+  options() {
+    const meters = Meters.find({ communityId: getActiveCommunityId() }).fetch();
+    const serviceValues = _.without(_.uniq(_.pluck(meters, 'service')), undefined);
+    return serviceValues?.map(s => ({ label: s, value: s })) || [];
+  },
+  firstOption: () => __('(Select one)'),
+};
+
+//----------------------------------------
+
 ParcelBillings.chargeSchema = new SimpleSchema({
   uom: { type: String, max: 15 },
   unitPrice: { type: Number, decimal: true },
@@ -32,7 +61,7 @@ ParcelBillings.chargeSchema = new SimpleSchema({
 });
 
 ParcelBillings.consumptionSchema = new SimpleSchema({
-  service: { type: String, allowedValues: Meters.serviceValues, autoform: allowedOptions() },
+  service: { type: String, autoform: chooseFromExistingServiceValues },
   charges: { type: [ParcelBillings.chargeSchema] },
 });
 
@@ -46,15 +75,6 @@ ParcelBillings.appliedAtSchema = new SimpleSchema({
   period: { type: String, max: 7 /* TODO: check period format */ },
 });
 
-const selectFromExistingGroups = {
-  options() {
-    const parcels = Parcels.find({ communityId: getActiveCommunityId() }).fetch();
-    const groups = _.without(_.uniq(_.pluck(parcels, 'group')), undefined);
-    return groups ? groups.map(g => ({ label: g, value: g })) : [];
-  },
-  firstOption: () => __('All'),
-};
-
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   title: { type: String, max: 100 },
@@ -62,8 +82,8 @@ ParcelBillings.schema = new SimpleSchema({
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
   digit: { type: String, autoform: Accounts.choosePayinType },
   localizer: { type: String, autoform: Parcels.choosePhysical },
-  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: { firstOption: () => __('All') } },
-  group: { type: String, optional: true, autoform: selectFromExistingGroups },
+  type: { type: String, optional: true, autoform: chooseFromExistingParcelTypes },
+  group: { type: String, optional: true, autoform: chooseFromExistingGroups },
   note: { type: String, optional: true },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
 });
