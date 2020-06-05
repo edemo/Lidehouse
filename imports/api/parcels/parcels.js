@@ -25,7 +25,6 @@ import { ActiveTimeMachine } from '../behaviours/active-time-machine';
 export const Parcels = new Mongo.Collection('parcels');
 
 Parcels.categoryValues = ['@property', '@common', '@group', '#tag'];
-Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'office', 'other'];
 
 Parcels.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },

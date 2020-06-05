@@ -457,7 +457,7 @@ Migrations.add({
       const parcelTypes = Object.keys(c.parcels);
 
       Parcels.find({ communityId: c._id, type: { $exists: true } }).forEach((p) => {
-        const type = TAPi18n.__(`schemaParcels.type.options.${p.type}`, {}, language);
+        const type = TAPi18n.__(`schemaParcels.type.${p.type}`, {}, language);
         Parcels.update(p._id, { $set: { type } }, { selector: { category: '@property' }, validate: false });
       });
 
@@ -469,7 +469,7 @@ Migrations.add({
 
       officerRoles.forEach(role => {
         Memberships.find({ communityId: c._id, role, rank: { $exists: true } }).forEach((m) => {
-          const rank = TAPi18n.__(`schemaMemberships.rank.options.${m.rank}`, {}, language);
+          const rank = TAPi18n.__(`schemaMemberships.rank.${m.rank}`, {}, language);
           Memberships.update(m._id, { $set: { rank } }, { selector: { role }, validate: false });
         });
       });

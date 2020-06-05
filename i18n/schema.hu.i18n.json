@@ -299,12 +299,10 @@
       "label": "Kiegészítő titulus",
       "placeholder": "(pl. elnök vagy helyettes)",
       "help": "Általában nincs rá szükség. A jogosultságokat nem befolyásolja. Csak egy szócska, ami segíthet árnyalni a személy szerepkörét a nyilvános tisztség listában.",
-      "options": {
-        "chairman": "elnök",
-        "lead": "vezető",
-        "assistant": "asszisztens",
-        "substitute": "helyettes"
-      }
+      "chairman": "elnök",
+      "lead": "vezető",
+      "assistant": "asszisztens",
+      "substitute": "helyettes"
     },
     "partnerId": {
       "label": "Partner"

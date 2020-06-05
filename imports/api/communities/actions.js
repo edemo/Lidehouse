@@ -5,6 +5,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { _ } from 'meteor/underscore';
+import { TAPi18n } from 'meteor/tap:i18n';
 
 import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
@@ -77,13 +78,15 @@ Communities.actions = {
     visible: doc.settings && doc.settings.joinable,
     run() {
       const communityId = doc._id;
+      const language = doc.settings.language;
+      const type = TAPi18n.__('schemaParcels.type.flat', {}, language);
       if (user.hasJoinedCommunity(communityId)) {  // should not let same person join twice
         FlowRouter.go('App home');
         return;
       }
       if (doc.status === 'sandbox') {   // Sandboxes have immediate (no questions asked) joining, with a fixed ownership share
         Meteor.call('parcels.insert',
-          { communityId, category: '@property', approved: false, serial: 0, ref: 'auto', units: 100, type: 'flat' },
+          { communityId, category: '@property', approved: false, serial: 0, ref: 'auto', units: 100, type },
           onSuccess(res => setMeAsParcelOwner(res, communityId, onSuccess(r => FlowRouter.go('App home')),
           )),
         );

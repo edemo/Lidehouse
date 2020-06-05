@@ -299,12 +299,10 @@
       "label": "Rank extension",
       "placeholder": "(eg. chairman or assistant)",
       "help": "Usually not necessary. It has no effect on the permissions. Just a free text, that may help to slightly differentiate between the roles on the officers page.",
-      "options": {
-        "chairman": "chairman",
-        "lead": "lead",
-        "assistant": "assistant",
-        "substitute": "substitute"
-      }
+      "chairman": "chairman",
+      "lead": "lead",
+      "assistant": "assistant",
+      "substitute": "substitute"
     },
     "partnerId": {
       "label": "Partner"
