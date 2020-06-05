@@ -2,6 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
+import '/imports/api/attachments/attachments.js';
+import '/imports/api//attachments/attachments-store.js';
+
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const allowedOptions = function allowedOptions() {
