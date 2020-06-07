@@ -65,38 +65,3 @@
   "Garden": "Kert",
   "Heating system": "Kazán"
 }
-
-/*
-  "CustomerBill": {
-    "name": "Kimenő számla",
-    "code": "KSZ"
-  },
-  "SupplierBill": {
-    "name": "Bejövő számla",
-    "code": "BSZ"
-  },
-  "ParcelBill": {
-    "name": "Albetét előírás",
-    "code": "AE"
-  },
-  "CustomerPayment": {
-    "name": "Kimenő számla befolyás",
-    "code": "KSZF"
-  },
-  "SupplierPayment": {
-    "name": "Bejövő számla kifizetése",
-    "code": "BSZF"
-  },
-  "ParcelPayment": {
-    "name": "Albetét befizetés",
-    "code": "AEF"
-  },
-  "MoneyTransfer": {
-    "name": "Átvezetés pénz számlák között",
-    "code": "ÁP"
-  },
-  "AccountingOp": {
-    "name": "Könyvelési művelet",
-    "code": "KM"
-  },
-*/
