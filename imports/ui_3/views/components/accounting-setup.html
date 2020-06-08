@@ -64,7 +64,7 @@
                                       <td>{{_ moneyAccount.name}}</td>
                                       <td>{{_ (concat 'schemaAccounts.category.options.' moneyAccount.category)}}</td>
                                       <td>{{moneyAccount.BAN}}</td>
-                                      <!--td>{{_ (concat 'schemaAccounts.sync.options' (or moneyAccount.sync 'none'))}}</td-->
+                                      <!--td>{{_ (concat 'schemaAccounts.sync.options.' (or moneyAccount.sync 'none'))}}</td-->
                                       <td>{{{checkBoolean moneyAccount.primary}}}</td>
                                       <td class="text-right">
                                           {{> Action_buttons_group doc=moneyAccount collection='accounts' actions='' size='sm'}}

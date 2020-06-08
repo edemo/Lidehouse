@@ -112,12 +112,12 @@ export function displayTxStatus(name) {
 export function displayUrgency(name) {
   if (!name) return '';
   const color = Tickets.urgencyColors[name];
-  return label(__('schemaTickets.ticket.urgency.options' + name), color);
+  return label(__('schemaTickets.ticket.urgency.options.' + name), color);
 }
 
 export function displayChargeType(name) {
   if (!name) return '';
-  return label(__('schemaTickets.ticket.chargeType.options' + name), 'default');
+  return label(__('schemaTickets.ticket.chargeType.options.' + name), 'default');
 }
 
 const Renderers = {
