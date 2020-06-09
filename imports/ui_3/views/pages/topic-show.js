@@ -29,7 +29,7 @@ Template.Topic_show.helpers({
     return topic;
   },
   pageTitle() {
-    return __('schemaTopics.category.' + this.category) + ' ' + __('details');
+    return __('schemaTopics.category.options.' + this.category) + ' ' + __('details');
   },
   smallTitle() {
     return this.title;
