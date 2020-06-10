@@ -25,6 +25,10 @@
   "Cash register": "Pénztár",
   "Checking account": "Folyószámla",
   "Savings account": "Megtakarítási számla",
+  "Capital goods suppliers": "Beruházási szállítók",
+  "VAT paid": "Előzetesen felszámított ÁFA",
+  "VAT payable": "Fizetendő ÁFA",
+  "VAT clearing": "ÁFA elszámolási számla",
 
   // Tx types
   "Money transfer": "Átvezetés pénz számlák között",
