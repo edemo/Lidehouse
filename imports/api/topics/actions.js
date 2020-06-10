@@ -242,3 +242,4 @@ _.each(Topics.entities, (entity, entityName) => {
     },
   });
 });
+AutoForm.addModalHooks('af.topic.move');

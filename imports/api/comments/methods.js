@@ -54,14 +54,13 @@ export const move = new ValidatedMethod({
   run({ _id, destinationId }) {
     const doc = checkExists(Comments, _id);
     checkPermissions(this.userId, 'comment.move', doc);
-
-    Comments.update(_id, { $set: { topicId: destinationId } });
     if (Meteor.isServer) {
       const community = Communities.findOne(doc.communityId);
       community.users().forEach((user) => {
         mergeLastSeen(user, doc.topicId, destinationId);
       });
     }
+    Comments.update(_id, { $set: { topicId: destinationId } });
   },
 });
 
