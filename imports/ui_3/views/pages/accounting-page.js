@@ -1,7 +1,7 @@
 /* globals document */
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries';
@@ -26,6 +26,9 @@ Template.Accounting_page.viewmodel({
   },
   communityId() {
     return getActiveCommunityId();
+  },
+  noAccountsDefined() {
+    return !Accounts.findOne({ communityId: this.communityId() });
   },
   countUnpostedTxs() {
     const communityId = this.communityId();
