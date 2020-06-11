@@ -514,6 +514,7 @@ Migrations.add({
         parcelId: p._id,
 //        membershipId: membership._id,
         habitants: p.habitants,
+        outstanding: membership.outstanding,
       });
       Transactions.find({ membershipId: membership._id }).forEach((tx) => {
         Transactions.update(tx._id, { $set: { contractId }, $unset: { membershipId: '' } }, { selector: tx, validate: false });
