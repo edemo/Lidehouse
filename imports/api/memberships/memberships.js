@@ -238,7 +238,11 @@ if (Meteor.isServer) {
   Memberships.after.update(function (userId, doc, fieldNames, modifier, options) {
     const tdoc = this.transform(doc);
     const contract = tdoc.contract();
-    if (contract) Contracts.update(contract._id, modifier); // keep contract's (active time) in sync
+    if (contract) {  // keep contract's (active time) in sync
+      try { // throws Error: After filtering out keys not in the schema, your modifier is now empty
+        Contracts.update(contract._id, modifier);
+      } catch (err) {}
+    }
   });
 
   Memberships.after.remove(function (userId, doc) {
