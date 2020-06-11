@@ -120,6 +120,7 @@ Meteor.publish('topics.list', function topicsList(params) {
     communityId: { type: String },
     category: { type: String, optional: true },
     closed: { type: Boolean, optional: true },
+    status: { type: Object, blackbox: true, optional: true },
   }).validate(params);
   const { communityId } = params;
   const user = Meteor.users.findOneOrNull(this.userId);

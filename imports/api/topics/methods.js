@@ -16,7 +16,7 @@ import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
 import './tickets/tickets.js';
-import { updateMyLastSeen } from '/imports/api/users/methods.js';
+import { updateMyLastSeen, mergeLastSeen } from '/imports/api/users/methods.js';
 import './rooms/rooms.js';
 import './feedbacks/feedbacks.js';
 import { autoOpen } from './votings/methods.js';
@@ -62,7 +62,14 @@ export const move = new ValidatedMethod({
   }).validator(),
   run({ _id, destinationId }) {
     const doc = checkExists(Topics, _id);
+    if (doc.category !== 'forum') throw new Meteor.Error('err_permissionDenied', 'Only forum topic may be moved.');
     checkPermissions(this.userId, 'comment.move', doc);
+    if (Meteor.isServer) {
+      const community = Communities.findOne(doc.communityId);
+      community.users().forEach((user) => {
+        mergeLastSeen(user, doc._id, destinationId);
+      });
+    }
     Comments.direct.insert(_.extend({}, doc, {
       category: 'comment',
       topicId: destinationId,
@@ -70,7 +77,7 @@ export const move = new ValidatedMethod({
     doc.comments().forEach((comment) => {
       Comments.update(comment._id, { $set: { topicId: destinationId } });
     });
-    Topics.remove(_id);
+    Topics.update(_id, { $set: { movedTo: destinationId, status: 'deleted' } }, { selector: doc });
   },
 });
 

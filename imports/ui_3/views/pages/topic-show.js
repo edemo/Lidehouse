@@ -1,5 +1,4 @@
-
-
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
@@ -58,5 +57,10 @@ Template.Topic_show.helpers({
       }
       default: return [];
     }
+  },
+  redirectToDestination(destinationId) {
+    Meteor.setTimeout(function () {
+      FlowRouter.go('Topic show', { _tid: destinationId });
+    }, 3000);
   },
 });

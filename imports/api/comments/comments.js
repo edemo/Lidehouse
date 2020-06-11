@@ -98,7 +98,7 @@ Comments.moveSchema = new SimpleSchema({
     autoform: {
       options() {
         const communityId = getActiveCommunityId();
-        const topics = Topics.find({ communityId });
+        const topics = Topics.find({ communityId, category: { $in: ['forum', 'vote', 'ticket'] } });
         return topics.map(function option(t) { return { label: t.title, value: t._id }; });
       },
       firstOption: () => __('(Select one)'),

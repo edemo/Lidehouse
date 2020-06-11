@@ -45,7 +45,7 @@ Template.Forum_topics.viewmodel({
   },
   selector() {
     const communityId = ModalStack.getVar('communityId');
-    const selector = { communityId, category: 'forum' };
+    const selector = { communityId, category: 'forum', status: { $ne: 'deleted' } };
     const show = this.show();
     if (show.archived) {
       if (show.active) delete selector.closed;

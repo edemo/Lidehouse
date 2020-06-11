@@ -107,10 +107,10 @@ Topics.actions = {
     name: 'move',
     label: __('move under other topic'),
     icon: 'fa fa-arrow-right',
-    visible: doc && doc.entityName() === 'forum' && user.hasPermission(`comment.move`, doc),
+    visible: doc && doc.entityName() === 'forum' && user.hasPermission('comment.move', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.comment.move',
+        id: 'af.topic.move',
         schema: Comments.moveSchema,
         doc: { _id: doc._id },
         type: 'method',
@@ -242,3 +242,4 @@ _.each(Topics.entities, (entity, entityName) => {
     },
   });
 });
+AutoForm.addModalHooks('af.topic.move');
