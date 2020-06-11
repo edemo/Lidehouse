@@ -380,14 +380,15 @@
     },
     "leadParcelId": {
       "label": "Lead parcel",
-      "help": "If you appoint a lead parcel, then this parcel will not get billed separately, but its fees will be added to the lead parcel's bills. Also the lead parcel can use the voting power of the parcel."
+      "help": "If you appoint a lead parcel, then this parcel will not get billed separately, but its fees will be added to the lead parcel's bills. Also the lead parcel can use the voting power of the parcel. Tipically a garage or a storage room would specify the flat it belongs to, as its lead parcel."
     },
     "membershipId": {
       "label": "Membership"
     },
     "habitants": {
       "label": "Habitants",
-      "placeholder": "(eg. 4)"
+      "placeholder": "(eg. 4)",
+      "help": "Needed only if there is a billing based on this."
     }
   },
   "schemaTopics": {

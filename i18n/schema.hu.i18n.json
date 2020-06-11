@@ -380,14 +380,15 @@
     },
     "leadParcelId": {
       "label": "Vezető albetét",
-      "help": "Ha vezető albetétet ad meg, akkor ez az albetét nem kerül külön számlára, hanem az előírásai a vezető albetét számlájához adódnak, plusz tételként. Vezető albetét esetén a szavazati jogokat is átadja az albetét a vezető albetétnek."
+      "help": "Ha vezető albetétet ad meg, akkor ez az albetét nem kerül külön számlára, hanem az előírásai a vezető albetét számlájához adódnak, plusz tételként. Vezető albetét esetén a szavazati jogokat is átadja az albetét a vezető albetétnek. Tipikusan parkolóhelyek, tárolók szokták megjelölni azt a lakást vezető albetétként, amelyikhez tartoznak."
     },
     "membershipId": {
       "label": "Tagság"
     },
     "habitants": {
       "label": "Lakók száma (fő)",
-      "placeholder": "(pl. 4)"
+      "placeholder": "(pl. 4)",
+      "help": "Csak akkor szükséges megadni, ha ez alapján szeretne előírni."
     }
   },
   "schemaTopics": {

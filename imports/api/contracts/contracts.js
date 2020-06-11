@@ -68,14 +68,14 @@ Contracts.helpers({
     const Memberships = Mongo.Collection.get('memberships');
     return Memberships.findOne(this.membershipId);
   },
+  parcel() {
+    return Parcels.findOne(this.parcelId);
+  },
   leadParcel() {
     return Parcels.findOne(this.leadParcelId);
   },
-  followerParcel() {
-    return Parcels.findOne(this.parcelId);
-  },
   toString() {
-    if (this.relation === 'member') return this.membership().displayRole();
+    if (this.relation === 'member') return this.parcel().ref;
     else return this.title;
   },
 });
