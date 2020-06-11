@@ -4,11 +4,6 @@ import { $ } from 'meteor/jquery';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
-import { Communities } from '/imports/api/communities/communities.js';
-import { Parcels } from '/imports/api/parcels/parcels';
-import { Parcelships } from '/imports/api/parcelships/parcelships.js';
-import { Partners } from '/imports/api/partners/partners.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
@@ -42,11 +37,11 @@ export const Import = {
 
 export const Transformers = {
   // Make sure your transformer clones the doc - in case there are several rounds, you dont want your original docs cleaned
-  parcelships: {
+  contracts: {
     default: (docs, options) => {
       const tdocs = [];
       docs.forEach((doc) => {
-        if (!doc.leadParcelId) return; // When missing the field, it means the parcel leads itself
+        if (!doc.leadParcelId) return; // When missing the field, it means the parcel leads itself => can use default contract
         const tdoc = {}; $.extend(true, tdoc, doc);
         tdocs.push(tdoc);
       });

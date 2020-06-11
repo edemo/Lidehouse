@@ -7,13 +7,6 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { Communities } from '/imports/api/communities/communities.js';
-import { Parcels } from '/imports/api/parcels/parcels';
-import { Parcelships } from '/imports/api/parcelships/parcelships.js';
-import { Partners } from '/imports/api/partners/partners.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Translator } from './translator.js';
 import { Parser } from './parser.js';
@@ -131,12 +124,6 @@ export const Conductors = {
             category: { default: '@property' },
           },
         }, {
-          collectionName: 'parcelships',
-          options,
-          dictionary: {
-            communityId: { default: getActiveCommunityId() },
-          },
-        }, {
           collectionName: 'partners',
           options,
           dictionary: {
@@ -151,6 +138,14 @@ export const Conductors = {
           dictionary: {
             communityId: { default: getActiveCommunityId() },
             role: { default: 'owner' },
+          },
+        }, {
+          collectionName: 'contracts',
+          schemaSelector: { relation: 'member' },
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+            relation: { default: 'member' },
           },
         }],
       };
@@ -240,12 +235,6 @@ export const Conductors = {
           dictionary: {
             communityId: { default: getActiveCommunityId() },
             role: { default: 'owner' },
-          },
-        }, {
-          collectionName: 'parcelships',
-          options,
-          dictionary: {
-            communityId: { default: getActiveCommunityId() },
           },
         }],
       };
