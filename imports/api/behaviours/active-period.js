@@ -109,7 +109,7 @@ export function sanityCheckOnlyOneActiveAtAllTimes(collection, selector) {
     if (!docs[i + 1]) return;
     if (doc.getActiveTime().end > docs[i + 1].getActiveTime().begin) {
       Log.debug('doc1:', docs[i + 1], 'doc2:', doc);
-      throw new Meteor.Error('err_sanityCheckFailed', `Cannot have two documents active at the same time (${doc.getActiveTime().end})`, docs.map(d => d.activeTime));
+      throw new Meteor.Error('err_sanityCheckFailed', 'Cannot have two documents active at the same time', `time: ${doc.getActiveTime().end}, doc: ${doc}`);
     }
   });
 }

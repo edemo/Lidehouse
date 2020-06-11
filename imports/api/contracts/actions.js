@@ -19,8 +19,10 @@ Contracts.actions = {
     color: 'primary',
     visible: user.hasPermission('contracts.insert', doc),
     run() {
-      const activeRelation = ModalStack.getVar('relation');
-      if (activeRelation) _.extend(doc, { relation: activeRelation });
+      const relation = ModalStack.getVar('relation');
+      if (relation) _.extend(doc, { relation });
+      const parcelId = ModalStack.getVar('parcelId');
+      if (parcelId) _.extend(doc, { parcelId });
       Modal.show('Autoform_modal', {
         id: 'af.contract.insert',
         schema: Contracts.simpleSchema(doc),

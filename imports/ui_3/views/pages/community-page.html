@@ -126,7 +126,7 @@
                             {{>Action_buttons_group collection='meters' doc=this actions='registerReading,editReadings' size='sm'}}
                         </td>
                         <td class="text-right">
-                            {{>Action_buttons_group collection='meters' doc=this actions='edit,delete' size='lg'}}
+                            {{>Action_buttons_group collection='meters' doc=this actions='view,edit,delete' size='lg'}}
                         </td>
                     </tr>
                     {{/each}}
@@ -178,7 +178,7 @@
                             </td>
                             <td>{{>Active_period collection='contracts' doc=doc}}</td>
                             <td class="text-right">
-                                {{>Action_buttons_group collection='contracts' doc=doc actions='edit,delete' size='lg'}}
+                                {{>Action_buttons_group collection='contracts' doc=doc actions='view,edit,delete' size='lg'}}
                             </td>
                         {{/if}}
                     </tr>
@@ -199,8 +199,7 @@
         </div>
         {{/if}}
         <p>
-          Ha nem hoz létre szerződést, akkor az első díj előíráskor, automatikusan lérehoz a rendszer egy szerződést az albetét tulajdonosával.
-          (Ha van képviselő kijelölve akkor azzal, ha nincs akkor az elsőnek megadott tulajdonossal.)
+          Ha nem hoz létre számlázást, akkor az első díj előíráskor a rendszer automatikusan lérehozza a számlázást, alap beállításokkal, az albetét képviselőjével, vagy ha az nincs kijelölve, akkor az elsőnek megadott tulajdonossal.
         </p>
         <br>
         <div class="member-list">

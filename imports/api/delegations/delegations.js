@@ -26,7 +26,7 @@ const chooseScopeObject = {
   options() {
     const user = Meteor.user();
     const scope = AutoForm.getFieldValue('scope');
-    if (!scope) return [{ label: __('schemaDelegations.scopeObjectId.placeholder'), value: 'none' }];
+    if (!scope) return [{ label: __('schemaDelegations.scopeObjectId.placeholder'), value: '' }];
     let scopeSet;
     if (scope === 'community') scopeSet = user.communities();
     else {
