@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { Mongo } from 'meteor/mongo';
 
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { sanityCheckOnlyOneActiveAtAllTimes } from '/imports/api/behaviours/active-period.js';

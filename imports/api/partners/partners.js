@@ -11,6 +11,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -220,7 +221,7 @@ Factory.define('member', Partners, {
 
 // ------------------------------------
 
-export const choosePartner = {
+export const choosePartner = () => ({
   relation: 'partner',
   value() {
     const selfId = AutoForm.getFormId();
@@ -231,7 +232,8 @@ export const choosePartner = {
     const communityId = ModalStack.getVar('communityId');
     const community = Communities.findOne(communityId);
     const relation = AutoForm.getFieldValue('relation') || ModalStack.getVar('relation');
-    const partners = Partners.find({ communityId, relation });
+    const selector = { communityId, relation };
+    const partners = Partners.find(Object.cleanUndefined(selector));
     const options = partners.map(function option(p) {
       return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
     });
@@ -239,4 +241,20 @@ export const choosePartner = {
     return sortedOptions;
   },
   firstOption: () => __('(Select one)'),
-};
+});
+
+export const choosePartnerOfParcel = () => ({
+  options() {
+    const communityId = ModalStack.getVar('communityId');
+    const community = Communities.findOne(communityId);
+    const parcelId = AutoForm.getFieldValue('parcelId') || ModalStack.getVar('parcelId');
+    const parcel = Parcels.findOne(parcelId);
+    const partners = parcel.partners();
+    const options = partners.map(function option(p) {
+      return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
+    });
+    const sortedOptions = options.sort((a, b) => a.label.localeCompare(b.label, community.settings.language, { sensitivity: 'accent' }));
+    return sortedOptions;
+  },
+  firstOption: false,
+});

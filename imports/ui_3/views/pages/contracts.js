@@ -29,7 +29,7 @@ Template.Contracts.viewmodel({
     ModalStack.setVar('relation', this.activePartnerRelation(), true);
   },
   relationValues() {
-    return Contracts.relationValues;
+    return _.without(Partners.relationValues, 'member');
   },
   activeClass(partnerRelation) {
     return (this.activePartnerRelation() === partnerRelation) && 'btn-primary active';

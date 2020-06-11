@@ -10,6 +10,7 @@ import { Clock } from '/imports/utils/clock';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { CommunityBuilder } from './community-builder.js';
@@ -48,7 +49,6 @@ export function insertUnittestFixture(lang) {
     door: '00',
     type: 'other',
     area: 0,
-    habitants: 0,
   });
   dummyParcels[1] = demoBuilder.createProperty({
     units: 10,
@@ -71,7 +71,6 @@ export function insertUnittestFixture(lang) {
     door: '03',
     type: 'flat',
     area: 30,
-    habitants: 3,
   });
   dummyParcels[4] = demoBuilder.createProperty({
     units: 40,
@@ -79,13 +78,15 @@ export function insertUnittestFixture(lang) {
     door: '04',
     type: 'flat',
     area: 40,
-    habitants: 4,
   });
 
-  demoBuilder.create('meter', { parcelId: dummyParcels[3], service: 'coldWater', uom: 'm3', identifier: 'CW-01010101', activeTime: { begin: new Date('2018-01-01') } });
-
-  demoBuilder.create('parcelship', { parcelId: dummyParcels[1], leadParcelId: dummyParcels[3] });
-  demoBuilder.create('parcelship', { parcelId: dummyParcels[2], leadParcelId: dummyParcels[3] });
+  demoBuilder.create('meter', {
+    parcelId: dummyParcels[3],
+    service: 'coldWater',
+    uom: 'm3',
+    identifier: 'CW-01010101',
+    activeTime: { begin: new Date('2018-01-01') },
+  });
 
 
   // ===== Demo owners =====
@@ -185,6 +186,22 @@ export function insertUnittestFixture(lang) {
   otherBuilder.createMembership(dummyUsers[4], 'accountant');
   otherBuilder.createMembership(dummyUsers[5], 'manager');
 
+  // Contracts
+  dummyParcels.forEach((parcelId, i) => {
+    const parcel = Parcels.findOne(parcelId);
+    if (i === 1 || i === 2) {
+      demoBuilder.create('memberContract', {
+        parcelId,
+        leadParcelId: dummyParcels[3],
+      });
+    } else { // i = 0, 3, 4
+      demoBuilder.create('memberContract', {
+        parcelId,
+        partnerId: parcel._payerMembership().partnerId,
+        habitants: i,
+      });
+    }
+  });
   // ===== Forum =====
 
   ['0', '1', '2'].forEach((topicNo) => {

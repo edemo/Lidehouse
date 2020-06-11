@@ -11,7 +11,6 @@ import { Fraction } from 'fractional';
 
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { insert as insertParcelship, update as updateParcelship, remove as removeParcelship } from '/imports/api/parcelships/methods.js';
 import '/imports/api/memberships/methods.js';
 import { everyRole, exceptAdmin, defaultRoles } from '/imports/api/permissions/roles.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -349,24 +348,6 @@ if (Meteor.isServer) {
           Memberships.methods.update._execute({ userId: Fixture.demoAdminId },
             { _id: testMembershipId, modifier: { $set: { 'ownership.share': new Fraction(3, 8) } } });
         }, 'err_sanityCheckFailed');
-        done();
-      });
-
-      xit('parcel should have either lead or owners, but not both', function (done) {
-        const userId = Fixture.demoManagerId;
-        const leadParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, category: '@property', ref: '45', units: 0 });
-        const parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, category: '@property', ref: '56', units: 0 });
-        insertParcelship._execute({ userId }, { communityId: Fixture.demoCommunityId, parcelId, leadParcelId, activeTime: { begin: new Date() } });
-
-
-        Memberships.methods.insert._execute({ userId: Fixture.demoAdminId },
-            createMembershipWithShare(leadParcelId, new Fraction(1, 2)));
-
-        chai.assert.throws(() => {
-          Memberships.methods.insert._execute({ userId: Fixture.demoAdminId },
-            createMembershipWithShare(parcelId, new Fraction(1, 2)));
-        }, 'err_sanityCheckFailed');
-
         done();
       });
     });

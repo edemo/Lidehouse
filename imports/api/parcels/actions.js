@@ -15,6 +15,7 @@ import { importCollectionFromFile } from '/imports/ui_3/views/components/import-
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from './parcels.js';
 import './methods.js';
@@ -113,6 +114,45 @@ Parcels.actions = {
         },
         size: user.hasPermission('meters.update', doc) ? 'lg' : 'md',
       });
+    },
+  }),
+  contracts: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'memberContract',
+    icon: 'fa fa-handshake-o',
+    visible: user.hasPermission('parcels.details', doc),
+    run(event, instance) {
+      ModalStack.setVar('parcelId', doc._id);
+      Modal.show('Modal', {
+        title: `${doc ? doc.display() : __('unknown')} - ${__('contracts')}`,
+        body: 'Contracts_box',
+        bodyContext: {
+          community: doc.community(),
+          parcel: doc,
+        },
+        size: user.hasPermission('contracts.update', doc) ? 'lg' : 'md',
+      });
+/*      let contract = doc.payerContract();
+      if (!contract) {
+        contract = doc._contractSelector();
+        Modal.show('Autoform_modal', {
+          id: 'af.contract.insert',
+          schema: Contracts.simpleSchema(contract),
+          omitFields: ['activeTime'],
+          doc: contract,
+          type: 'method',
+          meteormethod: 'contracts.insert',
+        });
+      } else {
+        Modal.show('Autoform_modal', {
+          id: 'af.contract.update',
+          schema: Contracts.simpleSchema(contract),
+          omitFields: ['activeTime'],
+          doc: contract,
+          type: 'method-update',
+          meteormethod: 'contracts.update',
+          singleMethodArgument: true,
+        });
+      }*/
     },
   }),
   finances: (options, doc, user = Meteor.userOrNull()) => ({

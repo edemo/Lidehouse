@@ -40,6 +40,7 @@ Template.Main_layout.onCreated(function() {
     const communityId = ModalStack.getVar('communityId');
     if (communityId) {
       this.subscribe('memberships.inCommunity', { communityId });
+      this.subscribe('contracts.inCommunity', { communityId });
       this.subscribe('partners.inCommunity', { communityId });
     }
   });

@@ -9,6 +9,7 @@
             <h5>{{_ 'partner'}}:</h5>
             <address>
                 {{doc.partner}}
+                {{#if doc.contractId}}[{{doc.contract}}]{{/if}}
             </address>
             <p>
                 <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>

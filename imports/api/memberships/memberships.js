@@ -16,10 +16,10 @@ import { allowedOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
-import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels, chooseProperty } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
+import { Contracts } from '../contracts/contracts';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -39,7 +39,7 @@ Memberships.baseSchema = new SimpleSchema({
     },
   },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner() },
 });
 
 // Parcels can be jointly owned, with each owner having a fractional *share* of it
@@ -136,6 +136,9 @@ Memberships.helpers({
     if (!this.partnerId) return undefined;
     return Partners.findOne(this.partnerId);
   },
+  contract() {
+    return Contracts.findOneActive({ partnerId: this.partnerId, parcelId: this.parcelId });
+  },
   user() {
     debugAssert(this.userId);
     return Meteor.users.findOne(this.userId);
@@ -190,7 +193,6 @@ Memberships.helpers({
 
 Memberships.attachBaseSchema(Memberships.baseSchema);
 Memberships.attachBehaviour(ActivePeriod);
-Memberships.attachBehaviour(AccountingLocation);
 Memberships.attachBehaviour(Timestamped);
 
 Memberships.attachVariantSchema(Ownerships.schema, { selector: { role: 'owner' } });
@@ -234,6 +236,9 @@ if (Meteor.isServer) {
   });
 
   Memberships.after.update(function (userId, doc, fieldNames, modifier, options) {
+    const tdoc = this.transform(doc);
+    const contract = tdoc.contract();
+    if (contract) Contracts.update(contract._id, modifier); // keep contract's (active time) in sync
   });
 
   Memberships.after.remove(function (userId, doc) {

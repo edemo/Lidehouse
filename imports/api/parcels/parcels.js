@@ -64,13 +64,11 @@ Parcels.physicalSchema = new SimpleSchema({
 
 Parcels.propertySchema = new SimpleSchema({
   serial: { type: Number, optional: true },
-  leadRef: { type: String, optional: true, autoform: { omit: true } }, // cached active value, if you need TimeMachine functionality use leadParcel() which reads from Parcelships
   units: { type: Number, optional: true },
   group: { type: String, max: 25, optional: true },
   // cost calculation purposes
   area: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
-  habitants: { type: Number, optional: true },  // TODO : need to move to parcelships, because it changes with time
 });
 
 Parcels.publicFields = {
@@ -81,7 +79,6 @@ Parcels.idSet = ['communityId', 'ref'];
 
 Meteor.startup(function indexParcels() {
   Parcels.ensureIndex({ communityId: 1, ref: 1 });
-  Parcels.ensureIndex({ communityId: 1, leadRef: 1 });
   if (Meteor.isServer) {
     Parcels._ensureIndex({ communityId: 1, code: 1 });
     Parcels._ensureIndex({ lot: 1 });
@@ -93,33 +90,25 @@ Parcels.helpers({
     return this.category;
   },
   leadParcelId() {
-    const Parcelships = Mongo.Collection.get('parcelships');
-    if (ActiveTimeMachine.isSimulating()) {
-      const parcelship = Parcelships.findOneActive({ parcelId: this._id });
-      return parcelship ? parcelship.leadParcelId : this._id; // if can't find your lead parcel, lead yourself
-    } else {
-      if (!this.leadRef || (this.leadRef === this.ref)) return this._id;
-      const leadParcel = Parcels.findOne({ communityId: this.communityId, ref: this.leadRef });
-      return leadParcel ? leadParcel._id : this._id;  // if can't find your lead parcel, lead yourself
-    }
+    const Contracts = Mongo.Collection.get('contracts');
+    const contract = Contracts.findOneActive({ parcelId: this._id });
+    return contract?.leadParcelId || this._id; // if can't find your lead parcel, lead yourself
   },
   leadParcel() {
-    return Parcels.findOne(this.leadParcelId());
+    const leadParcelId = this.leadParcelId();
+    return leadParcelId === this._id ? this : Parcels.findOne(leadParcelId);
   },
   leadParcelRef() {
-    if (ActiveTimeMachine.isSimulating()) return this.leadParcel().ref;
-    else return this.leadRef;
+    const leadParcel = this.leadParcel();
+    return leadParcel.ref === this.ref ? undefined : leadParcel.ref;
   },
   isLed() {
-    const leadRef = this.leadParcelRef();
-    return (leadRef && leadRef !== this.ref); // comparing the ref is quicker than the id, because the ref is cached
+    return (this.leadParcelId() !== this._id);
   },
   followers() {
-    const Parcelships = Mongo.Collection.get('parcelships');
-    if (ActiveTimeMachine.isSimulating()) {
-      const followerParcelIds = Parcelships.findActive({ leadParcelId: this._id }).map(ps => ps.parcelId);
-      return Parcels.find({ _id: { $in: _.without(followerParcelIds, this._id) } });
-    } else return Parcels.find({ _id: { $ne: this._id }, communityId: this.communityId, leadRef: this.ref });
+    const Contracts = Mongo.Collection.get('contracts');
+    const followerParcelIds = Contracts.findActive({ leadParcelId: this._id }).map(c => c.parcelId);
+    return Parcels.find({ _id: { $in: _.without(followerParcelIds, this._id) } });
   },
   withFollowers() {
     return [this].concat(this.followers().fetch());
@@ -150,13 +139,37 @@ Parcels.helpers({
   representor() {
     return this.representors().fetch()[0];
   },
-  payerMembership() {
+  _payerMembership() {
     const payer = this.representor() || this.owners().fetch()[0];
-    productionAssert(payer, 'err_invalidData', `Unable to pay for parcel ${this.ref} - no payer membership found`);
     return payer;
   },
+  _contractSelector() {
+    return { communityId: this.communityId, relation: 'member', parcelId: this._id };
+  },
+  payerContract() {
+    const Contracts = Mongo.Collection.get('contracts');
+    const contractSelector = this._contractSelector();
+    let payerContract = Contracts.findOneActive(contractSelector);
+    if (!payerContract) { // Contract can be created on the fly, at first payment
+      console.log('Did not find', contractSelector);
+      if (Meteor.isServer) { // will be called from parcelbillings.apply
+        const payerMembership = this._payerMembership();
+        productionAssert(payerMembership, 'err_invalidData', `Unable to pay for parcel ${this.ref} - no owner found`);
+        contractSelector.partnerId = payerMembership.partnerId;
+        const contractId = Contracts.insert(contractSelector);
+        payerContract = Contracts.findOne(contractId);
+      console.log('So inserted', payerContract);
+
+      }
+    }
+    return payerContract;
+  },
   payerPartner() {
-    return this.payerMembership().partner();
+    return this.payerContract().partner();
+  },
+  partners() {
+    const Partners = Mongo.Collection.get('partners');
+    return this.occupants().fetch().map(o => Partners.findOne(o.partnerId));
   },
   display() {
     return `${this.ref || '?'} (${this.location()}) ${this.type}`;

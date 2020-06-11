@@ -11,8 +11,6 @@ import '/imports/api/users/methods.js';
 import '/imports/api/users/publications.js';
 import '/imports/api/memberships/methods.js';
 import '/imports/api/memberships/publications.js';
-import '/imports/api/parcelships/methods.js';
-import '/imports/api/parcelships/publications.js';
 import '/imports/api/delegations/methods.js';
 import '/imports/api/delegations/publications.js';
 import '/imports/api/agendas/methods.js';

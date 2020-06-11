@@ -1,14 +1,9 @@
 <template name="Bill_partner">
-    <address>
-        <strong>{{partner.toString}}</strong><br>
-        {{partner.contact.address}}<br>
-        {{#if partner.BAN}}
-          Bank: {{partner.BAN}}<br>
-        {{/if}}
-        {{#if partner.taxNo}}
-          {{_ 'schemaPartners.taxNo.label'}}: {{partner.taxNo}}<br>
-        {{/if}}
-    </address>
+    <strong>{{partner.toString}}</strong><br>
+    {{#if this.partner.contact.address}}{{this.partner.contact.address}}<br>{{/if}}
+    {{#if this.partner.BAN}}Bank: {{this.partner.BAN}}<br>{{/if}}
+    {{#if this.partner.taxNo}}{{_ 'schemaPartners.taxNo.label'}}: {{this.partner.taxNo}}<br>{{/if}}
+    {{#if this.contract}}[{{this.contract}}]{{/if}}
 </template>
 
 <template name="Bill_view">
@@ -16,7 +11,7 @@
         <div class="col-xs-6">
             <h5>{{_ 'issuer'}}:</h5>
             <address>
-                {{>Bill_partner partner=doc.issuer}}
+                {{>Bill_partner doc.issuer}}
             </address>
         </div>
 
@@ -28,7 +23,7 @@
             </h4>
             <h5>{{_ 'receiver'}}:</h5>
             <address>
-                {{>Bill_partner partner=doc.receiver}}
+                {{>Bill_partner doc.receiver}}
             </address>
             <p>
                 {{#if isBill}}

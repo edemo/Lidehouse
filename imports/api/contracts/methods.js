@@ -3,18 +3,25 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { Topics } from '/imports/api/topics/topics.js';
+import { checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
+import { sanityCheckOnlyOneActiveAtAllTimes } from '/imports/api/behaviours/active-period.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
-import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
 
 export const insert = new ValidatedMethod({
   name: 'contracts.insert',
-  validate: Contracts.simpleSchema().validator({ clean: true }),
-
+  validate: doc => Contracts.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
     checkPermissions(this.userId, 'contracts.insert', doc);
 
-    return Contracts.insert(doc);
+    const ContractsStage = Contracts.Stage();
+    const _id = ContractsStage.insert(doc);
+    if (doc.relation === 'member') {
+      sanityCheckOnlyOneActiveAtAllTimes(ContractsStage, { parcelId: doc.parcelId });
+    }
+    ContractsStage.commit();
+
+    return _id;
   },
 });
 
@@ -27,10 +34,18 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Contracts, _id);
-    checkModifier(doc, modifier, ['title', 'text', 'partnerId', 'active', 'activeTime.begin', 'activeTime.end']);
+    checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'contracts.update', doc);
 
-    Contracts.update({ _id }, modifier);
+    const ContractsStage = Contracts.Stage();
+    const result = ContractsStage.update(_id, modifier, { selector: doc });
+    const newDoc = ContractsStage.findOne(_id);
+    if (doc.relation === 'member') {
+      sanityCheckOnlyOneActiveAtAllTimes(ContractsStage, { parcelId: newDoc.parcelId });
+    }
+    ContractsStage.commit();
+
+    return result;
   },
 });
 
@@ -54,3 +69,4 @@ export const remove = new ValidatedMethod({
 
 Contracts.methods = Contracts.methods || {};
 _.extend(Contracts.methods, { insert, update, remove });
+_.extend(Contracts.methods, crudBatchOps(Contracts));

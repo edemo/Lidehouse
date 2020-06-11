@@ -12,7 +12,6 @@ import { allowedOptions, imageUpload, noUpdate } from '/imports/utils/autoform.j
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
 
 export const Meters = new Mongo.Collection('meters');
 
@@ -68,6 +67,7 @@ Meteor.startup(function indexParcels() {
 
 Meters.helpers({
   parcel() {
+    const Parcels = Mongo.Collection.get('parcels');
     return Parcels.findOne(this.parcelId);
   },
   entityName() {

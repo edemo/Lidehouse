@@ -17,7 +17,6 @@ import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -162,7 +161,6 @@ export const remove = new ValidatedMethod({
     // Once there are no active officers, the community can be purged
     Meters.remove({ communityId });
     Memberships.remove({ communityId });
-    Parcelships.remove({ communityId });
     Comments.remove({ communityId });
     Topics.remove({ communityId });
     Agendas.remove({ communityId });

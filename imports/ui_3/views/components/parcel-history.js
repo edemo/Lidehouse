@@ -42,8 +42,8 @@ Template.Parcel_history.viewmodel({
     const parcelId = this.parcelSelected();
     if (!parcelId) return undefined;
     const parcel = Parcels.findOne(parcelId);
-//    const result = parcel && parcel.payerPartner() && parcel.payerPartner()._id;
-    const result = parcel && parcel.payerMembership() && parcel.payerMembership()._id;
+//    const result = parcel?.payerPartner()?._id;
+    const result = parcel?.payerContract()?.membershipId;
     return result;
   },
   subscribeParams() {

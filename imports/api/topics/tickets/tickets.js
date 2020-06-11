@@ -25,7 +25,7 @@ Tickets.extensionRawSchema = {
   type: { type: String, allowedValues: Tickets.typeValues, autoform: { type: 'hidden' } },
   urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: allowedOptions(), defaultValue: 'normal' },
   localizer: { type: String, optional: true, autoform: chooseParcel() },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner() },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract, optional: true },
   chargeType: { type: String, allowedValues: Tickets.chargeTypeValues, autoform: allowedOptions(), optional: true },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true /* TODO: Select from tx list */ },

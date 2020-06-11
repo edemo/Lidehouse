@@ -262,17 +262,6 @@
       }
     }
   },
-  "schemaParcelships" : {
-    "_": {
-      "label": "Vezető albetét"
-    },
-    "leadParcelId": {
-      "label": "Vezető albetét"
-    },
-    "parcelId": {
-      "label": "Albetét"
-    }
-  },
   "schemaMemberships" : {
     "_": {
       "label": "Tagság"
@@ -365,6 +354,9 @@
     }
   },
   "schemaContracts": {
+    "_": {
+      "label": "Szerződés"
+    },
     "title": {
       "label": "Név",
       "placeholder": "(pl. Lift karbantartási szerződés)"
@@ -374,10 +366,28 @@
       "placeholder": "(pl. 2012 CXXL. kormányrendelet alapján kötelező)"
     },
     "partnerId": {
-      "label": "Szolgáltató partner"
+      "label": "Partner"
+    },
+    "delegateId": {
+      "label": "Megbízott partner",
+      "help": "Csak akkor adja meg, ha a számlát nem a partner fogja fizetni, hanem egy másik személy. Az itt beállított személy részére szintén meg lesznek küldve a számlák."
     },
     "topicIds": {
       "label": "Munkalapok"
+    },
+    "parcelId": {
+      "label": "Albetét"
+    },
+    "leadParcelId": {
+      "label": "Vezető albetét",
+      "help": "Ha vezető albetétet ad meg, akkor ez az albetét nem kerül külön számlára, hanem az előírásai a vezető albetét számlájához adódnak, plusz tételként. Vezető albetét esetén a szavazati jogokat is átadja az albetét a vezető albetétnek."
+    },
+    "membershipId": {
+      "label": "Tagság"
+    },
+    "habitants": {
+      "label": "Lakók száma (fő)",
+      "placeholder": "(pl. 4)"
     }
   },
   "schemaTopics": {
@@ -733,7 +743,8 @@
       "label": "Partner"
     },
     "contractId": {
-      "label": "Szerződés"
+      "label": "Szerződés",
+      "placeholder": "Először válassza ki a partnert"
     },
     "partnerName": {
       "label": "Partner neve",
@@ -1057,10 +1068,22 @@
   },
   "schemaPayments": {
     "bills": {
-      "label": "Számlák kifizetve ",
+      "label": "Számlák kifizetve",
       "$": {
         "id": {
           "label": "Számla"
+        },
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "(pl. 14560)"
+        }
+      }
+    },
+    "lines": {
+      "label": "Számla megjelölés nélkül",
+      "$": {
+        "id": {
+          "label": "Szerződés"
         },
         "amount": {
           "label": "Összeg",

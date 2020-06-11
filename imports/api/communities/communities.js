@@ -11,10 +11,6 @@ import { allowedOptions, imageUpload } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Agendas } from '/imports/api/agendas/agendas.js';
 
 export const Communities = new Mongo.Collection('communities');
 
@@ -66,12 +62,14 @@ Communities.helpers({
     return Object.keys(this.parcels);
   },
   nextAvailableSerial() {
+    const Parcels = Mongo.Collection.get('parcels');
     const serials = _.pluck(Parcels.find({ communityId: this._id, category: '@property' }).fetch(), 'serial');
     const maxSerial = serials.length ? Math.max(...serials) : 0;
     return maxSerial + 1;
   },
   registeredUnits() {
     let total = 0;
+    const Parcels = Mongo.Collection.get('parcels');
     Parcels.find({ communityId: this._id, category: '@property' }).forEach(p => total += p.units);
     return total;
   },
@@ -83,22 +81,26 @@ Communities.helpers({
     const bankAccount = this.primaryBankAccount();
     partner.contact = { address: this.displayAddress() };
     partner.BAN = bankAccount && bankAccount.BAN;
-    return partner;
+    return { partner /* no contract */ };
   },
   accounts() {
+    const Accounts = Mongo.Collection.get('accounts');
     return Accounts.find({ communityId: this._id }, { sort: { code: 1 } });
   },
   primaryBankAccount() {
+    const Accounts = Mongo.Collection.get('accounts');
     const bankAccount = Accounts.findOne({ communityId: this._id, category: 'bank', primary: true });
 //    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
     return bankAccount;
   },
   primaryCashAccount() {
+    const Accounts = Mongo.Collection.get('accounts');
     const cashAccount = Accounts.findOne({ communityId: this._id, category: 'cash', primary: true });
 //    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
     return cashAccount;
   },
   userWithRole(role) {
+    const Memberships = Mongo.Collection.get('memberships');
     const membershipWithRole = Memberships.findOneActive({ communityId: this._id, role });
     if (!membershipWithRole) return undefined;
     return membershipWithRole.user();
@@ -115,10 +117,12 @@ Communities.helpers({
     return this.admin(); // TODO: should be the person with do.techsupport permission
   },
   users() {
+    const Memberships = Mongo.Collection.get('memberships');
     const users = Memberships.findActive({ communityId: this._id, userId: { $exists: true } }).map(m => m.user());
     return _.uniq(users, false, u => u._id);
   },
   voterships() {
+    const Memberships = Mongo.Collection.get('memberships');
     const voterships = Memberships.findActive({ communityId: this._id, approved: true, role: 'owner', userId: { $exists: true } })
       .fetch().filter(ownership => !ownership.isRepresentedBySomeoneElse());
     return voterships;
@@ -131,6 +135,7 @@ Communities.helpers({
     return this.status !== 'sandbox';
   },
   hasLiveAssembly() {
+    const Agendas = Mongo.Collection.get('agendas');
     return !!Agendas.findOne({ communityId: this._id, live: true });
   },
   toString() {

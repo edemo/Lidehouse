@@ -6,23 +6,6 @@
         {{> afQuickField name="defId" type="hidden"}}
         {{> afQuickField name="relation" type="hidden"}}
         <!-- hidden, needed for autoform doc data -->
-        <div class="col-sm-6 col-md-4 pull-right">
-            {{#if doc.serialId}}
-                <h4>{{_ doc.txdef.name}}:
-                <span class="text-navy">{{doc.serialId}}</span></h4>
-            {{/if}}
-            <address>
-                {{> afQuickField name="partnerId"}}
-              {{#unless (equals doc.partner.relation 'member') }}
-                {{> afQuickField name="contractId"}}
-              {{/unless}}
-            </address>
-            <p>
-                <span>{{> afQuickField name="valueDate" type=hiddenWhenReconciling}}</span>
-                <span>{{> afQuickField name="payAccount" type=hiddenWhenReconciling}}</span>
-                <span>{{> afQuickField name="amount" type=hiddenWhenReconciling}}</span>
-            </p>
-        </div>
         {{#if reconciling}}
         <div class="col-sm-6 col-md-7">
             <div class="form-group">
@@ -32,7 +15,20 @@
                 </textarea>
             </div>
         </div>
+        {{else}}
+        <div class="col-sm-6 col-md-4">
+            {{#if doc.serialId}}
+                <h4>{{_ doc.txdef.name}}:
+                <span class="text-navy">{{doc.serialId}}</span></h4>
+            {{/if}}
+            {{> afQuickField name="valueDate" type=hiddenWhenReconciling}}
+            {{> afQuickField name="payAccount" type=hiddenWhenReconciling}}
+        </div>
         {{/if}}
+        <div class="col-sm-6 col-md-4 pull-right">
+            {{> afQuickField name="partnerId"}}
+            {{> afQuickField name="amount"}}
+        </div>
     </div>
     <div class="table-responsive m-t">
         <table class="table invoice-table">
@@ -51,7 +47,7 @@
                 <tr class='js-autofill'>
                     <td>{{> afFormGroup name=this.current.id}}</td>
                     <td data-line="{{this.name}}">
-                      <button type="button" class="btn btn-default js-full-amount"><i class="fa fa-arrow-right"></i> {{_ 'Full'}}</button>
+                      <button type="button" class="btn btn-default js-full-amount"><i class="fa fa-arrow-right"></i> {{_ 'Full'}} <i class="fa fa-arrow-right"></i></button>
                     </td>
                     <td>{{> afFormGroup name=this.current.amount}}</td>
                     <td class="text-left">
@@ -62,6 +58,39 @@
                 </tr>
                 {{/afEachArrayItem}}
                 <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="bills">
+                    <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
+                </button>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive m-t">
+        <table class="table invoice-table">
+            <thead>
+                <tr>
+                    <th>{{_ 'schemaPayments.lines.label'}}</th>
+                    <th></th>
+                    <th></th>
+                    <th>{{_ 'schemaTransactions.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#afEachArrayItem name="lines"}}
+                <!--{{#if notNullLine this}}-->
+                <tr class='js-autofill'>
+                    <td>{{> afFormGroup name=this.current.contractId}}</td>
+                    <td>{{> afFormGroup name=this.current.parcelId}}</td>
+                    <td data-line="{{this.name}}">
+                      <button type="button" class="btn btn-default js-remainder-amount"><i class="fa fa-arrow-down"></i> {{_ 'Remainder'}} <i class="fa fa-arrow-right"></i></button>
+                    </td>
+                    <td>{{> afFormGroup name=this.current.amount}}</td>
+                    <td class="text-left">
+                      <button type="button" class="btn btn-info autoform-remove-item">
+                          <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                </tr>
+                {{/afEachArrayItem}}
+                <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="lines">
                     <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
                 </button>
             </tbody>

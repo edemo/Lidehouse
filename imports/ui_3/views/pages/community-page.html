@@ -86,17 +86,6 @@
                     </tr>
                     {{/let}}
                     {{/each}}
-                    {{#each doc in parcelships}}
-                    <tr class="parcelships" data-id="{{doc._id}}">
-                        <td class="text-center"> <a class="client-avatar"><i class="fa fa-lg fa-share"></i></a></td>
-                        <td><button class="js-occupants parcels" data-id="{{doc.leadParcelId}}"><strong title="{{_ 'parcelship'}}">{{doc.leadParcel.ref}}</strong></button></td>
-                        <td>{{>Active_period collection='parcelships' doc=doc}}</td>
-                        <td><span class="label label-plain">{{_ 'lead parcel'}}</span></td>
-                        <td class="text-right">
-                            {{>Action_buttons_group collection='parcelships' doc=doc actions='edit,delete' size='lg'}}
-                        </td>
-                    </tr>
-                    {{/each}}
                 </tbody>
             </table>
         </div>
@@ -106,10 +95,9 @@
 <template name="Occupants_box">
     <div>
         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
-        <h2>{{_ 'occupants'}} {{parcelshipTitle}}</h2>
+        <h2>{{_ 'occupants'}}</h2>
         <div class="pull-right">
             {{>Action_buttons_group collection='memberships' actions='new' size='md' options=(obj '{ "entity": ["ownership","benefactorship"] }')}}
-            {{>Action_buttons_group collection='parcelships' actions='new' size='md'}}
             {{>Action_buttons_group collection='memberships' actions='import' size='md'}}
         </div>
         <p>
@@ -164,6 +152,60 @@
         <div class="member-list">
             {{> Active_archive_tabs name='meters' icon='fa-tachometer'
                 template='Meters_table' content=metersContent }}
+        </div>
+    </div>
+</template>
+
+<template name="Contracts_table">
+    <div class="full-height-scroll">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <tbody>
+                    {{#each doc in rows}}
+                    <tr class="contracts" data-id="{{doc._id}}">
+                        {{#if doc.leadParcelId}}
+                            <td class="text-center"> <a class="client-avatar"><i class="fa fa-lg fa-share"></i></a></td>
+                            <td><button class="js-occupants parcels" data-id="{{doc.leadParcelId}}"><strong title="{{_ 'lead parcel'}}">{{doc.leadParcel.ref}}</strong></button></td>
+                            <td>{{>Active_period collection='contracts' doc=doc}}</td>
+                            <td><span class="label label-plain">{{_ 'lead parcel'}}</span></td>
+                            <td class="text-right">
+                                {{>Action_buttons_group collection='contracts' doc=doc actions='edit,delete' size='lg'}}
+                            </td>
+                        {{else}}
+                            <td><a href="" class="client-avatar js-member"><img alt="image" src={{doc.partner.avatar}}></a></td>
+                            <td><a href="" class="client-link js-member">{{doc.partner.displayName}}</a>  
+                              {{>Action_buttons_group collection='partners' doc=doc.partner actions='view,edit' size='sm'}}
+                            </td>
+                            <td>{{>Active_period collection='contracts' doc=doc}}</td>
+                            <td class="text-right">
+                                {{>Action_buttons_group collection='contracts' doc=doc actions='edit,delete' size='lg'}}
+                            </td>
+                        {{/if}}
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+
+<template name="Contracts_box">
+    <div>
+        <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
+        <h2>{{_ 'memberContract'}}</h2>
+        {{#if or (currentUserHasPermission 'contracts.insert' communityIdObject) (currentUserHasPermission 'parcels.details' communityIdObject)}}
+        <div class="btn-group pull-right">
+            {{>Action_buttons_group collection='contracts' actions='new,import' size='md'}}
+        </div>
+        {{/if}}
+        <p>
+          Ha nem hoz létre szerződést, akkor az első díj előíráskor, automatikusan lérehoz a rendszer egy szerződést az albetét tulajdonosával.
+          (Ha van képviselő kijelölve akkor azzal, ha nincs akkor az elsőnek megadott tulajdonossal.)
+        </p>
+        <br>
+        <div class="member-list">
+            {{> Active_archive_tabs name='contracts' icon='fa-handshake-o'
+                template='Contracts_table' content=contractsContent }}
         </div>
     </div>
 </template>

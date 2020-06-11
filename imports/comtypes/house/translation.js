@@ -188,10 +188,6 @@ export const HouseTranslation = {
         "label": "Volume (m3)",
         "placeholder": "(eg. 142)"
       },
-      "habitants": {
-        "label": "Habitants",
-        "placeholder": "(eg. 4)"
-      },
       "occupants": {
         "label": "Occupants"
       },
@@ -402,9 +398,6 @@ export const HouseTranslation = {
       "volume": {
         "label": "Légköbméter (m3)",
         "placeholder": "(pl. 142)"
-      },
-      "habitants": {
-        "label": "Lakók száma (fő)"
       },
       "occupants": {
         "label": "Birtokosok"

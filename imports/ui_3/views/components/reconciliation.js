@@ -12,9 +12,9 @@ import '/imports/api/contracts/actions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import '/imports/api/transactions/actions.js';
-import './payment-edit.html';
+import './reconciliation.html';
 
-Template.Payment_edit.viewmodel({
+Template.Reconciliation.viewmodel({
   partnerRelation() {
     return this.templateInstance.data.relation;
   },
@@ -23,10 +23,6 @@ Template.Payment_edit.viewmodel({
     (AutoForm.getFieldValue('bills') || []).forEach(bp => {
       if (!bp) return;
       allocated += bp.amount;
-    });
-    (AutoForm.getFieldValue('lines') || []).forEach(l => {
-      if (!l) return;
-      allocated += l.amount;
     });
     return allocated;
   },
@@ -41,12 +37,9 @@ Template.Payment_edit.viewmodel({
     const jsonText = JSON.stringify(original || {}, null, 2);
     return jsonText.trim().substr(3, jsonText.length - 5).trim();
   },
-  hiddenWhenReconciling() {
-    return this.reconciling() && 'hidden';
-  },
 });
 
-Template.Payment_edit.events({
+Template.Reconciliation.events({
   'click .js-new[data-entity="bill"]'(event, instance) {
     const paymentDef = instance.data.doc.txdef();
     const billDef = paymentDef.correspondingBillDef();
@@ -64,12 +57,6 @@ Template.Payment_edit.events({
 //    AutoForm.setFieldValue(afLineName + '.amount', bill.outstanding); AutoForm 7.0 has it. Can replace next 3 lines with it
     const amountElem = cell.next().find('input');
     amountElem.val(bill.outstanding);
-    amountElem.change();
-  },
-  'click .js-remainder-amount'(event, instance) {
-    const cell = $(event.target).closest('[data-line]');
-    const amountElem = cell.next().find('input');
-    amountElem.val(instance.viewmodel.unallocatedAmount());
     amountElem.change();
   },
 });

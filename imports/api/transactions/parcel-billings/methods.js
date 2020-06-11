@@ -110,7 +110,7 @@ export const apply = new ValidatedMethod({
             defId: Txdefs.findOne({ communityId, category: 'bill', 'data.relation': 'member' })._id,
   //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
             partnerId: leadParcel.payerPartner()._id,
-            membershipId: leadParcel.payerMembership()._id,
+            contractId: leadParcel.payerContract()._id,
             issueDate: Clock.currentDate(),
             deliveryDate: date,
             dueDate: moment(date).add(BILLING_DUE_DAYS, 'days').toDate(),
