@@ -44,6 +44,10 @@ Contracts.memberSchema = new SimpleSchema({
 
 Contracts.idSet = ['parcelId'];
 
+Contracts.publicFields = {
+  // fields come from behaviours
+};
+
 Meteor.startup(function indexContracts() {
   Contracts.ensureIndex({ partnerId: 1 });
   Contracts.ensureIndex({ parcelId: 1 });

@@ -10,9 +10,9 @@ Meteor.publish('contracts.inCommunity', function contractsInCommunity(params) {
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('contracts.inCommunity', { communityId })) {
-    return this.ready();
-  }
-
-  return Contracts.find({ communityId });
+  if (user.hasPermission('contracts.inCommunity', { communityId })) {
+    const fields = user.hasPermission('partners.details', { communityId }) ? {} : Contracts.publicFields;
+    return Contracts.find({ communityId }, { fields });
+  } // Otherwise, only the active leaders of the community can be seen
+  return this.ready();
 });
