@@ -9,7 +9,7 @@
             <h5>{{_ 'partner'}}:</h5>
             <address>
                 {{doc.partner}}
-                {{#if doc.contractId}}[{{doc.contract}}]{{/if}}
+                {{#if doc.contractId}}<br>[{{doc.contract}}]{{/if}}
             </address>
             <p>
                 <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>
@@ -38,6 +38,28 @@
             </tbody>
         </table>
     </div><!-- /table-responsive -->
+    <div class="table-responsive m-t">
+        <table class="table invoice-table">
+            <thead>
+                <tr>
+                    <th>{{_ 'schemaPayments.lines.label'}}</th>
+                    <th></th>
+                    <th>{{_ 'schemaTransactions.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each line in doc.lines}}
+                {{#if line}}
+                <tr>
+                    <td>{{displayContract line.contractId}}</td>
+                    <td>{{displayParcel line.parcelId}}</td>
+                    <td class="nowrap">{{displayMoney line.amount}}</td>
+                </tr>
+                {{/if}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
 
     <table class="table invoice-total">
         <tbody>

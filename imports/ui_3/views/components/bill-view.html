@@ -1,9 +1,9 @@
 <template name="Bill_partner">
-    <strong>{{partner.toString}}</strong><br>
-    {{#if this.partner.contact.address}}{{this.partner.contact.address}}<br>{{/if}}
-    {{#if this.partner.BAN}}Bank: {{this.partner.BAN}}<br>{{/if}}
-    {{#if this.partner.taxNo}}{{_ 'schemaPartners.taxNo.label'}}: {{this.partner.taxNo}}<br>{{/if}}
-    {{#if this.contract}}[{{this.contract}}]{{/if}}
+    <strong>{{partner.toString}}</strong>
+    {{#if this.partner.contact.address}}<br>{{this.partner.contact.address}}{{/if}}
+    {{#if this.partner.BAN}}<br>Bank: {{this.partner.BAN}}{{/if}}
+    {{#if this.partner.taxNo}}<br>{{_ 'schemaPartners.taxNo.label'}}: {{this.partner.taxNo}}{{/if}}
+    {{#if this.contract}}<br>[{{this.contract}}]{{/if}}
 </template>
 
 <template name="Bill_view">
