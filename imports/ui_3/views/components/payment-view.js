@@ -16,11 +16,8 @@ Template.Payment_view.viewmodel({
     return bill?.serialId;
   },
   displayContract(contractId) {
+    if (!contractId) return '---';
     const contract = Contracts.findOne(contractId);
     return contract?.toString();
-  },
-  displayParcel(parcelId) {
-    const parcel = Parcels.findOne(parcelId);
-    return parcel?.code;
   },
 });

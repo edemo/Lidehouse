@@ -136,9 +136,9 @@ export const chooseContract = {
     const communityId = ModalStack.getVar('communityId');
     const relation = AutoForm.getFieldValue('relation') || ModalStack.getVar('relation');
     const partnerId = AutoForm.getFieldValue('partnerId') || ModalStack.getVar('partnerId');
-    if (!partnerId) return [{ label: __('schemaTransactions.contractId.placeholder'), value: 'none' }];
+    if (!partnerId) return [{ label: __('schemaTransactions.contractId.placeholder'), value: '' }];
     const contracts = Contracts.find({ communityId, relation, partnerId });
-    const options = contracts.map(c => ({ label: c.title, value: c._id }));
+    const options = contracts.map(c => ({ label: c.toString(), value: c._id }));
     return options;
   },
   firstOption: false,

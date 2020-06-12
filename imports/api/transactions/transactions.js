@@ -128,7 +128,8 @@ Transactions.helpers({
     return undefined;
   },
   contract() {
-    return Contracts.findOne(this.contractId);
+    if (this.contractId) Contracts.findOne(this.contractId);
+    return undefined;
   },
   txdef() {
     if (this.defId) return Txdefs.findOne(this.defId);
@@ -394,7 +395,9 @@ if (Meteor.isServer) {
     autoValueUpdate(doc, modifier, 'complete', d => d.calculateComplete());
     if (doc.category === 'bill' || doc.category === 'receipt' || doc.category === 'payment') {
       const newDoc = Transactions._transform(_.extend({ category: doc.category }, modifier.$set));
-      if (newDoc.lines) newDoc.autofillLines();
+      if (doc.category === 'bill' || doc.category === 'receipt') {
+        newDoc.autofillLines();
+      }
       _.extend(modifier, { $set: newDoc });
       if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
         || (doc.category === 'payment' && newDoc.bills)) {

@@ -632,6 +632,7 @@
   "There is already a higher reading": "Van már ennél magasabb értékű leolvasás rögzítve",
   "Cannot have two documents active at the same time": "Nem lehet egyszerre két ilyen dokumentum aktív. A jelenlegit előbb archiválnia kell.",
   "Will use lead parcel's": "A vezér albetét lesz a mérvadó",
+  "Payment accounting can only be done, when all amount is allocated": "Kifizetés csak úgy kerülhet könyvelésbe, ha a teljes összege allokálva van.",
 
   "logout": "kilépés",
   "login": "belépés",

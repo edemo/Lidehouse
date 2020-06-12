@@ -17,15 +17,15 @@
         </div>
         {{else}}
         <div class="col-sm-6 col-md-4">
-            {{#if doc.serialId}}
-                <h4>{{_ doc.txdef.name}}:
-                <span class="text-navy">{{doc.serialId}}</span></h4>
-            {{/if}}
             {{> afQuickField name="valueDate" type=hiddenWhenReconciling}}
             {{> afQuickField name="payAccount" type=hiddenWhenReconciling}}
         </div>
         {{/if}}
         <div class="col-sm-6 col-md-4 pull-right">
+            {{#if doc.serialId}}
+                <h4>{{_ doc.txdef.name}}:
+                <span class="text-navy">{{doc.serialId}}</span></h4>
+            {{/if}}
             {{> afQuickField name="partnerId"}}
             {{> afQuickField name="amount"}}
         </div>
@@ -78,7 +78,7 @@
                 <!--{{#if notNullLine this}}-->
                 <tr class='js-autofill'>
                     <td>{{> afFormGroup name=this.current.contractId}}</td>
-                    <td>{{> afFormGroup name=this.current.parcelId}}</td>
+                    <td>{{> afFormGroup name=this.current.localizer}}</td>
                     <td data-line="{{this.name}}">
                       <button type="button" class="btn btn-default js-remainder-amount"><i class="fa fa-arrow-down"></i> {{_ 'Remainder'}} <i class="fa fa-arrow-right"></i></button>
                     </td>

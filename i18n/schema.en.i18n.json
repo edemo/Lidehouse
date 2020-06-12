@@ -1077,6 +1077,24 @@
         }
       }
     },
+    "lines": {
+      "label": "Without bill allocations",
+      "$": {
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "(pl. 14560)"
+        },
+        "contractid": {
+          "label": "Contract"
+        },
+        "localizer": {
+          "label": "Accounting location"
+        },
+        "parcelId": {
+          "label": "Parcel"
+        }
+      }
+    },
     "outstanding": {
       "label": "Unallocated amount",
       "placeholder": "(eg. 14560)"

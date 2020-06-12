@@ -44,7 +44,7 @@ export const chooseParcelOfPartner = {
     const communityId = ModalStack.getVar('communityId');
     const partnerId = AutoForm.getFieldValue('partnerId');
     const parcels = Memberships.find({ communityId, partnerId }).map(m => m.parcel());
-    const options = _.without(parcels, undefined).map(p => ({ label: p.displayAccount(), value: p._id }));
+    const options = _.without(parcels, undefined).map(p => ({ label: p.displayAccount(), value: p.code }));
     return options;
   },
   firstOption: () => __('Localizer'),
@@ -52,15 +52,15 @@ export const chooseParcelOfPartner = {
 
 const billPaidSchema = {
   id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBillOfPartner },
-  amount: { type: Number, decimal: true, autoform: { value: 0 } },
+  amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
 };
 _.each(billPaidSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
 Payments.billPaidSchema = new SimpleSchema(billPaidSchema);
 
 const lineSchema = {
-  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseParcelOfPartner },
-  amount: { type: Number, decimal: true, autoform: { value: 0 } },
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
+  localizer: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseParcelOfPartner },
+  amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
 Payments.lineSchema = new SimpleSchema(lineSchema);
@@ -79,7 +79,7 @@ const paymentSchema = new SimpleSchema([
   Payments.extensionSchema, {
     bills: { type: [Payments.billPaidSchema], defaultValue: [] },
     lines: { type: [Payments.lineSchema], defaultValue: [] },
-    outstanding: { type: Number, decimal: true, min: 0, optional: true },
+    outstanding: { type: Number, decimal: true, min: 0, max: 0, optional: true },
   },
 ]);
 
@@ -115,28 +115,32 @@ Transactions.categoryHelpers('payment', {
     let unallocatedAmount = this.amount;
     this[this.relationSide()].push({ amount: this.amount, account: this.payAccount });
     this.bills.forEach(billPaid => {
+      if (unallocatedAmount <= 0) return false;
       const bill = Transactions.findOne(billPaid.id);
       if (accountingMethod === 'accrual') {
         bill[this.relationSide()].forEach(entry => {
-          const amount = equalWithinRounding(entry.amount, unallocatedAmount) ? entry.amount : Math.min(entry.amount, unallocatedAmount);
+          if (unallocatedAmount <= 0) return false;
+          const amount = equalWithinRounding(entry.amount, billPaid.amount) ? entry.amount : Math.min(entry.amount, billPaid.amount);
           this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId });
           unallocatedAmount -= amount;
-          if (unallocatedAmount <= 0) return;
         });
       } else if (accountingMethod === 'cash') {
         bill.lines.forEach(line => {
-          if (!line) return; // can be null, when a line is deleted from the array
-          const amount = Math.min(line.amount, unallocatedAmount);
-          this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
+          if (unallocatedAmount <= 0) return false;
+          if (!line) return true; // can be null, when a line is deleted from the array
+          const amount = Math.min(line.amount, billPaid.amount);
+          const parcelId = line.localizer && Parcels.findOne({ communityId: this.communityId, code: line.localizer })._id;
+          this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId });
           unallocatedAmount -= amount;
-          if (unallocatedAmount <= 0) return;
         });
       }
     });
     this.lines.forEach(line => {
-      if (!line) return; // can be null, when a line is deleted from the array
+      if (unallocatedAmount <= 0) return false;
+      if (!line) return true; // can be null, when a line is deleted from the array
       const amount = Math.min(line.amount, unallocatedAmount);
-      this[this.conteerSide()].push({ amount, account: this.txdef()[this.conteerSide()][0], contractId: line.contractId, parcelId: line.parcelId });
+      this[this.conteerSide()].push({ amount, account: this.txdef()[this.conteerSide()][0], contractId: line.contractId, localizer: line.localizer, parcelId: line.parcelId });
+      unallocatedAmount -= amount;
     });
     // Handling the remainder
     if (unallocatedAmount) { // still has remainder

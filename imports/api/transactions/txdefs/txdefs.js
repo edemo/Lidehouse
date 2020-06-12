@@ -120,8 +120,17 @@ export const chooseConteerAccount = function (flipSide = false) {
       let side = txdef.conteerSide();
       if (flipSide) side = Transactions.oppositeSide(side);
       const codes = txdef[side];
-      return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false);
+      return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false, /*addRootNode*/ false);
     },
-    firstOption: () => __('Chart of Accounts'),
+    firstOption() {
+      const communityId = ModalStack.getVar('communityId');
+      const defId = AutoForm.getFieldValue('defId');
+      if (!defId) return [];
+      const txdef = Txdefs.findOne(defId);
+      let side = txdef.conteerSide();
+      if (flipSide) side = Transactions.oppositeSide(side);
+      const codes = txdef[side];
+      return (codes.length > 1) ? __('Chart of Accounts') : false;
+    },
   };
 };

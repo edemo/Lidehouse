@@ -1083,12 +1083,18 @@
     "lines": {
       "label": "Számla megjelölés nélkül",
       "$": {
-        "id": {
-          "label": "Szerződés"
-        },
         "amount": {
           "label": "Összeg",
           "placeholder": "(pl. 14560)"
+        },
+        "contractId": {
+          "label": "Szerződés"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        },
+        "parcelId": {
+          "label": "Albetét"
         }
       }
     },
