@@ -165,7 +165,7 @@
                     <tr class="contracts" data-id="{{doc._id}}">
                         {{#if doc.leadParcelId}}
                             <td class="text-center"> <a class="client-avatar"><i class="fa fa-lg fa-share"></i></a></td>
-                            <td><button class="js-occupants parcels" data-id="{{doc.leadParcelId}}"><strong title="{{_ 'lead parcel'}}">{{doc.leadParcel.ref}}</strong></button></td>
+                            <td><button class="js-contracts parcels" data-id="{{doc.leadParcelId}}"><strong title="{{_ 'lead parcel'}}">{{doc.leadParcel.ref}}</strong></button></td>
                             <td>{{>Active_period collection='contracts' doc=doc}}</td>
                             <td><span class="label label-plain">{{_ 'lead parcel'}}</span></td>
                             <td class="text-right">

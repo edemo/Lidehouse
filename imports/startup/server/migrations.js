@@ -529,7 +529,7 @@ Migrations.add({
   version: 28,
   name: 'Replace parcelships with contracts',
   up() {
-    Parcelships.find({}).fetch().forEach(p => {
+    Parcelships.find({}).fetch().filter(p => p.parcelId !== p.leadParcelId).forEach(p => {
       const contractId = Contracts.insert({
         communityId: p.communityId,
         relation: 'member',

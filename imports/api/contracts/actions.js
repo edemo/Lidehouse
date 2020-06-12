@@ -26,7 +26,6 @@ Contracts.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.contract.insert',
         schema: Contracts.simpleSchema(doc),
-        omitFields: ['activeTime'],
         doc,
         type: 'method',
         meteormethod: 'contracts.insert',
@@ -79,7 +78,7 @@ Contracts.actions = {
         fields: ['activeTime'],
         doc,
         type: 'method-update',
-        meteormethod: 'contract.updateActivePeriod',
+        meteormethod: 'contracts.updateActivePeriod',
         singleMethodArgument: true,
       });
     },
