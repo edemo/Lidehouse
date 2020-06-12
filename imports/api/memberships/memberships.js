@@ -17,13 +17,12 @@ import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { noUpdate } from '/imports/utils/autoform.js';
 import { Parcels, chooseProperty } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Contracts } from '../contracts/contracts';
 
 export const Memberships = new Mongo.Collection('memberships');
-
-const rankValues = ['chairman', 'lead', 'assistant', 'substitute'];
 
 // Memberships are the Ownerships, Benefactorships and Roleships in a single collection
 Memberships.baseSchema = new SimpleSchema({
@@ -31,15 +30,15 @@ Memberships.baseSchema = new SimpleSchema({
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },  // manager approved this membership
   accepted: { type: Boolean, autoform: { omit: true }, defaultValue: false },  // person accepted this membership
   role: { type: String, allowedValues() { return everyRole; },
-    autoform: {
+    autoform: _.extend({}, noUpdate, {
       options() {
         return Roles.find({ name: { $in: officerRoles } }).map(function option(r) { return { label: __(r.name), value: r._id }; });
       },
       firstOption: () => __('(Select one)'),
-    },
+    }),
   },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner() },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...choosePartner() } },
 });
 
 // Parcels can be jointly owned, with each owner having a fractional *share* of it

@@ -34,7 +34,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Contracts, _id);
-    checkModifier(doc, modifier, ['communityId'], true);
+    checkModifier(doc, modifier, Contracts.modifiableFields.concat('approved'));
     checkPermissions(this.userId, 'contracts.update', doc);
 
     const ContractsStage = Contracts.Stage();

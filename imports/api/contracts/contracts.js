@@ -11,6 +11,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
+import { noUpdate } from '/imports/utils/autoform.js';
 import { Partners, choosePartner, choosePartnerOfParcel } from '/imports/api/partners/partners.js';
 import { Parcels, chooseProperty } from '/imports/api/parcels/parcels.js';
 
@@ -19,7 +20,7 @@ export const Contracts = new Mongo.Collection('contracts');
 Contracts.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner() },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...noUpdate, ...choosePartner() } },
 });
 
 Contracts.detailsSchema = new SimpleSchema({
@@ -29,20 +30,28 @@ Contracts.detailsSchema = new SimpleSchema({
 
 Contracts.memberSchema = new SimpleSchema({
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
-    autoform: _.extend(choosePartnerOfParcel(), { value: () => {
+    autoform: { ...noUpdate, ...choosePartnerOfParcel(), value: () => {
       const leadParcelId = AutoForm.getFieldValue('leadParcelId');
       return leadParcelId && Contracts.findOne({ parcelId: leadParcelId })?.partnerId;
-    } }),
+    } },
   },
   delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner() },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { type: 'hidden', relation: '@property' } },
-  leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseProperty },
+  leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty } },
 //  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  habitants: { type: Number, optional: true },
+  habitants: { type: Number, optional: true, autoform: noUpdate },
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
 
 Contracts.idSet = ['parcelId'];
+
+Contracts.modifiableFields = [
+  // 'partnerId' and 'leadParcelId' are definitely not allowed to change! - you should create new Contract in that case
+  'title',
+  'text',
+  'delegateId',
+//  'habitants',
+];
 
 Contracts.publicFields = {
   // fields come from behaviours

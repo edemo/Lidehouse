@@ -89,7 +89,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));  // userId not allowed to change!
+    checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));
 
     const MembershipsStage = Memberships.Stage();
     const result = MembershipsStage.update({ _id }, modifier, { selector: doc });
