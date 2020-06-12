@@ -201,7 +201,7 @@ Transactions.actions = {
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',
-    visible: user.hasPermission('transactions.remove', doc),
+    visible: user.hasPermission('transactions.remove', doc) && (doc.status !== 'void'),
     run() {
       Modal.confirmAndCall(Transactions.methods.remove, { _id: doc._id }, {
         action: 'delete transaction',
