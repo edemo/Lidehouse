@@ -96,7 +96,7 @@ ViewModel.share({
 //      ];
 //    },
     possibleColumns() {
-      return _.without(_.pluck(this.conductor().possibleColumns(), 'name'), undefined);
+      return _.without(_.pluck(this.conductor().currentPhase().possibleColumns(), 'name'), undefined);
     },
     availableColumns() {
       return _.without(this.possibleColumns(), ...this.usedColumns());

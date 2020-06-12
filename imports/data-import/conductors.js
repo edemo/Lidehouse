@@ -33,6 +33,35 @@ export class ImportPhase {
     return Transformers[this.collectionName]?.[this.options?.transformer || 'default']
       || (docs => docs.map(doc => Object.deepCloneOwn(doc)));
   }
+  possibleColumns() {
+    const translator = this.translator();
+    const columns = [];
+    _.each(this.schema()._schema, (value, key) => {
+      const split = key.split('.');
+      if (_.contains(['Array', 'Object'], value.type.name)) return;
+      if (value.autoform && (value.autoform.omit || value.autoform.readonly /*|| _.contains(['hidden'], value.autoform.type)*/)) return;
+      if (_.contains(split, '$')) return;
+      if (_.contains(split, 'activeTime')) return;
+      if (_.contains(this.omitFields, key)) return;
+      if (!value.label) return;
+      const name = translator.__(key);
+      const example = translator.example(key, value);
+      const display = `[${name}]${value.optional ? '' : '(*)'}: ${value.type.name} ${example}`;
+      columns.push({ key, name, example, display });
+    });
+    _.each(translator.dictionary, (value, key) => {
+      if (value.depends) {
+        const i = columns.findIndex(c => c.key === key);
+        if (i >= 0) columns.splice(i, 1);
+        value.depends.forEach(name => {
+          if (columns.find(c => c.name === name)) return;
+          const display = `[${name}](*)`;
+          columns.push({ key: name, name, example: '', display });
+        });
+      }
+    });
+    return columns;
+  }
 }
 ImportPhase.Instance = new ImportPhase();
 ImportPhase.from = obj => { Object.setPrototypeOf(obj, ImportPhase.Instance); return obj; };
@@ -44,39 +73,13 @@ export class ImportConductor {
     this.phaseIndex = -1;
   }
   possibleColumnsListing() {
-    const columns = [{ display: __('importColumnsInstructions') }];
+    let columns = [{ display: __('importColumnsInstructions') }];
     this.phases.forEach((phase, phaseIndex) => {
       const translator = phase.translator();
       columns.push({ name: phaseIndex, display: `${translator.__('_')} ${__('data')}`.toUpperCase() });
-      _.each(phase.schema()._schema, (value, key) => {
-        const split = key.split('.');
-        if (_.contains(['Array', 'Object'], value.type.name)) return;
-        if (value.autoform && (value.autoform.omit || value.autoform.readonly /*|| _.contains(['hidden'], value.autoform.type)*/)) return;
-        if (_.contains(split, '$')) return;
-        if (_.contains(split, 'activeTime')) return;
-        if (_.contains(phase.omitFields, key)) return;
-        if (!value.label) return;
-        const name = translator.__(key);
-        const example = translator.example(key, value);
-        const display = `[${name}]${value.optional ? '' : '(*)'}: ${value.type.name} ${example}`;
-        columns.push({ key, name, example, display });
-      });
-      _.each(phase.translator().dictionary, (value, key) => {
-        if (value.depends) {
-          const i = columns.findIndex(c => c.key === key);
-          if (i >= 0) columns.splice(i, 1);
-          value.depends.forEach(name => {
-            if (columns.find(c => c.name === name)) return;
-            const display = `[${name}](*)`;
-            columns.push({ key: name, name, example: '', display });
-          });
-        }
-      });
+      columns = columns.concat(phase.possibleColumns());
     });
     return columns;
-  }
-  possibleColumns() {
-    return this.possibleColumnsListing().filter(c => c.key); // leave out the sperators, like "PARCELS DATA"
   }
   nextPhase() {
     this.phaseIndex += 1;
