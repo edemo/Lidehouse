@@ -233,10 +233,19 @@ Template.Occupants_box.events({
     const partner = membership.partner();
     Meteor.users.actions.view({}, partner.user()).run();
   },
-  'click .js-occupants'(event, instance) {
+});
+
+Template.Contracts_box.events({
+  'click .js-member'(event, instance) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    const contract = Contracts.findOne(id);
+    const partner = contract.partner();
+    Meteor.users.actions.view({}, partner.user()).run();
+  },
+  'click .js-contracts'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const parcel = Parcels.findOne(id);
-    Parcels.actions.occupants({}, parcel).run();
+    Parcels.actions.contracts({}, parcel).run();
   },
 });
 
