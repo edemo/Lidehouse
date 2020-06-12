@@ -16,14 +16,14 @@ import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 export const Meters = new Mongo.Collection('meters');
 
 Meters.readingSchema = new SimpleSchema({
-  date: { type: Date, autoform: { type: 'datetime-local', value: new Date() } },
+  date: { type: Date, autoform: { type: 'datetime-local', value() { return Clock.currentTime(); } } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
   approved: { type: Boolean, optional: true, autoform: { omit: true }, defaultValue: true },
 });
 
 Meters.unapprovedReadingSchema = new SimpleSchema({
-  date: { type: Date, autoValue: Clock.currentDate, autoform: { type: 'datetime-local', value: new Date(), readonly: true } },
+  date: { type: Date, autoValue() { return Clock.currentTime(); }, autoform: { type: 'datetime-local', value() { return Clock.currentTime(); }, readonly: true } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
 });
