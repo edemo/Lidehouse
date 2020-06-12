@@ -232,9 +232,10 @@ Transactions.helpers({
     Mongo.Collection.stripAdministrativeFields(tx);
     tx.note = 'STORNO ' + tx.serialId;
     tx.amount *= -1;
-    if (tx.lines) {   // 'bill' have lines
+    if (tx.lines) {
       tx.lines.forEach(l => {
-        l.quantity *= -1;
+        if (l.quantity) l.quantity *= -1;
+        if (l.amount) l.amount *= -1;       // payment lines dont have quantity
         if (l.metering) {
           const temp = l.metering.end; l.metering.end = l.metering.start; l.metering.start = temp;
         }
@@ -373,8 +374,10 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     tdoc.checkAccountsExist();
     tdoc.complete = tdoc.calculateComplete();
-    tdoc.autofillLines();
-    if (tdoc.category === 'bill' || tdoc.category === 'payment') {
+    if (tdoc.category === 'bill' || tdoc.category === 'receipt') {
+      tdoc.autofillLines();
+    }
+    if (tdoc.category === 'bill' || tdoc.category === 'receipt' || tdoc.category === 'payment') {
       tdoc.outstanding = tdoc.calculateOutstanding();
     }
     _.extend(doc, tdoc);
@@ -389,7 +392,7 @@ if (Meteor.isServer) {
 
   Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
     autoValueUpdate(doc, modifier, 'complete', d => d.calculateComplete());
-    if (doc.category === 'bill' || doc.category === 'receipt') {
+    if (doc.category === 'bill' || doc.category === 'receipt' || doc.category === 'payment') {
       const newDoc = Transactions._transform(_.extend({ category: doc.category }, modifier.$set));
       if (newDoc.lines) newDoc.autofillLines();
       _.extend(modifier, { $set: newDoc });
