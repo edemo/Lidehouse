@@ -504,7 +504,7 @@ Migrations.add({
   version: 27,
   name: 'Create contracts for members',
   up() {
-    Parcels.find({}).fetch().filter(p => p.leadRef && p.ref !== p.leadRef).forEach(p => {
+    Parcels.find({}).fetch().filter(p => !(p.leadRef && p.ref !== p.leadRef)).forEach(p => {
       const membership = p._payerMembership();
       if (!membership) return;
       const contractId = Contracts.insert({
@@ -537,9 +537,9 @@ Migrations.add({
         parcelId: p.parcelId,
         leadParcelId: p.leadParcelId,
       });
-      Parcels.update(p.parcelId, { $unset: { leadRef: '' } });
+      Parcels.update(p.parcelId, { $unset: { leadRef: '' } }, { validate: false });
     });
-    Parcelships.remove({});
+    Parcelships.direct.remove({});
   },
 });
 
