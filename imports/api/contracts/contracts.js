@@ -71,24 +71,27 @@ Contracts.helpers({
     return 'contracts';
   },
   partner() {
-    return Partners.findOne(this.partnerId);
+    if (this.partnerId) return Partners.findOne(this.partnerId);
+    return undefined;
   },
   worksheets() {
     const Topics = Mongo.Collection.get('topics');
     return Topics.find({ communityId: this.communityId, 'ticket.contractId': this._id });
   },
-  membership() {
-    const Memberships = Mongo.Collection.get('memberships');
-    return Memberships.findOne(this.membershipId);
-  },
+//  membership() {
+//    const Memberships = Mongo.Collection.get('memberships');
+//    return Memberships.findOne(this.membershipId);
+//  },
   parcel() {
-    return Parcels.findOne(this.parcelId);
+    if (this.parcelId) return Parcels.findOne(this.parcelId);
+    return undefined;
   },
   leadParcel() {
-    return Parcels.findOne(this.leadParcelId);
+    if (this.leadParcelId) return Parcels.findOne(this.leadParcelId);
+    return undefined;
   },
   toString() {
-    if (this.relation === 'member') return this.parcel().ref;
+    if (this.relation === 'member') return this.partner()?.idCard?.name + ':' + this.parcel()?.ref;
     else return this.title;
   },
 });

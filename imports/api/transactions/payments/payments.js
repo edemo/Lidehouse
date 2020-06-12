@@ -59,7 +59,7 @@ Payments.billPaidSchema = new SimpleSchema(billPaidSchema);
 
 const lineSchema = {
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
-  localizer: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseParcelOfPartner },
+  localizer: { type: String, optional: true, autoform: chooseParcelOfPartner },
   amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
