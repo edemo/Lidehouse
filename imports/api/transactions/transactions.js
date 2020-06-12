@@ -4,9 +4,12 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { Factory } from 'meteor/dburles:factory';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import faker from 'faker';
 import rusdiff from 'rus-diff';
 
+import { __ } from '/imports/localization/i18n.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Clock } from '/imports/utils/clock.js';
@@ -59,9 +62,8 @@ Transactions.coreSchema = {
 
 Transactions.partnerSchema = new SimpleSchema({
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
-  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
-  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract }, // ?? overriding LocationTags
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner() },
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
 });
 
 Transactions.legsSchema = {
@@ -126,7 +128,8 @@ Transactions.helpers({
     return undefined;
   },
   contract() {
-    return Contracts.findOne(this.contractId);
+    if (this.contractId) Contracts.findOne(this.contractId);
+    return undefined;
   },
   txdef() {
     if (this.defId) return Txdefs.findOne(this.defId);
@@ -230,9 +233,10 @@ Transactions.helpers({
     Mongo.Collection.stripAdministrativeFields(tx);
     tx.note = 'STORNO ' + tx.serialId;
     tx.amount *= -1;
-    if (tx.lines) {   // 'bill' have lines
+    if (tx.lines) {
       tx.lines.forEach(l => {
-        l.quantity *= -1;
+        if (l.quantity) l.quantity *= -1;
+        if (l.amount) l.amount *= -1;       // payment lines dont have quantity
         if (l.metering) {
           const temp = l.metering.end; l.metering.end = l.metering.start; l.metering.start = temp;
         }
@@ -276,12 +280,11 @@ Transactions.helpers({
   },
   // bill/receipt helpers
   issuer() {
-    if (this.relation === 'supplier') return this.partner();
+    if (this.relation === 'supplier') return { partner: this.partner(), contract: this.contract() };
     return this.community().asPartner();
   },
   receiver() {
-    if (this.relation === 'customer') return this.partner();
-    if (this.relation === 'member') return this.membership();
+    if (this.relation === 'customer' || this.relation === 'member') return { partner: this.partner(), contract: this.contract() };
     return this.community().asPartner();
   },
   lineCount() {
@@ -372,8 +375,10 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     tdoc.checkAccountsExist();
     tdoc.complete = tdoc.calculateComplete();
-    tdoc.autofillLines();
-    if (tdoc.category === 'bill' || tdoc.category === 'payment') {
+    if (tdoc.category === 'bill' || tdoc.category === 'receipt') {
+      tdoc.autofillLines();
+    }
+    if (tdoc.category === 'bill' || tdoc.category === 'receipt' || tdoc.category === 'payment') {
       tdoc.outstanding = tdoc.calculateOutstanding();
     }
     _.extend(doc, tdoc);
@@ -388,9 +393,11 @@ if (Meteor.isServer) {
 
   Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
     autoValueUpdate(doc, modifier, 'complete', d => d.calculateComplete());
-    if (doc.category === 'bill' || doc.category === 'receipt') {
+    if (doc.category === 'bill' || doc.category === 'receipt' || doc.category === 'payment') {
       const newDoc = Transactions._transform(_.extend({ category: doc.category }, modifier.$set));
-      if (newDoc.lines) newDoc.autofillLines();
+      if (doc.category === 'bill' || doc.category === 'receipt') {
+        newDoc.autofillLines();
+      }
       _.extend(modifier, { $set: newDoc });
       if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
         || (doc.category === 'payment' && newDoc.bills)) {

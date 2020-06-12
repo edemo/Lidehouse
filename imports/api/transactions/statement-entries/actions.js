@@ -8,6 +8,7 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
+import '/imports/ui_3/views/components/reconciliation.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -94,19 +95,42 @@ StatementEntries.actions = {
     run() {
       ModalStack.setVar('txdef', options.txdef);
       ModalStack.setVar('statementEntry', doc);
-      Modal.show('Autoform_modal', {
-        title: `${__('Reconciliation')} >> ${__(options.txdef.name)}`,
+      const tx = {
+        defId: options.txdef._id,
+        category: options.txdef.category,
+        relation: options.txdef.data.relation,
+        amount: doc.amount,
+      };
+/*      Modal.show('Autoform_modal', {
+        body: 'Reconciliation',
+        bodyContext: { doc: tx },
+        // --- --- --- ---
         id: 'af.statementEntry.reconcile',
-        schema: StatementEntries.reconcileSchema,
+        schema: Transactions.simpleSchema({ category: tx.category }),
+        doc: tx,
         type: 'method',
         meteormethod: 'statementEntries.reconcile',
+        // --- --- --- ---
+        size: 'lg',
+      });*/
+      Modal.show('Autoform_modal', {
+        body: 'Payment_edit',
+        bodyContext: { doc: tx },
+        // --- --- --- ---
+        id: 'af.payment.edit',
+        schema: Transactions.simpleSchema({ category: tx.category }),
+        doc: tx,
+        type: 'method',
+        meteormethod: 'transactions.insert',
+        // --- --- --- ---
+        size: 'lg',
       });
     },
   }),
   autoReconcile: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'autoReconcile',
     icon: 'fa fa-external-link',
-    color: 'info',
+    color: 'primary',
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
     run() {
       StatementEntries.methods.reconcile.call({ _id: doc._id });

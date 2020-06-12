@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
 import { Parcels } from '/imports/api/parcels/parcels';
+import { Contracts } from '/imports/api/contracts/contracts';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 
@@ -12,6 +13,11 @@ Template.Payment_view.viewmodel({
   },
   displayBill(bp) {
     const bill = Transactions.findOne(bp.id);
-    return bill && bill.serialId;
+    return bill?.serialId;
+  },
+  displayContract(contractId) {
+    if (!contractId) return '---';
+    const contract = Contracts.findOne(contractId);
+    return contract?.toString();
   },
 });

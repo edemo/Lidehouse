@@ -9,7 +9,8 @@ import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Partners, choosePartner } from '/imports/api/partners/partners.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { chooseBill } from '/imports/api/transactions/bills/bills.js';
 
@@ -67,7 +68,9 @@ Transactions.categoryHelpers('barter', {
     const customerBill = this.customerBill();
     debugAssert(supplierBill.partnerId && customerBill.partnerId, 'Cannot process a barter without partners');
     Partners.update(supplierBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    Contracts.update(supplierBill.contractId, { $inc: { outstanding: (-1) * sign * this.amount } });
     Partners.update(customerBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    Contracts.update(customerBill.contractId, { $inc: { outstanding: (-1) * sign * this.amount } });
     if (customerBill.relation === 'member') {
       customerBill.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array

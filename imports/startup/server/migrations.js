@@ -4,6 +4,7 @@ import { Migrations } from 'meteor/percolate:migrations';
 import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
 
+import { productionAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -496,6 +497,49 @@ Migrations.add({
         }
       });
     });
+  },
+});
+
+Migrations.add({
+  version: 27,
+  name: 'Create contracts for members',
+  up() {
+    Parcels.find({}).fetch().filter(p => !(p.leadRef && p.ref !== p.leadRef)).forEach(p => {
+      const membership = p._payerMembership();
+      if (!membership) return;
+      const contractId = Contracts.insert({
+        communityId: p.communityId,
+        relation: 'member',
+        partnerId: membership.partnerId,
+        parcelId: p._id,
+//        membershipId: membership._id,
+        habitants: p.habitants,
+        outstanding: membership.outstanding,
+      });
+      Transactions.find({ membershipId: membership._id }).forEach((tx) => {
+        Transactions.update(tx._id, { $set: { contractId }, $unset: { membershipId: '' } }, { selector: tx, validate: false });
+      });
+    });
+    const notConverted = Transactions.find({ membershipId: { $exists: true } });
+    productionAssert(!notConverted.fetch().length, notConverted.fetch());
+  },
+});
+
+Migrations.add({
+  version: 28,
+  name: 'Replace parcelships with contracts',
+  up() {
+    Parcelships.find({}).fetch().filter(p => p.parcelId !== p.leadParcelId).forEach(p => {
+      const contractId = Contracts.insert({
+        communityId: p.communityId,
+        relation: 'member',
+        partnerId: p.leadParcel()._payerMembership().partnerId,
+        parcelId: p.parcelId,
+        leadParcelId: p.leadParcelId,
+      });
+      Parcels.update(p.parcelId, { $unset: { leadRef: '' } }, { validate: false });
+    });
+    Parcelships.direct.remove({});
   },
 });
 

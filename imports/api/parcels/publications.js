@@ -5,8 +5,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
-import { Parcels } from '../parcels/parcels.js';
-import { Parcelships } from '../parcelships/parcelships.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
+import { Parcels } from './parcels.js';
 
 Parcels.findWithRelatedDocs = function (...args) {
   return {
@@ -33,7 +33,7 @@ Meteor.publish('parcels.codes', function parcelsCodes(params) {
     return this.ready();
   }
 
-  return Parcels.find({ communityId }, { fields: { communityId: 1, ref: 1, leadRef: 1, code: 1, name: 1 } });
+  return Parcels.find({ communityId }, { fields: { communityId: 1, ref: 1, code: 1, name: 1 } });
 });
 
 Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(params) {
@@ -84,11 +84,11 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
       },
       children: [{
         find(parcel) {
-          return Parcelships.find({ leadParcelId: parcel._id });
+          return Contracts.find({ leadParcelId: parcel._id });
         },
         children: [{
-          find(parcelship) {
-            return Parcels.find(parcelship.parcelId);
+          find(contract) {
+            return Parcels.find(contract.parcelId);
           },
           children: [{
             // Publish the Meters of the followerParcel

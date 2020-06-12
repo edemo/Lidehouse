@@ -5,6 +5,7 @@ import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { displayError } from '/imports/ui_3/lib/errors.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';  // TODO get rid of
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import './menu-overflow-guard.js';
@@ -86,7 +87,8 @@ export function actionHandlers(collection, actionNames) {
         status: doc && status && doc.statusObject(status),
       };
       Object.setPrototypeOf(options, new ActionOptions(collection));
-      action(options, doc).run(event, instance);
+      try { action(options, doc).run(event, instance); }
+      catch (err) { displayError(err); }
     };
   });
   return eventHandlers;
@@ -173,7 +175,8 @@ Template.Action_buttons_group.viewmodel(buttonHelpers);
 Template.Action_button.events({
   // This can be used most of the time to handle the click event - except when we are unable to render a proper template (like into a jquery cell).
   'click .btn'(event, instance) {
-    instance.data.action.run(event, instance);
+    try { instance.data.action.run(event, instance); }
+    catch (err) { displayError(err); }
   },
 });
 
@@ -186,7 +189,8 @@ Template.Action_buttons_dropdown.viewmodel(buttonHelpers);
 
 Template.Action_listitem.events({
   'click li.enabled'(event, instance) {
-    instance.data.action.run(event, instance);
+    try { instance.data.action.run(event, instance); }
+    catch (err) { displayError(err); }
   },
   'click li:not(.enabled)'(event, instance) {
     event.stopPropagation();

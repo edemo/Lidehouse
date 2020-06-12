@@ -6,16 +6,21 @@ function timestamp() {
 }
 
 export const Log = {
+  levels: ['error', 'warning', 'info', 'debug'],
+  level: 1,
+  levelIsHigherThan(text) {
+    return Log.levels.indexOf(text) >= Log.levels.indexOf(Log.level);
+  },
   error(...params) {
-    console.error(timestamp(), ...params);
+    if (Log.level >= 0) console.error(timestamp(), ...params);
   },
   warning(...params) {
-    console.warn(timestamp(), ...params);
+    if (Log.level >= 1) console.warn(timestamp(), ...params);
   },
   info(...params) {
-    console.info(timestamp(), ...params);
+    if (Log.level >= 2) console.info(timestamp(), ...params);
   },
   debug(...params) {
-    console.debug(timestamp(), ...params);
+    if (Log.level >= 3) console.debug(timestamp(), ...params);
   },
 };

@@ -94,7 +94,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: __('schemaParcels.type.flat'),
     area: 55,
     volume: 176,
-    habitants: 2,
   });
   demoParcels[1] = builder.createProperty({
     units: 427,
@@ -103,7 +102,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: __('schemaParcels.type.flat'),
     area: 48,
     volume: 153.6,
-    habitants: 2,
   });
   demoParcels[2] = builder.createProperty({
     units: 587,
@@ -112,7 +110,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: __('schemaParcels.type.flat'),
     area: 66,
     volume: 184.8,
-    habitants: 3,
   });
   demoParcels[3] = builder.createProperty({
     units: 622,
@@ -121,7 +118,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: __('schemaParcels.type.flat'),
     area: 70,
     volume: 196,
-    habitants: 1,
   });
   demoParcels[4] = builder.createProperty({
     units: 587,
@@ -130,7 +126,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: __('schemaParcels.type.flat'),
     area: 66,
     volume: 184.8,
-    habitants: 3,
   });
   demoParcels[5] = builder.createProperty({
     units: 622,
@@ -139,7 +134,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: __('schemaParcels.type.flat'),
     area: 70,
     volume: 196,
-    habitants: 4,
   });
   demoParcels[6] = builder.createProperty({
     units: 587,
@@ -148,7 +142,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: __('schemaParcels.type.flat'),
     area: 66,
     volume: 184.8,
-    habitants: 2,
   });
   demoParcels[7] = builder.createProperty({
     units: 622,
@@ -157,7 +150,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: __('schemaParcels.type.flat'),
     area: 70,
     volume: 196,
-    habitants: 2,
   });
   demoParcels[8] = builder.createProperty({
     units: 587,
@@ -166,7 +158,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: __('schemaParcels.type.flat'),
     area: 66,
     volume: 184.8,
-    habitants: 2,
   });
   demoParcels[9] = builder.createProperty({
     units: 622,
@@ -175,7 +166,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: __('schemaParcels.type.flat'),
     area: 70,
     volume: 196,
-    habitants: 3,
   });
   demoParcels[10] = builder.createProperty({
     units: 996,
@@ -183,7 +173,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     door: '11',
     type: __('schemaParcels.type.flat'),
     area: 112,
-    habitants: 5,
   });
   demoParcels[11] = builder.createProperty({
     units: 444,
@@ -191,7 +180,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     door: '01',
     type: __('schemaParcels.type.cellar'),
     area: 50,
-    habitants: 1,
   });
   demoParcels[12] = builder.createProperty({
     units: 613,
@@ -199,7 +187,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     door: '02',
     type: __('schemaParcels.type.cellar'),
     area: 69,
-    habitants: 1,
   });
   demoParcels[13] = builder.createProperty({
     units: 196,
@@ -207,7 +194,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     door: '00',
     type: __('schemaParcels.type.shop'),
     area: 22,
-    habitants: 1,
   });
 
   // Meters
@@ -330,9 +316,21 @@ export function insertDemoHouse(lang, demoOrTest) {
     benefactorship: { type: 'rental' },
   });
 
-  builder.create('parcelship', {
-    parcelId: demoParcels[11],
-    leadParcelId: demoParcels[5],
+  // Contracts
+  demoParcels.forEach((parcelId, i) => {
+    if (i === 11) {
+      builder.create('memberContract', {
+        parcelId,
+        leadParcelId: demoParcels[5],
+      });
+    } else {
+      const parcel = Parcels.findOne(parcelId);
+      builder.create('memberContract', {
+        parcelId,
+        partnerId: parcel._payerMembership().partnerId,
+        habitants: parcel.type === __('schemaParcels.type.flat') ? (i % 4) : undefined,
+      });
+    }
   });
 
   // ==== Loginable users with Roles =====

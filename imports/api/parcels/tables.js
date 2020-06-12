@@ -18,7 +18,7 @@ export function parcelColumns() {
   return [
     { data: 'serial', title: __('schemaParcels.serial.label') },
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'leadRef', title: __('schemaParcels.leadRef.label') },
+    { data: 'leadParcelRef()', title: __('schemaParcels.leadRef.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label') },
     { data: 'lot', title: __('schemaParcels.lot.label') },
@@ -27,7 +27,7 @@ export function parcelColumns() {
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'parcels', actions: 'view,edit,occupants,meters,delete', size: 'sm' }, cell),
+      { doc: cellData, collection: 'parcels', actions: 'view,edit,delete,occupants,meters,contracts', size: 'sm' }, cell),
     },
   ];
 }
@@ -50,7 +50,7 @@ export function parcelFinancesColumns() {
     { data: 'type', title: __('schemaParcels.type.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: 'withFollowers()', title: __('follower parcels') },
-    { data: 'payerMembership().outstanding', title: __('schemaBills.outstanding.label') },
+    { data: 'payerContract().outstanding', title: __('schemaBills.outstanding.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => Blaze.renderWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'finances,meters', size: 'sm' }, cell),
@@ -71,7 +71,7 @@ export function highlightMyRow(row, data, index) {
 /* with aldeed:tabular:
 const parcelColumns = [
   { data: 'ref', title: __('schemaParcels.ref.label') },
-  { data: 'leadRef', title: __('schemaParcels.leadParcelId.label') },
+  { data: 'leadParcelRef()', title: __('schemaParcels.leadParcelId.label') },
   { data: 'location()', title: __('schemaParcels.location.label') },
   { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
   { data: 'area', title: 'm2' },

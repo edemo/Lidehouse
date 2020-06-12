@@ -22,10 +22,10 @@ import '/imports/api/parcels/actions.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/actions.js';
-import { Parcelships } from '/imports/api/parcelships/parcelships.js';
-import '/imports/api/parcelships/actions.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import '/imports/api/meters/actions.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
+import '/imports/api/contracts/actions.js';
 import '/imports/api/users/users.js';
 import '/imports/api/users/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
@@ -55,17 +55,9 @@ Template.Occupants_table.viewmodel({
     const selector = this.templateInstance.data.selector;
     return Memberships.find(selector, { sort: { role: -1 } });
   },
-  parcelships() {
-    const selector = this.templateInstance.data.selector;
-    return Parcelships.find(selector);
-  },
 });
 
 Template.Occupants_box.viewmodel({
-  autorun() {
-    const parcelId = this.templateInstance.data.parcel._id;
-    this.templateInstance.subscribe('parcelships.ofParcel', { parcelId });
-  },
   membershipsContent() {
     const parcelId = this.templateInstance.data.parcel._id;
     const selector = { parcelId };
@@ -74,11 +66,6 @@ Template.Occupants_box.viewmodel({
   parcelDisplay() {
     const parcel = this.templateInstance.data.parcel;
     return parcel ? parcel.display() : __('unknown');
-  },
-  parcelshipTitle() {
-    const parcelId = this.templateInstance.data.parcel._id;
-    const parcelship = Parcelships.findOne({ parcelId });
-    return parcelship ? ` - ${__('parcelship')}` : '';
   },
 });
 
@@ -102,14 +89,34 @@ Template.Meters_box.viewmodel({
   },
 });
 
+Template.Contracts_table.viewmodel({
+  rows() {
+    const selector = this.templateInstance.data.selector;
+    return Contracts.find(selector);
+  },
+});
+
+Template.Contracts_box.viewmodel({
+  parcelDisplay() {
+    const parcel = this.templateInstance.data.parcel;
+    return parcel ? parcel.display() : __('unknown');
+  },
+  contractsContent() {
+    const communityId = this.templateInstance.data.community._id;
+    const parcelId = this.templateInstance.data.parcel._id;
+    const selector = { communityId, parcelId };
+    return { collection: 'contracts', selector };
+  },
+});
+
 Template.Parcels_box.viewmodel({
   showAllParcels: false,
   onCreated() {
     const user = Meteor.user();
     const communityId = this.templateInstance.data.communityId();
-    const parcelsCount = Parcels.find({ communityId, leadRef: { $exists: false } }).count();
+    const parcelsCount = Parcels.find({ communityId }).count();
     const showAllParcelsDefault = (
-      (user?.hasPermission('parcels.insert', { communityId })) || (parcelsCount <= 80)
+      (user?.hasPermission('parcels.insert', { communityId })) || (parcelsCount <= 100)
     );
     this.showAllParcels(!!showAllParcelsDefault);
   },
@@ -118,7 +125,7 @@ Template.Parcels_box.viewmodel({
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
-      this.templateInstance.subscribe('parcelships.inCommunity', { communityId });
+      this.templateInstance.subscribe('contracts.inCommunity', { communityId });
     } else {
       this.templateInstance.subscribe('parcels.ofSelf', { communityId });
     }
@@ -226,10 +233,19 @@ Template.Occupants_box.events({
     const partner = membership.partner();
     Meteor.users.actions.view({}, partner.user()).run();
   },
-  'click .js-occupants'(event, instance) {
+});
+
+Template.Contracts_box.events({
+  'click .js-member'(event, instance) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    const contract = Contracts.findOne(id);
+    const partner = contract.partner();
+    Meteor.users.actions.view({}, partner.user()).run();
+  },
+  'click .js-contracts'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const parcel = Parcels.findOne(id);
-    Parcels.actions.occupants({}, parcel).run();
+    Parcels.actions.contracts({}, parcel).run();
   },
 });
 

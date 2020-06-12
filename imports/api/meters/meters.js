@@ -12,19 +12,18 @@ import { allowedOptions, imageUpload, noUpdate } from '/imports/utils/autoform.j
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
 
 export const Meters = new Mongo.Collection('meters');
 
 Meters.readingSchema = new SimpleSchema({
-  date: { type: Date, autoform: { type: 'datetime-local', value: new Date() } },
+  date: { type: Date, autoform: { type: 'datetime-local', defaultValue() { return Clock.currentTime(); } } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
   approved: { type: Boolean, optional: true, autoform: { omit: true }, defaultValue: true },
 });
 
 Meters.unapprovedReadingSchema = new SimpleSchema({
-  date: { type: Date, autoValue: Clock.currentDate, autoform: { type: 'datetime-local', value: new Date(), readonly: true } },
+  date: { type: Date, autoValue() { return Clock.currentTime(); }, autoform: { type: 'datetime-local', defaultValue() { return Clock.currentTime(); }, readonly: true } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
 });
@@ -68,6 +67,7 @@ Meteor.startup(function indexParcels() {
 
 Meters.helpers({
   parcel() {
+    const Parcels = Mongo.Collection.get('parcels');
     return Parcels.findOne(this.parcelId);
   },
   entityName() {

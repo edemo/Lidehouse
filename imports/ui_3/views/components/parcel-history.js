@@ -19,7 +19,7 @@ Template.Parcel_history.viewmodel({
   onCreated(instance) {
     ModalStack.setVar('relation', 'member', true);
     instance.autorun(() => {
-      if (this.partnerSelected()) {
+      if (this.contractSelected()) {
         instance.subscribe('transactions.byPartner', this.subscribeParams());
         instance.subscribe('txdefs.inCommunity', { communityId: this.communityId() });
       }
@@ -38,19 +38,19 @@ Template.Parcel_history.viewmodel({
   communityId() {
     return ModalStack.getVar('communityId');
   },
-  partnerSelected() {
+  contractSelected() {
     const parcelId = this.parcelSelected();
     if (!parcelId) return undefined;
     const parcel = Parcels.findOne(parcelId);
-//    const result = parcel && parcel.payerPartner() && parcel.payerPartner()._id;
-    const result = parcel && parcel.payerMembership() && parcel.payerMembership()._id;
+//    const result = parcel?.payerPartner()?._id;
+    const result = parcel?.payerContract()?._id;
     return result;
   },
   subscribeParams() {
     return {
       communityId: this.communityId(),
 //      partnerId: this.partnerSelected() || null,
-      membershipId: this.partnerSelected() || null,
+      contractId: this.contractSelected() || null,
       begin: new Date(this.beginDate()),
       end: new Date(this.endDate()),
     };

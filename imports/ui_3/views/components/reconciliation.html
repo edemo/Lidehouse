@@ -1,0 +1,25 @@
+<template name="Reconciliation">
+    <div class="row">
+        <div class="col-sm-6 col-md-7">
+            <div class="form-group">
+                <label for="original">Eredeti kivonat adatok</label>
+                <textarea rows="8" name="original" id="original" data-schema-key="original" readonly="" class="form-control">
+                   {{originalStatementEntry}}
+                </textarea>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-5">
+            <address>
+                {{> afQuickField name="defId"}}
+                {{> afQuickField name="txId"}}
+            </address>
+        </div>
+    </div>
+    <!--div class="row">
+        {{> Payment_edit}}      
+    </div>
+    <div role="separator"></div>
+    <div class="row">
+        Konyvelesi nezet 
+    </div-->
+</template>

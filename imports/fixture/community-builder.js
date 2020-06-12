@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { TAPi18n } from 'meteor/tap:i18n';
@@ -80,7 +81,6 @@ export class CommunityBuilder {
         case 'agendas':
         case 'contracts':
         case 'parcels':
-        case 'parcelships':
         case 'partners':
         case 'meters': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');

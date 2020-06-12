@@ -15,6 +15,7 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
@@ -38,12 +39,31 @@ export const chooseBillOfPartner = {
   firstOption: () => __('(Select one)'),
 };
 
+export const chooseParcelOfPartner = {
+  options() {
+    const communityId = ModalStack.getVar('communityId');
+    const partnerId = AutoForm.getFieldValue('partnerId');
+    const parcels = Memberships.find({ communityId, partnerId }).map(m => m.parcel());
+    const options = _.without(parcels, undefined).map(p => ({ label: p.displayAccount(), value: p.code }));
+    return options;
+  },
+  firstOption: () => __('Localizer'),
+};
+
 const billPaidSchema = {
   id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBillOfPartner },
-  amount: { type: Number, decimal: true },
+  amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
 };
 _.each(billPaidSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
 Payments.billPaidSchema = new SimpleSchema(billPaidSchema);
+
+const lineSchema = {
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
+  localizer: { type: String, optional: true, autoform: chooseParcelOfPartner },
+  amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
+};
+_.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
+Payments.lineSchema = new SimpleSchema(lineSchema);
 
 const extensionSchema = {
   valueDate: { type: Date }, // same as Tx, but we need the readonly added
@@ -58,13 +78,17 @@ const paymentSchema = new SimpleSchema([
   Transactions.partnerSchema,
   Payments.extensionSchema, {
     bills: { type: [Payments.billPaidSchema], defaultValue: [] },
-    outstanding: { type: Number, decimal: true, min: 0, optional: true },
+    lines: { type: [Payments.lineSchema], defaultValue: [] },
+    outstanding: { type: Number, decimal: true, min: 0, max: 0, optional: true },
   },
 ]);
 
 Transactions.categoryHelpers('payment', {
   getBills() {
     return (this.bills || []);
+  },
+  getLines() {
+    return (this.lines || []);
   },
   getBillTransactions() {
     return this.getBills().map(bill => Transactions.findOne(bill.id));
@@ -74,7 +98,10 @@ Transactions.categoryHelpers('payment', {
   },
   calculateOutstanding() {
     let allocated = 0;
+    console.log(this);
     this.getBills().forEach(bill => allocated += bill.amount);
+    this.getLines().forEach(line => allocated += line.amount);
+    console.log('amount:', this.amount - allocated);
     return this.amount - allocated;
   },
   allocated() {
@@ -88,31 +115,38 @@ Transactions.categoryHelpers('payment', {
     let unallocatedAmount = this.amount;
     this[this.relationSide()].push({ amount: this.amount, account: this.payAccount });
     this.bills.forEach(billPaid => {
+      if (unallocatedAmount <= 0) return false;
       const bill = Transactions.findOne(billPaid.id);
       if (accountingMethod === 'accrual') {
         bill[this.relationSide()].forEach(entry => {
-          const amount = equalWithinRounding(entry.amount, unallocatedAmount) ? entry.amount : Math.min(entry.amount, unallocatedAmount);
+          if (unallocatedAmount <= 0) return false;
+          const amount = equalWithinRounding(entry.amount, billPaid.amount) ? entry.amount : Math.min(entry.amount, billPaid.amount);
           this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId });
           unallocatedAmount -= amount;
-          if (unallocatedAmount <= 0) return;
         });
       } else if (accountingMethod === 'cash') {
         bill.lines.forEach(line => {
-          if (!line) return; // can be null, when a line is deleted from the array
-          const amount = Math.min(line.amount, unallocatedAmount);
-          this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
+          if (unallocatedAmount <= 0) return false;
+          if (!line) return true; // can be null, when a line is deleted from the array
+          const amount = Math.min(line.amount, billPaid.amount);
+          const parcelId = line.localizer && Parcels.findOne({ communityId: this.communityId, code: line.localizer })._id;
+          this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId });
           unallocatedAmount -= amount;
-          if (unallocatedAmount <= 0) return;
         });
       }
+    });
+    this.lines.forEach(line => {
+      if (unallocatedAmount <= 0) return false;
+      if (!line) return true; // can be null, when a line is deleted from the array
+      const amount = Math.min(line.amount, unallocatedAmount);
+      this[this.conteerSide()].push({ amount, account: this.txdef()[this.conteerSide()][0], contractId: line.contractId, localizer: line.localizer, parcelId: line.parcelId });
+      unallocatedAmount -= amount;
     });
     // Handling the remainder
     if (unallocatedAmount) { // still has remainder
       if (equalWithinRounding(unallocatedAmount, 0)) {
         this[this.conteerSide()].push({ amount: unallocatedAmount, account: '`99' });
-      } else {
-        this[this.conteerSide()].push({ amount: unallocatedAmount, account: this.txdef()[this.conteerSide()][0] });
-      }
+      } else throw new Meteor.Error('err_notAllowed', 'Payment accounting can only be done, when all amount is allocated');
     }
     return { debit: this.debit, credit: this.credit };
   },
@@ -133,15 +167,15 @@ Transactions.categoryHelpers('payment', {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a payment without a partner');
     Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    Memberships.update(this.membershipId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    Contracts.update(this.contractId, { $inc: { outstanding: (-1) * sign * this.amount } }, { selector: { relation: 'member' } });
     if (this.relation === 'member') {
       this.bills.forEach(bp => {
         const bill = Transactions.findOne(bp.id);
-          bill.lines.forEach(line => {
-            if (!line) return; // can be null, when a line is deleted from the array
-            debugAssert(line.parcelId, 'Cannot process a parcel payment without parcelId field');
-            Parcels.update(line.parcelId, { $inc: { outstanding: (-1) * sign * line.amount } });
-          });
+        bill.lines.forEach(line => {
+          if (!line) return; // can be null, when a line is deleted from the array
+          debugAssert(line.parcelId, 'Cannot process a parcel payment without parcelId field');
+          Parcels.update(line.parcelId, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });
+        });
       });
     }
   },

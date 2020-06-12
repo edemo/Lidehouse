@@ -3,6 +3,8 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+
+import { Log } from '/imports/utils/log.js';
 import { checkExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 import { ActiveTimeMachine } from './active-time-machine';
 
@@ -67,17 +69,19 @@ const hooks = {};
 // remove non-active docs, only with direct.remove, which then doesn't perform other hooks that might be needed
 
 Mongo.Collection.prototype.findActive = function findActive(selector, options) {
-  if (!selector.active && !selector.activeTime) {
-    _.extend(selector, ActiveTimeMachine.selector());
+  if (selector.active || selector.activeTime) {
+    return this.find(selector, options);
   }
-  return this.find(selector, options);
+  const timedSelector = _.extend(ActiveTimeMachine.selector(), selector);
+  return this.find(timedSelector, options);
 };
 
 Mongo.Collection.prototype.findOneActive = function findOneActive(selector, options) {
-  if (!selector.active && !selector.activeTime) {
-    _.extend(selector, ActiveTimeMachine.selector());
+  if (selector.active || selector.activeTime) {
+    return this.findOne(selector, options);
   }
-  return this.findOne(selector, options);
+  const timedSelector = _.extend(ActiveTimeMachine.selector(), selector);
+  return this.findOne(timedSelector, options);
 };
 
 const indexes = function indexActivePeriod(collection) {
@@ -104,7 +108,8 @@ export function sanityCheckOnlyOneActiveAtAllTimes(collection, selector) {
   docs.forEach((doc, i) => {
     if (!docs[i + 1]) return;
     if (doc.getActiveTime().end > docs[i + 1].getActiveTime().begin) {
-      throw new Meteor.Error('err_sanityCheckFailed', `Cannot have two documents active at the same time (${doc.getActiveTime().end})`, docs.map(d => d.activeTime));
+      Log.debug('doc1:', docs[i + 1], 'doc2:', doc);
+      throw new Meteor.Error('err_sanityCheckFailed', 'Cannot have two documents active at the same time', `time: ${doc.getActiveTime().end}, doc: ${doc}`);
     }
   });
 }

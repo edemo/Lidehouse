@@ -26,6 +26,7 @@ Meteor.publish('transactions.byPartner', function transactionsInCommunity(params
   new SimpleSchema({
     communityId: { type: String },
     partnerId: { type: String, optional: true },
+    contractId: { type: String, optional: true },
     membershipId: { type: String, optional: true },
     begin: { type: Date, optional: true },
     end: { type: Date, optional: true },

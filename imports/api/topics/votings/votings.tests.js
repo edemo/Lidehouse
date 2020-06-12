@@ -15,7 +15,7 @@ import '/imports/api/topics/votings/votings.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Parcelships } from '/imports/api/parcelships/parcelships.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 
 if (Meteor.isServer) {
   let Fixture;
@@ -23,7 +23,7 @@ if (Meteor.isServer) {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
-      Parcelships.remove({});
+      Contracts.remove({});
     });
 
     describe('permissions', function () {
@@ -364,14 +364,14 @@ if (Meteor.isServer) {
         let otherVoting = Topics.findOne(otherVotingId);
         chai.assert.deepEqual(otherVoting.voteParticipation, { count: 3, units: 60 });
 
-        // no membership on follower parcel just parcelship
-        Fixture.builder.create('parcelship', { parcelId: extraParcelId, leadParcelId: Fixture.dummyParcels[1] });
+        // no membership given on follower parcel just a memberContract appointing a leadParcel
+        Fixture.builder.create('memberContract', { parcelId: extraParcelId, leadParcelId: Fixture.dummyParcels[1] });
         otherVoting.voteEvaluate();
         otherVoting = Topics.findOne(otherVotingId);
         chai.assert.deepEqual(otherVoting.voteParticipation, { count: 3, units: 110 });
         chai.assert.deepEqual(otherVoting.voteCasts[Fixture.partnerId(Fixture.dummyUsers[1])], [1]);
 
-        // both membership and parcelship exists for follower parcel
+        // both membership and memberContract exists for follower parcel
         const extraMembershipId = Fixture.builder.createMembership(Fixture.dummyUsers[1], 'owner', {
           parcelId: extraParcelId,
           ownership: {
@@ -383,7 +383,7 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(otherVoting.voteParticipation, { count: 4, units: 110 });
         chai.assert.deepEqual(otherVoting.voteCasts[Fixture.partnerId(Fixture.dummyUsers[1])], [1]);
 
-        Parcelships.remove({});
+        Contracts.remove({});
         Memberships.remove(extraMembershipId);
         done();
       });

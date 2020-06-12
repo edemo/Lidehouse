@@ -248,8 +248,9 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner4Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'person', unitPrice: 5000, quantity: 4, localizer: '@A104' });
-        chai.assert.equal(parcel4.payerPartner().outstanding, bills[0].lines[0].amount);
-        chai.assert.equal(parcel4.outstanding, bills[0].lines[0].amount);
+        chai.assert.equal(parcel4.payerPartner().outstanding, 5000 * 4);
+        chai.assert.equal(parcel4.payerContract().outstanding, 5000 * 4);
+        chai.assert.equal(parcel4.outstanding, 5000 * 4);
 
         Transactions.remove({});
         const meteredParcelId = Fixture.dummyParcels[3];
@@ -293,16 +294,22 @@ if (Meteor.isServer) {
       it('bills the then owner for given apply date', function () {
         const formerMembershipId = Memberships.findOne({ parcelId: Fixture.dummyParcels[3] })._id;
         Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
-          { _id: formerMembershipId, 
-            modifier: { $set: { 'activeTime.begin': moment('2017-12-01').toDate(),
-              'activeTime.end': moment('2018-01-31').toDate() } } });
+          { _id: formerMembershipId,
+            modifier: { $set: {
+              'activeTime.begin': moment('2017-12-01').toDate(),
+              'activeTime.end': moment('2018-01-31').toDate() },
+            },
+          });
         const laterMembershipId = Fixture.builder.createMembership(Fixture.dummyUsers[2], 'owner', {
           parcelId: Fixture.dummyParcels[3],
           ownership: { share: new Fraction(1, 1) },
         });
-        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
-          { _id: laterMembershipId, modifier: { $set: { 'activeTime.begin': moment('2018-02-01').toDate() } } });
-        
+        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId }, {
+          _id: laterMembershipId, modifier: { $set: {
+            'activeTime.begin': moment('2018-02-01').toDate(),
+          } },
+        });
+
         Fixture.builder.create('parcelBilling', {
           title: 'Test absolute',
           projection: {

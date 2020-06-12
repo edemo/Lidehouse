@@ -34,8 +34,6 @@ Template.Accounting_transactions.viewmodel({
   creditAccountOptions: [],
   localizerSelected: '',
   localizerOptions: [],
-//  partnerSelected: '',
-//  referenceIdSelected: '',
   beginDate: moment().subtract('30', 'day').format('YYYY-MM-DD'),
   endDate: moment().format('YYYY-MM-DD'),
 //  amount: undefined,

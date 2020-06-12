@@ -17,7 +17,7 @@ import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/acc
 import { Parcels, chooseParcel } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 
 export const Bills = {};
 
@@ -146,12 +146,12 @@ Transactions.categoryHelpers('bill', {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a bill without a partner');
     Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
-    Memberships.update(this.membershipId, { $inc: { outstanding: directionSign * this.amount } });
+    Contracts.update(this.contractId, { $inc: { outstanding: directionSign * this.amount } }, { selector: { relation: 'member' } });
     if (this.relation === 'member') {
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
         debugAssert(line.parcelId, `Cannot process a parcel bill without parcelId field: ${JSON.stringify(this)}`);
-        Parcels.update(line.parcelId, { $inc: { outstanding: directionSign * line.amount } });
+        Parcels.update(line.parcelId, { $inc: { outstanding: directionSign * line.amount } }, { selector: { category: '@property' } });
       });
     }
   },
