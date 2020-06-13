@@ -5,12 +5,8 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
-import { moment } from 'meteor/momentjs:moment';
 
-import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { __ } from '/imports/localization/i18n.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
 
 export const StatementEntries = new Mongo.Collection('statementEntries');
 
@@ -69,32 +65,4 @@ Factory.define('statementEntry', StatementEntries, {
   ref: () => faker.random.uuid(),
   note: () => faker.random.word(),
   amount: 10000,
-});
-
-// --- Reconciliation ---
-
-export const chooseTransaction = {
-  relation: 'transaction',
-  value() {
-    const selfId = AutoForm.getFormId();
-    const category = ModalStack.getVar('txdef').category;
-    return ModalStack.readResult(selfId, `af.${category}.insert`);
-  },
-  options() {
-    const communityId = ModalStack.getVar('communityId');
-    const txdef = ModalStack.getVar('txdef');
-    const txs = Transactions.find({ communityId, defId: txdef._id, seId: { $exists: false } });
-    const options = txs.map(tx => ({ label: tx.serialId, value: tx._id }));
-    return options;
-  },
-  firstOption: () => __('(Select one)'),
-};
-
-StatementEntries.reconcileSchema = new SimpleSchema({
-  _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseTransaction },
-});
-
-Meteor.startup(function attach() {
-  StatementEntries.reconcileSchema.i18n('schemaStatementEntries');
 });

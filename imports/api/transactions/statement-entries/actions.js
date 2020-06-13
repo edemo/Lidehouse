@@ -9,12 +9,11 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
-import '/imports/ui_3/views/components/reconciliation.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
-import './dummy-modal.js';
+import { reconciliationSchema } from '/imports/api/transactions/statement-entries/reconciliation.js';
+import '/imports/ui_3/views/components/reconciliation.js';
 import './methods.js';
 
 StatementEntries.actions = {
@@ -92,8 +91,6 @@ StatementEntries.actions = {
     icon: 'fa fa-external-link',
     color: (doc.match) ? 'info' : 'danger',
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
-    subActions: !options.txdef && Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
-      .map(txdef => StatementEntries.actions.reconcile({ txdef }, doc, user)),
     run() {
       ModalStack.setVar('txdef', options.txdef);
       ModalStack.setVar('statementEntry', doc);
@@ -105,34 +102,19 @@ StatementEntries.actions = {
         amount: doc.amount,
         valueDate: doc.valueDate,
       };
-      const hasSuchUnreconlicedTx = Transactions.findOne(_.extend(tx, { seId: { $exists: false } }));
-      if (hasSuchUnreconlicedTx) {
-        Modal.show('Autoform_modal', {
-          title: `${__('Reconciliation')} >> ${__(options.txdef.name)}`,
-          id: 'af.statementEntry.reconcile',
-          schema: StatementEntries.reconcileSchema,
-          type: 'method',
-          meteormethod: 'statementEntries.reconcile',
-        });
- /*           Modal.show('Autoform_modal', {
-          body: 'Reconciliation',
-          bodyContext: { doc: tx },
-          // --- --- --- ---
-          id: 'af.statementEntry.reconcile',
-          schema: Transactions.simpleSchema({ category: tx.category }),
-          doc: tx,
-          type: 'method',
-          meteormethod: 'statementEntries.reconcile',
-          // --- --- --- ---
-          size: 'lg',
-        });*/
-      } else {
-        Modal.show('Modal', {
-          body: 'Dummy_modal',
-          bodyContext: { doc: tx, options },
-          id: 'dummy',
-        });
-      }
+      const recDoc = { _id: doc._id, defId: options.txdef._id };
+      Modal.show('Autoform_modal', {
+        body: 'Reconciliation',
+        bodyContext: { doc: recDoc, tx, options: doc.options },
+        // --- --- --- ---
+        id: 'af.statementEntry.reconcile',
+        schema: reconciliationSchema,
+        doc: recDoc,
+        type: 'method',
+        meteormethod: 'statementEntries.reconcile',
+        // --- --- --- ---
+        size: 'lg',
+      });
     },
   }),
   autoReconcile: (options, doc, user = Meteor.userOrNull()) => ({

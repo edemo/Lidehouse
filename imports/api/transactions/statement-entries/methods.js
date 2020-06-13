@@ -13,6 +13,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
+import { reconciliationSchema } from '/imports/api/transactions/statement-entries/reconciliation.js';
 
 export const insert = new ValidatedMethod({
   name: 'statementEntries.insert',
@@ -70,7 +71,7 @@ function checkReconcileMatch(entry, transaction) {
 
 export const reconcile = new ValidatedMethod({
   name: 'statementEntries.reconcile',
-  validate: StatementEntries.reconcileSchema.validator(),
+  validate: reconciliationSchema.validator(),
   run({ _id, txId }) {
     const entry = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.reconcile', entry);

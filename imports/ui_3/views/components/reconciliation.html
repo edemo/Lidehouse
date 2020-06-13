@@ -10,16 +10,12 @@
         </div>
         <div class="col-sm-6 col-md-5">
             <address>
+                <!-- hidden, needed for autoform doc data -->
+                {{> afQuickField name="_id" type="hidden"}}
+                <!-- hidden, needed for autoform doc data -->
                 {{> afQuickField name="defId"}}
                 {{> afQuickField name="txId"}}
             </address>
         </div>
     </div>
-    <!--div class="row">
-        {{> Payment_edit}}      
-    </div>
-    <div role="separator"></div>
-    <div class="row">
-        Konyvelesi nezet 
-    </div-->
 </template>
