@@ -94,5 +94,14 @@ if (Meteor.isClient) {
       }
       return undefined;
     },
+/*    setCallback(callback) {
+      const modalStack = ModalStack.get();
+      _.last(modalStack).callback = callback;
+      Session.set('modalStack', modalStack);
+    },
+    getCallback() {
+      const modalStack = ModalStack.get();
+      return _.last(modalStack).callback;
+    },*/
   };
 }

@@ -6,21 +6,18 @@
         {{> afQuickField name="defId" type="hidden"}}
         {{> afQuickField name="relation" type="hidden"}}
         <!-- hidden, needed for autoform doc data -->
-        {{#if reconciling}}
         <div class="col-sm-6 col-md-7">
+            {{> afQuickField name="valueDate" type=hiddenWhenReconciling}}
+            {{> afQuickField name="payAccount" type=hiddenWhenReconciling}}
+            {{#if reconciling}}
             <div class="form-group">
                 <label for="original">Eredeti kivonat adatok</label>
                 <textarea rows="8" name="original" id="original" data-schema-key="original" readonly="" class="form-control">
                    {{originalStatementEntry}}
                 </textarea>
             </div>
+            {{/if}}
         </div>
-        {{else}}
-        <div class="col-sm-6 col-md-4">
-            {{> afQuickField name="valueDate" type=hiddenWhenReconciling}}
-            {{> afQuickField name="payAccount" type=hiddenWhenReconciling}}
-        </div>
-        {{/if}}
         <div class="col-sm-6 col-md-4 pull-right">
             {{#if doc.serialId}}
                 <h4>{{_ doc.txdef.name}}:

@@ -77,6 +77,8 @@ AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {
       const id = afId2details(afId);
       const actionNameDone = 'actionDone_' + id.action;
       displayMessage('success', __(id.object) + ' ' + __(actionNameDone));
+//      const callback = ModalStack.getCallback();
+//      if (callback) Meteor.timeout(() => Meteor.call(callback.method, callback.params), 500);
     },
   });
 };

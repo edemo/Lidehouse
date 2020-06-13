@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
@@ -13,6 +14,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
+import './dummy-modal.js';
 import './methods.js';
 
 StatementEntries.actions = {
@@ -96,35 +98,41 @@ StatementEntries.actions = {
       ModalStack.setVar('txdef', options.txdef);
       ModalStack.setVar('statementEntry', doc);
       const tx = {
+        communityId: doc.communityId,
         defId: options.txdef._id,
         category: options.txdef.category,
         relation: options.txdef.data.relation,
         amount: doc.amount,
+        valueDate: doc.valueDate,
       };
-/*      Modal.show('Autoform_modal', {
-        body: 'Reconciliation',
-        bodyContext: { doc: tx },
-        // --- --- --- ---
-        id: 'af.statementEntry.reconcile',
-        schema: Transactions.simpleSchema({ category: tx.category }),
-        doc: tx,
-        type: 'method',
-        meteormethod: 'statementEntries.reconcile',
-        // --- --- --- ---
-        size: 'lg',
-      });*/
-      Modal.show('Autoform_modal', {
-        body: 'Payment_edit',
-        bodyContext: { doc: tx },
-        // --- --- --- ---
-        id: 'af.payment.edit',
-        schema: Transactions.simpleSchema({ category: tx.category }),
-        doc: tx,
-        type: 'method',
-        meteormethod: 'transactions.insert',
-        // --- --- --- ---
-        size: 'lg',
-      });
+      const hasSuchUnreconlicedTx = Transactions.findOne(_.extend(tx, { seId: { $exists: false } }));
+      if (hasSuchUnreconlicedTx) {
+        Modal.show('Autoform_modal', {
+          title: `${__('Reconciliation')} >> ${__(options.txdef.name)}`,
+          id: 'af.statementEntry.reconcile',
+          schema: StatementEntries.reconcileSchema,
+          type: 'method',
+          meteormethod: 'statementEntries.reconcile',
+        });
+ /*           Modal.show('Autoform_modal', {
+          body: 'Reconciliation',
+          bodyContext: { doc: tx },
+          // --- --- --- ---
+          id: 'af.statementEntry.reconcile',
+          schema: Transactions.simpleSchema({ category: tx.category }),
+          doc: tx,
+          type: 'method',
+          meteormethod: 'statementEntries.reconcile',
+          // --- --- --- ---
+          size: 'lg',
+        });*/
+      } else {
+        Modal.show('Modal', {
+          body: 'Dummy_modal',
+          bodyContext: { doc: tx, options },
+          id: 'dummy',
+        });
+      }
     },
   }),
   autoReconcile: (options, doc, user = Meteor.userOrNull()) => ({
