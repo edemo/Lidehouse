@@ -26,6 +26,7 @@ export const insert = new ValidatedMethod({
     doc = StatementEntries._transform(doc);
     checkPermissions(this.userId, 'statements.insert', doc);
     const _id = StatementEntries.insert(doc);
+    StatementEntries.methods.recognize._execute({ userId: this.userId }, { _id });
     return _id;
   },
 });
