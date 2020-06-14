@@ -2,7 +2,6 @@
 
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { _ } from 'meteor/underscore';
 
 import { Partners } from './partners.js';
 

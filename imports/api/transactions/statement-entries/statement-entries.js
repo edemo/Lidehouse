@@ -24,7 +24,7 @@ StatementEntries.schema = new SimpleSchema({
   statementId: { type: String, /* regEx: SimpleSchema.RegEx.Id, */ optional: true, autoform: { omit: true } },
   row: { type: Number, optional: true }, // Row number within the statement
   original: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
-//  match: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
+  match: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 

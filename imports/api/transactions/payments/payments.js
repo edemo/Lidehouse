@@ -98,10 +98,10 @@ Transactions.categoryHelpers('payment', {
   },
   calculateOutstanding() {
     let allocated = 0;
-    console.log(this);
+//    console.log(this);
     this.getBills().forEach(bill => allocated += bill.amount);
     this.getLines().forEach(line => allocated += line.amount);
-    console.log('amount:', this.amount - allocated);
+//    console.log('amount:', this.amount - allocated);
     return this.amount - allocated;
   },
   allocated() {

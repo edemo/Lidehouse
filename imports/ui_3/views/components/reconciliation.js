@@ -11,12 +11,12 @@ import './reconciliation.html';
 
 Template.Reconciliation.onRendered(function () {
   const instance = this;
-  const tx = this.data.doc;
-  const options = this.data.options;
+//  const tx = this.data.doc;
+//  const options = this.data.options;
   const se = ModalStack.getVar('statementEntry');
-
+  const tx = se?.match?.tx;
   const hasSuchUnreconlicedTx = Transactions.findOne(_.extend(tx, { seId: { $exists: false } }));
-  if (!hasSuchUnreconlicedTx) {
+  if (tx.category && !hasSuchUnreconlicedTx) {
     Tracker.autorun((computation) => {
       const result = ModalStack.readResult('dummy', `af.${tx.category}.insert`);
       if (result) {
@@ -25,6 +25,6 @@ Template.Reconciliation.onRendered(function () {
         Modal.hide(instance.parent(3));
       }
     });
-    Transactions.actions.new(options, tx).run();
+    Transactions.actions.new({}, tx).run();
   }
 });

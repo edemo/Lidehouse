@@ -12,7 +12,7 @@ import { importCollectionFromFile } from '/imports/ui_3/views/components/import-
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
-import { reconciliationSchema } from '/imports/api/transactions/statement-entries/reconciliation.js';
+import { reconciliationSchema } from '/imports/api/transactions/reconciliation/reconciliation.js';
 import '/imports/ui_3/views/components/reconciliation.js';
 import './methods.js';
 
@@ -87,25 +87,23 @@ StatementEntries.actions = {
   }),
   reconcile: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'reconcile',
-    label: (options.txdef && options.txdef.name) || __('reconcile'),
     icon: 'fa fa-external-link',
-    color: (doc.match) ? 'info' : 'danger',
+    color: doc?.match?.confidence,
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
     run() {
-      ModalStack.setVar('txdef', options.txdef);
       ModalStack.setVar('statementEntry', doc);
-      const tx = {
+/*      const tx = {
         communityId: doc.communityId,
         defId: options.txdef._id,
         category: options.txdef.category,
         relation: options.txdef.data.relation,
         amount: doc.amount,
         valueDate: doc.valueDate,
-      };
-      const recDoc = { _id: doc._id, defId: options.txdef._id };
+      };*/
+      const recDoc = { _id: doc._id };
       Modal.show('Autoform_modal', {
         body: 'Reconciliation',
-        bodyContext: { doc: recDoc, tx, options: doc.options },
+        bodyContext: { doc: recDoc },
         // --- --- --- ---
         id: 'af.statementEntry.reconcile',
         schema: reconciliationSchema,
@@ -123,7 +121,15 @@ StatementEntries.actions = {
     color: 'primary',
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
     run() {
-      StatementEntries.methods.reconcile.call({ _id: doc._id });
+      StatementEntries.methods.autoReconcile.call({ _id: doc._id });
+    },
+  }),
+  recognize: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'recognize',
+    icon: 'fa fa-question',
+    visible: !doc.isReconciled() && !doc.match?.status && user.hasPermission('statements.reconcile', doc),
+    run() {
+      StatementEntries.methods.recognize.call({ _id: doc._id });
     },
   }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
@@ -141,10 +147,12 @@ StatementEntries.actions = {
 StatementEntries.dummyDoc = {
   communityId: getActiveCommunityId,
   isReconciled() { return false; },
+  match: {},
 };
 
 StatementEntries.batchActions = {
-  autoReconcile: new BatchAction(StatementEntries.actions.autoReconcile, StatementEntries.methods.batch.reconcile, {}, StatementEntries.dummyDoc),
+  recognize: new BatchAction(StatementEntries.actions.recognize, StatementEntries.methods.batch.recognize, {}, StatementEntries.dummyDoc),
+  autoReconcile: new BatchAction(StatementEntries.actions.autoReconcile, StatementEntries.methods.batch.autoReconcile, {}, StatementEntries.dummyDoc),
   delete: new BatchAction(StatementEntries.actions.delete, StatementEntries.methods.batch.remove),
 };
 
@@ -164,14 +172,17 @@ AutoForm.addHooks('af.statementEntry.insert', {
 AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.insert', 'af.statementEntry.update'], {
   formToDoc(doc) {
     if (doc.original) doc.original = JSON.parse(doc.original);
+    if (doc.match) doc.match = JSON.parse(doc.match);
     return doc;
   },
   docToForm(doc) {
     if (doc.original) doc.original = JSON.stringify(doc.original || {}, null, 2);
+    if (doc.match) doc.match = JSON.stringify(doc.match || {}, null, 2);
     return doc;
   },
   formToModifier(modifier) {
     if (modifier.$set.original) modifier.$set.original = JSON.parse(modifier.$set.original);
+    if (modifier.$set.match) modifier.$set.match = JSON.parse(modifier.$set.match);
     return modifier;
   },
 });

@@ -265,6 +265,7 @@
   "Data upload in progress": "Adatok feltöltése folyamatban",
   "Import template": "Sablon importálása",
   "Publish": "Publikálás",
+  "recognize": "Felismerés",
   "reconcile": "Egyeztetés",
   "autoReconcile": "Automatikus egyeztetés",
 
@@ -689,6 +690,7 @@
   "actionDone_enable": "engedélyezve",
   "actionDone_disable": "elutasítva",
   "actionDone_revoke": "visszavonva",
+  "actionDone_recognize": "felismerve",
   "actionDone_reconcile": "egyeztetve",
   "actionDone_autoReconcile": "automatikusan egyeztetve",
   "actionDone_refuse": "visszautasítva",

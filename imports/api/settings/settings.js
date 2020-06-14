@@ -16,7 +16,9 @@ if (Meteor.isClient) {
 export const Settings = new Mongo.Collection('settings');
 
 Meteor.startup(function indexSettings() {
-  Settings.ensureIndex({ userId: 1, communityId: 1 });
+  if (Meteor.isServer) {
+    Settings._ensureIndex({ userId: 1, communityId: 1 });
+  }
 });
 
 Settings.get = function get(name, selector = getDefaultSelector()) {
@@ -32,7 +34,7 @@ Settings.set = function set(name, value, selector = getDefaultSelector()) {
 };
 
 Settings.allow({
-  insert(userId, doc) { return doc.userId === userId; },
+  insert(userId, doc) { return Meteor.users.findOne(userId)?.hasPermission('parcels.details', doc); },
   update(userId, doc) { return doc.userId === userId; },
   remove(userId, doc) { return doc.userId === userId; },
 });

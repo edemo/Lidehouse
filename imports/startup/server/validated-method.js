@@ -1,6 +1,5 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { CollectionHooks } from 'meteor/matb33:collection-hooks';
-import { _ } from 'meteor/underscore';
 import { Log } from '/imports/utils/log.js';
 
 ValidatedMethod.prototype._mdgExecute = ValidatedMethod.prototype._execute;

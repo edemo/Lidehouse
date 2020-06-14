@@ -44,6 +44,8 @@ import '/imports/api/transactions/statements/methods.js';
 import '/imports/api/transactions/statements/publications.js';
 import '/imports/api/transactions/statement-entries/methods.js';
 import '/imports/api/transactions/statement-entries/publications.js';
+import '/imports/api/transactions/reconciliation/recognitions.js';
+import '/imports/api/transactions/reconciliation/publications.js';
 import '/imports/api/permissions/publications.js';
 import '/imports/api/shareddocs/publications.js';
 import '/imports/api/shareddocs/methods.js';

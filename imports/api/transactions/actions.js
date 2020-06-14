@@ -15,12 +15,26 @@ import '/imports/ui_3/views/components/transaction-view.js';
 import './entities.js';
 import './methods.js';
 
-function fillMissingOptions(options, doc) {
-  const mcTxdef = ModalStack.getVar('txdef');
-  if (mcTxdef && !options.txdef) options.txdef = mcTxdef; // This happens when new tx action is called from within statementEntry match action
-  if (typeof options.entity === 'string') options.entity = Transactions.entities[options.entity];
-  if (options.txdef && !options.entity) options.entity = Transactions.entities[options.txdef.category];
-  debugAssert(options.entity && options.txdef, 'Either entity or txdef needs to come in the options');
+function figureOutEntity(options, doc) {
+  const defId = doc.defId || options.txdef?._id
+    || AutoForm.getFieldValue('defId') || ModalStack.getVar('defId');
+  debugAssert(defId);
+  const txdef = Txdefs.findOne(defId);
+  let entity = txdef.category || doc.category || options.entity
+    || AutoForm.getFieldValue('category') || ModalStack.getVar('category');
+  debugAssert(entity);
+  if (typeof entity === 'string') entity = Transactions.entities[entity];
+  doc.defId = defId;
+  doc.category = entity.name;
+  _.each(txdef.data, (value, key) => doc[key] = value); // set doc.relation, etc
+  return entity;
+}
+
+function prefillDocWhenReconciling(doc) {
+  const statementEntry = ModalStack.getVar('statementEntry');
+  if (statementEntry) {
+    _.deepExtend(doc, statementEntry?.match.tx);
+  }
 }
 
 Transactions.actions = {
@@ -29,29 +43,9 @@ Transactions.actions = {
     icon: 'fa fa-plus',
     visible: user.hasPermission('transactions.insert', doc),
     run() {
-      fillMissingOptions(options);
-      const entity = options.entity;
       doc = _.extend(defaultNewDoc(), doc);
-      doc.category = entity.name;
-      doc.defId = options.txdef._id;
-      _.each(options.txdef.data, (value, key) => doc[key] = value); // set doc.relation, etc
-      let statementEntry = ModalStack.getVar('statementEntry');
-      if (statementEntry) {
-        // statementEntry = StatementEntries._transform(statementEntry);
-        _.deepExtend(doc, {
-          // triggers some 'SimpleSchema.clean: filtered out value' because we dont't switch on category
-          amount: Math.abs(statementEntry.amount), // payment
-          lines: [{ title: statementEntry.note, quantity: 1, unitPrice: Math.abs(statementEntry.amount) }], // receipt
-          partnerName: statementEntry.name, // receipt
-          valueDate: statementEntry.valueDate,
-          issueDate: statementEntry.valueDate, // bill
-          deliveryDate: statementEntry.valueDate, // bill
-          dueDate: statementEntry.valueDate, // bill
-          payAccount: statementEntry.account, // receipt, payment
-          fromAccount: statementEntry.account, // transfer
-          toAccount: statementEntry.account, // transfer
-        });
-      }
+      prefillDocWhenReconciling(doc);
+      const entity = figureOutEntity(options, doc);
       doc = Transactions._transform(doc);
 
       Modal.show('Autoform_modal', {

@@ -378,7 +378,7 @@ if (Meteor.isServer) {
     if (tdoc.category === 'bill' || tdoc.category === 'receipt') {
       tdoc.autofillLines();
     }
-    if (tdoc.category === 'bill' || tdoc.category === 'receipt' || tdoc.category === 'payment') {
+    if (tdoc.category === 'bill' || tdoc.category === 'payment') {
       tdoc.outstanding = tdoc.calculateOutstanding();
     }
     _.extend(doc, tdoc);

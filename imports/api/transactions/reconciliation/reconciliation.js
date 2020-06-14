@@ -11,7 +11,7 @@ import { StatementEntries } from '/imports/api/transactions/statement-entries/st
 export const chooseTxdef = {
   options() {
     const communityId = ModalStack.getVar('communityId');
-    const txdefs = Txdefs.find({ communityId });
+    const txdefs = Txdefs.find({ communityId }).fetch().filter(td => td.isReconciledTx());
     const options = txdefs.map(txdef => ({ label: __(txdef.name), value: txdef._id }));
     return options;
   },
@@ -26,13 +26,14 @@ export const chooseTransaction = {
   relation: 'transaction',
   value() {
     const selfId = AutoForm.getFormId();
-    const category = ModalStack.getVar('txdef').category;
+    const defId = AutoForm.getFieldValue('defId');
+    const category = Txdefs.findOne(defId).category;
     return ModalStack.readResult(selfId, `af.${category}.insert`);
   },
   options() {
     const communityId = ModalStack.getVar('communityId');
-    const txdef = ModalStack.getVar('txdef');
-    const txs = Transactions.find({ communityId, defId: txdef._id, seId: { $exists: false } });
+    const defId = AutoForm.getFieldValue('defId');
+    const txs = Transactions.find({ communityId, defId, seId: { $exists: false } });
     const options = txs.map(tx => ({ label: tx.serialId, value: tx._id }));
     return options;
   },
@@ -41,7 +42,8 @@ export const chooseTransaction = {
 
 export const reconciliationSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseTransaction },
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTransaction },
+// on the form only:
   defId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseTxdef },
 });
 

@@ -28,6 +28,7 @@ Template.Accounting_reconciliation.viewmodel({
     instance.autorun(() => {
       const communityId = getActiveCommunityId();
       instance.subscribe('statements.inCommunity', { communityId });
+      instance.subscribe('recognitions.ofCommunity', { communityId });
       if (this.unreconciledOnly()) {
         instance.subscribe('statementEntries.unreconciled', { communityId });
       } else {

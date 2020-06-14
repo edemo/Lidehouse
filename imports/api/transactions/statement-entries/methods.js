@@ -4,16 +4,19 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
 
+import { Log } from '/imports/utils/log.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
 import { equalWithinRounding } from '/imports/api/utils.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Recognitions } from '/imports/api/transactions/reconciliation/recognitions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
-import { reconciliationSchema } from '/imports/api/transactions/statement-entries/reconciliation.js';
+import { reconciliationSchema } from '/imports/api/transactions/reconciliation/reconciliation.js';
 
 export const insert = new ValidatedMethod({
   name: 'statementEntries.insert',
@@ -76,55 +79,140 @@ export const reconcile = new ValidatedMethod({
     const entry = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.reconcile', entry);
     const communityId = entry.communityId;
+    const reconciledTx = Transactions.findOne(txId);
+    checkReconcileMatch(entry, reconciledTx);
+    if (entry.name !== reconciledTx.partner().idCard.name) {
+      Recognitions.set(`names.${entry.name}`, reconciledTx.partner().idCard.name, { communityId });
+    }
+    Transactions.update(txId, { $set: { seId: _id } });
+    StatementEntries.update(_id, { $set: { txId }, $unset: { match: '' } });
+  },
+});
+
+export const autoReconcile = new ValidatedMethod({
+  name: 'statementEntries.autoReconcile',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id }) {
+    const entry = checkExists(StatementEntries, _id);
+    checkPermissions(this.userId, 'statements.reconcile', entry);
+    if (entry.match.confidence === 'primary' || entry.match.confidence === 'info') {
+      let txId = entry.match.txId;
+      if (!txId && entry.match.tx) {
+        txId = Transactions.methods.insert._execute({ userId: this.userId }, entry.match.tx);
+      }
+      reconcile._execute({ userId: this.userId }, { _id, txId });
+    }
+  },
+});
+
+export const recognize = new ValidatedMethod({
+  name: 'statementEntries.recognize',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id }) {
+    const entry = checkExists(StatementEntries, _id);
+    checkPermissions(this.userId, 'statements.reconcile', entry);
+    const communityId = entry.communityId;
     const community = Communities.findOne(communityId);
-    if (!txId) {
-      //console.log('Statement auto match requested');
-      if (!entry.note) return;
+    Log.info('Trying to recognize statement entry:', _id);
+    // ---------------------------
+    // 1st round - 'primary' match: We find the correct BILL REF in the NOTE
+    // ---------------------------
+    if (entry.note) {
       const noteSplit = entry.note.deaccent().toUpperCase().split(' ');
       const regex = TAPi18n.__('BIL', {}, community.settings.language) + '/';
       const serialId = noteSplit.find(s => s.startsWith(regex));
-      //console.log('Serial id:', serialId);
-      if (!serialId) return;
-      const matchingBill = Transactions.findOne({ communityId: entry.communityId, serialId });
-      //console.log('Matching bill:', matchingBill);
-      if (!matchingBill) return;
-      const adjustedEntryAmount = matchingBill.relationSign() * entry.amount;
-      if (equalWithinRounding(matchingBill.outstanding, adjustedEntryAmount)) {
-/*
-//      console.log("Looking for partner", entry.name, entry.communityId);
-      const partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': entry.name });
-      if (!partner) return;
-//      console.log("Looking for bill");
-      const matchingBill = Transactions.findOne({ category: 'bill', partnerId: partner._id, outstanding: moneyFlowSign(partner.relation) * entry.amount });
-      if (!matchingBill) return;
-//      console.log("Looking for payment");
-      const matchingPayment = matchingBill.getPaymentTransactions().find(payment => !payment.txId && payment.amount === matchingBill.outstanding);
-      if (matchingPayment) {
-//        console.log("matchingPayment", matchingPayment);
-
-        txId = matchingPayment._id;
-      } else {*/
-        const tx = {
-          communityId,
-          category: 'payment',
-          relation: matchingBill.relation,
-          partnerId: matchingBill.partnerId,
-          defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBill.relation })._id,
-          valueDate: entry.valueDate,
-          payAccount: entry.account,
-          amount: adjustedEntryAmount,
-          bills: [{ amount: matchingBill.outstanding, id: matchingBill._id }],
-        };
-        //console.log("Creating matchingPayment", tx);
-        txId = Transactions.methods.insert._execute({ userId: this.userId }, tx);
+      Log.debug('Serial id:', serialId);
+      if (serialId) {
+        const matchingBill = Transactions.findOne({ communityId: entry.communityId, serialId });
+        Log.debug('Matching bill:', matchingBill);
+        if (matchingBill) {
+          const adjustedEntryAmount = matchingBill.relationSign() * entry.amount;
+          if (equalWithinRounding(matchingBill.outstanding, adjustedEntryAmount)) {
+            const tx = {
+              communityId,
+              category: 'payment',
+              relation: matchingBill.relation,
+              partnerId: matchingBill.partnerId,
+              defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBill.relation })._id,
+              valueDate: entry.valueDate,
+              payAccount: entry.account,
+              amount: adjustedEntryAmount,
+              bills: [{ id: matchingBill._id, amount: matchingBill.outstanding }],
+            };
+            Log.info('Primary match with bill', matchingBill._id);
+            Log.debug(tx);
+            StatementEntries.update(_id, { $set: { match: { confidence: 'primary', tx } } });
+            return;
+          }
+        }
       }
     }
-    if (!txId) return undefined;
-    const reconciledTx = Transactions.findOne(txId);
-    checkReconcileMatch(entry, reconciledTx);
-    Transactions.update(txId, { $set: { seId: _id } });
-    StatementEntries.update(_id, { $set: { txId } });
-    return txId;
+    Log.debug('Looking for partner', entry.name, 'in', entry.communityId);
+    const recognizedName = Recognitions.get(`names.${entry.name}`, { communityId }) || entry.name;
+    const partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': recognizedName });
+    if (!partner) {
+      // ---------------------------
+      // 4th round, 'danger' match: No partner and tx type information, we can only provide some guesses
+      // ---------------------------
+      const tx = {
+        communityId,
+        partnerName: entry.name, // receipt
+        amount: Math.abs(entry.amount), // payment
+        valueDate: entry.valueDate,
+        issueDate: entry.valueDate, // bill
+        deliveryDate: entry.valueDate, // bill
+        dueDate: entry.valueDate, // bill
+        lines: [{ title: entry.note, quantity: 1, unitPrice: Math.abs(entry.amount) }], // receipt
+        payAccount: entry.account, // receipt, payment
+        fromAccount: entry.account, // transfer
+        toAccount: entry.account, // transfer
+      };
+      Log.info('Danger match recommendation');
+      Log.debug(tx);
+      StatementEntries.update(_id, { $set: { match: { confidence: 'danger', tx } } });
+      return;
+    }
+    const matchingBills = Transactions.find({ communityId, partnerId: partner._id, outstanding: { $gt: 0 } }, { sort: { issueDate: 1 } }).fetch();
+    const adjustedEntryAmount = matchingBills[0].relationSign() * entry.amount;
+    const tx = {
+      communityId,
+      category: 'payment',
+      relation: matchingBills[0].relation,
+      partnerId: matchingBills[0].partnerId,
+      defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBills[0].relation })._id,
+      valueDate: entry.valueDate,
+      payAccount: entry.account,
+      amount: adjustedEntryAmount,
+    };
+    if (partner.outstanding === adjustedEntryAmount) {
+      // ---------------------------
+      // 2nd round, 'info' match: The payment exactly matches the outstanding bills of the partner
+      // ---------------------------
+      tx.bills = matchingBills.map(bill => ({ id: bill._id, amount: bill.outstanding }));
+      Log.info('Info match with bills', matchingBills.length);
+      Log.debug(tx);
+      StatementEntries.update(_id, { $set: { match: { confidence: 'info', tx } } });
+    } else {
+      // ---------------------------
+      // 3nd round, 'warning' match: We found the partner but the payment is not the right amount.
+      // Either under-paid (=> need to decide which bills are paid), or over-paid (=> need to decide where to allocate the remainder)
+      // ---------------------------
+      tx.bills = [];
+      let amountToFill = adjustedEntryAmount;
+      matchingBills.forEach(bill => {
+        if (amountToFill === 0) return false;
+        const amount = Math.min(amountToFill, bill.outstanding);
+        tx.bills.push({ id: bill._id, amount });
+        amountToFill -= amount;
+      });
+      Log.info('Warning match with bills', matchingBills.length);
+      Log.debug(tx);
+      StatementEntries.update(_id, { $set: { match: { confidence: 'warning', tx } } });
+    }
   },
 });
 /*
@@ -168,7 +256,6 @@ export const remove = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
-
   run({ _id }) {
     const doc = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.remove', doc);
@@ -178,7 +265,7 @@ export const remove = new ValidatedMethod({
 });
 
 StatementEntries.methods = StatementEntries.methods || {};
-_.extend(StatementEntries.methods, { insert, update, reconcile, remove });
+_.extend(StatementEntries.methods, { insert, update, recognize, reconcile, autoReconcile, remove });
 _.extend(StatementEntries.methods, crudBatchOps(StatementEntries));
+StatementEntries.methods.batch.recognize = new BatchMethod(StatementEntries.methods.recognize);
 StatementEntries.methods.batch.reconcile = new BatchMethod(StatementEntries.methods.reconcile);
-
