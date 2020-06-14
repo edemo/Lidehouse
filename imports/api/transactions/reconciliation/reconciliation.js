@@ -15,11 +15,11 @@ export const chooseTxdef = {
     const options = txdefs.map(txdef => ({ label: __(txdef.name), value: txdef._id }));
     return options;
   },
-  firstOption() {
-    return false;
+  firstOption: () => __('(Select one)'),
+//    return false;
 //    const txdef = ModalStack.getVar('txdef');
 //    return txdef._id;
-  },
+//  },
 };
 
 export const chooseTransaction = {
@@ -27,12 +27,14 @@ export const chooseTransaction = {
   value() {
     const selfId = AutoForm.getFormId();
     const defId = AutoForm.getFieldValue('defId');
+    if (!defId) return undefined;
     const category = Txdefs.findOne(defId).category;
     return ModalStack.readResult(selfId, `af.${category}.insert`);
   },
   options() {
     const communityId = ModalStack.getVar('communityId');
     const defId = AutoForm.getFieldValue('defId');
+    if (!defId) return [];
     const txs = Transactions.find({ communityId, defId, seId: { $exists: false } });
     const options = txs.map(tx => ({ label: tx.serialId, value: tx._id }));
     return options;

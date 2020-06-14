@@ -31,7 +31,7 @@ Recognitions.set = function set(name, value, selector = getDefaultSelector()) {
 };
 
 Recognitions.allow({
-  insert(userId, doc) { return Meteor.users.findOne(userId)?.hasPermission('statementEntries.reconcile', doc); },
-  update(userId, doc) { return Meteor.users.findOne(userId)?.hasPermission('statementEntries.reconcile', doc); },
-  remove(userId, doc) { return Meteor.users.findOne(userId)?.hasPermission('statementEntries.reconcile', doc); },
+  insert(userId, doc) { return Meteor.users.findOne(userId)?.hasPermission('statements.reconcile', doc); },
+  update(userId, doc) { return Meteor.users.findOne(userId)?.hasPermission('statements.reconcile', doc); },
+  remove(userId, doc) { return Meteor.users.findOne(userId)?.hasPermission('statements.reconcile', doc); },
 });

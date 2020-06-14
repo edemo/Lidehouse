@@ -100,14 +100,14 @@ StatementEntries.actions = {
         amount: doc.amount,
         valueDate: doc.valueDate,
       };*/
-      const recDoc = { _id: doc._id };
+      const reconciliationDoc = { _id: doc._id, defId: doc.match?.tx?.defId, txId: doc.match?.txId };
       Modal.show('Autoform_modal', {
         body: 'Reconciliation',
-        bodyContext: { doc: recDoc },
+        bodyContext: { doc: reconciliationDoc },
         // --- --- --- ---
         id: 'af.statementEntry.reconcile',
         schema: reconciliationSchema,
-        doc: recDoc,
+        doc: reconciliationDoc,
         type: 'method',
         meteormethod: 'statementEntries.reconcile',
         // --- --- --- ---

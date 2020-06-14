@@ -151,6 +151,17 @@ export const recognize = new ValidatedMethod({
         }
       }
     }
+    if (!entry.name) {
+      const tx = {
+        communityId,
+        amount: Math.abs(entry.amount),
+        valueDate: entry.valueDate,
+      };
+      Log.info('Danger no partner, recommendation');
+      Log.debug(tx);
+      StatementEntries.update(_id, { $set: { match: { confidence: 'danger', tx } } });
+      return;
+    }
     Log.debug('Looking for partner', entry.name, 'in', entry.communityId);
     const recognizedName = Recognitions.get(`names.${entry.name}`, { communityId }) || entry.name;
     const partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': recognizedName });
@@ -171,19 +182,21 @@ export const recognize = new ValidatedMethod({
         fromAccount: entry.account, // transfer
         toAccount: entry.account, // transfer
       };
-      Log.info('Danger match recommendation');
+      Log.info('Danger not found partner, recommendation');
       Log.debug(tx);
       StatementEntries.update(_id, { $set: { match: { confidence: 'danger', tx } } });
       return;
     }
-    const matchingBills = Transactions.find({ communityId, partnerId: partner._id, outstanding: { $gt: 0 } }, { sort: { issueDate: 1 } }).fetch();
-    const adjustedEntryAmount = matchingBills[0].relationSign() * entry.amount;
+    const relation = partner.relation[0]; // TODO: When partner has mutiple relation, pick correctly
+    const adjustedEntryAmount = Transactions.relationSign(relation) * entry.amount;
+    const matchingBills = Transactions.find({ communityId, relation, partnerId: partner._id, outstanding: { $gt: 0 } }, { sort: { issueDate: 1 } }).fetch();
+    const paymentDef = Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': relation });
     const tx = {
       communityId,
       category: 'payment',
-      relation: matchingBills[0].relation,
-      partnerId: matchingBills[0].partnerId,
-      defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBills[0].relation })._id,
+      relation,
+      partnerId: partner._id,
+      defId: paymentDef._id,
       valueDate: entry.valueDate,
       payAccount: entry.account,
       amount: adjustedEntryAmount,
@@ -209,6 +222,14 @@ export const recognize = new ValidatedMethod({
         tx.bills.push({ id: bill._id, amount });
         amountToFill -= amount;
       });
+      if (amountToFill > 0) {
+        tx.lines = [{
+          amount: amountToFill,
+          account: paymentDef.conteerSide()[0],
+          contractId: partner.contracts(relation)[0],
+//          localizer: undefined,
+        }];
+      }
       Log.info('Warning match with bills', matchingBills.length);
       Log.debug(tx);
       StatementEntries.update(_id, { $set: { match: { confidence: 'warning', tx } } });

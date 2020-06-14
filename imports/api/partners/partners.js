@@ -118,13 +118,17 @@ Partners.helpers({
   getLanguage() {
     return this.user() ? this.user().settings.language : this.community().settings.language;
   },
-  activeRoles(communityId) {
+  activeRoles() {
     const Memberships = Mongo.Collection.get('memberships');
-    return _.uniq(Memberships.findActive({ communityId, approved: true, partnerId: this._id }).map(m => m.role));
+    return _.uniq(Memberships.findActive({ communityId: this.communityId, approved: true, partnerId: this._id }).map(m => m.role));
   },
-  ownerships(communityId) {
+  ownerships() {
     const Memberships = Mongo.Collection.get('memberships');
-    return Memberships.findActive({ communityId, approved: true, role: 'owner', partnerId: this._id });
+    return Memberships.findActive({ communityId: this.communityId, approved: true, role: 'owner', partnerId: this._id });
+  },
+  contracts(relation) {
+    const Contracts = Mongo.Collection.get('contracts');
+    return Contracts.findActive({ communityId: this.communityId, approved: true, relation, partnerId: this._id });
   },
   outstandingBills() {
     const Transactions = Mongo.Collection.get('transactions');
@@ -237,7 +241,7 @@ export const choosePartner = () => ({
     const selector = { communityId, relation };
     const partners = Partners.find(Object.cleanUndefined(selector));
     const options = partners.map(function option(p) {
-      return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
+      return { label: (p.displayName() + ', ' + p.activeRoles().map(role => __(role)).join(', ')), value: p._id };
     });
     const sortedOptions = options.sort((a, b) => a.label.localeCompare(b.label, community.settings.language, { sensitivity: 'accent' }));
     return sortedOptions;
@@ -255,7 +259,7 @@ export const choosePartnerOfParcel = () => ({
     const parcel = Parcels.findOne(parcelId);
     const partners = parcel.partners();
     const options = partners.map(function option(p) {
-      return { label: (p.displayName() + ', ' + p.activeRoles(communityId).map(role => __(role)).join(', ')), value: p._id };
+      return { label: (p.displayName() + ', ' + p.activeRoles().map(role => __(role)).join(', ')), value: p._id };
     });
     const sortedOptions = options.sort((a, b) => a.label.localeCompare(b.label, community.settings.language, { sensitivity: 'accent' }));
     return sortedOptions;

@@ -10,8 +10,9 @@ Meteor.publish('recognitions.ofCommunity', function (params) {
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('statementEntries.reconcile', { communityId })) {
+  if (!user.hasPermission('statements.reconcile', { communityId })) {
     return this.ready();
   }
+
   return Recognitions.find({ communityId });
 });

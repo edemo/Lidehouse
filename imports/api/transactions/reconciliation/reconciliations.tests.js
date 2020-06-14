@@ -325,6 +325,70 @@ if (Meteor.isServer) {
       });
     });
 
+    describe('Recognition', function () {
+      let billId, billId2;
+      let bill, bill2;
+      let entryId, entryId2;
+      const bankAccount = '`381';
+
+      before(function () {
+        billId = Fixture.builder.create('bill', {
+          relation: 'supplier',
+          partnerId: Fixture.supplier,
+          lines: [{
+            title: 'The Work',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 300,
+            account: '`861',
+            localizer: '@',
+          }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: billId });
+        bill = Transactions.findOne(billId);
+
+        billId2 = Fixture.builder.create('bill', {
+          relation: 'supplier',
+          partnerId: Fixture.supplier,
+          lines: [{
+            title: 'The Work A',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 50,
+            account: '`861',
+            localizer: '@',
+          }, {
+            title: 'The Work B',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 150,
+            account: '`861',
+            localizer: '@',
+          }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: billId2 });
+        bill2 = Transactions.findOne(billId2);
+      });
+      after(function () {
+        Transactions.remove({});
+      });
+
+      it('Handles Entry without partner', function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: Clock.currentDate(),
+          amount: -300,
+        });
+
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        const entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.match.confidence, 'danger');
+        chai.assert.isUndefined(entry.match.tx.category);
+        chai.assert.isUndefined(entry.match.tx.defId);
+        chai.assert.equal(entry.match.tx.amount, 300);
+      });
+    });
+
     describe('Machine learning', function () {
       let billId, billId2;
       let bill, bill2;
