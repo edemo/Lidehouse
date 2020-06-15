@@ -134,7 +134,7 @@ Transactions.helpers({
     return undefined;
   },
   contract() {
-    if (this.contractId) Contracts.findOne(this.contractId);
+    if (this.contractId) return Contracts.findOne(this.contractId);
     return undefined;
   },
   txdef() {
