@@ -33,7 +33,7 @@ function figureOutEntity(options, doc) {
 function prefillDocWhenReconciling(doc) {
   const statementEntry = ModalStack.getVar('statementEntry');
   if (statementEntry) {
-    _.deepExtend(doc, statementEntry?.match.tx);
+    _.deepExtend(doc, statementEntry?.match?.tx);
   }
 }
 
