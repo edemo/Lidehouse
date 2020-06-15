@@ -225,7 +225,7 @@ Factory.define('member', Partners, {
 
 // ------------------------------------
 
-export const choosePartner = () => ({
+export const choosePartner = {
   relation: 'partner',
   value() {
     const selfId = AutoForm.getFormId();
@@ -234,7 +234,7 @@ export const choosePartner = () => ({
   },
   options() {
     const leadParcelId = AutoForm.getFieldValue('leadParcelId');
-    if (leadParcelId) return [{ label: __(`Will use lead parcel's`), value: '' }];
+    if (leadParcelId) return [{ label: __("Will use lead parcel's"), value: '' }];
     const communityId = ModalStack.getVar('communityId');
     const community = Communities.findOne(communityId);
     const relation = AutoForm.getFieldValue('relation') || ModalStack.getVar('relation');
@@ -247,12 +247,12 @@ export const choosePartner = () => ({
     return sortedOptions;
   },
   firstOption: () => __('(Select one)'),
-});
+};
 
-export const choosePartnerOfParcel = () => ({
+export const choosePartnerOfParcel = {
   options() {
     const leadParcelId = AutoForm.getFieldValue('leadParcelId');
-    if (leadParcelId) return [{ label: __(`Will use lead parcel's`), value: '' }];
+    if (leadParcelId) return [{ label: __("Will use lead parcel's"), value: '' }];
     const communityId = ModalStack.getVar('communityId');
     const community = Communities.findOne(communityId);
     const parcelId = AutoForm.getFieldValue('parcelId') || ModalStack.getVar('parcelId');
@@ -265,4 +265,4 @@ export const choosePartnerOfParcel = () => ({
     return sortedOptions;
   },
   firstOption: false,
-});
+};

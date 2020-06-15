@@ -197,7 +197,7 @@ export function insertUnittestFixture(lang) {
     } else { // i = 0, 3, 4
       demoBuilder.create('memberContract', {
         parcelId,
-        partnerId: parcel._payerMembership().partnerId,
+        partnerId: parcel.payerPartner()._id,
         habitants: i,
       });
     }
