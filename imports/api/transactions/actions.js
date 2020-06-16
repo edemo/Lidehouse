@@ -233,6 +233,8 @@ Transactions.categoryValues.forEach(category => {
         doc.bills = doc.bills?.filter(bill => bill?.amount);  // filters out undefined lines (placeholder), and zero amount rows
         doc.lines = doc.lines?.filter(line => line?.amount);
       }
+      doc.debit = doc.debit?.filter(entry => entry);
+      doc.credit = doc.credit?.filter(entry => entry);
       return doc;
     },
   });
