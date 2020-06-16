@@ -91,7 +91,7 @@ Contracts.helpers({
     return undefined;
   },
   toString() {
-    if (this.relation === 'member') return this.partner()?.idCard?.name + ':' + this.parcel()?.ref;
+    if (this.relation === 'member') return this.parcel()?.ref;
     else return this.title;
   },
 });

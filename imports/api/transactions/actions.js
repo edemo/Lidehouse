@@ -228,9 +228,9 @@ Transactions.categoryValues.forEach(category => {
     },
     formToDoc(doc) {
       if (category === 'bill' || category === 'receipt') {
-        doc.lines = doc.lines.filter(line => line?.amount); // filters out undefined lines (placeholder), and zero amount rows
+        doc.lines = doc.lines?.filter(line => line);       // filters out undefined lines (placeholder)
       } else if (category === 'payment') {
-        doc.bills = doc.bills?.filter(bill => bill?.amount);
+        doc.bills = doc.bills?.filter(bill => bill?.amount);  // filters out undefined lines (placeholder), and zero amount rows
         doc.lines = doc.lines?.filter(line => line?.amount);
       }
       return doc;

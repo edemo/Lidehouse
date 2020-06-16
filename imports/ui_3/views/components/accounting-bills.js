@@ -96,7 +96,7 @@ Template.Accounting_bills.viewmodel({
     return overdues.length;
   },
   billsFilterSelector() {
-    const selector = { communityId: this.communityId(), category: 'bill' };
+    const selector = { communityId: this.communityId(), category: 'bill', status: { $ne: 'void' } };
     selector.relation = this.activePartnerRelation();
     if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
     if (this.unpostedOnly()) selector.postedAt = { $exists: false };
