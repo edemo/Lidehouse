@@ -809,6 +809,13 @@
     "toAccount": {
       "label": "Moving to"
     },
+    "side": {
+      "label": "Side",
+      "options": {
+        "debit": "Debit",
+        "credit": "Credit"
+      }
+    },
     "account": {
       "label": "Account"
     },

@@ -809,6 +809,13 @@
     "toAccount": {
       "label": "Átvezetés ide"
     },
+    "side": {
+      "label": "Oldal",
+      "options": {
+        "debit": "Tartozik",
+        "credit": "Követel"
+      }
+    },
     "account": {
       "label": "Számla"
     },
