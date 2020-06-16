@@ -7,7 +7,7 @@ function timestamp() {
 
 export const Log = {
   levels: ['error', 'warning', 'info', 'debug'],
-  level: 1,
+  level: 2,
   levelIsHigherThan(text) {
     return Log.levels.indexOf(text) >= Log.levels.indexOf(Log.level);
   },

@@ -8,6 +8,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
+import { Log } from '/imports/utils/log.js';
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
@@ -151,15 +152,14 @@ Parcels.helpers({
     const contractSelector = this._contractSelector();
     let payerContract = Contracts.findOneActive(contractSelector);
     if (!payerContract) { // Contract can be created on the fly, at first payment
-      console.log('Did not find', contractSelector);
+      Log.debug('Did not find', contractSelector);
       if (Meteor.isServer) { // will be called from parcelbillings.apply
         const payerMembership = this._payerMembership();
         productionAssert(payerMembership, 'err_invalidData', `Unable to pay for parcel ${this.ref} - no owner found`);
         contractSelector.partnerId = payerMembership.partnerId;
         const contractId = Contracts.insert(contractSelector);
         payerContract = Contracts.findOne(contractId);
-      console.log('So inserted', payerContract);
-
+        Log.debug('So inserted', payerContract);
       }
     }
     return payerContract;
