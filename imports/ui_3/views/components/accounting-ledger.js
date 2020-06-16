@@ -17,7 +17,7 @@ import '/imports/ui_3/views/components/journals-table.js';
 import './accounting-ledger.html';
 
 Template.Accounting_ledger.viewmodel({
-  periodSelected: PeriodBreakdown.lastYearTag(),
+  periodSelected: PeriodBreakdown.currentYearTag(),
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('balances.ofAccounts', { communityId: this.communityId() });

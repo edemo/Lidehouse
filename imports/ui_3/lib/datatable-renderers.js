@@ -24,7 +24,7 @@ export const Render = Meteor.isServer ? {} : {
   },
   formatTime(cellData, renderType, currentRow) {
     if (!cellData) return '---';
-    return moment(cellData).format('L LT');
+    return moment(cellData).format('L HH:mm');
   },
   checkmarkBoolean(cellData, renderType, currentRow) {
     return checkmarkBoolean(cellData);
