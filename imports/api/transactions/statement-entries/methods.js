@@ -82,7 +82,7 @@ export const reconcile = new ValidatedMethod({
     const communityId = entry.communityId;
     const reconciledTx = Transactions.findOne(txId);
     checkReconcileMatch(entry, reconciledTx);
-    if (entry.name !== reconciledTx.partner().idCard.name) {
+    if (reconciledTx.partnerId && entry.name && entry.name !== reconciledTx.partner().idCard.name) {
       Recognitions.set(`names.${entry.name}`, reconciledTx.partner().idCard.name, { communityId });
     }
     Transactions.update(txId, { $set: { seId: _id } });
