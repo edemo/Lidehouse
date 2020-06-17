@@ -636,7 +636,7 @@
   "Will use lead parcel's": "A vezér albetét lesz a mérvadó",
   "Payment has to be fully allocated": "Kifizetés teljes összege allokálva kell legyen.",
   "Payment accounting can only be done, when all amount is allocated": "Kifizetés csak úgy kerülhet könyvelésbe, ha a teljes összege allokálva van.",
-
+  "Bill has to be posted first": "Először mindig a számlát kell könyvelésbe küldeni, utána lehet a kifizetést.",
   "logout": "kilépés",
   "login": "belépés",
   "register": "új fiók",

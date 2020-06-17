@@ -117,6 +117,7 @@ Transactions.categoryHelpers('payment', {
     this.bills.forEach(billPaid => {
       if (unallocatedAmount <= 0) return false;
       const bill = Transactions.findOne(billPaid.id);
+      if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
       if (accountingMethod === 'accrual') {
         bill[this.relationSide()].forEach(entry => {
           if (unallocatedAmount <= 0) return false;
