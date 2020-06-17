@@ -4,6 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId, getActivePartnerId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
@@ -40,7 +41,9 @@ function prefillDocWhenReconciling(doc) {
 Transactions.actions = {
   new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
+    label: `${__('new') + ' ' + __('transaction')}`,
     icon: 'fa fa-plus',
+    color: 'primary',
     visible: user.hasPermission('transactions.insert', doc),
     run() {
       doc = _.extend(defaultNewDoc(), doc);
