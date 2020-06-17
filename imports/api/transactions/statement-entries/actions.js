@@ -15,6 +15,7 @@ import { StatementEntries } from './statement-entries.js';
 import { reconciliationSchema } from '/imports/api/transactions/reconciliation/reconciliation.js';
 import '/imports/ui_3/views/components/reconciliation.js';
 import './methods.js';
+import { Transactions } from '../transactions.js';
 
 StatementEntries.actions = {
   new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
@@ -132,6 +133,23 @@ StatementEntries.actions = {
       StatementEntries.methods.recognize.call({ _id: doc._id });
     },
   }),
+  transaction: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'transaction',
+    icon: 'fa fa-link',
+    visible: doc.isReconciled() && user.hasPermission('transactions.inCommunity', doc),
+    run() {
+      Transactions.actions.view(options, doc.transaction()).run();
+    },
+  }),
+  post: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'post',
+    icon: 'fa fa-check-square-o',
+    color: 'warning',
+    visible: doc.transaction() && !(doc.transaction().isPosted()) && user.hasPermission('transactions.post', doc),
+    run() {
+      Transactions.actions.post(options, doc.transaction()).run();
+    },
+  }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',
@@ -147,12 +165,14 @@ StatementEntries.actions = {
 StatementEntries.dummyDoc = {
   communityId: getActiveCommunityId,
   isReconciled() { return false; },
+  transaction() { return { isPosted() { return false; } }; },
   match: {},
 };
 
 StatementEntries.batchActions = {
   recognize: new BatchAction(StatementEntries.actions.recognize, StatementEntries.methods.batch.recognize, {}, StatementEntries.dummyDoc),
   autoReconcile: new BatchAction(StatementEntries.actions.autoReconcile, StatementEntries.methods.batch.autoReconcile, {}, StatementEntries.dummyDoc),
+  post: new BatchAction(StatementEntries.actions.post, Transactions.methods.batch.post, {}, StatementEntries.dummyDoc, doc => { doc._id = doc.txId; }),
   delete: new BatchAction(StatementEntries.actions.delete, StatementEntries.methods.batch.remove),
 };
 

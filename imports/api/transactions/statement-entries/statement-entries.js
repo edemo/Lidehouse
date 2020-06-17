@@ -43,8 +43,12 @@ StatementEntries.helpers({
   isReconciled() {
     return !!this.txId;
   },
+  transaction() {
+    const Transactions = Mongo.Collection.get('transactions');
+    return this.txId && Transactions.findOne(this.txId);
+  },
   impliedRelation() {
-    return (this.amount > 0) ? 'customer' : 'supplier'; 
+    return (this.amount > 0) ? 'customer' : 'supplier';
   },
 });
 
