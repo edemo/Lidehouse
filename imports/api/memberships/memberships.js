@@ -239,7 +239,7 @@ if (Meteor.isServer) {
     const contract = tdoc.contract();
     if (contract) {  // keep contract's (active time) in sync
       try { // throws Error: After filtering out keys not in the schema, your modifier is now empty
-        Contracts.update(contract._id, modifier);
+        Contracts.update(contract._id, modifier, { selector: { relation: 'member' } });
       } catch (err) {}
     }
   });
