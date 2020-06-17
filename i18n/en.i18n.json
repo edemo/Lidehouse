@@ -154,6 +154,7 @@
   "actionDone_statusUpdate": "status updated",
   "actionDone_registerReading": "reading registered",
   "actionDone_remind": "reminder sent",
+  "actionDone_period": "period modified",
 
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "Reconnecting user": "This person will be sent a new enrollment email to the same email address, as the previous one was sent to. As soon as the new email is sent, the old one becomes expired.",

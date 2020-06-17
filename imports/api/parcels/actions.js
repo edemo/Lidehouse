@@ -192,7 +192,7 @@ Parcels.actions = {
         schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
-        meteormethod: 'parcels.updateActivePeriod',
+        meteormethod: 'parcels.update',
         singleMethodArgument: true,
       });
     },

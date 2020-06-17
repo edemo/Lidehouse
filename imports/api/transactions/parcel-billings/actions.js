@@ -65,7 +65,7 @@ ParcelBillings.actions = {
         schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
-        meteormethod: 'parcelBillings.updateActivePeriod',
+        meteormethod: 'parcelBillings.update',
         singleMethodArgument: true,
       });
     },

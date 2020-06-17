@@ -58,7 +58,7 @@ Mongo.Collection.prototype.attachBehaviour = function attachBehaviour(behaviour)
     collection._behaviours = collection._behaviours || [];
     collection._behaviours.push(behaviour);
   }
-//  collection._baseSchema = new SimpleSchema([collection._baseSchema || {}, behaviour.schema]);
+  collection._baseSchema = new SimpleSchema([collection._baseSchema || {}, behaviour.schema]);
 };
 
 Mongo.Collection.prototype.attachVariantSchema = function attachVariantSchema(schema, options) {
@@ -77,6 +77,9 @@ Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour,
   // TODO: Only 0 values supported in public fields
   if (behaviour.publicFields) {
     collection.publicFields = _.extend({}, collection.publicFields, behaviour.publicFields);
+  }
+  if (behaviour.modifiableFields && collection.modifiableFields) {
+    collection.modifiableFields = _.union(collection.modifiableFields, behaviour.modifiableFields);
   }
 
   collection._behaviourMethodsApplied = collection._behaviourMethodsApplied || {};

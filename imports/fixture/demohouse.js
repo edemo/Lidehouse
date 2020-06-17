@@ -327,7 +327,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       const parcel = Parcels.findOne(parcelId);
       builder.create('memberContract', {
         parcelId,
-        partnerId: parcel.payerPartner()._id,
+        partnerId: parcel._payerMembership().partnerId,
         habitants: parcel.type === __('schemaParcels.type.flat') ? (i % 4) : undefined,
       });
     }

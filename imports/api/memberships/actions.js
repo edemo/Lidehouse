@@ -87,7 +87,7 @@ Memberships.actions = {
         schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
-        meteormethod: 'memberships.updateActivePeriod',
+        meteormethod: 'memberships.update',
         singleMethodArgument: true,
       });
     },
