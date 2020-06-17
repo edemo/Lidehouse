@@ -203,24 +203,19 @@ Transactions.helpers({
   journalEntries() {
     const entries = [];
     if (this.debit) {
-      this.debit.forEach(l => {
-        const txBase = _.clone(this);
-        delete txBase._id;
-        delete txBase.debit;
-        delete txBase.credit;
-        entries.push(_.extend(txBase, l, { side: 'debit' }));
+      this.debit.forEach((entry, i) => {
+        entries.push(_.extend({ side: 'debit', txId: this._id, _id: this._id + '#Dr' + i }, entry));
       });
     }
     if (this.credit) {
-      this.credit.forEach(l => {
-        const txBase = _.clone(this);
-        delete txBase._id;
-        delete txBase.debit;
-        delete txBase.credit;
-        entries.push(_.extend(txBase, l, { side: 'credit' }));
+      this.credit.forEach((entry, i) => {
+        entries.push(_.extend({ side: 'credit', txId: this._id, _id: this._id + '#Cr' + i }, entry));
       });
     }
-    return entries.map(JournalEntries._transform);
+    return entries.map(entry => {
+      Object.setPrototypeOf(entry, this);
+      return JournalEntries._transform(entry);
+    });
   },
   subjectiveAmount() {
     let sign = 0;
