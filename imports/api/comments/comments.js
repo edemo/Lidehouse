@@ -114,4 +114,5 @@ Meteor.startup(function attach() {
 
 Factory.define('comment', Comments, {
   text: () => faker.lorem.sentence(),
+  category: 'comment',
 });

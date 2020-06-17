@@ -58,7 +58,7 @@ Mongo.Collection.prototype.attachBehaviour = function attachBehaviour(behaviour)
     collection._behaviours = collection._behaviours || [];
     collection._behaviours.push(behaviour);
   }
-  collection._baseSchema = new SimpleSchema([collection._baseSchema || {}, behaviour.schema]);
+//  collection._baseSchema = new SimpleSchema([collection._baseSchema || {}, behaviour.schema]);
 };
 
 Mongo.Collection.prototype.attachVariantSchema = function attachVariantSchema(schema, options) {

@@ -147,7 +147,7 @@ const updateActivePeriod = new ValidatedMethod({
     }
     checkModifier(doc, modifier, ActivePeriod.fields);
 
-    collection.update(_id, modifier, doc);
+    collection.update(_id, modifier, { selector: doc });
   },
 });
 
