@@ -379,6 +379,10 @@ if (Meteor.isServer) {
     }
     if (tdoc.category === 'bill' || tdoc.category === 'payment') {
       tdoc.outstanding = tdoc.calculateOutstanding();
+      if (tdoc.category === 'payment' && tdoc.outstanding !== 0) {
+        // The min, max contraint on the schema does not work, because the hook runs after the schema check
+        throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${tdoc.outstanding}`);
+      }
     }
     _.extend(doc, tdoc);
   });
@@ -401,6 +405,10 @@ if (Meteor.isServer) {
       if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
         || (doc.category === 'payment' && newDoc.bills)) {
         autoValueUpdate(doc, modifier, 'outstanding', d => d.calculateOutstanding());
+        if (doc.category === 'payment' && doc.outstanding !== 0) {
+          // The min, max contraint on the schema does not work, because the hook runs after the schema check
+          throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${doc.outstanding}`);
+        }
       }
     }
   });
