@@ -55,8 +55,9 @@ function checkReconcileMatch(entry, transaction) {
     throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`);
   }
   if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate');
-  switch(transaction.category) {
+  switch (transaction.category) {
     case 'payment':
+    case 'receipt':
       if (!equalWithinRounding(transaction.amount, transaction.relationSign() * entry.amount)) throwMatchError('amount');
       if (transaction.payAccount !== entry.account) throwMatchError('account');
   //  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');

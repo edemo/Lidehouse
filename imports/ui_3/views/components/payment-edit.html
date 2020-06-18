@@ -7,7 +7,7 @@
         {{> afQuickField name="relation" type="hidden"}}
         <!-- hidden, needed for autoform doc data -->
         <div class="col-sm-6 col-md-7">
-            {{> afQuickField name="valueDate" type=hiddenWhenReconciling}}
+            {{> afQuickField name="valueDate" type=hiddenWhenReconciling defaultValue=defaultDate}}
             {{> afQuickField name="payAccount" type=hiddenWhenReconciling}}
             {{#if reconciling}}
             <div class="form-group">
