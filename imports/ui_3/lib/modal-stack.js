@@ -74,10 +74,6 @@ if (Meteor.isClient) {
       return ownModal?.result[afId];
     },
     setVar(key, value, keep = false) { // Should not call this within an autorun - would cause infinite loop
-      if (key === 'communityId') {
-        Session.set('communityId', value);   // temporary solution, for efficiency (communityId is used in subscription parameters)
-        return;
-      }
       const modalStack = ModalStack.get();
       // console.log('before set', modalStack);
       // console.log('set value', value);
@@ -90,9 +86,6 @@ if (Meteor.isClient) {
       // console.log('after set', modalStack);
     },
     getVar(key) {
-      if (key === 'communityId') {
-        return Session.get('communityId');   // temporary solution, for efficiency (communityId is used in subscription parameters)
-      }
       const modalStack = ModalStack.get();
       // console.log('before get', modalStack);
       for (let i = modalStack.length - 1; i >= 0; i--) {
