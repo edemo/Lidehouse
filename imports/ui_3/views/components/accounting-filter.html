@@ -1,0 +1,72 @@
+<template name="Accounting_filter">
+    <div class="{{!ibox}} filters m-b-lg">
+      <!--div class="ibox-title">
+        <h3>{{_ 'Filter settings'}}</h3>
+        {{> iboxTools}}
+      </div-->
+
+      <div {{!class="ibox-content"}}>
+        <div class="row">
+            {{#if (equals page 'bills')}}
+            <div class="col-sm-4">
+              <div class="input-group">
+                <label class="control-label text-capitalize">{{_ 'bill'}} {{_'schemaBills.relation.label'}}</label><br>
+                {{#each relation in relationValues}}
+                <button type="button" class="btn btn-xs btn-outline btn-default js-relation-filter {{activeClass relation}}" data-value="{{relation}}">{{_ (concat 'schemaBills.relation.options.' relation)}}</button>
+                {{/each}}
+              </div>
+            </div>
+            {{else}}
+            <div class="col-sm-4"></div>
+            {{/if}}
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label text-capitalize" for="partner">{{_ 'partner'}}/{{_ 'contract'}}</label>
+                    <select id="partner" name="partner" {{b 'options: partnerOptions, value: partnerSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label text-capitalize" for="localizer">{{_ 'Localizer'}}</label>
+                    <select id="localizer" name="localizer" {{b 'options: localizerOptions, value: localizerSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4">
+              <div class="input-group">
+                <label class="control-label text-capitalize">{{_ 'schemaTopics.status.label'}}</label><br>
+                {{#each txStatus in transactionStatuses}}
+                <button type="button" class="btn btn-xs btn-outline btn-{{txStatus.color}} js-filter {{activeButton 'txStatus' txStatus.name}}" data-field="txStatus" data-value="{{txStatus.name}}">{{_ (concat 'schemaTransactions.status.options.' txStatus.name)}}</button>
+                {{/each}}
+              </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
+                    <input type="date" id="begin_date" name="begin_date" {{b "value: beginDate"}} class="form-control">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+                    <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-3 align pull-right">
+            <button type="button" class="js-clear-filter btn btn-default btn-xs {{#unless hasFilters}}disabled{{/unless}}" data-value="cancel">
+                <i class="fa fa-times"></i> {{_ 'Clear filters'}}
+            </button>
+          </div>
+          <div class="col-sm-4">
+            <input type="checkbox" name="allow" id="unpaid-only" {{b "check: unreconciledOnly"}}>
+            <label for="unpaid-only">{{_ 'Show only'}} {{_ 'Unpaid'}}/{{_ 'Unreconciled'}}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>

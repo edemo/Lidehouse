@@ -28,43 +28,24 @@ import '/imports/ui_3/views/components/payment-edit.js';
 import '/imports/ui_3/views/components/print-action.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
+import '/imports/ui_3/views/components/accounting-filter.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-bills.html';
 
 Template.Accounting_bills.viewmodel({
-  activePartnerRelation: 'supplier',
-  unreconciledOnly: true,
-  unpostedOnly: false,
+  share: 'accountingFilter',
   onCreated(instance) {
     instance.autorun(() => {
       //initializeDatatablesSelectButtons('Bills');
       instance.subscribe('parcelBillings.inCommunity', { communityId: this.communityId() });
-      if (this.unreconciledOnly()) {
-        instance.subscribe('transactions.unreconciled', { communityId: this.communityId() });
-        instance.subscribe('transactions.outstanding', { communityId: this.communityId() });
-      } else {
-        instance.subscribe('transactions.inCommunity', { communityId: this.communityId() });
-      }
     });
   },
   autorun() {
     ModalStack.setVar('relation', this.activePartnerRelation(), true);
   },
-  communityId() {
-    return ModalStack.getVar('communityId');
-  },
-  hasFilters() {
-    return (this.unreconciledOnly() === false);
-  },
   parcelBillings() {
     return ParcelBillings.find({ communityId: this.communityId() });
-  },
-  relationValues() {
-    return Partners.relationValues;
-  },
-  activeClass(partnerRelation) {
-    return (this.activePartnerRelation() === partnerRelation) && 'active';
   },
   collectionOf(activePartnerRelation) {
     switch (activePartnerRelation) {
@@ -95,16 +76,13 @@ Template.Accounting_bills.viewmodel({
     const overdues = partners.fetch().filter(partner => partner.mostOverdueDaysColor() === color);
     return overdues.length;
   },
-  billsFilterSelector() {
-    const selector = { communityId: this.communityId(), category: 'bill', status: { $ne: 'void' } };
-    selector.relation = this.activePartnerRelation();
-    if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
-    if (this.unpostedOnly()) selector.postedAt = { $exists: false };
-    return selector;
+  txTableDataFn(category) {
+    const self = this;
+    return () => Transactions.find(self.txFilterSelector(category)).fetch();
   },
   billsTableDataFn() {
     const self = this;
-    return () => Transactions.find(self.billsFilterSelector()).fetch();
+    return () => Transactions.find(self.txFilterSelector('bill')).fetch();
   },
   billsOptionsFn() {
     return () => Object.create({
@@ -116,20 +94,27 @@ Template.Accounting_bills.viewmodel({
       ...DatatablesSelectButtons(Transactions),
     });
   },
-  paymentsFilterSelector() {
-    const selector = { communityId: this.communityId(), category: 'payment' };
-    selector.relation = this.activePartnerRelation();
-    if (this.unreconciledOnly()) selector.seId = { $exists: false };
-    if (this.unpostedOnly()) selector.complete = false;
-    return selector;
-  },
   paymentsTableDataFn() {
     const self = this;
-    return () => Transactions.find(self.paymentsFilterSelector()).fetch();
+    return () => Transactions.find(self.txFilterSelector('payment')).fetch();
   },
   paymentsOptionsFn() {
     return () => Object.create({
       columns: paymentsColumns(),
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+      lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+      pageLength: 25,
+      ...DatatablesSelectButtons(Transactions),
+    });
+  },
+  receiptsTableDataFn() {
+    const self = this;
+    return () => Transactions.find(self.txFilterSelector('receipt')).fetch();
+  },
+  receiptsOptionsFn() {
+    return () => Object.create({
+      columns: receiptColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
@@ -154,26 +139,6 @@ Template.Accounting_bills.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
     });
   },
-  receiptsFilterSelector() {
-    const selector = { communityId: this.communityId(), category: 'receipt' };
-    selector.relation = this.activePartnerRelation();
-    if (this.unpostedOnly()) selector.complete = false;
-    return selector;
-  },
-  receiptsTableDataFn() {
-    const self = this;
-    return () => Transactions.find(self.receiptsFilterSelector()).fetch();
-  },
-  receiptsOptionsFn() {
-    return () => Object.create({
-      columns: receiptColumns(),
-      tableClasses: 'display',
-      language: datatables_i18n[TAPi18n.getLanguage()],
-      lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
-      pageLength: 25,
-      ...DatatablesSelectButtons(Transactions),
-    });
-  },
 });
 
 Template.Accounting_bills.events({
@@ -181,10 +146,6 @@ Template.Accounting_bills.events({
 });
 
 Template.Accounting_bills.events({
-  'click .js-relation-filter'(event, instance) {
-    const partnerRelation = $(event.target).closest('[data-value]').data('value');
-    instance.viewmodel.activePartnerRelation(partnerRelation);
-  },
   'click .js-apply'(event, instance) {
     ParcelBillings.actions.apply().run();
   },

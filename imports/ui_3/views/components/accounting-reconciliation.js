@@ -15,15 +15,13 @@ import { statementEntriesColumns } from '/imports/api/transactions/statement-ent
 import { allStatementEntriesActions } from '/imports/api/transactions/statement-entries/actions.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
+import '/imports/ui_3/views/components/accounting-filter.js';
 import './accounting-reconciliation.html';
 
 Template.Accounting_reconciliation.viewmodel({
-  beginDate: '',
-  endDate: '',
+  share: 'accountingFilter',
   accountSelected: '',
   accountOptions: [],
-  status: 'Reconciled',
-  unreconciledOnly: true,
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = getActiveCommunityId();

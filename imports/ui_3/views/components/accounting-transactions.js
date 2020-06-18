@@ -26,16 +26,13 @@ import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-transactions.html';
 
 Template.Accounting_transactions.viewmodel({
+  share: 'accountingFilter',
   txdefSelected: '',
   txdefOptions: [],
   debitAccountSelected: '',
   debitAccountOptions: [],
   creditAccountSelected: '',
   creditAccountOptions: [],
-  localizerSelected: '',
-  localizerOptions: [],
-  beginDate: moment().subtract('30', 'day').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
 //  amount: undefined,
   onCreated(instance) {
     instance.autorun(() => {

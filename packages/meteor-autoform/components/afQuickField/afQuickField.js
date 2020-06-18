@@ -1,4 +1,5 @@
 /* global AutoForm */
+//import { ReactiveVar } from 'meteor/reactive-var';
 
 Template.afQuickField.helpers({
   isGroup: function afQuickFieldIsGroup() {
@@ -32,18 +33,64 @@ Template.afQuickField.helpers({
     return false;
   },
   //### droka extension ###//
-  relation: function relation() {
+  relation() {
     var c = AutoForm.Utility.getComponentContext(this, "afQuickField");
     return !c.atts.disabled && c.atts.relation;
   },
+  getReactiveValue() {
+    return Template.instance().reactiveValue.get();
+  },
+  entityObj() {
+    var c = AutoForm.Utility.getComponentContext(this, "afQuickField");
+    var entity = c.atts.relation;
+    return { entity };
+  },
+  collection() {
+    var c = AutoForm.Utility.getComponentContext(this, "afQuickField");
+    var entity = c.atts.relation;
+    var collection = Factory.get(entity).collection;
+    return collection._name;
+  },
 });
 
+//### droka extension ###//
+Template.afQuickField.onCreated(function() {
+  const instance = this;
+  instance.reactiveValue = new ReactiveVar('');
+});
+
+Template.afQuickField.onRendered(function() {
+  const instance = this;
+  const selectElem = instance.find('select');
+  if (selectElem) {
+    selectElem.addEventListener('change', function(event) { 
+      instance.reactiveValue.set(event.target.value);
+    }, false);
+  }
+});
+
+//### droka extension ###//
 Template.afQuickField.events({
-  //### droka extension ###//
   'click .js-new'(event, instance) {
     var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
     var entity = c.atts.relation;
     var collection = Factory.get(entity).collection;
     collection.actions.new({ entity }).run(event, instance);
   },
-})
+  'click .js-view'(event, instance) {
+    var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
+    var entity = c.atts.relation;
+    var collection = Factory.get(entity).collection;
+//    const selectedId = $($(event.target).closest('button').nextAll('.form-group')[0]).find('select')[0].value;
+    const selectedId = instance.reactiveValue.get();
+    collection.actions.view({ entity }, collection.findOne(selectedId)).run(event, instance);
+  },
+  'click .js-edit'(event, instance) {
+    var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
+    var entity = c.atts.relation;
+    var collection = Factory.get(entity).collection;
+//    const selectedId = $($(event.target).closest('button').nextAll('.form-group')[0]).find('select')[0].value; 
+    const selectedId = instance.reactiveValue.get();
+    collection.actions.edit({ entity }, collection.findOne(selectedId)).run(event, instance);
+  },
+});

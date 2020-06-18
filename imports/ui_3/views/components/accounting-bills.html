@@ -36,32 +36,7 @@
                 {{_ 'A bejövő/kimenő számlákat/albetét előírásokat külön választva tekintheti át.'}}<br>
             </p>
             <br>
-            <div class="filters m-b-md">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="input-group">
-                    <!--label class="control-label text-capitalize">{{_ 'bill'}} {{_'schemaBills.relation.label'}}</label><br-->
-                    {{#each relation in relationValues}}
-                    <button type="button" class="btn btn-xs btn-outline btn-default js-relation-filter {{activeClass relation}}" data-value="{{relation}}">{{_ (concat 'schemaBills.relation.options.' relation)}}</button>
-                    {{/each}}
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-9">
-                  <input type="checkbox" name="allow" id="unpaid-only" {{b "check: unreconciledOnly"}}>
-                  <label for="unpaid-only">{{_ 'Show only'}} {{_ 'Unpaid'}}/{{_ 'Unreconciled'}}</label>
-                  <br>
-                  <input type="checkbox" name="allow" id="unposted-only" {{b "check: unpostedOnly"}}>
-                  <label for="unposted-only">{{_ 'Show only'}} {{_ 'Unposted'}}</label>
-                </div>
-                <div class="col-sm-3 align">
-                  <button type="button" class="js-clear-filter btn btn-default btn-xs {{#unless hasFilters}}disabled{{/unless}}" data-value="cancel">
-                      <i class="fa fa-times"></i> {{_ 'Clear filters'}}
-                  </button>
-                </div>
-              </div>
-            </div>
+            {{> Accounting_filter page='bills'}}
             <div>
             {{#if Template.subscriptionsReady}}
             <ul class="nav nav-tabs m-b-md">

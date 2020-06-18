@@ -174,9 +174,9 @@ Template.Worksheets.viewmodel({
         this.reportedByCurrentUser()) return true;
     return false;
   },
-  activeButton(type, elem) {
-    const selected = this[`${type}Selected`]();
-    return selected.includes(elem) && 'active';
+  activeButton(field, value) {
+    const selected = this[`${field}Selected`]();
+    return selected.includes(value) && 'active';
   },
   recentTickets() {
     const communityId = ModalStack.getVar('communityId');
@@ -256,9 +256,9 @@ Template.Worksheets.events({
     instance.viewmodel.setDefaultFilter();
   },
   'click .js-filter'(event, instance) {
-    const key = $(event.target).data('key');
+    const field = $(event.target).data('field');
     const value = $(event.target).data('value');
-    const vmFunc = instance.viewmodel[`${key}Selected`];
+    const vmFunc = instance.viewmodel[`${field}Selected`];
     const selected = vmFunc();
     if (selected.includes(value)) {
       vmFunc(_.without(selected, value));
