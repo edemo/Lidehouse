@@ -36,7 +36,7 @@ Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options, cal
         } else {
           Modal.hide();
           displayMessage('success', options.notification || translatedDoneMessage);
-          if (callback) callback(true);
+          if (callback) callback(true, res);
         }
       });
     },
