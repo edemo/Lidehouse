@@ -32,6 +32,13 @@ export const Transactions = new Mongo.Collection('transactions');
 
 Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'transfer', 'opening', 'freeTx'];
 
+Transactions.statuses = {
+  draft: { name: 'draft', color: 'warning' },
+  posted: { name: 'posted', color: 'primary' },
+  void: { name: 'void', color: 'danger' },
+};
+Transactions.statusValues = Object.keys(Transactions.statuses);
+
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
   LocationTagsSchema,
@@ -55,7 +62,7 @@ Transactions.coreSchema = {
 //  month: { type: String, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getMonth() + 1; },
 //  },
-  status: { type: String, defaultValue: 'draft', allowedValues: ['draft', 'posted', 'void'], autoform: { omit: true } },
+  status: { type: String, defaultValue: 'draft', allowedValues: Transactions.statusValues, autoform: { omit: true } },
   postedAt: { type: Date, optional: true, autoform: { omit: true } },
   seId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
 };

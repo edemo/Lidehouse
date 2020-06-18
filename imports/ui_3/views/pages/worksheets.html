@@ -16,7 +16,7 @@
             <div class="input-group">
               <label class="control-label text-capitalize">{{_ 'work'}} {{_ 'schemaTopics.status.label'}}</label><br>
               {{#each ticketStatus in ticketStatuses}}
-              <button type="button" class="js-filter btn btn-xs btn-outline btn-{{ticketStatus.color}} {{activeButton 'ticketStatus' ticketStatus.name}}" data-key="ticketStatus" data-value="{{ticketStatus.name}}">{{_ (concat 'schemaTopics.status.options.' ticketStatus.name)}}</button>
+              <button type="button" class="btn btn-xs btn-outline btn-{{ticketStatus.color}} js-filter {{activeButton 'ticketStatus' ticketStatus.name}}" data-field="ticketStatus" data-value="{{ticketStatus.name}}">{{_ (concat 'schemaTopics.status.options.' ticketStatus.name)}}</button>
               {{/each}}
             </div>
           </div>
@@ -26,7 +26,7 @@
             <div class="input-group">
               <label class="control-label text-capitalize">{{_ 'work'}} {{_ 'schemaTickets.ticket.urgency.label'}}</label><br>
               {{#each ticketUrgency in ticketUrgencies}}
-              <button type="button" class="js-filter btn btn-xs btn-outline btn-{{ticketsUrgencyColor ticketUrgency}} {{activeButton 'ticketUrgency' ticketUrgency}}" data-key="ticketUrgency" data-value="{{ticketUrgency}}">{{_ (concat 'schemaTickets.ticket.urgency.options.' ticketUrgency)}}</button>
+              <button type="button" class="btn btn-xs btn-outline btn-{{ticketsUrgencyColor ticketUrgency}} js-filter {{activeButton 'ticketUrgency' ticketUrgency}}" data-field="ticketUrgency" data-value="{{ticketUrgency}}">{{_ (concat 'schemaTickets.ticket.urgency.options.' ticketUrgency)}}</button>
               {{/each}}
             </div>
           </div>
@@ -34,7 +34,7 @@
             <div class="input-group">
               <label class="control-label text-capitalize">{{_ 'work'}} {{_ 'schemaTickets.ticket.type.label'}}</label><br>
               {{#each ticketType in ticketTypes}}
-              <button type="button" class="js-filter btn btn-xs btn-outline btn-default {{activeButton 'ticketType' ticketType}}" data-key="ticketType" data-value="{{ticketType}}">{{_ (concat 'schemaTickets.ticket.type.options.' ticketType)}}</button>
+              <button type="button" class="btn btn-xs btn-outline btn-default js-filter {{activeButton 'ticketType' ticketType}}" data-field="ticketType" data-value="{{ticketType}}">{{_ (concat 'schemaTickets.ticket.type.options.' ticketType)}}</button>
               {{/each}}
             </div>
           </div>
@@ -72,7 +72,7 @@
             <label for="mine-only">{{_ 'My own only'}}</label>
           </div>
           <div class="col-sm-3 align">
-            <button type="button" class="js-clear-filter btn btn-default btn-xs {{#unless hasFilters}}disabled{{/unless}}" data-value="cancel">
+            <button type="button" class="btn btn-default btn-xs js-clear-filter {{#unless hasFilters}}disabled{{/unless}}" data-value="cancel">
                 <i class="fa fa-times"></i> {{_ 'Clear filters'}}
             </button>
           </div>

@@ -10,7 +10,17 @@
         {{> afFieldInput groupAtts}}
       {{else}}
         {{#if relation}} <!--### droka extension ###-->
-          <button type="button" class="btn btn-xs btn-default pull-right js-new" data-entity="{{relation}}"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relation}}</button>
+          <div class="pull-right">
+          {{#if getReactiveValue}}
+            <button type="button" class="btn btn-xs btn-default js-view"><i class="fa fa-eye"></i></button>
+            <button type="button" class="btn btn-xs btn-default js-edit text-capitalize"><i class="fa fa-pencil"></i>{{_ 'edit'}}</button>
+            {{! >Action_buttons_group collection=collection actions='view' size='sm'}}
+            {{! >Action_buttons_group collection=collection actions='edit' size='lg'}}
+          {{else}}
+            <button type="button" class="btn btn-xs btn-default pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relation}}</button>
+            {{! >Action_buttons_group collection=collection actions='new' size='lg' options=entityObj}}
+          {{/if}}
+          </div>
         {{/if}}
         {{> afFormGroup groupAtts}}
       {{/if}}
