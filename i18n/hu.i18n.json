@@ -704,6 +704,7 @@
   "actionDone_statusUpdate": "státusz frissítve",
   "actionDone_registerReading": "leolvasás rögzítve",
   "actionDone_remind": "emlékeztető elküldve",
+  "actionDone_period": "időszak módosítva",
 // "bill parcels successful": "Közös költség terv kiróvva",
 // "close vote successful": "Szavazás lezárva",
 // "publish balances successful": "Aktuális egyenlegek publikálva",

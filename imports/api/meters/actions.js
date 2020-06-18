@@ -105,7 +105,7 @@ Meters.actions = {
         fields: ['activeTime'],
         doc,
         type: 'method-update',
-        meteormethod: 'meters.updateActivePeriod',
+        meteormethod: 'meters.update',
         singleMethodArgument: true,
       });
     },

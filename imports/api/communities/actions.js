@@ -67,7 +67,7 @@ Communities.actions = {
         fields: ['activeTime'],
         doc,
         type: 'method-update',
-        meteormethod: 'communities.updateActivePeriod',
+        meteormethod: 'communities.update',
         singleMethodArgument: true,
       });
     },

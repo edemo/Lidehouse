@@ -487,7 +487,7 @@ if (Meteor.isServer) {
             relation: ['member'],
             // no userId yet
             idCard: { type: 'natural', name: 'Mr Already' },
-            contact: { name: 'Already User', email: 'alreadyuser@demotest.hu' },
+            contact: { email: 'alreadyuser@demotest.hu' },
           });
           membershipId = managerInsertsOwner();
           Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });

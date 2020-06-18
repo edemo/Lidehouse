@@ -195,7 +195,7 @@ if (Meteor.isServer) {
         chai.assert.isDefined(testMembership);
         chai.assert.equal(testMembership.role, randomRole);
 
-        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
+        Memberships.methods.update._execute({ userId: Fixture.demoAdminId },
           { _id: testMembershipId, modifier: { $set: { 'activeTime.begin': new Date() } } });
         testMembership = Memberships.findOne(testMembershipId);
         chai.assert.equal(testMembership.active, true);
@@ -216,7 +216,7 @@ if (Meteor.isServer) {
         chai.assert.isDefined(testMembership);
         chai.assert.equal(testMembership.role, 'admin');
 
-        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
+        Memberships.methods.update._execute({ userId: Fixture.demoAdminId },
           { _id: testMembershipId, modifier: { $set: { 'activeTime.end': new Date() } } });
         testMembership = Memberships.findOne(testMembershipId);
         chai.assert.equal(testMembership.active, false);

@@ -102,6 +102,12 @@ ActivePeriod.fields = [
   'active',
 ];
 
+ActivePeriod.modifiableFields = [
+  'activeTime.begin',
+  'activeTime.end',
+  'active',
+];
+
 export function sanityCheckOnlyOneActiveAtAllTimes(collection, selector) {
   let docs = collection.find(selector, { sort: { 'activeTime.begin': 1 } }).fetch();
   docs = _.sortBy(docs, d => d.activeTime && d.activeTime.begin); // a second sort is needed, because CollectionStage can break the sort
@@ -122,6 +128,7 @@ export function sanityCheckAtLeastOneActive(collection, selector) {
   }
 }
 
+// deprecated because of lack of sanity checks, call collection.update instead
 const updateActivePeriod = new ValidatedMethod({
   name: 'updateActivePeriod',
   validate: new SimpleSchema({
@@ -140,7 +147,7 @@ const updateActivePeriod = new ValidatedMethod({
     }
     checkModifier(doc, modifier, ActivePeriod.fields);
 
-    collection.update(_id, modifier);
+    collection.update(_id, modifier, { selector: doc });
   },
 });
 

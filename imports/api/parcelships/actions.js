@@ -68,7 +68,7 @@ Parcelships.actions = {
         fields: ['activeTime'],
         doc,
         type: 'method-update',
-        meteormethod: 'parcelships.updateActivePeriod',
+        meteormethod: 'parcelships.update',
         singleMethodArgument: true,
       });
     },

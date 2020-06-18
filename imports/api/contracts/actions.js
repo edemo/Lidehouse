@@ -78,7 +78,7 @@ Contracts.actions = {
         fields: ['activeTime'],
         doc,
         type: 'method-update',
-        meteormethod: 'contracts.updateActivePeriod',
+        meteormethod: 'contracts.update',
         singleMethodArgument: true,
       });
     },

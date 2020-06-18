@@ -293,7 +293,7 @@ if (Meteor.isServer) {
 
       it('bills the then owner for given apply date', function () {
         const formerMembershipId = Memberships.findOne({ parcelId: Fixture.dummyParcels[3] })._id;
-        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
+        Memberships.methods.update._execute({ userId: Fixture.demoAdminId },
           { _id: formerMembershipId,
             modifier: { $set: {
               'activeTime.begin': moment('2017-12-01').toDate(),
@@ -304,7 +304,7 @@ if (Meteor.isServer) {
           parcelId: Fixture.dummyParcels[3],
           ownership: { share: new Fraction(1, 1) },
         });
-        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId }, {
+        Memberships.methods.update._execute({ userId: Fixture.demoAdminId }, {
           _id: laterMembershipId, modifier: { $set: {
             'activeTime.begin': moment('2018-02-01').toDate(),
           } },
@@ -519,7 +519,7 @@ if (Meteor.isServer) {
       });
 
       it('Can archive a meter which has no unbilled amount', function () {
-        Fixture.builder.execute(Meters.methods.updateActivePeriod, { _id: meterId, modifier: { $set: { 'activeTime.end': new Date('2018-06-30') } } });
+        Fixture.builder.execute(Meters.methods.update, { _id: meterId, modifier: { $set: { 'activeTime.end': new Date('2018-06-30') } } });
       });
 
       it('Can use a new meter that measures in a different uom', function () {

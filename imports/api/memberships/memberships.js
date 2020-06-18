@@ -38,7 +38,7 @@ Memberships.baseSchema = new SimpleSchema({
     }),
   },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...choosePartner() } },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...choosePartner } },
 });
 
 // Parcels can be jointly owned, with each owner having a fractional *share* of it
@@ -239,7 +239,7 @@ if (Meteor.isServer) {
     const contract = tdoc.contract();
     if (contract) {  // keep contract's (active time) in sync
       try { // throws Error: After filtering out keys not in the schema, your modifier is now empty
-        Contracts.update(contract._id, modifier);
+        Contracts.update(contract._id, modifier, { selector: { relation: 'member' } });
       } catch (err) {}
     }
   });

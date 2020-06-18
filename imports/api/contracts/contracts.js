@@ -20,7 +20,7 @@ export const Contracts = new Mongo.Collection('contracts');
 Contracts.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...noUpdate, ...choosePartner() } },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...noUpdate, ...choosePartner } },
 });
 
 Contracts.detailsSchema = new SimpleSchema({
@@ -30,12 +30,12 @@ Contracts.detailsSchema = new SimpleSchema({
 
 Contracts.memberSchema = new SimpleSchema({
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
-    autoform: { ...noUpdate, ...choosePartnerOfParcel(), value: () => {
+    autoform: { ...noUpdate, ...choosePartnerOfParcel, value: () => {
       const leadParcelId = AutoForm.getFieldValue('leadParcelId');
       return leadParcelId && Contracts.findOne({ parcelId: leadParcelId })?.partnerId;
     } },
   },
-  delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner() },
+  delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { type: 'hidden', relation: '@property' } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty } },
 //  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
