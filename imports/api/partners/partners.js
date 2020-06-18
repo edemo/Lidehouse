@@ -128,7 +128,8 @@ Partners.helpers({
   },
   contracts(relation) {
     const Contracts = Mongo.Collection.get('contracts');
-    return Contracts.findActive({ communityId: this.communityId, approved: true, relation, partnerId: this._id });
+    const selector = { communityId: this.communityId, approved: true, relation, partnerId: this._id };
+    return Contracts.findActive(Object.cleanUndefined(selector));
   },
   outstandingBills() {
     const Transactions = Mongo.Collection.get('transactions');

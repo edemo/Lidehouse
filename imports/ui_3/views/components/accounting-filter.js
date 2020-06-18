@@ -16,9 +16,8 @@ import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { billColumns, receiptColumns } from '/imports/api/transactions/bills/tables.js';
-import { paymentsColumns } from '/imports/api/transactions/payments/tables.js';
-import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import '/imports/api/transactions/parcel-billings/actions.js';
 
 import './accounting-filter.html';
@@ -30,24 +29,29 @@ ViewModel.share({
     activePartnerRelation: 'supplier',  // only on bills page
     beginDate: '',
     endDate: '',
-    partnerSelected: '',
-    partnerOptions: [],
-    contractSelected: '',
-    contractOptions: [],
+    partnerContractSelected: '',
+    partnerContractOptions: [],
     localizerSelected: '',
     localizerOptions: [],
-    autorun() {
-      const communityId = this.communityId();
-      const instance = this.templateInstance;
-      instance.autorun(() => {
-        if (this.unreconciledOnly()) {
-          instance.subscribe('transactions.unreconciled', { communityId });
-          instance.subscribe('transactions.outstanding', { communityId });
-        } else {
-          instance.subscribe('transactions.inCommunity', { communityId });
-        }
-      });
-    },
+    autorun: [
+      function subscription() {
+        const communityId = this.communityId();
+        const instance = this.templateInstance;
+        instance.autorun(() => {
+          if (this.unreconciledOnly()) {
+            instance.subscribe('transactions.unreconciled', { communityId });
+            instance.subscribe('transactions.outstanding', { communityId });
+          } else {
+            instance.subscribe('transactions.inCommunity', { communityId });
+          }
+        });
+      },
+      function filterOptions() {
+        const communityId = this.communityId();
+        this.localizerOptions(Parcels.nodeOptionsOf(communityId, ''));
+        this.partnerContractOptions([{ label: __('All'), value: '' }].concat(Contracts.partnerContractOptions({ communityId })));
+      },
+    ],
     communityId() {
       return ModalStack.getVar('communityId');
     },
@@ -69,8 +73,7 @@ ViewModel.share({
       this.beginDate(moment().subtract(30, 'days').format('YYYY-MM-DD'));
       this.endDate(moment().format('YYYY-MM-DD'));
       this.unreconciledOnly(false);
-      this.partnerSelected('');
-      this.contractSelected('');
+      this.partnerContractSelected('');
       this.localizerSelected('');
     },
     hasFilters() {
@@ -79,8 +82,7 @@ ViewModel.share({
           this.unreconciledOnly() !== false ||
           this.beginDate() !== moment().subtract(30, 'days').format('YYYY-MM-DD') ||
           this.endDate() !== moment().format('YYYY-MM-DD') ||
-          this.partnerSelected() ||
-          this.contractSelected() ||
+          this.partnerContractSelected() ||
           this.localizerSelected()) return true;
       return false;
     },
@@ -96,6 +98,12 @@ ViewModel.share({
       selector.valueDate = {};
       if (this.beginDate()) selector.valueDate.$gte = new Date(this.beginDate());
       if (this.endDate()) selector.valueDate.$lte = new Date(this.endDate());
+      if (this.partnerContractSelected()) {
+        const pc = this.partnerContractSelected().split('/');
+        if (pc[0]) selector.partnerId = pc[0];
+        if (pc[1]) selector.contractId = pc[1];
+      }
+      if (this.localizerSelected()) selector.localizer = '\\^' + this.localizerSelected() + '\\';
       return selector;
     },
     txFilterSelector(category) {

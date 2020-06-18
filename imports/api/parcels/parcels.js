@@ -241,7 +241,7 @@ _.extend(Parcels, {
       const nodes = Parcels.nodesOf(communityId, code, leafsOnly);
       return nodes.map(node => node.asOption());
     }).flat(1);
-    if (codeS === '') return [{ value: '', label: '' }].concat(nodeOptions);
+    if (codeS === '') return [{ value: '', label: __('All') }].concat(nodeOptions);
     return nodeOptions;
   },
   chooseSubNode(code, leafsOnly) {

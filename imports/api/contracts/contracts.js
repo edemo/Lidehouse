@@ -146,3 +146,18 @@ export const chooseContract = {
   },
   firstOption: false,
 };
+
+Contracts.partnerContractOptions = function partnerContractOptions(selector) {
+  const partners = Partners.find(Object.cleanUndefined(selector));
+  const partnerContracts = [];
+  partners.forEach(p => {
+    const cs = p.contracts();
+    if (cs.count() > 0) {
+      cs.forEach(c => {
+        partnerContracts.push([p, c]);
+      });
+    } else partnerContracts.push([p, null]);
+  });
+  const options = partnerContracts.map(pc => ({ label: pc[0].toString() + (pc[1] ? `/${pc[1].toString()}` : ''), value: pc[0]._id + (pc[1] ? `/${pc[1]._id}` : '') }));
+  return options;
+};

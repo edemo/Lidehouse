@@ -45,7 +45,7 @@ Template.Accounting_transactions.viewmodel({
   },
   autorun: [
     function setTxdefOptions() {
-      const communityId = ModalStack.getVar('communityId');
+      const communityId = this.communityId();
       const txdefOptions = [{ value: '', label: __('All') }];
       Txdefs.find({ communityId }).map(function (def) {
         txdefOptions.push({ value: def._id, label: __(def.name) });
@@ -69,8 +69,6 @@ Template.Accounting_transactions.viewmodel({
       if (!this.creditAccountSelected() && this.creditAccountOptions() && this.creditAccountOptions().length > 0) {
         this.creditAccountSelected(this.creditAccountOptions()[0].value);
       }
-
-      this.localizerOptions(Parcels.nodeOptionsOf(communityId, ''));
     },
     function txSubscription() {
       this.templateInstance.subscribe('transactions.betweenAccounts', this.subscribeParams());
@@ -85,15 +83,11 @@ Template.Accounting_transactions.viewmodel({
     return Accounts.nodeOptionsOf(this.communityId(), accountCode, true);
   },
   subscribeParams() {
-    const selector = {
-      communityId: this.communityId(),
+    const selector = _.extend({
       defId: this.txdefSelected(),
       debitAccount: '\\^' + this.debitAccountSelected() + '\\',
       creditAccount: '\\^' + this.creditAccountSelected() + '\\',
-      begin: new Date(this.beginDate()),
-      end: new Date(this.endDate()),
-    };
-    if (this.localizerSelected()) selector.localizer = '\\^' + this.localizerSelected() + '\\';
+    }, this.txSubscribeSelector());
     return selector;
   },
   transactionsTableDataFn() {
