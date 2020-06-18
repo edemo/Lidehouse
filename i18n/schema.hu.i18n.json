@@ -715,7 +715,8 @@
       "options": {
         "draft": "Könyveletlen",
         "posted": "Könyvelt",
-        "void": "Sztornózott"
+        "void": "Sztornózott",
+        "storno": "Sztornó"
       }
     },
     "valueDate": {

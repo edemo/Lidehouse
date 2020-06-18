@@ -11,6 +11,7 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Parcels } from '../../api/parcels/parcels';
 
 export function label(value, color, icon) {
@@ -97,16 +98,11 @@ export function displayStatus(name) {
   return label(__('schemaTopics.status.options.' + name), color);
 }
 
-export function displayTxStatus(name) {
+export function displayTxStatus(name, doc) {
   if (!name) return '';
-  let color;
-  switch (name) {
-    case 'draft': color = 'warning'; break;
-    case 'posted': color = 'info'; return undefined;
-    case 'void': color = 'danger'; break;
-    default: debugAssert(false); return undefined;
-  }
-  return label(__('schemaTransactions.status.options.' + name), color);
+  const statusObject = Transactions.statuses[name];
+  const displayName = _.last(doc.serialId.split('/')) === 'STORNO' ? 'storno' : name;
+  return label(__('schemaTransactions.status.options.' + displayName), statusObject?.color);
 }
 
 export function displayUrgency(name) {

@@ -237,7 +237,8 @@ Transactions.helpers({
   negator() {
     const tx = Object.stringifyClone(this);
     Mongo.Collection.stripAdministrativeFields(tx);
-    tx.note = 'STORNO ' + tx.serialId;
+    tx.serialId += '/STORNO';
+    delete tx.note;
     tx.amount *= -1;
     if (tx.lines) {
       tx.lines.forEach(l => {

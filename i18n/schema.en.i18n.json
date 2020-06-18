@@ -715,7 +715,8 @@
       "options": {
         "draft": "Draft",
         "posted": "Posted",
-        "void": "Void"
+        "void": "Void",
+        "storno": "Storno"
       }
     },
     "valueDate": {

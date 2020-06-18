@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-8 pull-right text-right">
             <h4>
-              {{{displayTxStatus doc.status}}} 
+              {{{displayTxStatus doc.status doc}}} 
               {{_ (or doc.txdef.name 'schemaTransactions.serialId.label')}}:
               <span class="text-navy">{{doc.serialId}}</span>
             </h4>
