@@ -4,7 +4,6 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { Clock } from '/imports/utils/clock.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -165,7 +164,7 @@ export const remove = new ValidatedMethod({
       Transactions.remove(_id);
     } else if (doc.status === 'posted') {
       Transactions.update(doc._id, { $set: { status: 'void' } });
-      Transactions.insert(_.extend(doc.negator(), { status: 'void', postedAt: Clock.currentTime() }));
+      Transactions.insert(_.extend(doc.negator(), { status: 'void' }));
     } else if (doc.status === 'void') {
       throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');
     } else debugAssert(false, `No such tx status: ${doc.status}`);
