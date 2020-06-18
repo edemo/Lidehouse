@@ -216,7 +216,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.partner().outstanding, 200);
       });
 
-      it('Can primary auto reconcile when bill serial provided - rounded lower amount', function () {
+      xit('Can primary auto reconcile when bill serial provided - rounded lower amount', function () {
         chai.assert.isTrue(!!bill.serialId);
         const entryId = Fixture.builder.create('statementEntry', {
           account: bankAccount,
@@ -252,7 +252,7 @@ if (Meteor.isServer) {
         );
       });
 
-      it('Can primary auto reconcile when bill serial provided - rounded higher amount', function () {
+      xit('Can primary auto reconcile when bill serial provided - rounded higher amount', function () {
         chai.assert.isTrue(!!bill.serialId);
         const entryId = Fixture.builder.create('statementEntry', {
           account: bankAccount,
