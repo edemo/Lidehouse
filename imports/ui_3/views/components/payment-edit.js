@@ -6,6 +6,7 @@ import { $ } from 'meteor/jquery';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
+import { Clock } from '/imports/utils/clock';
 // The autoform needs to see these, to handle new events on it
 import '/imports/api/partners/actions.js';
 import '/imports/api/contracts/actions.js';
@@ -17,6 +18,9 @@ import './payment-edit.html';
 Template.Payment_edit.viewmodel({
   partnerRelation() {
     return this.templateInstance.data.relation;
+  },
+  defaultDate() {
+    return Clock.currentTime();
   },
   allocatedAmount() {
     let allocated = 0;

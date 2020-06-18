@@ -20,11 +20,11 @@ export const Render = Meteor.isServer ? {} : {
   // https://datatables.net/manual/data/renderers#Number-helper
   formatDate(cellData, renderType, currentRow) {
     if (!cellData) return '---';
-    return moment.utc(cellData).format('L');
+    return moment.utc(cellData).format('YYYY/MM/DD');
   },
   formatTime(cellData, renderType, currentRow) {
     if (!cellData) return '---';
-    return moment(cellData).format('L LT');
+    return moment(cellData).format('YYYY/MM/DD HH:mm');
   },
   checkmarkBoolean(cellData, renderType, currentRow) {
     return checkmarkBoolean(cellData);

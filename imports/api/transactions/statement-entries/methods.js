@@ -55,8 +55,9 @@ function checkReconcileMatch(entry, transaction) {
     throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`);
   }
   if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate');
-  switch(transaction.category) {
+  switch (transaction.category) {
     case 'payment':
+    case 'receipt':
       if (!equalWithinRounding(transaction.amount, transaction.relationSign() * entry.amount)) throwMatchError('amount');
       if (transaction.payAccount !== entry.account) throwMatchError('account');
   //  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
@@ -82,7 +83,7 @@ export const reconcile = new ValidatedMethod({
     const communityId = entry.communityId;
     const reconciledTx = Transactions.findOne(txId);
     checkReconcileMatch(entry, reconciledTx);
-    if (entry.name !== reconciledTx.partner().idCard.name) {
+    if (reconciledTx.partnerId && entry.name && entry.name !== reconciledTx.partner().idCard.name) {
       Recognitions.set(`names.${entry.name}`, reconciledTx.partner().idCard.name, { communityId });
     }
     Transactions.update(txId, { $set: { seId: _id } });

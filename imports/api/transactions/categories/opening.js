@@ -11,18 +11,19 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 
 const openingSchema = new SimpleSchema({
-  side: { type: String, allowedValues: ['debit', 'credit'] },
+//  side: { type: String, allowedValues: ['debit', 'credit'] },
   account: { type: String, autoform: chooseConteerAccount() },
 // autoform: Accounts.chooseSubNode('COA', '??')
 });
 
 Transactions.categoryHelpers('opening', {
   makeJournalEntries() {
-    const otherSide = Transactions.oppositeSide(this.side);
     const txdef = Txdefs.findOne(this.defId);
+    const side = txdef.data.side;
+    const otherSide = Transactions.oppositeSide(side);
     productionAssert(txdef[otherSide].length === 1, 'Opening tx has cannot have multiple choices for the opposite account');
     const otherAccount = txdef[otherSide][0];
-    this[this.side] = [{ account: this.account }];
+    this[side] = [{ account: this.account }];
     this[otherSide] = [{ account: otherAccount }];
     return { debit: this.debit, credit: this.credit };
   },

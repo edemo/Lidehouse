@@ -52,9 +52,13 @@ export class ActionOptions {
       this.status = status;
     }
     if (typeof this.entity === 'string') {
-      const entity = this.collection.entities[this.entity];
-      debugAssert(entity, `No such entity "${this.entity}" for collection ${this.collection._name}`);
-      this.entity = entity;
+      if (this.entity + 's' === this.collection._name) {
+        this.entity = { name: this.entity };
+      } else {
+        const entity = this.collection.entities[this.entity];
+        debugAssert(entity, `No such entity "${this.entity}" for collection ${this.collection._name}`);
+        this.entity = entity;
+      }
     }
     if (typeof this.txdef === 'string') {
       this.txdef = Txdefs.findOne(this.txdef);
@@ -116,6 +120,11 @@ const buttonHelpers = {
       case 'sm': return 'xs';   // this is the table cell buttons
       default: debugAssert(false, 'No such btn size'); return undefined;
     }
+  },
+  btnColor() {
+    const data = this.templateInstance.data;
+//    if (data.size === 'lg' || data.size === 'sm') return 'white';
+    return data.action.color || 'white';
   },
   getOptions() {
     const instanceData = this.templateInstance.data;

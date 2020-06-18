@@ -51,11 +51,11 @@
 
             <p>
                 {{#if isBill}}
-                    <span>{{> afQuickField name="issueDate" value=defaultDate}}</span>
-                    <span>{{> afQuickField name="deliveryDate" value=defaultDate}}</span>
-                    <span>{{> afQuickField name="dueDate" value=defaultDueDate}}</span>
+                    <span>{{> afQuickField name="issueDate" defaultValue=defaultDate}}</span>
+                    <span>{{> afQuickField name="deliveryDate" defaultValue=defaultDate}}</span>
+                    <span>{{> afQuickField name="dueDate" defaultValue=defaultDueDate}}</span>
                 {{else}} <!-- isReceipt -->
-                    <span>{{> afQuickField name="valueDate" value=defaultDate}}</span>
+                    <span>{{> afQuickField name="valueDate" defaultValue=defaultDate}}</span>
                     <span>{{> afQuickField name="payAccount"}}</span>
                 {{/if}}
             </p>

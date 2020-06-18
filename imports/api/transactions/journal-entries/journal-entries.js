@@ -54,13 +54,12 @@ if (Meteor.isClient) {
   Meteor.startup(function syncEntriesWithTransactions() {
     const callbacks = {
       added(doc) {
-        doc.journalEntries().forEach(entry => {
-          JournalEntries.insert(_.extend(entry, { txId: doc._id }));
-        });
+        doc.journalEntries().forEach(e => JournalEntries.insert(e));
       },
       changed(newDoc, oldDoc) {
-//        console.warn('Changed transaction noticed! From: ', oldDoc, ' To: ', newDoc);
-//      Normal that changes come through for createdAt, createdBy, updatedAt, updatedBy, serial, complete
+        // TODO no need to do it, when only the updatedAt field changes
+        JournalEntries.remove({ txId: oldDoc._id });
+        newDoc.journalEntries().forEach(e => JournalEntries.insert(e));
       },
       removed(doc) {
         JournalEntries.remove({ txId: doc._id });

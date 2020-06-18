@@ -27,14 +27,13 @@ Transactions.entities = {
   },
   transfer: {
     name: 'transfer',
-    fields: ['amount', 'valueDate', 'fromAccount', 'toAccount', 'communityId'],
+    omitFields: () => ['debit', 'credit'],
   },
   opening: {
     name: 'opening',
-    fields: ['amount', 'valueDate', 'account', 'communityId'],
+    omitFields: () => ['debit', 'credit'],
   },
   freeTx: {
     name: 'freeTx',
   },
 };
-
