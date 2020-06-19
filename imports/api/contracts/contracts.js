@@ -35,7 +35,7 @@ Contracts.memberSchema = new SimpleSchema({
       return leadParcelId && Contracts.findOne({ parcelId: leadParcelId })?.partnerId;
     } },
   },
-  delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
+  delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { type: 'hidden', relation: '@property' } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty } },
 //  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
