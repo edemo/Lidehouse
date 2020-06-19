@@ -35,6 +35,7 @@ function prefillDocWhenReconciling(doc) {
   const statementEntry = ModalStack.getVar('statementEntry');
   if (statementEntry) {
     _.deepExtend(doc, statementEntry?.match?.tx);
+    doc.defId = AutoForm.getFieldValue('defId') || doc.defId; // the form choice overrides the match recommendation
   }
 }
 
