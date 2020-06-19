@@ -24,6 +24,7 @@
                 <span class="text-navy">{{doc.serialId}}</span></h4>
             {{/if}}
             {{> afQuickField name="partnerId"}}
+            {{> afQuickField name="contractId"}}
             {{> afQuickField name="amount"}}
         </div>
     </div>
@@ -74,7 +75,7 @@
                 {{#afEachArrayItem name="lines"}}
                 <!--{{#if notNullLine this}}-->
                 <tr class='js-autofill'>
-                    <td>{{> afFormGroup name=this.current.contractId}}</td>
+                    <td>{{> afFormGroup name=this.current.account}}</td>
                     <td>{{> afFormGroup name=this.current.localizer}}</td>
                     <td data-line="{{this.name}}">
                       <button type="button" class="btn btn-default js-remainder-amount"><i class="fa fa-arrow-down"></i> {{_ 'Remainder'}} <i class="fa fa-arrow-right"></i></button>

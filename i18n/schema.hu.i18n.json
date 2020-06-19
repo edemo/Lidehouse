@@ -746,7 +746,8 @@
     },
     "contractId": {
       "label": "Szerződés",
-      "placeholder": "Először válassza ki a partnert"
+      "placeholder": "Először válassza ki a partnert",
+      "help": "Csak akkor szükséges megadni, ha egy partner több különböző viszonyban is áll a társasházzal. Vagy ha szerződés feltételeit vagy leírását szeretnénk rögzíteni a rendszerben. Általában nem szükséges megadnia."
     },
     "partnerName": {
       "label": "Partner neve",
@@ -872,7 +873,7 @@
     },
     "txId": {
       "label": "Kapcsolandó tranzakció",
-      "help": "Amennyiben a kivonat tételhez tartozó tranzakció már létre lett hozva, válassza ki a listából, ha még nem létezik, akkor hozza létre most új tranzakcióként, és utána kapcsolja."
+      "help": "Amennyiben a kivonat tételhez tartozó tranzakció már létre lett hozva, válassza ki a listából, ha még nem létezik, akkor hozza létre most új tranzakcióként."
     }
   },
   "schemaTxdefs": {
