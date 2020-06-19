@@ -16,9 +16,6 @@ import '/imports/api/transactions/actions.js';
 import './payment-edit.html';
 
 Template.Payment_edit.viewmodel({
-  partnerRelation() {
-    return this.templateInstance.data.relation;
-  },
   defaultDate() {
     return Clock.currentTime();
   },

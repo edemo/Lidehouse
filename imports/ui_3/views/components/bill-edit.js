@@ -12,12 +12,9 @@ import '/imports/api/partners/actions.js';
 import '/imports/api/contracts/actions.js';
 import './bill-edit.html';
 
-Template.Bill_edit.helpers({
-  partnerRelation() {
-    return this.doc.relation;
-  },
+Template.Bill_edit.viewmodel({
   isBill() {
-    return this.doc.category === 'bill';
+    return this.templateInstance.data.doc.category === 'bill';
   },
   defaultDate() {
     return Clock.currentTime();
@@ -55,5 +52,16 @@ Template.Bill_edit.helpers({
       gross += lineAmount;
     });
     return { net, tax, gross }[which];
+  },
+  reconciling() {
+    return ModalStack.getVar('statementEntry');
+  },
+  originalStatementEntry() {
+    const original = ModalStack.getVar('statementEntry')?.original;
+    const jsonText = JSON.stringify(original || {}, null, 2);
+    return jsonText.trim().substr(3, jsonText.length - 5).trim();
+  },
+  hiddenWhenReconciling() {
+    return this.reconciling() && 'hidden';
   },
 });
