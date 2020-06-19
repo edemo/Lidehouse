@@ -66,9 +66,19 @@ Template.Worksheets.viewmodel({
     this.ticketStatusSelected([]);
     this.ticketTypeSelected([]);
     this.ticketUrgencySelected([]);
-    this.startDate(moment().subtract(30, 'days').format('YYYY-MM-DD'));
+    this.startDate(moment().subtract(90, 'days').format('YYYY-MM-DD'));
     this.endDate('');
     this.reportedByCurrentUser(false);
+  },
+  hasFilters() {
+    if (this.searchText() ||
+        this.ticketStatusSelected().length ||
+        this.ticketTypeSelected().length ||
+        this.ticketUrgencySelected().length ||
+        this.startDate() !== moment().subtract(90, 'days').format('YYYY-MM-DD') ||
+        this.endDate() ||
+        this.reportedByCurrentUser()) return true;
+    return false;
   },
   addEventsToUpdate(eventObject) {
     const eventsToUpdate = this.eventsToUpdate();
@@ -163,16 +173,6 @@ Template.Worksheets.viewmodel({
   },
   ticketsUrgencyColor(name) {
     return Tickets.urgencyColors[name];
-  },
-  hasFilters() {
-    if (this.searchText() ||
-        this.ticketStatusSelected().length ||
-        this.ticketTypeSelected().length ||
-        this.ticketUrgencySelected().length ||
-        this.startDate() !== moment().subtract(30, 'days').format('YYYY-MM-DD') ||
-        this.endDate() ||
-        this.reportedByCurrentUser()) return true;
-    return false;
   },
   activeButton(field, value) {
     const selected = this[`${field}Selected`]();

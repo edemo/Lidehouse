@@ -70,7 +70,7 @@ ViewModel.share({
     },
     setDefaultFilter() {
       this.txStatusSelected(['draft', 'posted']);
-      this.beginDate(moment().subtract(30, 'days').format('YYYY-MM-DD'));
+      this.beginDate(moment().startOf('year').format('YYYY-MM-DD'));
       this.endDate(moment().format('YYYY-MM-DD'));
       this.unreconciledOnly(false);
       this.partnerContractSelected('');
@@ -80,7 +80,7 @@ ViewModel.share({
       if (this.txStatusSelected()[0] !== 'draft' ||
           this.txStatusSelected()[1] !== 'posted' ||
           this.unreconciledOnly() !== false ||
-          this.beginDate() !== moment().subtract(30, 'days').format('YYYY-MM-DD') ||
+          this.beginDate() !== moment().startOf('year').format('YYYY-MM-DD') ||
           this.endDate() !== moment().format('YYYY-MM-DD') ||
           this.partnerContractSelected() ||
           this.localizerSelected()) return true;
