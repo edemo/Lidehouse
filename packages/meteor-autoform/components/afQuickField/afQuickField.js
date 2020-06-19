@@ -35,7 +35,7 @@ Template.afQuickField.helpers({
   //### droka extension ###//
   relation() {
     var c = AutoForm.Utility.getComponentContext(this, "afQuickField");
-    return !c.atts.disabled && c.atts.relation;
+    return c.atts.relation;
   },
   getReactiveValue() {
     return Template.instance().reactiveValue.get();
@@ -63,6 +63,7 @@ Template.afQuickField.onRendered(function() {
   const instance = this;
   const selectElem = instance.find('select');
   if (selectElem) {
+    instance.reactiveValue.set(selectElem.value);
     selectElem.addEventListener('change', function(event) { 
       instance.reactiveValue.set(event.target.value);
     }, false);
