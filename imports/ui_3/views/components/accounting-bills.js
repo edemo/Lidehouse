@@ -5,8 +5,9 @@ import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { __ } from '/imports/localization/i18n.js';
+import { $ } from 'meteor/jquery';
 
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -142,10 +143,11 @@ Template.Accounting_bills.viewmodel({
 });
 
 Template.Accounting_bills.events({
-  ...(actionHandlers(Transactions, 'new')),
-});
-
-Template.Accounting_bills.events({
+  'click .js-new'(event, instance) {
+    const entity = $(event.target).closest('[data-entity]').data('entity');
+    const txdef = instance.viewmodel.findTxdef(entity);
+    Transactions.actions.new({ entity, txdef }).run(event, instance);
+  },
   'click .js-apply'(event, instance) {
     ParcelBillings.actions.apply().run();
   },
