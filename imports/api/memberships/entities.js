@@ -1,9 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Memberships } from './memberships';
-import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 function transformSchemaForUI(schema) {
   const transformedSchema = new SimpleSchema(schema);
@@ -19,18 +16,14 @@ Memberships.entities = {
   roleship: {
     name: 'roleship',
     schema: transformSchemaForUI(Memberships.simpleSchema({ role: 'manager' })),
-    omitFields: ['activeTime'],
-    modifiableFields: ['role', 'rank', 'partnerId'],
   },
   ownership: {
     name: 'ownership',
     schema: transformSchemaForUI(Memberships.simpleSchema({ role: 'owner' })),
-    modifiableFields: ['partnerId', 'ownership'],
   },
   benefactorship: {
     name: 'benefactorship',
     schema: transformSchemaForUI(Memberships.simpleSchema({ role: 'benefactor' })),
-    modifiableFields: ['partnerId', 'benefactorship'],
   },
   delegate: {
     name: 'delegate',

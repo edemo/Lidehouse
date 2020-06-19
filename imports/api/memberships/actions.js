@@ -68,7 +68,6 @@ Memberships.actions = {
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.update`,
         schema: entity.schema,
-        fields: entity.modifiableFields,
         omitFields: entity.omitFields,
         doc,
         type: 'method-update',

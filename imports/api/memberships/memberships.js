@@ -29,6 +29,8 @@ Memberships.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },  // manager approved this membership
   accepted: { type: Boolean, autoform: { omit: true }, defaultValue: false },  // person accepted this membership
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...choosePartner } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   role: { type: String, allowedValues() { return everyRole; },
     autoform: _.extend({}, noUpdate, {
       options() {
@@ -37,8 +39,6 @@ Memberships.baseSchema = new SimpleSchema({
       firstOption: () => __('(Select one)'),
     }),
   },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...choosePartner } },
 });
 
 // Parcels can be jointly owned, with each owner having a fractional *share* of it

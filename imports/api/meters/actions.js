@@ -55,7 +55,7 @@ Meters.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.meter.update',
         collection: Meters,
-        omitFields: ['readings', 'activeTime'],
+        omitFields: ['readings'],
         doc,
         type: 'method-update',
         meteormethod: 'meters.update',

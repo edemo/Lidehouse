@@ -47,7 +47,6 @@ ParcelBillings.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.update',
         collection: ParcelBillings,
-        omitFields: ['activeTime'],
         doc,
         type: 'method-update',
         meteormethod: 'parcelBillings.update',

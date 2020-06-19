@@ -137,7 +137,6 @@ Parcels.actions = {
         Modal.show('Autoform_modal', {
           id: 'af.contract.insert',
           schema: Contracts.simpleSchema(contract),
-          omitFields: ['activeTime'],
           doc: contract,
           type: 'method',
           meteormethod: 'contracts.insert',
@@ -146,7 +145,6 @@ Parcels.actions = {
         Modal.show('Autoform_modal', {
           id: 'af.contract.update',
           schema: Contracts.simpleSchema(contract),
-          omitFields: ['activeTime'],
           doc: contract,
           type: 'method-update',
           meteormethod: 'contracts.update',
