@@ -140,7 +140,7 @@ Transactions.categoryHelpers('payment', {
       if (unallocatedAmount <= 0) return false;
       if (!line) return true; // can be null, when a line is deleted from the array
       const amount = Math.min(line.amount, unallocatedAmount);
-      this[this.conteerSide()].push({ amount, account: this.txdef()[this.conteerSide()][0], contractId: line.contractId, localizer: line.localizer, parcelId: line.parcelId });
+      this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
       unallocatedAmount -= amount;
     });
     // Handling the remainder
