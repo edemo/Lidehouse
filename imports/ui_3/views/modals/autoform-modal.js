@@ -32,7 +32,7 @@ export function details2afId(details) {
 Template.Autoform_modal.viewmodel({
   showDebugInfo: false,
   onCreated(instance) {
-    Session.set('autoformType', instance.data.type);
+    ModalStack.setVar('autoformType', instance.data.type);
   },
   title() {
     const data = this.templateInstance.data;

@@ -76,7 +76,7 @@ Template.Voting_edit.helpers({
     return Shareddocs.find({ topicId });
   },
   updateForm() {
-    const afType = Session.get('autoformType');
+    const afType = ModalStack.getVar('autoformType');
     return afType === 'update' || afType === 'method-update';
   },
 });

@@ -2,10 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/api/attachments/attachments.js';
 import '/imports/api//attachments/attachments-store.js';
-
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const allowedOptions = function allowedOptions() {
   // Here the autoform-i18n options are being used, which are the translated values of the allowedOptions()
@@ -38,7 +37,7 @@ export const chooseUser = {
 
 export const noUpdate = {
   disabled() {
-    const afType = Session.get('autoformType');
+    const afType = ModalStack.getVar('autoformType');
     return afType === 'update' || afType === 'method-update';
   },
 };
