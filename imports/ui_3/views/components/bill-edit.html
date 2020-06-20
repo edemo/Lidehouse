@@ -14,38 +14,52 @@
         {{> afQuickField name="defId" type="hidden"}}
         {{> afQuickField name="relation" type="hidden"}}
          <!-- hidden, needed for autoform doc data -->
-        <div class="col-sm-6 col-md-6">
-            {{#if isBill}}
-                <span>{{> afQuickField name="issueDate" defaultValue=defaultDate}}</span>
-                <span>{{> afQuickField name="deliveryDate" defaultValue=defaultDate}}</span>
-                <span>{{> afQuickField name="dueDate" defaultValue=defaultDueDate}}</span>
-            {{else}} <!-- isReceipt -->
-                <span>{{> afQuickField name="valueDate" type=hiddenWhenReconciling defaultValue=defaultDate}}</span>
-                <span>{{> afQuickField name="payAccount" type=hiddenWhenReconciling}}</span>
-            {{/if}}
-            {{#if reconciling}}
-            <div class="form-group">
-                <label for="original">Eredeti kivonat adatok</label>
-                <textarea rows="8" name="original" id="original" data-schema-key="original" readonly="" class="form-control">
-                   {{originalStatementEntry}}
-                </textarea>
-            </div>
-            {{/if}}
+        <div class="col-sm-6 col-md-4">
+            <h5>{{_ 'issuer'}}:</h5>
+            <address>
+                {{#if (equals partnerRelation 'supplier')}}
+                    {{#if isBill}}
+                        {{> afQuickField name="partnerId"}}
+                        {{> afQuickField name="contractId"}}
+                    {{else}}
+                        {{> afQuickField name="partnerName"}}
+                    {{/if}}
+                {{else}}
+                    {{>Bill_partner activeCommunity.asPartner}}
+                {{/if}}
+            </address>
         </div>
 
-        <div class="col-sm-6 col-md-4 pull-right">
+        <div class="col-sm-6 col-md-4 col-md-offset-4">
             {{#if doc.serialId}}
                 <h4>{{_ doc.txdef.name}}:
                 <span class="text-navy">{{doc.serialId}}</span></h4>
             {{/if}}
+            <h5>{{_ 'receiver'}}:</h5>
             <address>
-            {{#if isBill}}
-                {{> afQuickField name="partnerId"}}
-                {{> afQuickField name="contractId"}}
-            {{else}}
-                {{> afQuickField name="partnerName"}}
-            {{/if}}
+                {{#if (equals partnerRelation 'customer')}}
+                    {{#if isBill}}
+                        {{> afQuickField name="partnerId"}}
+                        {{> afQuickField name="contractId"}}
+                    {{else}}
+                        {{> afQuickField name="partnerName"}}
+                    {{/if}}
+                {{else}}
+                    {{>Bill_partner activeCommunity.asPartner}}
+                {{/if}}
             </address>
+
+            <p>
+                {{#if isBill}}
+                    <span>{{> afQuickField name="issueDate" defaultValue=defaultDate}}</span>
+                    <span>{{> afQuickField name="deliveryDate" defaultValue=defaultDate}}</span>
+                    <span>{{> afQuickField name="dueDate" defaultValue=defaultDueDate}}</span>
+                {{else}} <!-- isReceipt -->
+                    <span>{{> afQuickField name="valueDate" defaultValue=defaultDate}}</span>
+                    <span>{{> afQuickField name="payAccount"}}</span>
+                {{/if}}
+            </p>
+
         </div>
     </div>
 
