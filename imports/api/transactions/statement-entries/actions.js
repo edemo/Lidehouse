@@ -94,10 +94,15 @@ StatementEntries.actions = {
   }),
   reconcile: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'reconcile',
+    label: options.txdef?.name || __('reconcile'),
     icon: 'fa fa-external-link',
-    color: doc?.match?.confidence,
+    color: doc.match?.confidence,
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
+    subActions: (doc.match?.confidence === 'danger') && !options.txdef
+      && Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
+      .map(txdef => StatementEntries.actions.reconcile({ txdef }, doc, user)),
     run() {
+//      ModalStack.setVar('txdef', options.txdef);
       ModalStack.setVar('statementEntry', doc);
 /*      const tx = {
         communityId: doc.communityId,
@@ -107,7 +112,7 @@ StatementEntries.actions = {
         amount: doc.amount,
         valueDate: doc.valueDate,
       };*/
-      const reconciliationDoc = { _id: doc._id, defId: doc.match?.tx?.defId, txId: doc.match?.txId };
+      const reconciliationDoc = { _id: doc._id, defId: doc.match?.tx?.defId || options.txdef._id, txId: doc.match?.txId };
       Modal.show('Autoform_modal', {
         body: 'Reconciliation',
         bodyContext: { doc: reconciliationDoc },
