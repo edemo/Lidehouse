@@ -11,10 +11,10 @@
             {{> afQuickField name="payAccount" type=hiddenWhenReconciling}}
             {{#if reconciling}}
             <div class="form-group">
-                <label for="original">Eredeti kivonat adatok</label>
-                <textarea rows="8" name="original" id="original" data-schema-key="original" readonly="" class="form-control">
-                   {{originalStatementEntry}}
-                </textarea>
+                <label>{{_ 'schemaStatementEntries.original.label'}}</label><br>
+                <div class="well">   
+                    {{>Doc_view doc=originalStatementEntry}}
+                </div>
             </div>
             {{/if}}
         </div>
@@ -113,6 +113,6 @@
     </table>
 
     <div class="well m-t">
-        {{> afQuickField name="note"}}
+        {{> afQuickField name="notes"}}
     </div>
 </template>

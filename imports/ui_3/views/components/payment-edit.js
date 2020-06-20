@@ -38,9 +38,7 @@ Template.Payment_edit.viewmodel({
     return ModalStack.getVar('statementEntry');
   },
   originalStatementEntry() {
-    const original = ModalStack.getVar('statementEntry')?.original;
-    const jsonText = JSON.stringify(original || {}, null, 2);
-    return jsonText.trim().substr(3, jsonText.length - 5).trim();
+    return ModalStack.getVar('statementEntry')?.original;
   },
   hiddenWhenReconciling() {
     return this.reconciling() && 'hidden';

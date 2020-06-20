@@ -9,13 +9,12 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import '/imports/api/transactions/actions.js';
+import '/imports/ui_3/views/components/doc-view.js';
 import './reconciliation.html';
 
 Template.Reconciliation.viewmodel({
   originalStatementEntry() {
-    const original = ModalStack.getVar('statementEntry')?.original;
-    const jsonText = JSON.stringify(original || {}, null, 2);
-    return jsonText.trim().substr(3, jsonText.length - 5).trim();
+    return ModalStack.getVar('statementEntry')?.original;
   },
 });
 

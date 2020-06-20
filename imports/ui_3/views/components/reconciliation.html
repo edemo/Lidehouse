@@ -1,14 +1,14 @@
 <template name="Reconciliation">
     <div class="row">
-        <div class="col-sm-6 col-md-7">
+        <div class="col-sm-6">
             <div class="form-group">
-                <label for="original">Eredeti kivonat adatok</label>
-                <textarea rows="8" name="original" id="original" data-schema-key="original" readonly="" class="form-control">
-                   {{originalStatementEntry}}
-                </textarea>
+                <label>{{_ 'schemaStatementEntries.original.label'}}</label><br>
+                <div class="well">   
+                    {{>Doc_view doc=originalStatementEntry}}
+                </div>
             </div>
         </div>
-        <div class="col-sm-6 col-md-5">
+        <div class="col-sm-6">
             <address>
                 <!-- hidden, needed for autoform doc data -->
                 {{> afQuickField name="_id" type="hidden"}}
