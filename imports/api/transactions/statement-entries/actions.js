@@ -14,6 +14,7 @@ import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
 import { reconciliationSchema } from '/imports/api/transactions/reconciliation/reconciliation.js';
 import '/imports/ui_3/views/components/reconciliation.js';
+import '/imports/ui_3/views/components/doc-view.js';
 import './methods.js';
 import { Transactions } from '../transactions.js';
 
@@ -62,11 +63,16 @@ StatementEntries.actions = {
     icon: 'fa fa-eye',
     visible: user.hasPermission('statements.inCommunity', doc),
     run() {
-      Modal.show('Autoform_modal', {
-        id: 'af.statementEntry.view',
-        collection: StatementEntries,
-        doc,
-        type: 'readonly',
+//      Modal.show('Autoform_modal', {
+//        id: 'af.statementEntry.view',
+//        collection: StatementEntries,
+//        doc,
+//        type: 'readonly',
+//      });
+      Modal.show('Modal', {
+        title: __('schemaStatementEntries.original.label'),
+        body: 'Doc_view',
+        bodyContext: { doc: doc.original },
       });
     },
   }),

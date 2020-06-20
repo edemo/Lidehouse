@@ -9,6 +9,7 @@ import './actions.js';
 export function statementEntriesColumns() {
   const columns = [
     { data: 'valueDate', title: __('schemaStatementEntries.valueDate.label'), render: Render.formatDate },
+    { data: 'refType', title: __('schemaStatementEntries.refType.label') },
     { data: 'name', title: __('schemaStatementEntries.name.label') },
     { data: 'amount', title: __('schemaStatementEntries.amount.label'), render: Render.formatNumber },
     { data: 'note', title: __('schemaStatementEntries.note.label') },

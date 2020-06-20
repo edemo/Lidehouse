@@ -1,0 +1,7 @@
+<template name='Doc_view'>
+    {{#each dataEntry in entriesOf doc}}
+    <span>
+    <strong>{{dataEntry.[0]}}:</strong> {{dataEntry.[1]}}
+    </span><br>
+    {{/each}}
+</template>
