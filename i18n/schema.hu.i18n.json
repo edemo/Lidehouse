@@ -713,7 +713,7 @@
     "status": {
       "label": "Státusz",
       "options": {
-        "draft": "Könyveletlen",
+        "draft": "Könyvelendő",
         "posted": "Könyvelt",
         "void": "Sztornózott",
         "storno": "Sztornó"
