@@ -1,9 +1,6 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
-  "schemaGeneral": {
-    "serialId": {
-      "label": "Azonosító"
-    },
+  "schemaTimestamped": {
     "creatorId": {
       "label": "Létrehozta"
     },
@@ -15,6 +12,16 @@
     },
     "updaterId": {
       "label": "Módosította"
+    }
+  },
+  "schemaSerialId": {
+    "serialId": {
+      "label": "Azonosító"
+    }
+  },
+  "schemaNoted": {
+    "notes": {
+      "label": "Megjegyzések"
     }
   },
   "schemaActivePeriod": {
@@ -795,9 +802,6 @@
         }
       }
     },
-    "note": {
-      "label": "Megjegyzések"
-    },
     // Following lines are for the different txdefs
     "supplierBillId": {
       "label": "Bejövő számla, amit beszámítunk"
@@ -866,7 +870,7 @@
       "label": "Kivonat sor"
     },
     "original": {
-      "label": "Eredeti adatok"
+      "label": "Eredeti kivonat adatok"
     },
     "match": {
       "label": "Ajánlott társított tranzakció"
@@ -1193,10 +1197,6 @@
     "group": {
       "label": "Csoport, amire előrunk",
       "help": "Válasszon csoportot, ha csak egy adott csoportra kell előírni a költséget, a többire nem."
-    },
-    "note": {
-      "label": "Megjegyzés",
-      "placeholder": "(pl. emlékeztető)"
     },
     "appliedAt": {
       "label": "Kivetések ideje"

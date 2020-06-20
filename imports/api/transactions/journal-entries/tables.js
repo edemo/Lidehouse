@@ -9,7 +9,7 @@ import { displayAccountText } from '/imports/ui_3/helpers/api-display.js';
 export function journalEntriesColumns() {
   const columns = [
   //  { data: 'partner().displayName()', title: 'Partner' },
-    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatTime },
+    { data: 'createdAt', title: __('schemaTimestamped.createdAt.label'), render: Render.formatTime },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'account', title: __('Account'), render: displayAccountText },
     { data: 'side', title: __('Side'), render: cellData => __(`schemaTransactions.${cellData}.label`).charAt(0) },

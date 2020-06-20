@@ -1,9 +1,6 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
-  "schemaGeneral": {
-    "serialId": {
-      "label": "Identifier"
-    },
+  "schemaTimestamped": {
     "creatorId": {
       "label": "Created by"
     },
@@ -15,6 +12,16 @@
     },
     "updaterId": {
       "label": "Last activity by"
+    }
+  },
+  "schemaSerialId": {
+    "serialId": {
+      "label": "Identifier"
+    }
+  },
+  "schemaNoted": {
+    "notes": {
+      "label": "Megjegyzések"
     }
   },
   "schemaActivePeriod": {
@@ -866,7 +873,7 @@
       "label": "Statement row"
     },
     "original": {
-      "label": "Original data"
+      "label": "Original statement data"
     },
     "match": {
       "label": "Suggested matched transaction"
@@ -1203,17 +1210,6 @@
     },
     "applyCount": {
       "label": "Apply count"
-    },
-    "activeTime": {
-      "label": "Active time (Can leave blank, if no time constraint)",
-      "begin": {
-        "label": "From",
-        "placeholder": "yyyy-mm-dd"
-      },
-      "end": {
-        "label": "Until",
-        "placeholder": "yyyy-mm-dd"
-      }
     }
   },
   "schemaSharedfolders": {

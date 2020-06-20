@@ -47,7 +47,6 @@ Parcelships.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Parcelships.simpleSchema().i18n('schemaParcelships');
-  Parcelships.simpleSchema().i18n('schemaActivePeriod');
 });
 
 if (Meteor.isServer) {

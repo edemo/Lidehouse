@@ -18,7 +18,7 @@ export function parcelBillingColumns() {
     { data: 'consumption.charges.0.uom', title: __('schemaParcelBillings.consumption.charges.$.uom.label') },
     { data: 'projection.unitPrice', title: __('schemaParcelBillings.projection.unitPrice.label') },
     { data: 'projection.base', title: __('schemaParcelBillings.projection.base.label'), render: Render.translateWithScope('schemaParcelBillings.projection.base') },
-//    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
+//    { data: 'createdAt', title: __('schemaTimestamped.createdAt.label'), render: Render.formatDate },
     { data: 'lastAppliedAt().date', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,

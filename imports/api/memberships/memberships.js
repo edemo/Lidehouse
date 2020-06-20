@@ -208,7 +208,6 @@ Memberships.attachVariantSchema(undefined, { selector: { role: 'guest' } });
 Meteor.startup(function attach() {
   nonOccupantRoles.forEach((role) => {
     Memberships.simpleSchema({ role }).i18n('schemaMemberships');
-    Memberships.simpleSchema({ role }).i18n('schemaActivePeriod');
   });
 });
 

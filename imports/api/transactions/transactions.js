@@ -13,6 +13,7 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Clock } from '/imports/utils/clock.js';
+import { Noted } from '/imports/api/behaviours/noted.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
@@ -79,14 +80,9 @@ Transactions.legsSchema = {
   complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
 };
 
-Transactions.noteSchema = {
-  note: { type: String, optional: true, autoform: { rows: 3 } },
-};
-
 Transactions.baseSchema = new SimpleSchema([
   Transactions.coreSchema,
   Transactions.legsSchema,
-  Transactions.noteSchema,
 ]);
 
 Transactions.idSet = ['communityId', 'serialId'];
@@ -329,6 +325,7 @@ Transactions.helpers({
 });
 
 Transactions.attachBaseSchema(Transactions.baseSchema);
+Transactions.attachBehaviour(Noted);
 Transactions.attachBehaviour(Timestamped);
 Transactions.attachBehaviour(SerialId(['category', 'relation', 'side']));
 

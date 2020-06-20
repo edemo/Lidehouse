@@ -71,9 +71,9 @@ Mongo.Collection.prototype.attachVariantSchema = function attachVariantSchema(sc
   });
 };
 
-Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour, schemaOptions) {
+Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour, options) {
   const collection = this;
-  collection.attachSchema(behaviour.schema, schemaOptions);
+  collection.attachSchema(behaviour.schema, options);
   // TODO: Only 0 values supported in public fields
   if (behaviour.publicFields) {
     collection.publicFields = _.extend({}, collection.publicFields, behaviour.publicFields);
@@ -112,4 +112,7 @@ Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour,
   if (behaviour.indexes) {
     Meteor.startup(() => behaviour.indexes(collection));
   }
+  Meteor.startup(() => {
+    collection.simpleSchema(options?.selector).i18n(`schema${behaviour.name}`);
+  });
 };

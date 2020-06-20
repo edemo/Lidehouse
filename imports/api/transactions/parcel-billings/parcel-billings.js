@@ -7,6 +7,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
+import { Noted } from '/imports/api/behaviours/noted.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -84,7 +85,6 @@ ParcelBillings.schema = new SimpleSchema({
   localizer: { type: String, autoform: Parcels.choosePhysical },
   type: { type: String, optional: true, autoform: chooseFromExistingParcelTypes },
   group: { type: String, optional: true, autoform: chooseFromExistingGroups },
-  note: { type: String, optional: true },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
 });
 
@@ -186,8 +186,9 @@ ParcelBillings.helpers({
 });
 
 ParcelBillings.attachSchema(ParcelBillings.schema);
-ParcelBillings.attachBehaviour(Timestamped);
+ParcelBillings.attachBehaviour(Noted);
 ParcelBillings.attachBehaviour(ActivePeriod);
+ParcelBillings.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   ParcelBillings.simpleSchema().i18n('schemaParcelBillings');

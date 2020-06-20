@@ -12,9 +12,9 @@ import './actions.js';
 export function paymentsColumns() {
   const columns = [
 //    { data: 'serial', title: __('schemaTransactions.serial.label') },
-    { data: 'serialId', title: __('schemaGeneral.serialId.label') },
+    { data: 'serialId', title: __('schemaSerialId.serialId.label') },
     { data: 'partner().displayName()', title: 'Partner' },
-//    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
+//    { data: 'createdAt', title: __('schemaTimestamped.createdAt.label'), render: Render.formatDate },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
     { data: 'outstanding', title: __('schemaPayments.outstanding.label'), render: Render.formatNumber },

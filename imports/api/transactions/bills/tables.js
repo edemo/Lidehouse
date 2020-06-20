@@ -12,9 +12,9 @@ import '../entities.js';
 export function billColumns() {
   const columns = [
 //    { data: 'serial', title: __('schemaTransactions.serial.label') },
-    { data: 'serialId', title: __('schemaGeneral.serialId.label') },
+    { data: 'serialId', title: __('schemaSerialId.serialId.label') },
     { data: 'partner()', title: 'Partner' },
-//    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
+//    { data: 'createdAt', title: __('schemaTimestamped.createdAt.label'), render: Render.formatDate },
     { data: 'issueDate', title: __('schemaBills.issueDate.label'), render: Render.formatDate },
     { data: 'deliveryDate', title: __('schemaBills.deliveryDate.label'), render: Render.formatDate },
     { data: 'dueDate', title: __('schemaBills.dueDate.label'), render: Render.formatDate },
@@ -33,9 +33,9 @@ export function billColumns() {
 export function receiptColumns() {
   const columns = [
 //    { data: 'serial', title: __('schemaTransactions.serial.label') },
-    { data: 'serialId', title: __('schemaGeneral.serialId.label') },
+    { data: 'serialId', title: __('schemaSerialId.serialId.label') },
     { data: 'partner()', title: 'Partner' },
-//    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
+//    { data: 'createdAt', title: __('schemaTimestamped.createdAt.label'), render: Render.formatDate },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
     { data: 'note', title: __('schemaTransactions.note.label') },

@@ -108,15 +108,12 @@ Contracts.attachVariantSchema(Contracts.memberSchema, { selector: { relation: 'm
 Meteor.startup(function attach() {
   Contracts.simpleSchema({ relation: 'customer' }).i18n('schemaContracts');
   Contracts.simpleSchema({ relation: 'customer' }).i18n('schemaPartners');    // for relation translation
-  Contracts.simpleSchema({ relation: 'customer' }).i18n('schemaActivePeriod');
 
   Contracts.simpleSchema({ relation: 'supplier' }).i18n('schemaContracts');
   Contracts.simpleSchema({ relation: 'supplier' }).i18n('schemaPartners');    // for relation translation
-  Contracts.simpleSchema({ relation: 'supplier' }).i18n('schemaActivePeriod');
 
   Contracts.simpleSchema({ relation: 'member' }).i18n('schemaContracts');
   Contracts.simpleSchema({ relation: 'member' }).i18n('schemaPartners');    // for relation translation
-  Contracts.simpleSchema({ relation: 'member' }).i18n('schemaActivePeriod');
 });
 
 Factory.define('contract', Contracts, {
