@@ -12,6 +12,7 @@ import { Meters } from '/imports/api/meters/meters.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { sendBillEmail } from '/imports/email/bill-send.js';
 import '/imports/api/transactions/txdefs/methods.js';
+import { StatementEntries } from './statement-entries/statement-entries';
 
 /*
 function runPositingRules(context, doc) {
@@ -169,6 +170,8 @@ export const remove = new ValidatedMethod({
     } else if (doc.status === 'void') {
       throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');
     } else debugAssert(false, `No such tx status: ${doc.status}`);
+
+    StatementEntries.update({ txId: _id }, { $unset: { txId: '' } }, { multi: true });
     return undefined;
   },
 });

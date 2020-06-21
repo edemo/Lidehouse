@@ -198,6 +198,7 @@ Transactions.actions = {
   }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
+    label: doc.isPosted() ? 'storno' : 'delete',
     icon: 'fa fa-trash',
     visible: user.hasPermission('transactions.remove', doc) && (doc.status !== 'void'),
     run() {
@@ -221,7 +222,7 @@ Transactions.dummyDoc = {
 
 Transactions.batchActions = {
   post: new BatchAction(Transactions.actions.post, Transactions.methods.batch.post, {}, Transactions.dummyDoc),
-  delete: new BatchAction(Transactions.actions.delete, Transactions.methods.batch.remove),
+  delete: new BatchAction(Transactions.actions.delete, Transactions.methods.batch.remove, {}, Transactions.dummyDoc),
 };
 
 //-------------------------------------------------
