@@ -30,7 +30,10 @@
                 {{#each bp in doc.bills}}
                 {{#if bp}}
                 <tr>
-                    <td><strong>{{displayBill bp}}</strong></td>
+                    <td>
+                      <strong>{{displayBill bp}}</strong>
+                      {{> Action_buttons_group collection='transactions' actions='view' doc=bp.id size='sm'}}
+                    </td>
                     <td class="nowrap">{{displayMoney bp.amount}}</td>
                 </tr>
                 {{/if}}
