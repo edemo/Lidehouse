@@ -401,7 +401,7 @@ if (Meteor.isServer) {
     if (tdoc.category === 'payment') tdoc.registerOnBill();
     tdoc.updateOutstandings(+1);
     const community = tdoc.community();
-    if (tdoc.category === 'bill' && !community.billsUsed?.[tdoc.relation]) {
+    if (tdoc.category === 'bill' && !_.contains(community.billsUsed, tdoc.relation)) {
       Communities.update(community._id, { $push: { billsUsed: tdoc.relation } });
     }
   });
