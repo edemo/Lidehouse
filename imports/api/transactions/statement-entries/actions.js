@@ -130,6 +130,14 @@ StatementEntries.actions = {
       });
     },
   }),
+  unReconcile: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'unReconcile',
+    icon: 'fa fa-times',
+    visible: doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
+    run() {
+      StatementEntries.methods.unReconcile.call({ _id: doc._id });
+    },
+  }),
   autoReconcile: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'autoReconcile',
     icon: 'fa fa-external-link',

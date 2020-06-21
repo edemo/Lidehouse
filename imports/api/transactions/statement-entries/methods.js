@@ -91,6 +91,19 @@ export const reconcile = new ValidatedMethod({
   },
 });
 
+export const unReconcile = new ValidatedMethod({
+  name: 'statementEntries.unReconcile',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id }) {
+    const entry = checkExists(StatementEntries, _id);
+    checkPermissions(this.userId, 'statements.reconcile', entry);
+    StatementEntries.update(_id, { $unset: { txId: '' } });
+    Transactions.update({ seId: entry._id }, { $unset: { seId: '' } });
+  },
+});
+
 export const autoReconcile = new ValidatedMethod({
   name: 'statementEntries.autoReconcile',
   validate: new SimpleSchema({
@@ -283,7 +296,7 @@ export const remove = new ValidatedMethod({
 });
 
 StatementEntries.methods = StatementEntries.methods || {};
-_.extend(StatementEntries.methods, { insert, update, recognize, reconcile, autoReconcile, remove });
+_.extend(StatementEntries.methods, { insert, update, recognize, reconcile, unReconcile, autoReconcile, remove });
 _.extend(StatementEntries.methods, crudBatchOps(StatementEntries));
 StatementEntries.methods.batch.recognize = new BatchMethod(StatementEntries.methods.recognize);
 StatementEntries.methods.batch.reconcile = new BatchMethod(StatementEntries.methods.reconcile);
