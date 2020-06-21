@@ -54,7 +54,7 @@ export function defineTxdefTemplates() {
     name: 'Customer payment', // 'Kimenő számla befolyás',
     category: 'payment',
     data: { relation: 'customer' },
-    debit: ['`38'],
+    debit: ['`38', '`43'],
     credit: ['`31'],
   }, {
 //    name: 'Customer payment identification', // 'Kimenő számla befolyás azonosítása',
@@ -78,7 +78,7 @@ export function defineTxdefTemplates() {
     name: 'Parcel payment', // 'Albetét befizetés',
     category: 'payment',
     data: { relation: 'member' },
-    debit: ['`38'],
+    debit: ['`38', '`43'],
     credit: ['`33'],
   }, {
 //    name: 'Parcel payment identification', // 'Albetét befizetés azonosítása',
@@ -112,6 +112,16 @@ export function defineTxdefTemplates() {
     debit: ['`38'],
     credit: ['`38'],
   }, {
+    name: 'Unidentified income', // "Nem azonosított bevétel",
+    category: 'transfer',
+    debit: ['`38'],
+    credit: ['`43'],
+  }, {
+    name: 'Unidentified expense', // "Nem azonosított kiadás",
+    category: 'transfer',
+    debit: ['`43'],
+    credit: ['`38'],
+  }, {
   /*
   // Készpénz felvétel bankszámláról
     name: 'Cash withdraw', // 'Készpénz felvétel',
@@ -133,12 +143,28 @@ export function defineTxdefTemplates() {
     category: 'receipt',
     data: { relation: 'customer' },
     debit: ['`38'],
-    credit: ['`9'],
+    credit: ['`4', '`9'],
   }, {
     name: 'Expense receipt', // 'Kiadás',
     category: 'receipt',
     data: { relation: 'supplier' },
-    debit: ['`8'],
+    debit: ['`1', '`5', '`8'],
+    credit: ['`38'],
+  }, {
+/*    name: 'Income identification', // '',
+    category: 'receipt',
+    debit: ['`43'],
+    credit: ['`9'],
+  }, {
+    name: 'Parcel payment identification', // '',
+    category: 'payment',
+    debit: ['`43'],
+    credit: ['`9'],
+  }, {*/
+    name: 'Bank fee expense', // 'Kamat  és bank  költség elszámolás',
+    category: 'receipt',
+    data: { relation: 'supplier' },
+    debit: ['`871'],
     credit: ['`38'],
   }, {
     name: 'Barter', // 'Albetét előírás elengedés',

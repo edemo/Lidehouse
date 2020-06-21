@@ -58,6 +58,9 @@
   "Closing asset": "Eszköz zárás",
   "Closing liability": "Forrás zárás",
   "Accounting operation": "Könyvelési művelet",
+  "Bank fee expense": "Kamat  és bank  költség elszámolás",
+  "Unidentified income": "Nem azonosított bevétel",
+  "Unidentified expense": "Nem azonosított kiadás",
 
   // Localizer
   "All locations": "Összes hely",
