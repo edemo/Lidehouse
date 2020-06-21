@@ -92,7 +92,7 @@ Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, valueDate: -1 });
   Transactions.ensureIndex({ seId: 1 });
   Transactions.ensureIndex({ partnerId: 1 }, { sparse: true });
-  Transactions.ensureIndex({ membershipId: 1 }, { sparse: true });
+  Transactions.ensureIndex({ contractId: 1 }, { sparse: true });
   if (Meteor.isClient && MinimongoIndexing) {
     Transactions._collection._ensureIndex('relation');
   } else if (Meteor.isServer) {
