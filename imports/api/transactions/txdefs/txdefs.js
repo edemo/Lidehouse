@@ -58,12 +58,11 @@ Txdefs.helpers({
     return this.isAccountantTx();
   },
   isAccountantTx() {
-    if (this.category === 'payment') return this.data.remission;
-    return !_.contains(['bill', 'receipt'], this.category);
+    return !_.contains(['bill', 'payment', 'receipt'], this.category);
   },
   isReconciledTx() {
     if (this.category === 'payment') return !this.data.remission;
-    return _.contains(['receipt', 'transfer', 'freeTx'], this.category);
+    return _.contains(['receipt', 'transfer'], this.category);
   },
   conteerSide() {
     if (this.data.side) return this.data.side;  // opening, closing txs

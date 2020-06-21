@@ -37,9 +37,11 @@ Template.Accounting_reconciliation.viewmodel({
   autorun: [
     function defaultOptionSelect() {
       const communityId = getActiveCommunityId();
-      const moneyAccount = Accounts.findOne({ communityId, name: 'Money accounts' });
-      if (!moneyAccount) return;
-      this.accountOptions(moneyAccount.nodeOptions(true));
+//      const moneyAccount = Accounts.findOne({ communityId, name: 'Money accounts' });
+//      if (!moneyAccount) return;
+//      this.accountOptions(moneyAccount.nodeOptions(true));
+      const nodeOptions = Accounts.nodeOptionsOf(communityId, ['`38', '`43'], /*leafsOnly*/ true, /*addRootNode*/ false);
+      this.accountOptions(nodeOptions);
       if (this.accountOptions().length && !this.accountSelected()) {
         this.accountSelected(this.accountOptions()[1].value);
       }
