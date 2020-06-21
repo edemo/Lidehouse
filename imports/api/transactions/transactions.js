@@ -112,6 +112,9 @@ Meteor.startup(function indexTransactions() {
 // Note: in addition the Sign of the breakdown itself (in the schema) will control how we display it, 
 // and in the BIG EQUATION constraint (Assets + Expenses = Equity + Sources + Incomes + Liabilities)
 
+Transactions.isValidSide = function isValidSide(side) {
+  return (side === 'debit') || (side === 'credit');
+};
 Transactions.oppositeSide = function oppositeSide(side) {
   if (side === 'debit') return 'credit';
   if (side === 'credit') return 'debit';

@@ -6,11 +6,12 @@ import { _ } from 'meteor/underscore';
 
 import { Clock } from '/imports/utils/clock.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const transferSchema = new SimpleSchema({
-  fromAccount: { type: String, optional: true, autoform: Accounts.chooseSubNode('`38') },  // the money account paid to/from
-  toAccount: { type: String, optional: true, autoform: Accounts.chooseSubNode('`38') },  // the money account paid to/from
+  fromAccount: { type: String, optional: true, autoform: chooseConteerAccount('credit') },
+  toAccount: { type: String, optional: true, autoform: chooseConteerAccount('debit') },
 });
 
 Transactions.categoryHelpers('transfer', {

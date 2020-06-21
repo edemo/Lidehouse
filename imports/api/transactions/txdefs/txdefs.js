@@ -109,15 +109,18 @@ Meteor.startup(function attach() {
 Factory.define('txdef', Txdefs, {
 });
 
-export const chooseConteerAccount = function (flipSide = false) {
+export const chooseConteerAccount = function (sideParam = false) { // false -> tx conteer side, true -> other side
   return {
     options() {
       const communityId = ModalStack.getVar('communityId');
       const defId = AutoForm.getFieldValue('defId');
       if (!defId) return [];
       const txdef = Txdefs.findOne(defId);
-      let side = txdef.conteerSide();
-      if (flipSide) side = Transactions.oppositeSide(side);
+      let side = sideParam;
+      if (!Transactions.isValidSide(side)) {
+        side = txdef.conteerSide();
+        if (sideParam) side = Transactions.oppositeSide(side);
+      }
       const codes = txdef[side];
       return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false, /*addRootNode*/ false);
     },
@@ -126,8 +129,11 @@ export const chooseConteerAccount = function (flipSide = false) {
       const defId = AutoForm.getFieldValue('defId');
       if (!defId) return [];
       const txdef = Txdefs.findOne(defId);
-      let side = txdef.conteerSide();
-      if (flipSide) side = Transactions.oppositeSide(side);
+      let side = sideParam;
+      if (!Transactions.isValidSide(side)) {
+        side = txdef.conteerSide();
+        if (sideParam) side = Transactions.oppositeSide(side);
+      }
       const codes = txdef[side];
       return (codes.length > 1) ? __('Chart of Accounts') : false;
     },
