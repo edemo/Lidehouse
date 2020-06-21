@@ -77,6 +77,21 @@ Txdefs.helpers({
     if (relation === 'customer' || relation === 'member') return 'credit';
     return undefined;
   },
+  conteerCodes(sideParam) {
+//    console.log('conteerCodes');
+//    console.log('def:', this, 'sideParam:', sideParam);
+    let def = this;
+    let side = sideParam;
+    if (!Transactions.isValidSide(side)) {
+      side = def.conteerSide();
+      if (sideParam) side = Transactions.oppositeSide(side);
+    }
+    if (this.category === 'payment' && this.community().settings.accountingMethod === 'cash') {
+      def = this.correspondingBillDef();
+    }
+//    console.log('usedDef:', def, 'side:', side);
+    return def[side];
+  },
   transformToTransaction(doc) {
     doc.debit = [{ account: doc.debit }];
     doc.credit = [{ account: doc.credit }];
@@ -115,32 +130,22 @@ Meteor.startup(function attach() {
 Factory.define('txdef', Txdefs, {
 });
 
+Txdefs.codesOf = function codesOf(sideParam) {
+  const defId = AutoForm.getFieldValue('defId');
+  if (!defId) return [];
+  const txdef = Txdefs.findOne(defId);
+  return txdef.conteerCodes(sideParam);
+};
+
 export const chooseConteerAccount = function (sideParam = false) { // false -> tx conteer side, true -> other side
   return {
     options() {
       const communityId = ModalStack.getVar('communityId');
-      const defId = AutoForm.getFieldValue('defId');
-      if (!defId) return [];
-      const txdef = Txdefs.findOne(defId);
-      let side = sideParam;
-      if (!Transactions.isValidSide(side)) {
-        side = txdef.conteerSide();
-        if (sideParam) side = Transactions.oppositeSide(side);
-      }
-      const codes = txdef[side];
+      const codes = Txdefs.codesOf(sideParam);
       return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false, /*addRootNode*/ false);
     },
     firstOption() {
-      const communityId = ModalStack.getVar('communityId');
-      const defId = AutoForm.getFieldValue('defId');
-      if (!defId) return [];
-      const txdef = Txdefs.findOne(defId);
-      let side = sideParam;
-      if (!Transactions.isValidSide(side)) {
-        side = txdef.conteerSide();
-        if (sideParam) side = Transactions.oppositeSide(side);
-      }
-      const codes = txdef[side];
+      const codes = Txdefs.codesOf(sideParam);
       return (codes.length > 1) ? __('Chart of Accounts') : false;
     },
   };
