@@ -153,20 +153,14 @@ export const recognize = new ValidatedMethod({
         }
       }
     }
-    if (!entry.name) {
-      const tx = {
-        communityId,
-        amount: Math.abs(entry.amount),
-        valueDate: entry.valueDate,
-      };
-      Log.info('Danger no partner, recommendation');
-      Log.debug(tx);
-      StatementEntries.update(_id, { $set: { match: { confidence: 'danger', tx } } });
-      return;
+    let partner;
+    if (entry.name) {
+      Log.debug('Looking for partner', entry.name, 'in', entry.communityId);
+      const recognizedName = Recognitions.get(`names.${entry.name}`, { communityId }) || entry.name;
+      partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': recognizedName });
+    } else {
+      Log.debug('No partner on statement');
     }
-    Log.debug('Looking for partner', entry.name, 'in', entry.communityId);
-    const recognizedName = Recognitions.get(`names.${entry.name}`, { communityId }) || entry.name;
-    const partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': recognizedName });
     if (!partner) {
       // ---------------------------
       // 4th round, 'danger' match: No partner and tx type information, we can only provide some guesses
