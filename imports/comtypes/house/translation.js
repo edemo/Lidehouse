@@ -105,6 +105,9 @@ export const HouseTranslation = {
             "accrual": "Accrual",
             "cash": 'Cash'
           }
+        },
+        "underVAT": {
+          "label": "Under VAT"
         }
       }
     },
@@ -316,6 +319,9 @@ export const HouseTranslation = {
             "accrual": "Kettős könyvvitel",
             "cash": "Egyszeres (pénzforgalmi) könyvvitel"
           }
+        },
+        "underVAT": {
+          "label": "ÁFA körben van"
         }
       }
     },

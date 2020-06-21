@@ -7,6 +7,7 @@
 </template-->
 
 <template name="Bill_edit">
+    {{#let community=doc.community}}
     <div class="row">
         <!-- hidden, needed for autoform doc data -->
         {{> afQuickField name="communityId" type="hidden"}} 
@@ -82,7 +83,9 @@
                     <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
-                    <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                    {{#if community.settings.underVat}}
+                      <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                    {{/if}}
                     <th>{{_ 'schemaBills.lines.$.amount.label'}}</th>
                     <th></th>
                 </tr>
@@ -93,9 +96,11 @@
                 <tr class='js-autofill'>
                     <td>{{> afFormGroup name=this.current.title}}</td>
                     <td>{{> afFormGroup name=this.current.quantity}}</td>
-                    <td>{{> afFormGroup name=this.current.uom}}</td> 
+                    <td>{{> afFormGroup name=this.current.uom}}</td>
                     <td>{{> afFormGroup name=this.current.unitPrice}} </td>
-                    <td>{{> afFormGroup name=this.current.taxPct}}</td>
+                    {{#if community.settings.underVat}}
+                      <td>{{> afFormGroup name=this.current.taxPct}}</td>
+                    {{/if}}
                     <!--td>{{> afFormGroup name=this.current.amount}} </td-->
                     <td class="text-center">{{lineTotal this}}</td>
                     <td class="text-left">
@@ -121,6 +126,7 @@
 
     <table class="table invoice-total">
         <tbody>
+        {{#if community.settings.underVat}}
         <tr>
             <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
             <td>{{billTotal 'net'}}</td>
@@ -129,6 +135,7 @@
             <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
             <td>{{billTotal 'tax'}}</td>
         </tr>
+        {{/if}}
         <tr>
             <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
             <td>{{billTotal 'gross'}}</td>
@@ -139,4 +146,5 @@
     <div class="well m-t">
         {{> afQuickField name="notes"}}
     </div>
+    {{/let}}
 </template>

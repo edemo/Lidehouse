@@ -46,7 +46,9 @@
                     <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
-                    <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                    {{#if community.settings.underVat}}
+                      <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                    {{/if}}
                     <!--th>{{_ 'schemaBills.lines.$.tax.label'}}</th-->
                     <th>{{_ 'schemaBills.lines.$.amount.label'}}</th>
                 </tr>
@@ -74,7 +76,9 @@
                     <td>{{_ line.uom}}</td>
                     <td>{{line.unitPrice}}</td>
                     <td>{{line.quantity}}</td>
-                    <td>{{line.taxPct}}</td>
+                    {{#if community.settings.underVat}}
+                      <td>{{line.taxPct}}</td>
+                    {{/if}}
                     <td class="nowrap">{{displayMoney line.amount}}</td>
                 </tr>
                 {{/if}}
@@ -85,6 +89,7 @@
 
     <table class="table invoice-total">
         <tbody>
+        {{#if community.settings.underVat}}
         <tr>
             <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
             <td class="nowrap">{{displayMoney doc.amount}}</td>
@@ -93,6 +98,7 @@
             <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
             <td class="nowrap">{{displayMoney doc.tax}}</td>
         </tr>
+        {{/if}}
         <tr>
             <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
             <td class="nowrap">{{displayMoney doc.amount}}</td>
