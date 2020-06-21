@@ -8,6 +8,7 @@ import { Factory } from 'meteor/dburles:factory';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -41,6 +42,9 @@ Meteor.startup(function indexTxdefs() {
 });
 
 Txdefs.helpers({
+  community() {
+    return Communities.findOne(this.communityId);
+  },
   schema() {
     const schema = new SimpleSchema([
       _.clone(Transactions.baseSchema), {
@@ -61,7 +65,9 @@ Txdefs.helpers({
     return !_.contains(['bill', 'payment', 'receipt'], this.category);
   },
   isReconciledTx() {
-    if (this.category === 'payment') return !this.data.remission;
+    if (this.category === 'payment') {
+      return !this.data.remission && _.contains(this.community().billsUsed, this.data.relation);
+    }
     return _.contains(['receipt', 'transfer'], this.category);
   },
   conteerSide() {

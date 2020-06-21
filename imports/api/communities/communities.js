@@ -18,6 +18,7 @@ const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
 Communities.statusValues = ['sandbox', 'live', 'official'];
 Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'documents'];
+Communities.relationValues = ['supplier', 'customer', 'member']; // exact copy of Partners.relationValues
 
 Communities.settingsSchema = new SimpleSchema({
   modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', checked: true } },
@@ -41,6 +42,7 @@ Communities.schema = new SimpleSchema([{
   settings: { type: Communities.settingsSchema },
   // cached fields:
   parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
+  billsUsed: { type: [String], defaultValue: [], allowedValues: Communities.relationValues, autoform: { omit: true } },
 }]);
 
 Communities.listingsFields = {

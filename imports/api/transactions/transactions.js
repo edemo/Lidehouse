@@ -26,7 +26,6 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 
 export const Transactions = new Mongo.Collection('transactions');
@@ -144,6 +143,7 @@ Transactions.helpers({
     return undefined;
   },
   txdef() {
+    const Txdefs = Mongo.Collection.get('txdefs');
     if (this.defId) return Txdefs.findOne(this.defId);
     return undefined;
   },
@@ -400,6 +400,10 @@ if (Meteor.isServer) {
     tdoc.updateBalances(+1);
     if (tdoc.category === 'payment') tdoc.registerOnBill();
     tdoc.updateOutstandings(+1);
+    const community = tdoc.community();
+    if (tdoc.category === 'bill' && !community.billsUsed?.[tdoc.relation]) {
+      Communities.update(community._id, { $push: { billsUsed: tdoc.relation } });
+    }
   });
 
   Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
