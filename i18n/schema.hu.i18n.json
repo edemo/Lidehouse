@@ -376,8 +376,8 @@
       "label": "Partner"
     },
     "delegateId": {
-      "label": "Megbízott partner",
-      "help": "Csak akkor adja meg, ha a számlát nem a partner fogja fizetni, hanem egy másik személy. Az itt beállított személy részére szintén meg lesznek küldve a számlák."
+      "label": "Fizető partner",
+      "help": "Akkor adja meg, ha a számlát nem a tulajonos fogja fizetni, hanem egy másik, megbízott személy. Az itt beállított személy részére szintén meg lesznek küldve a számlák."
     },
     "topicIds": {
       "label": "Munkalapok"

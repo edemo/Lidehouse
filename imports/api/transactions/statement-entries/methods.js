@@ -227,7 +227,7 @@ export const recognize = new ValidatedMethod({
       if (amountToFill > 0) {
         tx.lines = [{
           amount: amountToFill,
-          account: paymentDef.conteerSide()[0],
+          account: paymentDef[paymentDef.conteerSide()][0],
           contractId: partner.contracts(relation)[0],
 //          localizer: undefined,
         }];

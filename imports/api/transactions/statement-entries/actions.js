@@ -63,17 +63,20 @@ StatementEntries.actions = {
     icon: 'fa fa-eye',
     visible: user.hasPermission('statements.inCommunity', doc),
     run() {
-//      Modal.show('Autoform_modal', {
-//        id: 'af.statementEntry.view',
-//        collection: StatementEntries,
-//        doc,
-//        type: 'readonly',
-//      });
-      Modal.show('Modal', {
-        title: __('schemaStatementEntries.original.label'),
-        body: 'Doc_view',
-        bodyContext: { doc: doc.original },
-      });
+      if (Meteor.isDevelopment) {
+        Modal.show('Autoform_modal', {
+          id: 'af.statementEntry.view',
+          collection: StatementEntries,
+          doc,
+          type: 'readonly',
+        });
+      } else {
+        Modal.show('Modal', {
+          title: __('schemaStatementEntries.original.label'),
+          body: 'Doc_view',
+          bodyContext: { doc: doc.original },
+        });
+      }
     },
   }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({
