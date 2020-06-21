@@ -54,8 +54,8 @@
                 {{#each line in doc.lines}}
                 {{#if line}}
                 <tr>
-                    <td>{{displayContract line.contractId}}</td>
-                    <td>{{line.localizer}}</td>
+                    <td>{{{displayAccount line.account}}}</td>
+                    <td>{{{displayLocalizer line.localizer}}}</td>
                     <td class="nowrap">{{displayMoney line.amount}}</td>
                 </tr>
                 {{/if}}
