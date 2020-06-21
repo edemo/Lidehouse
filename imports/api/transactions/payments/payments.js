@@ -47,7 +47,7 @@ export const chooseParcelOfPartner = {
     const options = _.without(parcels, undefined).map(p => ({ label: p.displayAccount(), value: p.code }));
     return options;
   },
-  firstOption: () => __('Localizer'),
+  firstOption: false,
 };
 
 const billPaidSchema = {
