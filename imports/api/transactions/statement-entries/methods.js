@@ -208,6 +208,7 @@ export const recognize = new ValidatedMethod({
       // 2nd round, 'info' match: The payment exactly matches the outstanding bills of the partner
       // ---------------------------
       tx.bills = matchingBills.map(bill => ({ id: bill._id, amount: bill.outstanding }));
+      tx.lines = [];
       Log.info('Info match with bills', matchingBills.length);
       Log.debug(tx);
       StatementEntries.update(_id, { $set: { match: { confidence: 'info', tx } } });
@@ -216,7 +217,7 @@ export const recognize = new ValidatedMethod({
       // 3nd round, 'warning' match: We found the partner but the payment is not the right amount.
       // Either under-paid (=> need to decide which bills are paid), or over-paid (=> need to decide where to allocate the remainder)
       // ---------------------------
-      tx.bills = [];
+      tx.bills = []; tx.lines = [];
       let amountToFill = adjustedEntryAmount;
       matchingBills.forEach(bill => {
         if (amountToFill === 0) return false;
