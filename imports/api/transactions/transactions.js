@@ -390,10 +390,10 @@ if (Meteor.isServer) {
     }
     if (tdoc.category === 'bill' || tdoc.category === 'payment') {
       tdoc.outstanding = tdoc.calculateOutstanding();
-      if (tdoc.category === 'payment' && tdoc.outstanding !== 0) {
+//      if (tdoc.category === 'payment' && tdoc.outstanding !== 0) {
         // The min, max contraint on the schema does not work, because the hook runs after the schema check
-        throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${tdoc.outstanding}`);
-      }
+//        throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${tdoc.outstanding}`);
+//      }
     }
     _.extend(doc, tdoc);
   });
@@ -401,7 +401,7 @@ if (Meteor.isServer) {
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
     tdoc.updateBalances(+1);
-    if (tdoc.category === 'payment') tdoc.registerOnBill();
+    if (tdoc.category === 'payment') tdoc.registerOnBills(+1);
     tdoc.updateOutstandings(+1);
     const community = tdoc.community();
     if (tdoc.category === 'bill' && !_.contains(community.billsUsed, tdoc.relation)) {
@@ -420,20 +420,23 @@ if (Meteor.isServer) {
       if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
         || (doc.category === 'payment' && newDoc.bills)) {
         autoValueUpdate(doc, modifier, 'outstanding', d => d.calculateOutstanding());
-        if (doc.category === 'payment' && doc.outstanding !== 0) {
+//        if (doc.category === 'payment' && doc.outstanding !== 0) {
           // The min, max contraint on the schema does not work, because the hook runs after the schema check
-          throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${doc.outstanding}`);
-        }
+//          throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${doc.outstanding}`);
+//        }
       }
     }
   });
 
   Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {
-//    const tdoc = this.transform();
+    const tdoc = this.transform();
 //    tdoc.checkAccountsExist();
+    if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
+      tdoc.registerOnBills(+1);
+    }
     if (modifierChangesField(modifier, ['debit', 'credit', 'amount', 'valueDate'])) {
       const oldDoc = Transactions._transform(this.previous);
-      const newDoc = Transactions._transform(doc);
+      const newDoc = tdoc;
       oldDoc.updateBalances(-1);
       newDoc.updateBalances(+1);
       oldDoc.updateOutstandings(-1);
@@ -445,6 +448,7 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     tdoc.updateBalances(-1);
     tdoc.updateOutstandings(-1);
+    if (tdoc.category === 'payment') tdoc.registerOnBills(-1);
     if (tdoc.seId) StatementEntries.update(tdoc.seId, { $unset: { txId: 0 } });
   });
 }

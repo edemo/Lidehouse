@@ -25,10 +25,10 @@ Template.Payment_edit.viewmodel({
       if (!bp) return;
       allocated += bp.amount;
     });
-    (AutoForm.getFieldValue('lines') || []).forEach(l => {
-      if (!l) return;
-      allocated += l.amount;
-    });
+//    (AutoForm.getFieldValue('lines') || []).forEach(l => {
+//      if (!l) return;
+//      allocated += l.amount;
+//    });
     return allocated;
   },
   unallocatedAmount() {

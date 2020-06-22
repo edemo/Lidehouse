@@ -6,6 +6,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
+import { Communities } from '/imports/api/communities/communities.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
 export const StatementEntries = new Mongo.Collection('statementEntries');
@@ -40,6 +41,9 @@ Meteor.startup(function indexStatementEntries() {
 });
 
 StatementEntries.helpers({
+  community() {
+    return Communities.findOne(this.communityId);
+  },
   isReconciled() {
     return !!this.txId;
   },

@@ -47,7 +47,7 @@ Transactions.categoryHelpers('barter', {
       copyLinesInto(this.credit, customerBill);
     }
   },
-  registerOnBill() {
+  registerOnBills() {
     debugAssert(this.supplierBillId && this.customerBillId, 'Cannot process a barter without connecting it to a bills first');
     const supplierBill = Transactions.findOne(this.supplierBillId);
     const supplierRes = Transactions.update(this.supplierBill,

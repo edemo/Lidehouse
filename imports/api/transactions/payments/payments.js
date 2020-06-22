@@ -79,7 +79,7 @@ const paymentSchema = new SimpleSchema([
   Payments.extensionSchema, {
     bills: { type: [Payments.billPaidSchema], defaultValue: [] },
     lines: { type: [Payments.lineSchema], defaultValue: [] },
-    outstanding: { type: Number, decimal: true, min: 0, max: 0, optional: true },
+    outstanding: { type: Number, decimal: true, min: 0, optional: true },
   },
 ]);
 
@@ -100,7 +100,7 @@ Transactions.categoryHelpers('payment', {
     let allocated = 0;
 //    console.log(this);
     this.getBills().forEach(bill => allocated += bill.amount);
-    this.getLines().forEach(line => allocated += line.amount);
+//    this.getLines().forEach(line => allocated += line.amount);
 //    console.log('amount:', this.amount - allocated);
     return this.amount - allocated;
   },
@@ -151,14 +151,26 @@ Transactions.categoryHelpers('payment', {
     }
     return { debit: this.debit, credit: this.credit };
   },
-  registerOnBill() {
+  registerOnBills(direction = +1) {
     const result = [];
     this.bills.forEach(billPaid => {
       const bill = Transactions.findOne(billPaid.id);
-      const pb = _.extend({}, billPaid);
-      pb.id = this._id; // replacing the bill._id with the payment._id
+      const paymentOnBill = _.extend({}, billPaid);
+      paymentOnBill.id = this._id; // replacing the bill._id with the payment._id
+      const oldPayments = bill.getPayments();
+      const found = _.find(oldPayments, p => p.id === this._id);
+      let newPayments;
+      if (direction > 0) {
+        if (found) {
+          found.amount = paymentOnBill.amount;
+          newPayments = oldPayments;
+        } else newPayments = oldPayments.concat([paymentOnBill]);
+      } else {
+        if (found) found.amount = 0;
+        newPayments = oldPayments;
+      }
       result.push(Transactions.update(bill._id,
-        { $set: { payments: bill.getPayments().concat([pb]) } },
+        { $set: { payments: newPayments } },
         { selector: { category: 'bill' } },
       ));
     });

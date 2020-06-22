@@ -14,8 +14,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
 
-  describe('transactions', function () {
-    this.timeout(15000);
+  describe.only('transactions', function () {
+    this.timeout(15000000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
       FixtureA = freshFixture();
@@ -169,6 +169,29 @@ if (Meteor.isServer) {
         chai.assert.isTrue(tx2.isPosted());
         chai.assert.deepEqual(tx2.debit, [{ amount: 200, account: '`454', localizer: '@' }]);
         chai.assert.deepEqual(tx2.credit, [{ amount: 200, account: bankAccount }]);
+      });
+
+      it('Can storno a Payment', function () {
+        let payment1 = Transactions.findOne({ category: 'payment', amount: 100 });
+        FixtureA.builder.execute(Transactions.methods.remove, { _id: payment1._id });
+
+        payment1 = Transactions.findOne(payment1._id);
+        chai.assert.equal(payment1.status, 'void');
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.outstanding, 100);
+      });
+
+      it('Can amend a Payment', function () {
+        let payment2 = Transactions.findOne({ category: 'payment', amount: 200 });
+        FixtureA.builder.execute(Transactions.methods.update, { _id: payment2._id, modifier: { $set: {
+          bills: [{ id: billId, amount: 180 }],
+          lines: [{ account: '`88', amount: 20 }],
+        } } });
+
+        payment2 = Transactions.findOne(payment2._id);
+        chai.assert.equal(payment2.status, 'posted');
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.outstanding, 120);
       });
     });
   });

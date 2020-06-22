@@ -174,20 +174,19 @@ Transactions.actions = {
     name: 'registerPayment',
     icon: 'fa fa-credit-card',
     color: 'info',
-    visible: doc && (doc.status === 'posted') && (doc.category === 'bill') && doc.outstanding
+    visible: doc.community().settings.paymentsWoStatement && doc?.category === 'bill' && doc.outstanding
       && user.hasPermission('transactions.insert', doc),
     run() {
       ModalStack.setVar('billId', doc._id);
-      const txdef = Txdefs.findOne({ communityId: doc.communityId, category: 'payment', 'data.relation': doc.relation });
-      const paymentOptions = _.extend({}, options, { entity: Transactions.entities.payment, txdef });
+      const paymentDef = Txdefs.findOne({ communityId: doc.communityId, category: 'payment', 'data.relation': doc.relation });
+      const paymentOptions = _.extend({}, options, { entity: Transactions.entities.payment, txdef: paymentDef });
       const paymentTx = {
         category: 'payment',
-        defId: txdef._id,
+        defId: paymentDef._id,
         valueDate: new Date(),
         // - copied from the doc -
         relation: doc.relation,
         partnerId: doc.partnerId,
-        membershipId: doc.membershipId,
         contractId: doc.contractId,
         amount: doc.amount,
         bills: [{ id: doc._id, amount: doc.outstanding }],
@@ -196,6 +195,20 @@ Transactions.actions = {
       Transactions.actions.new(paymentOptions, paymentTx).run();
     },
   }),
+  connectPayment: (options, doc, user = Meteor.userOrNull()) => {
+    const connectablePayment = doc.category === 'bill' &&
+      Transactions.findOne({ communityId: doc.communityId, category: 'payment', partnerId: doc.partnerId/*, outstanding: { $gte: 0 } */});
+    return {
+      name: 'connectPayment',
+      icon: 'fa fa-credit-card',
+      color: 'warning',
+      visible: connectablePayment && doc.outstanding && user.hasPermission('transactions.update', doc),
+      run() {
+        ModalStack.setVar('billId', doc._id);
+        Transactions.actions.edit({}, connectablePayment).run();
+      },
+    };
+  },
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     label: doc.isPosted() ? 'storno' : 'delete',

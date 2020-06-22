@@ -108,6 +108,9 @@ export const HouseTranslation = {
         },
         "underVAT": {
           "label": "Under VAT"
+        },
+        "paymentsWoStatement": {
+          "label": "Can register payment without bank statement"
         }
       }
     },
@@ -322,6 +325,9 @@ export const HouseTranslation = {
         },
         "underVAT": {
           "label": "ÁFA körben van"
+        },
+        "paymentsWoStatement": {
+          "label": "Fizetés rögzíthető bankkivonat nélkül is"
         }
       }
     },

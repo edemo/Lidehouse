@@ -28,6 +28,7 @@ Communities.settingsSchema = new SimpleSchema({
   topicAgeDays: { type: Number, decimal: true, defaultValue: 90 },
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions(), defaultValue: 'accrual' },
   underVAT: { type: Boolean, optional: true },
+  paymentsWoStatement: { type: Boolean, optional: true },
 });
 
 Communities.schema = new SimpleSchema([{

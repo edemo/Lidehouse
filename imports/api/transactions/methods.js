@@ -147,9 +147,14 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'transactions.update', doc);
     if (doc.isPosted()) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
+      if (doc.category === 'payment') {
+        modifier.$set = modifier.$set && _.pick(modifier.$set, 'bills', 'lines');
+        modifier.$push = modifier.$push && _.pick(modifier.$push, 'bills', 'lines');
+      } else {
+        throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
+      }
     }
-    Transactions.update({ _id }, modifier, { selector: { category: doc.category } });
+    Transactions.update({ _id }, modifier, { selector: doc });
   },
 });
 

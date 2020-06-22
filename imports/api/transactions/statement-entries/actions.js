@@ -99,10 +99,9 @@ StatementEntries.actions = {
     name: 'reconcile',
     label: options.txdef?.name || __('reconcile'),
     icon: 'fa fa-external-link',
-    color: doc.match?.confidence,
+    color: 'danger',
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
-    subActions: (doc.match?.confidence === 'danger') && !options.txdef
-      && Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
+    subActions: !options.txdef && Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
       .map(txdef => StatementEntries.actions.reconcile({ txdef }, doc, user)),
     run() {
 //      ModalStack.setVar('txdef', options.txdef);
@@ -115,6 +114,29 @@ StatementEntries.actions = {
         amount: doc.amount,
         valueDate: doc.valueDate,
       };*/
+      const reconciliationDoc = { _id: doc._id };
+      Modal.show('Autoform_modal', {
+        body: 'Reconciliation',
+        bodyContext: { doc: reconciliationDoc },
+        // --- --- --- ---
+        id: 'af.statementEntry.reconcile',
+        schema: reconciliationSchema,
+        doc: reconciliationDoc,
+        type: 'method',
+        meteormethod: 'statementEntries.reconcile',
+        // --- --- --- ---
+        size: 'lg',
+      });
+    },
+  }),
+  matchedReconcile: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'reconcile',
+    icon: 'fa fa-external-link',
+    color: doc.match?.confidence,
+    visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc)
+      && doc.match?.confidence && doc.match?.confidence !== 'danger',
+    run() {
+      ModalStack.setVar('statementEntry', doc);
       const reconciliationDoc = { _id: doc._id, defId: doc.match?.tx?.defId || options.txdef?._id, txId: doc.match?.txId };
       Modal.show('Autoform_modal', {
         body: 'Reconciliation',
@@ -135,7 +157,11 @@ StatementEntries.actions = {
     icon: 'fa fa-times',
     visible: doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
     run() {
-      StatementEntries.methods.unReconcile.call({ _id: doc._id });
+      if (doc.community().settings.paymentsWoStatement) {
+        StatementEntries.methods.unReconcile.call({ _id: doc._id });
+      } else {
+        Transactions.actions.delete({}, doc.transaction()).run();
+      }
     },
   }),
   autoReconcile: (options, doc, user = Meteor.userOrNull()) => ({
