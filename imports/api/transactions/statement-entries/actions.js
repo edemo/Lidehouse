@@ -115,7 +115,7 @@ StatementEntries.actions = {
         amount: doc.amount,
         valueDate: doc.valueDate,
       };*/
-      const reconciliationDoc = { _id: doc._id, defId: doc.match?.tx?.defId || options.txdef._id, txId: doc.match?.txId };
+      const reconciliationDoc = { _id: doc._id, defId: doc.match?.tx?.defId || options.txdef?._id, txId: doc.match?.txId };
       Modal.show('Autoform_modal', {
         body: 'Reconciliation',
         bodyContext: { doc: reconciliationDoc },
