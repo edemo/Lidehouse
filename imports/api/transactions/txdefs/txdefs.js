@@ -59,7 +59,7 @@ Txdefs.helpers({
     return 'txdef';
   },
   isAutoPosting() {
-    return this.isAccountantTx();
+    return false;
   },
   isAccountantTx() {
     return !_.contains(['bill', 'payment', 'receipt'], this.category);
