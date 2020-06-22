@@ -3,6 +3,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -37,6 +38,9 @@ Transactions.categoryHelpers('receipt', {
     this[this.relationSide()] = [{ account: this.payAccount }];
 
     return { debit: this.debit, credit: this.credit };
+  },
+  displayInSelect() {
+    return `${this.serialId} (${moment(this.valueDate).format('YYYY.MM.DD')} ${this.partner()} ${this.amount})`;
   },
 });
 

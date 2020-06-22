@@ -35,7 +35,7 @@ export const chooseTransaction = {
     const communityId = ModalStack.getVar('communityId');
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return [];
-    const txs = Transactions.find({ communityId, defId, seId: { $exists: false } });
+    const txs = Transactions.find({ communityId, defId, status: { $ne: 'void' }, seId: { $exists: false } });
     const options = txs.map(tx => ({ label: tx.displayInSelect(), value: tx._id }));
     return options;
   },
