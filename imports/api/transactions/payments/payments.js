@@ -32,7 +32,7 @@ export const chooseBillOfPartner = {
     const selector = { communityId, category: 'bill', relation, partnerId };
     const bills = Transactions.find(Object.cleanUndefined(selector), { sort: { createdAt: -1 } });
     const options = bills.map(function option(bill) {
-      return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}/${bill.amount}`, value: bill._id };
+      return { label: bill.displayInSelect(), value: bill._id };
     });
     return options;
   },
@@ -182,6 +182,9 @@ Transactions.categoryHelpers('payment', {
   },
   displayInHistory() {
     return __(this.category) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');
+  },
+  displayInSelect() {
+    return `${this.serialId} (${moment(this.valueDate).format('YYYY.MM.DD')} ${this.partner()} ${this.amount})`;
   },
 });
 

@@ -36,7 +36,7 @@ export const chooseTransaction = {
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return [];
     const txs = Transactions.find({ communityId, defId, seId: { $exists: false } });
-    const options = txs.map(tx => ({ label: tx.serialId, value: tx._id }));
+    const options = txs.map(tx => ({ label: tx.displayInSelect(), value: tx._id }));
     return options;
   },
   firstOption: () => __('(Select one)'),

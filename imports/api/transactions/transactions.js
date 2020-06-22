@@ -284,6 +284,9 @@ Transactions.helpers({
   makeJournalEntries() {
     // NOP -- will be overwritten in the categories
   },
+  displayInSelect() {
+    return this.serialId;
+  },
   // bill/receipt helpers
   issuer() {
     if (this.relation === 'supplier') return { partner: this.partner(), contract: this.contract() };

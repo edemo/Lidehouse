@@ -155,8 +155,8 @@ Transactions.categoryHelpers('bill', {
       });
     }
   },
-  display() {
-    return `${moment(this.deliveryDate).format('L')} ${this.partner()} ${this.amount}`;
+  displayInSelect() {
+    return `${this.serialId} (${this.partner()} ${moment(this.valueDate).format('YYYY.MM.DD')} ${this.outstanding}/${this.amount})`;
   },
   displayInHistory() {
     return __(this.category) + (this.lineCount() ? ` (${this.lineCount()} ${__('item')})` : '');
