@@ -1082,7 +1082,7 @@
   },
   "schemaPayments": {
     "bills": {
-      "label": "Számlák kifizetve",
+      "label": "Kapcsolt számlák",
       "$": {
         "id": {
           "label": "Számla"

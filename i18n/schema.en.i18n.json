@@ -1082,7 +1082,7 @@
   },
   "schemaPayments": {
     "bills": {
-      "label": "Paid bills",
+      "label": "Connected bills",
       "$": {
         "id": {
           "label": "Bill"
