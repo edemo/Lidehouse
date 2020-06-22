@@ -87,7 +87,9 @@ Template.Accounting_transactions.viewmodel({
       defId: this.txdefSelected(),
       debitAccount: '\\^' + this.debitAccountSelected() + '\\',
       creditAccount: '\\^' + this.creditAccountSelected() + '\\',
-    }, this.txSubscribeSelector());
+    });
+    //, this.txSubscribeSelector());
+    //delete selector.relation;
     return selector;
   },
   transactionsTableDataFn() {
