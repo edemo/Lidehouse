@@ -706,8 +706,8 @@
       "label": "Kategória",
       "options": {
         "bill": "számla",
-        "payment": "számla teljesítés",
-        "remission": "számla elengedés",
+        "payment": "fizetés",
+        "remission": "elengedés",
         "receipt": "nyugta",
         "transfer": "átvezetés",
         "opening": "nyitó",

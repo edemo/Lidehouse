@@ -706,8 +706,8 @@
       "label": "Category",
       "options": {
         "bill": "bill",
-        "payment": "bill payment",
-        "remission": "bill remission",
+        "payment": "payment",
+        "remission": "remission",
         "receipt": "receipt",
         "transfer": "transfer",
         "opening": "opening",
