@@ -10,14 +10,17 @@ import './bill-view.html';
 Template.Bill_view.viewmodel({
   onCreated(instance) {
   },
+  reactiveDoc() {
+    return Transactions.findOne(this.templateInstance.data.doc._id);
+  },
+  isBill() {
+    return this.templateInstance.data.doc.category === 'bill';
+  },
   parcelRef(parcelId) {
     const parcel = Parcels.findOne(parcelId);
     return parcel && parcel.ref;
   },
   findTx(id) {
     return Transactions.findOne(id);
-  },
-  isBill() {
-    return this.templateInstance.data.doc.category === 'bill';
   },
 });

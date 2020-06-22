@@ -7,32 +7,33 @@
 </template>
 
 <template name="Bill_view">
+  {{#let rDoc=reactiveDoc}}
     <div class="row">
         <div class="col-xs-6">
             <h5>{{_ 'issuer'}}:</h5>
             <address>
-                {{>Bill_partner doc.issuer}}
+                {{>Bill_partner rDoc.issuer}}
             </address>
         </div>
 
         <div class="col-xs-6 text-right">
             <h4>
-              {{{displayTxStatus doc.status doc}}} 
-              {{_ (or doc.txdef.name 'schemaTransactions.serialId.label')}}:
-              <span class="text-navy">{{doc.serialId}}</span>
+              {{{displayTxStatus rDoc.status rDoc}}} 
+              {{_ (or rDoc.txdef.name 'schemaTransactions.serialId.label')}}:
+              <span class="text-navy">{{rDoc.serialId}}</span>
             </h4>
             <h5>{{_ 'receiver'}}:</h5>
             <address>
-                {{>Bill_partner doc.receiver}}
+                {{>Bill_partner rDoc.receiver}}
             </address>
             <p>
                 {{#if isBill}}
-                    <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate doc.issueDate}}</span><br/>
-                    <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate doc.deliveryDate}}</span><br/>
-                    <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate doc.dueDate}}</span>
+                    <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate rDoc.issueDate}}</span><br/>
+                    <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate rDoc.deliveryDate}}</span><br/>
+                    <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate rDoc.dueDate}}</span>
                 {{else}}
-                    <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>
-                    <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount doc.payAccount}}}</span><br/>
+                    <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate rDoc.valueDate}}</span><br/>
+                    <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount rDoc.payAccount}}}</span><br/>
                 {{/if}}
             </p>
         </div>
@@ -54,14 +55,14 @@
                 </tr>
             </thead>
             <tbody>
-                {{#each line in doc.lines}}
+                {{#each line in rDoc.lines}}
                 {{#if line}}
                 <tr>
                     <td>
                         <div>
                         <strong>
                             {{line.title}}
-                            {{#if (equals doc.relation 'member')}}
+                            {{#if (equals rDoc.relation 'member')}}
                                 {{#if line.parcelId}}{{parcelRef line.parcelId}}{{/if}} 
                                 {{#if line.billing}}{{line.billing.period}}{{/if}}
                             {{/if}}
@@ -92,16 +93,16 @@
         {{#if community.settings.underVat}}
         <tr>
             <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney doc.amount}}</td>
+            <td class="nowrap">{{displayMoney rDoc.amount}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney doc.tax}}</td>
+            <td class="nowrap">{{displayMoney rDoc.tax}}</td>
         </tr>
         {{/if}}
         <tr>
             <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney doc.amount}}</td>
+            <td class="nowrap">{{displayMoney rDoc.amount}}</td>
         </tr>
         </tbody>
     </table>
@@ -109,7 +110,7 @@
     {{#if isBill}}
     <table class="table invoice-total"> 
       <tbody>
-      {{#each billPayment in doc.getPayments}}
+      {{#each billPayment in rDoc.getPayments}}
       {{#let paymentTx=(findTx billPayment.id)}}
       <tr>
           <td class="text-capitalize">
@@ -123,19 +124,20 @@
       {{/each}}
       <tr>
           <td><strong>{{_ 'schemaBills.outstanding.label'}} :</strong></td>
-          <td class="nowrap">{{displayMoney doc.outstanding}}</td>
+          <td class="nowrap">{{displayMoney rDoc.outstanding}}</td>
       </tr>
       </tbody>
     </table>
     {{/if}}
 
-    <div class="text-right" data-id="{{doc._id}}">
-      {{>Action_buttons_group collection='transactions' doc=doc actions='edit,post,delete,registerPayment' size='xl'}}
+    <div class="text-right" data-id="{{rDoc._id}}">
+      {{>Action_buttons_group collection='transactions' doc=rDoc actions='edit,post,delete,registerPayment' size='xl'}}
     </div>
 
-    {{#if doc.note}}
+    {{#if rDoc.note}}
     <div class="well m-t"><strong>{{_ 'schemaTransactions.note.label'}}:</strong><br>
-        {{doc.note}}
+        {{rDoc.note}}
     </div>
     {{/if}}
+  {{/let}}
 </template>

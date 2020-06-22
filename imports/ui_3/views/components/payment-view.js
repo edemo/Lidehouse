@@ -11,6 +11,9 @@ import './payment-view.html';
 Template.Payment_view.viewmodel({
   onCreated(instance) {
   },
+  reactiveDoc() {
+    return Transactions.findOne(this.templateInstance.data.doc._id);
+  },
   displayBill(bp) {
     const bill = Transactions.findOne(bp.id);
     return bill?.serialId;

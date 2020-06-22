@@ -1,19 +1,20 @@
 <template name="Payment_view">
+  {{#let rDoc=reactiveDoc}}
     <div class="row">
         <div class="col-sm-12 col-md-8 pull-right text-right">
             <h4>
-              {{{displayTxStatus doc.status doc}}} 
-              {{_ (or doc.txdef.name 'schemaTransactions.serialId.label')}}:
-              <span class="text-navy">{{doc.serialId}}</span>
+              {{{displayTxStatus rDoc.status rDoc}}} 
+              {{_ (or rDoc.txdef.name 'schemaTransactions.serialId.label')}}:
+              <span class="text-navy">{{rDoc.serialId}}</span>
             </h4>
             <h5>{{_ 'partner'}}:</h5>
             <address>
-                {{doc.partner}}
-                {{#if doc.contractId}}<br>[{{doc.contract}}]{{/if}}
+                {{rDoc.partner}}
+                {{#if rDoc.contractId}}<br>[{{rDoc.contract}}]{{/if}}
             </address>
             <p>
-                <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>
-                <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount doc.payAccount}}}</span><br/>
+                <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate rDoc.valueDate}}</span><br/>
+                <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount rDoc.payAccount}}}</span><br/>
             </p>
         </div>
     </div>
@@ -27,7 +28,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{#each bp in doc.bills}}
+                {{#each bp in rDoc.bills}}
                 {{#if bp}}
                 <tr>
                     <td>
@@ -51,7 +52,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{#each line in doc.lines}}
+                {{#each line in rDoc.lines}}
                 {{#if line}}
                 <tr>
                     <td>{{{displayAccount line.account}}}</td>
@@ -68,26 +69,27 @@
         <tbody>
         <!--tr>
             <td><strong>{{_ 'Allocated'}} :</strong></td>
-            <td class="nowrap">{{displayMoney doc.allocated}}</td>
+            <td class="nowrap">{{displayMoney rDoc.allocated}}</td>
         </tr-->
         <tr>
             <td><strong>{{_ 'Overpayment'}} :</strong></td>
-            <td class="nowrap">{{displayMoney doc.outstanding}}</td>
+            <td class="nowrap">{{displayMoney rDoc.outstanding}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'schemaTransactions.amount.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney doc.amount}}</td>
+            <td class="nowrap">{{displayMoney rDoc.amount}}</td>
         </tr>
         </tbody>
     </table>
 
-    <div class="text-right" data-id="{{doc._id}}">
-      {{>Action_buttons_group collection='transactions' doc=doc actions='edit,delete,post' size='xl'}}
+    <div class="text-right" data-id="{{rDoc._id}}">
+      {{>Action_buttons_group collection='transactions' doc=rDoc actions='edit,delete,post' size='xl'}}
     </div>
 
-    {{#if doc.note}}
+    {{#if rDoc.note}}
     <div class="well m-t"><strong>{{_ 'schemaTransactions.note.label'}}:</strong><br>
-        {{doc.note}}
+        {{rDoc.note}}
     </div>
     {{/if}}
+  {{/let}}
 </template>
