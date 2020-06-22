@@ -71,7 +71,7 @@ Template.Accounting_transactions.viewmodel({
       }
     },
     function txSubscription() {
-      this.templateInstance.subscribe('transactions.betweenAccounts', this.subscribeParams());
+      this.templateInstance.subscribe('transactions.betweenAccounts', this.transactionsSubscribeSelector());
     },
   ],
   txdefs() {
@@ -82,21 +82,19 @@ Template.Accounting_transactions.viewmodel({
   optionsOf(accountCode) {
     return Accounts.nodeOptionsOf(this.communityId(), accountCode, true);
   },
-  subscribeParams() {
-    const selector = _.extend({
-      defId: this.txdefSelected(),
-      debitAccount: '\\^' + this.debitAccountSelected() + '\\',
-      creditAccount: '\\^' + this.creditAccountSelected() + '\\',
-    });
-    //, this.txSubscribeSelector());
-    //delete selector.relation;
+  transactionsSubscribeSelector() {
+    const selector = this.subscribeSelector();
+    delete selector.relation; // relation has only effect on the bills page
+    if (this.txdefSelected()) selector.defId = this.txdefSelected();
+    if (this.debitAccountSelected()) selector.debitAccount = '\\^' + this.debitAccountSelected() + '\\';
+    if (this.creditAccountSelected()) selector.creditAccount = '\\^' + this.creditAccountSelected() + '\\';
     return selector;
   },
   transactionsTableDataFn() {
-    const templateInstance = Template.instance();
+    const instance = this.templateInstance;
     return () => {
-      if (!templateInstance.subscriptionsReady()) return [];
-      const selector = Transactions.makeFilterSelector(this.subscribeParams());
+      if (!instance.subscriptionsReady()) return [];
+      const selector = Transactions.makeFilterSelector(this.transactionsSubscribeSelector());
       return Transactions.find(selector).fetch();
     };
   },

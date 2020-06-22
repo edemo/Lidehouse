@@ -495,6 +495,7 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
   if (params.begin || params.end) selector.valueDate = dateFilter(params.begin, params.end);
   delete selector.begin; delete selector.end;
   if (params.defId) {
+    selector.defId = params.defId;
   } else delete selector.defId;
   if (params.account) {
     const account = withSubs(params.account);

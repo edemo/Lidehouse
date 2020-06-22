@@ -86,7 +86,7 @@ ViewModel.share({
           this.localizerSelected()) return true;
       return false;
     },
-    txSubscribeSelector() {
+    subscribeSelector() {
       const communityId = this.communityId();
       const selector = { communityId };
       selector.relation = this.activePartnerRelation();
@@ -106,8 +106,8 @@ ViewModel.share({
       if (this.localizerSelected()) selector.localizer = '\\^' + this.localizerSelected() + '\\';
       return selector;
     },
-    txFilterSelector(category) {
-      const selector = this.txSubscribeSelector();
+    filterSelector(category) {
+      const selector = this.subscribeSelector();
       selector.category = category;
       return selector;
     },

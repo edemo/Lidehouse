@@ -79,11 +79,11 @@ Template.Accounting_bills.viewmodel({
   },
   txTableDataFn(category) {
     const self = this;
-    return () => Transactions.find(self.txFilterSelector(category)).fetch();
+    return () => Transactions.find(self.filterSelector(category)).fetch();
   },
   billsTableDataFn() {
     const self = this;
-    return () => Transactions.find(self.txFilterSelector('bill')).fetch();
+    return () => Transactions.find(self.filterSelector('bill')).fetch();
   },
   billsOptionsFn() {
     return () => Object.create({
@@ -97,7 +97,7 @@ Template.Accounting_bills.viewmodel({
   },
   paymentsTableDataFn() {
     const self = this;
-    return () => Transactions.find(self.txFilterSelector('payment')).fetch();
+    return () => Transactions.find(self.filterSelector('payment')).fetch();
   },
   paymentsOptionsFn() {
     return () => Object.create({
@@ -111,7 +111,7 @@ Template.Accounting_bills.viewmodel({
   },
   receiptsTableDataFn() {
     const self = this;
-    return () => Transactions.find(self.txFilterSelector('receipt')).fetch();
+    return () => Transactions.find(self.filterSelector('receipt')).fetch();
   },
   receiptsOptionsFn() {
     return () => Object.create({

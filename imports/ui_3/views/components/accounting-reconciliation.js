@@ -63,7 +63,7 @@ Template.Accounting_reconciliation.viewmodel({
       ...DatatablesExportButtons,
     });
   },*/
-  filterSelector() {
+  statementEntriesFilterSelector() {
     const selector = { 
       communityId: getActiveCommunityId(),
       account: this.accountSelected(),
@@ -76,10 +76,11 @@ Template.Accounting_reconciliation.viewmodel({
   },
   statementEntriesTableDataFn() {
     const self = this;
-    const templateInstance = Template.instance();
+    const instance = this.templateInstance;
     return () => {
-      if (!templateInstance.subscriptionsReady()) return [];
-      const entries = StatementEntries.find(self.filterSelector()).fetch();
+      if (!instance.subscriptionsReady()) return [];
+      const selector = self.statementEntriesFilterSelector();
+      const entries = StatementEntries.find(selector).fetch();
       return entries;
     };
   },
