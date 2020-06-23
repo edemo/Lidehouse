@@ -43,7 +43,7 @@ Topics.baseSchema = new SimpleSchema({
 //  shareddocs: { type: Array, optional: true },
 //  'shareddocs.$': { type: String, optional: true, autoform: documentUpload() },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
-  movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id },
+  movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 });
 
 Topics.extensionSchemas.news = new SimpleSchema({
