@@ -19,12 +19,8 @@
             <h5>{{_ 'issuer'}}:</h5>
             <address>
                 {{#if (equals partnerRelation 'supplier')}}
-                    {{#if isBill}}
-                        {{> afQuickField name="partnerId"}}
-                        {{> afQuickField name="contractId"}}
-                    {{else}}
-                        {{> afQuickField name="partnerName"}}
-                    {{/if}}
+                    {{> afQuickField name="partnerId"}}
+                    {{> afQuickField name="contractId"}}
                 {{else}}
                     {{>Bill_partner activeCommunity.asPartner}}
                 {{/if}}
@@ -50,12 +46,8 @@
             <h5>{{_ 'receiver'}}:</h5>
             <address>
                 {{#if (equals partnerRelation 'customer')}}
-                    {{#if isBill}}
-                        {{> afQuickField name="partnerId"}}
-                        {{> afQuickField name="contractId"}}
-                    {{else}}
-                        {{> afQuickField name="partnerName"}}
-                    {{/if}}
+                    {{> afQuickField name="partnerId"}}
+                    {{> afQuickField name="contractId"}}
                 {{else}}
                     {{>Bill_partner activeCommunity.asPartner}}
                 {{/if}}

@@ -13,17 +13,17 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
-const receiptSchema = new SimpleSchema({
-  partnerName: { type: String, max: 100, optional: true },
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
-  // amount overrides non-optional value of transactions, with optional & calculated value
-  amount: { type: Number, decimal: true, optional: true },
-  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
-  title: { type: String, max: 200, optional: true }, // title here used only when there are no lines
-  lines: { type: Array, defaultValue: [] },
-  'lines.$': { type: Bills.lineSchema },
-  payAccount: { type: String, autoform: chooseConteerAccount(true) }, // the money account paid to/from
-});
+const receiptSchema = new SimpleSchema([
+  Transactions.partnerSchema, {
+    // amount overrides non-optional value of transactions, with optional & calculated value
+    amount: { type: Number, decimal: true, optional: true },
+    tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+    title: { type: String, max: 200, optional: true }, // title here used only when there are no lines
+    lines: { type: Array, defaultValue: [] },
+    'lines.$': { type: Bills.lineSchema },
+    payAccount: { type: String, autoform: chooseConteerAccount(true) }, // the money account paid to/from
+  },
+]);
 
 Transactions.categoryHelpers('receipt', {
   makeJournalEntries() {

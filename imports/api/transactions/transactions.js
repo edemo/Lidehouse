@@ -132,7 +132,7 @@ Transactions.helpers({
   },
   partner() {
     if (this.partnerId) return Partners.findOne(this.partnerId);
-    return this.partnerName;
+    return undefined;
   },
   membership() {
     if (this.membershipId) return Memberships.findOne(this.membershipId);

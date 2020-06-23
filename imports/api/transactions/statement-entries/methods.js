@@ -183,7 +183,6 @@ export const recognize = new ValidatedMethod({
       // ---------------------------
       const tx = {
         communityId,
-        partnerName: entry.name, // receipt
         amount: Math.abs(entry.amount), // payment
         valueDate: entry.valueDate,
 //        issueDate: entry.valueDate, // bill
