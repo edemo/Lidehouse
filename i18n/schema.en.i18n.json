@@ -770,7 +770,7 @@
       "label": "Reconciled"
     },
     "allocated": {
-      "label": "Allocated"
+      "label": "Reconciled to bills"
     },
     "debit": {
       "label": "Debit",
@@ -1112,7 +1112,7 @@
       }
     },
     "outstanding": {
-      "label": "Unallocated amount",
+      "label": "Unreconciled amount",
       "placeholder": "(eg. 14560)"
     }
   },

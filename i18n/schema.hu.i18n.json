@@ -770,7 +770,7 @@
       "label": "Egyeztetve"
     },
     "allocated": {
-      "label": "Allokálva"
+      "label": "Számlákhoz egyeztetve"
     },
     "debit": {
       "label": "Tartozik",
@@ -1112,7 +1112,7 @@
       }
     },
     "outstanding": {
-      "label": "Allokálatlan összeg",
+      "label": "Egyeztetendő összeg",
       "placeholder": "(pl. 14560)"
     }
   },
