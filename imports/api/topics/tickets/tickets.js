@@ -49,9 +49,7 @@ Topics.attachVariantSchema(
   { selector: { category: 'ticket' } },
 );
 
-Meteor.startup(function attach() {
-  Topics.simpleSchema({ category: 'ticket' }).i18n('schemaTickets');   // translation is different from schemaTopics
-});
+Topics.simpleSchema({ category: 'ticket' }).i18n('schemaTickets');   // translation is different from schemaTopics
 
 Tickets.publicExtensionFields = { ticket: 1 };
 _.extend(Topics.publicFields, Tickets.publicExtensionFields);

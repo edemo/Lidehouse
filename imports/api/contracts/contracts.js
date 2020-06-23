@@ -105,16 +105,14 @@ Contracts.attachVariantSchema(Contracts.detailsSchema, { selector: { relation: '
 Contracts.attachVariantSchema(Contracts.detailsSchema, { selector: { relation: 'supplier' } });
 Contracts.attachVariantSchema(Contracts.memberSchema, { selector: { relation: 'member' } });
 
-Meteor.startup(function attach() {
-  Contracts.simpleSchema({ relation: 'customer' }).i18n('schemaContracts');
-  Contracts.simpleSchema({ relation: 'customer' }).i18n('schemaPartners');    // for relation translation
+Contracts.simpleSchema({ relation: 'customer' }).i18n('schemaContracts');
+Contracts.simpleSchema({ relation: 'customer' }).i18n('schemaPartners');    // for relation translation
 
-  Contracts.simpleSchema({ relation: 'supplier' }).i18n('schemaContracts');
-  Contracts.simpleSchema({ relation: 'supplier' }).i18n('schemaPartners');    // for relation translation
+Contracts.simpleSchema({ relation: 'supplier' }).i18n('schemaContracts');
+Contracts.simpleSchema({ relation: 'supplier' }).i18n('schemaPartners');    // for relation translation
 
-  Contracts.simpleSchema({ relation: 'member' }).i18n('schemaContracts');
-  Contracts.simpleSchema({ relation: 'member' }).i18n('schemaPartners');    // for relation translation
-});
+Contracts.simpleSchema({ relation: 'member' }).i18n('schemaContracts');
+Contracts.simpleSchema({ relation: 'member' }).i18n('schemaPartners');    // for relation translation
 
 Factory.define('contract', Contracts, {
   title: () => `Contract on ${faker.random.word()}`,

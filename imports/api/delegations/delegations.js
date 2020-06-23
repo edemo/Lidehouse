@@ -108,9 +108,7 @@ Delegations.helpers({
 Delegations.attachSchema(Delegations.schema);
 Delegations.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Delegations.simpleSchema().i18n('schemaDelegations');
-});
+Delegations.simpleSchema().i18n('schemaDelegations');
 
 Factory.define('delegation', Delegations, {
   sourceId: () => Factory.get('partner'),

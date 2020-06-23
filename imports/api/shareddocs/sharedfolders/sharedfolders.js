@@ -27,9 +27,7 @@ Sharedfolders.schema = new SimpleSchema({
 Sharedfolders.attachSchema(Sharedfolders.schema);
 Sharedfolders.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Sharedfolders.simpleSchema().i18n('schemaSharedfolders');
-});
+Sharedfolders.simpleSchema().i18n('schemaSharedfolders');
 
 Factory.define('sharedfolder', Sharedfolders, {
   name: () => faker.random.word(),

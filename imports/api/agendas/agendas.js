@@ -54,9 +54,7 @@ Agendas.helpers({
 Agendas.attachSchema(Agendas.schema);
 Agendas.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Agendas.simpleSchema().i18n('schemaAgendas');
-});
+Agendas.simpleSchema().i18n('schemaAgendas');
 
 Factory.define('agenda', Agendas, {
   title: () => `New agenda on ${faker.random.word()}`,

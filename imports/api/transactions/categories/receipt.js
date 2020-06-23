@@ -46,10 +46,8 @@ Transactions.categoryHelpers('receipt', {
 
 Transactions.attachVariantSchema(receiptSchema, { selector: { category: 'receipt' } });
 
-Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'receipt' }).i18n('schemaTransactions');
-  Transactions.simpleSchema({ category: 'receipt' }).i18n('schemaBills');
-});
+Transactions.simpleSchema({ category: 'receipt' }).i18n('schemaTransactions');
+Transactions.simpleSchema({ category: 'receipt' }).i18n('schemaBills');
 
 // --- Factory ---
 

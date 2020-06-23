@@ -5,9 +5,7 @@ import { Memberships } from './memberships';
 function transformSchemaForUI(schema) {
   const transformedSchema = new SimpleSchema(schema);
   transformedSchema._schema.partnerId.optional = false;
-  Meteor.startup(() => {
-    transformedSchema.i18n('schemaMemberships');
-  });
+  transformedSchema.i18n('schemaMemberships');
   return transformedSchema;
 }
 

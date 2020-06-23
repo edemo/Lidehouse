@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 const schema = new SimpleSchema({
   notes: { type: String, optional: true, autoform: { rows: 3 } },
 });
-Meteor.startup(() => schema.i18n('schemaNoted'));
+schema.i18n('schemaNoted');
 
 const helpers = {
 };

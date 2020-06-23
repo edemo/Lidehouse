@@ -19,6 +19,4 @@ Vouchers.helpers({
 Vouchers.attachSchema(Vouchers.schema);
 Vouchers.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Vouchers.simpleSchema().i18n('schemaVouchers');
-});
+Vouchers.simpleSchema().i18n('schemaVouchers');

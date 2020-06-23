@@ -205,10 +205,8 @@ Memberships.attachVariantSchema(undefined, { selector: { role: 'guest' } });
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,
 // and that happens earlier than TAPi18n extra comtype transaltions get added.
-Meteor.startup(function attach() {
-  nonOccupantRoles.forEach((role) => {
-    Memberships.simpleSchema({ role }).i18n('schemaMemberships');
-  });
+nonOccupantRoles.forEach((role) => {
+  Memberships.simpleSchema({ role }).i18n('schemaMemberships');
 });
 
 // --- Before/after actions ---

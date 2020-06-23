@@ -53,9 +53,7 @@ Certificates.schema = new SimpleSchema([
 Certificates.attachSchema(Certificates.schema);
 Certificates.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Certificates.simpleSchema().i18n('schemaCertificates');
-});
+Certificates.simpleSchema().i18n('schemaCertificates');
 
 Certificates.allow({
   insert() { return true; },

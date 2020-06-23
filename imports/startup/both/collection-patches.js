@@ -112,7 +112,4 @@ Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour,
   if (behaviour.indexes) {
     Meteor.startup(() => behaviour.indexes(collection));
   }
-  Meteor.startup(() => {
-    collection.simpleSchema(options?.selector).i18n(`schema${behaviour.name}`);
-  });
 };

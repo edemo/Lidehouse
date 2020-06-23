@@ -170,10 +170,8 @@ Transactions.categoryHelpers('bill', {
 
 Transactions.attachVariantSchema(Bills.extensionSchema, { selector: { category: 'bill' } });
 
-Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'bill' }).i18n('schemaTransactions');
-  Transactions.simpleSchema({ category: 'bill' }).i18n('schemaBills');
-});
+Transactions.simpleSchema({ category: 'bill' }).i18n('schemaTransactions');
+Transactions.simpleSchema({ category: 'bill' }).i18n('schemaBills');
 
 // --- Factory ---
 

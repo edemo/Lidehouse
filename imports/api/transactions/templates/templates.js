@@ -65,9 +65,7 @@ Templates.helpers({
 
 Templates.attachSchema(Templates.schema);
 
-Meteor.startup(function attach() {
-  Templates.simpleSchema().i18n('schemaTemplates');
-});
+Templates.simpleSchema().i18n('schemaTemplates');
 
 Factory.define('template', Templates, {
 });

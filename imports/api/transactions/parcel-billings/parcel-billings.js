@@ -190,10 +190,8 @@ ParcelBillings.attachBehaviour(Noted);
 ParcelBillings.attachBehaviour(ActivePeriod);
 ParcelBillings.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  ParcelBillings.simpleSchema().i18n('schemaParcelBillings');
-  ParcelBillings.applySchema.i18n('schemaParcelBillings');
-});
+ParcelBillings.simpleSchema().i18n('schemaParcelBillings');
+ParcelBillings.applySchema.i18n('schemaParcelBillings');
 
 Factory.define('parcelBilling', ParcelBillings, {
   title: faker.random.word(),

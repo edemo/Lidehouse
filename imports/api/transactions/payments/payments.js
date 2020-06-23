@@ -202,10 +202,8 @@ Transactions.categoryHelpers('payment', {
 
 Transactions.attachVariantSchema(paymentSchema, { selector: { category: 'payment' } });
 
-Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'payment' }).i18n('schemaTransactions');
-  Transactions.simpleSchema({ category: 'payment' }).i18n('schemaPayments');
-});
+Transactions.simpleSchema({ category: 'payment' }).i18n('schemaTransactions');
+Transactions.simpleSchema({ category: 'payment' }).i18n('schemaPayments');
 
 // --- Factory ---
 

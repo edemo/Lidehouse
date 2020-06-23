@@ -31,9 +31,7 @@ Transactions.categoryHelpers('opening', {
 
 Transactions.attachVariantSchema(openingSchema, { selector: { category: 'opening' } });
 
-Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'opening' }).i18n('schemaTransactions');
-});
+Transactions.simpleSchema({ category: 'opening' }).i18n('schemaTransactions');
 
 // --- Factory ---
 
