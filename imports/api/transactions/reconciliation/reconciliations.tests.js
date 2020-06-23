@@ -75,7 +75,8 @@ if (Meteor.isServer) {
 */
       });
       afterEach(function () {
-        Transactions.remove({});
+        Transactions.remove({ category: 'payment' });
+        Transactions.remove({ category: 'bill' });
       });
 
       it('Can pay bill by registering a payment tx - later a statementEntry will be matched to it', function () {
@@ -370,7 +371,8 @@ if (Meteor.isServer) {
         bill2 = Transactions.findOne(billId2);
       });
       after(function () {
-        Transactions.remove({});
+        Transactions.remove({ category: 'payment' });
+        Transactions.remove({ category: 'bill' });
       });
 
       it('Handles Entry without partner', function () {
@@ -434,7 +436,8 @@ if (Meteor.isServer) {
         bill2 = Transactions.findOne(billId2);
       });
       after(function () {
-        Transactions.remove({});
+        Transactions.remove({ category: 'payment' });
+        Transactions.remove({ category: 'bill' });
       });
 
       it('[1] Entry has unknown partner name - will not be auto reconciled', function () {
@@ -453,6 +456,11 @@ if (Meteor.isServer) {
 
         Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId });
         chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 0);
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.amount, 300);
+        chai.assert.equal(bill.getPayments().length, 0);
+        chai.assert.equal(bill.outstanding, 300);
+        chai.assert.equal(bill.partner().outstanding, 500);
       });
 
       it('[2] ... but can be reconciled by hand', function () {
@@ -470,6 +478,7 @@ if (Meteor.isServer) {
         Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId, txId: paymentId });
         const entry = StatementEntries.findOne(entryId);
         chai.assert.equal(entry.isReconciled(), true);
+
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.getPayments().length, 1);

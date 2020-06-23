@@ -1,10 +1,11 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
+import { Tracker } from 'meteor/tracker';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
+import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
@@ -97,59 +98,52 @@ StatementEntries.actions = {
   }),
   reconcile: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'reconcile',
-    label: options.txdef?.name || __('reconcile'),
     icon: 'fa fa-external-link',
     color: 'danger',
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
-    subActions: !options.txdef && Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
-      .map(txdef => StatementEntries.actions.reconcile({ txdef }, doc, user)),
-    run() {
-//      ModalStack.setVar('txdef', options.txdef);
-      ModalStack.setVar('statementEntry', doc);
-/*      const tx = {
-        communityId: doc.communityId,
-        defId: options.txdef._id,
-        category: options.txdef.category,
-        relation: options.txdef.data.relation,
-        amount: doc.amount,
-        valueDate: doc.valueDate,
-      };*/
-      const reconciliationDoc = { _id: doc._id };
-      Modal.show('Autoform_modal', {
-        body: 'Reconciliation',
-        bodyContext: { doc: reconciliationDoc },
-        // --- --- --- ---
-        id: 'af.statementEntry.reconcile',
-        schema: reconciliationSchema,
-        doc: reconciliationDoc,
-        type: 'method',
-        meteormethod: 'statementEntries.reconcile',
-        // --- --- --- ---
-        size: 'lg',
-      });
-    },
+    subActions: !doc.txdef && Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
+      .map(txdef => StatementEntries.actions.matchedReconcile({ txdef }, doc, user)),
   }),
   matchedReconcile: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'reconcile',
+    name: 'matchedReconcile',
+    label: options.txdef?.name || __('reconcile'),
     icon: 'fa fa-external-link',
     color: doc.match?.confidence,
-    visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc)
-      && doc.match?.confidence && doc.match?.confidence !== 'danger',
+    visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc) && (options.txdef || doc.match?.tx?.defId),
     run() {
-      ModalStack.setVar('statementEntry', doc);
-      const reconciliationDoc = { _id: doc._id, defId: doc.match?.tx?.defId || options.txdef?._id, txId: doc.match?.txId };
-      Modal.show('Autoform_modal', {
-        body: 'Reconciliation',
-        bodyContext: { doc: reconciliationDoc },
-        // --- --- --- ---
-        id: 'af.statementEntry.reconcile',
-        schema: reconciliationSchema,
-        doc: reconciliationDoc,
-        type: 'method',
-        meteormethod: 'statementEntries.reconcile',
-        // --- --- --- ---
-        size: 'lg',
-      });
+//      ModalStack.setVar('statementEntry', doc, true);
+//      const defId = doc.match?.tx?.defId || options.txdef?._id;
+      const insertTx = doc.match?.tx || {};
+      if (options.txdef) insertTx.defId = options.txdef._id;
+      debugAssert(insertTx.defId);
+      const txdef = Txdefs.findOne(insertTx.defId);
+
+      if (doc.community().settings.paymentsWoStatement) {
+        const reconciliationDoc = { _id: doc._id, defId: insertTx.defId, txId: doc.match?.txId };
+        Modal.show('Autoform_modal', {
+          body: 'Reconciliation',
+          bodyContext: { doc: reconciliationDoc },
+          // --- --- --- ---
+          id: 'af.statementEntry.reconcile',
+          schema: reconciliationSchema,
+          doc: reconciliationDoc,
+          type: 'method',
+          meteormethod: 'statementEntries.reconcile',
+          // --- --- --- ---
+          size: 'lg',
+        });
+      } else {
+        Tracker.autorun((computation) => {
+          const result = ModalStack.readResult('root', `af.${txdef.category}.insert`, true);
+          if (result) {
+            Meteor.defer(() => {
+              computation.stop();
+              StatementEntries.methods.reconcile.call({ _id: doc._id, txId: result });
+            });
+          }
+        });
+        Transactions.actions.new({ txdef }, insertTx).run();
+      }
     },
   }),
   unReconcile: (options, doc, user = Meteor.userOrNull()) => ({

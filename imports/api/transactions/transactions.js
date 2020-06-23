@@ -390,10 +390,10 @@ if (Meteor.isServer) {
     }
     if (tdoc.category === 'bill' || tdoc.category === 'payment') {
       tdoc.outstanding = tdoc.calculateOutstanding();
-//      if (tdoc.category === 'payment' && tdoc.outstanding !== 0) {
+      if (tdoc.category === 'payment' && tdoc.allocatedSomewhere() !== tdoc.amount) {
         // The min, max contraint on the schema does not work, because the hook runs after the schema check
-//        throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${tdoc.outstanding}`);
-//      }
+        throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${tdoc.outstanding}`);
+      }
     }
     _.extend(doc, tdoc);
   });
@@ -410,6 +410,7 @@ if (Meteor.isServer) {
   });
 
   Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
+    const tdoc = this.transform();
     autoValueUpdate(doc, modifier, 'complete', d => d.calculateComplete());
     if (doc.category === 'bill' || doc.category === 'receipt' || doc.category === 'payment') {
       const newDoc = Transactions._transform(_.extend({ category: doc.category }, modifier.$set));
@@ -420,10 +421,10 @@ if (Meteor.isServer) {
       if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
         || (doc.category === 'payment' && newDoc.bills)) {
         autoValueUpdate(doc, modifier, 'outstanding', d => d.calculateOutstanding());
-//        if (doc.category === 'payment' && doc.outstanding !== 0) {
+        if (doc.category === 'payment' && tdoc.allocatedSomewhere() !== doc.amount) {
           // The min, max contraint on the schema does not work, because the hook runs after the schema check
-//          throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${doc.outstanding}`);
-//        }
+          throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${doc.outstanding}`);
+        }
       }
     }
   });

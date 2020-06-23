@@ -14,8 +14,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
 
-  describe.only('transactions', function () {
-    this.timeout(15000000);
+  describe('transactions', function () {
+    this.timeout(15000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
       FixtureA = freshFixture();
@@ -59,7 +59,7 @@ if (Meteor.isServer) {
 
       it('Fills calculated values correctly', function () {
         bill = Transactions.findOne(billId);
-    
+
         chai.assert.equal(bill.lines.length, 2);
         chai.assert.equal(bill.lines[0].amount, 300);
         chai.assert.equal(bill.lines[1].amount, 1000);

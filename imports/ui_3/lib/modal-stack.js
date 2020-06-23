@@ -64,14 +64,19 @@ if (Meteor.isClient) {
       modalStack[modalStack.length - 2].result[afId] = result;
       Session.set('modalStack', modalStack);
     },
-    readResult(ownId, afId) {
+    readResult(ownId, afId, destroy = false) {
       const modalStack = ModalStack.get();
       // console.log('before read', modalStack);
       let ownModal = {};
       ownModal = _.find(modalStack, modal => (modal.id === ownId));
       // console.log('ownModal:', ownModal);
       // console.log('returns:', ownModal?.result[afId]);
-      return ownModal?.result[afId];
+      const result = ownModal?.result[afId];
+      if (destroy && result !== undefined) {
+        delete ownModal.result[afId];
+        Session.set('modalStack', modalStack);
+      }
+      return result;
     },
     setVar(key, value, keep = false) { // Should not call this within an autorun - would cause infinite loop
       if (key === 'communityId') {

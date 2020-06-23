@@ -17,12 +17,12 @@ import './entities.js';
 import './methods.js';
 
 function figureOutEntity(options, doc) {
-  const defId = doc.defId || options.txdef?._id
-    || AutoForm.getFieldValue('defId') || ModalStack.getVar('defId');
+  const defId = doc.defId || options.txdef?._id;
+//    || AutoForm.getFieldValue('defId') || ModalStack.getVar('defId');
   debugAssert(defId);
   const txdef = Txdefs.findOne(defId);
-  let entity = txdef.category || doc.category || options.entity
-    || AutoForm.getFieldValue('category') || ModalStack.getVar('category');
+  let entity = txdef.category;
+//    || doc.category || options.entity || AutoForm.getFieldValue('category') || ModalStack.getVar('category');
   debugAssert(entity);
   if (typeof entity === 'string') entity = Transactions.entities[entity];
   doc.defId = defId;
@@ -30,7 +30,7 @@ function figureOutEntity(options, doc) {
   _.each(txdef.data, (value, key) => doc[key] = value); // set doc.relation, etc
   return entity;
 }
-
+/*
 function prefillDocWhenReconciling(doc) {
   const statementEntry = ModalStack.getVar('statementEntry');
   if (statementEntry) {
@@ -38,7 +38,7 @@ function prefillDocWhenReconciling(doc) {
     doc.defId = AutoForm.getFieldValue('defId') || doc.defId; // the form choice overrides the match recommendation
   }
 }
-
+*/
 Transactions.actions = {
   new: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'new',
@@ -48,7 +48,7 @@ Transactions.actions = {
     visible: user.hasPermission('transactions.insert', doc),
     run() {
       doc = _.extend(defaultNewDoc(), doc);
-      prefillDocWhenReconciling(doc);
+//      prefillDocWhenReconciling(doc);
       const entity = figureOutEntity(options, doc);
       doc = Transactions._transform(doc);
 
@@ -221,7 +221,7 @@ Transactions.actions = {
       }, (didIt, res) => {
         if (!didIt || !res) return;
         const stornoTx = Transactions.findOne(res);
-        Transactions.actions.view({}, stornoTx).run();
+        Meteor.setTimeout(Transactions.actions.view({}, stornoTx).run, 1000);
       });
     },
   }),

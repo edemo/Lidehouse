@@ -82,12 +82,14 @@ export const reconcile = new ValidatedMethod({
     checkPermissions(this.userId, 'statements.reconcile', entry);
     const communityId = entry.communityId;
     const reconciledTx = Transactions.findOne(txId);
-    checkReconcileMatch(entry, reconciledTx);
-    if (reconciledTx.partnerId && entry.name && entry.name !== reconciledTx.partner().idCard.name) {
-      Recognitions.set(`names.${entry.name}`, reconciledTx.partner().idCard.name, { communityId });
+    if (Meteor.isServer) {
+      checkReconcileMatch(entry, reconciledTx);
+      if (reconciledTx.partnerId && entry.name && entry.name !== reconciledTx.partner().idCard.name) {
+        Recognitions.set(`names.${entry.name}`, reconciledTx.partner().idCard.name, { communityId });
+      }
     }
     Transactions.update(txId, { $set: { seId: _id } });
-    StatementEntries.update(_id, { $set: { txId }, $unset: { match: '' } });
+    StatementEntries.update(_id, { $set: { txId } }); //, $unset: { match: '' }
   },
 });
 
@@ -184,13 +186,13 @@ export const recognize = new ValidatedMethod({
         partnerName: entry.name, // receipt
         amount: Math.abs(entry.amount), // payment
         valueDate: entry.valueDate,
-        issueDate: entry.valueDate, // bill
-        deliveryDate: entry.valueDate, // bill
-        dueDate: entry.valueDate, // bill
-        lines: [{ title: entry.note, quantity: 1, unitPrice: Math.abs(entry.amount) }], // receipt
-        payAccount: entry.account, // receipt, payment
-        fromAccount: entry.account, // transfer
-        toAccount: entry.account, // transfer
+//        issueDate: entry.valueDate, // bill
+//        deliveryDate: entry.valueDate, // bill
+//        dueDate: entry.valueDate, // bill
+//        lines: [{ title: entry.note, quantity: 1, unitPrice: Math.abs(entry.amount) }], // receipt
+//        payAccount: entry.account, // receipt, payment
+//        fromAccount: entry.account, // transfer
+//        toAccount: entry.account, // transfer
       };
       Log.info('Danger not found partner, recommendation');
       Log.debug(tx);

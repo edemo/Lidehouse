@@ -98,17 +98,17 @@
     <table class="table invoice-total">
         <tbody>
         <tr>
-            <td><strong>{{_ 'Allocated'}} :</strong></td>
-            <td class="nowrap">{{displayMoney allocatedAmount}}</td>
+            <td><strong>{{_ 'Allocated to bills'}} :</strong></td>
+            <td class="nowrap">{{displayMoney allocatedToBillsAmount}}</td>
+        </tr>
+        <tr>
+            <td><strong>{{_ 'Allocated to no bills'}} :</strong></td>
+            <td class="nowrap">{{displayMoney allocatedToNonBillsAmount}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'Unallocated'}} :</strong></td>
             <td class="nowrap">{{displayMoney unallocatedAmount}}</td>
         </tr>
-        <!--tr>
-            <td><strong>{{_ 'schemaTransactions.amount.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney doc.amount}}</td>
-        </tr-->
         </tbody>
     </table>
 

@@ -19,6 +19,12 @@ import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
+Math.smallerInAbs = function smallerInAbs(a, b) {
+  if (a >= 0 && b >= 0) return Math.min(a, b);
+  else if (a <= 0 && b <= 0) return Math.max(a, b);
+  debugAssert(false); return undefined;
+};
+
 export const Payments = {};
 
 export const chooseBillOfPartner = {
@@ -97,15 +103,20 @@ Transactions.categoryHelpers('payment', {
     return this.getBills().length;
   },
   calculateOutstanding() {
-    let allocated = 0;
-//    console.log(this);
-    this.getBills().forEach(bill => allocated += bill.amount);
-//    this.getLines().forEach(line => allocated += line.amount);
-//    console.log('amount:', this.amount - allocated);
-    return this.amount - allocated;
+    return this.amount - this.allocatedToBills();
   },
-  allocated() {
-    return this.amount - this.outstanding;
+  allocatedToBills() {
+    let allocated = 0;
+    this.getBills().forEach(bill => allocated += bill.amount);
+    return allocated;
+  },
+  allocatedToNonBills() {
+    let allocated = 0;
+    this.getLines().forEach(line => allocated += line.amount);
+    return allocated;
+  },
+  allocatedSomewhere() {
+    return this.allocatedToBills() + this.allocatedToNonBills();
   },
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
@@ -115,21 +126,21 @@ Transactions.categoryHelpers('payment', {
     let unallocatedAmount = this.amount;
     this[this.relationSide()].push({ amount: this.amount, account: this.payAccount });
     this.bills.forEach(billPaid => {
-      if (unallocatedAmount <= 0) return false;
+      if (unallocatedAmount === 0) return false;
       const bill = Transactions.findOne(billPaid.id);
       if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
       if (accountingMethod === 'accrual') {
         bill[this.relationSide()].forEach(entry => {
-          if (unallocatedAmount <= 0) return false;
-          const amount = equalWithinRounding(entry.amount, billPaid.amount) ? entry.amount : Math.min(entry.amount, billPaid.amount);
+          if (unallocatedAmount === 0) return false;
+          const amount = equalWithinRounding(entry.amount, billPaid.amount) ? entry.amount : Math.smallerInAbs(entry.amount, billPaid.amount);
           this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId });
           unallocatedAmount -= amount;
         });
       } else if (accountingMethod === 'cash') {
         bill.lines.forEach(line => {
-          if (unallocatedAmount <= 0) return false;
+          if (unallocatedAmount === 0) return false;
           if (!line) return true; // can be null, when a line is deleted from the array
-          const amount = Math.min(line.amount, billPaid.amount);
+          const amount = Math.smallerInAbs(line.amount, billPaid.amount);
           const parcelId = line.localizer && Parcels.findOne({ communityId: this.communityId, code: line.localizer })._id;
           this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId });
           unallocatedAmount -= amount;
@@ -137,9 +148,9 @@ Transactions.categoryHelpers('payment', {
       }
     });
     this.lines.forEach(line => {
-      if (unallocatedAmount <= 0) return false;
+      if (unallocatedAmount === 0) return false;
       if (!line) return true; // can be null, when a line is deleted from the array
-      const amount = Math.min(line.amount, unallocatedAmount);
+      const amount = Math.smallerInAbs(line.amount, unallocatedAmount);
       this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
       unallocatedAmount -= amount;
     });

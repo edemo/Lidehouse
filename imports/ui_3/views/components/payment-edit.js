@@ -19,20 +19,24 @@ Template.Payment_edit.viewmodel({
   defaultDate() {
     return Clock.currentTime();
   },
-  allocatedAmount() {
+  allocatedToBillsAmount() {
     let allocated = 0;
     (AutoForm.getFieldValue('bills') || []).forEach(bp => {
       if (!bp) return;
       allocated += bp.amount;
     });
-//    (AutoForm.getFieldValue('lines') || []).forEach(l => {
-//      if (!l) return;
-//      allocated += l.amount;
-//    });
+    return allocated;
+  },
+  allocatedToNonBillsAmount() {
+    let allocated = 0;
+    (AutoForm.getFieldValue('lines') || []).forEach(l => {
+      if (!l) return;
+      allocated += l.amount;
+    });
     return allocated;
   },
   unallocatedAmount() {
-    return AutoForm.getFieldValue('amount') - this.allocatedAmount();
+    return AutoForm.getFieldValue('amount') - this.allocatedToBillsAmount() - this.allocatedToNonBillsAmount();
   },
   reconciling() {
     return ModalStack.getVar('statementEntry');
