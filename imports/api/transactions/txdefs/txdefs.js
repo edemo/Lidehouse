@@ -86,7 +86,7 @@ Txdefs.helpers({
       side = def.conteerSide();
       if (sideParam) side = Transactions.oppositeSide(side);
     }
-    if (this.category === 'payment' && this.community().settings.accountingMethod === 'cash') {
+    if (this.category === 'payment' && !sideParam && this.community().settings.accountingMethod === 'cash') {
       def = this.correspondingBillDef();
     }
 //    console.log('usedDef:', def, 'side:', side);
