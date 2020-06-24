@@ -12,6 +12,8 @@ import { sendOutstandingsEmail } from '/imports/email/outstandings-send.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
+import { Delegations } from '/imports/api/delegations/delegations.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import { Partners } from './partners.js';
 
 
@@ -90,6 +92,13 @@ export const merge = new ValidatedMethod({
       $inc: { outstanding: doc.outstanding },
     };
     Partners.update(destinationId, modifier, { selector: destinationDoc });
+
+    Contracts.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { multi: true });
+    Memberships.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { multi: true });
+    Transactions.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { multi: true });
+    Delegations.update({ sourceId: _id }, { $set: { sourceId: destinationId } }, { multi: true });
+    Delegations.update({ targetId: _id }, { $set: { targetId: destinationId } }, { multi: true });
+    // Topics.update({ voteCasts: _id }, ...
     Partners.remove(_id);
   },
 });
