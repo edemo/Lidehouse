@@ -111,20 +111,19 @@ export const insert = new ValidatedMethod({
       doc.bills.forEach((bp, i) => {
         const bill = Transactions.findOne(bp.id);
 //      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
-        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
+//        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
         function setOrCheckEquals(field) {
           if (i === 0) doc[field] = bill[field];
           else if (doc[field] !== bill[field]) throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
         }
         setOrCheckEquals('relation');
         setOrCheckEquals('partnerId');
-        setOrCheckEquals('membershipId');
         setOrCheckEquals('contractId');
       });
     } else if (doc.category === 'barter') {
       const supplierBill = doc.supplierBill();
       const customerBill = doc.customerBill();
-      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
+//      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
       if (supplierBill.relation !== 'supplier') throw new Meteor.Error('Supplier bill is not from a supplier');
       if (customerBill.relation !== 'customer' && customerBill.relation !== 'member') throw new Meteor.Error('Customer bill is not from a customer/owner');
     }

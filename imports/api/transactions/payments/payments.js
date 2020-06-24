@@ -122,7 +122,7 @@ Transactions.categoryHelpers('payment', {
     const allocatedAmount = this.allocatedSomewhere();
     if (allocatedAmount !== this.amount) {
       // The min, max contraint on the schema does not work, because the hook runs after the schema check
-      throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.amount - this.allocatedAmount}`);
+      throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.amount - allocatedAmount}`);
     }
   },
   fillFromStatementEntry(entry) {
