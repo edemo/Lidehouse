@@ -55,7 +55,7 @@ export const post = new ValidatedMethod({
     if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
 
     if (doc.category === 'bill' || doc.category === 'receipt') {
-      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
     } else if (doc.category === 'payment') {
       doc.bills.forEach(bp => checkBillIsPosted(bp.id));
     } else if (doc.category === 'barter') {
@@ -111,7 +111,7 @@ export const insert = new ValidatedMethod({
       doc.bills.forEach((bp, i) => {
         const bill = Transactions.findOne(bp.id);
 //      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
-        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
         function setOrCheckEquals(field) {
           if (i === 0) doc[field] = bill[field];
           else if (doc[field] !== bill[field]) throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
@@ -124,7 +124,7 @@ export const insert = new ValidatedMethod({
     } else if (doc.category === 'barter') {
       const supplierBill = doc.supplierBill();
       const customerBill = doc.customerBill();
-      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bartered bill has to be conteered first');
+      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
       if (supplierBill.relation !== 'supplier') throw new Meteor.Error('Supplier bill is not from a supplier');
       if (customerBill.relation !== 'customer' && customerBill.relation !== 'member') throw new Meteor.Error('Customer bill is not from a customer/owner');
     }

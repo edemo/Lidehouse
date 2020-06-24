@@ -107,13 +107,13 @@ if (Meteor.isServer) {
       it('Can not post without accounts', function () {
         chai.assert.throws(() => {
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
-        }, 'Bill has to be conteered first');
+        }, 'Bill has to be account assigned first');
       });
 
       it('Can not registerPayment without accounts', function () {
         chai.assert.throws(() => {
           FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 300 }], amount: 300, valueDate: Clock.currentTime() });
-        }, 'Bill has to be conteered first');
+        }, 'Bill has to be account assigned first');
       });
 
       it('Can post - creates tx in accountig', function () {

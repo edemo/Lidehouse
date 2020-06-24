@@ -49,24 +49,24 @@ export const update = new ValidatedMethod({
 });
 
 function checkReconcileMatch(entry, transaction) {
-  function throwMatchError(mismatch) {
-//    console.log(JSON.stringify(entry));/
-//    console.log(JSON.stringify(transaction));
-    throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`);
+  function throwMatchError(mismatch, entryVal, txVal) {
+    console.log('entry', JSON.stringify(entry));
+    console.log('transaction', JSON.stringify(transaction));
+    throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`, `tx: ${txVal}, entry: ${entryVal}`);
   }
   if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate');
   switch (transaction.category) {
     case 'payment':
     case 'receipt':
-      if (!equalWithinRounding(transaction.amount, transaction.relationSign() * entry.amount)) throwMatchError('amount');
-      if (transaction.payAccount !== entry.account) throwMatchError('account');
+      if (!equalWithinRounding(transaction.amount, transaction.relationSign() * entry.amount)) throwMatchError('amount', entry.amount, transaction.amount);
+      if (transaction.payAccount !== entry.account) throwMatchError('account', entry.account, transaction.payAccount);
   //  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
       break;
     case 'transfer':
       if (transaction.toAccount === entry.account) {
-        if (transaction.amount !== entry.amount) throwMatchError('amount');
+        if (transaction.amount !== entry.amount) throwMatchError('amount', entry.amount, transaction.amount);
       } else if (transaction.fromAccount === entry.account) {
-        if (transaction.amount !== -1 * entry.amount) throwMatchError('amount');
+        if (transaction.amount !== -1 * entry.amount) throwMatchError('amount', entry.amount, transaction.amount);
       } else throwMatchError('account');
       break;
     case 'freeTx': break;
@@ -137,7 +137,18 @@ export const recognize = new ValidatedMethod({
     const community = Communities.findOne(communityId);
     Log.info('Trying to recognize statement entry:', _id);
     // ---------------------------
-    // 1st round - 'primary' match: We find the correct BILL REF in the NOTE
+    // 0th grade - 'direct' match: We find an existing payment tx, which can be mathched to this entry
+    // ---------------------------
+    if (community.settings.paymentsWoStatement) {
+      const matchingTx = Transactions.findOne({ valueDate: entry.valueDate, amount: Math.abs(entry.amount) });
+      if (matchingTx) {
+        Log.info('Direct match with payment', matchingTx._id);
+        Log.debug(matchingTx);
+        StatementEntries.update(_id, { $set: { match: { confidence: 'direct', txId: matchingTx._id } } });
+      }
+    }
+    // ---------------------------
+    // 1st grade - 'primary' match: We find the correct BILL REF in the NOTE
     // ---------------------------
     if (entry.note) {
       const noteSplit = entry.note.deaccent().toUpperCase().split(' ');
@@ -179,7 +190,7 @@ export const recognize = new ValidatedMethod({
     }
     if (!partner) {
       // ---------------------------
-      // 4th round, 'danger' match: No partner and tx type information, we can only provide some guesses
+      // 4th grade, 'danger' match: No partner and tx type information, we can only provide some guesses
       // ---------------------------
       const tx = {
         communityId,
@@ -195,7 +206,7 @@ export const recognize = new ValidatedMethod({
     }
     const relation = partner.relation[0]; // TODO: When partner has mutiple relation, pick correctly
     const adjustedEntryAmount = Transactions.relationSign(relation) * entry.amount;
-    const matchingBills = Transactions.find({ communityId, relation, partnerId: partner._id, outstanding: { $gt: 0 } }, { sort: { issueDate: 1 } }).fetch();
+    const matchingBills = Transactions.find({ communityId, category: 'bill', relation, partnerId: partner._id, outstanding: { $gt: 0 } }, { sort: { issueDate: 1 } }).fetch();
     const paymentDef = Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': relation });
     const tx = {
       communityId,
@@ -209,7 +220,7 @@ export const recognize = new ValidatedMethod({
     };
     if (partner.outstanding === adjustedEntryAmount) {
       // ---------------------------
-      // 2nd round, 'info' match: The payment exactly matches the outstanding bills of the partner
+      // 2nd grade, 'info' match: The payment exactly matches the outstanding bills of the partner
       // ---------------------------
       tx.bills = matchingBills.map(bill => ({ id: bill._id, amount: bill.outstanding }));
       tx.lines = [];
@@ -218,7 +229,7 @@ export const recognize = new ValidatedMethod({
       StatementEntries.update(_id, { $set: { match: { confidence: 'info', tx } } });
     } else {
       // ---------------------------
-      // 3nd round, 'warning' match: We found the partner but the payment is not the right amount.
+      // 3rd grade, 'warning' match: We found the partner but the payment is not the right amount.
       // Either under-paid (=> need to decide which bills are paid), or over-paid (=> need to decide where to allocate the remainder)
       // ---------------------------
       tx.bills = []; tx.lines = [];
