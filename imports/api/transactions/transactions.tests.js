@@ -110,7 +110,7 @@ if (Meteor.isServer) {
         }, 'Bill has to be account assigned first');
       });
 
-      it('Can not registerPayment without accounts', function () {
+      xit('Can not registerPayment without accounts', function () {
         chai.assert.throws(() => {
           FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 300 }], amount: 300, valueDate: Clock.currentTime() });
         }, 'Bill has to be account assigned first');
