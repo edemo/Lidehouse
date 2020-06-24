@@ -13,9 +13,6 @@ import '/imports/api/contracts/actions.js';
 import './bill-edit.html';
 
 Template.Bill_edit.viewmodel({
-  partnerRelation() {
-    return this.templateInstance.data.doc.relation;
-  },
   isBill() {
     return this.templateInstance.data.doc.category === 'bill';
   },

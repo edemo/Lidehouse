@@ -22,10 +22,10 @@ Partners.actions = {
     color: 'primary',
     visible: user.hasPermission('partners.insert', doc),
     run() {
-      const activeRelation = ModalStack.getVar('relation');
-      if (activeRelation) _.extend(doc, { relation: [activeRelation] });
-      const activeTxdef = ModalStack.getVar('txdef');
-      if (activeTxdef)  _.extend(doc, { relation: [activeTxdef.data.relation] });
+      const relation = AutoForm.getFieldValue('relation') ||  ModalStack.getVar('relation');
+      if (relation) _.extend(doc, { relation: [relation] });
+//      const activeTxdef = ModalStack.getVar('txdef');
+//      if (activeTxdef)  _.extend(doc, { relation: [activeTxdef.data.relation] });
       const statementEntry = ModalStack.getVar('statementEntry');
       if (statementEntry) _.deepExtend(doc, { idCard: { name: statementEntry.name } });
 
