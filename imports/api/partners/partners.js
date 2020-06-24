@@ -249,6 +249,7 @@ export const choosePartner = {
 };
 
 export const choosePartnerOfParcel = {
+  relation: 'partner',
   options() {
     const leadParcelId = AutoForm.getFieldValue('leadParcelId');
     if (leadParcelId) return [{ label: __("Will use lead parcel's"), value: '' }];
