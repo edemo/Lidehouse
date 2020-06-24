@@ -5,6 +5,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
+import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
@@ -26,6 +27,11 @@ const receiptSchema = new SimpleSchema([
 ]);
 
 Transactions.categoryHelpers('receipt', {
+  fillFromStatementEntry(entry) {
+    this.payAccount = entry.account;
+    const title =  entry.note || __(this.txdef().name);
+    this.lines = [{ title, quantity: 1, unitPrice: Math.abs(entry.amount) }];
+  },
   makeJournalEntries() {
     const self = this;
     function copyLinesInto(txSide) {

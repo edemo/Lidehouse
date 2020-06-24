@@ -183,15 +183,10 @@ export const recognize = new ValidatedMethod({
       // ---------------------------
       const tx = {
         communityId,
-        amount: Math.abs(entry.amount), // payment
+        amount: Math.abs(entry.amount),
         valueDate: entry.valueDate,
-//        issueDate: entry.valueDate, // bill
-//        deliveryDate: entry.valueDate, // bill
-//        dueDate: entry.valueDate, // bill
-//        lines: [{ title: entry.note, quantity: 1, unitPrice: Math.abs(entry.amount) }], // receipt
-//        payAccount: entry.account, // receipt, payment
-//        fromAccount: entry.account, // transfer
-//        toAccount: entry.account, // transfer
+        title: entry.note,
+        // Further values will be filled based on the entry, on the client when the txdef is selected
       };
       Log.info('Danger not found partner, recommendation');
       Log.debug(tx);

@@ -121,6 +121,13 @@ Transactions.categoryHelpers('bill', {
     const paymentTx = payment && Transactions.findOne(payment.id);
     return paymentTx && paymentTx.valueDate;
   },
+  fillFromStatementEntry(entry) {
+    this.issueDate = entry.valueDate;
+    this.deliveryDate = entry.valueDate;
+    this.dueDate = entry.valueDate;
+    const title =  entry.note || __(this.txdef().name);
+    this.lines = [{ title, quantity: 1, unitPrice: Math.abs(entry.amount) }];
+  },
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
 //    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });

@@ -111,12 +111,16 @@ StatementEntries.actions = {
     color: doc.match?.confidence,
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc) && (options.txdef || doc.match?.tx?.defId),
     run() {
-//      ModalStack.setVar('statementEntry', doc, true);
-//      const defId = doc.match?.tx?.defId || options.txdef?._id;
+      ModalStack.setVar('statementEntry', doc, true);
       const insertTx = doc.match?.tx || {};
-      if (options.txdef) insertTx.defId = options.txdef._id;
-      debugAssert(insertTx.defId);
-      const txdef = Txdefs.findOne(insertTx.defId);
+      let txdef;
+      if (options.txdef) {
+        txdef = options.txdef;
+        Transactions.setTxdef(insertTx, txdef);
+      } else {
+        debugAssert(insertTx.defId);
+        txdef = Txdefs.findOne(insertTx.defId);
+      }
 
       if (doc.community().settings.paymentsWoStatement) {
         const reconciliationDoc = { _id: doc._id, defId: insertTx.defId, txId: doc.match?.txId };

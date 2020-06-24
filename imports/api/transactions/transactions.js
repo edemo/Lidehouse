@@ -126,6 +126,12 @@ Transactions.relationSign = function relationSign(relation) {
   debugAssert(false, 'No such relation ' + relation); return undefined;
 };
 
+Transactions.setTxdef = function setTxdef(doc, txdef) {
+  doc.defId = txdef._id;
+  doc.category = txdef.category;
+  _.each(txdef.data, (value, key) => doc[key] = value); // set doc.relation, etc
+};
+
 Transactions.helpers({
   community() {
     return Communities.findOne(this.communityId);
@@ -284,6 +290,12 @@ Transactions.helpers({
   makeJournalEntries() {
     // NOP -- will be overwritten in the categories
   },
+  fillFromStatementEntry() {
+    // NOP -- will be overwritten in the categories
+  },
+  validate() {
+    // NOP -- will be overwritten in the categories
+  },
   displayInSelect() {
     return this.serialId;
   },
@@ -388,11 +400,8 @@ if (Meteor.isServer) {
     }
     if (tdoc.category === 'bill' || tdoc.category === 'payment') {
       tdoc.outstanding = tdoc.calculateOutstanding();
-      if (tdoc.category === 'payment' && tdoc.allocatedSomewhere() !== tdoc.amount) {
-        // The min, max contraint on the schema does not work, because the hook runs after the schema check
-        throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${tdoc.outstanding}`);
-      }
     }
+    tdoc.validate();
     _.extend(doc, tdoc);
   });
 
@@ -419,12 +428,9 @@ if (Meteor.isServer) {
       if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
         || (doc.category === 'payment' && newDoc.bills)) {
         autoValueUpdate(doc, modifier, 'outstanding', d => d.calculateOutstanding());
-        if (doc.category === 'payment' && tdoc.allocatedSomewhere() !== doc.amount) {
-          // The min, max contraint on the schema does not work, because the hook runs after the schema check
-          throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `outstanding: ${doc.outstanding}`);
-        }
       }
     }
+    // tdoc.validate(); => moved to Stage
   });
 
   Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {

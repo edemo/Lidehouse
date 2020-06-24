@@ -148,13 +148,18 @@ export const update = new ValidatedMethod({
     checkPermissions(this.userId, 'transactions.update', doc);
     if (doc.isPosted()) {
       if (doc.category === 'payment') {
-        modifier.$set = modifier.$set && _.pick(modifier.$set, 'bills', 'lines');
-        modifier.$push = modifier.$push && _.pick(modifier.$push, 'bills', 'lines');
+        checkModifier(doc, modifier, ['bills', 'lines']);
       } else {
         throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
       }
     }
-    Transactions.update({ _id }, modifier, { selector: doc });
+
+    const TransactionsStage = Transactions.Stage();
+    const result = TransactionsStage.update({ _id }, modifier, { selector: doc });
+    const modifiedDoc = TransactionsStage.findOne(_id);
+    modifiedDoc.validate();
+    TransactionsStage.commit();
+    return result;
   },
 });
 

@@ -21,13 +21,11 @@ function figureOutEntity(options, doc) {
 //    || AutoForm.getFieldValue('defId') || ModalStack.getVar('defId');
   debugAssert(defId);
   const txdef = Txdefs.findOne(defId);
-  let entity = txdef.category;
-//    || doc.category || options.entity || AutoForm.getFieldValue('category') || ModalStack.getVar('category');
+  if (!doc.defId) Transactions.setTxdef(doc, txdef);
+  let entity = options.entity || txdef.category;
+//    || doc.category || AutoForm.getFieldValue('category') || ModalStack.getVar('category');
   debugAssert(entity);
   if (typeof entity === 'string') entity = Transactions.entities[entity];
-  doc.defId = defId;
-  doc.category = entity.name;
-  _.each(txdef.data, (value, key) => doc[key] = value); // set doc.relation, etc
   return entity;
 }
 /*
@@ -48,9 +46,10 @@ Transactions.actions = {
     visible: user.hasPermission('transactions.insert', doc),
     run() {
       doc = _.extend(defaultNewDoc(), doc);
-//      prefillDocWhenReconciling(doc);
       const entity = figureOutEntity(options, doc);
       doc = Transactions._transform(doc);
+      const statementEntry = ModalStack.getVar('statementEntry');
+      if (statementEntry) doc.fillFromStatementEntry(statementEntry);
 
       Modal.show('Autoform_modal', {
         body: entity.editForm,
@@ -100,7 +99,8 @@ Transactions.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: doc && !doc.isPosted() && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
+    visible: doc && (!doc.isPosted() || doc.category === 'payment') // payment is allowed to be reallocated
+      && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
       && user.hasPermission('transactions.update', doc),
     run() {
       const entity = Transactions.entities[doc.entityName()];

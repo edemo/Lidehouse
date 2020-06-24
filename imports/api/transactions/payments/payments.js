@@ -118,6 +118,16 @@ Transactions.categoryHelpers('payment', {
   allocatedSomewhere() {
     return this.allocatedToBills() + this.allocatedToNonBills();
   },
+  validate() {
+    const allocatedAmount = this.allocatedSomewhere();
+    if (allocatedAmount !== this.amount) {
+      // The min, max contraint on the schema does not work, because the hook runs after the schema check
+      throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.amount - this.allocatedAmount}`);
+    }
+  },
+  fillFromStatementEntry(entry) {
+    this.payAccount = entry.account;
+  },
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
 //    const cat = Txdefs.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
