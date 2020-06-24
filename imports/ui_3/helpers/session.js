@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import { getActiveCommunityId, getActiveCommunity, getActivePartnerId, getActivePartner } from '/imports/ui_3/lib/active-community';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community';
+import { getActivePartnerId, getActivePartner } from '/imports/ui_3/lib/active-partner';
 
 Template.registerHelper('fromSession', function fromSession(paramName) {
   return Session.get(paramName);

@@ -11,8 +11,7 @@ import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { userUnlinkNeeded }from '/imports/api/partners/methods.js';
-import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import { userUnlinkNeeded } from '/imports/api/partners/methods.js';
 import './methods.js';
 
 Partners.actions = {
@@ -74,6 +73,26 @@ Partners.actions = {
       });
     },
   }),
+  merge: (options, doc, user = Meteor.userOrNull()) => {
+    const destinationId = doc.idCard?.name &&
+      Partners.findOne({ _id: { $ne: doc._id }, 'idCard.name': doc.idCard.name })?._id;
+    return {
+      name: 'merge',
+      icon: 'fa fa-compress',
+      color: destinationId && 'danger',
+      visible: user.hasPermission('partners.update', doc),
+      run() {
+        Modal.show('Autoform_modal', {
+          description: 'warningPartnerMerge',
+          id: 'af.partner.merge',
+          schema: Partners.mergeSchema,
+          doc: { _id: doc._id, destinationId },
+          type: 'method',
+          meteormethod: 'partners.merge',
+        });
+      },
+    };
+  },
   remindOutstandings: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'remindOutstandings',
     color: doc.mostOverdueDaysColor(),
@@ -111,6 +130,7 @@ Partners.batchActions = {
 
 AutoForm.addModalHooks('af.partner.insert');
 AutoForm.addModalHooks('af.partner.update');
+AutoForm.addModalHooks('af.partner.merge');
 
 AutoForm.addHooks('af.partner.update', {
   before: {

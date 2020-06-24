@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
@@ -69,6 +70,27 @@ export const update = new ValidatedMethod({
     }
     const result = Partners.update({ _id }, modifier);
     return result;
+  },
+});
+
+export const merge = new ValidatedMethod({
+  name: 'partners.merge',
+  validate: Partners.mergeSchema.validator(),
+
+  run({ _id, destinationId }) {
+    const doc = checkExists(Partners, _id);
+    checkPermissions(this.userId, 'partners.update', doc);
+    const destinationDoc = checkExists(Partners, destinationId);
+    const $set = _.deepExtend({}, doc, destinationDoc);
+    delete $set.relation;
+    delete $set.outstanding;
+    Mongo.Collection.stripAdministrativeFields($set);
+    const modifier = {
+      $set: _.extend($set, { relation: _.union(doc.relation, destinationDoc.relation) }),
+      $inc: { outstanding: doc.outstanding },
+    };
+    Partners.update(destinationId, modifier, { selector: destinationDoc });
+    Partners.remove(_id);
   },
 });
 

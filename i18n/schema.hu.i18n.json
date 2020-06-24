@@ -960,10 +960,13 @@
       "label": "Bankszámlaszám",
       "placeholder": "(pl 12345678-00000000-00000078)"
     },
-    "taxNo": { 
+    "taxNo": {
       "label": "Adószám",
       "placeholder": "(pl 123456-2-42)",
       "help": "Nem szükséges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
+    },
+    "destinationId": {
+      "label": "Beleolvasztás ebbe a partnerbe:"
     }
   },
   "schemaBills": {

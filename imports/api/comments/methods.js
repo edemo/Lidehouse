@@ -46,10 +46,7 @@ export const update = new ValidatedMethod({
 
 export const move = new ValidatedMethod({
   name: 'comments.move',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    destinationId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
+  validate: Comments.moveSchema.validator(),
 
   run({ _id, destinationId }) {
     const doc = checkExists(Comments, _id);

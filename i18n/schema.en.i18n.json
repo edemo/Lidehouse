@@ -965,6 +965,9 @@
       "label": "Tax number",
       "placeholder": "(eg. international VAT number)",
       "help": "Not mandatory, but you can set this, if you'd like it to appear on invoices and bills."
+    },
+    "destinationId": {
+      "label": "Merge into this partner:"
     }
   },
   "schemaBills": {

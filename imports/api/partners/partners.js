@@ -11,6 +11,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
@@ -171,6 +172,23 @@ if (Meteor.isServer) {
     }
   });
 }
+
+Partners.mergeSchema = new SimpleSchema({
+  _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  destinationId: { type: String, regEx: SimpleSchema.RegEx.Id,
+    autoform: {
+      options() {
+        const communityId = getActiveCommunityId();
+        const thisId = AutoForm.getFieldValue('_id');
+        const partners = Partners.find({ communityId, _id: { $ne: thisId } });
+        return partners.map(function option(p) { return { label: p.toString(), value: p._id }; });
+      },
+      firstOption: () => __('(Select one)'),
+    },
+  },
+});
+
+Partners.mergeSchema.i18n('schemaPartners');
 
 // --- Factory ---
 
