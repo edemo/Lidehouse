@@ -106,11 +106,9 @@ Comments.moveSchema = new SimpleSchema({
   },
 });
 
-Meteor.startup(function attach() {
-  Comments.simpleSchema({ category: 'comment' }).i18n('schemaComments');
-  Comments.simpleSchema({ category: 'statusChange' }).i18n('schemaStatusChanges');
-  Comments.moveSchema.i18n('schemaComments');
-});
+Comments.simpleSchema({ category: 'comment' }).i18n('schemaComments');
+Comments.simpleSchema({ category: 'statusChange' }).i18n('schemaStatusChanges');
+Comments.moveSchema.i18n('schemaComments');
 
 Factory.define('comment', Comments, {
   text: () => faker.lorem.sentence(),

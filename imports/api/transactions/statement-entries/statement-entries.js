@@ -61,9 +61,8 @@ Meteor.startup(function indexStatements() {
 
 StatementEntries.attachSchema(StatementEntries.schema);
 
-Meteor.startup(function attach() {
-  StatementEntries.simpleSchema().i18n('schemaStatementEntries');
-});
+StatementEntries.simpleSchema().i18n('schemaStatementEntries');
+
 // --- Factory ---
 
 Factory.define('statementEntry', StatementEntries, {

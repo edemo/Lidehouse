@@ -19,6 +19,4 @@ Topics.attachVariantSchema(
   { selector: { category: 'feedback' } },
 );
 
-Meteor.startup(function attach() {
-  Feedbacks.schema().i18n('schemaFeedbacks');
-});
+Feedbacks.schema().i18n('schemaFeedbacks');

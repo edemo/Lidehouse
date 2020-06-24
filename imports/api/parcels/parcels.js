@@ -280,12 +280,10 @@ Parcels.attachVariantSchema(Parcels.physicalSchema, { selector: { category: '@co
 Parcels.attachVariantSchema(undefined, { selector: { category: '@group' } });
 Parcels.attachVariantSchema(undefined, { selector: { category: '#tag' } });
 
-Meteor.startup(function attach() {
-  Parcels.simpleSchema({ category: '@property' }).i18n('schemaParcels');
-  Parcels.simpleSchema({ category: '@common' }).i18n('schemaParcels');
-  Parcels.simpleSchema({ category: '@group' }).i18n('schemaParcels');
-  Parcels.simpleSchema({ category: '#tag' }).i18n('schemaParcels');
-});
+Parcels.simpleSchema({ category: '@property' }).i18n('schemaParcels');
+Parcels.simpleSchema({ category: '@common' }).i18n('schemaParcels');
+Parcels.simpleSchema({ category: '@group' }).i18n('schemaParcels');
+Parcels.simpleSchema({ category: '#tag' }).i18n('schemaParcels');
 
 // --- Before/after actions ---
 

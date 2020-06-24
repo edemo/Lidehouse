@@ -376,9 +376,7 @@ if (Meteor.isServer) {
   });
 }
 
-Meteor.startup(function attach() {
-  Meteor.users.simpleSchema().i18n('schemaUsers');
-});
+Meteor.users.simpleSchema().i18n('schemaUsers');
 
 // Deny all client-side updates since we will be using methods to manage this collection
 Meteor.users.deny({

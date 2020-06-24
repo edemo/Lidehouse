@@ -253,9 +253,7 @@ Topics.categoryHelpers('vote', {
 
 Topics.attachVariantSchema(Votings.extensionSchema, { selector: { category: 'vote' } });
 
-Meteor.startup(function attach() {
-  Topics.simpleSchema({ category: 'vote' }).i18n('schemaVotings');
-});
+Topics.simpleSchema({ category: 'vote' }).i18n('schemaVotings');
 
 Votings.publicExtensionFields = {
   vote: 1,

@@ -49,7 +49,5 @@ export const reconciliationSchema = new SimpleSchema({
   defId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseTxdef },
 });
 
-Meteor.startup(function attach() {
-  reconciliationSchema.i18n('schemaStatementEntries');
-  reconciliationSchema.i18n('schemaTransactions');
-});
+reconciliationSchema.i18n('schemaStatementEntries');
+reconciliationSchema.i18n('schemaTransactions');

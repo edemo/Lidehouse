@@ -121,9 +121,7 @@ Txdefs.helpers({
 Txdefs.attachSchema(Txdefs.schema);
 Txdefs.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Txdefs.simpleSchema().i18n('schemaTxdefs');
-});
+Txdefs.simpleSchema().i18n('schemaTxdefs');
 
 // -------- Factory
 

@@ -12,9 +12,7 @@ export const ticketSchemaWithMoreDates = new SimpleSchema([
     moreDates: { type: [Date], optional: true },
   },
 ]);
-Meteor.startup(function attach() {
-  ticketSchemaWithMoreDates.i18n('schemaTickets');
-});
+ticketSchemaWithMoreDates.i18n('schemaTickets');
 
 // Ptototypes used for their virtual functions
 const IssueProto = Topics._transform({ category: 'ticket', text: '-', ticket: { type: 'issue' } });

@@ -150,9 +150,7 @@ Communities.helpers({
 Communities.attachSchema(Communities.schema);
 Communities.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Communities.simpleSchema().i18n('schemaCommunities');
-});
+Communities.simpleSchema().i18n('schemaCommunities');
 
 if (Meteor.isServer) {
   Communities.after.remove(function (userId, doc) {

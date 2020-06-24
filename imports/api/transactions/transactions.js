@@ -337,9 +337,7 @@ Transactions.attachBehaviour(SerialId(['category', 'relation', 'side']));
 
 Transactions.attachVariantSchema(undefined, { selector: { category: 'freeTx' } });
 
-Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'freeTx' }).i18n('schemaTransactions');
-});
+Transactions.simpleSchema({ category: 'freeTx' }).i18n('schemaTransactions');
 
 // --- Before/after actions ---
 

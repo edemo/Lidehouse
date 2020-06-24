@@ -45,9 +45,7 @@ Parcelships.attachSchema(Parcelships.schema);
 Parcelships.attachBehaviour(ActivePeriod);
 Parcelships.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Parcelships.simpleSchema().i18n('schemaParcelships');
-});
+Parcelships.simpleSchema().i18n('schemaParcelships');
 
 if (Meteor.isServer) {
   Parcelships.after.insert(function (userId, doc) {

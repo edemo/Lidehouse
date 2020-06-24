@@ -60,9 +60,7 @@ const schemaQuickCommunityLaunch = new SimpleSchema({
   promoCode: { type: String, autoform: { type: 'hidden' } },
 });
 
-Meteor.startup(function attach() {
-  schemaQuickCommunityLaunch.i18n('promo');
-});
+schemaQuickCommunityLaunch.i18n('promo');
 
 Template.Promotion.events({
   'click .promotion-config-box'(event, instance) {

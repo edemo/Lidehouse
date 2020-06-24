@@ -157,12 +157,10 @@ Accounts.simpleCategoryValues.forEach((category) => {
   Accounts.attachVariantSchema(undefined, { selector: { category } });
 });
 
-Meteor.startup(function attach() {
-  Accounts.simpleSchema({ category: 'cash' }).i18n('schemaAccounts');
-  Accounts.simpleSchema({ category: 'bank' }).i18n('schemaAccounts');
-  Accounts.simpleCategoryValues.forEach((category) => {
-    Accounts.simpleSchema({ category }).i18n('schemaAccounts');
-  });
+Accounts.simpleSchema({ category: 'cash' }).i18n('schemaAccounts');
+Accounts.simpleSchema({ category: 'bank' }).i18n('schemaAccounts');
+Accounts.simpleCategoryValues.forEach((category) => {
+  Accounts.simpleSchema({ category }).i18n('schemaAccounts');
 });
 
 // --- Factory ---

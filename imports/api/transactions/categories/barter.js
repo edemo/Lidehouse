@@ -83,9 +83,7 @@ Transactions.categoryHelpers('barter', {
 
 Transactions.attachVariantSchema(barterSchema, { selector: { category: 'barter' } });
 
-Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'barter' }).i18n('schemaTransactions');
-});
+Transactions.simpleSchema({ category: 'barter' }).i18n('schemaTransactions');
 
 // --- Factory ---
 

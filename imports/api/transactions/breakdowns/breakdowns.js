@@ -299,9 +299,7 @@ Breakdowns.helpers({
 Breakdowns.attachSchema(Breakdowns.schema);
 Breakdowns.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Breakdowns.simpleSchema().i18n('schemaBreakdowns');
-});
+Breakdowns.simpleSchema().i18n('schemaBreakdowns');
 
 Factory.define('breakdown', Breakdowns, {
 });

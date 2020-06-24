@@ -24,9 +24,7 @@ Transactions.categoryHelpers('transfer', {
 
 Transactions.attachVariantSchema(transferSchema, { selector: { category: 'transfer' } });
 
-Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'transfer' }).i18n('schemaTransactions');
-});
+Transactions.simpleSchema({ category: 'transfer' }).i18n('schemaTransactions');
 
 // --- Factory ---
 

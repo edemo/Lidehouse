@@ -43,7 +43,7 @@ Topics.baseSchema = new SimpleSchema({
 //  shareddocs: { type: Array, optional: true },
 //  'shareddocs.$': { type: String, optional: true, autoform: documentUpload() },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
-  movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id },
+  movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 });
 
 Topics.extensionSchemas.news = new SimpleSchema({
@@ -237,12 +237,10 @@ Topics.attachVariantSchema(undefined, { selector: { category: 'room' } });
 Topics.attachVariantSchema(Topics.extensionSchemas.forum, { selector: { category: 'forum' } });
 Topics.attachVariantSchema(Topics.extensionSchemas.news, { selector: { category: 'news' } });
 
-Meteor.startup(function attach() {
-  Topics.categoryValues.forEach(category =>
-    Topics.simpleSchema({ category }).i18n('schemaTopics')
-  );
+Topics.categoryValues.forEach(category =>
+  Topics.simpleSchema({ category }).i18n('schemaTopics')
+);
 //  Topics.schema.i18n('schemaTopics');
-});
 
 Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'photo'];
 Topics.modifiableFields.push('closed'); // comes from Workflow behaviour

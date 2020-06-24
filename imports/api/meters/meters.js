@@ -117,10 +117,8 @@ Meters.registerReadingSchema = new SimpleSchema({
   reading: { type: Meters.unapprovedReadingSchema },
 });
 
-Meteor.startup(function attach() {
-  Meters.simpleSchema().i18n('schemaMeters');
-  Meters.registerReadingSchema.i18n('schemaReadings');
-});
+Meters.simpleSchema().i18n('schemaMeters');
+Meters.registerReadingSchema.i18n('schemaReadings');
 
 // --- Factory ---
 

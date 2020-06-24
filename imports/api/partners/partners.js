@@ -155,9 +155,7 @@ Partners.attachSchema(Partners.schema);
 Partners.attachBehaviour(AccountingLocation);
 Partners.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Partners.simpleSchema().i18n('schemaPartners');
-});
+Partners.simpleSchema().i18n('schemaPartners');
 
 // --- Before/after actions ---
 
