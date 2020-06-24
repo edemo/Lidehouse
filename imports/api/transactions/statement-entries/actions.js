@@ -174,7 +174,7 @@ StatementEntries.actions = {
   recognize: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'recognize',
     icon: 'fa fa-question',
-    visible: !doc.isReconciled() && !doc.match?.status && user.hasPermission('statements.reconcile', doc),
+    visible: user.hasPermission('statements.reconcile', doc),
     run() {
       StatementEntries.methods.recognize.call({ _id: doc._id });
     },
