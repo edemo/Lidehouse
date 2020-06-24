@@ -94,7 +94,7 @@ Breakdowns.Level2Schema = new SimpleSchema({
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   children: { type: Array, optional: true },
   'children.$': { type: Breakdowns.LeafSchema },
-  include: { type: String, optional: true, autoform: chooseBreakdown },
+  include: { type: String, optional: true, autoform: { ...chooseBreakdown } },
   // just for money accounts - TODO it should be some freefields here
   category: { type: String, optional: true },
   primary: { type: Boolean, optional: true },
@@ -107,7 +107,7 @@ Breakdowns.Level1Schema = new SimpleSchema({
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   children: { type: Array, optional: true },
   'children.$': { type: Breakdowns.Level2Schema },
-  include: { type: String, optional: true, autoform: chooseBreakdown },
+  include: { type: String, optional: true, autoform: { ...chooseBreakdown } },
   // just for money accounts - TODO it should be some freefields here
   category: { type: String, optional: true },
   primary: { type: Boolean, optional: true },
@@ -123,7 +123,7 @@ Breakdowns.schema = new SimpleSchema({
 //  type: { type: String, allowedValues: Breakdowns.typeValues },
   children: { type: Array, optional: true },
   'children.$': { type: Breakdowns.Level1Schema },
-  include: { type: String, optional: true, autoform: chooseBreakdown },
+  include: { type: String, optional: true, autoform: { ...chooseBreakdown } },
 });
 
 /*

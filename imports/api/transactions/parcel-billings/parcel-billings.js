@@ -62,7 +62,7 @@ ParcelBillings.chargeSchema = new SimpleSchema({
 });
 
 ParcelBillings.consumptionSchema = new SimpleSchema({
-  service: { type: String, autoform: chooseFromExistingServiceValues },
+  service: { type: String, autoform: { ...chooseFromExistingServiceValues } },
   charges: { type: [ParcelBillings.chargeSchema] },
 });
 
@@ -81,10 +81,10 @@ ParcelBillings.schema = new SimpleSchema({
   title: { type: String, max: 100 },
   consumption: { type: ParcelBillings.consumptionSchema, optional: true }, // if consumption based
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
-  digit: { type: String, autoform: Accounts.choosePayinType },
-  localizer: { type: String, autoform: Parcels.choosePhysical },
-  type: { type: String, optional: true, autoform: chooseFromExistingParcelTypes },
-  group: { type: String, optional: true, autoform: chooseFromExistingGroups },
+  digit: { type: String, autoform: { ...Accounts.choosePayinType } },
+  localizer: { type: String, autoform: { ...Parcels.choosePhysical } },
+  type: { type: String, optional: true, autoform: { ...chooseFromExistingParcelTypes } },
+  group: { type: String, optional: true, autoform: { ...chooseFromExistingGroups } },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
 });
 

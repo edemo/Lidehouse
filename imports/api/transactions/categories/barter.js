@@ -17,8 +17,8 @@ import { chooseBill } from '/imports/api/transactions/bills/bills.js';
 const barterSchema = new SimpleSchema({
 //  supplier: { type: Transactions.partnerSchema },
 //  customer: { type: Transactions.partnerSchema },
-  customerBillId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBill },
-  supplierBillId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBill },
+  customerBillId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseBill } },
+  supplierBillId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseBill } },
 });
 
 Transactions.categoryHelpers('barter', {

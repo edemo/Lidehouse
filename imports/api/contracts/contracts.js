@@ -39,7 +39,7 @@ Contracts.memberSchema = new SimpleSchema({
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { type: 'hidden', relation: '@property' } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty } },
 //  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  habitants: { type: Number, optional: true, autoform: noUpdate },
+  habitants: { type: Number, optional: true, autoform: { ...noUpdate } },
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
 

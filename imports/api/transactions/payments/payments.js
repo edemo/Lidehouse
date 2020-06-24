@@ -57,7 +57,7 @@ export const chooseParcelOfPartner = {
 };
 
 const billPaidSchema = {
-  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseBillOfPartner },
+  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseBillOfPartner } },
   amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
 };
 _.each(billPaidSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
@@ -65,7 +65,7 @@ Payments.billPaidSchema = new SimpleSchema(billPaidSchema);
 
 const lineSchema = {
   account: { type: String /* account code */, autoform: chooseConteerAccount(), optional: true },
-  localizer: { type: String /* account code */, autoform: chooseParcelOfPartner, optional: true },
+  localizer: { type: String /* account code */, autoform: { ...chooseParcelOfPartner }, optional: true },
   amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
