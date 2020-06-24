@@ -6,5 +6,4 @@ export function resetSession() {
     Session.set(key, undefined);
   });
   Session.keys = {};
-  Session.set('modalStack', [{ id: 'root', result: {}, context: {} }]);
 }

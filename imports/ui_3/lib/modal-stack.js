@@ -15,7 +15,6 @@ export let ModalStack = {};
 
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
-  import { resetSession } from '/imports/startup/client/session.js';
 
   // Set up peppelg:bootstrap-3-modal to allow multiple modals
   Modal.allowMultiple = true;
@@ -28,8 +27,8 @@ if (Meteor.isClient) {
     get() {
       let modalStack = Session.get('modalStack');
       if (!modalStack) {
-        resetSession();
-        modalStack = Session.get('modalStack');
+        modalStack = [{ id: 'root', result: {}, context: {} }];
+        Session.set('modalStack', modalStack);
       }
       return modalStack;
     },
