@@ -54,7 +54,7 @@ function checkReconcileMatch(entry, transaction) {
     console.log('transaction', JSON.stringify(transaction));
     throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`, `tx: ${txVal}, entry: ${entryVal}`);
   }
-  if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate');
+  if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate', entry.valueDate, transaction.valueDate);
   switch (transaction.category) {
     case 'payment':
     case 'receipt':
@@ -181,6 +181,7 @@ export const recognize = new ValidatedMethod({
       }
     }
     let partner;
+    let relation;
     if (entry.name) {
       Log.debug('Looking for partner', entry.name, 'in', entry.communityId);
       const recognizedName = Recognitions.get(`names.${entry.name}`, { communityId }) || entry.name;
@@ -188,7 +189,16 @@ export const recognize = new ValidatedMethod({
     } else {
       Log.debug('No partner on statement');
     }
-    if (!partner) {
+    if (partner) {
+      const possibleRelations = _.filter(partner.relation, r => Transactions.relationSign(r) === Math.sign(entry.amount));
+      if (possibleRelations.length > 0) {
+        relation = _.find(possibleRelations, r => Transactions.findOne({ communityId, category: 'bill', relation: r, outstanding: { $gt: 0 } }));
+      }
+      if (!relation) relation = possibleRelations[0];
+    } else {
+      Log.debug('No appropriate relation of partner');
+    }
+    if (!partner || !relation) {
       // ---------------------------
       // 4th grade, 'danger' match: No partner and tx type information, we can only provide some guesses
       // ---------------------------
@@ -204,8 +214,7 @@ export const recognize = new ValidatedMethod({
       StatementEntries.update(_id, { $set: { match: { confidence: 'danger', tx } } });
       return;
     }
-    const relation = partner.relation[0]; // TODO: When partner has mutiple relation, pick correctly
-    const adjustedEntryAmount = Transactions.relationSign(relation) * entry.amount;
+    const adjustedEntryAmount = Math.abs(entry.amount);
     const matchingBills = Transactions.find({ communityId, category: 'bill', relation, partnerId: partner._id, outstanding: { $gt: 0 } }, { sort: { issueDate: 1 } }).fetch();
     const paymentDef = Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': relation });
     const tx = {
