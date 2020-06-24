@@ -11,8 +11,8 @@ export const LocationTagsSchema = new SimpleSchema({
 });
 
 export const AccountSchema = new SimpleSchema([{
-  account: { type: String /* account code */, autoform: Accounts.chooseNode, optional: true },
-  localizer: { type: String /* account code */, autoform: Parcels.chooseNode, optional: true },
+  account: { type: String /* account code */, autoform: { ...Accounts.chooseNode }, optional: true },
+  localizer: { type: String /* account code */, autoform: { ...Parcels.chooseNode }, optional: true },
 }, LocationTagsSchema]);
 
 export class AccountSpecification {

@@ -79,7 +79,7 @@ Bills.receiptSchema = new SimpleSchema({
 });
 
 Bills.paymentSchema = new SimpleSchema({
-  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePayment },
+  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePayment } },
   amount: { type: Number, decimal: true },
 });
 

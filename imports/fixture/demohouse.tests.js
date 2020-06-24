@@ -9,6 +9,7 @@ import '/i18n/demo.en.i18n.json';
 import { Clock } from '/imports/utils/clock.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { insertDemoHouse, schedulePurgeExpiringDemoUsers } from '/imports/fixture/demohouse.js';
+import { emptyFixture } from '../api/test-utils';
 
 if (Meteor.isServer) {
   let demoHouseId;
@@ -19,6 +20,7 @@ if (Meteor.isServer) {
   describe('demohouse', function () {
     this.timeout(3 * 60 * 1000);
     before(function () {
+      emptyFixture();
       demoHouseId = insertDemoHouse('en', 'demo');
     });
 

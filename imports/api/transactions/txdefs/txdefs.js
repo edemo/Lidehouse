@@ -33,8 +33,8 @@ Txdefs.schema = new SimpleSchema({
   name: { type: String, max: 100 },
   category: { type: String, max: 15, optional: true, autoform: { omit: true } }, // Name of the entity
   data: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // Default data values
-  debit: { type: [String], max: 6, autoform: Accounts.chooseNode, optional: true },
-  credit: { type: [String], max: 6, autoform: Accounts.chooseNode, optional: true },
+  debit: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
+  credit: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
 });
 
 Meteor.startup(function indexTxdefs() {

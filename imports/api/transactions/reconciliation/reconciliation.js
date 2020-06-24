@@ -44,9 +44,9 @@ export const chooseTransaction = {
 
 export const reconciliationSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTransaction },
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseTransaction } },
 // on the form only:
-  defId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseTxdef },
+  defId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...chooseTxdef } },
 });
 
 reconciliationSchema.i18n('schemaStatementEntries');

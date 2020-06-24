@@ -58,8 +58,8 @@ const PersonIdSchema = new SimpleSchema({
 
 Delegations.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { type: 'hidden' } },
-  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: _.omit(choosePartner, ['relation', 'value']) },
-  targetId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
+  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: _.omit(choosePartner, ['value']) },
+  targetId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
   scope: { type: String, allowedValues: Delegations.scopeValues, autoform: allowedOptions() },
   scopeObjectId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseScopeObject },
   sourcePersonId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for sourceId (partner)

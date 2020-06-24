@@ -1117,7 +1117,36 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // === Incomes ===
 
+  const partnerStudio = builder.create('customer', {
+    idCard: {
+      type: 'legal',
+      name: '21st CDF Studio',
+    },
+  });
+
+  const partnerBank = builder.create('customer', {
+    idCard: {
+      type: 'legal',
+      name: 'TMSBank',
+    },
+  });
+
+  const partnerCustomer = builder.create('customer', {
+    idCard: {
+      type: 'legal',
+      name: 'AB General',
+    },
+  });
+
+  const partnerKozmu = builder.create('supplier', {
+    idCard: {
+      type: 'legal',
+      name: 'KÖZMÜ Zrt',
+    },
+  });
+
   builder.create('income', {
+    partnerId: partnerStudio,
     valueDate: new Date(`${lastYear}-06-01`),
     lines: [{
       title: 'Forgatási bérleti díj',
@@ -1132,6 +1161,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
     builder.create('income', {
+      partnerId: partnerBank,
       valueDate: new Date(`${lastYear}-${mm}-01`),
       lines: [{
         title: 'Banki kamat',
@@ -1146,6 +1176,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   builder.create('income', {
+    partnerId: partnerBank,
     valueDate: new Date(`${lastYear}-09-15`),
     lines: [{
       title: 'Állami támogatás tetőfelújításra',
@@ -1160,6 +1191,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   builder.create('income', {
+    partnerId: customer0,
     valueDate: new Date(`${lastYear}-05-10`),
     lines: [{
       title: 'Antenna hely bérleti díj',
@@ -1174,6 +1206,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   builder.create('income', {
+    partnerId: partnerCustomer,
     valueDate: new Date(`${lastYear}-10-15`),
     lines: [{
       title: '???',
@@ -1188,6 +1221,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   builder.create('income', {
+    partnerId: partnerBank,
     valueDate: new Date(`${lastYear}-07-21`),
     lines: [{
       title: 'Banki hitel',
@@ -1202,6 +1236,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // == Expenses
   builder.create('expense', {
+    partnerId: supplier0,
     valueDate: new Date(`${lastYear}-01-10`),
     lines: [{
       title: 'Kazán',
@@ -1216,6 +1251,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   for (let mm = 1; mm < 13; mm++) {
     builder.create('expense', {
+      partnerId: partnerKozmu,
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       lines: [{
         title: 'Víz fogyasztás',
@@ -1229,6 +1265,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     builder.create('expense', {
+      partnerId: partnerKozmu,
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       lines: [{
         title: 'Csatorna díj',
@@ -1242,6 +1279,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     builder.create('expense', {
+      partnerId: partnerKozmu,
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '07', '08', '10'])}`),
       lines: [{
         title: 'Áram fogyasztás',
