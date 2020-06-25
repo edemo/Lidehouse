@@ -33,6 +33,10 @@ Template.afQuickField.helpers({
     return false;
   },
   //### droka extension ###//
+  isDisabled() {
+    var c = AutoForm.Utility.getComponentContext(this, "afQuickField");
+    return c.atts.disabled;
+  },
   relation() {
     var c = AutoForm.Utility.getComponentContext(this, "afQuickField");
     return c.atts.relation;

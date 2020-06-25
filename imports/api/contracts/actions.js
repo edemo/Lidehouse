@@ -21,6 +21,8 @@ Contracts.actions = {
     run() {
       const relation = AutoForm.getFieldValue('relation') ||  ModalStack.getVar('relation');
       if (relation) _.extend(doc, { relation });
+      const partnerId = AutoForm.getFieldValue('partnerId') ||  ModalStack.getVar('partnerId');
+      if (partnerId) _.extend(doc, { partnerId });
       const parcelId = AutoForm.getFieldValue('parcelId') || ModalStack.getVar('parcelId');
       if (parcelId) _.extend(doc, { parcelId });
       Modal.show('Autoform_modal', {

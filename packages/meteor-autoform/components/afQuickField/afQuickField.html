@@ -17,8 +17,10 @@
             {{! >Action_buttons_group collection=collection actions='view' size='sm'}}
             {{! >Action_buttons_group collection=collection actions='edit' size='lg'}}
           {{else}}
-            <button type="button" class="btn btn-xs btn-default pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relation}}</button>
-            {{! >Action_buttons_group collection=collection actions='new' size='lg' options=entityObj}}
+            {{#unless isDisabled}}
+              <button type="button" class="btn btn-xs btn-default pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relation}}</button>
+              {{! >Action_buttons_group collection=collection actions='new' size='lg' options=entityObj}}
+            {{/unless}}
           {{/if}}
           </div>
         {{/if}}

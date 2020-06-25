@@ -50,6 +50,18 @@ function communityIdAutoValue() {
 }
 
 /*
+export const chooseUser = {
+  options() {
+    const users = Meteor.users.find({});
+    const options = users.map(function option(u) {
+      return { label: u.displayOfficialName(), value: u._id };
+    });
+    const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+    return sortedOptions;
+  },
+  firstOption: () => __('(Select one)'),
+};
+
 const PersonIdSchema = new SimpleSchema({
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
   identifier: { type: String, optional: true },

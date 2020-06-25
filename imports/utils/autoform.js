@@ -23,18 +23,6 @@ export const autoformOptions = function autoformOptions(values, i18Path = '') {
   };
 };
 
-export const chooseUser = {
-  options() {
-    const users = Meteor.users.find({});
-    const options = users.map(function option(u) {
-      return { label: u.displayOfficialName(), value: u._id };
-    });
-    const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
-    return sortedOptions;
-  },
-  firstOption: () => __('(Select one)'),
-};
-
 export const noUpdate = {
   disabled() {
     const afType = ModalStack.getVar('autoformType');
