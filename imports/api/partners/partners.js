@@ -274,6 +274,7 @@ export const choosePartnerOfParcel = {
     const communityId = ModalStack.getVar('communityId');
     const community = Communities.findOne(communityId);
     const parcelId = AutoForm.getFieldValue('parcelId') || ModalStack.getVar('parcelId');
+    if (!parcelId) return [];
     const parcel = Parcels.findOne(parcelId);
     const partners = parcel.partners();
     const options = partners.map(function option(p) {

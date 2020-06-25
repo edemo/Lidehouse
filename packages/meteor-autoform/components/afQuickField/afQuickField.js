@@ -80,7 +80,9 @@ Template.afQuickField.events({
     var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
     var entity = c.atts.relation;
     var collection = Factory.get(entity).collection;
-    collection.actions.new({ entity }).run(event, instance);
+    const options = { entity: collection.entities?.[entity], splitable() { return false; } };
+//    Object.setPrototypeOf(options, new ActionOptions(collection));
+    collection.actions.new(options).run(event, instance);
   },
   'click .js-view'(event, instance) {
     var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
@@ -88,7 +90,9 @@ Template.afQuickField.events({
     var collection = Factory.get(entity).collection;
 //    const selectedId = $($(event.target).closest('button').nextAll('.form-group')[0]).find('select')[0].value;
     const selectedId = instance.reactiveValue.get();
-    collection.actions.view({ entity }, collection.findOne(selectedId)).run(event, instance);
+    const options = {};
+    const doc = collection.findOne(selectedId);
+    collection.actions.view(options, doc).run(event, instance);
   },
   'click .js-edit'(event, instance) {
     var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
@@ -96,6 +100,8 @@ Template.afQuickField.events({
     var collection = Factory.get(entity).collection;
 //    const selectedId = $($(event.target).closest('button').nextAll('.form-group')[0]).find('select')[0].value; 
     const selectedId = instance.reactiveValue.get();
-    collection.actions.edit({ entity }, collection.findOne(selectedId)).run(event, instance);
+    const options = {};
+    const doc = collection.findOne(selectedId);
+    collection.actions.edit(options, doc).run(event, instance);
   },
 });
