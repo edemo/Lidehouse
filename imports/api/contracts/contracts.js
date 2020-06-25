@@ -12,6 +12,7 @@ import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { noUpdate } from '/imports/utils/autoform.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Partners, choosePartner, choosePartnerOfParcel } from '/imports/api/partners/partners.js';
 import { Parcels, chooseProperty } from '/imports/api/parcels/parcels.js';
 
@@ -96,6 +97,12 @@ Contracts.helpers({
   },
 });
 
+Communities.helpers({
+  hasLeadParcels() {
+    return !!Contracts.findOne({ communityId: this._id, relation: 'member', leadParcelId: { $exists: true } });
+  },
+});
+
 Contracts.attachBaseSchema(Contracts.baseSchema);
 Contracts.attachBehaviour(Timestamped);
 Contracts.attachBehaviour(ActivePeriod);
@@ -113,6 +120,8 @@ Contracts.simpleSchema({ relation: 'supplier' }).i18n('schemaPartners');    // f
 
 Contracts.simpleSchema({ relation: 'member' }).i18n('schemaContracts');
 Contracts.simpleSchema({ relation: 'member' }).i18n('schemaPartners');    // for relation translation
+
+// ---------------------------------------
 
 Factory.define('contract', Contracts, {
   title: () => `Contract on ${faker.random.word()}`,

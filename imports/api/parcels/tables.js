@@ -9,16 +9,19 @@ import { ReactiveDatatable } from 'meteor/ephemer:reactive-datatables';
 
 //import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { __ } from '/imports/localization/i18n.js';
+import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 
 export function parcelColumns() {
   return [
     { data: 'serial', title: __('schemaParcels.serial.label') },
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'leadParcelRef()', title: __('schemaParcels.leadRef.label') },
+    getActiveCommunity().hasLeadParcels() &&
+      { data: 'leadParcelRef()', title: __('schemaParcels.leadRef.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label') },
     { data: 'lot', title: __('schemaParcels.lot.label') },
@@ -29,7 +32,7 @@ export function parcelColumns() {
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'view,edit,delete,occupants,meters,contracts', size: 'sm' }, cell),
     },
-  ];
+  ].filter(c => c);
 }
 
 export function localizerColumns() {
