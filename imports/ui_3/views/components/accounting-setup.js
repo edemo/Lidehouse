@@ -58,9 +58,10 @@ Template.Accounting_setup.viewmodel({
   },
   accountsTableDataFn(tab) {
     const templateInstance = Template.instance();
-    const communityId = this.communityId();
+    const self = this;
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
+      const communityId = self.communityId();
       return Accounts.find({ communityId }, { sort: { code: 1 } }).fetch();
     }
     return getTableData;
@@ -78,9 +79,10 @@ Template.Accounting_setup.viewmodel({
   },
   localizersTableDataFn(tab) {
     const templateInstance = Template.instance();
-    const communityId = this.communityId();
+    const self = this;
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
+      const communityId = self.communityId();
       return Parcels.find({ communityId }).fetch();
     }
     return getTableData;
