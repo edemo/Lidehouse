@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { sanitizeHtml } from 'meteor/djedi:sanitize-html';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { numeral } from 'meteor/numeral:numeral';
 import { _ } from 'meteor/underscore';
@@ -48,7 +49,8 @@ export const EmailTemplateHelpers = {
     }
   },
   urlFor(route, hash = {}) {
-    return FlowRouterHelpers.urlFor(route, hash);
+    if (FlowRouter.path(route).charAt(0) === '/') return FlowRouterHelpers.urlFor(route, hash);
+    return route;
   },
   topicUrlFor(topic) {
     if (topic.category === 'room') {
