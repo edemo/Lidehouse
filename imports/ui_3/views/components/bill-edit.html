@@ -76,7 +76,7 @@
                     <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
-                    {{#if afDoc.community.settings.underVat}}
+                    {{#if afDoc.community.settings.subjectToVat}}
                       <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
                     {{/if}}
                     <th>{{_ 'schemaBills.lines.$.amount.label'}}</th>
@@ -95,7 +95,7 @@
                     <td>{{> afFormGroup name=this.current.quantity}}</td>
                     <td>{{> afFormGroup name=this.current.uom}}</td>
                     <td>{{> afFormGroup name=this.current.unitPrice}} </td>
-                    {{#if afDoc.community.settings.underVat}}
+                    {{#if afDoc.community.settings.subjectToVat}}
                       <td>{{> afFormGroup name=this.current.taxPct}}</td>
                     {{/if}}
                     <td>{{> afFormGroup name=this.current.amount}} </td>
@@ -119,7 +119,7 @@
 
     <table class="table invoice-total">
         <tbody>
-        {{#if afDoc.community.settings.underVat}}
+        {{#if afDoc.community.settings.subjectToVat}}
         <tr>
             <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
             <td>{{afDoc.net}}</td>
