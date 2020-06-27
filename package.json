@@ -58,6 +58,7 @@
       "no-underscore-dangle": "off",
       "no-else-return": "off",
       "no-nested-ternary": "off",
+      "no-unused-expressions": "off",
       "object-shorthand": [
         "error",
         "always",

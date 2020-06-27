@@ -153,12 +153,7 @@ export const update = new ValidatedMethod({
       }
     }
 
-    const TransactionsStage = Transactions.Stage();
-    const result = TransactionsStage.update({ _id }, modifier, { selector: doc });
-    const modifiedDoc = TransactionsStage.findOne(_id);
-    modifiedDoc.validate();
-    TransactionsStage.commit();
-    return result;
+    return Transactions.update({ _id }, modifier, { selector: doc });
   },
 });
 

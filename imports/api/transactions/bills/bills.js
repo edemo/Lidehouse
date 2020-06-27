@@ -55,7 +55,7 @@ const lineSchema = {
   uom: { type: String, optional: true },  // unit of measurment
   quantity: { type: Number, decimal: true },
   unitPrice: { type: Number, decimal: true },
-  taxPct: { type: Number, decimal: true, defaultValue: 0 },
+  taxPct: { type: Number, decimal: true, optional: true, defaultValue: 0 },
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   // autoValue() {
@@ -106,7 +106,53 @@ Meteor.startup(function indexBills() {
   }
 });
 
+export const BillAndReceiptHelpers = {
+  issuer() {
+    if (this.relation === 'supplier') return { partner: this.partner(), contract: this.contract() };
+    return this.community().asPartner();
+  },
+  receiver() {
+    if (this.relation === 'customer' || this.relation === 'member') return { partner: this.partner(), contract: this.contract() };
+    return this.community().asPartner();
+  },
+  lineCount() {
+    return this.lines.length;
+  },
+  matchingTxSide() {
+    if (this.relation === 'supplier') return 'debit';
+    else if (this.relation === 'customer' || this.relation === 'member') return 'credit';
+    debugAssert(false, 'unknown relation');
+    return undefined;
+  },
+  otherTxSide() {
+    return Transactions.oppositeSide(this.matchingTxSide());
+  },
+  hasConteerData() {
+    let result = true;
+    this.lines.forEach(line => { if (line && !line.account) result = false; });
+    return result;
+  },
+  autoFill() {
+    if (!this.lines || !this.lines.length) return;
+    let totalAmount = 0;
+    let totalTax = 0;
+    this.lines?.forEach(line => {
+      if (!line) return; // can be null, when a line is deleted from the array
+      line.amount = Math.round(line.unitPrice * line.quantity);
+      if (line.taxPct) {
+        line.tax = Math.round((line.amount * line.taxPct) / 100);
+        line.amount += line.tax; // =
+        totalTax += line.tax;
+      }
+      totalAmount += line.amount;
+    });
+    this.amount = totalAmount;
+    this.tax = totalTax;
+  },
+};
+
 Transactions.categoryHelpers('bill', {
+  ...BillAndReceiptHelpers,
   getPayments() {
     return (this.payments || []);
   },
@@ -120,6 +166,9 @@ Transactions.categoryHelpers('bill', {
     const payment = _.last(this.getPayments());
     const paymentTx = payment && Transactions.findOne(payment.id);
     return paymentTx && paymentTx.valueDate;
+  },
+  net() {
+    return this.amount - this.tax;
   },
   fillFromStatementEntry(entry) {
     this.issueDate = entry.valueDate;

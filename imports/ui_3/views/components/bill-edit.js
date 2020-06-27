@@ -1,11 +1,12 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { moment } from 'meteor/momentjs:moment';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Clock } from '/imports/utils/clock';
 import { __ } from '/imports/localization/i18n.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
 // The autoform needs to see these, to handle new events on it
 import '/imports/api/partners/actions.js';
@@ -13,6 +14,10 @@ import '/imports/api/contracts/actions.js';
 import './bill-edit.html';
 
 Template.Bill_edit.viewmodel({
+  afDoc() {
+    const doc = Transactions._transform(AutoForm.getDoc());
+    return doc;
+  },
   isBill() {
     return this.templateInstance.data.doc.category === 'bill';
   },
@@ -29,30 +34,6 @@ Template.Bill_edit.viewmodel({
 //    console.log(AutoForm.getFieldValue('lines')[index]);
     return AutoForm.getFieldValue('lines')[index];
   },
-  lineTotal(afLine) {
-    function getLineField(fieldName) {
-      return AutoForm.getFieldValue(afLine.name + '.' + fieldName) || 0;
-    }
-    let amount = getLineField('unitPrice') * getLineField('quantity');
-    const tax = (amount * getLineField('taxPct') || 0) / 100;
-    amount += tax;
-    return amount || 0;
-  },
-  billTotal(which) {
-    let net = 0;
-    let tax = 0;
-    let gross = 0;
-    (AutoForm.getFieldValue('lines') || []).forEach(line => {
-      if (!line) return;
-      let lineAmount = line.unitPrice * line.quantity || 0;
-      const lineTax = (lineAmount * line.taxPct || 0) / 100;
-      net += lineAmount;
-      tax += lineTax;
-      lineAmount += lineTax;
-      gross += lineAmount;
-    });
-    return { net, tax, gross }[which];
-  },
   reconciling() {
     return ModalStack.getVar('statementEntry');
   },
@@ -61,5 +42,22 @@ Template.Bill_edit.viewmodel({
   },
   hiddenWhenReconciling() {
     return this.reconciling() && 'hidden';
+  },
+});
+
+function autoFill(formId) {
+  const doc = Transactions._transform(AutoForm.getFormValues(formId).insertDoc);
+  doc.autoFill();
+  AutoForm.setDoc(doc, formId);
+}
+
+Template.Bill_edit.events({
+  'change .js-autofill'(event, instance) {
+    autoFill();
+  },
+  'click .js-autofill button'(event, instance) {
+    // The click happens beore the line is removed/added, so here we do not yet see the changed doc
+    const formId = AutoForm.getFormId();  // The delayed call will need to be told, what formId is
+    Meteor.setTimeout(() => autoFill(formId), 1000);
   },
 });

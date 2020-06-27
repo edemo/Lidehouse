@@ -1,4 +1,5 @@
 <template name="Payment_edit">
+    {{#let afDoc=afDoc}}
     <div class="row">
         <!-- hidden, needed for autoform doc data -->
         {{> afQuickField name="communityId" type="hidden"}}
@@ -18,10 +19,10 @@
             </div>
             {{/if}}
         </div>
-        <div class="col-sm-6 col-md-4 pull-right">
-            {{#if doc.serialId}}
-                <h4>{{_ doc.txdef.name}}:
-                <span class="text-navy">{{doc.serialId}}</span></h4>
+        <div class="col-sm-6 col-md-4 pull-right js-autofill">
+            {{#if afDoc.serialId}}
+                <h4>{{_ afDoc.txdef.name}}:
+                <span class="text-navy">{{afDoc.serialId}}</span></h4>
             {{/if}}
             {{> afQuickField name="partnerId"}}
             {{> afQuickField name="contractId"}}
@@ -29,44 +30,44 @@
         </div>
     </div>
     <div class="table-responsive m-t">
-        <table class="table invoice-table">
+        <table class="table invoice-table js-autofill">
             <thead>
                 <tr>
+                    <th></th>
                     <th>{{_ 'schemaPayments.bills.label'}}
                       <button type="button" class="btn btn-xs btn-default pull-right js-new" data-entity="bill"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'bill'}}</button>
                     </th>
-                    <th></th>
                     <th>{{_ 'schemaTransactions.amount.label'}}</th>
                 </tr>
             </thead>
             <tbody>
                 {{#afEachArrayItem name="bills"}}
                 <!--{{#if notNullLine this}}-->
-                <tr class='js-autofill'>
-                    <td>{{> afFormGroup name=this.current.id}}</td>
-                    <td data-line="{{this.name}}">
-                      <button type="button" class="btn btn-default js-full-amount"><i class="fa fa-arrow-right"></i> {{_ 'Full'}} <i class="fa fa-arrow-right"></i></button>
-                    </td>
-                    <td>{{> afFormGroup name=this.current.amount}}</td>
+                <tr>
                     <td class="text-left">
                       <button type="button" class="btn btn-info autoform-remove-item">
                           <i class="fa fa-trash"></i>
                       </button>
                     </td>
+                    <td>{{> afFormGroup name=this.current.id}}</td>
+                    <!--td data-line="{{this.name}}">
+                      <button type="button" class="btn btn-default js-full-amount"><i class="fa fa-arrow-right"></i> {{_ 'Full'}} <i class="fa fa-arrow-right"></i></button>
+                    </td-->
+                    <td>{{> afFormGroup name=this.current.amount}}</td>
                 </tr>
                 {{/afEachArrayItem}}
-                <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="bills">
-                    <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
-                </button>
             </tbody>
         </table>
+        <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="bills">
+            <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
+        </button>
     </div>
-    <div class="table-responsive m-t">
+    <div class="table-responsive m-t js-autofill">
         <table class="table invoice-table">
             <thead>
                 <tr>
-                    <th>{{_ 'schemaPayments.lines.label'}}</th>
                     <th></th>
+                    <th>{{_ 'schemaPayments.lines.label'}}</th>
                     <th></th>
                     <th>{{_ 'schemaTransactions.amount.label'}}</th>
                 </tr>
@@ -74,45 +75,46 @@
             <tbody>
                 {{#afEachArrayItem name="lines"}}
                 <!--{{#if notNullLine this}}-->
-                <tr class='js-autofill'>
-                    <td>{{> afFormGroup name=this.current.account}}</td>
-                    <td>{{> afFormGroup name=this.current.localizer}}</td>
-                    <td data-line="{{this.name}}">
-                      <button type="button" class="btn btn-default js-remainder-amount"><i class="fa fa-arrow-down"></i> {{_ 'Remainder'}} <i class="fa fa-arrow-right"></i></button>
-                    </td>
-                    <td>{{> afFormGroup name=this.current.amount}}</td>
+                <tr>
                     <td class="text-left">
                       <button type="button" class="btn btn-info autoform-remove-item">
                           <i class="fa fa-trash"></i>
                       </button>
                     </td>
+                    <td>{{> afFormGroup name=this.current.account}}</td>
+                    <td>{{> afFormGroup name=this.current.localizer}}</td>
+                    <!--td data-line="{{this.name}}">
+                      <button type="button" class="btn btn-default js-remainder-amount"><i class="fa fa-arrow-down"></i> {{_ 'Remainder'}} <i class="fa fa-arrow-right"></i></button>
+                    </td-->
+                    <td>{{> afFormGroup name=this.current.amount}}</td>
                 </tr>
                 {{/afEachArrayItem}}
-                <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="lines">
-                    <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
-                </button>
             </tbody>
         </table>
+        <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="lines">
+            <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
+        </button>
     </div>
 
     <table class="table invoice-total">
         <tbody>
         <tr>
             <td><strong>{{_ 'Allocated to bills'}} :</strong></td>
-            <td class="nowrap">{{displayMoney allocatedToBillsAmount}}</td>
+            <td class="nowrap">{{displayMoney afDoc.allocatedToBills}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'Allocated to no bills'}} :</strong></td>
-            <td class="nowrap">{{displayMoney allocatedToNonBillsAmount}}</td>
+            <td class="nowrap">{{displayMoney afDoc.allocatedToNonBills}}</td>
         </tr>
-        <tr>
+        <!--tr>
             <td><strong>{{_ 'Unallocated'}} :</strong></td>
-            <td class="nowrap">{{displayMoney unallocatedAmount}}</td>
-        </tr>
+            <td class="nowrap">{{displayMoney afDoc.unallocated}}</td>
+        </tr-->
         </tbody>
     </table>
 
     <div class="well m-t">
         {{> afQuickField name="notes"}}
     </div>
+    {{/let}}
 </template>

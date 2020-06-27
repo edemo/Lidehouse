@@ -434,6 +434,17 @@ AutoForm.getFieldValue = function autoFormGetFieldValue(fieldName, formId) {
   return mDoc.getValueForKey(fieldName);
 };
 
+/* ### droka extension ###
+ * Provide a setter to the form's doc, so we can update fields from the code, and it triggers reactive updates
+*/
+AutoForm.getDoc = function autoFormGetDoc(doc, formId) {
+  return AutoForm.reactiveFormData.sourceDoc(formId || AutoForm.getFormId())._obj;
+}
+AutoForm.setDoc = function autoFormSetDoc(doc, formId) {
+  var mDoc = new MongoObject(doc);
+  AutoForm.reactiveFormData.sourceDoc(formId || AutoForm.getFormId(), mDoc);
+}
+
 /**
  * @method AutoForm.getInputTypeTemplateNameForElement
  * @public

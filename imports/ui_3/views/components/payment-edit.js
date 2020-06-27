@@ -1,8 +1,6 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { moment } from 'meteor/momentjs:moment';
-import { $ } from 'meteor/jquery';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
@@ -11,32 +9,16 @@ import { Clock } from '/imports/utils/clock';
 import '/imports/api/partners/actions.js';
 import '/imports/api/contracts/actions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import '/imports/api/transactions/actions.js';
 import './payment-edit.html';
 
 Template.Payment_edit.viewmodel({
+  afDoc() {
+    const doc = Transactions._transform(AutoForm.getDoc());
+    return doc;
+  },
   defaultDate() {
     return Clock.currentTime();
-  },
-  allocatedToBillsAmount() {
-    let allocated = 0;
-    (AutoForm.getFieldValue('bills') || []).forEach(bp => {
-      if (!bp) return;
-      allocated += bp.amount;
-    });
-    return allocated;
-  },
-  allocatedToNonBillsAmount() {
-    let allocated = 0;
-    (AutoForm.getFieldValue('lines') || []).forEach(l => {
-      if (!l) return;
-      allocated += l.amount;
-    });
-    return allocated;
-  },
-  unallocatedAmount() {
-    return AutoForm.getFieldValue('amount') - this.allocatedToBillsAmount() - this.allocatedToNonBillsAmount();
   },
   reconciling() {
     return ModalStack.getVar('statementEntry');
@@ -49,7 +31,21 @@ Template.Payment_edit.viewmodel({
   },
 });
 
+function autoFill(formId) {
+  const doc = Transactions._transform(AutoForm.getFormValues(formId).insertDoc);
+  doc.autoFill();
+  AutoForm.setDoc(doc, formId);
+}
+
 Template.Payment_edit.events({
+  'change .js-autofill'(event, instance) {
+    autoFill();
+  },
+  'click .js-autofill button'(event, instance) {
+    // The click happens beore the line is removed/added, so here we do not yet see the changed doc
+    const formId = AutoForm.getFormId();  // The delayed call will need to be told, what formId is
+    Meteor.setTimeout(() => autoFill(formId), 1000);
+  },
   'click .js-new[data-entity="bill"]'(event, instance) {
     const paymentDef = instance.data.doc.txdef();
     const billDef = paymentDef.correspondingBillDef();
@@ -58,21 +54,5 @@ Template.Payment_edit.events({
       partnerId: AutoForm.getFieldValue('partnerId'),
     };
     Transactions.actions.new({ entity: 'bill', txdef: billDef }, doc).run(event, instance);
-  },
-  'click .js-full-amount'(event, instance) {
-    const cell = $(event.target).closest('[data-line]');
-    const afLineName = cell.data('line');
-    const billId = AutoForm.getFieldValue(afLineName + '.id');
-    const bill = Transactions.findOne(billId);
-//    AutoForm.setFieldValue(afLineName + '.amount', bill.outstanding); AutoForm 7.0 has it. Can replace next 3 lines with it
-    const amountElem = cell.next().find('input');
-    amountElem.val(bill.outstanding);
-    amountElem.change();
-  },
-  'click .js-remainder-amount'(event, instance) {
-    const cell = $(event.target).closest('[data-line]');
-    const amountElem = cell.next().find('input');
-    amountElem.val(instance.viewmodel.unallocatedAmount());
-    amountElem.change();
   },
 });

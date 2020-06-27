@@ -11,7 +11,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
+import { Bills, BillAndReceiptHelpers } from '/imports/api/transactions/bills/bills.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
 const receiptSchema = new SimpleSchema([
@@ -27,6 +27,7 @@ const receiptSchema = new SimpleSchema([
 ]);
 
 Transactions.categoryHelpers('receipt', {
+  ...BillAndReceiptHelpers,
   fillFromStatementEntry(entry) {
     this.payAccount = entry.account;
     const title =  entry.note || __(this.txdef().name);

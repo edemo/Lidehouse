@@ -299,47 +299,6 @@ Transactions.helpers({
   displayInSelect() {
     return this.serialId;
   },
-  // bill/receipt helpers
-  issuer() {
-    if (this.relation === 'supplier') return { partner: this.partner(), contract: this.contract() };
-    return this.community().asPartner();
-  },
-  receiver() {
-    if (this.relation === 'customer' || this.relation === 'member') return { partner: this.partner(), contract: this.contract() };
-    return this.community().asPartner();
-  },
-  lineCount() {
-    return this.lines.length;
-  },
-  matchingTxSide() {
-    if (this.relation === 'supplier') return 'debit';
-    else if (this.relation === 'customer' || this.relation === 'member') return 'credit';
-    debugAssert(false, 'unknown relation');
-    return undefined;
-  },
-  otherTxSide() {
-    return Transactions.oppositeSide(this.matchingTxSide());
-  },
-  hasConteerData() {
-    let result = true;
-    this.lines.forEach(line => { if (line && !line.account) result = false; });
-    return result;
-  },
-  autofillLines() {
-    if (!this.lines || !this.lines.length) return;
-    let totalAmount = 0;
-    let totalTax = 0;
-    this.lines.forEach(line => {
-      if (!line) return; // can be null, when a line is deleted from the array
-      line.amount = Math.round(line.unitPrice * line.quantity);
-      line.tax = Math.round((line.amount * line.taxPct) / 100);
-      line.amount += line.tax; // =
-      totalAmount += line.amount;
-      totalTax += line.tax;
-    });
-    this.amount = totalAmount;
-    this.tax = totalTax;
-  },
 });
 
 Transactions.attachBaseSchema(Transactions.baseSchema);
@@ -395,13 +354,10 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     tdoc.checkAccountsExist();
     tdoc.complete = tdoc.calculateComplete();
-    if (tdoc.category === 'bill' || tdoc.category === 'receipt') {
-      tdoc.autofillLines();
-    }
+    tdoc.autoFill?.();
     if (tdoc.category === 'bill' || tdoc.category === 'payment') {
       tdoc.outstanding = tdoc.calculateOutstanding();
     }
-    tdoc.validate();
     _.extend(doc, tdoc);
   });
 
@@ -421,16 +377,13 @@ if (Meteor.isServer) {
     autoValueUpdate(doc, modifier, 'complete', d => d.calculateComplete());
     if (doc.category === 'bill' || doc.category === 'receipt' || doc.category === 'payment') {
       const newDoc = Transactions._transform(_.extend({ category: doc.category }, modifier.$set));
-      if (doc.category === 'bill' || doc.category === 'receipt') {
-        newDoc.autofillLines();
-      }
+      newDoc.autoFill?.();
       _.extend(modifier, { $set: newDoc });
       if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
         || (doc.category === 'payment' && newDoc.bills)) {
         autoValueUpdate(doc, modifier, 'outstanding', d => d.calculateOutstanding());
       }
     }
-    // tdoc.validate(); => moved to Stage
   });
 
   Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {

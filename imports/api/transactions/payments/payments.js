@@ -118,11 +118,41 @@ Transactions.categoryHelpers('payment', {
   allocatedSomewhere() {
     return this.allocatedToBills() + this.allocatedToNonBills();
   },
+  unallocated() {
+    return this.amount - this.allocatedSomewhere();
+  },
   validate() {
-    const allocatedAmount = this.allocatedSomewhere();
-    if (allocatedAmount !== this.amount) {
+    if (this.unallocated() !== 0) {
       // The min, max contraint on the schema does not work, because the hook runs after the schema check
-      throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.amount - allocatedAmount}`);
+      throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.unallocated()}`);
+    }
+  },
+  autoFill() {
+    if (!this.amount) return;
+    let amountToAllocate = this.amount;
+    this.bills?.forEach(pb => {
+      if (!pb) return true; // can be null, when a line is deleted from the array
+      const bill = Transactions.findOne(pb.id);
+      const autoAmount = Math.min(amountToAllocate, bill.outstanding);
+      if (pb.amount && pb.amount < autoAmount) { /* we dont override amounts that are specified */ }
+      else pb.amount = autoAmount;
+      amountToAllocate -= pb.amount;
+      if (amountToAllocate === 0) return false;
+    });
+    this.lines?.forEach(line => {
+      if (!line) return true; // can be null, when a line is deleted from the array
+      if (line.amount && line.amount < amountToAllocate) {
+        amountToAllocate -= line.amount;
+        return true;
+      } else {
+        line.amount = amountToAllocate;
+        amountToAllocate = 0;
+        return false;
+      }
+    });
+    if (amountToAllocate) {
+      if (this.lines?.length) (_.last(this.lines)).amount += amountToAllocate;
+      else this.lines = [{ amount: amountToAllocate }];
     }
   },
   fillFromStatementEntry(entry) {

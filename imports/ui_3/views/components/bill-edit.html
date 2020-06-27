@@ -7,7 +7,7 @@
 </template-->
 
 <template name="Bill_edit">
-    {{#let community=doc.community}}
+    {{#let afDoc=afDoc}}
     <div class="row">
         <!-- hidden, needed for autoform doc data -->
         {{> afQuickField name="communityId" type="hidden"}} 
@@ -18,7 +18,7 @@
         <div class="col-sm-6 col-md-4">
             <h5>{{_ 'issuer'}}:</h5>
             <address>
-                {{#if (equals doc.relationSign -1)}}
+                {{#if (equals afDoc.relationSign -1)}}
                     {{> afQuickField name="partnerId"}}
                     {{> afQuickField name="contractId"}}
                 {{else}}
@@ -39,13 +39,13 @@
         {{/if}}
 
         <div class="col-sm-6 col-md-4 pull-right">
-            {{#if doc.serialId}}
-                <h4>{{_ doc.txdef.name}}:
-                <span class="text-navy">{{doc.serialId}}</span></h4>
+            {{#if afDoc.serialId}}
+                <h4>{{_ afDoc.txdef.name}}:
+                <span class="text-navy">{{afDoc.serialId}}</span></h4>
             {{/if}}
             <h5>{{_ 'receiver'}}:</h5>
             <address>
-                {{#if (equals doc.relationSign 1)}}
+                {{#if (equals afDoc.relationSign 1)}}
                     {{> afQuickField name="partnerId"}}
                     {{> afQuickField name="contractId"}}
                 {{else}}
@@ -67,70 +67,71 @@
         </div>
     </div>
 
-    <div class="table-responsive m-t">
+    <div class="table-responsive m-t js-autofill">
         <table class="table invoice-table">
             <thead>
                 <tr >
+                    <th></th>
                     <th>{{_ 'schemaBills.lines.$.title.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
-                    {{#if community.settings.underVat}}
+                    {{#if afDoc.community.settings.underVat}}
                       <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
                     {{/if}}
                     <th>{{_ 'schemaBills.lines.$.amount.label'}}</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {{#afEachArrayItem name="lines"}}
                 <!--{{#if notNullLine this}}-->
-                <tr class='js-autofill'>
-                    <td>{{> afFormGroup name=this.current.title}}</td>
-                    <td>{{> afFormGroup name=this.current.quantity}}</td>
-                    <td>{{> afFormGroup name=this.current.uom}}</td>
-                    <td>{{> afFormGroup name=this.current.unitPrice}} </td>
-                    {{#if community.settings.underVat}}
-                      <td>{{> afFormGroup name=this.current.taxPct}}</td>
-                    {{/if}}
-                    <!--td>{{> afFormGroup name=this.current.amount}} </td-->
-                    <td class="text-center">{{lineTotal this}}</td>
+                <tr>
                     <td class="text-left">
                       <button type="button" class="btn btn-info autoform-remove-item">
                           <i class="fa fa-trash"></i>
                       </button>
                     </td>                       
+                    <td>{{> afFormGroup name=this.current.title}}</td>
+                    <td>{{> afFormGroup name=this.current.quantity}}</td>
+                    <td>{{> afFormGroup name=this.current.uom}}</td>
+                    <td>{{> afFormGroup name=this.current.unitPrice}} </td>
+                    {{#if afDoc.community.settings.underVat}}
+                      <td>{{> afFormGroup name=this.current.taxPct}}</td>
+                    {{/if}}
+                    <td>{{> afFormGroup name=this.current.amount}} </td>
+                    <!--td class="text-center">{{lineTotal this}}</td-->
                 </tr>
                 {{#if currentUserHasPermission 'transactions.post'}}
                 <tr>
+                      <td></td>
                       <td>{{> afFormGroup name=this.current.account}}</td>
                       <td>{{> afFormGroup name=this.current.localizer}}</td>
                 </tr>
                 <!--{{/if}}-->
                 {{/if}}
                 {{/afEachArrayItem}}
-                <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="lines">
-                    <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
-                </button>                  
             </tbody>
         </table>
+        <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="lines">
+            <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
+        </button>                  
     </div>
 
     <table class="table invoice-total">
         <tbody>
-        {{#if community.settings.underVat}}
+        {{#if afDoc.community.settings.underVat}}
         <tr>
             <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
-            <td>{{billTotal 'net'}}</td>
+            <td>{{afDoc.net}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
-            <td>{{billTotal 'tax'}}</td>
+            <td>{{afDoc.tax}}</td>
         </tr>
         {{/if}}
         <tr>
             <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
-            <td>{{billTotal 'gross'}}</td>
+            <td>{{afDoc.amount}}</td>
         </tr>
         </tbody>
     </table>

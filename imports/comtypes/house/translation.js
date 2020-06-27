@@ -106,7 +106,7 @@ export const HouseTranslation = {
             "cash": 'Cash'
           }
         },
-        "underVAT": {
+        "underVat": {
           "label": "Under VAT"
         },
         "paymentsWoStatement": {
@@ -323,7 +323,7 @@ export const HouseTranslation = {
             "cash": "Egyszeres (pénzforgalmi) könyvvitel"
           }
         },
-        "underVAT": {
+        "underVat": {
           "label": "ÁFA körben van"
         },
         "paymentsWoStatement": {
