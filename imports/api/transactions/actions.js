@@ -4,6 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { displayError } from '/imports/ui_3/lib/errors.js';
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
@@ -258,8 +259,14 @@ Transactions.categoryValues.forEach(category => {
       }
       doc.debit = doc.debit?.filter(entry => entry);
       doc.credit = doc.credit?.filter(entry => entry);
-      doc.validate?.();
-      return doc;
+      try {
+        const tdoc = Transactions._transform(doc);
+        tdoc.validate?.();
+        return doc;
+      } catch (err) {
+        displayError(err);
+        return false;
+      }
     },
   });
 });

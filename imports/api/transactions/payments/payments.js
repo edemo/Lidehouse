@@ -35,7 +35,8 @@ export const chooseBillOfPartner = {
 //    const amount = AutoForm.getFieldValue('amount');
 //    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
 //    const billByProximity = _.sortBy(bills.fetch(), b => (b.oustanding - amount));
-    const selector = { communityId, category: 'bill', relation, partnerId };
+//    const onFormAllocatedBillIds = _.pluck(AutoForm.getFieldValue('bills'), 'id'); _id: { $nin: onFormAllocatedBillIds }
+    const selector = { communityId, category: 'bill', relation, partnerId, status: { $ne: 'void' }, outstanding: { $gt: 0 } };
     const bills = Transactions.find(Object.cleanUndefined(selector), { sort: { createdAt: -1 } });
     const options = bills.map(function option(bill) {
       return { label: bill.displayInSelect(), value: bill._id };
@@ -125,6 +126,10 @@ Transactions.categoryHelpers('payment', {
     if (this.unallocated() !== 0) {
       // The min, max contraint on the schema does not work, because the hook runs after the schema check
       throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.unallocated()}`);
+    }
+    const connectedBillIds = _.pluck(this.bills, 'id');
+    if (connectedBillIds.length !== _.uniq(connectedBillIds).length) {
+      throw new Meteor.Error('err_notAllowed', 'Same bill may not be selected multiple times', `connectedBillIds: ${connectedBillIds}`);
     }
   },
   autoAllocate() {
