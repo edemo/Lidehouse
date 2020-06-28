@@ -258,6 +258,7 @@ Transactions.categoryValues.forEach(category => {
       }
       doc.debit = doc.debit?.filter(entry => entry);
       doc.credit = doc.credit?.filter(entry => entry);
+      doc.validate?.();
       return doc;
     },
   });

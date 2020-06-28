@@ -247,6 +247,8 @@
   "print": "nyomtatás",
   "skip": "átugrás",
   "merge": "beleolvasztás",
+  "Detailed bill": "Részletes számla",
+  "Reconcile to bills": "Számlákhoz egyeztetés",
 
   "link": "Kapcsolás",
   "join": "Csatlakozás",

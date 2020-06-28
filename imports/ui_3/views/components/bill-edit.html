@@ -67,10 +67,11 @@
         </div>
     </div>
 
-    <div class="table-responsive m-t js-autofill">
-        <table class="table invoice-table">
+    {{#if detailedView}}
+    <div class="table-responsive m-t">
+        <table class="table">
             <thead>
-                <tr >
+                <tr>
                     <th></th>
                     <th>{{_ 'schemaBills.lines.$.title.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
@@ -85,7 +86,7 @@
             <tbody>
                 {{#afEachArrayItem name="lines"}}
                 <!--{{#if notNullLine this}}-->
-                <tr>
+                <tr class="js-autofill">
                     <td class="text-left">
                       <button type="button" class="btn btn-info autoform-remove-item">
                           <i class="fa fa-trash"></i>
@@ -116,7 +117,6 @@
             <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
         </button>                  
     </div>
-
     <table class="table invoice-total">
         <tbody>
         {{#if afDoc.community.settings.subjectToVat}}
@@ -135,6 +135,31 @@
         </tr>
         </tbody>
     </table>
+    {{else}}
+    <div class="table-responsive m-t">
+        <table class="table">
+                {{> afQuickField name="lines.0.quantity" type="hidden"}} 
+            <thead>
+                <tr>
+                    <th class="text-left">{{_ 'schemaBills.lines.$.title.label'}}
+                        <button type="button" class="btn btn-xs btn-outline btn-info pull-right js-view-mode">{{_ "Detailed bill"}}</button>
+                    </th>
+                    <th class="text-left">{{_ 'schemaBills.lines.$.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{> afFormGroup name="lines.0.title"}}</td>
+                    <td>{{> afFormGroup name="lines.0.unitPrice"}}</td>
+                </tr>
+                <tr>
+                    <td>{{> afFormGroup name="lines.0.account"}}</td>
+                    <td>{{> afFormGroup name="lines.0.localizer"}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {{/if}}
 
     <div class="well m-t">
         {{> afQuickField name="notes"}}

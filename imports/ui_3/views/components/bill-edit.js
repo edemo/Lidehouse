@@ -14,8 +14,12 @@ import '/imports/api/contracts/actions.js';
 import './bill-edit.html';
 
 Template.Bill_edit.viewmodel({
-  afDoc() {
-    const doc = Transactions._transform(AutoForm.getDoc());
+  detailedView: false,
+  onCreated() {
+    this.detailedView(!this.templateInstance.data.doc.isSimple());
+  },
+  afDoc(formId) {
+    const doc = Transactions._transform(AutoForm.getDoc(formId));
     return doc;
   },
   isBill() {
@@ -59,5 +63,9 @@ Template.Bill_edit.events({
     // The click happens beore the line is removed/added, so here we do not yet see the changed doc
     const formId = AutoForm.getFormId();  // The delayed call will need to be told, what formId is
     Meteor.setTimeout(() => autoFill(formId), 1000);
+  },
+  'click .js-view-mode'(event, instance) {
+    autoFill();
+    instance.viewmodel.detailedView(true);
   },
 });

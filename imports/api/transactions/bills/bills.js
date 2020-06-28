@@ -53,7 +53,7 @@ const lineSchema = {
   title: { type: String },
   details: { type: String, optional: true },
   uom: { type: String, optional: true },  // unit of measurment
-  quantity: { type: Number, decimal: true },
+  quantity: { type: Number, decimal: true, autoform: { defaultValue: 1 } },
   unitPrice: { type: Number, decimal: true },
   taxPct: { type: Number, decimal: true, optional: true, defaultValue: 0 },
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
@@ -69,12 +69,21 @@ const lineSchema = {
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
 Bills.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);
 
+/*
+const simpleLineSchema = {
+  title: { type: String },
+  amount: { type: Number, decimal: true },
+  account: { type: String, optional: true, autoform: chooseConteerAccount() },
+  localizer: { type: String, optional: true, autoform: chooseParcel() },
+};
+*/
+
 Bills.receiptSchema = new SimpleSchema({
   // amount overrides non-optional value of transactions, with optional & calculated value
   amount: { type: Number, decimal: true, optional: true },
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
-  title: { type: String, max: 200, optional: true }, // title here used only when there are no lines
-  lines: { type: Array, defaultValue: [] },
+//  simple: { type: simpleLineSchema, optional: true }, // used if there is only one simplified line
+  lines: { type: Array, optional: true },             // used if there multiple complex line
   'lines.$': { type: Bills.lineSchema },
 });
 
@@ -107,6 +116,10 @@ Meteor.startup(function indexBills() {
 });
 
 export const BillAndReceiptHelpers = {
+  isSimple() {
+    return !this.lines?.length ||
+      (this.lines?.length === 1 && this.lines[0].quantity === 1 && !this.lines[0].taxPct);
+  },
   issuer() {
     if (this.relation === 'supplier') return { partner: this.partner(), contract: this.contract() };
     return this.community().asPartner();
@@ -116,7 +129,7 @@ export const BillAndReceiptHelpers = {
     return this.community().asPartner();
   },
   lineCount() {
-    return this.lines.length;
+    return this.lines?.length;
   },
   matchingTxSide() {
     if (this.relation === 'supplier') return 'debit';
@@ -129,11 +142,11 @@ export const BillAndReceiptHelpers = {
   },
   hasConteerData() {
     let result = true;
-    this.lines.forEach(line => { if (line && !line.account) result = false; });
+    this.lines?.forEach(line => { if (line && !line.account) result = false; });
     return result;
   },
   autoFill() {
-    if (!this.lines || !this.lines.length) return;
+    if (!this.lines) return;  // when the modifier doesn't touch the lines, should not autoFill
     let totalAmount = 0;
     let totalTax = 0;
     this.lines?.forEach(line => {
@@ -183,7 +196,7 @@ Transactions.categoryHelpers('bill', {
     if (accountingMethod === 'accrual') {
       this.debit = [];
       this.credit = [];
-      this.lines.forEach(line => {
+      this.lines?.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
         this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
         let contraAccount = this.relationAccount().code;
@@ -204,7 +217,7 @@ Transactions.categoryHelpers('bill', {
     Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
     Contracts.update(this.contractId, { $inc: { outstanding: directionSign * this.amount } }, { selector: { relation: 'member' } });
     if (this.relation === 'member') {
-      this.lines.forEach(line => {
+      this.lines?.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
         debugAssert(line.parcelId, `Cannot process a parcel bill without parcelId field: ${JSON.stringify(this)}`);
         Parcels.update(line.parcelId, { $inc: { outstanding: directionSign * line.amount } }, { selector: { category: '@property' } });

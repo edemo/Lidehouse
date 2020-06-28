@@ -437,7 +437,7 @@ AutoForm.getFieldValue = function autoFormGetFieldValue(fieldName, formId) {
 /* ### droka extension ###
  * Provide a setter to the form's doc, so we can update fields from the code, and it triggers reactive updates
 */
-AutoForm.getDoc = function autoFormGetDoc(doc, formId) {
+AutoForm.getDoc = function autoFormGetDoc(formId) {
   return AutoForm.reactiveFormData.sourceDoc(formId || AutoForm.getFormId())._obj;
 }
 AutoForm.setDoc = function autoFormSetDoc(doc, formId) {

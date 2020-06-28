@@ -13,8 +13,12 @@ import '/imports/api/transactions/actions.js';
 import './payment-edit.html';
 
 Template.Payment_edit.viewmodel({
-  afDoc() {
-    const doc = Transactions._transform(AutoForm.getDoc());
+  billsView: false,
+  onCreated() {
+    this.billsView(!!this.templateInstance.data.doc.bills?.length);
+  },
+  afDoc(formId) {
+    const doc = Transactions._transform(AutoForm.getDoc(formId));
     return doc;
   },
   defaultDate() {
@@ -33,7 +37,7 @@ Template.Payment_edit.viewmodel({
 
 function autoFill(formId) {
   const doc = Transactions._transform(AutoForm.getFormValues(formId).insertDoc);
-  doc.autoFill();
+  doc.autoAllocate();
   AutoForm.setDoc(doc, formId);
 }
 
@@ -44,7 +48,10 @@ Template.Payment_edit.events({
   'click .js-autofill button'(event, instance) {
     // The click happens beore the line is removed/added, so here we do not yet see the changed doc
     const formId = AutoForm.getFormId();  // The delayed call will need to be told, what formId is
-    Meteor.setTimeout(() => autoFill(formId), 1000);
+    Meteor.setTimeout(() => {
+      autoFill(formId);
+      instance.viewmodel.billsView(instance.viewmodel.afDoc(formId).bills?.length);
+    }, 1000);
   },
   'click .js-new[data-entity="bill"]'(event, instance) {
     const paymentDef = instance.data.doc.txdef();
@@ -54,5 +61,8 @@ Template.Payment_edit.events({
       partnerId: AutoForm.getFieldValue('partnerId'),
     };
     Transactions.actions.new({ entity: 'bill', txdef: billDef }, doc).run(event, instance);
+  },
+  'click .js-view-mode'(event, instance) {
+    instance.viewmodel.billsView(true);
   },
 });

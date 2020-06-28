@@ -29,12 +29,13 @@
             {{> afQuickField name="amount"}}
         </div>
     </div>
+    {{#if billsView}}
     <div class="table-responsive m-t">
-        <table class="table invoice-table js-autofill">
+        <table class="table">
             <thead>
                 <tr>
                     <th></th>
-                    <th>{{_ 'schemaPayments.bills.label'}}
+                    <th>{{_ 'Reconcile to bills'}}
                       <button type="button" class="btn btn-xs btn-default pull-right js-new" data-entity="bill"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'bill'}}</button>
                     </th>
                     <th>{{_ 'schemaTransactions.amount.label'}}</th>
@@ -43,7 +44,7 @@
             <tbody>
                 {{#afEachArrayItem name="bills"}}
                 <!--{{#if notNullLine this}}-->
-                <tr>
+                <tr class="js-autofill">
                     <td class="text-left">
                       <button type="button" class="btn btn-info autoform-remove-item">
                           <i class="fa fa-trash"></i>
@@ -62,12 +63,18 @@
             <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
         </button>
     </div>
-    <div class="table-responsive m-t js-autofill">
-        <table class="table invoice-table">
+    {{/if}}
+
+    <div class="table-responsive m-t">
+        <table class="table">
             <thead>
                 <tr>
                     <th></th>
-                    <th>{{_ 'schemaPayments.lines.label'}}</th>
+                    <th>{{_ 'schemaPayments.lines.label'}}
+                        {{#unless billsView}}
+                        <button type="button" class="btn btn-xs btn-outline btn-info js-view-mode pull-right">{{_ "Reconcile to bills"}}</button>
+                        {{/unless}}
+                    </th>
                     <th></th>
                     <th>{{_ 'schemaTransactions.amount.label'}}</th>
                 </tr>
@@ -75,7 +82,7 @@
             <tbody>
                 {{#afEachArrayItem name="lines"}}
                 <!--{{#if notNullLine this}}-->
-                <tr>
+                <tr class="js-autofill">
                     <td class="text-left">
                       <button type="button" class="btn btn-info autoform-remove-item">
                           <i class="fa fa-trash"></i>

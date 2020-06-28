@@ -10,7 +10,7 @@ Template.registerHelper('print', function print() {
   return {
     visible: true,
     href: '',
-    color: 'primary',
+    color: 'primary btn-outline',
     name: 'print',
     icon: 'fa fa-print',
     label: 'print',

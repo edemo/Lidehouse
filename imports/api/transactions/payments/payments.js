@@ -127,11 +127,11 @@ Transactions.categoryHelpers('payment', {
       throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.unallocated()}`);
     }
   },
-  autoFill() {
+  autoAllocate() {
     if (!this.amount) return;
     let amountToAllocate = this.amount;
     this.bills?.forEach(pb => {
-      if (!pb) return true; // can be null, when a line is deleted from the array
+      if (!pb?.id) return true; // can be null, when a line is deleted from the array
       const bill = Transactions.findOne(pb.id);
       const autoAmount = Math.min(amountToAllocate, bill.outstanding);
       if (pb.amount && pb.amount < autoAmount) { /* we dont override amounts that are specified */ }
