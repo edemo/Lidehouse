@@ -92,10 +92,10 @@ const paymentSchema = new SimpleSchema([
 
 Transactions.categoryHelpers('payment', {
   getBills() {
-    return (this.bills || []);
+    return (this.bills || []).filter(b => b); // nulls can be in the array, on the UI, when lines are deleted
   },
   getLines() {
-    return (this.lines || []);
+    return (this.lines || []).filter(l => l);
   },
   getBillTransactions() {
     return this.getBills().map(bill => Transactions.findOne(bill.id));
@@ -135,7 +135,7 @@ Transactions.categoryHelpers('payment', {
   autoAllocate() {
     if (!this.amount) return;
     let amountToAllocate = this.amount;
-    this.bills?.forEach(pb => {
+    this.getBills().forEach(pb => {
       if (!pb?.id) return true; // can be null, when a line is deleted from the array
       const bill = Transactions.findOne(pb.id);
       const autoAmount = Math.min(amountToAllocate, bill.outstanding);
@@ -144,7 +144,7 @@ Transactions.categoryHelpers('payment', {
       amountToAllocate -= pb.amount;
       if (amountToAllocate === 0) return false;
     });
-    this.lines?.forEach(line => {
+    this.getLines().forEach(line => {
       if (!line) return true; // can be null, when a line is deleted from the array
       if (line.amount && line.amount < amountToAllocate) {
         amountToAllocate -= line.amount;
@@ -170,7 +170,7 @@ Transactions.categoryHelpers('payment', {
     this.credit = [];
     let unallocatedAmount = this.amount;
     this[this.relationSide()].push({ amount: this.amount, account: this.payAccount });
-    this.bills.forEach(billPaid => {
+    this.getBills().forEach(billPaid => {
       if (unallocatedAmount === 0) return false;
       const bill = Transactions.findOne(billPaid.id);
       if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
@@ -182,7 +182,7 @@ Transactions.categoryHelpers('payment', {
           unallocatedAmount -= amount;
         });
       } else if (accountingMethod === 'cash') {
-        bill.lines.forEach(line => {
+        bill.getLines().forEach(line => {
           if (unallocatedAmount === 0) return false;
           if (!line) return true; // can be null, when a line is deleted from the array
           const amount = Math.smallerInAbs(line.amount, billPaid.amount);
@@ -192,7 +192,7 @@ Transactions.categoryHelpers('payment', {
         });
       }
     });
-    this.lines.forEach(line => {
+    this.getLines().forEach(line => {
       if (unallocatedAmount === 0) return false;
       if (!line) return true; // can be null, when a line is deleted from the array
       const amount = Math.smallerInAbs(line.amount, unallocatedAmount);
@@ -209,7 +209,7 @@ Transactions.categoryHelpers('payment', {
   },
   registerOnBills(direction = +1) {
     const result = [];
-    this.bills.forEach(billPaid => {
+    this.getBills().forEach(billPaid => {
       const bill = Transactions.findOne(billPaid.id);
       const paymentOnBill = _.extend({}, billPaid);
       paymentOnBill.id = this._id; // replacing the bill._id with the payment._id
@@ -238,9 +238,9 @@ Transactions.categoryHelpers('payment', {
     Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
     Contracts.update(this.contractId, { $inc: { outstanding: (-1) * sign * this.amount } }, { selector: { relation: 'member' } });
     if (this.relation === 'member') {
-      this.bills.forEach(bp => {
+      this.getBills().forEach(bp => {
         const bill = Transactions.findOne(bp.id);
-        bill.lines.forEach(line => {
+        bill.getLines().forEach(line => {
           if (!line) return; // can be null, when a line is deleted from the array
           debugAssert(line.parcelId, 'Cannot process a parcel payment without parcelId field');
           Parcels.update(line.parcelId, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });

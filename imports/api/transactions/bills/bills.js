@@ -116,6 +116,9 @@ Meteor.startup(function indexBills() {
 });
 
 export const BillAndReceiptHelpers = {
+  getLines() {
+    return (this.lines || []).filter(l => l); // nulls can be in the array, on the UI, when lines are deleted
+  },
   isSimple() {
     return !this.lines?.length ||
       (this.lines?.length === 1 && this.lines[0].quantity === 1 && !this.lines[0].taxPct);
@@ -142,14 +145,14 @@ export const BillAndReceiptHelpers = {
   },
   hasConteerData() {
     let result = true;
-    this.lines?.forEach(line => { if (line && !line.account) result = false; });
+    this.getLines().forEach(line => { if (line && !line.account) result = false; });
     return result;
   },
   autoFill() {
     if (!this.lines) return;  // when the modifier doesn't touch the lines, should not autoFill
     let totalAmount = 0;
     let totalTax = 0;
-    this.lines?.forEach(line => {
+    this.getLines().forEach(line => {
       if (!line) return; // can be null, when a line is deleted from the array
       line.amount = Math.round(line.unitPrice * line.quantity);
       if (line.taxPct) {
@@ -196,7 +199,7 @@ Transactions.categoryHelpers('bill', {
     if (accountingMethod === 'accrual') {
       this.debit = [];
       this.credit = [];
-      this.lines?.forEach(line => {
+      this.getLines().forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
         this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
         let contraAccount = this.relationAccount().code;
@@ -217,7 +220,7 @@ Transactions.categoryHelpers('bill', {
     Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
     Contracts.update(this.contractId, { $inc: { outstanding: directionSign * this.amount } }, { selector: { relation: 'member' } });
     if (this.relation === 'member') {
-      this.lines?.forEach(line => {
+      this.getLines().forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
         debugAssert(line.parcelId, `Cannot process a parcel bill without parcelId field: ${JSON.stringify(this)}`);
         Parcels.update(line.parcelId, { $inc: { outstanding: directionSign * line.amount } }, { selector: { category: '@property' } });

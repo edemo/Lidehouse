@@ -269,4 +269,18 @@ Transactions.categoryValues.forEach(category => {
       }
     },
   });
+/*
+  AutoForm.addHooks(`af.${category}.update`, {
+    formToModifier(modifier) {
+      try {
+        const tdoc = Transactions._transform(doc);
+        tdoc.validate?.();
+        return doc;
+      } catch (err) {
+        displayError(err);
+        return false;
+      }
+    },
+  });
+*/
 });
