@@ -115,7 +115,7 @@ export const autoReconcile = new ValidatedMethod({
   run({ _id }) {
     const entry = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.reconcile', entry);
-    if (entry.match.confidence === 'primary' || entry.match.confidence === 'info') {
+    if (entry.match.confidence === 'primary' || entry.match.confidence === 'success' || entry.match.confidence === 'info') {
       let txId = entry.match.txId;
       if (!txId && entry.match.tx) {
         txId = Transactions.methods.insert._execute({ userId: this.userId }, entry.match.tx);
@@ -229,16 +229,16 @@ export const recognize = new ValidatedMethod({
     };
     if (partner.outstanding === adjustedEntryAmount) {
       // ---------------------------
-      // 2nd grade, 'info' match: The payment exactly matches the outstanding bills of the partner
+      // 2nd grade, 'success' match: The payment exactly matches the outstanding bills of the partner
       // ---------------------------
       tx.bills = matchingBills.map(bill => ({ id: bill._id, amount: bill.outstanding }));
       tx.lines = [];
-      Log.info('Info match with bills', matchingBills.length);
+      Log.info('Success match with bills', matchingBills.length);
       Log.debug(tx);
-      StatementEntries.update(_id, { $set: { match: { confidence: 'info', tx } } });
+      StatementEntries.update(_id, { $set: { match: { confidence: 'success', tx } } });
     } else {
       // ---------------------------
-      // 3rd grade, 'warning' match: We found the partner but the payment is not the right amount.
+      // 3rd grade, 'info' match: We found the partner but the payment is not the right amount.
       // Either under-paid (=> need to decide which bills are paid), or over-paid (=> need to decide where to allocate the remainder)
       // ---------------------------
       tx.bills = []; tx.lines = [];
@@ -257,9 +257,9 @@ export const recognize = new ValidatedMethod({
 //          localizer: undefined,
         }];
       }
-      Log.info('Warning match with bills', matchingBills.length);
+      Log.info('Info match with bills', matchingBills.length);
       Log.debug(tx);
-      StatementEntries.update(_id, { $set: { match: { confidence: 'warning', tx } } });
+      StatementEntries.update(_id, { $set: { match: { confidence: 'info', tx } } });
     }
   },
 });
