@@ -111,7 +111,8 @@ StatementEntries.actions = {
     color: doc.match?.confidence,
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc) && (options.txdef || doc.match?.tx?.defId),
     run() {
-      ModalStack.setVar('statementEntry', doc, true);
+      ModalStack.setVar('statementEntry', doc);
+
       const insertTx = doc.match?.tx || {};
       let txdef;
       if (options.txdef) {
