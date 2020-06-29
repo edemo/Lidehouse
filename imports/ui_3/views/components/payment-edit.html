@@ -50,7 +50,16 @@
                           <i class="fa fa-trash"></i>
                       </button>
                     </td>
-                    <td>{{> afFormGroup name=this.current.id}}</td>
+                    <td>
+                    {{#if docField this.current.id}}
+                      {{> afFormGroup name=this.current.id type='hidden'}}
+                      <div>
+                        <strong>{{displayBill this.current.id}}</strong>
+                      </div>                                
+                    {{else}} 
+                      {{> afFormGroup name=this.current.id}}
+                    {{/if}}
+                    </td>
                     <!--td data-line="{{this.name}}">
                       <button type="button" class="btn btn-default js-full-amount"><i class="fa fa-arrow-right"></i> {{_ 'Full'}} <i class="fa fa-arrow-right"></i></button>
                     </td-->
