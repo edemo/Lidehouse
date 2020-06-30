@@ -10,6 +10,7 @@ import { Clock } from '/imports/utils/clock';
 import '/imports/api/partners/actions.js';
 import '/imports/api/contracts/actions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import '/imports/api/transactions/actions.js';
 import './payment-edit.html';
 
@@ -33,6 +34,11 @@ Template.Payment_edit.viewmodel({
   },
   defaultDate() {
     return Clock.currentTime();
+  },
+  showContractField() {
+    const doc = this.afDoc();
+    const selector = { communityId: doc.communityId, partnerId: doc.partnerId };
+    return doc.partnerId && Contracts.find(selector).count() > 1;
   },
   reconciling() {
     return ModalStack.getVar('statementEntry');

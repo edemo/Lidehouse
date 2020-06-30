@@ -20,7 +20,9 @@
             <address>
                 {{#if (equals afDoc.relationSign -1)}}
                     {{> afQuickField name="partnerId"}}
-                    {{> afQuickField name="contractId"}}
+                    {{#if showContractField}}
+                      {{> afQuickField name="contractId"}}
+                    {{/if}}
                 {{else}}
                     {{>Bill_partner activeCommunity.asPartner}}
                 {{/if}}
@@ -47,7 +49,9 @@
             <address>
                 {{#if (equals afDoc.relationSign 1)}}
                     {{> afQuickField name="partnerId"}}
-                    {{> afQuickField name="contractId"}}
+                    {{#if showContractField}}
+                      {{> afQuickField name="contractId"}}
+                    {{/if}}
                 {{else}}
                     {{>Bill_partner activeCommunity.asPartner}}
                 {{/if}}

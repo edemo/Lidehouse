@@ -6,6 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Clock } from '/imports/utils/clock';
 import { __ } from '/imports/localization/i18n.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
 // The autoform needs to see these, to handle new events on it
@@ -24,6 +25,11 @@ Template.Bill_edit.viewmodel({
   },
   isBill() {
     return this.templateInstance.data.doc.category === 'bill';
+  },
+  showContractField() {
+    const doc = this.afDoc();
+    const selector = { communityId: doc.communityId, partnerId: doc.partnerId };
+    return doc.partnerId && Contracts.find(selector).count() > 1;
   },
   defaultDate() {
     return Clock.currentTime();

@@ -25,7 +25,9 @@
                 <span class="text-navy">{{afDoc.serialId}}</span></h4>
             {{/if}}
             {{> afQuickField name="partnerId"}}
-            {{> afQuickField name="contractId"}}
+            {{#if showContractField}}
+              {{> afQuickField name="contractId"}}
+            {{/if}}
             {{> afQuickField name="amount"}}
         </div>
     </div>
