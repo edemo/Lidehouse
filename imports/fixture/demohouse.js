@@ -70,6 +70,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       parcelRefFormat: 'bfdd',
       accountingMethod: 'accrual',
       topicAgeDays: 365,
+      subjectToVat: false,
+      paymentsWoStatement: false,
     },
   });
 
