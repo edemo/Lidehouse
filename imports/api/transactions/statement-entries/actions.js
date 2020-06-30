@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-import { Tracker } from 'meteor/tracker';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -138,7 +137,8 @@ StatementEntries.actions = {
           size: 'lg',
         });
       } else {
-        Tracker.autorun((computation) => {
+        Transactions.actions.new({ txdef }, insertTx).run();
+        ModalStack.autorun((computation) => {
           const result = ModalStack.readResult('root', `af.${txdef.category}.insert`, true);
           if (result) {
             Meteor.defer(() => {
@@ -147,7 +147,6 @@ StatementEntries.actions = {
             });
           }
         });
-        Transactions.actions.new({ txdef }, insertTx).run();
       }
     },
   }),

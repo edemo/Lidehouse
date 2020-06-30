@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Tracker } from 'meteor/tracker';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -45,6 +46,10 @@ if (Meteor.isClient) {
       // console.log('before pop:', modalStack);
       const topModal = modalStack.pop();
       debugAssert((!topModal.id && !dataId) || topModal.id === dataId);
+      if (ModalStack.computation) {
+        ModalStack.computation.stop();
+        delete ModalStack.computation;
+      }
       // console.log('after pop:', modalStack);
       Session.set('modalStack', modalStack);
       if (modalStack.length > 1) $('body').addClass('modal-open');
@@ -104,6 +109,9 @@ if (Meteor.isClient) {
         if (value) return value;
       }
       return undefined;
+    },
+    autorun(func) {
+      ModalStack.computation = Tracker.autorun(func);
     },
 /*    setCallback(callback) {
       const modalStack = ModalStack.get();
