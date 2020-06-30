@@ -81,10 +81,11 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>{{_ 'schemaPayments.lines.label'}}
-                        {{#unless billsView}}
-                        <button type="button" class="btn btn-xs btn-outline btn-info js-view-mode pull-right">{{_ "Reconcile to bills"}}</button>
-                        {{/unless}}
+                    <th>{{#if billsView}}
+                          {{_ 'schemaPayments.lines.label'}}
+                        {{else}}
+                          <button type="button" class="btn btn-xs btn-outline btn-info js-view-mode pull-right">{{_ "Reconcile to bills"}}</button>
+                        {{/if}}
                     </th>
                     <th></th>
                     <th>{{_ 'schemaTransactions.amount.label'}}</th>
@@ -114,6 +115,7 @@
         </button>
     </div>
 
+    {{#if billsView}}
     <table class="table invoice-total">
         <tbody>
         <tr>
@@ -130,6 +132,7 @@
         </tr-->
         </tbody>
     </table>
+    {{/if}}
 
     <div class="well m-t">
         {{> afQuickField name="notes"}}
