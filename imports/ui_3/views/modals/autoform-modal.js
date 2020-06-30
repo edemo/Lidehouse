@@ -33,6 +33,10 @@ Template.Autoform_modal.viewmodel({
   showDebugInfo: false,
   onCreated(instance) {
     ModalStack.setVar('autoformType', instance.data.type);
+    instance.data.onCreated?.();
+  },
+  onRendered(instance) {
+    instance.data.onRendered?.();
   },
   title() {
     const data = this.templateInstance.data;

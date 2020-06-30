@@ -50,12 +50,19 @@ Transactions.actions = {
       doc = _.extend(defaultNewDoc(), doc);
       const entity = figureOutEntity(options, doc);
       doc = Transactions._transform(doc);
-      const statementEntry = ModalStack.getVar('statementEntry');
-      if (statementEntry) doc.fillFromStatementEntry(statementEntry);
+      const fillFromStatementEntry = function fillFromStatementEntry() {
+        const statementEntry = ModalStack.getVar('statementEntry');
+        if (statementEntry) {
+          const doc = Transactions._transform(AutoForm.getDoc());
+          doc.fillFromStatementEntry(statementEntry);
+          AutoForm.setDoc(doc);
+        }
+      };
 
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
+        onRendered: fillFromStatementEntry,
         // --- --- --- ---
         id: `af.${entity.name}.insert`,
         schema: Transactions.simpleSchema(doc),
