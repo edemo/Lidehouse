@@ -15,6 +15,7 @@ import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/ui_3/views/components/transaction-view.js';
+
 import './entities.js';
 import './methods.js';
 

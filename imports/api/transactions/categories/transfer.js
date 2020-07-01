@@ -5,11 +5,13 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { Clock } from '/imports/utils/clock.js';
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const transferSchema = new SimpleSchema({
+  amount: { type: Number, decimal: true, autoform: { readonly() { return !!ModalStack.getVar('statementEntry'); } } }, // same as Tx, but we need the readonly added
   fromAccount: { type: String, optional: true, autoform: chooseConteerAccount('credit') },
   toAccount: { type: String, optional: true, autoform: chooseConteerAccount('debit') },
 });
