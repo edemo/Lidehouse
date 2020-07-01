@@ -266,6 +266,7 @@ Transactions.categoryValues.forEach(category => {
       }
       doc.debit = doc.debit?.filter(entry => entry);
       doc.credit = doc.credit?.filter(entry => entry);
+/*
       try {
         const tdoc = Transactions._transform(doc);
         tdoc.validate?.();
@@ -274,10 +275,13 @@ Transactions.categoryValues.forEach(category => {
         displayError(err);
         return false;
       }
+*/
+      return doc;
     },
   });
-/*
+
   AutoForm.addHooks(`af.${category}.update`, {
+/*
     formToModifier(modifier) {
       try {
         const tdoc = Transactions._transform(doc);
@@ -288,6 +292,6 @@ Transactions.categoryValues.forEach(category => {
         return false;
       }
     },
-  });
 */
+  });
 });
