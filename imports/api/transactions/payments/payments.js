@@ -46,12 +46,20 @@ export const chooseBillOfPartner = {
   firstOption: () => __('(Select one)'),
 };
 
-export const chooseParcelOfPartner = {
+export const chooseLocalizerOfPartner = {
   options() {
     const communityId = ModalStack.getVar('communityId');
+    const relation = AutoForm.getFieldValue('relation');
     const partnerId = AutoForm.getFieldValue('partnerId');
-    const parcels = Memberships.find({ communityId, partnerId }).map(m => m.parcel());
-    const options = _.without(parcels, undefined).map(p => ({ label: p.displayAccount(), value: p.code }));
+    let localizers;
+    if (relation === 'member') {
+      const selector = Object.cleanUndefined({ communityId, partnerId });
+      localizers = Memberships.find(selector).map(m => m.parcel());
+      localizers = _.without(localizers, undefined);
+    } else {
+      localizers = Parcels.find({ communityId });
+    }
+    const options = localizers.map(p => ({ label: p.displayAccount(), value: p.code }));
     return options;
   },
   firstOption: false,
@@ -66,7 +74,7 @@ Payments.billPaidSchema = new SimpleSchema(billPaidSchema);
 
 const lineSchema = {
   account: { type: String /* account code */, autoform: chooseConteerAccount(), optional: true },
-  localizer: { type: String /* account code */, autoform: { ...chooseParcelOfPartner }, optional: true },
+  localizer: { type: String /* account code */, autoform: { ...chooseLocalizerOfPartner }, optional: true },
   amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
