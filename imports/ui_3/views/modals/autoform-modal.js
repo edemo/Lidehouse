@@ -36,7 +36,7 @@ Template.Autoform_modal.viewmodel({
     instance.data.onCreated?.();
   },
   onRendered(instance) {
-    instance.data.onRendered?.();
+    instance.data.onRendered?.(instance);
   },
   title() {
     const data = this.templateInstance.data;
