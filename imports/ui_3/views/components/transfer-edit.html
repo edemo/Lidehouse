@@ -1,0 +1,42 @@
+<template name="Transfer_edit">
+    {{#let afDoc=afDoc}}
+    <div class="row">
+        <!-- hidden, needed for autoform doc data -->
+        {{> afQuickField name="communityId" type="hidden"}}
+        {{> afQuickField name="category" type="hidden"}}
+        {{> afQuickField name="defId" type="hidden"}}
+        {{> afQuickField name="relation" type="hidden"}}
+        <!-- hidden, needed for autoform doc data -->
+        <div class="col-sm-7">
+            {{> afQuickField name="valueDate" type=hiddenWhenReconciling defaultValue=defaultDate}}
+            {{#if reconciling}}
+            <div class="form-group">
+                <label>{{_ 'schemaStatementEntries.original.label'}}</label><br>
+                <div class="well">   
+                    {{>Doc_view doc=originalStatementEntry}}
+                </div>
+            </div>
+            {{/if}}
+        </div>
+        <div class="col-sm-5 pull-right">
+            {{#if afDoc.serialId}}
+                <h4>{{_ afDoc.txdef.name}}:
+                <span class="text-navy">{{afDoc.serialId}}</span></h4>
+            {{/if}}
+            {{> afQuickField name="amount"}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            {{> afQuickField name="fromAccount"}}
+        </div>
+        <div class="col-sm-6">
+            {{> afQuickField name="toAccount"}}
+        </div>
+    </div>
+
+    <div class="well m-t">
+        {{> afQuickField name="notes"}}
+    </div>
+    {{/let}}
+</template>
