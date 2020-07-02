@@ -85,7 +85,7 @@ export const reconcile = new ValidatedMethod({
     if (Meteor.isServer) {
       checkReconcileMatch(entry, reconciledTx);
       if (reconciledTx.partnerId && entry.name && entry.name !== reconciledTx.partner().idCard.name) {
-        Recognitions.set(`names.${entry.name}`, reconciledTx.partner().idCard.name, { communityId });
+        Recognitions.setName(entry.name, reconciledTx.partner().idCard.name, { communityId });
       }
     }
     Transactions.update(txId, { $set: { seId: _id } });
@@ -184,7 +184,7 @@ export const recognize = new ValidatedMethod({
     let relation;
     if (entry.name) {
       Log.debug('Looking for partner', entry.name, 'in', entry.communityId);
-      const recognizedName = Recognitions.get(`names.${entry.name}`, { communityId }) || entry.name;
+      const recognizedName = Recognitions.getName(entry.name, { communityId }) || entry.name;
       partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': recognizedName });
     } else {
       Log.debug('No partner on statement');
