@@ -27,8 +27,8 @@ Communities.settingsSchema = new SimpleSchema({
   parcelRefFormat: { type: String, optional: true },
   topicAgeDays: { type: Number, decimal: true, defaultValue: 90 },
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions() },
-  subjectToVat: { type: Boolean },
-  paymentsWoStatement: { type: Boolean },
+  subjectToVat: { type: Boolean, optional: true },
+  paymentsWoStatement: { type: Boolean, optional: true },
 });
 
 Communities.schema = new SimpleSchema([{

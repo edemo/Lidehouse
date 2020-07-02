@@ -286,7 +286,6 @@ export class CommunityBuilder {
         floor: '9',
         door: i.toString(),
         area: faker.random.number({ min: 30, max: 200 }),
-        habitants: faker.random.number({ min: 1, max: 8 }),
       });
       const membershipId = this.createMembership(this.createFakePerson(i), 'owner', {
         parcelId,

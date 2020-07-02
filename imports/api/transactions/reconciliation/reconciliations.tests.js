@@ -303,7 +303,7 @@ if (Meteor.isServer) {
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
         entry = StatementEntries.findOne(entryId);
         chai.assert.equal(entry.isReconciled(), false);
-        chai.assert.equal(entry.match.confidence, 'info');
+        chai.assert.equal(entry.match.confidence, 'success');
         chai.assert.equal(entry.match.tx.category, 'payment');
         chai.assert.equal(entry.match.tx.amount, 500);
         chai.assert.deepEqual(entry.match.tx.bills, [{ id: billId, amount: 300 }, { id: billId2, amount: 200 }]);
@@ -497,7 +497,7 @@ if (Meteor.isServer) {
 
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
         const entry = StatementEntries.findOne(entryId);
-        chai.assert.equal(entry.match.confidence, 'info');
+        chai.assert.equal(entry.match.confidence, 'success');
 
         Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId });
         chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 2);
@@ -508,6 +508,69 @@ if (Meteor.isServer) {
         chai.assert.equal(bill2.getPaymentTransactions()[0].isReconciled(), true);
         chai.assert.equal(bill2.outstanding, 0);
         chai.assert.equal(bill2.partner().outstanding, 0);
+      });
+
+      it('Partner name containing dots can be saved and recognized', function () { 
+        const billId3 = Fixture.builder.create('bill', {
+          relation: 'supplier',
+          partnerId: Fixture.supplier,
+          lines: [{
+            title: 'Next Work',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 500,
+            account: '`861',
+            localizer: '@',
+          }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: billId3 });
+        const entryId3 = Fixture.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: Clock.currentDate(),
+          name: 'Supplier.Inc.',
+          amount: -100,
+        });
+        const paymentId3 = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 100,
+          valueDate: Clock.currentDate(),
+          payAccount: bankAccount,
+          partnerId: Fixture.supplier,
+          bills: [{ id: billId3, amount: 100 }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: paymentId3 });
+        chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 3);
+
+        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId3, txId: paymentId3 });
+        const entry = StatementEntries.findOne(entryId3);
+        chai.assert.equal(entry.isReconciled(), true);
+        let bill3 = Transactions.findOne(billId3);
+        chai.assert.equal(bill3.amount, 500);
+        chai.assert.equal(bill3.getPayments().length, 1);
+        chai.assert.equal(bill3.getPaymentTransactions()[0].isReconciled(), true);
+        chai.assert.equal(bill3.outstanding, 400);
+        chai.assert.equal(bill3.partner().outstanding, 400);
+
+        const entryId4 = Fixture.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: Clock.currentDate(),
+          name: 'Supplier.Inc.',
+          amount: -100,
+        });
+
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId4 });
+        const entry4 = StatementEntries.findOne(entryId4);
+        chai.assert.equal(entry4.match.confidence, 'info');
+
+        Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId4 });
+        chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 4);
+
+        bill3 = Transactions.findOne(billId3);
+        chai.assert.equal(bill3.amount, 500);
+        chai.assert.equal(bill3.getPayments().length, 2);
+        chai.assert.equal(bill3.getPaymentTransactions()[0].isReconciled(), true);
+        chai.assert.equal(bill3.outstanding, 300);
+        chai.assert.equal(bill3.partner().outstanding, 300);
       });
     });
   });

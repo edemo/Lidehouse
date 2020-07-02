@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { debugAssert } from '/imports/utils/assert.js';
+import { replaceDotsInString } from '/imports/api/utils';
 
 let getDefaultSelector;
 if (Meteor.isClient) {
@@ -18,16 +19,18 @@ Meteor.startup(function indexSettings() {
   }
 });
 
-Recognitions.get = function get(name, selector = getDefaultSelector()) {
+Recognitions.getName = function getName(name, selector = getDefaultSelector()) {
   const setting = Recognitions.findOne(selector);
   if (!setting) return undefined;
-  return Object.getByString(setting, name);
+  const compatibleName = replaceDotsInString(name);
+  return Object.getByString(setting, `names.${compatibleName}`);
 };
 
-Recognitions.set = function set(name, value, selector = getDefaultSelector()) {
+Recognitions.setName = function set(name, value, selector = getDefaultSelector()) {
   const setting = Recognitions.findOne(selector);
   const settingId = setting ? setting._id : Recognitions.insert(selector);
-  Recognitions.update(settingId, { $set: { [name]: value } });
+  const compatibleName = replaceDotsInString(name);
+  Recognitions.update(settingId, { $set: { [`names.${compatibleName}`]: value } });
 };
 
 Recognitions.allow({

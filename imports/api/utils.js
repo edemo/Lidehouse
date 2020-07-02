@@ -35,3 +35,8 @@ export function isFieldDeleted(doc, modifier, field) {
   if (Object.getByString(doc, field) && !Object.getByString(newDoc, field)) return true;
   return false;
 }
+
+export function replaceDotsInString(dottedString, newChar = '\\u002e') {
+  const withoutDots = dottedString.replace(/\./g, newChar);
+  return withoutDots;
+}

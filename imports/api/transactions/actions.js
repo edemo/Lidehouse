@@ -51,12 +51,13 @@ Transactions.actions = {
       doc = _.extend(defaultNewDoc(), doc);
       const entity = figureOutEntity(options, doc);
       doc = Transactions._transform(doc);
-      const fillFromStatementEntry = function fillFromStatementEntry() {
+      const fillFromStatementEntry = function fillFromStatementEntry(instance) {
         const statementEntry = ModalStack.getVar('statementEntry');
         if (statementEntry) {
-          const doc = Transactions._transform(AutoForm.getDoc());
+          const formId = instance.data.id;
+          const doc = Transactions._transform(AutoForm.getDoc(formId));
           doc.fillFromStatementEntry(statementEntry);
-          AutoForm.setDoc(doc);
+          AutoForm.setDoc(doc, formId);
         }
       };
 
@@ -283,16 +284,16 @@ Transactions.categoryValues.forEach(category => {
 
   AutoForm.addHooks(`af.${category}.update`, {
 /*
-    formToModifier(modifier) {
-      try {
-        const tdoc = Transactions._transform(doc);
-        tdoc.validate?.();
-        return doc;
-      } catch (err) {
-        displayError(err);
-        return false;
-      }
-    },
+  formToModifier(modifier) {
+    try {
+      const tdoc = Transactions._transform(doc);
+      tdoc.validate?.();
+      return doc;
+    } catch (err) {
+      displayError(err);
+      return false;
+    }
+  },
 */
   });
 });
