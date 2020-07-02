@@ -31,6 +31,7 @@ Template.Community_launch.onRendered(function onRendered() {
       totalunits: 100 * FlowRouter.getQueryParam('count'),  // new joiners will get 100 voting units
       settings: {
         language: FlowRouter.getQueryParam('lang'),
+        accountingMethod: 'cash',
       },
     },
     parcelCount: FlowRouter.getQueryParam('count'),

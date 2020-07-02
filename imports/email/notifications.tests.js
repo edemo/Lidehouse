@@ -328,6 +328,10 @@ if (Meteor.isServer) {
           number: '?-szám',
           zip: '1111',
           lot: '?-hrsz',
+          settings: {
+            language: 'hu',
+            accountingMethod: 'cash',
+          },
         });
         Communities.methods.launch._execute({}, { community, admin, promoCode });
         sinon.assert.calledOnce(EmailSender.send);
