@@ -28,7 +28,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{#each bp in rDoc.bills}}
+                {{#each bp in rDoc.getBills}}
                 {{#if bp}}
                 <tr>
                     <td>
@@ -52,7 +52,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{#each line in rDoc.lines}}
+                {{#each line in rDoc.getLines}}
                 {{#if line}}
                 <tr>
                     <td>{{{displayAccount line.account}}}</td>

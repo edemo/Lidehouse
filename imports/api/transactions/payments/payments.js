@@ -92,8 +92,8 @@ Payments.extensionSchema = new SimpleSchema(extensionSchema);
 const paymentSchema = new SimpleSchema([
   Transactions.partnerSchema,
   Payments.extensionSchema, {
-    bills: { type: [Payments.billPaidSchema], defaultValue: [] },
-    lines: { type: [Payments.lineSchema], defaultValue: [] },
+    bills: { type: [Payments.billPaidSchema], optional: true },
+    lines: { type: [Payments.lineSchema], optional: true },
     outstanding: { type: Number, decimal: true, min: 0, optional: true },
   },
 ]);
@@ -135,7 +135,7 @@ Transactions.categoryHelpers('payment', {
       // The min, max contraint on the schema does not work, because the hook runs after the schema check
       throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.unallocated()}`);
     }
-    const connectedBillIds = _.pluck(this.bills, 'id');
+    const connectedBillIds = _.pluck(this.getBills(), 'id');
     if (connectedBillIds.length !== _.uniq(connectedBillIds).length) {
       throw new Meteor.Error('err_notAllowed', 'Same bill may not be selected multiple times', `connectedBillIds: ${connectedBillIds}`);
     }

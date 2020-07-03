@@ -57,7 +57,7 @@ export const post = new ValidatedMethod({
     if (doc.category === 'bill' || doc.category === 'receipt') {
       if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
     } else if (doc.category === 'payment') {
-      doc.bills.forEach(bp => checkBillIsPosted(bp.id));
+      doc.getBills().forEach(bp => checkBillIsPosted(bp.id));
     } else if (doc.category === 'barter') {
       checkBillIsPosted(doc.supplierBillId);
       checkBillIsPosted(doc.customerBillId);
@@ -73,7 +73,7 @@ export const post = new ValidatedMethod({
     const result = Transactions.update(_id, modifier);
 
     if (Meteor.isServer && doc.category === 'bill') {
-      doc.lines.forEach((line) => {
+      doc.getLines().forEach((line) => {
         if (line.metering) {
           Meters.methods.registerBilling._execute({ userId: this.userId }, { _id: line.metering.id,
             billing: { date: line.metering.end.date, value: line.metering.end.value, billId: doc._id },
@@ -108,7 +108,7 @@ export const insert = new ValidatedMethod({
     doc = Transactions._transform(doc);
     checkPermissions(this.userId, 'transactions.insert', doc);
     if (doc.category === 'payment') {
-      doc.bills.forEach((bp, i) => {
+      doc.getBills().forEach((bp, i) => {
         const bill = Transactions.findOne(bp.id);
 //      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
 //        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
