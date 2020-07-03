@@ -28,8 +28,9 @@ Template.Bill_edit.viewmodel({
   },
   showContractField() {
     const doc = this.afDoc();
-    const selector = { communityId: doc.communityId, partnerId: doc.partnerId };
-    return doc.partnerId && Contracts.find(selector).count() > 1;
+    const partnerId = AutoForm.getFieldValue('partnerId');
+    const selector = { communityId: doc.communityId, partnerId };
+    return partnerId && Contracts.find(selector).count() > 1;
   },
   defaultDate() {
     return Clock.currentTime();
