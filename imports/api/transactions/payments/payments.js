@@ -53,9 +53,10 @@ export const chooseLocalizerOfPartner = {
     const partnerId = AutoForm.getFieldValue('partnerId');
     let localizers;
     if (relation === 'member') {
-      const selector = Object.cleanUndefined({ communityId, partnerId });
-      localizers = Memberships.find(selector).map(m => m.parcel());
-      localizers = _.without(localizers, undefined);
+      const selector = Object.cleanUndefined({ communityId, relation: 'member', partnerId, leadParcelId: { $exists: false } });
+      const contracts = Contracts.find(selector);
+      const parcels = contracts.map(m => m.parcel());
+      localizers = parcels.length ? parcels : Parcels.find({ communityId, category: '@property' });
     } else {
       localizers = Parcels.find({ communityId });
     }
