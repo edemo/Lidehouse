@@ -51,7 +51,7 @@ export class Translator {
     if (allowedValues) {
       let result = '(';
       allowedValues.forEach((val, i) => {
-        result += this.dictionary[key]?.options?.[val];
+        result += Object.getByString(this.dictionary, key)?.options?.[val];
         if (i < allowedValues.length - 1) result += '/';
       });
       result += ')';
@@ -108,12 +108,14 @@ export class Translator {
       const path = [];
       const conductor = this.conductor; // so it can be used in eval's context
       function applyDefault(dic) {
+        const joinedPath = path.join('.');
+        if (doc.getByString(joinedPath)) return;
         if (dic.formula) {
           const calculatedValue = eval(dic.formula);
-          Object.setByString(doc, path.join('.'), calculatedValue);
+          Object.setByString(doc, joinedPath, calculatedValue);
         }
         if (dic.default) {
-          Object.setByString(doc, path.join('.'), dic.default);
+          Object.setByString(doc, joinedPath, dic.default);
         }
         if (typeof dic === 'object' && !Array.isArray(dic)) {
           _.each(dic, (value, key) => {
