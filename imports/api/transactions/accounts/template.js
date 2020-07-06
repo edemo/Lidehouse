@@ -124,6 +124,7 @@ export function defineAccountTemplates() {
     { code: '`8123', name: 'Egyéb anyag jellegű ráfordítások', category: 'expense' },
     { code: '`82', name: 'SZEMÉLYI JELLEGŰ RÁFORDÍTÁSOK', category: 'expense' },
     { code: '`821', name: 'Bérköltség', category: 'expense' },
+    { code: '`8211', name: 'Bérből: Vezető tisztségviselők juttatásai', category: 'expense' },
     { code: '`822', name: 'Személyi jellegű egyéb költség', category: 'expense' },
     { code: '`823', name: 'Bérjárulékok', category: 'expense' },
     { code: '`83', name: 'ÉRTÉKCSÖKKENÉSI LEÍRÁS', category: 'expense' },

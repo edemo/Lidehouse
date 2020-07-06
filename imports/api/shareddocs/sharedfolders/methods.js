@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
@@ -6,6 +7,15 @@ import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolde
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 
+function checkExternalUrl(externalUrl) {
+  if (!externalUrl) return;
+  const split = externalUrl.split('/');
+  const folderId = _.last(split).split('?')[0];
+  if (split[2] !== 'drive.google.com' || folderId.length !== 33) {
+    throw new Meteor.Error('err_invalidData', 'Not a valid google drive link');
+  }
+}
+
 export const insert = new ValidatedMethod({
   name: 'sharedfolders.insert',
   validate: Sharedfolders.simpleSchema().validator({ clean: true }),
@@ -13,6 +23,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     checkNotExists(Sharedfolders, { communityId: doc.communityId, name: doc.name });
     checkPermissions(this.userId, 'shareddocs.upload', doc);
+    checkExternalUrl(doc.externalUrl);
 
     return Sharedfolders.insert(doc);
   },
@@ -27,9 +38,10 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Sharedfolders, _id);
-    checkModifier(doc, modifier, ['name']);
+//    checkModifier(doc, modifier, ['name', 'externalUrl']);
     checkNotExists(Sharedfolders, { _id: { $ne: doc._id }, communityId: doc.communityId, name: modifier.$set.name });
     checkPermissions(this.userId, 'shareddocs.upload', doc);
+    checkExternalUrl(modifier.$set?.externalUrl);
 
     Sharedfolders.update({ _id }, modifier);
   },

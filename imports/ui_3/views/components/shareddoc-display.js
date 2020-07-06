@@ -1,16 +1,16 @@
 import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
-import { Session } from 'meteor/session';
+import { $ } from 'meteor/jquery';
 import { Template } from 'meteor/templating';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
-import { remove as removeShareddocs } from '/imports/api/shareddocs/methods.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/api/shareddocs/actions.js';
 import './shareddoc-display.html';
 
 Template.Shareddoc_inline.helpers({
   completed() {
     return Math.round(this.progress * 100);
+  },
+  isNew() {
+    return this.uploadedAt.getDay() === (new Date()).getDay();
   },
   userHasPermissionToRemoveUploaded() {
     return Shareddocs.hasPermissionToRemoveUploaded(Meteor.userId(), this);
@@ -18,8 +18,10 @@ Template.Shareddoc_inline.helpers({
 });
 
 Template.Shareddoc_inline.events({
-  'click .js-delete'() {
-    Shareddocs.remove(this._id);
+  'click .js-delete'(event) {
+    const a = $(event.target).closest('.file-item').find('a');
+    const _id = a.data('id');
+    Shareddocs.actions.delete({}, { _id }).run();
   },
 });
 
@@ -43,9 +45,6 @@ Template.Shareddoc_boxy.events({
   'click .js-delete'(event) {
     const a = $(event.target).closest('div').find('a');
     const _id = a.data('id');
-    Modal.confirmAndCall(removeShareddocs, { _id }, {
-      action: 'delete shareddoc',
-      message: 'It will disappear forever',
-    });
+    Shareddocs.actions.delete({}, { _id }).run();
   },
 });

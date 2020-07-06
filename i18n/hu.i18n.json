@@ -645,6 +645,10 @@
   "Same bill may not be selected multiple times": "Ugyanazt a számlát nem lehet többször is kiválasztani.",
   "Bill has to be posted first": "Először mindig a számlát kell könyvelésbe küldeni, utána lehet a kifizetést.",
   "Bill has to be account assigned first": "A számlának kontírozva kell lennie, hogy könyvelhető legyen.",
+  "err_invalidData": "Nem megfelelő adat",
+  "Not a valid google drive link": "Érvénytelen google drive link",
+  "Sorting may not be applied on external docs": "Sorbarendezés a külső szolgáltatónál tárolt fájlokra nem alkalmazható",
+
   "logout": "kilépés",
   "login": "belépés",
   "register": "új fiók",
@@ -685,6 +689,9 @@
   "documentStoreSubtitle": "Mindenki számára elérhető dokumentumok helye.",
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
   "Sort by": "Rendezés %s szerint",
+  "ViewMode": "Nézet",
+  "grid": "Rács",
+  "list": "Lista",
 
   // Notifications
   "Join request submitted": "Csatlakozási kérelem beadva a(z) %s közösséghez",

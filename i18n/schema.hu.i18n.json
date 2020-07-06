@@ -1222,6 +1222,11 @@
     "name": {
       "label": "Név",
       "placeholder": "(pl. Jogi papírok)"
+    },
+    "externalUrl": {
+      "label": "Google drive link",
+      "placeholder": "(pl. https://drive.google.com/drive/folders/1DNs0_ELHYHUjdhK7VQ9cyTYPZ11CO6xY)",
+      "help": "Amennyiben azt szeretné, hogy mappa a google drive egy mappáját mutassa, akkor adja meg itt a mappa linkjét"
     }
   }
 }
