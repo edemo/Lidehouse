@@ -109,7 +109,7 @@ export class Translator {
       const conductor = this.conductor; // so it can be used in eval's context
       function applyDefault(dic) {
         const joinedPath = path.join('.');
-        if (doc.getByString(joinedPath)) return;
+        if (Object.getByString(doc, joinedPath)) return;
         if (dic.formula) {
           const calculatedValue = eval(dic.formula);
           Object.setByString(doc, joinedPath, calculatedValue);
