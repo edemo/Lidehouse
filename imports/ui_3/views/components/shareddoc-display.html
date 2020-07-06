@@ -45,9 +45,13 @@
       </div>
       {{else}}
       <div class="col-xs-10">
-        <a target="_blank" href="{{url}}" title="{{displayDate createdAt}}">
+        <a target="_blank" data-id={{_id}} href="{{url}}">
           <i class="fa fa-file"></i>
           {{name}}
+          {{#unless isNew}}
+            <br/>
+            <small>{{_ 'createdAt'}}: {{displayDate this.uploadedAt}}</small>
+          {{/unless}}
         </a>
       </div>
       {{#if userHasPermissionToRemoveUploaded}}

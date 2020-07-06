@@ -43,18 +43,27 @@
                                 </li>
                                 {{/each}}
                             </ul>
-                            {{#if currentUserHasPermission 'shareddocs.upload'}}
+                            {{#let userCanUpload=(currentUserHasPermission 'shareddocs.upload')}}
+                            {{#if userCanUpload}}
                             <button name="newdir" class="btn btn-default btn-xs js-new">
                                 <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'sharedfolder'}}
                             </button>
                             {{/if}}
                             <div class="hr-line-dashed"></div>
-                            <button name="upload" class="btn btn-primary btn-block {{#unless currentUserHasPermission 'shareddocs.upload'}}disabled{{/unless}}" title={{_ 'No permission to upload'}}>
+                            <button name="upload" class="btn btn-primary btn-block" {{disabledUpload}} title="{{#unless userCanUpload}}{{_ 'No permission to upload'}}{{/unless}}">
                                 <i class="fa fa-upload"></i>
                                 {{_ 'Upload file'}}
                             </button>
+                            {{/let}}
                             <div class="hr-line-dashed"></div>
-                            <h5>{{_ 'Show'}}</h5>
+                            <h5>{{_ 'Show'}}
+                              <span class="pull-right">
+                                <select name="view-mode" {{b 'value: viewMode'}}>
+                                  <option value="grid" selected>{{_ 'grid'}} </option>
+                                  <option value="list">{{_ 'list'}} </option>
+                                </select>
+                              </span>                            
+                            </h5>
                             <div class="">
                                 <select name="sort-by" {{b 'value: sortBy'}}>
                                   <option value="name" selected>{{_ 'Sort by' (_ 'name')}}</option>
@@ -66,6 +75,7 @@
                                   <option value="1" selected>{{_ 'increasing'}}</option>
                                   <option value="-1">{{_ 'decreasing'}}</option>
                                 </select>
+                                {{>Help_icon title=(_ 'Sorting may not be applied on external docs')}}                 
                             </div>
                             <!--h5 class="tag-title">Tags</h5>
                             <ul class="tag-list" style="padding: 0">
@@ -78,27 +88,45 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-8 animated fadeInUp text-center">
+            <div class="col-md-8 animated fadeInUp">
                 <!--h1 class="page-title">{{_ activeFolder.name}}</h1-->
                 <!-- some instruction for the users 
                 {{_ 'documentStoreSubtitle'}}-->
+            {{#if activeFolder.externalUrl}} 
+                <iframe src={{embedUrl activeFolder.externalUrl}} style="width:100%; height:600px; border:0;"></iframe>
+            {{else}}
                 <div class="row">
                 <div class="col-lg-12">
 
 <!--              {{#if storeHasDocuments }}-->
-                <div class="file-list">
+                {{#if (equals viewMode 'grid')}}
+                <div class="file-list text-center">
                   {{#each doc in shareddocs}}
-                  {{> Shareddoc_boxy doc }}
+                      {{> Shareddoc_boxy doc }}
                   {{/each}}
                 </div>
+                {{/if}}
+                {{#if (equals viewMode 'list')}}
+                <ul class="file-list list-unstyled">
+                  {{#each doc in shareddocs}}
+                    <li>
+                      {{> Shareddoc_inline doc}}
+                    </li>
+                  {{/each}}
+                </ul>
+                <!--div class="table-responsive">
+                  {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+                </div-->
+                {{/if}}                
 <!--              {{else}} -->
                     <!-- empty state -->
 <!--                <div class="upload-row margined-row border-bottom">
                   <i>{{_ 'documentStorePlaceholder'}}</i>
                 </div>
-              {{/if}}-->
-              </div>
-              </div>
+                {{/if}}-->
+                </div>
+                </div>
+            {{/if}}
             </div>
         </div>
     </div>

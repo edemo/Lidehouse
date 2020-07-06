@@ -2,7 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { _ } from 'meteor/underscore';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
@@ -12,12 +14,14 @@ import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '../common/page-heading.html';
+import '/imports/ui_3/views/blocks/help-icon.js';
 import '../components/shareddoc-display.js';
 import './shareddoc-store.html';
 
 Template.Shareddoc_store.viewmodel({
   sortBy: 'name',
   sortDirection: 1,
+  viewMode: 'grid',
   activeFolderId: 'main',
   onCreated(instance) {
     instance.autorun(() => {
@@ -47,6 +51,9 @@ Template.Shareddoc_store.viewmodel({
     const id = this.activeFolderId();
     return Sharedfolders.findOne(id);
   },
+  disabledUpload() {
+    return this.activeFolder()?.externalUrl && 'disabled';
+  },
   shareddocs() {
     const communityId = ModalStack.getVar('communityId');
     const folderId = this.activeFolderId();
@@ -63,6 +70,25 @@ Template.Shareddoc_store.viewmodel({
       containedFiles = Shareddocs.find({ communityId, folderId }, { sort: { [sortBy]: sortDirection } });
     }
     return containedFiles;
+  },
+  reactiveTableDataFn() {
+    const self = this;
+    return () => self.shareddocs();
+  },
+  optionsFn() {
+    return () => Object.create({
+      columns: shareddocsColumns(),
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+      lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+      pageLength: 25,
+    });
+  },
+  embedUrl(externalUrl) {
+    const split = externalUrl.split('/');
+    const folderId = _.last(split).split('?')[0];
+    debugAssert(split[2] === 'drive.google.com' && folderId.length === 33);
+    return `https://drive.google.com/embeddedfolderview?id=${folderId}#${this.viewMode()}`;
   },
   extensions() {
     return ['doc', 'pdf', 'mpg'];

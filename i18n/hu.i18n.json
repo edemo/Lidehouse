@@ -630,6 +630,9 @@
   "err_notAllowed": "Nem megengedett érték",
   "There is already a newer reading": "Van már ennél későbbi dátumú leolvasás rögzítve",
   "There is already a higher reading": "Van már ennél magasabb értékű leolvasás rögzítve",
+  "err_invalidData": "Nem megfelelő adat",
+  "Not a valid google drive link": "Érvénytelen google drive link",
+  "Sorting may not be applied on external docs": "Sorbarendezés a külső szolgáltatónál tárolt fájlokra nem alkalmazható",
 
   "logout": "kilépés",
   "login": "belépés",
@@ -670,6 +673,9 @@
   "documentStoreSubtitle": "Mindenki számára elérhető dokumentumok helye.",
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
   "Sort by": "Rendezés %s szerint",
+  "ViewMode": "Nézet",
+  "grid": "Rács",
+  "list": "Lista",
 
   // Notifications
   "Join request submitted": "Csatlakozási kérelem beadva a(z) %s közösséghez",
