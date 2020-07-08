@@ -80,7 +80,7 @@ Template.afQuickField.events({
     var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
     var entity = c.atts.relation;
     var collection = Factory.get(entity).collection;
-    const options = { entity: collection.entities?.[entity], splitable() { return false; } };
+    const options = { entity: collection.entities && collection.entities[entity], splitable() { return false; } };
 //    Object.setPrototypeOf(options, new ActionOptions(collection));
     collection.actions.new(options).run(event, instance);
   },
