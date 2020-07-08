@@ -46,7 +46,7 @@ if (Meteor.isClient) {
       // console.log('before pop:', modalStack);
       const topModal = modalStack.pop();
       debugAssert((!topModal.id && !dataId) || topModal.id === dataId);
-      if (ModalStack.computation) {
+      if (ModalStack.computation && modalStack.length <= 1) {
         ModalStack.computation.stop();
         delete ModalStack.computation;
       }
