@@ -28,8 +28,9 @@ export class BatchAction {
     const self = this;
     Modal.confirmAndCall(self.method, {
       args: _.map(docs, doc => {
-        let newDoc = { _id: doc._id, ...self.options };
-        if (self.transform) newDoc = self.transform(newDoc);
+        let newDoc = _.clone(doc);
+        if (self.transform) self.transform(newDoc);
+        newDoc = { _id: newDoc._id, ...self.options };
         return newDoc;
       }),
     }, {
