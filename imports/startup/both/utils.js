@@ -12,8 +12,8 @@ Object.getByString = function (object, string) {
   const keyFragments = str.split('.');
   for (let i = 0, n = keyFragments.length; i < n; ++i) {
     const key = keyFragments[i];
-    if (key in obj) obj = obj[key];
-    else return;
+    if (typeof obj === 'object' && key in obj) obj = obj[key];
+    else return; // return undefined if not found
   }
   return obj;
 };

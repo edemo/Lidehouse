@@ -6,7 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
-import { Clock } from '/imports/utils/clock.js';
+import { Clock, datePartOnly } from '/imports/utils/clock.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { allowedOptions, imageUpload, noUpdate } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
@@ -16,14 +16,14 @@ import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 export const Meters = new Mongo.Collection('meters');
 
 Meters.readingSchema = new SimpleSchema({
-  date: { type: Date, autoform: { type: 'datetime-local', defaultValue() { return Clock.currentTime(); } } },
+  date: { type: Date, autoform: { defaultValue() { return Clock.currentDate(); } } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
   approved: { type: Boolean, optional: true, autoform: { omit: true }, defaultValue: true },
 });
 
 Meters.unapprovedReadingSchema = new SimpleSchema({
-  date: { type: Date, autoValue() { return Clock.currentTime(); }, autoform: { type: 'datetime-local', defaultValue() { return Clock.currentTime(); }, readonly: true } },
+  date: { type: Date, autoValue() { return Clock.currentDate(); }, autoform: { defaultValue() { return Clock.currentDate(); }, readonly: true } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
 });
@@ -47,7 +47,7 @@ Meters.schema = new SimpleSchema({
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   readings: { type: Array, optional: true, autoValue() {
     if (this.isInsert && !this.isSet) {
-      const date = this.field('activeTime.begin').value || Clock.currentTime();
+      const date = this.field('activeTime.begin').value || Clock.currentDate();
       const value = 0;
       return [{ date, value, approved: this.field('approved').value }];
     } return undefined;
@@ -98,6 +98,8 @@ Meters.helpers({
     if (length === 1) return lastReading.value; // With only one initial reading, unable estimate consumption
     const previousReading = this.readings[length - 2];
     const usageDays = moment(lastReading.date).diff(moment(previousReading.date), 'days');
+    if (usageDays === 0) return 0;
+    debugAssert(usageDays > 0, 'No negative days between reading');
     const usage = lastReading.value - previousReading.value;
     const elapsedDays = moment(date).diff(moment(lastReading.date), 'days');
     const estimate = (usage / usageDays) * elapsedDays;
