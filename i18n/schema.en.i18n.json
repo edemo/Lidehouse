@@ -183,6 +183,9 @@
       "heating": "Heating",
       "cooling": "Cooling"
     },
+    "parcelId": {
+      "label": "Parcel"
+    },
     "identifier": {
       "label": "Serial number"
     },

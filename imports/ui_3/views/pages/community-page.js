@@ -35,7 +35,8 @@ import '/imports/ui_3/views/common/page-heading.js';
 import '/imports/ui_3/views/components/contact-long.js';
 import '/imports/ui_3/views/blocks/active-period.js';
 import '/imports/ui_3/views/blocks/menu-overflow-guard.js';
-import '/imports/ui_3/views/components/partners-table.js';
+import '/imports/ui_3/views/components/partners-datatable.js';
+import '/imports/ui_3/views/components/meters-datatable.js';
 import './community-page.html';
 
 Template.Roleships_box.viewmodel({
@@ -260,8 +261,17 @@ Template.Community_page.events({
   'click .js-partners'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     Modal.show('Modal', {
-      title: 'Teljes partner lista',
-      body: 'Partners_table',
+      title: 'partners',
+      body: 'Partners_datatable',
+      bodyContext: { communityId },
+      size: 'lg',
+    });
+  },
+  'click .js-meters'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    Modal.show('Modal', {
+      title: 'meters',
+      body: 'Meters_datatable',
       bodyContext: { communityId },
       size: 'lg',
     });

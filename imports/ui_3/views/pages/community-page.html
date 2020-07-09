@@ -330,12 +330,15 @@
         {{/if}}
         {{/if}}
         
-        {{#if currentUserHasPermission 'partners.inCommunity' communityIdObject}}
         <div class="row">
             <div class="col-xs-12 text-center">
-                <button class="btn btn-default js-partners"><i class="fa fa-list"></i> {{_ 'Teljes partner lista'}}</button>
+                {{#if currentUserHasPermission 'partners.inCommunity' communityIdObject}}
+                <button class="btn btn-default text-capitalize js-partners"><i class="fa fa-list"></i> {{_ 'partner'}} {{_ 'list'}}</button>
+                {{/if}}
+                {{#if currentUserHasPermission 'meters.inCommunity' communityIdObject}}
+                <button class="btn btn-default text-capitalize js-meters"><i class="fa fa-list"></i> {{_ 'meter'}} {{_ 'list'}}</button>
+                {{/if}}
             </div>
         </div>
-        {{/if}}
     </div>
 </template>
