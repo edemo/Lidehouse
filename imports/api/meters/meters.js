@@ -16,14 +16,14 @@ import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 export const Meters = new Mongo.Collection('meters');
 
 Meters.readingSchema = new SimpleSchema({
-  date: { type: Date, autoform: { type: 'datetime-local', defaultValue() { return Clock.currentDate(); } } },
+  date: { type: Date, autoform: { defaultValue() { return Clock.currentDate(); } } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
   approved: { type: Boolean, optional: true, autoform: { omit: true }, defaultValue: true },
 });
 
 Meters.unapprovedReadingSchema = new SimpleSchema({
-  date: { type: Date, autoValue() { return Clock.currentDate(); }, autoform: { type: 'datetime-local', defaultValue() { return Clock.currentDate(); }, readonly: true } },
+  date: { type: Date, autoValue() { return Clock.currentDate(); }, autoform: { defaultValue() { return Clock.currentDate(); }, readonly: true } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
 });
@@ -47,8 +47,7 @@ Meters.schema = new SimpleSchema({
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   readings: { type: Array, optional: true, autoValue() {
     if (this.isInsert && !this.isSet) {
-      const dateWithTime = this.field('activeTime.begin').value || Clock.currentTime();
-      const date = datePartOnly(dateWithTime);
+      const date = this.field('activeTime.begin').value || Clock.currentDate();
       const value = 0;
       return [{ date, value, approved: this.field('approved').value }];
     } return undefined;
