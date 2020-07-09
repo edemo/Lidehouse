@@ -65,7 +65,7 @@ export const Notifications_Email = {
       return value;
     },
     frequencyKey() {
-      return 'schemaUsers.settings.notiFrequency.' + this.user.settings.notiFrequency;
+      return 'schemaUsers.settings.notiFrequency.options.' + this.user.settings.notiFrequency;
     },
   },
 
