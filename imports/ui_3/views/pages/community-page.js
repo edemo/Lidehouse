@@ -258,7 +258,7 @@ Template.Parcels_box.events({
 });
 
 Template.Community_page.events({
-  'click .js-partners'(event, instance) {
+  'click .js-partners-list'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     Modal.show('Modal', {
       title: 'partners',
@@ -267,7 +267,7 @@ Template.Community_page.events({
       size: 'lg',
     });
   },
-  'click .js-meters'(event, instance) {
+  'click .js-meters-list'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     Modal.show('Modal', {
       title: 'meters',
