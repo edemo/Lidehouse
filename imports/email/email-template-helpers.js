@@ -78,6 +78,9 @@ export const EmailTemplateHelpers = {
   renderMarkdown(value) {
     return sanitizeHtml(marked(value));
   },
+  lowcase(text) {
+    return text.toLowerCase();
+  },
 };
 
 // ------------- Sample ----------------

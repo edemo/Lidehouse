@@ -64,9 +64,6 @@ export const Notifications_Email = {
       if (_.isString(value)) return TAPi18n.__(value, {}, this.user.settings.language);
       return value;
     },
-    frequencyKey() {
-      return 'schemaUsers.settings.notiFrequency.options.' + this.user.settings.notiFrequency;
-    },
   },
 
   route: {
