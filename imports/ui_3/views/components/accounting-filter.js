@@ -125,6 +125,7 @@ Template.Accounting_filter.events({
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');
     instance.viewmodel.activePartnerRelation(partnerRelation);
+    ModalStack.setVar('relation', partnerRelation, true);
   },
   'click .js-filter'(event, instance) {
     const field = $(event.target).data('field');

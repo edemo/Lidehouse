@@ -33,13 +33,11 @@ import './accounting-bills.html';
 Template.Accounting_bills.viewmodel({
   share: 'accountingFilter',
   onCreated(instance) {
+    ModalStack.setVar('relation', this.activePartnerRelation(), true);
     instance.autorun(() => {
       //initializeDatatablesSelectButtons('Bills');
       instance.subscribe('parcelBillings.inCommunity', { communityId: this.communityId() });
     });
-  },
-  autorun() {
-    ModalStack.setVar('relation', this.activePartnerRelation(), true);
   },
   parcelBillings() {
     return ParcelBillings.find({ communityId: this.communityId() });
@@ -53,7 +51,7 @@ Template.Accounting_bills.viewmodel({
     }
   },
   findTxdef(category) {
-    const txdef = Txdefs.findOne({ 
+    const txdef = Txdefs.findOne({
       communityId: this.communityId(),
       category,
       'data.relation': this.activePartnerRelation(),
