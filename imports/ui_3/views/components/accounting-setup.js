@@ -30,11 +30,6 @@ import './accounting-setup.html';
 
 Template.Accounting_setup.viewmodel({
   onCreated(instance) {
-    instance.autorun(() => {
-      const communityId = this.communityId();
-      instance.subscribe('txdefs.inCommunity', { communityId });
-      instance.subscribe('parcels.inCommunity', { communityId });
-    });
   },
   communityId() {
     return ModalStack.getVar('communityId');

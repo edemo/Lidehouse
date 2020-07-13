@@ -10,18 +10,27 @@ import '/imports/ui_3/views/components/accounting-ledger.js';
 import '/imports/ui_3/views/components/accounting-transactions.js';
 import '/imports/ui_3/views/components/accounting-setup.js';
 import '/imports/ui_3/views/components/accounting-reconciliation.js';
+import '/imports/ui_3/views/components/accounting-filter.js';
 import './accounting-page.html';
 
 Template.Accounting_page.viewmodel({
+  share: 'accountingFilter',
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
       instance.subscribe('accounts.inCommunity', { communityId });
-      instance.subscribe('transactions.outstanding', { communityId });
-      instance.subscribe('transactions.unreconciled', { communityId });
-      instance.subscribe('statementEntries.unreconciled', { communityId });
+      instance.subscribe('parcels.inCommunity', { communityId });
+      instance.subscribe('txdefs.inCommunity', { communityId });
+      const selector = {
+        communityId: this.communityId(),
+        begin: new Date(this.beginDate()),
+        end: new Date(this.endDate()),
+      };
+      instance.subscribe('transactions.inCommunity', selector);
+      instance.subscribe('statements.inCommunity', selector);
+      instance.subscribe('statementEntries.inCommunity', selector);
     });
   },
   communityId() {
