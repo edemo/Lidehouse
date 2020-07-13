@@ -11,14 +11,14 @@ Meteor.publish('statementEntries.byId', function statementsById(params) {
   const { _id } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  const bs = Statements.findOne(_id);
-  if (!user.hasPermission('statements.inCommunity', bs)) {
+  const doc = StatementEntries.findOne(_id);
+  if (!user.hasPermission('statements.inCommunity', doc)) {
     return this.ready();
   }
   return StatementEntries.find({ _id });
 });
 
-Meteor.publish('statementEntries.byAccount', function statementsByAccount(params) {
+Meteor.publish('statementEntries.inCommunity', function statementsByAccount(params) {
   new SimpleSchema({
     communityId: { type: String },
     account: { type: String, optional: true },
@@ -34,12 +34,12 @@ Meteor.publish('statementEntries.byAccount', function statementsByAccount(params
 
   const selector = { communityId };
   if (account) selector.account = account;
-  if (end) selector.beginDate = { $lte: end };
-  if (begin) selector.endDate = { $gte: begin };
+  if (end) selector.valueDate = { $lte: end };
+  if (begin) selector.valueDate = { $gte: begin };
 
   return StatementEntries.find(selector);
 });
-
+/*
 Meteor.publish('statementEntries.unreconciled', function statementsUnreconciled(params) {
   new SimpleSchema({
     communityId: { type: String },
@@ -52,3 +52,4 @@ Meteor.publish('statementEntries.unreconciled', function statementsUnreconciled(
   }
   return StatementEntries.find({ communityId, txId: { $exists: false } });
 });
+*/

@@ -35,10 +35,6 @@ Template.Accounting_transactions.viewmodel({
   creditAccountOptions: [],
 //  amount: undefined,
   onCreated(instance) {
-    instance.autorun(() => {
-      const communityId = this.communityId();
-      instance.subscribe('txdefs.inCommunity', { communityId });
-    });
   },
   communityId() {
     return ModalStack.getVar('communityId');
@@ -69,9 +65,6 @@ Template.Accounting_transactions.viewmodel({
       if (!this.creditAccountSelected() && this.creditAccountOptions() && this.creditAccountOptions().length > 0) {
         this.creditAccountSelected(this.creditAccountOptions()[0].value);
       }
-    },
-    function txSubscription() {
-      this.templateInstance.subscribe('transactions.betweenAccounts', this.transactionsSubscribeSelector());
     },
   ],
   txdefs() {

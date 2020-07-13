@@ -18,7 +18,7 @@ Meteor.publish('statements.byId', function statementsById(params) {
   return Statements.find({ _id });
 });
 
-Meteor.publish('statements.byAccount', function statementsByAccount(params) {
+Meteor.publish('statements.inCommunity', function statementsByAccount(params) {
   new SimpleSchema({
     communityId: { type: String },
     account: { type: String, optional: true },
@@ -39,7 +39,7 @@ Meteor.publish('statements.byAccount', function statementsByAccount(params) {
 
   return Statements.find(selector);
 });
-
+/*
 Meteor.publish('statements.unreconciled', function statementsUnreconciled(params) {
   new SimpleSchema({
     communityId: { type: String },
@@ -52,3 +52,4 @@ Meteor.publish('statements.unreconciled', function statementsUnreconciled(params
   }
   return Statements.find({ communityId, reconciled: false });
 });
+*/

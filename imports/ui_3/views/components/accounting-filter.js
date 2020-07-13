@@ -33,25 +33,11 @@ ViewModel.share({
     partnerContractOptions: [],
     localizerSelected: '',
     localizerOptions: [],
-    autorun: [
-      function subscription() {
-        const communityId = this.communityId();
-        const instance = this.templateInstance;
-        instance.autorun(() => {
-          if (this.unreconciledOnly()) {
-            instance.subscribe('transactions.unreconciled', { communityId });
-            instance.subscribe('transactions.outstanding', { communityId });
-          } else {
-            instance.subscribe('transactions.inCommunity', { communityId });
-          }
-        });
-      },
-      function filterOptions() {
-        const communityId = this.communityId();
-        this.localizerOptions(Parcels.nodeOptionsOf(communityId, ''));
-        this.partnerContractOptions([{ label: __('All'), value: '' }].concat(Contracts.partnerContractOptions({ communityId })));
-      },
-    ],
+    autorun() {
+      const communityId = this.communityId();
+      this.localizerOptions(Parcels.nodeOptionsOf(communityId, ''));
+      this.partnerContractOptions([{ label: __('All'), value: '' }].concat(Contracts.partnerContractOptions({ communityId })));
+    },
     communityId() {
       return ModalStack.getVar('communityId');
     },
@@ -92,7 +78,7 @@ ViewModel.share({
       selector.relation = this.activePartnerRelation();
       if (this.txStatusSelected().length > 0) selector.status = { $in: this.txStatusSelected() };
       if (this.unreconciledOnly()) {
-//        selector.outstanding = { $or: { $exists: false, $gte: 0 } };
+        selector.outstanding = { $or: { $exists: false, $gte: 0 } };
         selector.seId = { $exists: false };
       }
       selector.valueDate = {};

@@ -12,6 +12,8 @@ import { Transactions } from './transactions.js';
 Meteor.publish('transactions.inCommunity', function transactionsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
+    begin: { type: Date, optional: true },
+    end: { type: Date, optional: true },
   }).validate(params);
   const { communityId } = params;
 
@@ -19,7 +21,8 @@ Meteor.publish('transactions.inCommunity', function transactionsInCommunity(para
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     return this.ready();
   }
-  return Transactions.find({ communityId });
+  const selector = Transactions.makeFilterSelector(params);
+  return Transactions.find(selector);
 });
 
 Meteor.publish('transactions.byPartner', function transactionsInCommunity(params) {
@@ -27,18 +30,16 @@ Meteor.publish('transactions.byPartner', function transactionsInCommunity(params
     communityId: { type: String },
     partnerId: { type: String, optional: true },
     contractId: { type: String, optional: true },
-    membershipId: { type: String, optional: true },
     begin: { type: Date, optional: true },
     end: { type: Date, optional: true },
   }).validate(params);
-  const { communityId, partnerId, membershipId, begin, end } = params;
+  const { communityId, partnerId, contractId, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     // Normal user can only see his own parcels' transactions
-    if (!partnerId && !membershipId) return this.ready();
+    if (!partnerId && !contractId) return this.ready();
     if (partnerId && Partners.findOne(partnerId).userId !== this.userId) return this.ready();
-    if (membershipId && Memberships.findOne(membershipId).userId !== this.userId) return this.ready();  
   }
 
   const selector = Transactions.makeFilterSelector(params);
@@ -122,7 +123,7 @@ Meteor.publishComposite('transactions.byId', function transactionsById(params) {
   }
   return findTxsWithRelatedStuff({ _id });
 });
-
+/*
 Meteor.publish('transactions.unreconciled', function transactionsUnreconciled(params) {
   new SimpleSchema({
     communityId: { type: String },
@@ -150,3 +151,4 @@ Meteor.publish('transactions.outstanding', function transactionsOutstanding(para
   }
   return Transactions.find(_.extend({}, params, { outstanding: { $gt: 0 } }));
 });
+*/
