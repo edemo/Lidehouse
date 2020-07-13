@@ -19,14 +19,12 @@ import './contracts.html';
 Template.Contracts.viewmodel({
   activePartnerRelation: 'supplier',
   onCreated(instance) {
+    ModalStack.setVar('relation', this.activePartnerRelation(), true);
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
     });
-  },
-  autorun() {
-    ModalStack.setVar('relation', this.activePartnerRelation(), true);
   },
   relationValues() {
     return _.without(Partners.relationValues, 'member');
@@ -64,5 +62,6 @@ Template.Contracts.events({
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');
     instance.viewmodel.activePartnerRelation(partnerRelation);
+    ModalStack.setVar('relation', partnerRelation, true);
   },
 });
