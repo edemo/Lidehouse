@@ -47,7 +47,7 @@
                                 {{#let footer=(or this.footer 'GenericFooter')}}
                                 {{{_ (concat 'email.' footer)
                                   link=(urlFor 'User data page')
-                                  frequency=(_ (concat 'schemaUsers.settings.notiFrequency.' user.settings.notiFrequency))
+                                  frequency=(lowcase (_ (concat 'schemaUsers.settings.notiFrequency.options.' user.settings.notiFrequency)))
                                   adminEmail=community.admin.getPrimaryEmail
                                 }}}
                                 {{/let}}
