@@ -4,18 +4,18 @@ ReactiveDatatable = function(options) {
 	this.options = options = _.defaults(options, {
 		// Any of these can be overriden by passing an options
 		// object into your ReactiveDatatable template (see readme)
-		stateSave: true,
-		stateDuration: -1, // Store data for session only
+//		stateSave: true,
+//		stateDuration: -1, // Store data for session only
 		pageLength: 10,
 		lengthMenu: [10, 25, 100, 250, 1000],
 		columnDefs: [{ // Global default blank value to avoid popup on missing data
 			targets: '_all',
 			defaultContent: '–––'
 		}],
-		stateLoadParams: function(settings, data) {
+//		stateLoadParams: function(settings, data) {
 			// Make it easy to change to the stored page on .update()
-			self.page = data.start / data.length;
-		}
+//			self.page = data.start / data.length;
+//		}
 	});
 };
 
