@@ -28,8 +28,8 @@
                 <br>
                 <ul class="nav nav-tabs m-b-md">
                     <li class="active"><a data-toggle="tab" href="#tab-moneys" class="text-capitalize">{{_ 'moneyAccounts'}}</a></li>
-                    <!--li class=""><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of Accounts'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-loc">{{_ 'Localizers'}}</a></li-->
+                    <li class=""><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of Accounts'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-loc">{{_ 'Localizers'}}</a></li>
                     <!--li class=""><a data-toggle="tab" href="#tab-others">{{_ 'Other accounts'}}</a></li-->
                     <li class=""><a data-toggle="tab" href="#tab-defs" class="text-capitalize">{{_ 'txdefs'}}</a></li>
                 </ul>
@@ -75,7 +75,7 @@
                             </table>
                         </div>
                     </div>
-                    <!--div id="tab-coa" class="tab-pane">
+                    <div id="tab-coa" class="tab-pane">
                         <div class="row">
                             <div class="pull-right m-b-sm m-r-md">
                                 {{>Action_buttons_group collection='accounts' actions='new' size='md' options=(obj '{ "entity": "simpleAccount" }')}}
@@ -94,7 +94,7 @@
                         <div class="table-responsive">
                             {{> ReactiveDatatable tableData=localizersTableDataFn options=localizersOptionsFn }}
                         </div>
-                    </div-->
+                    </div>
                     <!--div id="tab-others" class="tab-pane">
                         <div class="table-responsive">
                             {{> ReactiveDatatable tableData=othersAccountsTableDataFn options=accountsOptionsFn }}
