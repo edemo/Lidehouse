@@ -11,6 +11,7 @@ import '/imports/ui_3/views/components/accounting-transactions.js';
 import '/imports/ui_3/views/components/accounting-setup.js';
 import '/imports/ui_3/views/components/accounting-reconciliation.js';
 import '/imports/ui_3/views/components/accounting-filter.js';
+import '/imports/ui_3/views/components/lazy-tab.js';
 import './accounting-page.html';
 
 Template.Accounting_page.viewmodel({
@@ -37,6 +38,7 @@ Template.Accounting_page.viewmodel({
     return getActiveCommunityId();
   },
   noAccountsDefined() {
+    if (!Template.instance().subscriptionsReady()) return false;
     return !Accounts.findOne({ communityId: this.communityId() });
   },
   countUnpostedTxs() {
