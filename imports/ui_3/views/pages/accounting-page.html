@@ -13,12 +13,12 @@
               {{> Badge value=countUnpostedTxs color='warning' title=(_ 'Unposted') align='right'}} 
               {{> Badge value=countOutstandingBills color='info' title=(concat (_ 'Unpaid') ' ' (_ 'bills')) align='right'}} 
             </h3></a></li>
-            <!--li class="nav-link"><a data-toggle="tab" href="#tab-ledger">
+            <li class="nav-link"><a data-toggle="tab" href="#tab-ledger">
               <h3>{{_ 'General ledger'}}</h3>
             </a></li>
             <li class="nav-link"><a data-toggle="tab" href="#tab-transactions">
               <h3>{{_ 'Transactions'}}</h3>
-            </a></li-->
+            </a></li>
             <li class="nav-link"><a data-toggle="tab" href="#tab-reconciliation">
               <h3>{{_ 'Statement reconciliation'}}&nbsp;
               {{> Badge value=countUnreconciledEntries color='danger' title=(concat (_ 'Unreconciled') ' ' (_ 'statementEntries') align='right')}}
@@ -35,7 +35,7 @@
                 {{> Accounting_bills}}
                 </div>
             </div>
-            <!--div role="tabpanel" id="tab-ledger" class="tab-pane">
+            <div role="tabpanel" id="tab-ledger" class="tab-pane">
                 <div class="ibox-content">
                 {{> Accounting_ledger}}
                 </div>
@@ -44,7 +44,7 @@
                 <div class="ibox-content">
                 {{> Accounting_transactions}}
                 </div>
-            </div-->
+            </div>
             <div role="tabpanel" id="tab-reconciliation" class="tab-pane">
                 <div class="ibox-content">
                 {{> Accounting_reconciliation}}
