@@ -24,9 +24,9 @@
               {{> Badge value=countUnreconciledEntries color='danger' title=(concat (_ 'Unreconciled') ' ' (_ 'statementEntries') align='right')}}
             </h3></a></li>
             {{/unless}}
-            <!--li class="nav-link {{#if noAccountsDefined}}active{{/if}}"><a data-toggle="tab" href="#tab-breakdowns">
+            <li class="nav-link {{#if noAccountsDefined}}active{{/if}}"><a data-toggle="tab" href="#tab-breakdowns">
               <h3>{{_ 'Accounting configuration'}} <i class="fa fa-cog"></i></h3>
-            </a></li-->
+            </a></li>
         </ul>
         <div class="tab-content">
             {{#unless noAccountsDefined}}
@@ -51,11 +51,11 @@
                 </div>
             </div>
             {{/unless}}
-            <!--div role="tabpanel" id="tab-breakdowns" class="tab-pane {{#if noAccountsDefined}}active{{/if}}">
+            <div role="tabpanel" id="tab-breakdowns" class="tab-pane {{#if noAccountsDefined}}active{{/if}}">
                 <div class="ibox-content">
                 {{> Accounting_setup}}
                 </div>
-            </div-->
+            </div>
         </div>
     </div>
     </div>
