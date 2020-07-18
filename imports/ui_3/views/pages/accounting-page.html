@@ -32,28 +32,38 @@
             {{#unless noAccountsDefined}}
             <div role="tabpanel" id="tab-bills" class="tab-pane active">
                 <div class="ibox-content">
-                {{> LazyTab template='Accounting_bills'}}
+                  {{#LazyTab}}
+                    {{> Accounting_bills}}
+                  {{/LazyTab}}
                 </div>
             </div>
             <div role="tabpanel" id="tab-ledger" class="tab-pane">
                 <div class="ibox-content">
-                {{> LazyTab template='Accounting_ledger'}}
+                  {{#LazyTab}}
+                    {{> Accounting_ledger}}
+                  {{/LazyTab}}
                 </div>
             </div>
             <div role="tabpanel" id="tab-transactions" class="tab-pane">
                 <div class="ibox-content">
-                {{> LazyTab template='Accounting_transactions'}}
+                  {{#LazyTab}}
+                    {{> Accounting_transactions}}
+                  {{/LazyTab}}
                 </div>
             </div>
             <div role="tabpanel" id="tab-reconciliation" class="tab-pane">
                 <div class="ibox-content">
-                {{> LazyTab template='Accounting_reconciliation'}}
+                  {{#LazyTab}}
+                    {{> Accounting_reconciliation}}
+                  {{/LazyTab}}
                 </div>
             </div>
             {{/unless}}
             <div role="tabpanel" id="tab-breakdowns" class="tab-pane {{#if noAccountsDefined}}active{{/if}}">
                 <div class="ibox-content">
-                {{> LazyTab template='Accounting_setup'}}
+                  {{#LazyTab}}
+                    {{> Accounting_setup}}
+                  {{/LazyTab}}
                 </div>
             </div>
         </div>

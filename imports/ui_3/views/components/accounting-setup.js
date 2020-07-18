@@ -26,6 +26,7 @@ import { importCollectionFromFile } from '/imports/ui_3/views/components/import-
 import '/imports/api/transactions/txdefs/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
+import '/imports/ui_3/views/components/lazy-tab.js';
 import './accounting-setup.html';
 
 Template.Accounting_setup.viewmodel({
