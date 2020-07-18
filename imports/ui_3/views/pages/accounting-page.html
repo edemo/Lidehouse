@@ -31,40 +31,40 @@
         <div class="tab-content">
             {{#unless noAccountsDefined}}
             <div role="tabpanel" id="tab-bills" class="tab-pane active">
+              {{#LazyTab}}
                 <div class="ibox-content">
-                  {{#LazyTab}}
                     {{> Accounting_bills}}
-                  {{/LazyTab}}
                 </div>
+              {{/LazyTab}}
             </div>
             <div role="tabpanel" id="tab-ledger" class="tab-pane">
+              {{#LazyTab}}
                 <div class="ibox-content">
-                  {{#LazyTab}}
                     {{> Accounting_ledger}}
-                  {{/LazyTab}}
                 </div>
+              {{/LazyTab}}
             </div>
             <div role="tabpanel" id="tab-transactions" class="tab-pane">
+              {{#LazyTab}}
                 <div class="ibox-content">
-                  {{#LazyTab}}
                     {{> Accounting_transactions}}
-                  {{/LazyTab}}
                 </div>
+              {{/LazyTab}}
             </div>
             <div role="tabpanel" id="tab-reconciliation" class="tab-pane">
+              {{#LazyTab}}
                 <div class="ibox-content">
-                  {{#LazyTab}}
                     {{> Accounting_reconciliation}}
-                  {{/LazyTab}}
                 </div>
+              {{/LazyTab}}
             </div>
             {{/unless}}
             <div role="tabpanel" id="tab-breakdowns" class="tab-pane {{#if noAccountsDefined}}active{{/if}}">
+              {{#LazyTab}}
                 <div class="ibox-content">
-                  {{#LazyTab}}
                     {{> Accounting_setup}}
-                  {{/LazyTab}}
                 </div>
+              {{/LazyTab}}
             </div>
         </div>
     </div>

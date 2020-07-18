@@ -35,7 +35,7 @@
                 </ul>
                 <div class="tab-content">
                     <div id="tab-moneys" class="tab-pane active">
-                    {{#LazyTab}}
+                      {{#LazyTab}}
                         {{#if currentUserHasPermission 'accounts.insert'}}
                         <div class="row">
                             <div class="pull-right m-b-sm m-r-md">
@@ -75,10 +75,10 @@
                                 </tbody>
                             </table>
                         </div>
-                    {{/LazyTab}}
+                      {{/LazyTab}}
                     </div>
                     <div id="tab-coa" class="tab-pane">
-                        {{#LazyTab}}    
+                      {{#LazyTab}}    
                         <div class="row">
                             <div class="pull-right m-b-sm m-r-md">
                                 {{>Action_buttons_group collection='accounts' actions='new' size='md' options=(obj '{ "entity": "simpleAccount" }')}}
@@ -87,10 +87,10 @@
                         <div class="table-responsive">
                             {{> ReactiveDatatable tableData=accountsTableDataFn options=accountsOptionsFn }}
                         </div>
-                        {{/LazyTab}}
+                      {{/LazyTab}}
                     </div>
                     <div id="tab-loc" class="tab-pane">
-                        {{#LazyTab}}
+                      {{#LazyTab}}
                         <div class="row">
                             <div class="pull-right m-b-sm m-r-md">
                                 {{>Action_buttons_group collection='parcels' actions='new' size='md' options=(obj '{ "entity": ["@group","#tag"] }')}}
@@ -99,7 +99,7 @@
                         <div class="table-responsive">
                             {{> ReactiveDatatable tableData=localizersTableDataFn options=localizersOptionsFn }}
                         </div>
-                        {{/LazyTab}}
+                      {{/LazyTab}}
                     </div>
                     <!--div id="tab-others" class="tab-pane">
                         <div class="table-responsive">
@@ -114,7 +114,7 @@
                         {{/if}}
                     </div-->
                     <div id="tab-defs" class="tab-pane txdefs">
-                        {{#LazyTab}}
+                      {{#LazyTab}}
                         {{#if currentUserHasPermission 'accounts.insert'}}
                         <div class="row">
                             <div class="pull-right m-b-sm m-r-md">
@@ -146,7 +146,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        {{/LazyTab}}
+                      {{/LazyTab}}
                     </div>
                 </div>
         </div>
