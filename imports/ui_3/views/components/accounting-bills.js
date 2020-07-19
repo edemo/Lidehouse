@@ -27,6 +27,7 @@ import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
 import '/imports/ui_3/views/components/accounting-filter.js';
 import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/components/lazy-tab.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-bills.html';
 

@@ -60,24 +60,32 @@
             </ul>
             <div class="tab-content">
                 <div id="tab-bill" class="tab-pane active">
+                  {{#LazyTab}}
                     <div class="table-responsive transactions" data-entity='bill'>
                         {{> ReactiveDatatable tableData=billsTableDataFn options=billsOptionsFn }}
                     </div>
+                  {{/LazyTab}}
                 </div>
                 <div id="tab-payment" class="tab-pane">
+                  {{#LazyTab}}
                     <div class="table-responsive transactions" data-entity='payment'>
                         {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
                     </div>
+                  {{/LazyTab}}
                 </div>
                 <div id="tab-receipt" class="tab-pane">
+                  {{#LazyTab}}
                     <div class="table-responsive transactions">
                         {{> ReactiveDatatable tableData=receiptsTableDataFn options=receiptsOptionsFn }}
                     </div>
+                  {{/LazyTab}}
                 </div>
                 <div id="tab-partner" class="tab-pane">
+                  {{#LazyTab}}
                     <div class="table-responsive partners">
                         {{> ReactiveDatatable tableData=partnersTableDataFn options=partnersOptionsFn }}
                     </div>
+                  {{/LazyTab}}
                 </div>
             </div>
             {{else}}
