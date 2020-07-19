@@ -65,9 +65,6 @@ Template.Parcel_history.viewmodel({
     });
     return txsWithRunningTotal.reverse();
   },
-  negativeClass(tx) {
-    return tx.subjectiveAmount() < 0 ? 'negative' : '';
-  },
 });
 
 Template.Parcel_history.events({

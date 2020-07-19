@@ -35,9 +35,6 @@ Template.Ledger_report.helpers({
   displayAccount(account) {
     return account.displayAccount();
   },
-  negativeClass(number) {
-    return number < 0 && 'negative';
-  },
   displayPeriod(tag) {
     const node = PeriodBreakdown.nodeByCode(tag);
     return node.label || node.name;

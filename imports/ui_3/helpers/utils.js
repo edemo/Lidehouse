@@ -7,6 +7,10 @@ import { TimeSync } from 'meteor/mizzao:timesync';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
+export function negativeClass(number) {
+  return number < 0 && 'negative';
+}
+
 export function displayMoney(number) {
   return numeral(number).format('0,0$');
 }
@@ -70,6 +74,8 @@ if (Meteor.isClient) {
   });
 
   Template.registerHelper('displayMoney', displayMoney);
+
+  Template.registerHelper('negativeClass', negativeClass);
 
   Template.registerHelper('displayNumber', function displayNumber(number) {
     return numeral(number).format('0,0');
