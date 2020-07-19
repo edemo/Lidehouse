@@ -61,9 +61,10 @@ export const chooseLocalizerOfPartner = {
       localizers = Parcels.find({ communityId });
     }
     const options = localizers.map(p => ({ label: p.displayAccount(), value: p.code }));
-    return options;
+    const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+    return sortedOptions;
   },
-  firstOption: false,
+  firstOption: () => __('Localizers'),
 };
 
 const billPaidSchema = {
