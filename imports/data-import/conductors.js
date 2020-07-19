@@ -165,6 +165,7 @@ export const Conductors = {
             communityId: { default: getActiveCommunityId() },
             category: { default: '@property' },
             type: {
+              label: 'Típusa',
               options: {
                 Lakás: 'L',
                 Parkoló: 'P',
@@ -174,6 +175,22 @@ export const Conductors = {
                 Iroda: 'I',
               },
             },
+            floor: {
+              label: 'Szint',
+            },
+            area: {
+              label: 'Terület',
+            },
+            volume: {
+              label: 'Térfogat',
+            },
+            group: {
+              label: 'Vízórás',
+              options: {
+                Vízórás: 'I',
+                'Vízóra nélküli': 'N',
+              },
+            },
           },
         }, {
           collectionName: 'partners',
@@ -181,13 +198,20 @@ export const Conductors = {
           dictionary: {
             communityId: { default: getActiveCommunityId() },
             relation: { default: ['member'] },
+            ref: {
+              label: 'Lakó azonosító',
+            },
             idCard: {
               type: {
+                label: 'Típusa',
                 options: {
                   natural: 'T',
                   legal: 'G',
                   other: 'E',
                 },
+              },
+              name: {
+                label: 'Név',
               },
             },
           },
