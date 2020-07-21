@@ -9,6 +9,8 @@ import { checkExists, checkModifier, checkPermissions } from '/imports/api/metho
 import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Meters } from '/imports/api/meters/meters.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { sendBillEmail } from '/imports/email/bill-send.js';
 import '/imports/api/transactions/txdefs/methods.js';
@@ -106,19 +108,26 @@ export const insert = new ValidatedMethod({
   validate: doc => Transactions.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
     doc = Transactions._transform(doc);
+    const communityId = doc.communityId;
     checkPermissions(this.userId, 'transactions.insert', doc);
     if (doc.category === 'payment') {
-      doc.getBills().forEach((bp, i) => {
+      doc.getBills().forEach((bp) => {
         const bill = Transactions.findOne(bp.id);
 //      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
 //        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
         function setOrCheckEquals(field) {
-          if (i === 0) doc[field] = bill[field];
+          if (!doc[field]) doc[field] = bill[field];
           else if (doc[field] !== bill[field]) throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
         }
         setOrCheckEquals('relation');
         setOrCheckEquals('partnerId');
         setOrCheckEquals('contractId');
+      });
+      doc.getLines().forEach((line) => {
+        const parcel = Localizer.parcelFromCode(line.localizer, communityId);
+        const contract = Contracts.findOne({ parcelId: parcel._id }).billingContract();
+        if (!doc.contractId) doc.contractId = contract._id;
+        else if (doc.contractId !== contract._id) throw new Meteor.Error(`All lines need to have same contractId`, `${doc.contractId} !== ${contract._id}`);
       });
     } else if (doc.category === 'barter') {
       const supplierBill = doc.supplierBill();

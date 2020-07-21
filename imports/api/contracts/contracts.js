@@ -6,6 +6,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
@@ -90,6 +91,11 @@ Contracts.helpers({
   leadParcel() {
     if (this.leadParcelId) return Parcels.findOne(this.leadParcelId);
     return undefined;
+  },
+  billingContract() {
+    debugAssert(this.parcelId);
+    if (this.leadParcelId) return Contracts.findOne({ parcelId: this.leadParcelId });
+    else return this;
   },
   toString() {
     if (this.relation === 'member') return `${__('property')} ${this.parcel()?.ref}`;
