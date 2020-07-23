@@ -1,0 +1,54 @@
+<template name="Topic_links">
+
+    <!-- Page heading -->
+    {{> Page_heading title=pageTitle smallTitle=smallTitle crumbs=pageCrumbs }}
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="m-b-md">
+            {{#if Template.subscriptionsReady}}
+                {{#if not (equals pointThisTopicIdArray 0)}}
+                    <p class="vote-title margin-bottom">{{_ 'Topics was pointed to this topic'}}:</p><br>
+                    {{#each topicId in pointThisTopicIdArray}}
+                    {{> Topic_by_link topic topicId}}
+                    {{/each}}
+                {{/if}}
+                <br>
+                {{#if not (equals pointOtherTopicIdArray 0)}}
+                    <p class="vote-title margin-bottom">{{_ 'This topic was pointed to these topics'}}:</p><br>
+                    {{#each topicId in pointOtherTopicIdArray}}
+                    {{> Topic_by_link topic topicId}}
+                    {{/each}}
+                {{/if}}
+            {{/if}}
+        </div>
+    </div>
+</template>
+
+<template name="Topic_by_link">
+    <div class="vote-item">
+        <div class="row">
+            <div class="col-sm-10">
+                <div class="vote-actions">
+                    {{#let liked=(this.isLikedBy currentUser._id) }}
+                    <a href="" class="{{#if liked}}invisible{{/if}} js-like"><i class="fa fa-hand-o-up"> </i></a>
+                    <div>{{this.likesCount}}</div>
+                    <a href="" class="{{#unless liked}}invisible{{/unless}} js-like"><i class="fa fa-hand-o-down"> </i></a>
+                    {{/let}}
+                </div>
+                <a href="{{pathFor 'Topic show' _tid=this._id}}" class="vote-title">
+                    {{this.title}}
+                </a>
+                <div class="vote-info">
+                    <i class="fa fa-comments-o"></i> <a class="text-capitalize" href="{{pathFor 'Topic show' _tid=this._id}}">{{_ 'Comment'}} ({{this.commentCounter}})</a>
+                    <i class="fa fa-clock-o"></i> <a href="">{{displayTimeFrom this.createdAt}}</a>
+                    <i class="fa fa-user"></i> <a href="">{{this.creator}}</a>
+                </div>
+            </div>
+            <div class="col-sm-2 ">
+                <div class="vote-icon">
+                    <i class="fa fa-compass"> </i>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -12,7 +12,7 @@
       
         <div class="social-comment">
             <a href="" class="pull-left">
-                <img alt="avatar" class="message-avatar" src={{currentUser.avatar}}>
+                <img alt="avatar" class="message-avatar" src={{Meteor.absoluteUrl currentUser.avatar}}>
             </a>
             <div class="media-body">
                 <textarea  class="form-control js-send-enter" {{b "value: commentText"}} placeholder="{{_ 'newCommentPlaceholder'}}"></textarea>
@@ -28,7 +28,7 @@
 <template name="Frame">
     <div class="social-comment">         
         <a href="{{pathFor 'User show' _id=this.creatorId}}" class="pull-left">
-            <img alt="avatar" class="message-avatar" src={{this.creator.avatar}}>
+            <img alt="avatar" class="message-avatar" src={{Meteor.absoluteUrl this.creator.avatar}}>
         </a>
         <div class="media-body" >
             <a href="{{pathFor 'User show' _id=this.creatorId}}">
@@ -55,7 +55,7 @@
         {{#hideable}}
             <span class="text-dark newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
             <br/>
-            {{#if photo}}<div><img src="{{photo}}" class="img-embed"></div>{{/if}}
+            {{#if photo}}<div><img src="{{Meteor.absoluteUrl photo}}" class="img-embed"></div>{{/if}}
             <a href="" class="small cap-first js-like">
                 <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
                 {{_ 'important'}}! ({{this.likesCount}})
@@ -83,7 +83,7 @@
         {{/each}}
     </div>
     {{/if}}
-    {{#if photo}}<div><img src="{{photo}}" class="img-embed"></div>{{/if}}
+    {{#if photo}}<div><img src="{{Meteor.absoluteUrl photo}}" class="img-embed"></div>{{/if}}
     <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
     {{/let}}
 </template>

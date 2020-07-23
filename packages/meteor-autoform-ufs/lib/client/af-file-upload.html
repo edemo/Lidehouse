@@ -20,6 +20,11 @@
       <button type="button" name="upload" class="btn btn-info">
           <i class="fa fa-upload"></i> {{_ 'Upload file'}}
       </button>
+      {{#if Meteor.isCordova}}
+      <button type="button" class="create-photo btn btn-info">
+        <i class="fa fa-upload"></i>{{_ 'photo'}}
+      </button>
+      {{/if}}
     </div>
     {{/unless}}
   </div>

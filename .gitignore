@@ -75,5 +75,7 @@ tramp
 ecosystem.json
 pm2.json
 settings.json
+mobile-settings.json
+mobile-config.js
 build.sh
 .vscode

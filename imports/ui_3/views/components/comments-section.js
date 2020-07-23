@@ -8,6 +8,8 @@ import { ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { __ } from '/imports/localization/i18n.js';
 import { displayError, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import { Push } from 'meteor/raix:push';
 import '/imports/api/comments/methods.js';
 import '/imports/api/comments/actions.js';
 import '/imports/ui_3/views/blocks/hideable.js';
@@ -86,6 +88,15 @@ Template.Comments_section.events({
         vm.commentText(vm.draft());
         displayError(err);
       }
+    });
+    const topic = Topics.findOne(this._id);
+    Push.send({
+      from: 'Honline',
+      title: topic.title,
+      text: vm.draft(),
+      query: {
+        userId: topic.creatorId,
+      },
     });
   },
 });
