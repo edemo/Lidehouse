@@ -19,7 +19,7 @@ function uploadFile(file, context, inst) {
     name: file.name,
     size: file.size,
     type: file.type,
-    communityId: Session.get('modalStack')[0].context.communityId,
+    communityId: Session.get('communityId'),
     userId: Meteor.userId(),
   };
 
