@@ -151,8 +151,7 @@ Transactions.categoryHelpers('payment', {
       if (!pb?.id) return true; // can be null, when a line is deleted from the array
       const bill = Transactions.findOne(pb.id);
       const autoAmount = Math.min(amountToAllocate, bill.outstanding);
-      if (pb.amount && pb.amount < autoAmount) { /* we dont override amounts that are specified */ }
-      else pb.amount = autoAmount;
+      if (!pb.amount) pb.amount = autoAmount; // we dont override amounts that are specified
       amountToAllocate -= pb.amount;
       if (amountToAllocate === 0) return false;
     });

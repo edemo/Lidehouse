@@ -127,8 +127,10 @@ export const insert = new ValidatedMethod({
       });
       doc.getLines().forEach((line) => {
         const parcel = Localizer.parcelFromCode(line.localizer, communityId);
-        const contract = parcel.payerContract();
-        line.contractId = contract._id;
+        if (!line.contractId && parcel) {
+          const contract = parcel?.payerContract();
+          line.contractId = contract?._id;
+        }
       });
     } else if (doc.category === 'barter') {
       const supplierBill = doc.supplierBill();
