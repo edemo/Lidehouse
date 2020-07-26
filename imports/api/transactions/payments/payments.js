@@ -12,6 +12,8 @@ import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { equalWithinRounding } from '/imports/api/utils.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -80,7 +82,7 @@ const lineSchema = {
   amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
-Payments.lineSchema = new SimpleSchema(lineSchema);
+Payments.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);
 
 const extensionSchema = {
   valueDate: { type: Date }, // same as Tx, but we need the readonly added
@@ -197,7 +199,7 @@ Transactions.categoryHelpers('payment', {
           if (!line) return true; // can be null, when a line is deleted from the array
           const amount = Math.smallerInAbs(line.amount, billPaid.amount);
           const parcelId = line.localizer && Parcels.findOne({ communityId: this.communityId, code: line.localizer })._id;
-          this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId });
+          this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId, contractId: line.contractId });
           unallocatedAmount -= amount;
         });
       }
@@ -206,7 +208,7 @@ Transactions.categoryHelpers('payment', {
       if (unallocatedAmount === 0) return false;
       if (!line) return true; // can be null, when a line is deleted from the array
       const amount = Math.smallerInAbs(line.amount, unallocatedAmount);
-      this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
+      this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId, contractId: line.contractId });
       unallocatedAmount -= amount;
     });
     // Handling the remainder
@@ -246,17 +248,25 @@ Transactions.categoryHelpers('payment', {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a payment without a partner');
     Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    Contracts.update(this.contractId, { $inc: { outstanding: (-1) * sign * this.amount } }, { selector: { relation: 'member' } });
-    if (this.relation === 'member') {
-      this.getBills().forEach(bp => {
-        const bill = Transactions.findOne(bp.id);
-        bill.getLines().forEach(line => {
-          if (!line) return; // can be null, when a line is deleted from the array
-          debugAssert(line.parcelId, 'Cannot process a parcel payment without parcelId field');
-          Parcels.update(line.parcelId, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });
-        });
+    this.getBills().forEach(bp => {
+      const bill = Transactions.findOne(bp.id);
+      Contracts.update(bill.contractId, { $inc: { outstanding: (-1) * sign * bp.amount } }, { selector: { relation: 'member' } });
+      bill.getLines().forEach(line => {
+        if (!line) return; // can be null, when a line is deleted from the array
+        const parcel = Localizer.parcelFromCode(line.localizer, this.communityId);
+        if (parcel) {
+          Parcels.update(parcel._id, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });
+        } else debugAssert(this.relation !== 'member', 'Cannot process a parcel payment without parcelId field');
       });
-    }
+    });
+    this.getLines().forEach(line => {
+      if (!line) return; // can be null, when a line is deleted from the array
+      Contracts.update(line.contractId, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { relation: 'member' } });
+      const parcel = Localizer.parcelFromCode(line.localizer, this.communityId);
+      if (parcel) {
+        Parcels.update(parcel._id, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });
+      } 
+    });
   },
   displayInHistory() {
     return __(this.category) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');
@@ -277,8 +287,8 @@ Factory.define('payment', Transactions, {
   category: 'payment',
 //  billId: () => Factory.get('bill'),
   relation: 'supplier',
-  partnerId: () => Factory.get('supplier'),
-  contractId: () => Factory.get('contract'),
+//  partnerId: () => Factory.get('supplier'),
+//  contractId: () => Factory.get('contract'),
   valueDate: Clock.currentDate(),
   amount: () => faker.random.number(1000),
   payAccount: '`381',

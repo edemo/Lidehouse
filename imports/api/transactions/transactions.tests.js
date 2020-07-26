@@ -93,6 +93,9 @@ if (Meteor.isServer) {
           }],
         });
       });
+      after(function () {
+        Transactions.remove(billId);
+      });
 
       it('Can create without accounts', function () {
         bill = Transactions.findOne(billId);
@@ -131,14 +134,14 @@ if (Meteor.isServer) {
 
       it('Can register Payments', function () {
         const bankAccount = '`381';
-        const paymentId1 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, valueDate: Clock.currentTime(), payAccount: bankAccount });
+        const paymentId1 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, partnerId: FixtureA.supplier, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.getPayments().length, 1);
         chai.assert.equal(bill.outstanding, 200);
         chai.assert.equal(bill.partner().outstanding, 200);
 
-        const paymentId2 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 200 }], amount: 200, valueDate: Clock.currentTime(), payAccount: bankAccount });
+        const paymentId2 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 200 }], amount: 200, partnerId: FixtureA.supplier, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.getPayments().length, 2);
@@ -192,6 +195,35 @@ if (Meteor.isServer) {
         chai.assert.equal(payment2.status, 'posted');
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.outstanding, 120);
+      });
+    });
+
+    describe('Non-bill allocation', function () {
+      it('Can create a Payment which is not allocated to bills', function () {
+        const bankAccount = '`381';
+        const paymentId = FixtureA.builder.create('payment', { 
+          amount: 100, relation: 'member', partnerId: FixtureA.supplier, valueDate: Clock.currentTime(), payAccount: bankAccount, lines: [
+            { amount: 20, account: '`820', localizer: '@A103' },
+            { amount: 80, account: '`880', localizer: '@A104' },
+          ],
+        });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
+        tx = Transactions.findOne(paymentId);
+        const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'A103' });
+        const parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'A104' });
+        const contract1 = parcel1.payerContract(); chai.assert.isDefined(contract1);
+        const contract2 = parcel2.payerContract(); chai.assert.isDefined(contract2);      
+
+        chai.assert.isTrue(tx.isPosted());
+        chai.assert.deepEqual(tx.debit, [{ amount: 100, account: bankAccount }]);
+        chai.assert.deepEqual(tx.credit, [
+          { amount: 20, account: '`820', localizer: '@A103', contractId: contract1._id },
+          { amount: 80, account: '`880', localizer: '@A104', contractId: contract2._id },
+        ]);
+        chai.assert.equal(parcel1.outstanding, -20);
+        chai.assert.equal(parcel2.outstanding, -80);
+        chai.assert.equal(contract1.outstanding, -20);
+        chai.assert.equal(contract2.outstanding, -80);
       });
     });
   });

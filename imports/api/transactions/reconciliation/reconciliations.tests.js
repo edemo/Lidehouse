@@ -80,7 +80,7 @@ if (Meteor.isServer) {
       });
 
       it('Can pay bill by registering a payment tx - later a statementEntry will be matched to it', function () {
-        Fixture.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, valueDate: Clock.currentDate(), payAccount: bankAccount });
+        Fixture.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.getPayments().length, 1);
@@ -104,7 +104,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 200);
         chai.assert.equal(bill.partner().outstanding, 200 + 200);
 
-        Fixture.builder.create('payment', { bills: [{ id: billId, amount: 200 }], amount: 200, valueDate: Clock.currentDate(), payAccount: bankAccount });
+        Fixture.builder.create('payment', { bills: [{ id: billId, amount: 200 }], amount: 200, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.getPayments().length, 2);
@@ -128,7 +128,7 @@ if (Meteor.isServer) {
       });
 
       it('Can NOT reconcile statementEntry with different relation, amount or date', function () {
-        Fixture.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, valueDate: Clock.currentDate(), payAccount: bankAccount });
+        Fixture.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         const txId = bill.getPayments()[0].id;
 /*        

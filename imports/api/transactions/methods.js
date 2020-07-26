@@ -117,17 +117,18 @@ export const insert = new ValidatedMethod({
 //        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
         function setOrCheckEquals(field) {
           if (!doc[field]) doc[field] = bill[field];
-          else if (doc[field] !== bill[field]) throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
+          else if (doc[field] !== bill[field]) {
+            throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
+          }
         }
         setOrCheckEquals('relation');
         setOrCheckEquals('partnerId');
-        setOrCheckEquals('contractId');
+//        setOrCheckEquals('contractId');
       });
       doc.getLines().forEach((line) => {
         const parcel = Localizer.parcelFromCode(line.localizer, communityId);
-        const contract = Contracts.findOne({ parcelId: parcel._id }).billingContract();
-        if (!doc.contractId) doc.contractId = contract._id;
-        else if (doc.contractId !== contract._id) throw new Meteor.Error(`All lines need to have same contractId`, `${doc.contractId} !== ${contract._id}`);
+        const contract = parcel.payerContract();
+        line.contractId = contract._id;
       });
     } else if (doc.category === 'barter') {
       const supplierBill = doc.supplierBill();

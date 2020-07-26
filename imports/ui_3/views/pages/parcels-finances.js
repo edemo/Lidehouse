@@ -72,7 +72,7 @@ Template.Parcels_finances.viewmodel({
   },
   parcelFinancesTableDataFn() {
     const communityId = ModalStack.getVar('communityId');
-    return () => Parcels.find({ communityId, category: '@property' }).fetch().filter(p => !p.isLed());
+    return () => Parcels.find({ communityId, category: '@property' }).fetch().filter(p => !p.isLed() && p.payerContract());
   },
   parcelFinancesOptionsFn() {
     return () => ({

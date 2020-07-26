@@ -71,6 +71,7 @@ Transactions.partnerSchema = new SimpleSchema({
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...chooseContract } },
+//  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...chooseParcel } },
 });
 
 Transactions.legsSchema = {
@@ -225,6 +226,9 @@ Transactions.helpers({
       });
     }
     return entries.map(entry => {
+      if (!entry.partnerId) entry.partnerId = this.partnerId;
+      if (!entry.contractId) entry.contractId = this.contractId;
+      if (!entry.parcelId) entry.parcelId = this.parcelId;
       Object.setPrototypeOf(entry, this);
       return JournalEntries._transform(entry);
     });
