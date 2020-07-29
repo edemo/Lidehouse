@@ -217,7 +217,6 @@ Transactions.categoryHelpers('payment', {
       } else throw new Meteor.Error('err_notAllowed', 'Payment accounting can only be done, when all amount is allocated');
     }
     const legs = { debit: this.debit, credit: this.credit };
-    console.log('legs', legs);
     return legs;
   },
   registerOnBills(direction = +1) {
