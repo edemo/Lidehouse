@@ -233,7 +233,7 @@ Transactions.helpers({
       return JournalEntries._transform(entry);
     });
   },
-  subjectiveAmount() {
+  getContractAmount(contractId) {
     let sign = 0;
     switch (this.category) {
       case 'bill':
@@ -241,7 +241,14 @@ Transactions.helpers({
       case 'payment': sign = +1; break;
       default: debugAssert(false);
     }
-    return sign * this.amount;
+    let amount = 0;
+    if (!contractId || sign === -1) amount = this.amount;
+    else {
+      this.journalEntries().forEach(je => {
+        if (je.contractId === contractId) amount += je.amount;
+      });
+    }
+    return sign * amount;
   },
   negator() {
     const tx = Object.stringifyClone(this);
@@ -466,6 +473,11 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
   if (params.defId) {
     selector.defId = params.defId;
   } else delete selector.defId;
+  if (params.contractId) {
+    const contractId = params.contractId;
+    selector.$or = [{ contractId }, { 'credit.contractId': contractId }, { 'debit.contractId': contractId }];
+    delete selector.contractId;
+  }
   if (params.account) {
     const account = withSubs(params.account);
     selector.$or = [{ 'credit.account': account }, { 'debit.account': account }];

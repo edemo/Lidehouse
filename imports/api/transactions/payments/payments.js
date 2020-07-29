@@ -189,7 +189,7 @@ Transactions.categoryHelpers('payment', {
         bill[this.relationSide()].forEach(entry => {
           if (unallocatedAmount === 0) return false;
           const amount = equalWithinRounding(entry.amount, billPaid.amount) ? entry.amount : Math.smallerInAbs(entry.amount, billPaid.amount);
-          this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId });
+          this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
           unallocatedAmount -= amount;
         });
       } else if (accountingMethod === 'cash') {
@@ -198,7 +198,7 @@ Transactions.categoryHelpers('payment', {
           if (!line) return true; // can be null, when a line is deleted from the array
           const amount = Math.smallerInAbs(line.amount, billPaid.amount);
           const parcelId = line.localizer && Parcels.findOne({ communityId: this.communityId, code: line.localizer })._id;
-          this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId, contractId: line.contractId });
+          this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId, contractId: bill.contractId });
           unallocatedAmount -= amount;
         });
       }
@@ -216,7 +216,9 @@ Transactions.categoryHelpers('payment', {
         this[this.conteerSide()].push({ amount: unallocatedAmount, account: '`99' });
       } else throw new Meteor.Error('err_notAllowed', 'Payment accounting can only be done, when all amount is allocated');
     }
-    return { debit: this.debit, credit: this.credit };
+    const legs = { debit: this.debit, credit: this.credit };
+    console.log('legs', legs);
+    return legs;
   },
   registerOnBills(direction = +1) {
     const result = [];
