@@ -251,7 +251,7 @@ export const choosePartner = {
   },
   options() {
     const leadParcelId = AutoForm.getFieldValue('leadParcelId');
-    if (leadParcelId) return [{ label: __("Will use lead parcel's"), value: '' }];
+    if (leadParcelId) return [{ label: __('Lead parcel will be in effect'), value: '' }];
     const communityId = ModalStack.getVar('communityId');
     const community = Communities.findOne(communityId);
     const relation = AutoForm.getFieldValue('relation') || ModalStack.getVar('relation');
@@ -270,7 +270,7 @@ export const choosePartnerOfParcel = {
   relation: 'partner',
   options() {
     const leadParcelId = AutoForm.getFieldValue('leadParcelId');
-    if (leadParcelId) return [{ label: __("Will use lead parcel's"), value: '' }];
+    if (leadParcelId) return [{ label: __('Lead parcel will be in effect'), value: '' }];
     const communityId = ModalStack.getVar('communityId');
     const community = Communities.findOne(communityId);
     const parcelId = AutoForm.getFieldValue('parcelId') || ModalStack.getVar('parcelId');
