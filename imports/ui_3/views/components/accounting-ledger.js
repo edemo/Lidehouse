@@ -14,6 +14,7 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts';
 import '/imports/ui_3/views/components/ledger-report.js';
 import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/journals-table.js';
+import '/imports/ui_3/views/components/income-statement.js';
 import './accounting-ledger.html';
 
 Template.Accounting_ledger.viewmodel({
@@ -75,8 +76,18 @@ Template.Accounting_ledger.events({
     const communityId = instance.viewmodel.communityId();
     // ModalStack.setVar('parcelId', doc._id);
     Modal.show('Modal', {
-      title: 'Teljes journal lista',
+      title: 'Full journal list',
       body: 'Journals_table',
+      bodyContext: { communityId },
+      size: 'lg',
+    });
+  },
+  'click .js-income-statement'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    // ModalStack.setVar('parcelId', doc._id);
+    Modal.show('Modal', {
+      title: 'Income statement',
+      body: 'Income_statement',
       bodyContext: { communityId },
       size: 'lg',
     });
