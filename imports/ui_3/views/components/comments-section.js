@@ -43,28 +43,45 @@ const RECENT_COMMENT_COUNT = 5;
 Template.Comments_section.viewmodel({
   commentText: '',
   draft: '',
-  isVote() {
+  showAll: false, // by default show only unread
+  lastSeenTimestamp: null,
+  onCreated(instance) {
+    const user = Meteor.user();
+    const topic = this.topic();
+    // Not calling this in autorun, because we dont want the new comments to disappear as soon as the user looks at them
+    if (!topic.unseenCommentCountBy(user._id, Meteor.users.SEEN_BY.EYES)) this.showAll(true);
+    else this.lastSeenTimestamp(user?.lastSeens()[Meteor.users.SEEN_BY.EYES][topic._id]?.timestamp);
+  },
+  topic() {
     const topic = this.templateInstance.data;
-    return topic.category === 'vote';
+    return topic;
+  },
+  isVote() {
+    return this.topic().category === 'vote';
   },
   eventsOfTopic() {
     const route = FlowRouter.current().route.name;
-    const events = Comments.find({ topicId: this._id.value }, { sort: { createdAt: 1 } });
-    if (route === 'Board') {
-      // on the board showing only the most recent ones
-      return events.fetch().slice(-1 * RECENT_COMMENT_COUNT);
+    let events;
+    if (route === 'Board') { // on the board, showing only the most recent ones
+      events = Comments.find({ topicId: this._id.value }, { sort: { createdAt: 1 } })
+        .fetch().slice(-1 * RECENT_COMMENT_COUNT);
+    } else {  // on the topic page, showing the unread ones, or all
+      events = this.showAll()
+        ? Comments.find({ topicId: this._id.value }, { sort: { createdAt: 1 } })
+        : this.topic().commentsSince(this.lastSeenTimestamp());
+      events = events.fetch();
     }
     return events;
   },
-  hasMoreEvents() {
-    const route = FlowRouter.current().route.name;
-    return (route === 'Board' && this.commentCounter.value > RECENT_COMMENT_COUNT)
-      ? this.commentCounter.value - RECENT_COMMENT_COUNT
-      : 0;
+  undisplayedEvents() {
+    return this.commentCounter.value - this.eventsOfTopic().length;
   },
 });
 
 Template.Comments_section.events({
+  'click .js-show-all'(event, instance) {
+    instance.viewmodel.showAll(true);
+  },
   'click .social-comment .js-attach'(event, instance) {
     const vm = instance.viewmodel;
     const doc = {
@@ -133,4 +150,3 @@ Template.Comment.events({
     }
   },
 });
-

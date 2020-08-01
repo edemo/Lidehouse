@@ -1,8 +1,8 @@
 <template name="Comments_section">
     <div class="social-footer comment-section" data-id="{{_id}}">
-        {{#if hasMoreEvents}}
+        {{#if undisplayedEvents}}
         <div class="social-comment">
-            <a href="{{pathFor 'Topic show' _tid=_id}}">{{_ 'View previous comments' hasMoreEvents}}</a>
+            <a href="{{pathFor 'Topic show' _tid=_id}}" class="js-show-all">{{_ 'View previous comments' undisplayedEvents}}</a>
         </div>
         {{/if}}
         {{#each event in eventsOfTopic}}

@@ -187,7 +187,7 @@ export function initialUsername(user) {
 Meteor.users.helpers({
   lastSeens() {
     const noti = Notifications.findOne({ userId: this._id });
-    return noti && noti.lastSeens;
+    return noti?.lastSeens;
   },
   isVerified() {
 //    debugAssert(Meteor.isServer, 'Email addresses of users are not sent to the clients');
