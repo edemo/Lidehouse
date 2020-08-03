@@ -38,8 +38,8 @@ Template.Payment_edit.viewmodel({
   showContractField() {
     const doc = this.afDoc();
     const partnerId = AutoForm.getFieldValue('partnerId');
-    const selector = { communityId: doc.communityId, partnerId };
-    return partnerId && Contracts.find(selector).count() > 1;
+    const selector = { communityId: doc.communityId, relation: doc.relation, partnerId };
+    return (partnerId && Contracts.find(selector).count() > 1) ? undefined : 'hidden';
   },
   reconciling() {
     return ModalStack.getVar('statementEntry');

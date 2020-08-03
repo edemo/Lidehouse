@@ -15,7 +15,8 @@ import { AccountingLocation } from '/imports/api/behaviours/accounting-location.
 import { noUpdate } from '/imports/utils/autoform.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners, choosePartner, choosePartnerOfParcel } from '/imports/api/partners/partners.js';
-import { Parcels, chooseProperty } from '/imports/api/parcels/parcels.js';
+import { Parcels, chooseParcel, chooseProperty } from '/imports/api/parcels/parcels.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
 export const Contracts = new Mongo.Collection('contracts');
 
@@ -25,9 +26,15 @@ Contracts.baseSchema = new SimpleSchema({
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...noUpdate, ...choosePartner } },
 });
 
+Contracts.accountingSchema = new SimpleSchema({
+  account: { type: String /* account code */, autoform: { ...Accounts.chooseNode }, optional: true },
+  localizer: { type: String /* account code */, autoform: chooseParcel(), optional: true },
+});
+
 Contracts.detailsSchema = new SimpleSchema({
-  title: { type: String, max: 100 },
-  text: { type: String, max: 5000,  autoform: { rows: 8 } },
+  title: { type: String, max: 100, optional: true },
+  text: { type: String, max: 5000,  autoform: { rows: 8 }, optional: true },
+  accounting: { type: Contracts.accountingSchema, optional: true },
 });
 
 Contracts.memberSchema = new SimpleSchema({
@@ -51,6 +58,8 @@ Contracts.modifiableFields = [
   // 'partnerId' and 'leadParcelId' are definitely not allowed to change! - you should create new Contract in that case
   'title',
   'text',
+  'accounting.account',
+  'accounting.localizer',
   'delegateId',
 //  'habitants',
 ];
@@ -75,6 +84,9 @@ Contracts.helpers({
   partner() {
     if (this.partnerId) return Partners.findOne(this.partnerId);
     return undefined;
+  },
+  partnerName() {
+    return this.partner()?.displayName();
   },
   worksheets() {
     const Topics = Mongo.Collection.get('topics');
@@ -143,7 +155,14 @@ export const chooseContract = {
   relation: 'contract',
   value() {
     const selfId = AutoForm.getFormId();
-    return ModalStack.readResult(selfId, 'af.contract.insert');
+    const result = ModalStack.readResult(selfId, 'af.contract.insert');
+    if (result) return result;
+    const communityId = AutoForm.getFieldValue('communityId');
+    const relation = AutoForm.getFieldValue('relation');
+    const partnerId = AutoForm.getFieldValue('partnerId');
+    const selector = { communityId, relation, partnerId };
+    const contractId = partnerId && Contracts.findOne(Object.cleanUndefined(selector))?._id;
+    return contractId;
   },
   options() {
     const communityId = ModalStack.getVar('communityId');

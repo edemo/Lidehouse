@@ -129,8 +129,20 @@ Partners.helpers({
   },
   contracts(relation) {
     const Contracts = Mongo.Collection.get('contracts');
-    const selector = { communityId: this.communityId, approved: true, relation, partnerId: this._id };
+    const selector = { communityId: this.communityId, relation, partnerId: this._id };
     return Contracts.findActive(Object.cleanUndefined(selector));
+  },
+  ensureContract(relation) { // Creates one if doesn't exist
+    const contracts = this.contracts(relation).fetch();
+    if (contracts.length) return contracts[0];
+    else {
+      if (Meteor.isClient) return undefined;
+      else { // if (Meteor.isServer)
+        const Contracts = Mongo.Collection.get('contracts');
+        const id = Contracts.insert({ communityId: this.communityId, relation, partnerId: this._id });
+        return Contracts.findOne(id);
+      }
+    }
   },
   outstandingBills() {
     const Transactions = Mongo.Collection.get('transactions');

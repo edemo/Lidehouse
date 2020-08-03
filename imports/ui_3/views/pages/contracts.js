@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -14,6 +15,7 @@ import '/imports/api/topics/actions.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import '/imports/ui_3/views/components/ticket-list.js';
 import '/imports/ui_3/views/components/new-ticket.js';
+import '/imports/ui_3/views/components/contracts-datatable.js';
 import './contracts.html';
 
 Template.Contracts.viewmodel({
@@ -24,6 +26,7 @@ Template.Contracts.viewmodel({
       const communityId = ModalStack.getVar('communityId');
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
+      instance.subscribe('accounts.inCommunity', { communityId });
     });
   },
   relationValues() {
@@ -35,7 +38,7 @@ Template.Contracts.viewmodel({
   contracts() {
     const communityId = ModalStack.getVar('communityId');
     const relation = ModalStack.getVar('relation');
-    return Contracts.find({ communityId, relation });
+    return Contracts.find({ communityId, relation, title: { $exists: true } });
   },
   ticketStatuses() {
     return Object.values(Tickets.statuses);
@@ -63,5 +66,14 @@ Template.Contracts.events({
     const partnerRelation = $(event.target).closest('[data-value]').data('value');
     instance.viewmodel.activePartnerRelation(partnerRelation);
     ModalStack.setVar('relation', partnerRelation, true);
+  },
+  'click .js-contracts-list'(event, instance) {
+    const communityId = ModalStack.getVar('communityId');
+    Modal.show('Modal', {
+      title: 'contracts',
+      body: 'Contracts_datatable',
+      bodyContext: { communityId },
+      size: 'lg',
+    });
   },
 });

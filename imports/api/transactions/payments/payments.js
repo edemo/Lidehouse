@@ -49,6 +49,13 @@ export const chooseBillOfPartner = {
 };
 
 export const chooseLocalizerOfPartner = {
+/*  To dynamically select localizer, when changing the partner on the payment:
+  value() {
+    const contractId = AutoForm.getFieldValue('contractId');
+    const contract = contractId && Contracts.findOne(contractId);
+    return contract?.accounting?.localizer;
+  },
+*/
   options() {
     const communityId = ModalStack.getVar('communityId');
     const relation = AutoForm.getFieldValue('relation');

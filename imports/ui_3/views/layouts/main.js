@@ -24,7 +24,7 @@ Template.Main_layout.onCreated(function() {
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
-    this.subscribe('communities.byId', { _id: ModalStack.getVar('communityId') });
+    this.subscribe('communities.byId', { _id: communityId });
     this.subscribe('delegations.toUser', { communityId });
     this.subscribe('delegations.fromUser', { communityId });
     this.subscribe('topics.active', { communityId });

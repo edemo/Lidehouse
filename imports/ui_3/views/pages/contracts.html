@@ -54,5 +54,12 @@
         </div>
         {{/each}}
 
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                {{#if currentUserHasPermission 'contracts.insert'}}
+                <button class="btn btn-default text-capitalize js-contracts-list"><i class="fa fa-list"></i> {{_ 'contract'}} {{_ 'list'}}</button>
+                {{/if}}
+            </div>
+        </div>
     </div>
 </template>

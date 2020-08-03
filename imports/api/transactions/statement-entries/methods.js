@@ -17,6 +17,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
 import { reconciliationSchema } from '/imports/api/transactions/reconciliation/reconciliation.js';
+import { Contracts } from '../../contracts/contracts.js';
 
 export const insert = new ValidatedMethod({
   name: 'statementEntries.insert',
@@ -86,6 +87,15 @@ export const reconcile = new ValidatedMethod({
       checkReconcileMatch(entry, reconciledTx);
       if (reconciledTx.partnerId && entry.name && entry.name !== reconciledTx.partner().idCard.name) {
         Recognitions.setName(entry.name, reconciledTx.partner().idCard.name, { communityId });
+      }
+      if (reconciledTx.lines?.length === 1) {
+        const contract = reconciledTx.contract() || reconciledTx.partner().ensureContract(reconciledTx.relation);
+        const line = reconciledTx.lines[0];
+        if (line.account !== contract.accouting?.account ||
+          line.localizer !== contract.accouting?.localizer) {
+          const modifier = { $set: { 'accounting.account': line.account, 'accounting.localizer': line.localizer } };
+          Contracts.update(contract._id, modifier, { selector: { relation: contract.relation } });
+        }
       }
     }
     Transactions.update(txId, { $set: { seId: _id } });
@@ -250,11 +260,12 @@ export const recognize = new ValidatedMethod({
         amountToFill -= amount;
       });
       if (amountToFill > 0) {
+        const contract = partner.ensureContract(relation);
         tx.lines = [{
           amount: amountToFill,
-          account: paymentDef.conteerCodes()[0],
-          contractId: partner.contracts(relation)[0],
-//          localizer: undefined,
+          contractId: contract._id,
+          account: contract.accounting?.account || paymentDef.conteerCodes()[0],
+          localizer: contract.accounting?.localizer,
         }];
       }
       Log.info('Info match with bills', matchingBills.length);
