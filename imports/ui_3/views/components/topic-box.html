@@ -31,7 +31,7 @@
 <template name="Topic_header">
     <!-- creator avatar at the left corner -->
     <a href="" class="pull-left">
-        <img alt="avatar" class="message-avatar" src={{Meteor.absoluteUrl creator.avatar}}>
+        <img alt="avatar" class="message-avatar" src={{absoluteUrl creator.avatar}}>
     </a>
     <!-- editing options at the right corner -->
     <div class="pull-right social-action">
@@ -58,7 +58,7 @@
     </a>
     <div class="text-dark">{{>Chopped text=text chars=600 markdown=true}}</div>
     {{>Attached_shareddocs shareddocs=this.getShareddocs}}
-    {{#if photo}}<img src="{{Meteor.absoluteUrl photo}}" class="img-embed">{{/if}}
+    {{#if photo}}<img src="{{absoluteUrl photo}}" class="img-embed">{{/if}}
 </template>
 
 <template name="Topic_box">

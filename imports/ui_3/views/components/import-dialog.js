@@ -50,8 +50,8 @@ const launchNextPhase = function launchNextPhase(vm) {
 
       console.log(`Calling batch upsert on ${tdocsToUpsert.length} docs`);
       Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocsToUpsert }, {
-        action: __('import data', { collection: __(collection._name) }),
-        message: __('This operation will do the following') + '<br>'
+        action: 'import data',
+        message: __('This operation will do the following', { collection: __(collection._name) }) + '<br>'
           + __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>'
           + __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>'
           + __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>'

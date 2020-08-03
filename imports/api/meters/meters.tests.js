@@ -118,7 +118,7 @@ if (Meteor.isServer) {
           uom: 'm3',
         });
         const newMeter = Meters.findOne(newMeterId);
-        chai.assert.deepEqual(newMeter.lastReading(), { date: Clock.currentTime(), value: 0, approved: true });
+        chai.assert.deepEqual(newMeter.lastReading(), { date: Clock.currentDate(), value: 0, approved: true });
       });
     });
   });

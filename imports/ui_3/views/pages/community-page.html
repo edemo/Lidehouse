@@ -5,7 +5,7 @@
                 <tbody>
                 {{#each doc in roleships}}
                     <tr data-id="{{doc._id}}">
-                        <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-avatar"><img alt="image" src={{Meteor.absoluteUrl doc.partner.avatar}}></a></td>
+                        <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-avatar"><img alt="image" src={{absoluteUrl doc.partner.avatar}}></a></td>
                         <td><a href="{{pathFor 'User show' _id=doc.partner.userId}}" class="client-link">{{doc.partner.displayName}}</a></td>
                         <td><span class="label label-plain">{{_ doc.role}}</span> 
                             {{#if doc.rank}}<span class="label label-plain">{{doc.rank}}</span>{{/if}}
@@ -62,7 +62,7 @@
                     {{#each doc in memberships}}
                     {{#let entity=doc.entityName}}
                     <tr class="memberships" data-id="{{doc._id}}">
-                        <td><a href="" class="client-avatar js-member"><img alt="image" src={{Meteor.absoluteUrl doc.partner.avatar}}></a></td>
+                        <td><a href="" class="client-avatar js-member"><img alt="image" src={{absoluteUrl doc.partner.avatar}}></a></td>
                         <td><a href="" class="client-link js-member">{{doc.partner.displayName}}</a></td>
                         <td>{{>Active_period collection='memberships' doc=doc}}</td>
                             {{#if equals entity 'ownership'}}

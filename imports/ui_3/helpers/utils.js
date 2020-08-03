@@ -102,6 +102,11 @@ if (Meteor.isClient) {
     return time ? moment(time).from(serverTimeNow) : __('never');
   });
 
+  Template.registerHelper('absoluteUrl', function absoluteUrl(path) {
+    if (path.charAt(0) === '/') return Meteor.absoluteUrl(path);
+    return path;
+  });
+
   // Takes any number of arguments and returns them concatenated.
   Template.registerHelper('concat', function concat() {
     return Array.prototype.slice.call(arguments, 0, -1).join('');
