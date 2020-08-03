@@ -317,7 +317,7 @@
   "Conteer": "Kontírozás",
   "Bill conteer": "Számla kontírozás",
 
-  "This operation will do the following": "Ezzel a következő műveleteket hajtja végre",
+  "This operation will do the following": "Ezzel a következő műveleteket hajtja végre a(z) __collection__ adatokon",
   "creates": "Létrehoz",
   "modifies": "Módosít",
   "deletes": "Töröl",
@@ -767,7 +767,7 @@
   "delete sharedfolder": "törli a mappát",
   "close vote": "lezárja a szavazást",
   "publish balances": "publikálja az aktuális egyenlegeket",
-  "import data": "importálja a(z) __collection__ adatokat",
+  "import data": "importálja az adatokat",
   "update partner": "megváltoztatja a partner adatokat",
 
   "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",

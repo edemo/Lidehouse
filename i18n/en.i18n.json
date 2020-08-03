@@ -87,6 +87,7 @@
   "pleaseSupplyParcelData": "Please supply as much data as possible about your parcel, so your join request can be approved quickly!",
   "No permission to upload": "You have no permission to upload documents, please ask the community manager's help",
   "Remove not possible after posting": "NOTICE: Transaction cannot be removed, because it has been already posted. If you press OK, a storno transaction will be created.",
+  "This operation will do the following": "This operation will do the following with __collection__ data",
   "This operation will be performed on many documents": "If you approve, this operation will be performed on <strong>%s selected documents</strong> at once",
   "Changing partner email address will unlink user": "By changing the partner's email address you are disconnecting them from the user account. Are you sure to continue?",
   "warningPartnerMerge": "This operation deletes the partner you invoked it on, and merges his balance into the below selected partner. Data of the below selected partner will overwrite data from the partner to be removed.",
@@ -161,7 +162,6 @@
   "Reconnecting user": "This person will be sent a new enrollment email to the same email address, as the previous one was sent to. As soon as the new email is sent, the old one becomes expired.",
   "Sending outstandings reminder": "To the following partner: <strong>'%s'</strong> you are about to send out an outstandings reminder email.",
 
-  "import data": "import __collection__ data",
   "delete user": "delete your account permanently",
   "deletedUser": "Deleted user",
   "unknownUser": "Unknown user",
