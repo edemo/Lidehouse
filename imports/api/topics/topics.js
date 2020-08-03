@@ -121,13 +121,17 @@ Topics.helpers({
     const lastSeenInfo = user && user.lastSeens()[seenType][this._id];
     return lastSeenInfo ? false : true;
   },
+  commentsSince(timestamp) {
+    const sortByDate = { sort: { createdAt: 1 } };
+    const messages = timestamp ?
+      Comments.find({ topicId: this._id, createdAt: { $gt: timestamp } }, sortByDate) :
+      Comments.find({ topicId: this._id }, sortByDate);
+    return messages;
+  },
   unseenCommentsBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
-    const lastSeenInfo = user && user.lastSeens()[seenType][this._id];
-    const messages = lastSeenInfo ?
-       Comments.find({ topicId: this._id, createdAt: { $gt: lastSeenInfo.timestamp } }) :
-       Comments.find({ topicId: this._id });
-    return messages;
+    const lastSeenTimestamp = user?.lastSeens()[seenType][this._id]?.timestamp;
+    return this.commentsSince(lastSeenTimestamp);
   },
   unseenCommentCountBy(userId, seenType) {
     return this.unseenCommentsBy(userId, seenType).count();

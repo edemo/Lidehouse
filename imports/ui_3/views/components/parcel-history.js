@@ -60,8 +60,9 @@ Template.Parcel_history.viewmodel({
     const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
     let total = 0;
     const txsWithRunningTotal = txs.map(tx => {
-      total += tx.subjectiveAmount();
-      return _.extend(tx, { total });
+      const contractAmount = tx.getContractAmount(this.contractSelected());
+      total += contractAmount;
+      return _.extend(tx, { contractAmount, total });
     });
     return txsWithRunningTotal.reverse();
   },

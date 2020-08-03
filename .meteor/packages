@@ -78,7 +78,6 @@ useraccounts:flow-routing
 softwarerero:accounts-t9n
 
 # mobile
-crosswalk@1.7.1
 mobile-experience@1.1.0
 chriswessels:hammer
 
@@ -116,3 +115,5 @@ droka:autoform-ufs
 ostrio:flow-router-title
 djedi:sanitize-html
 djedi:sanitize-html-client
+raix:push
+mdg:camera

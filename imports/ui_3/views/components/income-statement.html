@@ -1,0 +1,17 @@
+<template name="Income_statement">
+    <div class="table-responsive">
+    <table class="table table-bordered table-condensed ">
+        <thead>
+          <tr class="table-row">
+              <td><strong>{{_ 'Account'}}</strong></td>
+          </tr>
+        </thead>
+        <tbody>
+            {{#each account in accounts}}
+            {{#if hasActivity account}}
+            {{/if}}
+            {{/each}}
+        </tbody>
+    </table>
+    </div>
+</template>

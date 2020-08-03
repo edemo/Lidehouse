@@ -54,7 +54,8 @@ export const post = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
-    if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
+// Allowing repost action
+//   if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
 
     if (doc.category === 'bill' || doc.category === 'receipt') {
       if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
@@ -66,7 +67,7 @@ export const post = new ValidatedMethod({
     }
 
     const modifier = { $set: { postedAt: new Date() } };
-    if (doc.status === 'draft') { // voided already has the accounting data on it
+    if (doc.status !== 'void') { // voided already has the accounting data on it
       const community = Communities.findOne(doc.communityId);
       const accountingMethod = community.settings.accountingMethod;
       const updateData = doc.makeJournalEntries(accountingMethod);
@@ -74,7 +75,7 @@ export const post = new ValidatedMethod({
     }
     const result = Transactions.update(_id, modifier);
 
-    if (Meteor.isServer && doc.category === 'bill') {
+    if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {
       doc.getLines().forEach((line) => {
         if (line.metering) {
           Meters.methods.registerBilling._execute({ userId: this.userId }, { _id: line.metering.id,
@@ -115,19 +116,22 @@ export const insert = new ValidatedMethod({
         const bill = Transactions.findOne(bp.id);
 //      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
 //        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
-        function setOrCheckEquals(field) {
-          if (!doc[field]) doc[field] = bill[field];
-          else if (doc[field] !== bill[field]) throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
-        }
-        setOrCheckEquals('relation');
-        setOrCheckEquals('partnerId');
-        setOrCheckEquals('contractId');
+//        function setOrCheckEquals(field) {
+//          if (!doc[field]) doc[field] = bill[field];
+//          else if (doc[field] !== bill[field]) {
+//            throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
+//          }
+//        }
+//        setOrCheckEquals('relation');
+//        setOrCheckEquals('partnerId');
+//        setOrCheckEquals('contractId');
       });
       doc.getLines().forEach((line) => {
         const parcel = Localizer.parcelFromCode(line.localizer, communityId);
-        const contract = Contracts.findOne({ parcelId: parcel._id }).billingContract();
-        if (!doc.contractId) doc.contractId = contract._id;
-        else if (doc.contractId !== contract._id) throw new Meteor.Error(`All lines need to have same contractId`, `${doc.contractId} !== ${contract._id}`);
+        if (!line.contractId && parcel) {
+          const contract = parcel?.payerContract();
+          line.contractId = contract?._id;
+        }
       });
     } else if (doc.category === 'barter') {
       const supplierBill = doc.supplierBill();

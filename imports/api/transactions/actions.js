@@ -170,6 +170,21 @@ Transactions.actions = {
       }
     },
   }),
+  repost: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'repost',
+    icon: 'fa fa-check-square-o',
+    visible: doc && doc.isPosted() && user.hasPermission('transactions.post', doc),
+    run() {
+      doc.makeJournalEntries(doc.community().settings.accountingMethod);
+      Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
+        action: 'repost transaction',
+//            message: 'This will create the following journal entries',
+        body: 'Transaction_view',
+        bodyContext: { doc },
+        size: 'lg',
+      });
+    },
+  }),
   resend: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'resend',
     icon: 'fa fa-envelope',

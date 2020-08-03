@@ -1,7 +1,7 @@
 <template name="Contact_long">
     <div class="contact-box center-version">
         <a href="">
-            <img alt="image" class="img-circle" src="{{avatar}}">
+            <img alt="image" class="img-circle" src="{{Meteor.absoluteUrl avatar}}">
             <h3 class="m-b-xs"><strong>{{this.displayOfficialName}}</strong></h3>
             {{#each this.memberships activeCommunityId}}
             <div class="font-bold">{{this.displayRole}}</div>

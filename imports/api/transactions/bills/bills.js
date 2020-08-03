@@ -13,7 +13,8 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
+import { LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels, chooseParcel } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -219,13 +220,13 @@ Transactions.categoryHelpers('bill', {
     debugAssert(this.partnerId, 'Cannot process a bill without a partner');
     Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
     Contracts.update(this.contractId, { $inc: { outstanding: directionSign * this.amount } }, { selector: { relation: 'member' } });
-    if (this.relation === 'member') {
-      this.getLines().forEach(line => {
-        if (!line) return; // can be null, when a line is deleted from the array
-        debugAssert(line.parcelId, `Cannot process a parcel bill without parcelId field: ${JSON.stringify(this)}`);
-        Parcels.update(line.parcelId, { $inc: { outstanding: directionSign * line.amount } }, { selector: { category: '@property' } });
-      });
-    }
+    this.getLines().forEach(line => {
+      if (!line) return; // can be null, when a line is deleted from the array
+      const parcel = Localizer.parcelFromCode(line.localizer, this.communityId);
+      if (parcel) {
+        Parcels.update(parcel._id, { $inc: { outstanding: directionSign * line.amount } }, { selector: { category: '@property' } });
+      } else debugAssert(this.relation !== 'member', `Cannot process a parcel bill without parcelId field: ${JSON.stringify(this)}`);
+    });
   },
   displayInSelect() {
     return `${this.serialId} (${this.partner()} ${moment(this.valueDate).format('YYYY.MM.DD')} ${this.outstanding}/${this.amount})`;
