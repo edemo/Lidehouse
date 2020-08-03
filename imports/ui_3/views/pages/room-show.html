@@ -2,7 +2,7 @@
     {{#each messages}}
         {{#if ownMessage this}}    <!-- box for my messages -->
             <div class="chat-message right">
-                <img class="message-avatar" src="{{Meteor.absoluteUrl creator.avatar}}" alt="avatar" >
+                <img class="message-avatar" src="{{absoluteUrl creator.avatar}}" alt="avatar" >
                 <div class="message">
                     <a class="message-author" href=""> {{creator.displayOfficialName}} </a>
                     <span class="message-date"> {{displayTimeFrom createdAt}} </span>
@@ -11,7 +11,7 @@
             </div>
         {{else}}                  <!-- box for recived messages -->
             <div class="chat-message left">
-                <img class="message-avatar" src="{{Meteor.absoluteUrl creator.avatar}}" alt="avatar" >
+                <img class="message-avatar" src="{{absoluteUrl creator.avatar}}" alt="avatar" >
                 <div class="message">
                     <a class="message-author" href=""> {{creator.displayOfficialName}} </a>
                     <span class="message-date"> {{displayTimeFrom createdAt}} </span>
