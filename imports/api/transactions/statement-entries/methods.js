@@ -85,8 +85,9 @@ export const reconcile = new ValidatedMethod({
     const reconciledTx = Transactions.findOne(txId);
     if (Meteor.isServer) {
       checkReconcileMatch(entry, reconciledTx);
-      if (reconciledTx.partnerId && entry.name && entry.name !== reconciledTx.partner().idCard.name) {
-        Recognitions.setName(entry.name, reconciledTx.partner().idCard.name, { communityId });
+      const entryName = entry.nameOrType();
+      if (reconciledTx.partnerId && entryName && entryName !== reconciledTx.partner().idCard.name) {
+        Recognitions.setName(entryName, reconciledTx.partner().idCard.name, { communityId });
       }
       if (reconciledTx.lines?.length === 1) {
         const contract = reconciledTx.contract() || reconciledTx.partner().ensureContract(reconciledTx.relation);
@@ -192,9 +193,10 @@ export const recognize = new ValidatedMethod({
     }
     let partner;
     let relation;
-    if (entry.name) {
-      Log.debug('Looking for partner', entry.name, 'in', entry.communityId);
-      const recognizedName = Recognitions.getName(entry.name, { communityId }) || entry.name;
+    const entryName = entry.nameOrType();
+    if (entryName) {
+      Log.debug('Looking for partner', entryName, 'in', entry.communityId);
+      const recognizedName = Recognitions.getName(entryName, { communityId }) || entryName;
       partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': recognizedName });
     } else {
       Log.debug('No partner on statement');

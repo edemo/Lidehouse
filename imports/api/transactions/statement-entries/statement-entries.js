@@ -44,6 +44,9 @@ StatementEntries.helpers({
   community() {
     return Communities.findOne(this.communityId);
   },
+  nameOrType() {
+    return this.name || this.refType;
+  },
   isReconciled() {
     return !!this.txId;
   },
