@@ -178,18 +178,19 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.remove', doc);
+    let result;
     if (doc.status === 'draft') {
       Transactions.remove(_id);
-      return null;
+      result = null;
     } else if (doc.status === 'posted') {
       Transactions.update(doc._id, { $set: { status: 'void' } });
-      return Transactions.insert(_.extend(doc.negator(), { status: 'void' }));
+      result = Transactions.insert(_.extend(doc.negator(), { status: 'void' }));
     } else if (doc.status === 'void') {
       throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');
     } else debugAssert(false, `No such tx status: ${doc.status}`);
 
     StatementEntries.update({ txId: _id }, { $unset: { txId: '' } }, { multi: true });
-    return undefined;
+    return result;
   },
 });
 
