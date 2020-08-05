@@ -244,10 +244,6 @@ Transactions.actions = {
       Modal.confirmAndCall(Transactions.methods.remove, { _id: doc._id }, {
         action: 'delete transaction',
         message: doc.isPosted() ? 'Remove not possible after posting' : 'It will disappear forever',
-      }, (didIt, res) => {
-        if (!didIt || !res) return;
-        const stornoTx = Transactions.findOne(res);
-        Meteor.setTimeout(Transactions.actions.view({}, stornoTx).run, 1000);
       });
     },
   }),
