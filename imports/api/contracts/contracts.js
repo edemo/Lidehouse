@@ -20,21 +20,21 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
 export const Contracts = new Mongo.Collection('contracts');
 
-Contracts.baseSchema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...noUpdate, ...choosePartner } },
-});
-
 Contracts.accountingSchema = new SimpleSchema({
   account: { type: String /* account code */, autoform: { ...Accounts.chooseNode }, optional: true },
   localizer: { type: String /* account code */, autoform: chooseParcel(), optional: true },
 });
 
+Contracts.baseSchema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...noUpdate, ...choosePartner } },
+  accounting: { type: Contracts.accountingSchema, optional: true },
+});
+
 Contracts.detailsSchema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000,  autoform: { rows: 8 }, optional: true },
-  accounting: { type: Contracts.accountingSchema, optional: true },
 });
 
 Contracts.memberSchema = new SimpleSchema({
