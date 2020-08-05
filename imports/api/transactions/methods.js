@@ -185,6 +185,7 @@ export const remove = new ValidatedMethod({
     } else if (doc.status === 'posted') {
       Transactions.update(doc._id, { $set: { status: 'void' } });
       result = Transactions.insert(_.extend(doc.negator(), { status: 'void' }));
+      post._execute({ userId: this.userId }, { _id: result });
     } else if (doc.status === 'void') {
       throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');
     } else debugAssert(false, `No such tx status: ${doc.status}`);
