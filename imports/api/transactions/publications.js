@@ -57,13 +57,11 @@ Meteor.publish('transactions.byAccount', function transactionsInCommunity(params
   const { communityId, account, localizer, begin, end } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
-      return this.ready();
-  }
-  if ((account && localizer) || (!account && !localizer)) {
-    throw new Meteor.Error('invalid subscription');
+    return this.ready();
   }
 
   const selector = Transactions.makeFilterSelector(params);
+  console.log("selector", selector);
   return Transactions.find(selector);
 });
 

@@ -468,6 +468,7 @@ function dateFilter(begin, end) {
 
 Transactions.makeFilterSelector = function makeFilterSelector(params) {
   const selector = _.clone(params);
+  selector.$and = [];
   if (params.begin || params.end) selector.valueDate = dateFilter(params.begin, params.end);
   delete selector.begin; delete selector.end;
   if (params.defId) {
@@ -475,17 +476,20 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
   } else delete selector.defId;
   if (params.contractId) {
     const contractId = params.contractId;
-    selector.$or = [{ contractId }, { 'credit.contractId': contractId }, { 'debit.contractId': contractId }];
+    const $or = [{ contractId }, { 'credit.contractId': contractId }, { 'debit.contractId': contractId }];
+    selector.$and.push({ $or });
     delete selector.contractId;
   }
   if (params.account) {
     const account = withSubs(params.account);
-    selector.$or = [{ 'credit.account': account }, { 'debit.account': account }];
+    const $or = [{ 'credit.account': account }, { 'debit.account': account }];
+    selector.$and.push({ $or });
     delete selector.account;
   } else delete selector.account;
   if (params.localizer) {
     const localizer = withSubs(params.localizer);
-    selector.$or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
+    const $or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
+    selector.$and.push({ $or });
     delete selector.localizer;
   } else delete selector.localizer;
   if (params.debitAccount) {
@@ -498,6 +502,8 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
     selector['credit.account'] = creditAccount;
     delete selector.creditAccount;
   } else delete selector.creditAccount;
+
+  if (selector.$and.length === 0) delete selector.$and;
   return selector;
 };
 
