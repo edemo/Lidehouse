@@ -239,7 +239,8 @@ Transactions.actions = {
     name: 'delete',
     label: doc.isPosted() ? 'storno' : 'delete',
     icon: 'fa fa-trash',
-    visible: user.hasPermission('transactions.remove', doc) && (doc.status !== 'void'),
+    visible: user.hasPermission('transactions.remove', doc) && (doc.status !== 'void')
+      && (doc.isPosted() ? user.hasPermission('transactions.post', doc) : true),
     run() {
       Modal.confirmAndCall(Transactions.methods.remove, { _id: doc._id }, {
         action: 'delete transaction',
