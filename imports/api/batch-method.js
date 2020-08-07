@@ -68,8 +68,8 @@ export class BatchTester extends ValidatedMethod {
         if (!args.length) return neededOperations;
         checkPermissions(this.userId, batchUpsertName, { communityId: args[0].communityId });
         args.forEach((doc, i) => {
-          collection.simpleSchema(doc).clean(doc);
-          collection.simpleSchema(doc).validate(doc);
+//          collection.simpleSchema(doc).clean(doc);
+//          collection.simpleSchema(doc).validate(doc);
           const selector = {};
           collection.idSet.forEach((fieldName) => {
             const fieldValue = Object.getByString(doc, fieldName);
