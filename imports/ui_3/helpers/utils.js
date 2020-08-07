@@ -103,7 +103,7 @@ if (Meteor.isClient) {
   });
 
   Template.registerHelper('absoluteUrl', function absoluteUrl(path) {
-    if (path.charAt(0) === '/') return Meteor.absoluteUrl(path);
+    if (path?.charAt(0) === '/') return Meteor.absoluteUrl(path);
     return path;
   });
 
