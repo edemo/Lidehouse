@@ -6,6 +6,7 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -20,7 +21,7 @@ Breakdowns.define = function define(doc) {
 Breakdowns.findOneByName = function findOneByName(name, communityId = getActiveCommunityId()) {
   const result = Breakdowns.findOne({ name, communityId })
               || Breakdowns.findOne({ name, communityId: null });
-  if (!result) console.warn(`Unable to find breakdown '${name}' for community '${communityId}'`);
+  if (!result) Log.warning(`Unable to find breakdown '${name}' for community '${communityId}'`);
   return result;
 };
 

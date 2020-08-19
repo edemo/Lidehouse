@@ -88,8 +88,6 @@ Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour,
 
   collection.helpers(behaviour.helpers);
 
-//  console.log('_applyBehaviour methods!');
-
   collection.methods = collection.methods || {};
   _.forEach(behaviour.methods, (method, key) => {
     const methodCopy = new ValidatedMethod({
@@ -99,7 +97,6 @@ Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour,
     });
     _.extend(collection.methods, { [key]: methodCopy });
   });
-//  console.log(collection.methods);
 
   // if (Meteor.isClient) return;  // No hooking on the client side
   const hooks = (typeof behaviour.hooks === 'function') ? behaviour.hooks(collection) : behaviour.hooks;

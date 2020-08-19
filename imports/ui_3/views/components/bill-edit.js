@@ -6,6 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Clock } from '/imports/utils/clock';
 import { __ } from '/imports/localization/i18n.js';
+import { Log } from '/imports/utils/log.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
@@ -42,7 +43,7 @@ Template.Bill_edit.viewmodel({
     // Not the right place to find out if line is null (got removed earlier)
     // Should be dealt with within autoform iterator
     const index = afLine.name.split('.')[1];
-//    console.log(AutoForm.getFieldValue('lines')[index]);
+//    Log.debug(AutoForm.getFieldValue('lines')[index]);
     return AutoForm.getFieldValue('lines')[index];
   },
   reconciling() {

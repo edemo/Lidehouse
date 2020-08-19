@@ -51,8 +51,8 @@ export const update = new ValidatedMethod({
 
 function checkReconcileMatch(entry, transaction) {
   function throwMatchError(mismatch, entryVal, txVal) {
-    console.log('entry', JSON.stringify(entry));
-    console.log('transaction', JSON.stringify(transaction));
+    Log.info('entry', JSON.stringify(entry));
+    Log.info('transaction', JSON.stringify(transaction));
     throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`, `tx: ${txVal}, entry: ${entryVal}`);
   }
   if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate', entry.valueDate, transaction.valueDate);

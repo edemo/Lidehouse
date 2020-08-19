@@ -2,6 +2,7 @@
 import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { Communities } from '/imports/api/communities/communities';
 import { Topics } from '/imports/api/topics/topics.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
@@ -37,7 +38,7 @@ function sendNotifications(user) {
 
 export function processNotifications(frequency) {
   const usersToBeNotified = Meteor.users.find({ 'settings.notiFrequency': frequency });
-  // console.log(usersToBeNotified.fetch());
+  // Log.debug(usersToBeNotified.fetch());
   usersToBeNotified.forEach(user => sendNotifications(user));
 }
 

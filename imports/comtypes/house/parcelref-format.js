@@ -1,9 +1,10 @@
 import { _ } from 'meteor/underscore';
 import { productionAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 
 export const ParcelRefFormat = {
   isMatching(format, doc) {
- //       console.log("isMatching:", format, doc);
+ //       Log.debug("isMatching:", format, doc);
     if (!format) return false;
     if (!doc.building || !doc.floor || !doc.door) return false;
     return ParcelRefFormat.createRefFromFields(format, doc) === doc.ref;

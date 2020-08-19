@@ -1,6 +1,7 @@
 import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 
 const accountSigns = {
   1: +1, 2: +1, 3: +1, 9: +1,
@@ -122,7 +123,7 @@ export class TableReport {
 
     const totalAmount = displaySign * amount;
     if (totalAmount < 0) classes += ' negative';
-//    console.log(`${x}, ${y}: filter:`); console.log(filter);
+//    Log.debug(`${x}, ${y}: filter:`); Log.debug(filter);
     return { class: classes, value: numeral(totalAmount).format() };
   }
 

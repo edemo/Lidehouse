@@ -8,6 +8,7 @@ import { Tracker } from 'meteor/tracker';
 import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import 'meteor/numeral:languages';
+import { Log } from '/imports/utils/log.js';
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { update as updateUser } from '/imports/api/users/methods.js';
@@ -16,7 +17,7 @@ import { handleError } from '/imports/ui_3/lib/errors.js';
 export function getBrowserLanguage() {
   // https://stackoverflow.com/questions/31471411/how-to-set-user-language-settings-in-meteor#31471877
   const language = window.navigator.userLanguage || window.navigator.language;  // works IE/SAFARI/CHROME/FF
-//  console.log('Browser language:', language);
+//  Log.info('Browser language:', language);
   return language.split('-')[0];
 }
 
@@ -33,7 +34,7 @@ function setLanguage(lang) {
       Session.set('showLoadingIndicator', false);
     })
     .fail(function handleError(errorMessage) {
-      console.log(errorMessage);        // TODO: Handle the error
+      Log.error(errorMessage);        // TODO: Handle the error
     });
   T9n.setLanguage(supportedLang);
 }

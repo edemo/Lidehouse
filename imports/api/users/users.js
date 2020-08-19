@@ -9,6 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { allowedOptions, imageUpload } from '/imports/utils/autoform.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
@@ -296,7 +297,7 @@ Meteor.users.helpers({
     const memberships = Memberships.findActive({ approved: true, userId: this._id }).fetch();
     const communityIds = _.uniq(_.pluck(memberships, 'communityId'));
     const communities = Communities.find({ _id: { $in: communityIds } });
-    // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
+    // Log.debug(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },
   isInCommunity(communityId) {
@@ -333,8 +334,8 @@ Meteor.users.helpers({
     }
     const userHasTheseRoles = this.activeRoles(communityId, parcelId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
-//    console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, parcelId, ' is ', result);
-//  if (!result) console.log(this.safeUsername(), 'current permissions:', this.activeRoles(communityId));
+//    Log.debug(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, parcelId, ' is ', result);
+//  if (!result) Log.debug(this.safeUsername(), 'current permissions:', this.activeRoles(communityId));
     return result;
   },
   totalOwnedUnits(communityId) {

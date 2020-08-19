@@ -2,6 +2,7 @@
 /* eslint-disable no-alert, no-console, prefer-template */
 import { Meteor } from 'meteor/meteor';
 import { __ } from '/imports/localization/i18n.js';
+import { Log } from '/imports/utils/log.js';
 
 //------------------------
 // structure of errors
@@ -20,7 +21,7 @@ import { __ } from '/imports/localization/i18n.js';
 
 export const displayError = (error) => {
   if (error) {
-    console.error(error);
+    Log.error(error);
     let message;
     if (error instanceof Meteor.Error) {
       // For server side errors, on the client side we always get a Meteor.Error, that is what gets channeled over DDP.

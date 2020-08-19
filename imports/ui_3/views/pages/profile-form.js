@@ -78,7 +78,6 @@ AutoForm.addHooks('af.user.update', {
       // TODO: A verification email has to be sent to the user now
     }
     delete modifier.$set.email;
-    // console.log(`modifier: ${JSON.stringify(modifier)}`);
     return modifier;
   },
   onError(formType, error) {

@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -124,10 +125,10 @@ Balances.checkCorrect = function checkCorrect(def) {
   });
   const dbBalance = Balances.get(def).total();
   if (dbBalance !== calculatedBalance) {
-    console.log('Balance inconsistency ERROR',
+    Log.error('Balance inconsistency ERROR',
       `Calculated balance of '${def} is ${calculatedBalance} (from ${entryCount} entries)\nDb balance of same account: ${dbBalance}`
     );
-    console.log(txs.fetch());
+    Log.info(txs.fetch());
   }
 };
 

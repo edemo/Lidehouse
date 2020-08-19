@@ -6,6 +6,7 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 //import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
@@ -44,7 +45,7 @@ function importTxdef(communityId, txdef) {
 Templates.clone = function clone(id, communityId) {
   const template = Templates.findOne(id);
   if (!template) {
-    console.log('Templates:', Templates.find({}).fetch());
+    Log.info('Templates:', Templates.find({}).fetch());
     throw new Meteor.Error(`No such template ${id}`);
   }
   if (template.accounts) {

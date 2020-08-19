@@ -3,6 +3,7 @@ import { _ } from 'meteor/underscore';
 
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 
 export function checkConstraint(predicate, errorMessage) {
   if (!predicate) {
@@ -30,14 +31,14 @@ export function checkNotExists(collection, predicate) {
   // Checks that a *collection* does not yet contain a doc with given *objectId*
   const object = collection.findOne(predicate);
   if (object) {
-    console.log('Already has such object', collection._name, JSON.stringify(predicate), JSON.stringify(object));
+    Log.error('Already has such object', collection._name, JSON.stringify(predicate), JSON.stringify(object));
     throw new Meteor.Error('err_alreadyExists', 'Already has such object', `${collection._name}: ${JSON.stringify(predicate)}`);
   }
 }
 
 export function checkUnique(collection, doc) {
-//  console.log('checkUnique', doc);
-//  console.log('from:', collection.find({}).fetch());
+//  Log.debug('checkUnique', doc);
+//  Log.debug('from:', collection.find({}).fetch());
   const selector = _.pick(doc, ...collection.idSet);
   selector._id = { $ne: doc._id }; // in case doc is already in the collection when we check (after stage update)
   checkNotExists(collection, selector);

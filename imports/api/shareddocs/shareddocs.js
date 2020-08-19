@@ -4,6 +4,7 @@ import { UploadFS } from 'meteor/jalik:ufs';
 import { _ } from 'meteor/underscore';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Log } from '/imports/utils/log.js';
 
 export const Shareddocs = new Mongo.Collection('shareddocs');
 
@@ -72,25 +73,25 @@ Shareddocs.upload = function upload(extraFields) {
       file: shareddoc,
       // The error callback
       onError(err, file) {
-        console.error(err);
+        Log.error(err);
       },
       onAbort(file) {
-        console.log(file.name + ' upload has been aborted');
+        Log.warning(file.name + ' upload has been aborted');
       },
       onComplete(file) {
-        console.log(file.name + ' has been uploaded');
+        Log.info(file.name + ' has been uploaded');
       },
       onCreate(file) {
-        console.log(file.name + ' has been created with ID ' + file._id);
+        Log.info(file.name + ' has been created with ID ' + file._id);
       },
       onProgress(file, progress) {
-        console.log(file.name + ' ' + (progress*100) + '% uploaded');
+        Log.info(file.name + ' ' + (progress*100) + '% uploaded');
       },
       onStart(file) {
-        console.log(file.name + ' started');
+        Log.info(file.name + ' started');
       },
       onStop(file) {
-        console.log(file.name + ' stopped');
+        Log.info(file.name + ' stopped');
       },
     });
 
