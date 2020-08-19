@@ -12,6 +12,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 export const Txdefs = new Mongo.Collection('txdefs');
@@ -78,8 +79,8 @@ Txdefs.helpers({
     return undefined;
   },
   conteerCodes(sideParam) {
-//    console.log('conteerCodes');
-//    console.log('def:', this, 'sideParam:', sideParam);
+//    Log.debug('conteerCodes');
+//    Log.debug('def:', this, 'sideParam:', sideParam);
     let def = this;
     let side = sideParam;
     if (!Transactions.isValidSide(side)) {
@@ -89,7 +90,7 @@ Txdefs.helpers({
     if (this.category === 'payment' && !sideParam && this.community().settings.accountingMethod === 'cash') {
       def = this.correspondingBillDef();
     }
-//    console.log('usedDef:', def, 'side:', side);
+//    Log.debug('usedDef:', def, 'side:', side);
     return def[side];
   },
   transformToTransaction(doc) {

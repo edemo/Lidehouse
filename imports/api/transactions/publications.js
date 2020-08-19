@@ -61,7 +61,6 @@ Meteor.publish('transactions.byAccount', function transactionsInCommunity(params
   }
 
   const selector = Transactions.makeFilterSelector(params);
-  console.log("selector", selector);
   return Transactions.find(selector);
 });
 

@@ -52,8 +52,8 @@ export const update = new ValidatedMethod({
 
 function checkReconcileMatch(entry, transaction) {
   function throwMatchError(mismatch, entryVal, txVal) {
-    console.log('entry', JSON.stringify(entry));
-    console.log('transaction', JSON.stringify(transaction));
+    Log.info('entry', JSON.stringify(entry));
+    Log.info('transaction', JSON.stringify(transaction));
     throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`, `tx: ${txVal}, entry: ${entryVal}`);
   }
   if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate', entry.valueDate, transaction.valueDate);
@@ -91,15 +91,22 @@ export const reconcile = new ValidatedMethod({
         Recognitions.setName(entryName, reconciledTx.partner().idCard.name, { communityId });
       }
       if (reconciledTx.lines?.length === 1) {
-        const contract = reconciledTx.contract() || reconciledTx.partner().ensureContract(reconciledTx.relation);
+        let contract = reconciledTx.contract() || reconciledTx.partner().contracts(reconciledTx.relation).fetch()[0];
         const line = reconciledTx.lines[0];
-        if (line.account !== contract.accounting?.account ||
-          line.localizer !== contract.accounting?.localizer) {
-          const modifier = { $set: { 'accounting.account': line.account, 'accounting.localizer': line.localizer } };
+        if (!contract) {
+          let parcelId;
           if (reconciledTx.relation === 'member') {
             if (!line.localizer) throw new Meteor.Error('err_notAllowed', 'Need to provide a location');
-            modifier.$set.parcelId = Localizer.parcelFromCode(line.localizer)._id;
+            parcelId = Localizer.parcelFromCode(line.localizer, communityId)._id;
           }
+          const doc = Object.cleanUndefined({ communityId, relation: reconciledTx.relation, partnerId: reconciledTx.partnerId, parcelId });
+          const id = Contracts.insert(doc);
+          contract = Contracts.findOne(id);
+        }
+        if (line.account !== contract.accounting?.account ||
+          line.localizer !== contract.accounting?.localizer ||
+          (reconciledTx.relation === 'member' && !contract.parcelId)) {
+          const modifier = { $set: { 'accounting.account': line.account, 'accounting.localizer': line.localizer } };
           Contracts.update(contract._id, modifier, { selector: { relation: contract.relation } });
         }
       }

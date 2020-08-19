@@ -6,6 +6,7 @@ import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -54,7 +55,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   Clock.AUTO_TICK = 1000; // one second pass after each Clock call - to avoid same timestamp on two things
   Clock.starts(2, 'year', 'ago');
-  console.log('Creating house:', demoHouseName);
+  Log.info('Creating house:', demoHouseName);
   const communityId = Communities.insert({
     name: __(`${demoOrTest}.house`),
     zip: '1144',

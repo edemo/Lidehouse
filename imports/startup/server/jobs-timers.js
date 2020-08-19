@@ -16,7 +16,7 @@ const job = (func, ...params) => {
     const finish = Date.now();
     Log.info('Job', func.name, finish - start, 'ms');
   };
-  return Meteor.bindEnvironment(wrappedFunc, (err) => { console.error(err); });
+  return Meteor.bindEnvironment(wrappedFunc, (err) => { Log.error(err); });
 };
 
 Meteor.startup(() => {

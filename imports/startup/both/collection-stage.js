@@ -1,5 +1,6 @@
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
+import { Log } from '/imports/utils/log.js';
 
 // The stage is a non-indexed temporary decorator for collection operations,
 // which ops can later (after some checks) be commit-ed to the real collection or simply discard-ed.
@@ -20,12 +21,12 @@ CollectionStage.prototype.constructor = CollectionStage;
 
 // But the standard Collection API needs to be overriden
 CollectionStage.prototype.find = function find(selector, options) {
-//    console.log('find', this._toString());
-//    console.log('selector', selector);
+//    Log.debug('find', this._toString());
+//    Log.debug('selector', selector);
   const freshResult = this._fresh.find(selector, options).fetch();
   let collectionResult = this._collection.find(selector, options).fetch();
-//    console.log('freshResult', freshResult);
-//    console.log('collectionResult', collectionResult);
+//    Log.debug('freshResult', freshResult);
+//    Log.debug('collectionResult', collectionResult);
   //  if the stage has a version of it, that is overriding the collection version
   freshResult.forEach(sdoc => {
     collectionResult = _.reject(collectionResult, doc => doc._id === sdoc._id);
@@ -33,7 +34,7 @@ CollectionStage.prototype.find = function find(selector, options) {
   let results = freshResult.concat(collectionResult);
   // find should return only docs that are not in the trash,
   results = _.reject(results, doc => _.contains(this._trash, doc._id));
-//    console.log('results', results);
+//    Log.debug('results', results);
   return results;
 };
 
@@ -44,7 +45,7 @@ CollectionStage.prototype.findOne = function findOne(selector, options) {
 CollectionStage.prototype.insert = function insert(doc) {
   const _id = this._fresh.insert(doc);
   this._operations.push({ operation: this._collection.insert, params: [_.extend(doc, { _id })] });
-//    console.log('insert', this._toString());
+//    Log.debug('insert', this._toString());
   return _id;
 };
 
@@ -56,7 +57,7 @@ CollectionStage.prototype.update = function update(selector, modifier, options) 
   const freshResult = this._fresh.update(selector, modifier, options);
 
   this._operations.push({ operation: this._collection.update, params: [selector, modifier, options] });
-//    console.log('update', this._toString());
+//    Log.debug('update', this._toString());
   return freshResult;
 };
 
@@ -64,7 +65,7 @@ CollectionStage.prototype.remove = function remove(selector) {
   const toRemoveIds = this.find(selector).map(doc => doc._id);
   this._trash = this._trash.concat(toRemoveIds);
   this._operations.push({ operation: this._collection.remove, params: [selector] });
-//    console.log('remove', this._toString());
+//    Log.debug('remove', this._toString());
   return toRemoveIds.length;
 };
 
@@ -76,9 +77,9 @@ CollectionStage.prototype._clear = function _clear() {
 
 CollectionStage.prototype.commit = function commit() {
   this._operations.forEach(op => {
-//      console.log("Applying", op.operation.name, op.params);
+//      Log.debug("Applying", op.operation.name, op.params);
     const ret = op.operation.apply(this._collection, op.params);
-//      console.log("ret", ret);
+//      Log.debug("ret", ret);
   });
   this._clear();
 };

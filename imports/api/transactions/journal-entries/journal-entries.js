@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Transactions } from '../transactions.js';
 import { AccountSpecification } from '../account-specification.js';
@@ -32,7 +33,7 @@ JournalEntries.helpers({
   },
   transaction() {
     const tx = Transactions.findOne(this.txId);
-    if (!tx) console.log(`Tx with id ${this.txId} NOT found`);
+    if (!tx) Log.warning(`Tx with id ${this.txId} NOT found`);
     return tx;
   },
   contra() {

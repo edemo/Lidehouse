@@ -11,6 +11,7 @@ import XLSX from 'xlsx';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { doubleScroll } from '/imports/ui_3/lib/double-scroll.js';
 import { Settings } from '/imports/api/settings/settings.js';
 import { Conductors, getConductor } from '/imports/data-import/conductors.js';
@@ -44,11 +45,11 @@ const launchNextPhase = function launchNextPhase(vm) {
       const digest = digestImportJsons(jsons, phase);
       phase.docs = digest.docs;
 
-      console.log(`Calling batch test on ${digest.tdocs.length} docs`);
+      Log.info(`Calling batch test on ${digest.tdocs.length} docs`);
       const neededOps = collection.methods.batch.test._execute({ userId }, { args: digest.tdocs });
       const tdocsToUpsert = _.reject(digest.tdocs, (d, i) => _.contains(neededOps.noChange, i));
 
-      console.log(`Calling batch upsert on ${tdocsToUpsert.length} docs`);
+      Log.info(`Calling batch upsert on ${tdocsToUpsert.length} docs`);
       Modal.confirmAndCall(collection.methods.batch.upsert, { args: tdocsToUpsert }, {
         action: 'import data',
         message: __('This operation will do the following', { collection: __(collection._name) }) + '<br>'

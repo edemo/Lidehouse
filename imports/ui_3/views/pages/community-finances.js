@@ -9,6 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { monthTags, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
@@ -240,7 +241,7 @@ Template.Community_finances.viewmodel({
     if (!account.startsWith('`')) {
       const a = Accounts.findOne({ communityId, name: account });
       if (!a) {
-        console.log('No such account:', account);
+        Log.warning('No such account:', account);
         return 0;
       }
       account = a.code;
@@ -261,7 +262,7 @@ Template.Community_finances.viewmodel({
   leafsOf(account) {
     const accounts = Accounts.findOne({ communityId: this.communityId(), name: account });
     if (!accounts) {
-      console.log('No such account:', account);
+      Log.warning('No such account:', account);
       return [];
     }
     return accounts.leafs();

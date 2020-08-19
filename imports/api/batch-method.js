@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 import rusdiff from 'rus-diff';
 
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { newBundledErrors } from '/imports/utils/errors.js';
 import { checkPermissions } from '/imports/api/method-checks.js';
 
@@ -23,7 +24,7 @@ export class BatchMethod extends ValidatedMethod {
       validate: batchOperationSchema.validator({ clean: true }),
       run({ args }) {
         if (Meteor.isClient) return {}; // Batch methods are not simulated on the client, just executed on the server
-//        console.log("running batch with", args.length, ":", args[0]);
+//        Log.info("running batch with", args.length, ":", args[0]);
         const userId = this.userId;
 //        checkPermissions(userId, method.name, { communityId });  // Whoever has perm for the method, can do it in batch as well
         const results = [];
@@ -31,11 +32,11 @@ export class BatchMethod extends ValidatedMethod {
         args.forEach((arg) => {
           try {
             const res = method._execute({ userId }, arg);
-//            console.log("successful batch call", arg);
+//            Log.info("successful batch call", arg);
             results.push(res);
           } catch (err) {
-            if (err.error === 'err_permissionDenied') throw err; // The batch method continues exectuing even after an error. Just collects all errors on the way/            console.log("error in batch call", err);
-            console.log(err);
+            if (err.error === 'err_permissionDenied') throw err; // The batch method continues exectuing even after an error. Just collects all errors on the way
+            Log.error(err);
             errors.push(err);
           }
         });
@@ -51,8 +52,8 @@ function difference(oldDoc, newDoc) {
   const modifier = rusdiff.diff(oldDoc, newDoc);
   delete modifier.$unset;
   delete modifier.$rename;
-//  console.log('Changes between', oldDoc, newDoc);
-//  console.log(modifier);
+//  Log.debug('Changes between', oldDoc, newDoc);
+//  Log.debug(modifier);
   return modifier;
 }
 export class BatchTester extends ValidatedMethod {
@@ -76,7 +77,7 @@ export class BatchTester extends ValidatedMethod {
             if (fieldValue) selector[fieldName] = fieldValue;
 //            else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
           });
-//          console.log('selector', selector);
+//          Log.debug('selector', selector);
           if (_.isEmpty(selector)) return;
           const existingDoc = collection.findOne(selector);
           if (!existingDoc) neededOperations.insert.push(i);
@@ -84,7 +85,7 @@ export class BatchTester extends ValidatedMethod {
             const modifier = difference(existingDoc, doc);
             if (!_.isEmpty(modifier)) {
               neededOperations.update.push({ _id: existingDoc._id, modifier });
-            // console.log(`Field ${hasChanges(doc, existingDoc)} has changed in doc: ${JSON.stringify(existingDoc)}`);
+            // Log.debug(`Field ${hasChanges(doc, existingDoc)} has changed in doc: ${JSON.stringify(existingDoc)}`);
             } else neededOperations.noChange.push(i);
             // Shall we determine also what to remove?
           }
@@ -104,7 +105,7 @@ export class UpsertMethod extends ValidatedMethod {
       validate: null, // doc => collection.simpleSchema(doc).validator({ clean: true })(doc),
                       // cannot validate here - that causes defaultvalues to be addded, which cause differing
       run(doc) {
-//        console.log('Upserting:', doc);
+//        Log.info('Upserting:', doc);
         const communityId = doc.communityId;
         const userId = this.userId;
         checkPermissions(userId, upsertName, { communityId });
@@ -119,7 +120,7 @@ export class UpsertMethod extends ValidatedMethod {
         if (_.isEmpty(selector)) return null;
         const existingDoc = collection.findOne(selector);
         if (!existingDoc) {
-//          console.log('No existing doc, so inserting', doc);
+//          Log.info('No existing doc, so inserting', doc);
           return collection.methods.insert._execute({ userId }, doc);
         } else {
           const modifier = difference(existingDoc, doc);

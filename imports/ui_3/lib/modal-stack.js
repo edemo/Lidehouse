@@ -5,6 +5,7 @@ import { $ } from 'meteor/jquery';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 
 // This is how we did it, before multi modals
 export function runInNewModal(toRun) {
@@ -35,22 +36,22 @@ if (Meteor.isClient) {
     },
     push(dataId) { // called upon Modal.show();
       const modalStack = ModalStack.get();
-      // console.log('before push:', modalStack);
+      // Log.debug('before push:', modalStack);
       modalStack.push({ id: dataId, result: {}, context: ModalStack.contextForTheNext });
-      // console.log('after push:', modalStack);
+      // Log.debug('after push:', modalStack);
       Session.set('modalStack', modalStack);
       ModalStack.contextForTheNext = {};
     },
     pop(dataId) { // called upon Modal.hide();
       const modalStack = ModalStack.get();
-      // console.log('before pop:', modalStack);
+      // Log.debug('before pop:', modalStack);
       const topModal = modalStack.pop();
       debugAssert((!topModal.id && !dataId) || topModal.id === dataId);
       if (ModalStack.computation && modalStack.length <= 1) {
         ModalStack.computation.stop();
         delete ModalStack.computation;
       }
-      // console.log('after pop:', modalStack);
+      // Log.debug('after pop:', modalStack);
       Session.set('modalStack', modalStack);
       if (modalStack.length > 1) $('body').addClass('modal-open');
     },
@@ -70,11 +71,11 @@ if (Meteor.isClient) {
     },
     readResult(ownId, afId, destroy = false) {
       const modalStack = ModalStack.get();
-      // console.log('before read', modalStack);
+      // Log.debug('before read', modalStack);
       let ownModal = {};
       ownModal = _.find(modalStack, modal => (modal.id === ownId));
-      // console.log('ownModal:', ownModal);
-      // console.log('returns:', ownModal?.result[afId]);
+      // Log.debug('ownModal:', ownModal);
+      // Log.debug('returns:', ownModal?.result[afId]);
       const result = ownModal?.result[afId];
       if (destroy && result !== undefined) {
         delete ownModal.result[afId];
@@ -88,22 +89,22 @@ if (Meteor.isClient) {
         return;
       }
       const modalStack = ModalStack.get();
-      // console.log('before set', modalStack);
-      // console.log('set value', value);
+      // Log.debug('before set', modalStack);
+      // Log.debug('set value', value);
       if (keep) { // keep sets it for this level
         _.last(modalStack).context[key] = value;
         Session.set('modalStack', modalStack);
       } else { // no keep sets it only for the next level
         ModalStack.contextForTheNext[key] = value;
       }
-      // console.log('after set', modalStack);
+      // Log.debug('after set', modalStack);
     },
     getVar(key) {
       if (key === 'communityId') {
         return Session.get('communityId');   // temporary solution, for efficiency (communityId is used in subscription parameters)
       }
       const modalStack = ModalStack.get();
-      // console.log('before get', modalStack);
+      // Log.debug('before get', modalStack);
       for (let i = modalStack.length - 1; i >= 0; i--) {
         const value = modalStack[i].context[key];
         if (value) return value;

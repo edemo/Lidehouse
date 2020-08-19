@@ -5,6 +5,7 @@ import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { displayError } from '/imports/ui_3/lib/errors.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';  // TODO get rid of
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
@@ -26,7 +27,7 @@ export class ActionOptions {
   }
 
   split() { // It will split up the options to several options sets, in case array values are found in the parameters
-    //console.log("splitting", this);
+    //Log.debug("splitting", this);
     const arrayFields = [];
     const nonArrayfields = [];
     this.fields().forEach(field => (Array.isArray(this[field]) ? arrayFields.push(field) : nonArrayfields.push(field)));
@@ -40,12 +41,12 @@ export class ActionOptions {
       });
       results = descartedResults;
     });
-    //console.log("result", results);
+    //Log.debug("result", results);
     return results.map(r => Object.setPrototypeOf(r, Object.getPrototypeOf(this)));
   }
 
   fetch() { // Wherever a string is used as parameter, it will fetch the appropriate object, named by the string
-    //console.log("fetching", this);
+    //Log.debug("fetching", this);
     if (typeof this.status === 'string') {
       const status = this.collection.statuses[this.status];
       debugAssert(status, `No such status "${this.status}" for collection ${this.collection._name}`);
@@ -63,7 +64,7 @@ export class ActionOptions {
     if (typeof this.txdef === 'string') {
       this.txdef = Txdefs.findOne(this.txdef);
     }
-    //console.log("result", this);
+    //Log.debug("result", this);
     return this;
   }
 }

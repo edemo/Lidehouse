@@ -3,6 +3,7 @@ import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
@@ -82,7 +83,7 @@ export const Transformers = {
           const billId = split.join('/');
           const bill = Transactions.findOne({ serialId: billId });
           if (!bill) {
-            console.error('No bill found for payment', paymentId);
+            Log.error('No bill found for payment', paymentId);
             return;
           }
           tdoc.bills = [{
