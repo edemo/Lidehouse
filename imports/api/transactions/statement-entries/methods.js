@@ -15,9 +15,10 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Recognitions } from '/imports/api/transactions/reconciliation/recognitions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { StatementEntries } from './statement-entries.js';
 import { reconciliationSchema } from '/imports/api/transactions/reconciliation/reconciliation.js';
-import { Contracts } from '../../contracts/contracts.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { StatementEntries } from './statement-entries.js';
 
 export const insert = new ValidatedMethod({
   name: 'statementEntries.insert',
@@ -92,9 +93,13 @@ export const reconcile = new ValidatedMethod({
       if (reconciledTx.lines?.length === 1) {
         const contract = reconciledTx.contract() || reconciledTx.partner().ensureContract(reconciledTx.relation);
         const line = reconciledTx.lines[0];
-        if (line.account !== contract.accouting?.account ||
-          line.localizer !== contract.accouting?.localizer) {
+        if (line.account !== contract.accounting?.account ||
+          line.localizer !== contract.accounting?.localizer) {
           const modifier = { $set: { 'accounting.account': line.account, 'accounting.localizer': line.localizer } };
+          if (reconciledTx.relation === 'member') {
+            if (!line.localizer) throw new Meteor.Error('err_notAllowed', 'Need to provide a location');
+            modifier.$set.parcelId = Localizer.parcelFromCode(line.localizer)._id;
+          }
           Contracts.update(contract._id, modifier, { selector: { relation: contract.relation } });
         }
       }
@@ -262,13 +267,15 @@ export const recognize = new ValidatedMethod({
         amountToFill -= amount;
       });
       if (amountToFill > 0) {
-        const contract = partner.ensureContract(relation);
-        tx.lines = [{
-          amount: amountToFill,
-          contractId: contract._id,
-          account: contract.accounting?.account || paymentDef.conteerCodes()[0],
-          localizer: contract.accounting?.localizer,
-        }];
+        const contract = partner.contracts(relation)?.[0];
+        tx.lines = [
+          Object.cleanUndefined({
+            amount: amountToFill,
+            contractId: contract?._id,
+            account: contract?.accounting?.account || paymentDef.conteerCodes()[0],
+            localizer: contract?.accounting?.localizer,
+          }),
+        ];
       }
       Log.info('Info match with bills', matchingBills.length);
       Log.debug(tx);
