@@ -652,6 +652,7 @@
   "err_invalidData": "Nem megfelelő adat",
   "Not a valid google drive link": "Érvénytelen google drive link",
   "Sorting may not be applied on external docs": "Sorbarendezés a külső szolgáltatónál tárolt fájlokra nem alkalmazható",
+  "Need to provide a location": "Könyvelési hely megadása kötelező",
 
   "logout": "kilépés",
   "login": "belépés",
