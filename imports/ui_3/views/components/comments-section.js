@@ -21,9 +21,10 @@ Template.Comments_section.onRendered(function chatboxOnRendered() {
     element: this.find('.comment-section'),
     handler() {
       const topicId = this.element.dataset.id;
-      // displayMessage('info', `You just seen ${topicId}`); // debug
+    // displayMessage('info', `You just seen ${topicId}`); // debug
       Meteor.user().hasNowSeen(topicId);
     },
+    context: document.getElementById('wrapper'),
     offset: '80%',
   });
   // Above is nicer syntax , but requires bigu:jquery-waypoints https://stackoverflow.com/questions/28975693/using-jquery-waypoints-in-meteor

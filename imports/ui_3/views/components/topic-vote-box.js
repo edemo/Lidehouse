@@ -41,6 +41,7 @@ Template.Topic_vote_body.onRendered(function () {
       });
       return self.waypoint && self.waypoint.disable();
     },
+    context: document.getElementById('wrapper'),
     offset: '80%',
   });
 });
