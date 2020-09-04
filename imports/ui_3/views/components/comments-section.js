@@ -75,7 +75,7 @@ Template.Comments_section.viewmodel({
     return events;
   },
   undisplayedEvents() {
-    return this.commentCounter.value - this.eventsOfTopic().length;
+    return this.commentCounter.value() - this.eventsOfTopic().length;
   },
 });
 
