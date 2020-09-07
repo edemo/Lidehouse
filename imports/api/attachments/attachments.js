@@ -11,6 +11,12 @@ Attachments.hasPermissionToUpload = function hasPermissionToUpload(userId, doc) 
   return user.hasPermission('attachments.upload', doc);
 };
 
+Attachments.hasPermissionToUpdate = function hasPermissionToUpdate(userId, doc) {
+  if (!userId) return false;
+  const user = Meteor.users.findOne(userId);
+  return user.hasPermission('attachments.update', doc);
+};
+
 Attachments.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploaded(userId, doc) {
   if (Meteor.isServer) return true;
   if (!userId) return false;
@@ -21,7 +27,9 @@ Attachments.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUpload
 // Can be manipulated only through the AttachmentsStore interface
 Attachments.allow({
   insert() { return false; },
-  update() { return false; },
+  update(userId, doc) {
+    return Attachments.hasPermissionToUpdate(userId, doc);
+  },
   remove(userId, doc) {
     return Attachments.hasPermissionToRemoveUploaded(userId, doc);
   },

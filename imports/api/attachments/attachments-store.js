@@ -14,7 +14,7 @@ AttachmentsStore.setPermissions(new UploadFS.StorePermissions({
     return Attachments.hasPermissionToUpload(userId, doc);
   },
   update(userId, doc) {
-    return false;
+    return Attachments.hasPermissionToUpdate(userId, doc);
   },
   remove(userId, doc) {
     return Attachments.hasPermissionToRemoveUploaded(userId, doc);

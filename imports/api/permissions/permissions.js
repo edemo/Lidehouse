@@ -143,6 +143,7 @@ export const Permissions = [
   { name: 'shareddocs.download',    roles: exceptGuest },
   { name: 'shareddocs.remove',      roles: ['manager'], allowAuthor: true  },
   { name: 'attachments.upload',     roles: exceptGuest },
+  { name: 'attachments.update',     roles: ['admin', 'moderator'], allowAuthor: true  },
   { name: 'attachments.download',   roles: exceptGuest },
   { name: 'attachments.remove',     roles: ['admin', 'moderator'], allowAuthor: true  },
   { name: 'do.techsupport',         roles: ['admin'] },

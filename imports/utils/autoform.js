@@ -46,3 +46,11 @@ export const documentUpload = () => ({
 //    multi: true,
   },
 });
+
+export const attachmentUpload = () => ({
+  afFieldInput: {
+    type: 'fileUpload',
+    collection: 'attachments',
+    fileType: 'attachment',
+  },
+});
