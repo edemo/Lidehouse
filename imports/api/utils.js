@@ -7,7 +7,7 @@ export function toggleElementInArray(collection, id, arrayName, element) {
   const index = _.indexOf(object[arrayName], element);
   const action = (index >= 0) ? '$pull' : '$push';
   const modifier = { [action]: { [arrayName]: element } };
-  collection.update(id, modifier);
+  collection.update(id, modifier, { selector: object });
 }
 
 export function toggle(element, array) {
