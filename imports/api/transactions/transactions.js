@@ -244,8 +244,9 @@ Transactions.helpers({
     let amount = 0;
     if (!contractId || sign === -1) amount = this.amount;
     else {
+      const side = this.conteerSide();
       this.journalEntries().forEach(je => {
-        if (je.contractId === contractId) amount += je.amount;
+        if (je.side === side && je.contractId === contractId) amount += je.amount;
       });
     }
     return sign * amount;
