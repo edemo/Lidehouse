@@ -3,7 +3,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Attachments } from './shareddocs.js';
+import { Attachments } from '/imports/api/attachments/attachments.js';
 
 Meteor.publish('attachments.ofCommunity', function (params) {
   new SimpleSchema({
@@ -15,6 +15,5 @@ Meteor.publish('attachments.ofCommunity', function (params) {
     this.ready();
     return undefined;
   }
-
   return Attachments.find({ communityId });
 });

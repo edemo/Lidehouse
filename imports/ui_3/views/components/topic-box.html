@@ -13,6 +13,34 @@
     {{/if}}
 </template>
 
+<template name="Attachments">
+    {{#if countBy 'application' doc.getAttachments}}
+      <br>
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-white btn-xs dropdown-toggle drop-unfoll" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="glyphicon glyphicon-paperclip"></i> 
+            {{_ 'Attachments'}} ({{countBy 'application' doc.getAttachments}})
+            <b class="caret"></b>
+          </button>
+          <ul class="slim-menu dropdown-menu dropdown-menu-left" aria-labelledby="attachments_{{_id}}">
+            {{#each attachment in doc.getAttachments}}
+              {{#unless isImage attachment.type}}<li><a class="filename" target="_blank" href="{{attachment.url}}">{{attachment.name}}</a></li>{{/unless}}
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+      {{/if}}
+      <br>
+      {{#each photo in doc.photo}}
+        {{#if isImage photo}}
+        <div class= "img-uploaded">
+          <img class="img-thumbnail img-af" src="{{photo}}"/>
+        </div>
+        {{/if}}
+      {{/each}}
+</template>
+
 <template name="Topic_reactions">
     <div class="btn-group">
         <button class="btn btn-white btn-xs js-like">
@@ -57,8 +85,10 @@
         <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
     </a>
     <div class="text-dark">{{>Chopped text=text chars=600 markdown=true}}</div>
-    {{>Attached_shareddocs shareddocs=this.getShareddocs}}
-    {{#if photo}}<img src="{{absoluteUrl photo}}" class="img-embed">{{/if}}
+    <!-- {{>Attached_shareddocs shareddocs=this.getShareddocs}} -->
+    {{>Attachments doc=this}}
+    <br>
+    <!-- {{#if photo}}<img src="{{Meteor.absoluteUrl photo}}" class="img-embed">{{/if}} -->
 </template>
 
 <template name="Topic_box">

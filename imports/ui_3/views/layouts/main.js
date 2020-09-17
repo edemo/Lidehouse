@@ -29,6 +29,7 @@ Template.Main_layout.onCreated(function() {
     this.subscribe('delegations.fromUser', { communityId });
     this.subscribe('topics.active', { communityId });
     this.subscribe('parcels.codes', { communityId });
+    this.subscribe('attachments.ofCommunity', { communityId });
   });
   // This autorun sets the active community automatically to the first community of the user
   // TODO: active community could be saved somewhere so he gets back where he left off last time
