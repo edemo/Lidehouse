@@ -23,6 +23,15 @@ const helpers = {
 
 function hooks(collection) {
   return {
+    before: {
+      update(userId, doc, fieldNames, modifier, options) {
+        if (modifier.$set?.photo && modifier.$set.photo.includes(null)) {
+          const cleanedList = modifier.$set.photo.filter(el => el !== null);
+          modifier.$set.photo = cleanedList;
+        }
+        return true;
+      },
+    },
     after: {
       insert(userId, doc) {
         const uploadIds = [];
