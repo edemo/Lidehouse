@@ -24,6 +24,15 @@
       "label": "Megjegyzések"
     }
   },
+  "schemaAttachmentField": {
+    "photo": {
+      "label": "Photo (if applicable)",
+      "$": {
+        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+      },
+      "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
+    }
+  },
   "schemaActivePeriod": {
     "activeTime": {
       "label": "Active time (Can leave blank, if no time constraint)",
@@ -431,11 +440,6 @@
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
     },
-    "photo": {
-      "label": "Photo (if applicable)",
-      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)",
-      "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
-    },
     "shareddocs": {
       "label": "Documents (if applicable)",
       "$": {
@@ -536,10 +540,6 @@
     "text": {
       "label": "Remarks",
       "placeholder": "Remarks..."
-    },
-    "photo": {
-      "label": "Photo (if applicable)",
-      "placeholder": "Link to file (eg. https://imgbb.com/pic.jpg)"
     },
     "status": {
       "label": "Status"
