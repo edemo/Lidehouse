@@ -22,44 +22,46 @@ const helpers = {
 };
 
 function hooks(collection) {
-  return {
-    before: {
-      update(userId, doc, fieldNames, modifier, options) {
-        if (modifier.$set?.photo && modifier.$set.photo.includes(null)) {
-          const cleanedList = modifier.$set.photo.filter(el => el !== null);
-          modifier.$set.photo = cleanedList;
-        }
-        return true;
+  if (Meteor.isServer) {
+    return {
+      before: {
+        update(userId, doc, fieldNames, modifier, options) {
+          if (modifier.$set?.photo && modifier.$set.photo.includes(null)) {
+            const cleanedList = modifier.$set.photo.filter(el => el !== null);
+            modifier.$set.photo = cleanedList;
+          }
+          return true;
+        },
       },
-    },
-    after: {
-      insert(userId, doc) {
-        const uploadIds = [];
-        doc.photo?.forEach((path) => {
-          const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
-          if (uploaded) uploadIds.push(uploaded._id);
-        });
-        uploadIds.forEach(id => Attachments.update(id, { $set: { topicId: doc._id } }));
-        return true;
+      after: {
+        insert(userId, doc) {
+          const uploadIds = [];
+          doc.photo?.forEach((path) => {
+            const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
+            if (uploaded) uploadIds.push(uploaded._id);
+          });
+          uploadIds.forEach(id => Attachments.update(id, { $set: { topicId: doc._id } }));
+          return true;
+        },
+        update(userId, doc, fieldNames, modifier, options) {
+          const uploadIds = [];
+          modifier.$set?.photo?.forEach((path) => {
+            const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
+            if (uploaded && !uploaded.topicId) uploadIds.push(uploaded._id);
+          });
+          uploadIds.forEach(id => Attachments.update(id, { $set: { topicId: doc._id } }));
+  /*         if (modifier.$unset?.photo) {
+            if (doc._id) Attachments.remove({ communityId: doc.communityId, topicId: doc.id });
+          }); */ // droka:autoform-ufs package removes the uploaded files before submitting the form
+          return true;
+        },
+  /*       remove(userId, doc) {
+          if (doc._id) Attachments.remove({ topicId: doc.id });
+          return true;
+        }, */
       },
-      update(userId, doc, fieldNames, modifier, options) {
-        const uploadIds = [];
-        modifier.$set?.photo?.forEach((path) => {
-          const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
-          if (uploaded && !uploaded.topicId) uploadIds.push(uploaded._id);
-        });
-        uploadIds.forEach(id => Attachments.update(id, { $set: { topicId: doc._id } }));
-/*         if (modifier.$unset?.photo) {
-          if (doc._id) Attachments.remove({ communityId: doc.communityId, topicId: doc.id });
-        }); */ // droka:autoform-ufs package removes the uploaded files before submitting the form
-        return true;
-      },
-/*       remove(userId, doc) {
-        if (doc._id) Attachments.remove({ topicId: doc.id });
-        return true;
-      }, */
-    },
-  };
+    };
+  }
 }
 
 

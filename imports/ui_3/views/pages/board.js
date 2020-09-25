@@ -12,6 +12,7 @@ import '/imports/api/topics/actions.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/collapse-section.js';
 import '/imports/ui_3/views/components/new-forum-topic.js';
+import '/imports/ui_3/views/components/attachments.js';
 import '../components/topic-box.js';
 import '../components/topic-vote-box.js';
 import '../components/comments-section.js';

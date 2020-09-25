@@ -13,36 +13,6 @@
     {{/if}}
 </template>
 
-<template name="Attachments">
-    {{#let attachments=doc.getAttachments}}
-    {{#if countBy 'application' attachments}}
-        <br>
-        <div class="row">
-            <div class="col-xs-12">
-              <button class="btn btn-white btn-xs dropdown-toggle drop-unfoll" type="button" id="attachments_{{doc._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="glyphicon glyphicon-paperclip"></i> 
-                  {{_ 'Attachments'}} ({{countBy 'application' attachments}})
-                  <b class="caret"></b>
-              </button>
-              <ul class="slim-menu dropdown-menu dropdown-menu-left" aria-labelledby="attachments_{{_id}}">
-                  {{#each attachment in attachments}}
-                      {{#unless isImage attachment.type}}<li><a class="filename" target="_blank" href="{{attachment.url}}">{{attachment.name}}</a></li>{{/unless}}
-                  {{/each}}
-              </ul>
-            </div>
-        </div>
-    {{/if}}
-    {{/let}}
-    <br>
-    {{#each photo in doc.photo}}
-        {{#if isImage photo}}
-        <div class= "img-uploaded">
-            <img class="img-thumbnail img-af" src="{{photo}}"/>
-        </div>
-        {{/if}}
-    {{/each}}
-</template>
-
 <template name="Topic_reactions">
     <div class="btn-group">
         <button class="btn btn-white btn-xs js-like">
