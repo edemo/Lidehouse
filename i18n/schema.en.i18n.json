@@ -25,8 +25,8 @@
     }
   },
   "schemaAttachmentField": {
-    "photo": {
-      "label": "Photo (if applicable)",
+    "attachments": {
+      "label": "Photo or file (if applicable)",
       "$": {
         "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
       },

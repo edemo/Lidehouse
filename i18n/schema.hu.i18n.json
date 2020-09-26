@@ -25,8 +25,8 @@
     }
   },
   "schemaAttachmentField": {
-    "photo": {
-      "label": "Fénykép (ha csatolni szeretne)",
+    "attachments": {
+      "label": "Fénykép vagy fájl (ha csatolni szeretne)",
       "$": {
         "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
       },

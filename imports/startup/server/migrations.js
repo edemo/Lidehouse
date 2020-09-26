@@ -549,11 +549,11 @@ Migrations.add({
   name: 'Multiple attachment on topic',
   up() {
     Topics.find({ photo: { $exists: true } }).forEach(topic => {
-      if (typeof Topics.photo !== 'string') return;
+      if (typeof topic.photo !== 'string') return;
       const photo = topic.photo;
       const uploadedPhoto = Attachments.findOne({ path: photo });
-      if (uploadedPhoto) Attachments.direct.update(uploadedPhoto._id, { $set: { topicId: topic._id } });
-      Topics.update(topic._id, { $set: { photo: [photo] } });
+      if (uploadedPhoto) Attachments.direct.update(uploadedPhoto._id, { $set: { parentId: topic._id } });
+      Topics.update(topic._id, { $set: { attachments: [photo] }, $unset: { photo: '' } }, { selector: topic, validate: false });
     });
   },
 });

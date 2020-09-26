@@ -6,17 +6,17 @@ import { Attachments } from '/imports/api/attachments/attachments.js';
 import { attachmentUpload } from '/imports/utils/autoform.js';
 
 const schema = new SimpleSchema({
-  photo: { type: Array, optional: true },
-  'photo.$': { type: String, optional: true, autoform: attachmentUpload() },
+  attachments: { type: Array, optional: true },
+  'attachments.$': { type: String, optional: true, autoform: attachmentUpload() },
 });
 
 schema.i18n('schemaAttachmentField');
 
 const publicFields = {
-  photo: 1,
+  attachments: 1,
 };
 
-const modifiableFields = ['photo'];
+const modifiableFields = ['attachments'];
 
 const helpers = {
 };
@@ -26,9 +26,9 @@ function hooks(collection) {
     return {
       before: {
         update(userId, doc, fieldNames, modifier, options) {
-          if (modifier.$set?.photo && modifier.$set.photo.includes(null)) {
-            const cleanedList = modifier.$set.photo.filter(el => el !== null);
-            modifier.$set.photo = cleanedList;
+          if (modifier.$set?.attachments && modifier.$set.attachments.includes(null)) {
+            const cleanedList = modifier.$set.attachments.filter(el => el !== null);
+            modifier.$set.attachments = cleanedList;
           }
           return true;
         },
@@ -36,27 +36,27 @@ function hooks(collection) {
       after: {
         insert(userId, doc) {
           const uploadIds = [];
-          doc.photo?.forEach((path) => {
+          doc.attachments?.forEach((path) => {
             const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
             if (uploaded) uploadIds.push(uploaded._id);
           });
-          uploadIds.forEach(id => Attachments.update(id, { $set: { topicId: doc._id } }));
+          uploadIds.forEach(id => Attachments.update(id, { $set: { parentId: doc._id } }));
           return true;
         },
         update(userId, doc, fieldNames, modifier, options) {
           const uploadIds = [];
-          modifier.$set?.photo?.forEach((path) => {
+          modifier.$set?.attachments?.forEach((path) => {
             const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
-            if (uploaded && !uploaded.topicId) uploadIds.push(uploaded._id);
+            if (uploaded && !uploaded.parentId) uploadIds.push(uploaded._id);
           });
-          uploadIds.forEach(id => Attachments.update(id, { $set: { topicId: doc._id } }));
-  /*         if (modifier.$unset?.photo) {
-            if (doc._id) Attachments.remove({ communityId: doc.communityId, topicId: doc.id });
+          uploadIds.forEach(id => Attachments.update(id, { $set: { parentId: doc._id } }));
+  /*         if (modifier.$unset?.attachments) {
+            if (doc._id) Attachments.remove({ communityId: doc.communityId, parentId: doc.id });
           }); */ // droka:autoform-ufs package removes the uploaded files before submitting the form
           return true;
         },
   /*       remove(userId, doc) {
-          if (doc._id) Attachments.remove({ topicId: doc.id });
+          if (doc._id) Attachments.remove({ parentId: doc.id });
           return true;
         }, */
       },
