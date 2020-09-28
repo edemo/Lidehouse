@@ -12,7 +12,6 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { Attachments } from '/imports/api/attachments/attachments.js';
 import './autoform-modal.html';
 
 // How to instantiate an Autoform_modal window: Modal.show('Autoform_modal', afOptions)
@@ -34,7 +33,6 @@ Template.Autoform_modal.viewmodel({
   showDebugInfo: false,
   onCreated(instance) {
     ModalStack.setVar('autoformType', instance.data.type);
-    ModalStack.setVar('topicId', instance.data.doc._id);
     instance.data.onCreated?.();
   },
   onRendered(instance) {
@@ -78,10 +76,6 @@ AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {
       displayError(error);
     },
     onSuccess(formType, result) {
-      const topicId = result || ModalStack.getVar('topicId');
-      const uploadIds = Attachments.find({ topicId: Meteor.userId() }).fetch().map(d => d._id);
-      uploadIds.forEach(id => Attachments.update(id, { $set: { topicId } }));
-
       ModalStack.recordResult(afId, result);
       Modal.hide(this.template.parent());
       const id = afId2details(afId);

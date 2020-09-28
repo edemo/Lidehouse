@@ -21,7 +21,6 @@ function uploadFile(file, context, inst) {
     type: file.type,
     communityId: Session.get('communityId'),
     userId: Meteor.userId(),
-    topicId: Meteor.userId(),
   };
 
   // Create a new Uploader for this file
