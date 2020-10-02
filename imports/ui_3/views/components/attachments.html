@@ -18,8 +18,6 @@
     {{/if}}
     <br>
     {{#each image in byType.images}}
-        <div class= "img-uploaded">
-            <img class="img-thumbnail img-af" src="{{absoluteUrl image}}"/>
-        </div>
+        <a><img class="img-thumbnail js-show-image" src="{{absoluteUrl image}}"/></a>
     {{/each}}
 </template>
