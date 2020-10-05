@@ -31,6 +31,13 @@
         "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
       },
       "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
+    },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "$": {
+        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      },
+      "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
     }
   },
   "schemaActivePeriod": {

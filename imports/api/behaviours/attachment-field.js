@@ -5,66 +5,71 @@ import { _ } from 'meteor/underscore';
 import { Attachments } from '/imports/api/attachments/attachments.js';
 import { attachmentUpload } from '/imports/utils/autoform.js';
 
-const schema = new SimpleSchema({
-  attachments: { type: Array, optional: true },
-  'attachments.$': { type: String, optional: true, autoform: attachmentUpload() },
-});
+export const AttachmentField = function (photoOnly) {
+  let fieldName = 'attachments';
+  if (photoOnly) fieldName = 'photo';
+  const fieldNameElem = fieldName + '.$';
 
-schema.i18n('schemaAttachmentField');
+  const schema = new SimpleSchema({
+    [fieldName]: { type: Array, optional: true },
+    [fieldNameElem]: { type: String, optional: true, autoform: attachmentUpload() },
+  });
 
-const publicFields = {
-  attachments: 1,
-};
+  schema.i18n('schemaAttachmentField');
 
-const modifiableFields = ['attachments'];
+  const publicFields = {
+    [fieldName]: 1,
+  };
 
-const helpers = {
-};
+  const modifiableFields = [fieldName];
 
-function hooks(collection) {
-  if (Meteor.isServer) {
-    return {
-      before: {
-        update(userId, doc, fieldNames, modifier, options) {
-          if (modifier.$set?.attachments && modifier.$set.attachments.includes(null)) {
-            const cleanedList = modifier.$set.attachments.filter(el => el !== null);
-            modifier.$set.attachments = cleanedList;
-          }
-          return true;
+  const helpers = {
+  };
+
+  function hooks(collection) {
+    if (Meteor.isServer) {
+      return {
+        before: {
+          update(userId, doc, fieldNames, modifier, options) {
+            if (modifier.$set?.fieldName && modifier.$set.fieldName.includes(null)) {
+              const cleanedList = modifier.$set.fieldName.filter(el => el !== null);
+              modifier.$set.fieldName = cleanedList;
+            }
+            return true;
+          },
         },
-      },
-      after: {
-        insert(userId, doc) {
-          const uploadIds = [];
-          doc.attachments?.forEach((path) => {
-            const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
-            if (uploaded) uploadIds.push(uploaded._id);
-          });
-          uploadIds.forEach(id => Attachments.update(id, { $set: { parentId: doc._id } }));
-          return true;
+        after: {
+          insert(userId, doc) {
+            const uploadIds = [];
+            doc.fieldName?.forEach((path) => {
+              const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
+              if (uploaded) uploadIds.push(uploaded._id);
+            });
+            uploadIds.forEach(id => Attachments.update(id, { $set: { parentId: doc._id, parentCollection: collection._name } }));
+            return true;
+          },
+          update(userId, doc, fieldNames, modifier, options) {
+            const uploadIds = [];
+            modifier.$set?.[fieldName]?.forEach((path) => {
+              const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
+              if (uploaded && !uploaded.parentId) uploadIds.push(uploaded._id);
+            });
+            uploadIds.forEach(id => Attachments.update(id, { $set: { parentId: doc._id, parentCollection: collection._name } }));
+    /*         if (modifier.$unset?.fieldName) {
+              if (doc._id) Attachments.remove({ communityId: doc.communityId, parentId: doc.id });
+            }); */ // droka:autoform-ufs package removes the uploaded files before submitting the form
+            return true;
+          },
+    /*       remove(userId, doc) {
+            if (doc._id) Attachments.remove({ parentId: doc.id });
+            return true;
+          }, */
         },
-        update(userId, doc, fieldNames, modifier, options) {
-          const uploadIds = [];
-          modifier.$set?.attachments?.forEach((path) => {
-            const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
-            if (uploaded && !uploaded.parentId) uploadIds.push(uploaded._id);
-          });
-          uploadIds.forEach(id => Attachments.update(id, { $set: { parentId: doc._id } }));
-  /*         if (modifier.$unset?.attachments) {
-            if (doc._id) Attachments.remove({ communityId: doc.communityId, parentId: doc.id });
-          }); */ // droka:autoform-ufs package removes the uploaded files before submitting the form
-          return true;
-        },
-  /*       remove(userId, doc) {
-          if (doc._id) Attachments.remove({ parentId: doc.id });
-          return true;
-        }, */
-      },
-    };
+      };
+    }
   }
-}
-
-
-export const AttachmentField = { name: 'AttachmentField',
-  schema, publicFields, modifiableFields, helpers, hooks,
+  return {
+    name: 'AttachmentField',
+    schema, publicFields, modifiableFields, helpers, hooks,
+  };
 };

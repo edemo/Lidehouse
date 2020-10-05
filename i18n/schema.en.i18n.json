@@ -31,6 +31,13 @@
         "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
       },
       "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
+    }, 
+    "photo": {
+      "label": "Photo (if applicable)",
+      "$": {
+        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+      },
+      "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
     }
   },
   "schemaActivePeriod": {
