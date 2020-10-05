@@ -234,7 +234,7 @@ Topics.attachBehaviour(Likeable);
 Topics.attachBehaviour(Flagable);
 Topics.attachBehaviour(Workflow());
 Topics.attachBehaviour(SerialId(['category', 'ticket.type']));
-Topics.attachBehaviour(AttachmentField);
+Topics.attachBehaviour(AttachmentField());
 
 Topics.attachVariantSchema(undefined, { selector: { category: 'room' } });
 Topics.attachVariantSchema(Topics.extensionSchemas.forum, { selector: { category: 'forum' } });

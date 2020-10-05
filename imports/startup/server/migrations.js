@@ -558,6 +558,20 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 30,
+  name: 'Parent collection on attachment',
+  up() {
+    Attachments.find({ parentId: { $exists: true } }).forEach(attachment => {
+      if (Topics.findOne(attachment.parentId)) {
+        Attachments.direct.update(attachment._id, { $set: { parentCollection: 'topics' } });
+      } else {
+        console.warn(`ATTACHMENT ${attachment._id} does not belong to any topic`);
+      }
+    });
+  },
+});
+
 /* Migrations.add({
   version: ??,
   name: 'Connect partner userId with membership userId',

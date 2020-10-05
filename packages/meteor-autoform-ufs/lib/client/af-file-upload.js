@@ -25,7 +25,7 @@ function uploadFile(file, context, inst) {
 
   // Create a new Uploader for this file
   const uploader = new UploadFS.Uploader({
-    store: inst.collection,
+    store: inst.inputFieldName.split('.')[0],
     data: file, // The File/Blob object containing the data
     file: doc,  // The document to save in the collection
 
@@ -43,6 +43,7 @@ function uploadFile(file, context, inst) {
       context.addInvalidKeys([{ name: inst.inputFieldName, type: 'uploadError', value: err.reason }]);
       inst.viewmodel.vmValue('');
       inst.viewmodel.currentUpload(null);
+      alert(err.message);
     },
     onAbort(file) {
       console.log(file.name + ' upload has been aborted');
