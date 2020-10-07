@@ -54,8 +54,7 @@
     {{else}}
         {{#hideable}}
             <span class="text-dark newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
-            <br/>
-            {{#if photo}}<div><img src="{{absoluteUrl photo}}" class="img-embed"></div>{{/if}}
+            {{> Attachments doc=this}}
             <a href="" class="small cap-first js-like">
                 <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
                 {{_ 'important'}}! ({{this.likesCount}})

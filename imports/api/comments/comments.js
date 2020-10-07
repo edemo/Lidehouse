@@ -12,6 +12,7 @@ import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Likeable } from '/imports/api/behaviours/likeable.js';
 import { Flagable } from '/imports/api/behaviours/flagable.js';
+import { AttachmentField } from '/imports/api/behaviours/attachment-field.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
 
@@ -22,9 +23,8 @@ Comments.categoryValues = ['comment', 'statusChange', 'pointAt'];
 Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
-  category: { type: String, defaultValue: 'comment', allowedValues: Comments.categoryValues, autoform: { omit: true } },
+  category: { type: String, defaultValue: 'comment', allowedValues: Comments.categoryValues, autoform: { type: 'hidden' } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
-  photo: { type: String, optional: true, autoform: imageUpload() },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true },
     autoValue() {
@@ -57,6 +57,7 @@ Comments.attachBaseSchema(Comments.schema);
 Comments.attachBehaviour(Timestamped);
 Comments.attachBehaviour(Likeable);
 Comments.attachBehaviour(Flagable);
+Comments.attachBehaviour(AttachmentField(true));
 
 Comments.attachVariantSchema(undefined, { selector: { category: 'comment' } });
 Comments.attachVariantSchema(StatusChanges.extensionSchema, { selector: { category: 'statusChange' } });

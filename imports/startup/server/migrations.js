@@ -572,6 +572,20 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 31,
+  name: 'Attachment behaviour on comments for multi photo',
+  up() {
+    Comments.find({ photo: { $exists: true } }).forEach(comment => {
+      if (typeof comment.photo !== 'string') return;
+      const photo = comment.photo;
+      const uploadedPhoto = Attachments.findOne({ path: photo });
+      if (uploadedPhoto) Attachments.direct.update(uploadedPhoto._id, { $set: { parentId: comment._id, parentCollection: 'comments' } });
+      Comments.update(comment._id, { $set: { photo: [photo] } }, { selector: comment, validate: false });
+    });
+  },
+});
+
 /* Migrations.add({
   version: ??,
   name: 'Connect partner userId with membership userId',
