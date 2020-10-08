@@ -136,6 +136,13 @@ Template.Comment.events({
     Meteor.setTimeout(() => element.find('textarea')[0].focus(), 100);
     instance.viewmodel.editing(true);
   },
+  'click .js-editphoto'(event, instance) {
+    const doc = instance.data;
+    const options = {};
+    Object.setPrototypeOf(options, new ActionOptions(Comments));
+    Comments.actions.editphoto(options, doc).run(event, instance);
+    instance.viewmodel.editing(false);
+  },
   'click .js-save'(event, instance) {
     const text = $(event.target).closest('.media-body').find('textarea')[0].value;
     Comments.methods.update.call({
