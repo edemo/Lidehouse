@@ -17,6 +17,15 @@ Shareddocs.hasPermissionToUpload = function hasPermissionToUpload(userId, doc) {
   else return user.hasPermission('shareddocs.upload', doc);
 };
 
+Shareddocs.hasPermissionToUpdate = function hasPermissionToUpdate(userId, doc) {
+  if (!userId) return false;
+  const user = Meteor.users.findOne(userId);
+  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc);
+  else if (doc.folderId === 'voting') return user.hasPermission('poll.update', doc);
+  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.update', doc);
+  else return user.hasPermission('shareddocs.upload', doc);
+};
+
 Shareddocs.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploaded(userId, doc) {
   if (Meteor.isServer) return true;
   if (!userId) return false;
@@ -30,7 +39,9 @@ Shareddocs.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploade
 // Can be manipulated only through the ShareddocStore interface
 Shareddocs.allow({
   insert() { return false; },
-  update() { return false; },
+  update(userId, doc) {
+    return Shareddocs.hasPermissionToUpdate(userId, doc);
+  },
   remove(userId, doc) {
     return Shareddocs.hasPermissionToRemoveUploaded(userId, doc);
   },
