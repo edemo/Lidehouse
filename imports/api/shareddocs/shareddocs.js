@@ -5,35 +5,47 @@ import { _ } from 'meteor/underscore';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Log } from '/imports/utils/log.js';
+import { debugAssert } from '/imports/utils/assert.js';
 
 export const Shareddocs = new Mongo.Collection('shareddocs');
 
-Shareddocs.hasPermissionToUpload = function hasPermissionToUpload(userId, doc) {
+function permissionsByFolders(userId, doc, permissions) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
-  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc);
-  else if (doc.folderId === 'voting') return user.hasPermission('poll.insert', doc);
-  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.insert', doc);
-  else return user.hasPermission('shareddocs.upload', doc);
+  debugAssert(permissions.default, 'default folder permission required');
+  const folder = doc.folderId;
+  if (permissions[folder]) return user.hasPermission(permissions[folder], doc);
+  else return user.hasPermission(permissions.default, doc);
+}
+
+Shareddocs.hasPermissionToUpload = function hasPermissionToUpload(userId, doc) {
+  const permissions = {
+    community: 'shareddocs.upload',
+    voting: 'poll.insert',
+    agenda: 'agendas.insert',
+    default: 'shareddocs.upload',
+  };
+  return permissionsByFolders(userId, doc, permissions);
 };
 
 Shareddocs.hasPermissionToUpdate = function hasPermissionToUpdate(userId, doc) {
-  if (!userId) return false;
-  const user = Meteor.users.findOne(userId);
-  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc);
-  else if (doc.folderId === 'voting') return user.hasPermission('poll.update', doc);
-  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.update', doc);
-  else return user.hasPermission('shareddocs.upload', doc);
+  const permissions = {
+    community: 'shareddocs.upload',
+    voting: 'poll.update',
+    agenda: 'agendas.update',
+    default: 'shareddocs.upload',
+  };
+  return permissionsByFolders(userId, doc, permissions);
 };
 
 Shareddocs.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploaded(userId, doc) {
-  if (Meteor.isServer) return true;
-  if (!userId) return false;
-  const user = Meteor.users.findOne(userId);
-  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.remove', doc);
-  else if (doc.folderId === 'voting') return user.hasPermission('poll.remove', doc);
-  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.remove', doc);
-  else return user.hasPermission('shareddocs.remove', doc);
+  const permissions = {
+    community: 'shareddocs.remove',
+    voting: 'poll.remove',
+    agenda: 'agendas.remove',
+    default: 'shareddocs.remove',
+  };
+  return permissionsByFolders(userId, doc, permissions);
 };
 
 // Can be manipulated only through the ShareddocStore interface
