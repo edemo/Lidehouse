@@ -131,16 +131,16 @@ Template.Comment.events({
   'click .js-like'(event, instance) {
     Comments.actions.like({}, this).run();
   },
-  'click .js-edit'(event, instance) {
+  'click .js-inplaceEdit'(event, instance) {
     const element = $(event.target).closest('.media-body');
     Meteor.setTimeout(() => element.find('textarea')[0].focus(), 100);
     instance.viewmodel.editing(true);
   },
-  'click .js-editphoto'(event, instance) {
+  'click .js-edit'(event, instance) {
     const doc = instance.data;
     const options = {};
     Object.setPrototypeOf(options, new ActionOptions(Comments));
-    Comments.actions.editphoto(options, doc).run(event, instance);
+    Comments.actions.edit(options, doc).run(event, instance);
     instance.viewmodel.editing(false);
   },
   'click .js-save'(event, instance) {
