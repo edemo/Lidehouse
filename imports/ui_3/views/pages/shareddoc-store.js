@@ -52,6 +52,7 @@ Template.Shareddoc_store.viewmodel({
     return Sharedfolders.findOne(id);
   },
   disabledUpload() {
+    if (!Meteor.userOrNull().hasPermission('shareddocs.upload')) return 'disabled';
     return this.activeFolder()?.externalUrl && 'disabled';
   },
   shareddocs() {

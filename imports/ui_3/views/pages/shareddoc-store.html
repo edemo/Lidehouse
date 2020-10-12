@@ -50,7 +50,7 @@
                             </button>
                             {{/if}}
                             <div class="hr-line-dashed"></div>
-                            <button name="upload" class="btn btn-primary btn-block" {{disabledUpload}} title="{{#unless userCanUpload}}{{_ 'No permission to upload'}}{{/unless}}">
+                            <button name="upload" class="btn btn-primary btn-block {{disabledUpload}}" title="{{#unless userCanUpload}}{{_ 'No permission to upload'}}{{/unless}}">
                                 <i class="fa fa-upload"></i>
                                 {{_ 'Upload file'}}
                             </button>
