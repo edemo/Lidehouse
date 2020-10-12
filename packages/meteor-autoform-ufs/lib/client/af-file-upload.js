@@ -3,15 +3,24 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
+import { UploadFS } from 'meteor/jalik:ufs';
 
 import { isHostedByUs, link2doc } from './link-format.js';
 import './display-image.html';
 import './display-document.html';
 import './display-file.html';
-import './af-file-upload.js';
+import './af-file-upload.html';
 
 import Compress from 'compress.js';
 const compress = new Compress();
+
+export function isImage(file) {
+  const parts = file.split('.');
+  const extension = parts.length > 1 ? parts.pop().toLowerCase() : '';
+  const fileType = UploadFS.getMimeType(extension);
+  if (fileType?.split('/')[0] === 'image') return true;
+  return (/\.(gif|jpe?g|tiff?|png|webp|bmp)\?/i).test(file);
+}
 
 function uploadFile(file, context, inst) {
   console.log("Uploading file", file);
@@ -103,9 +112,6 @@ Template.afFileUpload.viewmodel({
     this.vmValue(instance.data.value || null);
     return;
   },
-  isImage(value) {
-    return (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(value) || value.includes('image');
-  },
   textOrHidden() {
     const vmValue = this.vmValue();
     return vmValue ? "hidden" : "text";
@@ -117,7 +123,7 @@ Template.afFileUpload.viewmodel({
   template() {
     let fileType = this.templateInstance.data.atts.fileType;
     if (fileType == 'attachment') {
-      if (this.isImage(this.vmValue())) fileType = 'image';
+      if (isImage(this.vmValue())) fileType = 'image';
       else fileType = 'document';
     };
     const template = `Display_${fileType}`;

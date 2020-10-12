@@ -75,7 +75,7 @@ Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour,
   const collection = this;
   collection.attachSchema(behaviour.schema, options);
   // TODO: Only 0 values supported in public fields
-  if (behaviour.publicFields) {
+  if (behaviour.publicFields && collection.publicFields) {
     collection.publicFields = _.extend({}, collection.publicFields, behaviour.publicFields);
   }
   if (behaviour.modifiableFields && collection.modifiableFields) {
