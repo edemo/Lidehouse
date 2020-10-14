@@ -33,15 +33,15 @@ Comments.actions = {
     visible: user.hasPermission('events.inCommunity', doc),
     run() { /* NOP -- 'comments.view is not used as command');*/ },
   }),
+  inplaceEdit: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'inplaceEdit',
+    icon: 'fa fa-pencil',
+    visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
+    run() { /* NOP -- 'comments.inplaceEdit is not used as command');*/ },
+  }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
-    run() { /* NOP -- 'comments.edit is not used as command');*/ },
-  }),
-  editphoto: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'editphoto',
-    icon: 'fa fa-photo',
     visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
     run() {
       Modal.show('Autoform_modal', {

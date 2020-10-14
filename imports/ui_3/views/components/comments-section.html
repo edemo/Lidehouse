@@ -48,7 +48,7 @@
     {{#if editing}}
         <textarea class="form-control" data-id="{{_id}}" value={{text}}></textarea>
         <div class="text-right">
-            {{#if this.photo}}<span class="btn btn-xs btn-default m-t-xs js-editphoto"><i class="fa fa-photo"></i> {{_ 'Photo'}}</span>{{/if}}
+            {{#if this.photo}}<span class="btn btn-xs btn-default m-t-xs js-edit"><i class="fa fa-photo"></i> {{_ 'Photo'}}</span>{{/if}}
             <span class="btn btn-xs btn-default m-t-xs text-capitalize js-cancel">{{_ 'cancel'}}</span>
             <span class="btn btn-xs btn-primary m-t-xs text-capitalize js-save">{{_ 'save'}}</span>
         </div>
@@ -63,7 +63,7 @@
                     {{_ 'important'}}! ({{this.likesCount}})
                 </a> -
                 <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
-                {{>Action_buttons_group doc=this collection='comments' actions='edit,move,delete,mute' size='sm'}}
+                {{>Action_buttons_group doc=this collection='comments' actions='inplaceEdit,move,delete,mute' size='sm'}}
             </div>
         {{/hideable}}
     {{/if}}
