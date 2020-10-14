@@ -5,7 +5,7 @@
     &nbsp;
     <span class="progress">{{currentProgress}}%</span>
   {{else}}
-    {{#if value}}
+    {{#if vmValue}}
       {{>Template.dynamic template=template data=context}}
       <a data-reset-file href="#" style="display:none">Reset</a>
       <!--span class="text-muted">{{_ 'needToRemoveCurrentToAddNew'}}</span-->
@@ -13,9 +13,9 @@
   {{/if}}
   <div class="row">
     <div class="col-xs-8">
-      <input class="form-control" type="{{textOrHidden}}" value="{{value}}" {{this.atts}}/>
+      <input class="form-control" type="{{textOrHidden}}" value="{{vmValue}}" {{this.atts}}/>
     </div>
-    {{#unless value}}
+    {{#unless vmValue}}
     <div class="col-xs-4">
       <button type="button" name="upload" class="btn btn-info">
           <i class="fa fa-upload"></i> {{_ 'Upload file'}}

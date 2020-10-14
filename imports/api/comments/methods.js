@@ -37,7 +37,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Comments, _id);
     const topic = checkExists(Topics, doc.topicId);
-    checkModifier(doc, modifier, ['text']);     // only the text can be modified
+    checkModifier(doc, modifier, ['text', 'photo']);     // only the text and photo can be modified
     checkPermissions(this.userId, `${doc.entityName()}.update`, doc);
 
     Comments.update(_id, modifier, { selector: { category: doc.category } });

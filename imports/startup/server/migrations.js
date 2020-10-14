@@ -19,6 +19,7 @@ import { Meters } from '/imports/api/meters/meters.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
+import { Attachments } from '/imports/api/attachments/attachments.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -540,6 +541,48 @@ Migrations.add({
       Parcels.update(p.parcelId, { $unset: { leadRef: '' } }, { validate: false });
     });
     Parcelships.direct.remove({});
+  },
+});
+
+Migrations.add({
+  version: 29,
+  name: 'Multiple attachment on topic',
+  up() {
+    Topics.find({ photo: { $exists: true } }).forEach(topic => {
+      if (typeof topic.photo !== 'string') return;
+      const photo = topic.photo;
+      const uploadedPhoto = Attachments.findOne({ path: photo });
+      if (uploadedPhoto) Attachments.direct.update(uploadedPhoto._id, { $set: { parentId: topic._id } });
+      Topics.update(topic._id, { $set: { attachments: [photo] }, $unset: { photo: '' } }, { selector: topic, validate: false });
+    });
+  },
+});
+
+Migrations.add({
+  version: 30,
+  name: 'Parent collection on attachment',
+  up() {
+    Attachments.find({ parentId: { $exists: true } }).forEach(attachment => {
+      if (Topics.findOne(attachment.parentId)) {
+        Attachments.direct.update(attachment._id, { $set: { parentCollection: 'topics' } });
+      } else {
+        console.warn(`ATTACHMENT ${attachment._id} does not belong to any topic`);
+      }
+    });
+  },
+});
+
+Migrations.add({
+  version: 31,
+  name: 'Attachment behaviour on comments for multi photo',
+  up() {
+    Comments.find({ photo: { $exists: true } }).forEach(comment => {
+      if (typeof comment.photo !== 'string') return;
+      const photo = comment.photo;
+      const uploadedPhoto = Attachments.findOne({ path: photo });
+      if (uploadedPhoto) Attachments.direct.update(uploadedPhoto._id, { $set: { parentId: comment._id, parentCollection: 'comments' } });
+      Comments.update(comment._id, { $set: { photo: [photo] } }, { selector: comment, validate: false });
+    });
   },
 });
 

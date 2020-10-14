@@ -3,15 +3,24 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
+import { UploadFS } from 'meteor/jalik:ufs';
 
 import { isHostedByUs, link2doc } from './link-format.js';
 import './display-image.html';
 import './display-document.html';
 import './display-file.html';
-import './af-file-upload.js';
+import './af-file-upload.html';
 
 import Compress from 'compress.js';
 const compress = new Compress();
+
+export function isImage(file) {
+  const parts = file.split('.');
+  const extension = parts.length > 1 ? parts.pop().toLowerCase() : '';
+  const fileType = UploadFS.getMimeType(extension);
+  if (fileType?.split('/')[0] === 'image') return true;
+  return (/\.(gif|jpe?g|tiff?|png|webp|bmp)\?/i).test(file);
+}
 
 function uploadFile(file, context, inst) {
   console.log("Uploading file", file);
@@ -25,7 +34,7 @@ function uploadFile(file, context, inst) {
 
   // Create a new Uploader for this file
   const uploader = new UploadFS.Uploader({
-    store: inst.collection,
+    store: inst.inputFieldName.split('.')[0],
     data: file, // The File/Blob object containing the data
     file: doc,  // The document to save in the collection
 
@@ -41,8 +50,9 @@ function uploadFile(file, context, inst) {
       console.error(err);
       context.resetValidation();
       context.addInvalidKeys([{ name: inst.inputFieldName, type: 'uploadError', value: err.reason }]);
-      inst.viewmodel.value('');
+      inst.viewmodel.vmValue('');
       inst.viewmodel.currentUpload(null);
+      alert(err.message);
     },
     onAbort(file) {
       console.log(file.name + ' upload has been aborted');
@@ -50,7 +60,7 @@ function uploadFile(file, context, inst) {
     },
     onComplete(file) {
       console.log(file.name + ' has been uploaded');
-      inst.viewmodel.value(file.path);
+      inst.viewmodel.vmValue(file.path);
       inst.viewmodel.currentUpload(null);
       inst.viewmodel.currentProgress(0);
     },
@@ -95,27 +105,32 @@ Template.afFileUpload.onCreated(function () {
 });
 
 Template.afFileUpload.viewmodel({
-  value: null,  // viewmodel Value!
+  vmValue: null,  // viewmodel Value!
   currentUpload: null,
   currentProgress: 0,
   onCreated(instance) {
-    this.value(instance.data.value || null);
+    this.vmValue(instance.data.value || null);
     return;
   },
   textOrHidden() {
-    const vmValue = this.value();
+    const vmValue = this.vmValue();
     return vmValue ? "hidden" : "text";
 //    return isHostedByUs(vmValue) ? "hidden" : "text";
   },
   valueHasChanged() {
-    return this.value() !== this.templateInstance.dbValue;
+    return this.vmValue() !== this.templateInstance.dbValue;
   },
   template() {
-    const template = `Display_${this.templateInstance.data.atts.fileType}`;
+    let fileType = this.templateInstance.data.atts.fileType;
+    if (fileType == 'attachment') {
+      if (isImage(this.vmValue())) fileType = 'image';
+      else fileType = 'document';
+    };
+    const template = `Display_${fileType}`;
     return template;
   },
   context() {
-    return { value: this.value() };
+    return { value: this.vmValue() };
   },
 });
 
@@ -143,19 +158,19 @@ Template.afFileUpload.events({
   },
   'click [data-reset-file]'(event, instance) {
     event.preventDefault();
-    instance.viewmodel.value(null);
+    instance.viewmodel.vmValue(null);
     return false;
   },
   'click [data-remove-file]'(event, instance) {
     event.preventDefault();
-    const vmValue = instance.viewmodel.value();
-    instance.viewmodel.value(null);
+    const vmValue = instance.viewmodel.vmValue();
+    instance.viewmodel.vmValue(null);
     const upload = link2doc(vmValue, instance.collection);
     if (upload) upload.remove();
   },
   'blur input'(event, instance) {
     const value = event.target.value;
-    instance.viewmodel.value(value);
+    instance.viewmodel.vmValue(value);
   },
   'click button[name=upload]'(event, instance) {
     event.preventDefault();

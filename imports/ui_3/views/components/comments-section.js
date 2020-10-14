@@ -14,6 +14,7 @@ import '/imports/api/comments/methods.js';
 import '/imports/api/comments/actions.js';
 import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
+import '/imports/ui_3/views/components/attachments.js';
 import './comments-section.html';
 
 Template.Comments_section.onRendered(function chatboxOnRendered() {
@@ -88,6 +89,7 @@ Template.Comments_section.events({
     const doc = {
       topicId: this._id,
       text: instance.viewmodel.commentText(),
+      category: 'comment',
     };
     const options = {};
     Object.setPrototypeOf(options, new ActionOptions(Comments));
@@ -129,10 +131,17 @@ Template.Comment.events({
   'click .js-like'(event, instance) {
     Comments.actions.like({}, this).run();
   },
-  'click .js-edit'(event, instance) {
+  'click .js-inplaceEdit'(event, instance) {
     const element = $(event.target).closest('.media-body');
     Meteor.setTimeout(() => element.find('textarea')[0].focus(), 100);
     instance.viewmodel.editing(true);
+  },
+  'click .js-edit'(event, instance) {
+    const doc = instance.data;
+    const options = {};
+    Object.setPrototypeOf(options, new ActionOptions(Comments));
+    Comments.actions.edit(options, doc).run(event, instance);
+    instance.viewmodel.editing(false);
   },
   'click .js-save'(event, instance) {
     const text = $(event.target).closest('.media-body').find('textarea')[0].value;

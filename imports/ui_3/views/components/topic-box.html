@@ -57,8 +57,10 @@
         <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
     </a>
     <div class="text-dark">{{>Chopped text=text chars=600 markdown=true}}</div>
-    {{>Attached_shareddocs shareddocs=this.getShareddocs}}
-    {{#if photo}}<img src="{{absoluteUrl photo}}" class="img-embed">{{/if}}
+    <!-- {{>Attached_shareddocs shareddocs=this.getShareddocs}} -->
+    {{>Attachments doc=this}}
+    <br>
+    <!-- {{#if photo}}<img src="{{Meteor.absoluteUrl photo}}" class="img-embed">{{/if}} -->
 </template>
 
 <template name="Topic_box">

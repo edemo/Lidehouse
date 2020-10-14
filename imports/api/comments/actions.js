@@ -33,11 +33,26 @@ Comments.actions = {
     visible: user.hasPermission('events.inCommunity', doc),
     run() { /* NOP -- 'comments.view is not used as command');*/ },
   }),
+  inplaceEdit: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'inplaceEdit',
+    icon: 'fa fa-pencil',
+    visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
+    run() { /* NOP -- 'comments.inplaceEdit is not used as command');*/ },
+  }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
     visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
-    run() { /* NOP -- 'comments.edit is not used as command');*/ },
+    run() {
+      Modal.show('Autoform_modal', {
+        id: 'af.comment.update',
+        schema: Comments.simpleSchema({ category: 'comment' }),
+        doc,
+        type: 'method-update',
+        meteormethod: 'comments.update',
+        singleMethodArgument: true,
+      });
+    },
   }),
   move: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'move',
@@ -99,6 +114,6 @@ Comments.actions = {
 
 //-------------------------------------------------------
 
-AutoForm.addModalHooks(`af.comment.insert`);
-AutoForm.addModalHooks(`af.comment.update`);
+AutoForm.addModalHooks('af.comment.insert');
+AutoForm.addModalHooks('af.comment.update');
 AutoForm.addModalHooks('af.comment.move');

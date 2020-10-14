@@ -1,0 +1,32 @@
+<template name="Attachments">
+    {{#if doc.attachments}}
+        {{#if byType.files.length}}
+            <br>
+            <div class="row">
+                <div class="col-xs-12">
+                <button class="btn btn-white btn-xs dropdown-toggle drop-unfoll" type="button" id="attachments_{{doc._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="glyphicon glyphicon-paperclip"></i> 
+                    {{_ 'Attachments'}} ({{byType.files.length}})
+                    <b class="caret"></b>
+                </button>
+                <ul class="slim-menu dropdown-menu dropdown-menu-left" aria-labelledby="attachments_{{_id}}">
+                    {{#each file in byType.files}}
+                        <li><a class="filename" target="_blank" href="{{absoluteUrl file}}">{{fileName file}}</a></li>
+                    {{/each}}
+                </ul>
+                </div>
+            </div>
+        {{/if}}
+        <br>
+        {{#each image in byType.images}}
+            <a><img class="img-thumbnail js-show-image" src="{{absoluteUrl image}}"/></a>
+        {{/each}}
+    {{/if}}
+    {{#if doc.photo}}
+        <div>
+            {{#each photo in doc.photo}}
+                <a><img class="img-thumbnail img-embed js-show-image" src="{{absoluteUrl photo}}"/></a>
+            {{/each}}
+        </div>
+    {{/if}}
+</template>

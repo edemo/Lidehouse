@@ -24,6 +24,22 @@
       "label": "Megjegyzések"
     }
   },
+  "schemaAttachmentField": {
+    "attachments": {
+      "label": "Fénykép vagy fájl (ha csatolni szeretne)",
+      "$": {
+        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      },
+      "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
+    },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "$": {
+        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      },
+      "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
+    }
+  },
   "schemaActivePeriod": {
     "activeTime": {
       "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
@@ -431,11 +447,6 @@
       "label": "Részletek",
       "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
     },
-    "photo": {
-      "label": "Fénykép (ha csatolni szeretne)",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)",
-      "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
-    },
     "shareddocs": {
       "label": "Dokumentumok (ha csatolni szeretne)",
       "$": {
@@ -536,10 +547,6 @@
     "text": {
       "label": "Megjegyzések",
       "placeholder": "Hozzáfűznivaló..."
-    },
-    "photo": {
-      "label": "Fénykép (ha csatolni szeretne)",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "status": {
       "label": "Státusz"

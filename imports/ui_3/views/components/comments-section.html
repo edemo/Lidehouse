@@ -17,7 +17,7 @@
             <div class="media-body">
                 <textarea  class="form-control js-send-enter" {{b "value: commentText"}} placeholder="{{_ 'newCommentPlaceholder'}}"></textarea>
                 <div {{b "if: commentText"}} class="text-right">
-                    <span class="btn btn-xs btn-default m-t-xs js-attach"><i class="fa fa-photo"></i> {{_ 'Attachments'}}</span>
+                    <span class="btn btn-xs btn-default m-t-xs js-attach"><i class="fa fa-photo"></i> {{_ 'Photo'}}</span>
                     <span class="btn btn-xs btn-primary m-t-xs text-capitalize js-send">{{_ 'send'}}</span>
                 </div>
             </div>
@@ -48,20 +48,23 @@
     {{#if editing}}
         <textarea class="form-control" data-id="{{_id}}" value={{text}}></textarea>
         <div class="text-right">
+            {{#if this.photo}}<span class="btn btn-xs btn-default m-t-xs js-edit"><i class="fa fa-photo"></i> {{_ 'Photo'}}</span>{{/if}}
             <span class="btn btn-xs btn-default m-t-xs text-capitalize js-cancel">{{_ 'cancel'}}</span>
             <span class="btn btn-xs btn-primary m-t-xs text-capitalize js-save">{{_ 'save'}}</span>
         </div>
+        {{> Attachments doc=this}}
     {{else}}
         {{#hideable}}
             <span class="text-dark newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
-            <br/>
-            {{#if photo}}<div><img src="{{absoluteUrl photo}}" class="img-embed"></div>{{/if}}
-            <a href="" class="small cap-first js-like">
-                <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
-                {{_ 'important'}}! ({{this.likesCount}})
-            </a> -
-            <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
-            {{>Action_buttons_group doc=this collection='comments' actions='edit,move,delete,mute' size='sm'}}
+            {{> Attachments doc=this}}
+            <div>
+                <a href="" class="small cap-first js-like">
+                    <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+                    {{_ 'important'}}! ({{this.likesCount}})
+                </a> -
+                <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+                {{>Action_buttons_group doc=this collection='comments' actions='inplaceEdit,move,delete,mute' size='sm'}}
+            </div>
         {{/hideable}}
     {{/if}}
 </template>

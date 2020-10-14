@@ -200,7 +200,7 @@ Topics.categoryHelpers('ticket', {
     return this.statusFields(this.startStatus());
   },
   modifiableFields() {
-    return ['title', 'text', 'photo'].concat(this.startFields());
+    return ['title', 'text', 'attachments'].concat(this.startFields());
   },
   inputFields() {
     return this.modifiableFields().concat(this.startFields());

@@ -6,7 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { imageUpload, documentUpload } from '/imports/utils/autoform.js';
+import { imageUpload, documentUpload, attachmentUpload } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Revisioned } from '/imports/api/behaviours/revisioned.js';
@@ -14,11 +14,13 @@ import { Workflow } from '/imports/api/behaviours/workflow.js';
 import { Likeable } from '/imports/api/behaviours/likeable.js';
 import { Flagable } from '/imports/api/behaviours/flagable.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
+import { AttachmentField } from '/imports/api/behaviours/attachment-field.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
+import { Attachments } from '/imports/api/attachments/attachments.js';
 
 import './category-helpers.js';
 
@@ -39,9 +41,6 @@ Topics.baseSchema = new SimpleSchema({
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { type: 'markdown' } },
-  photo: { type: String, optional: true, autoform: imageUpload() },
-//  shareddocs: { type: Array, optional: true },
-//  'shareddocs.$': { type: String, optional: true, autoform: documentUpload() },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
   movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 });
@@ -61,7 +60,6 @@ Topics.publicFields = {
   title: 1,
   text: 1,
   agendaId: 1,
-  photo: 1,
   createdAt: 1,
   updatedAt: 1,
   creatorId: 1,
@@ -236,6 +234,7 @@ Topics.attachBehaviour(Likeable);
 Topics.attachBehaviour(Flagable);
 Topics.attachBehaviour(Workflow());
 Topics.attachBehaviour(SerialId(['category', 'ticket.type']));
+Topics.attachBehaviour(AttachmentField());
 
 Topics.attachVariantSchema(undefined, { selector: { category: 'room' } });
 Topics.attachVariantSchema(Topics.extensionSchemas.forum, { selector: { category: 'forum' } });
@@ -246,7 +245,7 @@ Topics.categoryValues.forEach(category =>
 );
 //  Topics.schema.i18n('schemaTopics');
 
-Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'photo'];
+Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId'];
 Topics.modifiableFields.push('closed'); // comes from Workflow behaviour
 
 Topics.categoryValues.forEach((category) => {

@@ -14,7 +14,7 @@ ShareddocsStore.setPermissions(new UploadFS.StorePermissions({
     return Shareddocs.hasPermissionToUpload(userId, doc);
   },
   update(userId, doc) {
-    return false;
+    return Shareddocs.hasPermissionToUpdate(userId, doc);
   },
   remove(userId, doc) {
     return Shareddocs.hasPermissionToRemoveUploaded(userId, doc);
