@@ -59,7 +59,7 @@ export const Notifications_Email = {
       if (key === 'localizer') return displayLocalizer(value, this.community);
       if (key === 'partnerId') return Partners.findOne(value) ? Partners.findOne(value).getName() : '';
       if (key === 'contractId') return Contracts.findOne(value) ? Contracts.findOne(value).title : '';
-      if (key === 'chargeType') return TAPi18n.__('schemaTickets.ticket.chargeType.' + value, {}, this.user.settings.language);
+      if (key === 'chargeType') return TAPi18n.__('schemaTickets.ticket.chargeType.options.' + value, {}, this.user.settings.language);
       if (_.isDate(value)) return moment(value).format('L');
       if (_.isString(value)) return TAPi18n.__(value, {}, this.user.settings.language);
       return value;
