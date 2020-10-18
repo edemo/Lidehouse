@@ -31,10 +31,11 @@ function uploadFile(file, context, inst) {
     communityId: Session.get('communityId'),
     userId: Meteor.userId(),
   };
-
+  const store = (inst.inputFieldName.split('.')[0] === 'photo' || 'avatar') ? 'photo' : inst.collection;
+  
   // Create a new Uploader for this file
   const uploader = new UploadFS.Uploader({
-    store: inst.inputFieldName.split('.')[0],
+    store,
     data: file, // The File/Blob object containing the data
     file: doc,  // The document to save in the collection
 
