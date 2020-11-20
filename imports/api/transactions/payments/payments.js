@@ -182,8 +182,6 @@ Transactions.categoryHelpers('payment', {
     this.payAccount = entry.account;
   },
   makeJournalEntries(accountingMethod) {
-//    const communityId = this.communityId;
-//    const cat = Txdefs.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
     this.debit = [];
     this.credit = [];
     let unallocatedAmount = this.amount;
@@ -193,12 +191,40 @@ Transactions.categoryHelpers('payment', {
       const bill = Transactions.findOne(billPaid.id);
       if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
       if (accountingMethod === 'accrual') {
-        bill[this.relationSide()].forEach(entry => {
-          if (unallocatedAmount === 0) return false;
-          const amount = equalWithinRounding(entry.amount, billPaid.amount) ? entry.amount : Math.smallerInAbs(entry.amount, billPaid.amount);
-          this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
-          unallocatedAmount -= amount;
-        });
+        if (billPaid.amount === bill.amount) {
+          bill[this.relationSide()].forEach(entry => {
+            if (unallocatedAmount === 0) return false;
+            const amount = entry.amount;
+            this[this.conteerSide()].push({ amount: entry.amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+            unallocatedAmount -= amount;
+          });
+        } else if (billPaid.amount < bill.amount) {
+          let alreadyPaidAmount = 0;
+          bill.payments?.forEach(payment => {
+            if (payment.id !== this._id) alreadyPaidAmount += payment.amount;
+          });
+          let unallocatedFromBill = billPaid.amount;
+          const billEntries = bill[this.relationSide()].sort((a, b) => a.amount - b.amount);
+          billEntries.forEach(entry => {
+            if (unallocatedAmount === 0) return false;
+            if (alreadyPaidAmount > 0) alreadyPaidAmount -= entry.amount;
+            if (alreadyPaidAmount === 0) {
+              const amount = entry.amount >= 0 ? Math.min(entry.amount, unallocatedAmount, unallocatedFromBill) : entry.amount;
+              this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+              unallocatedAmount -= amount;
+              unallocatedFromBill -= amount;
+            }
+            if (alreadyPaidAmount < 0) {
+              const remainder = Math.abs(alreadyPaidAmount);
+              alreadyPaidAmount = 0;
+              const amount = Math.min(remainder, unallocatedAmount, unallocatedFromBill);
+              this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+              unallocatedAmount -= amount;
+              unallocatedFromBill -= amount;
+            }
+          });
+        }
+        debugAssert(billPaid.amount <= bill.amount, "payed amount for a bill can not be more than bill's amount");
       } else if (accountingMethod === 'cash') {
         bill.getLines().forEach(line => {
           if (unallocatedAmount === 0) return false;
