@@ -109,6 +109,9 @@ Topics.helpers({
   getShareddocs() {
     return Shareddocs.find({ topicId: this._id });
   },
+  hasAttachment() {
+    return !!this.attachments?.length;
+  },
   hiddenBy(userId) {
     const author = this.creator();
     if (this.creatorId === userId) return undefined;
