@@ -19,6 +19,7 @@ export function ticketColumns() {
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Badge,
         { color: 'info', value: cellData }, cell),
     },
+    { data: 'hasAttachment()', render: Render.paperclip },
     { data: 'status', title: __('schemaTopics.status.label'), render: displayStatus },
     { data: 'ticket.localizer', title: __('schemaTickets.ticket.localizer.label'), render: l => displayLocalizer(l, communityId) },
     { data: 'creator().displayOfficialName()', title: __('reportedBy') },
