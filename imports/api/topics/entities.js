@@ -49,7 +49,7 @@ Topics.entities = {
     name: 'maintenance',
     schema: ticketSchemaWithMoreDates,
     formType: 'normal',
-    inputFields: MaintenanceProto.inputFields().concat(['moreDates']),
+    inputFields: MaintenanceProto.inputFields().concat(['moreDates', 'localizer']),
     implicitFields: {
       communityId: () => ModalStack.getVar('communityId'),
       category: 'ticket',

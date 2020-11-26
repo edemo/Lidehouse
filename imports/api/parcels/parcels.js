@@ -46,6 +46,8 @@ Parcels.baseSchema = new SimpleSchema({
     autoValue() {
       if (this.isInsert && !this.isSet) {
         return this.field('category').value.charAt(0) + this.field('ref').value;
+      } else if (this.isInsert && this.value.charAt(0) !== this.field('category').value.charAt(0)) {
+        return this.field('category').value.charAt(0) + this.value;
       } else return undefined;
     },
   },
