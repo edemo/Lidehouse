@@ -82,6 +82,7 @@ const scheduled = {
   color: 'info',
   colorCode: '#1FAEB0',
   data: [
+    'localizer',
     'partnerId',
     'chargeType',
     'contractId',
