@@ -26,6 +26,7 @@ import '/imports/ui_3/views/blocks/chopped.js';
 import '/imports/ui_3/views/components/new-ticket.js';
 import { ContextMenu } from '/imports/ui_3/views/components/context-menu';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
+import { toggle } from '/imports/api/utils';
 import './worksheets.html';
 
 Template.Worksheets.onCreated(function onCreated() {
@@ -255,18 +256,14 @@ Template.Worksheets.events({
   'click .js-clear-filter'(event, instance) {
     instance.viewmodel.setDefaultFilter();
   },
-  'click .js-filter'(event, instance) {
+  'click .js-toggle-filter'(event, instance) {
     const field = $(event.target).data('field');
     const value = $(event.target).data('value');
     const vmFunc = instance.viewmodel[`${field}Selected`];
     const selected = vmFunc();
-    if (selected.includes(value)) {
-      vmFunc(_.without(selected, value));
-      $(event.target).blur();
-    } else {
-      selected.push(value);
-      vmFunc(selected);
-    }
+    const newSelected = toggle(value, selected);
+    vmFunc(newSelected);
+    $(event.target).blur();  // if focus is on the button it appears to be pushed
   },
   'click .js-save-calendar'(event, instance) {
     const eventsToUpdate = instance.viewmodel.eventsToUpdate();
