@@ -114,7 +114,7 @@ Template.Community_finances.viewmodel({
   periods() { return PeriodBreakdown.leafs().slice(this.startIndex(), this.endIndex()); },
   prePeriods() { return PeriodBreakdown.leafs().slice(0, this.startIndex()); },
   demoLabels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"],
-  marinaLabels() { return this.periods().map(l => `${l.label === 'JAN' ? l.parent.name : l.label}`); },
+  marinaLabels() { return this.periods().map(l => `${l.label === 'JAN' ? __(l.parent.name) : __(l.label)}`); },
 
   onCreated(instance) {
     instance.autorun(() => {
