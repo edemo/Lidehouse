@@ -67,9 +67,13 @@
         </div>
 
         <div class="row">
-          <div class="col-sm-9">
+          <div class="col-sm-4">
             <input type="checkbox" name="allow" id="mine-only" {{b "check: reportedByCurrentUser"}}>
             <label for="mine-only">{{_ 'My own only'}}</label>
+          </div>
+          <div class="col-sm-5">
+            <input type="checkbox" name="allow_start" id="by-start" {{b "check: byStartDate"}}>
+            <label for="by-start">{{_ 'By start date'}}</label>
           </div>
           <div class="col-sm-3 align">
             <button type="button" class="btn btn-default btn-xs js-clear-filter {{#unless hasFilters}}disabled{{/unless}}" data-value="cancel">

@@ -55,6 +55,7 @@ Template.Worksheets.viewmodel({
   ticketUrgencySelected: [],
   startDate: '',
   endDate: '',
+  byStartDate: false,
   reportedByCurrentUser: false,
   communityId: null,
   onCreated() {
@@ -69,6 +70,7 @@ Template.Worksheets.viewmodel({
     this.ticketUrgencySelected([]);
     this.startDate(moment().subtract(90, 'days').format('YYYY-MM-DD'));
     this.endDate('');
+    this.byStartDate(false);
     this.reportedByCurrentUser(false);
   },
   hasFilters() {
@@ -78,6 +80,7 @@ Template.Worksheets.viewmodel({
         this.ticketUrgencySelected().length ||
         this.startDate() !== moment().subtract(90, 'days').format('YYYY-MM-DD') ||
         this.endDate() ||
+        !this.byStartDate() ||
         this.reportedByCurrentUser()) return true;
     return false;
   },
@@ -197,14 +200,22 @@ Template.Worksheets.viewmodel({
     const ticketUrgencySelected = this.ticketUrgencySelected();
     const startDate = this.startDate();
     const endDate = this.endDate();
+    const byStartDate = this.byStartDate();
     const reportedByCurrentUser = this.reportedByCurrentUser();
     const selector = { communityId, category: 'ticket' };
     if (ticketStatusSelected.length > 0) selector.status = { $in: ticketStatusSelected };
     if (ticketTypeSelected.length > 0) selector['ticket.type'] = { $in: ticketTypeSelected };
     if (ticketUrgencySelected.length > 0) selector['ticket.urgency'] = { $in: ticketUrgencySelected };
     selector.createdAt = {};
-    if (startDate) selector.createdAt.$gte = new Date(startDate);
-    if (endDate) selector.createdAt.$lte = new Date(endDate);
+    if (startDate && !byStartDate) selector.createdAt.$gte = new Date(startDate);
+    if (endDate && !byStartDate) selector.createdAt.$lte = new Date(endDate);
+    if (byStartDate) selector.$and = [];
+    if (startDate && byStartDate) selector.$and.push({ $or: [
+      { 'ticket.expectedStart': { $gte: new Date(startDate) } }, 
+      { 'ticket.actualStart': { $gte: new Date(startDate) } }] });
+    if (endDate && byStartDate) selector.$and.push({ $or: [
+      { $and: [{ 'ticket.expectedStart': { $lte: new Date(endDate) } }, { 'ticket.actualStart': { $exists: false } }] }, 
+      { 'ticket.actualStart': { $lte: new Date(endDate) } }] });
     if (reportedByCurrentUser) selector.creatorId = Meteor.userId();
     return selector;
   },
