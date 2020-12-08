@@ -80,8 +80,9 @@ Template.Worksheets.viewmodel({
         this.ticketUrgencySelected().length ||
         this.startDate() !== moment().subtract(90, 'days').format('YYYY-MM-DD') ||
         this.endDate() ||
-        !this.byStartDate() ||
-        this.reportedByCurrentUser()) return true;
+        this.byStartDate() ||
+        this.reportedByCurrentUser())
+        return true;
     return false;
   },
   addEventsToUpdate(eventObject) {
