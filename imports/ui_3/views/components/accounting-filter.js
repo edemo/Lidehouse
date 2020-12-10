@@ -10,6 +10,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { toggle } from '/imports/api/utils';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
 import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
@@ -113,18 +114,14 @@ Template.Accounting_filter.events({
     instance.viewmodel.activePartnerRelation(partnerRelation);
     ModalStack.setVar('relation', partnerRelation, true);
   },
-  'click .js-filter'(event, instance) {
+  'click .js-toggle-filter'(event, instance) {
     const field = $(event.target).data('field');
     const value = $(event.target).data('value');
     const vmFunc = instance.viewmodel[`${field}Selected`];
     const selected = vmFunc();
-    if (selected.includes(value)) {
-      vmFunc(_.without(selected, value));
-      $(event.target).blur();
-    } else {
-      selected.push(value);
-      vmFunc(selected);
-    }
+    const newSelected = toggle(value, selected);
+    vmFunc(newSelected);
+    $(event.target).blur();  // if focus is on the button it appears to be pushed
   },
   'click .js-clear-filter'(event, instance) {
     instance.viewmodel.setDefaultFilter();

@@ -206,6 +206,9 @@ Topics.categoryHelpers('ticket', {
   inputFields() {
     return this.modifiableFields().concat(this.startFields());
   },
+  displayStart() {
+    return (this.ticket.actualStart || this.ticket.expectedStart);
+  },
 });
 
 // ===================================================

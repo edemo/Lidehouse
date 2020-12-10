@@ -24,6 +24,7 @@ export function ticketColumns() {
     { data: 'ticket.localizer', title: __('schemaTickets.ticket.localizer.label'), render: l => displayLocalizer(l, communityId) },
     { data: 'creator().displayOfficialName()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },
+    { data: 'displayStart()', title: __('Start date'), render: Render.formatDate },
     { data: 'ticket.urgency', title: __('schemaTickets.ticket.urgency.label'), render: displayUrgency },
     { data: 'ticket.type', title: __('schemaTickets.ticket.type.label'), render: displayTicketType },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,

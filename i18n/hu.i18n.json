@@ -491,6 +491,8 @@
   "Type": "Típus",
   "No tickets yet": "Még nincs bejelentése",
   "My own only": "Csak a sajátjaim mutatása",
+  "By start date": "Kezdés dátuma szerint",
+  "Start date": "Kezdés dátuma",
 
   // finances
   "Side": "Oldal",
@@ -811,5 +813,15 @@
     "Addig a __communityName__ közösségben az ön hozzászólásai és szavazatai mellett a többi tulajdonos hivatalos névként azt fogja látni: __personName__."],
 
   "s": "k",
-  "":""
+  "":"",
+
+  // Months (in charts) 
+  "FEB": "FEBR",
+  "MAR": "MÁRC",
+  "APR": "ÁPR",
+  "MAY": "MÁJ",
+  "JUN": "JÚN",
+  "JUL": "JÚL",
+  "SEP": "SZEPT",
+  "OCT": "OKT"
 }
