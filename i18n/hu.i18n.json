@@ -816,12 +816,16 @@
   "":"",
 
   // Months (in charts) 
+  "JAN": "JAN",
   "FEB": "FEBR",
   "MAR": "MÁRC",
   "APR": "ÁPR",
   "MAY": "MÁJ",
   "JUN": "JÚN",
   "JUL": "JÚL",
+  "AUG": "AUG",
   "SEP": "SZEPT",
-  "OCT": "OKT"
+  "OCT": "OKT",
+  "NOV": "NOV",
+  "DEC": "DEC"
 }
