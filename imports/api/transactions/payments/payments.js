@@ -27,6 +27,16 @@ Math.smallerInAbs = function smallerInAbs(a, b) {
   debugAssert(false); return undefined;
 };
 
+Array.negativesFirst = function negativesFirst(inputArray, key) {
+  const negatives = [];
+  const positives = [];
+  inputArray.forEach(elem => {
+    if (elem < 0 || elem[key] < 0) negatives.push(elem);
+    else positives.push(elem);
+  });
+  return negatives.concat(positives);
+};
+
 export const Payments = {};
 
 export const chooseBillOfPartner = {
@@ -204,7 +214,7 @@ Transactions.categoryHelpers('payment', {
             if (payment.id !== this._id) alreadyPaidAmount += payment.amount;
           });
           let unallocatedFromBill = billPaid.amount;
-          const billEntries = bill[this.relationSide()].sort((a, b) => a.amount - b.amount);
+          const billEntries = Array.negativesFirst(bill[this.relationSide()], 'amount');
           billEntries.forEach(entry => {
             if (unallocatedAmount === 0) return false;
             if (alreadyPaidAmount > 0) alreadyPaidAmount -= entry.amount;
