@@ -586,13 +586,13 @@ Migrations.add({
   },
 });
 
-/* Migrations.add({
-  version: ??,
+Migrations.add({
+  version: 32,
   name: 'Connect partner userId with membership userId',
   up() {
-    Memberships.find({ userId: { $exists: false } }).forEach((m) => {
+    Memberships.find({ $and: [{ userId: { $exists: false } }, { partnerId: { $exists: true } }] }).forEach((m) => {
       const partner = Partners.findOne(m.partnerId);
-      if (partner && partner.userId) Memberships.update({ _id: m._id }, { $set: { userId: partner.userId } });
+      if (partner && partner.userId) Memberships.update({ _id: m._id }, { $set: { userId: partner.userId } }, { selector: m });
     });
     Partners.find({ userId: { $exists: false } }).forEach((p) => {
       const membership = Memberships.findOne({ partnerId: p._id, userId: { $exists: true } });
@@ -600,7 +600,7 @@ Migrations.add({
     });
   },
 });
- */
+
 Meteor.startup(() => {
   Migrations.unlock();
   Migrations.migrateTo('latest');
