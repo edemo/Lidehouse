@@ -83,6 +83,10 @@ export const merge = new ValidatedMethod({
     const doc = checkExists(Partners, _id);
     checkPermissions(this.userId, 'partners.update', doc);
     const destinationDoc = checkExists(Partners, destinationId);
+    if (doc.userId && destinationDoc.userId && doc.userId !== destinationDoc.userId) {
+      const user = Meteor.users.findOne(doc.userId);
+      if (Meteor.isServer && user.isVerified()) throw new Meteor.Error('err_notAllowed', 'Partners are connected to different users');
+    }
     const $set = _.deepExtend({}, doc, destinationDoc);
     delete $set.relation;
     delete $set.outstanding;
@@ -98,7 +102,17 @@ export const merge = new ValidatedMethod({
     Transactions.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: { category: 'bill' }, multi: true });
     Delegations.update({ sourceId: _id }, { $set: { sourceId: destinationId } }, { multi: true });
     Delegations.update({ targetId: _id }, { $set: { targetId: destinationId } }, { multi: true });
-    // Topics.update({ voteCasts: _id }, ...
+    if (Meteor.isServer) {
+      const affectedVotings = Topics.find({ $and: [{ voteCasts: { $exists: true } }, { [`voteCasts.${_id}`]: { $exists: true } }] });
+      affectedVotings.forEach((topic) => {
+        const value = topic.voteCasts[_id];
+        let voteModifier = { $set: { [`voteCasts.${destinationId}`]: value },  $unset: { [`voteCasts.${_id}`]: '' }  };
+        const destinationValue = topic.voteCasts[destinationId];
+        if (destinationValue) voteModifier = { $unset: { [`voteCasts.${_id}`]: '' } };
+        Topics.update({ _id: topic._id }, voteModifier, { selector: { category: 'vote' } });
+        Topics.findOne(topic._id).voteEvaluate();
+      });
+    }
     Partners.remove(_id);
   },
 });
@@ -137,5 +151,5 @@ export const remindOutstandings = new ValidatedMethod({
 });
 
 Partners.methods = Partners.methods || {};
-_.extend(Partners.methods, { insert, update, remove, remindOutstandings });
+_.extend(Partners.methods, { insert, update, merge, remove, remindOutstandings });
 _.extend(Partners.methods, crudBatchOps(Partners));
