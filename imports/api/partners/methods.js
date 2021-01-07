@@ -103,14 +103,16 @@ export const merge = new ValidatedMethod({
     Delegations.update({ sourceId: _id }, { $set: { sourceId: destinationId } }, { multi: true });
     Delegations.update({ targetId: _id }, { $set: { targetId: destinationId } }, { multi: true });
     if (Meteor.isServer) {
-      const affectedVotings = Topics.find({ $and: [{ voteCasts: { $exists: true } }, { [`voteCasts.${_id}`]: { $exists: true } }] });
-      affectedVotings.forEach((topic) => {
-        const value = topic.voteCasts[_id];
-        let voteModifier = { $set: { [`voteCasts.${destinationId}`]: value },  $unset: { [`voteCasts.${_id}`]: '' }  };
-        const destinationValue = topic.voteCasts[destinationId];
-        if (destinationValue) voteModifier = { $unset: { [`voteCasts.${_id}`]: '' } };
-        Topics.update({ _id: topic._id }, voteModifier, { selector: { category: 'vote' } });
-        Topics.findOne(topic._id).voteEvaluate();
+      const votings = Topics.find({ communityId: doc.communityId, category: 'vote' });
+      votings.forEach((topic) => {
+        if (topic.voteCasts && topic.voteCasts[_id]) {
+          const value = topic.voteCasts[_id];
+          const voteModifier = { $set: { [`voteCasts.${destinationId}`]: value }, $unset: { [`voteCasts.${_id}`]: '' } };
+          const destinationValue = topic.voteCasts[destinationId];
+          if (destinationValue) delete voteModifier.$set;
+          Topics.update({ _id: topic._id }, voteModifier, { selector: { category: 'vote' } });
+          Topics.findOne(topic._id).voteEvaluate();
+        }
       });
     }
     Partners.remove(_id);
