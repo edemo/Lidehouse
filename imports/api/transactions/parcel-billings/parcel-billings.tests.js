@@ -122,7 +122,7 @@ if (Meteor.isServer) {
         });
 
         applyParcelBillings('2018-01-12');
-        const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
+        const bills = Transactions.find({ communityId, category: 'bill' }, { sort: { amount: -1 } }).fetch();
         chai.assert.equal(bills.length, 2);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 3, lineTitle: 'Test area', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 15, quantity: 30, localizer: '@A103' });
