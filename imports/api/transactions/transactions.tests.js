@@ -329,7 +329,7 @@ if (Meteor.isServer) {
           { amount: 250, account: '`3324', localizer, parcelId }]);
       });
 
-      // N1-N2, BA+, A<, B2, P0
+      // N1-N2, BA+, A<, B2, P0-P1
       it('negative item, part payment, assigned to more bills', function () {
         const billId1 = createBill([billLinePos1, billLinePos2, billLineNeg]); // 300, 250, -100
         const billId2 = createBill([billLineNeg, billLinePos2, billLinePos1]); // -100, 250, 300
@@ -406,6 +406,73 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(payment.credit, [
           { amount: -100, account: '`3324', localizer, parcelId },
           { amount: -100, account: '`3324', localizer, parcelId }]);
+      });
+
+      // BA+, A<, B1, P0-P1
+      it('positive bill amount, positive payment, partially paid', function () {
+        const billId1 = createBill([billLinePos1, billLinePos2, billLinePos2]);
+        FixtureA.builder.execute(Transactions.methods.post, { _id: billId1 });
+        const paymentId = FixtureA.builder.create('payment', {
+          relation: 'member',
+          bills: [{ id: billId1, amount: 300 }],
+          amount: 300,
+          partnerId,
+          valueDate: Clock.currentTime(),
+          payAccount: '`381' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
+        const payment = Transactions.findOne(paymentId);
+        chai.assert.deepEqual(payment.debit, [{ amount: 300, account: '`381' }]);
+        chai.assert.deepEqual(payment.credit, [{ amount: 300, account: '`331', localizer, parcelId }]);
+
+        const paymentId2 = FixtureA.builder.create('payment', {
+          relation: 'member',
+          bills: [{ id: billId1, amount: 500 }],
+          amount: 500,
+          partnerId,
+          valueDate: Clock.currentTime(),
+          payAccount: '`381' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
+        const payment2 = Transactions.findOne(paymentId2);
+        chai.assert.deepEqual(payment2.debit, [{ amount: 500, account: '`381' }]);
+        chai.assert.deepEqual(payment2.credit, [
+          { amount: 250, account: '`3324', localizer, parcelId },
+          { amount: 250, account: '`3324', localizer, parcelId },
+        ]);
+      });
+
+      // N1-N2, BA-, A<, B1, P0
+      it('negative bill amount, negative payment, partially paid', function () {
+        const billId1 = createBill([billLineNeg, billLinePos2, billLineNeg, billLineNeg]); // -50
+        FixtureA.builder.execute(Transactions.methods.post, { _id: billId1 });
+        const paymentId = FixtureA.builder.create('payment', {
+          relation: 'member',
+          bills: [{ id: billId1, amount: -20 }],
+          amount: -20,
+          partnerId,
+          valueDate: Clock.currentTime(),
+          payAccount: '`381' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
+        const payment = Transactions.findOne(paymentId);
+        chai.assert.deepEqual(payment.debit, [{ amount: -20, account: '`381' }]);
+        chai.assert.deepEqual(payment.credit, [
+          { amount: 250, account: '`3324', localizer, parcelId },
+          { amount: -100, account: '`3324', localizer, parcelId },
+          { amount: -100, account: '`3324', localizer, parcelId },
+          { amount: -70, account: '`3324', localizer, parcelId }]);
+
+        const paymentId2 = FixtureA.builder.create('payment', {
+          relation: 'member',
+          bills: [{ id: billId1, amount: -30 }],
+          amount: -30,
+          partnerId,
+          valueDate: Clock.currentTime(),
+          payAccount: '`381' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
+        const payment2 = Transactions.findOne(paymentId2);
+        chai.assert.deepEqual(payment2.debit, [{ amount: -30, account: '`381' }]);
+        chai.assert.deepEqual(payment2.credit, [
+          { amount: -30, account: '`3324', localizer, parcelId },
+        ]);
       });
 
       xit('getLines tests: ', function () {});
