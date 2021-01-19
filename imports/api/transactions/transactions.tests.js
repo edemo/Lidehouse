@@ -475,7 +475,43 @@ if (Meteor.isServer) {
         ]);
       });
 
-      xit('getLines tests: ', function () {});
+      it('assigned to bill and remainder in a line', function () {
+        const billId = createBill([billLinePos1, billLinePos2]);
+        FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
+        const paymentId = FixtureA.builder.create('payment', {
+          relation: 'member',
+          bills: [{ id: billId, amount: 550 }],
+          lines: [{ amount: 450, account: '`331' }],
+          amount: 1000,
+          partnerId,
+          valueDate: Clock.currentTime(),
+          payAccount: '`381' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
+        const payment = Transactions.findOne(paymentId);
+        chai.assert.deepEqual(payment.debit, [{ amount: 1000, account: '`381' }]);
+        chai.assert.deepEqual(payment.credit, [{ amount: 300, account: '`331', localizer, parcelId },
+          { amount: 250, account: '`3324', localizer, parcelId },
+          { amount: 450, account: '`331' }]);
+      });
+
+      it('only lines on payment (not assigned to bill)', function () {
+        const paymentId = FixtureA.builder.create('payment', {
+          relation: 'member',
+          lines: [
+            { amount: 20, account: '`331' },
+            { amount: 80, account: '`3324', localizer }, // contractId is autoCalculated from localizer at insert
+          ],
+          amount: 100,
+          partnerId,
+          valueDate: Clock.currentTime(),
+          payAccount: '`381' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
+        const payment = Transactions.findOne(paymentId);
+        chai.assert.deepEqual(payment.debit, [{ amount: 100, account: '`381' }]);
+        chai.assert.deepEqual(payment.credit, [{ amount: 20, account: '`331' },
+          { amount: 80, account: '`3324', localizer, contractId: payment.lines[1].contractId }]);
+      });
+
       xit('throws for non allocated remainder ', function () {});
     });
   });
