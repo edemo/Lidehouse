@@ -202,55 +202,49 @@ Transactions.categoryHelpers('payment', {
       const bill = Transactions.findOne(billPaid.id);
       if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
       productionAssert(billPaid.amount < 0 === bill.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
-      if (accountingMethod === 'accrual') {
-        if (billPaid.amount === bill.amount) {
-          bill[this.relationSide()].forEach(entry => {
-            if (unallocatedAmount === 0) return false;
-            const amount = entry.amount;
-            this[this.conteerSide()].push({ amount: entry.amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
-            unallocatedAmount -= amount;
-          });
-        } else if (Math.abs(billPaid.amount) < Math.abs(bill.amount)) {
-          let paidBefore = 0;
-          bill.payments?.forEach(payment => {
-            if (payment.id !== this._id) paidBefore += payment.amount;
-          });
-          let unallocatedFromBill = billPaid.amount;
-          const billEntries = Array.oppositeSignsFirst(bill[this.relationSide()], bill.amount, 'amount');
-          billEntries.forEach(entry => {
-            if (unallocatedAmount === 0) return false;
-            if (paidBefore === 0) {
-              let amount;
-              if (bill.amount >= 0) amount = entry.amount >= 0 ? Math.min(entry.amount, unallocatedAmount, unallocatedFromBill) : entry.amount;
-              if (bill.amount < 0) amount = entry.amount < 0 ? Math.max(entry.amount, unallocatedAmount, unallocatedFromBill) : entry.amount;
-              this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
-              unallocatedAmount -= amount;
-              unallocatedFromBill -= amount;
-            } else if ((bill.amount >= 0 && paidBefore > 0) || (bill.amount < 0 && paidBefore < 0)) {
-              paidBefore -= entry.amount;
-            }
-            if ((bill.amount >= 0 && paidBefore < 0) || (bill.amount < 0 && paidBefore > 0)) {
-              const remainder = -paidBefore;
-              paidBefore = 0;
-              let amount;
-              if (bill.amount >= 0) amount = Math.min(remainder, unallocatedAmount, unallocatedFromBill);
-              if (bill.amount < 0) amount = Math.max(remainder, unallocatedAmount, unallocatedFromBill);
-              this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
-              unallocatedAmount -= amount;
-              unallocatedFromBill -= amount;
-            }
-          });
-        }
-        debugAssert(Math.abs(billPaid.amount) <= Math.abs(bill.amount), "payed amount for a bill can not be more than bill's amount");
-      } else if (accountingMethod === 'cash') {
-        bill.getLines().forEach(line => {
+      let linesOrEntries;
+      if (accountingMethod === 'accrual') linesOrEntries = bill[this.relationSide()];
+      else if (accountingMethod === 'cash') linesOrEntries = bill.getLines();
+
+      if (billPaid.amount === bill.amount) {
+        linesOrEntries.forEach(entry => {
           if (unallocatedAmount === 0) return false;
-          const amount = Math.smallerInAbs(line.amount, billPaid.amount);
-          const parcelId = line.localizer && Parcels.findOne({ communityId: this.communityId, code: line.localizer })._id;
-          this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId, contractId: bill.contractId });
+          const amount = entry.amount;
+          this[this.conteerSide()].push({ amount: entry.amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
           unallocatedAmount -= amount;
         });
+      } else if (Math.abs(billPaid.amount) < Math.abs(bill.amount)) {
+        let paidBefore = 0;
+        bill.payments?.forEach(payment => {
+          if (payment.id !== this._id) paidBefore += payment.amount;
+        });
+        let unallocatedFromBill = billPaid.amount;
+        const billEntriesOrLines = Array.oppositeSignsFirst(linesOrEntries, bill.amount, 'amount');
+        billEntriesOrLines.forEach(entry => {
+          if (unallocatedAmount === 0) return false;
+          if (paidBefore === 0) {
+            let amount;
+            if (bill.amount >= 0) amount = entry.amount >= 0 ? Math.min(entry.amount, unallocatedAmount, unallocatedFromBill) : entry.amount;
+            if (bill.amount < 0) amount = entry.amount < 0 ? Math.max(entry.amount, unallocatedAmount, unallocatedFromBill) : entry.amount;
+            this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+            unallocatedAmount -= amount;
+            unallocatedFromBill -= amount;
+          } else if ((bill.amount >= 0 && paidBefore > 0) || (bill.amount < 0 && paidBefore < 0)) {
+            paidBefore -= entry.amount;
+          }
+          if ((bill.amount >= 0 && paidBefore < 0) || (bill.amount < 0 && paidBefore > 0)) {
+            const remainder = -paidBefore;
+            paidBefore = 0;
+            let amount;
+            if (bill.amount >= 0) amount = Math.min(remainder, unallocatedAmount, unallocatedFromBill);
+            if (bill.amount < 0) amount = Math.max(remainder, unallocatedAmount, unallocatedFromBill);
+            this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+            unallocatedAmount -= amount;
+            unallocatedFromBill -= amount;
+          }
+        });
       }
+      debugAssert(Math.abs(billPaid.amount) <= Math.abs(bill.amount), "payed amount for a bill can not be more than bill's amount");
     });
     this.getLines().forEach(line => {
       if (unallocatedAmount === 0) return false;
