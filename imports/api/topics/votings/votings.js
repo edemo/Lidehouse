@@ -123,6 +123,8 @@ Topics.categoryHelpers('vote', {
     return voteParticipationPercent;
   },
   isVoteSuccessful() {
+    if (this.vote.procedure === 'meeting') return true;
+    debugAssert(this.vote.procedure === 'online');
     return this.votedPercent() >= this.voteSuccessLimit();
   },
   notVotedUnits() {
