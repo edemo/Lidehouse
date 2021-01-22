@@ -73,11 +73,17 @@ Template.Topic_vote_body.helpers({
         backgroundColor: voteSummaryDisplay.map((s, i) => choiceColors[i]), // .concat(notVotedColor),
       }],
     };
+    const voteData = voteSummaryDisplay.map((s) => s.percentOfVotes);
+    const shortenedLabel = function shortenedLabel(text) {
+      if (voteData.length > 9 && text.length > 12) return text.substr(0, 11) + '...';
+      else if (text.length < 21) return text;
+      return text.substr(0, 19) + '...';
+    };
     const barData = {
-      labels: vote.choices.map(c => `${__(c)}`),
+      labels: voteSummaryDisplay.map(s => `${shortenedLabel(__(s.choice))}`),
       datasets: [{
         label: __('Support'),
-        data: vote.choices.map((c, i) => voteSummary[i]),
+        data: voteData,
         backgroundColor: choiceColors[2],
         borderWidth: 2,
       }],
