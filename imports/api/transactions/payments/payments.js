@@ -9,7 +9,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Clock } from '/imports/utils/clock.js';
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { equalWithinRounding } from '/imports/api/utils.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
@@ -201,7 +201,7 @@ Transactions.categoryHelpers('payment', {
       if (unallocatedAmount === 0) return false;
       const bill = Transactions.findOne(billPaid.id);
       if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
-      debugAssert(billPaid.amount < 0 === bill.amount < 0, 'Bill amount and its payment must have the same sign');
+      productionAssert(billPaid.amount < 0 === bill.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
       if (accountingMethod === 'accrual') {
         if (billPaid.amount === bill.amount) {
           bill[this.relationSide()].forEach(entry => {
@@ -245,7 +245,6 @@ Transactions.categoryHelpers('payment', {
       } else if (accountingMethod === 'cash') {
         bill.getLines().forEach(line => {
           if (unallocatedAmount === 0) return false;
-          if (!line) return true; // can be null, when a line is deleted from the array
           const amount = Math.smallerInAbs(line.amount, billPaid.amount);
           const parcelId = line.localizer && Parcels.findOne({ communityId: this.communityId, code: line.localizer })._id;
           this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId, contractId: bill.contractId });
@@ -255,7 +254,7 @@ Transactions.categoryHelpers('payment', {
     });
     this.getLines().forEach(line => {
       if (unallocatedAmount === 0) return false;
-      if (!line) return true; // can be null, when a line is deleted from the array
+      productionAssert(unallocatedAmount < 0 === line.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
       const amount = Math.smallerInAbs(line.amount, unallocatedAmount);
       this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId, contractId: line.contractId });
       unallocatedAmount -= amount;
