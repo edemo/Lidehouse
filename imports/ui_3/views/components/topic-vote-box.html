@@ -101,10 +101,9 @@
                   </div>
                 </div>
               </div>
-            {{/unless}}
-            {{#if equals votedCount 0}}
+            {{else}}
               <div class="text-center">{{_ "No vote on this topic"}}</div>
-            {{/if}}
+            {{/unless}}
           {{/unless}}
         </div>
       </div>
