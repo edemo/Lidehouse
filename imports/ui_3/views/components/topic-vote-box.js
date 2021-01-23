@@ -36,7 +36,7 @@ Template.Topic_vote_body.onRendered(function () {
     element: this.find('.progress-bar'),
     handler() {
       self.autorun(() => {
-        const votedPercent = Topics.findOne(doc._id).votedPercent().toFixed(2);
+        const votedPercent = Topics.findOne(doc._id)?.votedPercent().toFixed(2);
         self.$('.progress-bar').css('width', votedPercent + '%');
       });
       return self.waypoint && self.waypoint.disable();
