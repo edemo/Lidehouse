@@ -123,6 +123,8 @@ Topics.categoryHelpers('vote', {
     return voteParticipationPercent;
   },
   isVoteSuccessful() {
+    if (this.vote.procedure === 'meeting') return true;
+    debugAssert(this.vote.procedure === 'online');
     return this.votedPercent() >= this.voteSuccessLimit();
   },
   notVotedUnits() {
@@ -237,14 +239,22 @@ Topics.categoryHelpers('vote', {
   },
   voteSummaryDisplay() {
     if (!this.voteSummary) return [];   // Results come down in a different sub, so it might not be there just yet
-    return Object.keys(this.voteSummary).map(key => {
+    const voteSummarydata = Object.keys(this.voteSummary).map(key => {
       const choice = this.vote.choices[key];
       const votingUnits = this.voteSummary[key];
       const votingShare = this.unitsToShare(this.voteSummary[key]);
-      const percentOfTotal = votingShare.toNumber() * 100;
-      const percentOfVotes = (votingUnits / this.voteParticipation.units) * 100;
-      return { choice, votingUnits, votingShare, percentOfTotal, percentOfVotes };
+      const percentOfTotal = (votingShare.toNumber() * 100);
+      const percentOfVotes = ((votingUnits / this.voteParticipation.units) * 100);
+      return { 
+        choice,
+        votingUnits: votingUnits.round(0),
+        votingShare,
+        percentOfTotal: percentOfTotal.round(2),
+        percentOfVotes: percentOfVotes.round(2),
+      };
     });
+    if (this.vote.type === 'yesno') return voteSummarydata;
+    return voteSummarydata.sort((a, b) => b.percentOfVotes - a.percentOfVotes);
   },
   workflow() {
     return Votings.workflow;

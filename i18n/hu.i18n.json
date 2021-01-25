@@ -406,6 +406,7 @@
   "Vote results": "Szavazási eredmények",
   "Aggregation of votes": "Szavazatok összesítése",
   "Support of options": "Opciók támogatottsága",
+  "No vote on this topic": "Nem érkezett szavazat",
   "voter": "Szavazó",
   "casted vote": "Szavazat",
   "Casted votes": "Szavazatok",
@@ -491,6 +492,8 @@
   "Type": "Típus",
   "No tickets yet": "Még nincs bejelentése",
   "My own only": "Csak a sajátjaim mutatása",
+  "By start date": "Kezdés dátuma szerint",
+  "Start date": "Kezdés dátuma",
 
   // finances
   "Side": "Oldal",
@@ -654,6 +657,7 @@
   "Not a valid google drive link": "Érvénytelen google drive link",
   "Sorting may not be applied on external docs": "Sorbarendezés a külső szolgáltatónál tárolt fájlokra nem alkalmazható",
   "Need to provide a location": "Könyvelési hely megadása kötelező",
+  "Partners are connected to different users" : "A partnerek különböző felhasználókhoz kapcsolódnak!",
 
   "logout": "kilépés",
   "login": "belépés",
@@ -680,7 +684,7 @@
   "pageNotFoundMessage": "A %s nem található a rendszerben.\nEnnek lehet oka, hogy időközben már törölték.\nDe az is lehet hogy önnek nincs megfelelő jogosultsága hogy megtekintse.",
   "Back to the board": "Vissza a főoldalra",
   "Activate community": "Aktiválom a házamat",
-  "warningPartnerMerge": "Ezzel a művelettel a partner amelyiken meghívta törlődni fog, annak adatait és egyenlegét beleolvasztjuk az allább kijelölt partnerbe. A törlendő partner adatait felülírja a cél partner adata, ha mindkettőn meg van adva.",
+  "warningPartnerMerge": "Ezzel a művelettel a partner, amelyiken meghívta, törlődni fog, annak adatait és egyenlegét beleolvasztjuk az alább kijelölt partnerbe. A törlendő partner adatait felülírja a cél partner adata, ha mindkettőn meg van adva.",
 
   "userAccountsSubtitle": {
     "signIn": "A rendszer használatához lépjen be",
@@ -727,6 +731,7 @@
   "actionDone_registerReading": "leolvasás rögzítve",
   "actionDone_remind": "emlékeztető elküldve",
   "actionDone_period": "időszak módosítva",
+  "actionDone_merge": "beolvasztva",
 // "bill parcels successful": "Közös költség terv kiróvva",
 // "close vote successful": "Szavazás lezárva",
 // "publish balances successful": "Aktuális egyenlegek publikálva",
@@ -811,5 +816,19 @@
     "Addig a __communityName__ közösségben az ön hozzászólásai és szavazatai mellett a többi tulajdonos hivatalos névként azt fogja látni: __personName__."],
 
   "s": "k",
-  "":""
+  "":"",
+
+  // Months (in charts) 
+  "JAN": "JAN",
+  "FEB": "FEBR",
+  "MAR": "MÁRC",
+  "APR": "ÁPR",
+  "MAY": "MÁJ",
+  "JUN": "JÚN",
+  "JUL": "JÚL",
+  "AUG": "AUG",
+  "SEP": "SZEPT",
+  "OCT": "OKT",
+  "NOV": "NOV",
+  "DEC": "DEC"
 }

@@ -52,4 +52,8 @@ export const Render = Meteor.isServer ? {} : {
     if (renderType === 'display') return '';
     return cellData;
   },
+  paperclip(cellData) {
+    if (!cellData) return '';
+    return '<i class="glyphicon glyphicon-paperclip"></i>';
+  },
 };

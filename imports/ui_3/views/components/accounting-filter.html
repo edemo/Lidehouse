@@ -38,7 +38,7 @@
               <div class="input-group">
                 <label class="control-label text-capitalize">{{_ 'schemaTopics.status.label'}}</label><br>
                 {{#each txStatus in transactionStatuses}}
-                <button type="button" class="btn btn-xs btn-outline btn-{{txStatus.color}} js-filter {{activeButton 'txStatus' txStatus.name}}" data-field="txStatus" data-value="{{txStatus.name}}">{{_ (concat 'schemaTransactions.status.options.' txStatus.name)}}</button>
+                <button type="button" class="btn btn-xs btn-outline btn-{{txStatus.color}} js-toggle-filter {{activeButton 'txStatus' txStatus.name}}" data-field="txStatus" data-value="{{txStatus.name}}">{{_ (concat 'schemaTransactions.status.options.' txStatus.name)}}</button>
                 {{/each}}
               </div>
             </div>

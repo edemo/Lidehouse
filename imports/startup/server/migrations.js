@@ -34,6 +34,8 @@ import '/imports/api/transactions/accounts/template.js';
 
 const keepOrderSort = { sort: { updatedAt: 1 } };   // use this to keep updatedAt order intact
 
+// Use only direct db operations to avoid unnecessary hooks!
+
 Migrations.add({
   version: 1,
   name: 'Add CreatedBy and UpdatedBy fields (and use CreatedBy instead of userId)',
@@ -586,13 +588,13 @@ Migrations.add({
   },
 });
 
-/* Migrations.add({
-  version: ??,
+Migrations.add({
+  version: 32,
   name: 'Connect partner userId with membership userId',
   up() {
-    Memberships.find({ userId: { $exists: false } }).forEach((m) => {
+    Memberships.find({ $and: [{ userId: { $exists: false } }, { partnerId: { $exists: true } }] }).forEach((m) => {
       const partner = Partners.findOne(m.partnerId);
-      if (partner && partner.userId) Memberships.update({ _id: m._id }, { $set: { userId: partner.userId } });
+      if (partner && partner.userId) Memberships.update({ _id: m._id }, { $set: { userId: partner.userId } }, { selector: m });
     });
     Partners.find({ userId: { $exists: false } }).forEach((p) => {
       const membership = Memberships.findOne({ partnerId: p._id, userId: { $exists: true } });
@@ -600,7 +602,22 @@ Migrations.add({
     });
   },
 });
- */
+
+Migrations.add({
+  version: 33,
+  name: 'Set memberships to accepted if user is verified',
+  up() {
+    Memberships.find({ userId: { $exists: true }, accepted: false }).forEach((m) => {
+      const user = Meteor.users.findOne({ _id: m.userId });
+      if (user && user.isVerified()) {
+        Memberships.direct.update(m._id, { $set: { accepted: true } });
+      }
+    });
+  },
+});
+
+// Use only direct db operations to avoid unnecessary hooks!
+
 Meteor.startup(() => {
   Migrations.unlock();
   Migrations.migrateTo('latest');

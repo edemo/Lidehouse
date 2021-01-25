@@ -83,6 +83,10 @@ export const merge = new ValidatedMethod({
     const doc = checkExists(Partners, _id);
     checkPermissions(this.userId, 'partners.update', doc);
     const destinationDoc = checkExists(Partners, destinationId);
+    if (doc.userId && destinationDoc.userId && doc.userId !== destinationDoc.userId) {
+      const user = Meteor.users.findOne(doc.userId);
+      if (Meteor.isServer && user.isVerified()) throw new Meteor.Error('err_notAllowed', 'Partners are connected to different users');
+    }
     const $set = _.deepExtend({}, doc, destinationDoc);
     delete $set.relation;
     delete $set.outstanding;
@@ -98,7 +102,19 @@ export const merge = new ValidatedMethod({
     Transactions.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: { category: 'bill' }, multi: true });
     Delegations.update({ sourceId: _id }, { $set: { sourceId: destinationId } }, { multi: true });
     Delegations.update({ targetId: _id }, { $set: { targetId: destinationId } }, { multi: true });
-    // Topics.update({ voteCasts: _id }, ...
+    if (Meteor.isServer) {
+      const votings = Topics.find({ communityId: doc.communityId, category: 'vote' });
+      votings.forEach((topic) => {
+        if (topic.voteCasts && topic.voteCasts[_id]) {
+          const value = topic.voteCasts[_id];
+          const voteModifier = { $set: { [`voteCasts.${destinationId}`]: value }, $unset: { [`voteCasts.${_id}`]: '' } };
+          const destinationValue = topic.voteCasts[destinationId];
+          if (destinationValue) delete voteModifier.$set;
+          Topics.update({ _id: topic._id }, voteModifier, { selector: { category: 'vote' } });
+          Topics.findOne(topic._id).voteEvaluate();
+        }
+      });
+    }
     Partners.remove(_id);
   },
 });
@@ -137,5 +153,5 @@ export const remindOutstandings = new ValidatedMethod({
 });
 
 Partners.methods = Partners.methods || {};
-_.extend(Partners.methods, { insert, update, remove, remindOutstandings });
+_.extend(Partners.methods, { insert, update, merge, remove, remindOutstandings });
 _.extend(Partners.methods, crudBatchOps(Partners));

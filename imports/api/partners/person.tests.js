@@ -12,6 +12,8 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/methods.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import { castVote } from '/imports/api/topics/votings/methods.js';
 import '/imports/api/users/users.js';
 
 import { Email } from 'meteor/email';   // We will be mocking it over
@@ -542,6 +544,117 @@ if (Meteor.isServer) {
         Partners.remove(partnerId);
         done();
       });
+    });
+
+    describe('partner merge', function () {
+      let partnerId2;
+      beforeEach(function () {
+        partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+          communityId: Fixture.demoCommunityId,
+          relation: ['member'],
+          idCard: { type: 'natural', name: 'Jim John' },
+          contact: { email: 'partner@demotest.hu' },
+          outstanding: 100,
+        });
+        partnerId2 = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+          communityId: Fixture.demoCommunityId,
+          relation: ['customer'],
+          idCard: { type: 'natural', name: 'Jim John James' },
+          contact: { address: 'Buffalo, Bull street' },
+          outstanding: 200,
+        });
+      });
+
+      it('keeps destination partner data, sums relation and outstandings', function (done) {
+        const ownershipId = managerInsertsOwner();
+        Partners.methods.merge._execute({ userId: Fixture.demoManagerId }, { _id: partnerId, destinationId: partnerId2 });
+
+        chai.assert.isUndefined(Partners.findOne(partnerId));
+        const partner = Partners.findOne(partnerId2);
+        chai.assert.equal(partner.idCard.name, 'Jim John James');
+        chai.assert.deepEqual(partner.contact, { email: 'partner@demotest.hu', address: 'Buffalo, Bull street' });
+        chai.assert.equal(partner.outstanding, 300);
+        chai.assert.deepEqual(partner.relation, ['member', 'customer']);
+        const ownership = Memberships.findOne(ownershipId);
+        chai.assert.equal(ownership.partnerId, partnerId2);
+
+        Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: ownershipId });
+        Partners.remove(partnerId2);
+        done();
+      });
+
+      it("throws error if partners' verified userId is different", function (done) {
+        const userId = Accounts.createUser({ email: 'partner@demotest.hu', password: 'password' });
+        const userId2 = Accounts.createUser({ email: 'partner2@demotest.hu', password: 'password' });
+        Partners.update({ _id: partnerId }, { $set: { userId } });
+        Partners.update({ _id: partnerId2 }, { $set: { userId: userId2 } });
+
+        // merges when source partner's user is not verified
+        Partners.methods.merge._execute({ userId: Fixture.demoManagerId }, { _id: partnerId, destinationId: partnerId2 });
+        let partner = Partners.findOne(partnerId2);
+        chai.assert.equal(partner.idCard.name, 'Jim John James');
+        chai.assert.equal(partner.userId, userId2);
+        chai.assert.isUndefined(Partners.findOne(partnerId));
+
+        // throws if source partner's user is verified and destination partner has userId
+        Meteor.users.update(userId2, { $set: { 'emails.0.verified': true } });
+        const partnerId3 = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+          communityId: Fixture.demoCommunityId,
+          relation: ['member'],
+          idCard: { type: 'natural', name: 'Jim Bob' },
+          userId,
+        });
+        chai.assert.throws(() => {
+          Partners.methods.merge._execute({ userId: Fixture.demoManagerId }, { _id: partnerId2, destinationId: partnerId3 });
+        }, 'err_notAllowed');
+
+        // keeps source partner's userId, if there is no userId on destination partner
+        Partners.update({ _id: partnerId3 }, { $unset: { userId: '' } });
+        Partners.methods.merge._execute({ userId: Fixture.demoManagerId }, { _id: partnerId2, destinationId: partnerId3 });
+        partner = Partners.findOne(partnerId3);
+        chai.assert.equal(partner.idCard.name, 'Jim Bob');
+        const partner3 = Partners.findOne(partnerId3);
+        chai.assert.equal(partner3.userId, userId2);
+        chai.assert.isUndefined(Partners.findOne(partnerId2));
+
+        Partners.remove(partnerId3);
+        done();
+      });
+
+      it('merges votes correctly', function (done) {
+        const userId = Accounts.createUser({ email: 'voter@demotest.hu', password: 'password' });
+        Partners.update({ _id: partnerId }, { $set: { userId } });
+        const ownershipId = managerInsertsOwner();
+        Memberships.update({ _id: ownershipId }, { $set: { userId } }, { selector: { role: 'owner' } });
+        const votingId = Topics.methods.insert._execute({ userId: Fixture.demoManagerId },
+          Fixture.builder.build('vote', { userId: Fixture.demoManagerId }));
+
+        let voting = Topics.findOne(votingId);
+        castVote._execute({ userId: Fixture.demoAdminId }, { topicId: votingId, castedVote: [1], voters: [partnerId] });
+        castVote._execute({ userId: Fixture.dummyUsers[2] }, { topicId: votingId, castedVote: [2] });
+        castVote._execute({ userId: Fixture.dummyUsers[3] }, { topicId: votingId, castedVote: [3] });
+        voting = Topics.findOne(votingId);
+        chai.assert.deepEqual(voting.voteCasts[partnerId], [1]);
+        chai.assert.isDefined(voting.votePaths[partnerId]);
+        chai.assert.isUndefined(voting.voteCasts[partnerId2]);
+        chai.assert.deepEqual(voting.voteCasts[Fixture.partnerId(Fixture.dummyUsers[2])], [2]);
+        chai.assert.deepEqual(voting.voteCasts[Fixture.partnerId(Fixture.dummyUsers[3])], [3]);
+
+        Partners.methods.merge._execute({ userId: Fixture.demoManagerId }, { _id: partnerId, destinationId: partnerId2 });
+
+        voting = Topics.findOne(votingId);
+        chai.assert.isUndefined(voting.voteCasts[partnerId]);
+        chai.assert.isUndefined(voting.votePaths[partnerId]);
+        chai.assert.deepEqual(voting.voteCasts[partnerId2], [1]);
+        chai.assert.isDefined(voting.votePaths[partnerId2]);
+        chai.assert.deepEqual(voting.voteCasts[Fixture.partnerId(Fixture.dummyUsers[2])], [2]);
+        chai.assert.deepEqual(voting.voteCasts[Fixture.partnerId(Fixture.dummyUsers[3])], [3]);
+
+        Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: ownershipId });
+        Partners.remove(partnerId2);
+        done();
+      });
+
     });
   });
 }

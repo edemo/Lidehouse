@@ -82,6 +82,7 @@ const scheduled = {
   color: 'info',
   colorCode: '#1FAEB0',
   data: [
+    'localizer',
     'partnerId',
     'chargeType',
     'contractId',
@@ -204,6 +205,9 @@ Topics.categoryHelpers('ticket', {
   },
   inputFields() {
     return this.modifiableFields().concat(this.startFields());
+  },
+  displayStart() {
+    return (this.ticket.actualStart || this.ticket.expectedStart);
   },
 });
 
