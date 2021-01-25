@@ -243,9 +243,15 @@ Topics.categoryHelpers('vote', {
       const choice = this.vote.choices[key];
       const votingUnits = this.voteSummary[key];
       const votingShare = this.unitsToShare(this.voteSummary[key]);
-      const percentOfTotal = (votingShare.toNumber() * 100).round(2);
-      const percentOfVotes = ((votingUnits / this.voteParticipation.units) * 100).round(2);
-      return { choice, votingUnits: votingUnits.round(0), votingShare, percentOfTotal, percentOfVotes };
+      const percentOfTotal = (votingShare.toNumber() * 100);
+      const percentOfVotes = ((votingUnits / this.voteParticipation.units) * 100);
+      return { 
+        choice,
+        votingUnits: votingUnits.round(0),
+        votingShare,
+        percentOfTotal: percentOfTotal.round(2),
+        percentOfVotes: percentOfVotes.round(2),
+      };
     });
     if (this.vote.type === 'yesno') return voteSummarydata;
     return voteSummarydata.sort((a, b) => b.percentOfVotes - a.percentOfVotes);
