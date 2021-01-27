@@ -111,9 +111,9 @@ export const insert = new ValidatedMethod({
     doc = Transactions._transform(doc);
     const communityId = doc.communityId;
     checkPermissions(this.userId, 'transactions.insert', doc);
-    if (doc.category === 'payment') {
-      doc.getBills().forEach((bp) => {
-        const bill = Transactions.findOne(bp.id);
+//  if (doc.category === 'payment') {
+//    doc.getBills?.()?.forEach((bp) => {
+//      const bill = Transactions.findOne(bp.id);
 //      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
 //        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
 //        function setOrCheckEquals(field) {
@@ -125,15 +125,17 @@ export const insert = new ValidatedMethod({
 //        setOrCheckEquals('relation');
 //        setOrCheckEquals('partnerId');
 //        setOrCheckEquals('contractId');
-      });
-      doc.getLines().forEach((line) => {
-        const parcel = Localizer.parcelFromCode(line.localizer, communityId);
-        if (!line.contractId && parcel) {
-          const contract = parcel?.payerContract();
-          line.contractId = contract?._id;
-        }
-      });
-    } else if (doc.category === 'barter') {
+//     });
+//   }
+    doc.getLines?.()?.forEach((line) => {
+      const parcel = Localizer.parcelFromCode(line.localizer, communityId);
+      if (!line.contractId && parcel) {
+        const contract = parcel?.payerContract();
+        line.contractId = contract?._id;
+      }
+      if (!line.parcelId && parcel) line.parcelId = parcel._id;
+    });
+    if (doc.category === 'barter') {
       const supplierBill = doc.supplierBill();
       const customerBill = doc.customerBill();
 //      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
@@ -165,6 +167,14 @@ export const update = new ValidatedMethod({
         throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
       }
     }
+    modifier.$set?.lines?.forEach((line, i) => {
+      if (line.localizer) {
+        const parcel = Localizer.parcelFromCode(line.localizer, doc.communityId);
+        const contract = parcel?.payerContract();
+        line.contractId = contract?._id;
+        line.parcelId = parcel?._id;
+      }
+    });
 
     return Transactions.update({ _id }, modifier, { selector: doc });
   },
