@@ -150,6 +150,7 @@ Parcels.helpers({
     return { communityId: this.communityId, relation: 'member', parcelId: this._id };
   },
   payerContract() {
+    if (this.category !== '@property') return undefined;
     const Contracts = Mongo.Collection.get('contracts');
     const contractSelector = this._contractSelector();
     let payerContract = Contracts.findOneActive(contractSelector);
@@ -167,7 +168,7 @@ Parcels.helpers({
     return payerContract;
   },
   payerPartner() {
-    return this.payerContract().partner();
+    return this.payerContract()?.partner();
   },
   partners() {
     const Partners = Mongo.Collection.get('partners');
@@ -210,7 +211,7 @@ Parcels.helpers({
     return total;
   },
   isLeaf() {
-    return this.category !== 'group';
+    return this.category !== '@group';
   },
   asOption() {
     return { label: this.displayAccount(), value: this.code };

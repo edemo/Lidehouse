@@ -26,9 +26,8 @@ export const Localizer = {
     return code.substring(1);
   },
   parcelFromCode(code, communityId) {
-    const ref = Localizer.code2parcelRef(code);
-    if (!communityId || !ref) return undefined;
-    const parcel = Parcels.findOne({ communityId, ref });
+    if (!communityId || !code) return undefined;
+    const parcel = Parcels.findOne({ communityId, code });
     return parcel;
   },
   node(parcel) {
