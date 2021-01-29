@@ -45,6 +45,9 @@
     "BillText": "You have a new electronic bill, which can be viewed in detail and printed by <a href=\"__link__\">logging into the system</a>. Here you can also view your bill and payment history.",
     "PaymentMethods": "You may transfer the amount to this bank account",
     "PaymentInstructions": "Please provide the bill ID at the remarks.",
+    "BillFooter" : ["You received this email, because in your settings you agreed to get notifications about your invoices in the community.<br>",
+    "You can change your settings in your user profile <a href=\"__link__\">at this link</a>.<br>",
+    "Should you have any questions, feel free to contact the community's <a href=\"mailto:__adminEmail__\">administrator<br>."],
 
     "PromoSignature": [
       "In case you have any questions, you can email us at <a href=mailto:info@honline.hu>info@honline.hu</a>",
@@ -65,7 +68,7 @@
 
     "NotificationsHeader": "The View button next to the topics will take you to that topic's page, where you can comment on it.",
     "NotificationsFooter": ["You are receiving these notifications, because you have asked us to send you email notifications about the activities in your community __frequency__.<br>",
-      "You can change your email notification settings or turn it off completely <a href=\"__link__\"> on this link</a>.<br>",
+      "You can change your email notification settings or turn it off completely <a href=\"__link__\"> at this link</a>.<br>",
       "Should you have any questions, feel free to contact the community's <a href=\"mailto:__adminEmail__\">administrator<br>."],
     "VoteClosesTitle": "Attention! The following voting(s) below will be closing soon, and you have not yet voted on these issues. By clicking on the green button you may still do so for a couple of days. You may also set up a delegation and let someone else vote for you on this and on similar issues in the future.",
     "ConfirmVoteSubject": "Your vote is registered in __community__",
