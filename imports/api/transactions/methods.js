@@ -84,7 +84,7 @@ export const post = new ValidatedMethod({
           });
         }
       });
-      sendBillEmail(doc);
+      if (doc.relation === 'member') sendBillEmail(doc);
     }
 
     return result;
@@ -99,7 +99,7 @@ export const resend = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
-    if (Meteor.isServer && doc.category === 'bill') {
+    if (Meteor.isServer && doc.category === 'bill' && doc.relation === 'member') {
       sendBillEmail(doc);
     }
   },

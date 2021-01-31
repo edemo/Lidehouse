@@ -94,6 +94,7 @@ const UserSettingsSchema = new SimpleSchema({
   delegatee: { type: Boolean, defaultValue: true },
   notiFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'never', autoform: allowedOptions() },
 //  notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: allowedOptions() },
+  getBillEmail: { type: Boolean, defaultValue: true },
   newsletter: { type: Boolean, defaultValue: false },
 });
 

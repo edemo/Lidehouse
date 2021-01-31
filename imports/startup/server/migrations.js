@@ -616,6 +616,14 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 34,
+  name: 'Get bill emails setting on user profile',
+  up() {
+    Meteor.users.direct.update({ 'settings.getBillEmail': { $exists: false } }, { $set: { 'settings.getBillEmail': true } }, { multi: true });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {
