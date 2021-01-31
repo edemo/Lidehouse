@@ -51,7 +51,9 @@
     "BillText": "Önnek új elektronikus számlája érkezett, amelyet az <a href=\"__link__\">online felületre belépve</a> részleteiben is megtekinthet vagy kinyomtathat. Ugyanitt a korábbi számláit is átnézheti.",
     "PaymentMethods": "A társasház bankszámlaszáma, amire átutalhatja az összeget",
     "PaymentInstructions": "A közlemény rovatba kérjük írja be a díjbekérő azonosító számát.",
-
+    "BillFooter" : ["Ön azért kapta ezt a levelet, mert beállításaiban az szerepel, hogy az Ön részére kiállított számlákról értesítőt kér.<br>",
+      "Az email értesítést a felhasználó profil beállításaiban tudja kikapcsolni <a href=\"__link__\">ezen a linken</a>.<br>",
+      "Ha bármi egyéb kérdése lenne, lépjen kapcsolatba a társasház <a href=\"mailto:__adminEmail__\">adminisztrátorával</a>."],
     "PromoSubject": "Üdvözöljük a HONLINE rendszerben",
     "PromoFooter": "Ezt a üzenetet azért küldtük a regisztrációja során megadott e-mail címre, hogy tájékoztassuk a kezdeti lépésekről. Amennyiben úgy véli, tévedésből kapta ezt az e-mailt, kérjük, hagyja figyelmen kívül vagy írjon az info@honline.hu e-mail címre.",
     "PromoSignature": [

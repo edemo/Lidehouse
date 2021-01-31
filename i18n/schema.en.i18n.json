@@ -183,6 +183,9 @@
           "low": "Every new comment and status update on topics"
         }
       },
+      "getBillEmail": {
+        "label": "I would like to receive emails about the invoices issued to me"
+      },
       "newsletter": {
         "label": "I would like to receive the newsletter about the application"
       }

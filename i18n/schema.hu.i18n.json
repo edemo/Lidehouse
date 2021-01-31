@@ -183,6 +183,9 @@
           "low": "Minden témáról, hozzászólásról és téma változásról"
         }
       },
+      "getBillEmail": {
+        "label": "Email értesítést kérek a számomra kiállított számlákról"
+      },
       "newsletter": {
         "label": "Szeretnék feliratkozni az applikációval kapcsolatos hírlevélre"
       }

@@ -11,6 +11,7 @@ export const Bill_Email = {
   layoutData: {
     type: 'New bill',
     alert: 'good',
+    footer: 'BillFooter',
   },
 
   helpers: {
