@@ -61,6 +61,7 @@ Transactions.categoryHelpers('barter', {
     );
     return supplierRes + customerRes;
   },
+/*
   updateOutstandings(sign) {
     if (Meteor.isClient) return;
     debugAssert(this.supplierBillId && this.customerBillId, 'Cannot process a barter without connecting it to a bills first');
@@ -78,7 +79,7 @@ Transactions.categoryHelpers('barter', {
         Parcels.update(line.parcelId, { $inc: { outstanding: (-1) * sign * line.amount } });
       });
     }
-  },
+  },*/
 });
 
 Transactions.attachVariantSchema(barterSchema, { selector: { category: 'barter' } });

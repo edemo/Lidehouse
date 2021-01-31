@@ -287,6 +287,7 @@ Transactions.categoryHelpers('payment', {
     });
     return result;
   },
+/*
   updateOutstandings(sign) {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a payment without a partner');
@@ -310,7 +311,7 @@ Transactions.categoryHelpers('payment', {
         Parcels.update(parcel._id, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });
       } 
     });
-  },
+  },*/
   displayInHistory() {
     return __(this.category) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');
   },

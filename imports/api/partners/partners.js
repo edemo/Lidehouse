@@ -14,7 +14,6 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
 
@@ -165,7 +164,6 @@ Partners.helpers({
 });
 
 Partners.attachSchema(Partners.schema);
-Partners.attachBehaviour(AccountingLocation);
 Partners.attachBehaviour(Timestamped);
 
 Partners.simpleSchema().i18n('schemaPartners');

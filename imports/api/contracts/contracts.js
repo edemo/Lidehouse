@@ -11,7 +11,6 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { noUpdate } from '/imports/utils/autoform.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners, choosePartner, choosePartnerOfParcel } from '/imports/api/partners/partners.js';
@@ -124,7 +123,6 @@ Communities.helpers({
 Contracts.attachBaseSchema(Contracts.baseSchema);
 Contracts.attachBehaviour(Timestamped);
 Contracts.attachBehaviour(ActivePeriod);
-Contracts.attachBehaviour(AccountingLocation);
 
 Contracts.attachVariantSchema(Contracts.detailsSchema, { selector: { relation: 'customer' } });
 Contracts.attachVariantSchema(Contracts.detailsSchema, { selector: { relation: 'supplier' } });

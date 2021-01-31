@@ -215,6 +215,7 @@ Transactions.categoryHelpers('bill', {
     this.getPayments().forEach(p => paid += p.amount);
     return this.amount - paid;
   },
+/*
   updateOutstandings(directionSign) {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a bill without a partner');
@@ -227,7 +228,7 @@ Transactions.categoryHelpers('bill', {
         Parcels.update(parcel._id, { $inc: { outstanding: directionSign * line.amount } }, { selector: { category: '@property' } });
       } else debugAssert(this.relation !== 'member', `Cannot process a parcel bill without parcelId field: ${JSON.stringify(this)}`);
     });
-  },
+  },*/
   displayInSelect() {
     return `${this.serialId} (${this.partner()} ${moment(this.valueDate).format('YYYY.MM.DD')} ${this.outstanding}/${this.amount})`;
   },

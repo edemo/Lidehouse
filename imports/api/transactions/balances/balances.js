@@ -15,9 +15,10 @@ export const Balances = new Mongo.Collection('balances');
 Balances.defSchema = new SimpleSchema([{
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   // phase: { type: String, defaultValue: 'done', allowedValues: ['real', 'plan'] },
-  account: { type: String },
+  account: { type: String, optional: true, defaultValue: '`' },
   localizer: { type: String, optional: true },
-  tag: { type: String },  // can be a period, end of a period, or a publication
+  partner: { type: String, optional: true },  // format: 'partnerId/contractId'
+  tag: { type: String, optional: true, defaultValue: 'T' },  // can be a period, end of a period, or a publication
 }]);
 
 // Definition + values of a balance
@@ -65,7 +66,7 @@ Balances.helpers({
 });
 
 Meteor.startup(function indexBalances() {
-  Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, tag: 1 });
+  Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, partner: 1, tag: 1 });
 });
 
 Balances.attachSchema(Balances.schema);
@@ -95,14 +96,22 @@ Balances.get = function get(def) {
   // Aggregating sub-accounts balances with regexp
   const subdef = _.clone(def);
   if (def.account !== undefined) subdef.account = new RegExp('^' + def.account);
-//  if (def.localizer) subdef.localizer = new RegExp('^' + def.localizer);
-  subdef.localizer = def.localizer ? def.localizer : { $exists: false };
+  subdef.localizer = def.localizer ? new RegExp('^' + def.localizer) : { $exists: false };
+  subdef.partner = def.partner ? new RegExp('^' + def.partner) : { $exists: false };
   Balances.find(subdef).forEach((balance) => {
     result.debit += balance.debit;
     result.credit += balance.credit;
   });
   result = Balances._transform(result);
   return result;
+};
+
+Balances.checkNullBalance = function checkNullBalance(def) {
+  const bal = Balances.get(def);
+  if (bal.total) {
+    throw new Meteor.Error('err_unableToRemove',
+      'Accounting location cannot be deleted while it has outstanding balance', `Outstanding: {${bal.total}}`);
+  }
 };
 
 function timeTagMatches(valueDate, tag) {
@@ -137,5 +146,13 @@ Balances.checkAllCorrect = function checkAllCorrect() {
   Balances.find({ tag: 'T' }).forEach((bal) => {
     delete bal._id;
     Balances.checkCorrect(bal);
+  });
+};
+
+Balances.ensureAllCorrect = function ensureAllCorrect() {
+  if (Meteor.isClient) return;
+  Balances.remove({});
+  Transactions.find({}).forEach((tx) => {
+    tx.updateBalances(+1);
   });
 };

@@ -186,9 +186,6 @@ Transactions.helpers({
   isReconciled() {
     return (!!this.seId);
   },
-  hasOutstanding() {
-    return (!!this.outstanding);
-  },
   reconciledEntry() {
     return this.seId && StatementEntries.findOne(this.seId);
   },
@@ -280,6 +277,8 @@ Transactions.helpers({
   //      entry.account.parents().forEach(account => {
       const account = entry.account;
       const localizer = entry.localizer;
+      let partner = entry.partnerId;
+      if (entry.contractId) partner += `/${entry.contractId}`;
       PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
         const changeAmount = entry.amount * directionSign;
         function increaseBalance(selector, side, amount) {
@@ -292,12 +291,12 @@ Transactions.helpers({
         if (localizer) {
           increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
         }
+        if (partner) {
+          increaseBalance({ communityId, account, partner, tag }, entry.side, changeAmount);
+        }
       });
     });
     // checkBalances([doc]);
-  },
-  updateOutstandings() {
-    // NOP -- will be overwritten in the categories
   },
   makeJournalEntries() {
     // NOP -- will be overwritten in the categories
@@ -375,9 +374,8 @@ if (Meteor.isServer) {
 
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
-    tdoc.updateBalances(+1);
+//    tdoc.updateBalances(+1); no entries yet, so this should happen at the time of posting
     if (tdoc.category === 'payment') tdoc.registerOnBills(+1);
-    tdoc.updateOutstandings(+1);
     const community = tdoc.community();
     if (tdoc.category === 'bill' && !_.contains(community.billsUsed, tdoc.relation)) {
       Communities.update(community._id, { $push: { billsUsed: tdoc.relation } });
@@ -409,15 +407,12 @@ if (Meteor.isServer) {
       const newDoc = tdoc;
       oldDoc.updateBalances(-1);
       newDoc.updateBalances(+1);
-      oldDoc.updateOutstandings(-1);
-      newDoc.updateOutstandings(+1);
     }
   });
 
   Transactions.after.remove(function (userId, doc) {
     const tdoc = this.transform();
     tdoc.updateBalances(-1);
-    tdoc.updateOutstandings(-1);
     if (tdoc.category === 'payment') tdoc.registerOnBills(-1);
     if (tdoc.seId) StatementEntries.update(tdoc.seId, { $unset: { txId: 0 } });
   });

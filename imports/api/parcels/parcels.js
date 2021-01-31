@@ -14,7 +14,6 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { FreeFields } from '/imports/api/behaviours/free-fields.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -274,7 +273,6 @@ _.extend(Parcels, {
 
 Parcels.attachBaseSchema(Parcels.baseSchema);
 // Parcels.attachBehaviour(FreeFields);
-Parcels.attachBehaviour(AccountingLocation);
 Parcels.attachBehaviour(Timestamped);
 
 Parcels.attachVariantSchema(Parcels.physicalSchema, { selector: { category: '@property' } });

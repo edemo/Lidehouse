@@ -9,6 +9,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Meters } from '/imports/api/meters/meters.js';
@@ -23,8 +24,8 @@ chai.assert.equalDate = function equalDate(d1, d2) {
 if (Meteor.isServer) {
   let Fixture;
 
-  describe('parcel billings', function () {
-    this.timeout(25000);
+  describe.only('parcel billings', function () {
+    this.timeout(25000000);
     let applyParcelBillings;
     let postParcelBillings;
     let revertParcelBillings;
@@ -149,9 +150,12 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 2);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test floor', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 25, quantity: 30, localizer: '@A103' });
-        chai.assert.equal(payer3.outstanding, bills[0].amount);
         assertBillDetails(bills[1], { payerPartnerId: payerPartner4Id, linesLength: 1, lineTitle: 'Test floor', linePeriod: '2018-01' });
         assertLineDetails(bills[1].lines[0], { uom: 'm2', unitPrice: 25, quantity: 40, localizer: '@A104' });
+        chai.assert.equal(Balances.get({ communityId, partner: payer3._id }).total(), 0);
+
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(Balances.get({ communityId, partner: payer3._id }).total(), bills[0].amount);
       });
 
       it('can apply billing to a certain parcel type', function() {
@@ -172,7 +176,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test type', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 100, quantity: 20, localizer: '@AP02' });
-        chai.assert.equal(payer3.outstanding, bills[0].amount);
+        chai.assert.equal(Balances.get({ communityId, partner: payer3._id }).total(), 0);
+
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(Balances.get({ communityId, partner: payer3._id }).total(), bills[0].amount);
       });
 
       it('can apply billing to a certain parcel group', function() {
@@ -193,7 +200,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test group', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 100, quantity: 20, localizer: '@AP02' });
-        chai.assert.equal(payer3.outstanding, bills[0].amount);
+        chai.assert.equal(Balances.get({ communityId, partner: payer3._id }).total(), 0);
+
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(Balances.get({ communityId, partner: payer3._id }).total(), bills[0].amount);
       });
 
       it('can apply multiple projections', function () {
@@ -248,9 +258,12 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner4Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'person', unitPrice: 5000, quantity: 4, localizer: '@A104' });
-        chai.assert.equal(parcel4.payerPartner().outstanding, 5000 * 4);
-        chai.assert.equal(parcel4.payerContract().outstanding, 5000 * 4);
-        chai.assert.equal(parcel4.outstanding, 5000 * 4);
+        chai.assert.equal(Balances.get({ communityId, partner: parcel4.payerPartner()._id }).total(), 0);
+
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(Balances.get({ communityId, partner: parcel4.payerPartner()._id }).total(), 5000 * 4);
+        chai.assert.equal(Balances.get({ communityId, partner: `${parcel4.payerPartner()._id}/${parcel4.payerContract()._id}` }).total(), 5000 * 4);
+        chai.assert.equal(Balances.get({ communityId, localizer: parcel4.code }).total(), 5000 * 4);
 
         Transactions.remove({});
         const meteredParcelId = Fixture.dummyParcels[3];
@@ -263,8 +276,12 @@ if (Meteor.isServer) {
         const billMetered = Transactions.findOne({ category: 'bill', partnerId: meteredParcel.payerPartner()._id });
         assertBillDetails(billMetered, { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-02' });
         assertLineDetails(billMetered.lines[0], { uom: 'm3', unitPrice: 600, quantity: 14.903, localizer: '@A103' });
-        chai.assert.equal(meteredParcel.payerPartner().outstanding, billMetered.amount);
-        chai.assert.equal(meteredParcel.outstanding, billMetered.amount);
+        chai.assert.equal(Balances.get({ communityId, partner: meteredParcel.payerPartner()._id }).total(), 0);
+        chai.assert.equal(Balances.get({ communityId, localizer: meteredParcel.code }).total(), 0);
+
+        postParcelBillings('2018-02-12');
+        chai.assert.equal(Balances.get({ communityId, partner: meteredParcel.payerPartner()._id }).total(), billMetered.amount);
+        chai.assert.equal(Balances.get({ communityId, localizer: meteredParcel.code }).total(), billMetered.amount);
       });
 
       it('bills follower parcel\'s parcel-billing to lead parcel\'s payer', function () {
@@ -286,9 +303,13 @@ if (Meteor.isServer) {
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'One follower parcel', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 15, quantity: 10, localizer: '@AP01' });
         chai.assert.equal(bills[0].amount, 150);
-        chai.assert.equal(leadParcel.payerPartner().outstanding, bills[0].lines[0].amount);
-        chai.assert.equal(followerParcel.outstanding, bills[0].lines[0].amount);
-        chai.assert.equal(leadParcel.outstanding, 0);
+        chai.assert.equal(Balances.get({ communityId, partner: leadParcel.payerPartner()._id }).total(), 0);
+
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(Balances.get({ communityId, partner: leadParcel.payerPartner()._id }).total(), bills[0].lines[0].amount);
+        chai.assert.equal(Balances.get({ communityId, partner: followerParcel.payerPartner()._id }).total(), bills[0].lines[0].amount);
+        chai.assert.equal(Balances.get({ communityId, localizer: leadParcel.code }).total(), 0);
+        chai.assert.equal(Balances.get({ communityId, localizer: followerParcel.code }).total(), bills[0].lines[0].amount);
       });
 
       it('bills the then owner for given apply date', function () {
@@ -329,9 +350,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test absolute', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'piece', unitPrice: 500, quantity: 1, localizer: '@A103' });
-        chai.assert.equal(formerPayer.outstanding, bills[0].amount);
-        chai.assert.equal(formerPayer.outstanding, parcel.outstanding);
-        chai.assert.equal(laterPayer.outstanding, 0);
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(Balances.get({ communityId, partner: formerPayer._id }).total(), bills[0].amount);
+        chai.assert.equal(Balances.get({ communityId, localizer: parcel.code }).total(), bills[0].amount);
+        chai.assert.equal(Balances.get({ communityId, partner: laterPayer._id }).total(), 0);
 
         Transactions.remove({});
         applyParcelBillings('2018-03-12');
@@ -342,9 +364,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills2.length, 1);
         assertBillDetails(bills2[0], { payerPartnerId: laterpayerPartnerId, linesLength: 1, lineTitle: 'Test absolute', linePeriod: '2018-03' });
         assertLineDetails(bills2[0].lines[0], { uom: 'piece', unitPrice: 500, quantity: 1, localizer: '@A103' });
-        chai.assert.equal(laterPayer.outstanding, bills2[0].amount);
-        chai.assert.equal(laterPayer.outstanding, parcel.outstanding);
-        chai.assert.equal(formerPayer.outstanding, 0);
+        postParcelBillings('2018-03-12');
+        chai.assert.equal(Balances.get({ communityId, partner: laterPayer._id }).total(), bills2[0].amount);
+        chai.assert.equal(Balances.get({ communityId, localizer: parcel.code }).total(), bills2[0].amount);
+        chai.assert.equal(Balances.get({ communityId,  partner: formerPayer._id }).total(), 0);
       });
 
       xit('will not apply for same period twice', function () {

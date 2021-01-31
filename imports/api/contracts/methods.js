@@ -58,6 +58,8 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Contracts, _id);
     checkPermissions(this.userId, 'contracts.remove', doc);
+    const contractTag = `${doc.partnerId}/${doc._id}`;
+    checkNullBalance({ communityId: doc.communityId, partner: contractTag});
     const worksheets = doc.worksheets();
     if (worksheets.count() > 0) {
       throw new Meteor.Error('err_unableToRemove', 'Contract cannot be deleted while it contains worksheets',

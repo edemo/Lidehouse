@@ -39,7 +39,7 @@ if (Meteor.isServer) {
         Templates.clone('Test_COA', Fixture.demoCommunityId);
         insertTx = function (params) {
           const communityId = Fixture.demoCommunityId;
-          return Transactions.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
+          const _id = Transactions.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
             communityId,
             category: 'freeTx',
             defId: Txdefs.findOne({ communityId, category: 'freeTx' })._id,
@@ -54,6 +54,8 @@ if (Meteor.isServer) {
               localizer: params.debit[1],
             }],
           });
+          Transactions.methods.post._execute({ userId: Fixture.demoAccountantId }, { _id });
+          return _id;
         };
         assertBalance = function (account, localizer, tag, expectedBalance) {
           const balance = Balances.get({

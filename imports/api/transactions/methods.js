@@ -74,6 +74,7 @@ export const post = new ValidatedMethod({
       _.extend(modifier.$set, { status: 'posted', ...updateData });
     }
     const result = Transactions.update(_id, modifier);
+    doc.updateBalances(+1);
 
     if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {
       doc.getLines().forEach((line) => {
