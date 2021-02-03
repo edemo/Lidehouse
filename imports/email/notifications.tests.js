@@ -12,6 +12,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import '/i18n/en.i18n.json';
 import '/i18n/email.en.i18n.json';
@@ -271,11 +272,13 @@ if (Meteor.isServer) {
       let billId;
       let partnerId;
 
-      it('Sends new bill', function () {
-        partnerId = Fixture.builder.create('supplier', { creatorId: Fixture.demoManagerId });
+      it('Sends new bill to member', function () {
+        Fixture.builder.create('parcelBilling', { creatorId: Fixture.demoManagerId });
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId: Fixture.demoCommunityId, date: new Date() }, Fixture.demoManagerId);
+        partnerId = Meteor.users.findOne(Fixture.dummyUsers[3]).partnerId(Fixture.demoCommunityId);
         const partner = Partners.findOne(partnerId);
-        billId = Fixture.builder.create('bill', { creatorId: Fixture.demoManagerId, partnerId });
-        const bill = Transactions.findOne(billId);
+        const bill = Transactions.findOne({ partnerId });
+        billId = bill._id;
         sinon.assert.notCalled(EmailSender.send);
 
         Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: billId });
