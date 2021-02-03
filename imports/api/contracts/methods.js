@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { sanityCheckOnlyOneActiveAtAllTimes } from '/imports/api/behaviours/active-period.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -59,7 +60,7 @@ export const remove = new ValidatedMethod({
     const doc = checkExists(Contracts, _id);
     checkPermissions(this.userId, 'contracts.remove', doc);
     const contractTag = `${doc.partnerId}/${doc._id}`;
-    checkNullBalance({ communityId: doc.communityId, partner: contractTag});
+    Balances.checkNullBalance({ communityId: doc.communityId, partner: contractTag });
     const worksheets = doc.worksheets();
     if (worksheets.count() > 0) {
       throw new Meteor.Error('err_unableToRemove', 'Contract cannot be deleted while it contains worksheets',

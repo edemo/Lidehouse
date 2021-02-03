@@ -78,11 +78,11 @@ Balances.get = function get(def) {
 
 //  This version is slower in gathering sub-accounts first,
 //  but minimongo indexing does not handle sorting, so in fact might be faster after all
-  if (def.localizer) {
-    const parcel = Parcels.findOne({ communityId: def.communityId, code: def.localizer });
-    debugAssert(parcel.isLeaf()); // Currently not prepared for upward cascading localizer
+//  if (def.localizer) {
+//    const parcel = Parcels.findOne({ communityId: def.communityId, code: def.localizer });
+//    debugAssert(parcel.isLeaf()); // Currently not prepared for upward cascading localizer
     // If you want to know the balance of a whole floor or building, the transaction update has to trace the localizer's parents too
-  }
+//  }
 /*  leafs.forEach(leaf => {
     const balance = Balances.findOne({/
       communityId: def.communityId,

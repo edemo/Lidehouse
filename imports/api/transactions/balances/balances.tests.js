@@ -23,7 +23,7 @@ if (Meteor.isServer) {
     });
 
     describe('api', function () {
-      let insertTx;
+      let insertAndPostTx;
       let assertBalance;
       before(function () {
         Templates.define({ _id: 'Test_COA', accounts: [
@@ -37,7 +37,7 @@ if (Meteor.isServer) {
         ],
         });
         Templates.clone('Test_COA', Fixture.demoCommunityId);
-        insertTx = function (params) {
+        insertAndPostTx = function (params) {
           const communityId = Fixture.demoCommunityId;
           const _id = Transactions.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
             communityId,
@@ -73,7 +73,7 @@ if (Meteor.isServer) {
       });
 
       it('updates balances with tx operations', function (done) {
-        insertTx({
+        insertAndPostTx({
           valueDate: new Date('2017-01-01'),
           amount: 1000,
           credit: [':12A'],
@@ -87,7 +87,7 @@ if (Meteor.isServer) {
         assertBalance(':1', undefined, 'T-2017-01', 0);
         assertBalance(':19', undefined, 'T', 1000);
 
-        const txId = insertTx({
+        const txId = insertAndPostTx({
           valueDate: new Date('2017-02-02'),
           amount: 2000,
           credit: [':12A'],
@@ -118,7 +118,7 @@ if (Meteor.isServer) {
       });
 
       it('updates balances of localizer', function (done) {
-        insertTx({
+        insertAndPostTx({
           valueDate: new Date('2017-03-03'),
           amount: 500,
           credit: [':12B', '@A103'],
@@ -126,9 +126,9 @@ if (Meteor.isServer) {
         });
         assertBalance(':12B', '@A103', 'T', -500);
         assertBalance(':12B', '@A103', 'T-2017-03', -500);
-        chai.assert.throws(() =>
-          assertBalance(':12B', '@A', 'T', -500) // todo? upward cascading localizer 
-        );
+        assertBalance(':12B', '@A1', 'T', -500); // upward cascading localizer
+        assertBalance(':12B', '@A', 'T', -500);
+        assertBalance(':12B', '@A', 'T-2017-03', -500);
         assertBalance(':12B', undefined, 'T', -500); // non-localized main account is also updated
         assertBalance(':12C', '@A103', 'T', 0);      // non-existing localized account answers with 0
         assertBalance(':12C', undefined, 'T', 500);
@@ -137,7 +137,7 @@ if (Meteor.isServer) {
         assertBalance(':1', undefined, 'T', 0);
         assertBalance(':1', '@A103', 'T', -500);
 
-        insertTx({
+        insertAndPostTx({
           valueDate: new Date('2017-03-03'),
           amount: 500,
           credit: [':12C', '@A103'],
@@ -149,7 +149,7 @@ if (Meteor.isServer) {
       });
 
       it('updates balances of both account and localizer', function (done) {
-        insertTx({
+        insertAndPostTx({
           valueDate: new Date('2017-03-03'),
           amount: 600,
           credit: [':12A', '@A103'],
