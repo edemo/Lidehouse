@@ -51,6 +51,11 @@ Meteor.startup(function indexMoneyAccounts() {
   }
 });
 
+Accounts.isPayableOrReceivable = function isPayableOrReceivable(code) {
+  const category = Accounts.findOne({ code }).category;
+  return (category === 'payable' || category === 'receivable');
+};
+
 Accounts.helpers({
   entityName() {
     const majorCategory = _.contains(['cash', 'bank'], this.category) ? this.category : 'simple';
