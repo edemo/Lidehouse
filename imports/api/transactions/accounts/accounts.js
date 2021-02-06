@@ -51,8 +51,8 @@ Meteor.startup(function indexMoneyAccounts() {
   }
 });
 
-Accounts.isPayableOrReceivable = function isPayableOrReceivable(code) {
-  const category = Accounts.findOne({ code }).category;
+Accounts.isPayableOrReceivable = function isPayableOrReceivable(code, communityId) {
+  const category = Accounts.findOne({ code, communityId }).category;
   return (category === 'payable' || category === 'receivable');
 };
 

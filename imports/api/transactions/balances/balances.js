@@ -54,9 +54,9 @@ Balances.helpers({
         case '1':
         case '2':
         case '3':
+        case '5':
         case '8': displaySign = +1; break;
         case '4':
-        case '5':
         case '9': displaySign = -1; break;
         default: break;
       }
@@ -108,9 +108,9 @@ Balances.get = function get(def) {
 
 Balances.checkNullBalance = function checkNullBalance(def) {
   const bal = Balances.get(def);
-  if (bal.total) {
+  if (bal.total()) {
     throw new Meteor.Error('err_unableToRemove',
-      'Accounting location cannot be deleted while it has outstanding balance', `Outstanding: {${bal.total}}`);
+      'Accounting location cannot be deleted while it has outstanding balance', `Outstanding: {${bal.total()}}`);
   }
 };
 
