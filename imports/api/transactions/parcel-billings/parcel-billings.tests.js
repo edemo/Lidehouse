@@ -366,9 +366,9 @@ if (Meteor.isServer) {
         assertBillDetails(bills2[0], { payerPartnerId: laterpayerPartnerId, linesLength: 1, lineTitle: 'Test absolute', linePeriod: '2018-03' });
         assertLineDetails(bills2[0].lines[0], { uom: 'piece', unitPrice: 500, quantity: 1, localizer: '@A103' });
         postParcelBillings('2018-03-12');
-        chai.assert.equal(Balances.get({ communityId, partner: laterPayer._id, tag: 'T-2018-03' }).total(), bills2[0].amount);
-        chai.assert.equal(Balances.get({ communityId, localizer: parcel.code, tag: 'T-2018-03' }).total(), bills2[0].amount);
-        chai.assert.equal(Balances.get({ communityId,  partner: formerPayer._id, tag: 'T-2018-03' }).total(), 0);
+        chai.assert.equal(Balances.get({ communityId, partner: laterPayer._id, tag: 'T' }).total(), bills2[0].amount);
+        chai.assert.equal(Balances.get({ communityId, localizer: parcel.code, tag: 'T' }).total(), bills2[0].amount);
+        chai.assert.equal(Balances.get({ communityId,  partner: formerPayer._id, tag: 'T' }).total(), 0);
       });
 
       xit('will not apply for same period twice', function () {
