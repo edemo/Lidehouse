@@ -89,17 +89,17 @@ export const merge = new ValidatedMethod({
     }
     const $set = _.deepExtend({}, doc, destinationDoc);
     delete $set.relation;
-    delete $set.outstanding;
     Mongo.Collection.stripAdministrativeFields($set);
     const modifier = {
       $set: _.extend($set, { relation: _.union(doc.relation, destinationDoc.relation) }),
-      $inc: { outstanding: doc.outstanding },
     };
     Partners.update(destinationId, modifier, { selector: destinationDoc });
 
     Contracts.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: destinationDoc, multi: true });
     Memberships.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: { role: 'owner' }, multi: true });
     Transactions.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: { category: 'bill' }, multi: true });
+    // Balances update happens in Transactions hooks
+    Balances.remove({ communityId: doc.communityId, partner: new RegExp('^' + _id) });
     Delegations.update({ sourceId: _id }, { $set: { sourceId: destinationId } }, { multi: true });
     Delegations.update({ targetId: _id }, { $set: { targetId: destinationId } }, { multi: true });
     if (Meteor.isServer) {
