@@ -147,6 +147,11 @@ Partners.helpers({
     const Transactions = Mongo.Collection.get('transactions');
     return Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $gt: 0 } });
   },
+  outstanding() {
+    // negative amount if relation = supplier
+    const Balances = Mongo.Collection.get('balances');
+    return Balances.get({ communityId: this.communityId, partner: this._id, tag: 'T' }).total();
+  },
   mostOverdueDays() {
     if (this.outstanding === 0) return 0;
     const daysOfExpiring = this.outstandingBills().map(bill => bill.overdueDays());

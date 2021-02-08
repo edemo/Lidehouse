@@ -554,26 +554,63 @@ if (Meteor.isServer) {
           relation: ['member'],
           idCard: { type: 'natural', name: 'Jim John' },
           contact: { email: 'partner@demotest.hu' },
-          outstanding: 100,
         });
         partnerId2 = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
           communityId: Fixture.demoCommunityId,
           relation: ['customer'],
           idCard: { type: 'natural', name: 'Jim John James' },
           contact: { address: 'Buffalo, Bull street' },
-          outstanding: 200,
         });
       });
 
       it('keeps destination partner data, sums relation and outstandings', function (done) {
         const ownershipId = managerInsertsOwner();
+        const billingId = Fixture.builder.create('parcelBilling', { title: 'Test area', projection: { base: 'area', unitPrice: 300 }, digit: '3', localizer: '@' });
+        Fixture.builder.create('bill', {
+          relation: 'member',
+          partnerId,
+          issueDate: new Date('2018-01-05'),
+          deliveryDate: new Date('2018-01-02'),
+          dueDate: new Date('2018-01-30'),
+          postedAt: new Date('2018-01-30'),
+          lines: [{
+            title: 'Work 1',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 100,
+            billing: { id: billingId },
+            account: '`951',
+          }],
+          debit: [{ account: '`33', amount: 100 }],
+          credit: [{ account: '`951', amount: 100 }],
+        });
+        Fixture.builder.create('bill', {
+          relation: 'customer',
+          partnerId: partnerId2,
+          issueDate: new Date('2018-01-05'),
+          deliveryDate: new Date('2018-01-02'),
+          dueDate: new Date('2018-01-30'),
+          postedAt: new Date('2018-01-30'),
+          lines: [{
+            title: 'Work 1',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 200,
+            account: '`952',
+          }],
+          debit: [{ account: '`31', amount: 200 }],
+          credit: [{ account: '`952', amount: 200 }],
+        });
+        chai.assert.equal(Partners.findOne(partnerId).outstanding(), 100);
+        chai.assert.equal(Partners.findOne(partnerId2).outstanding(), 200);
+
         Partners.methods.merge._execute({ userId: Fixture.demoManagerId }, { _id: partnerId, destinationId: partnerId2 });
 
         chai.assert.isUndefined(Partners.findOne(partnerId));
         const partner = Partners.findOne(partnerId2);
         chai.assert.equal(partner.idCard.name, 'Jim John James');
         chai.assert.deepEqual(partner.contact, { email: 'partner@demotest.hu', address: 'Buffalo, Bull street' });
-        chai.assert.equal(partner.outstanding, 300);
+        chai.assert.equal(partner.outstanding(), 300);
         chai.assert.deepEqual(partner.relation, ['member', 'customer']);
         const ownership = Memberships.findOne(ownershipId);
         chai.assert.equal(ownership.partnerId, partnerId2);

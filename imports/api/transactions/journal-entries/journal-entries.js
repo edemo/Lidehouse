@@ -4,7 +4,6 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { Transactions } from '../transactions.js';
 import { AccountSpecification } from '../account-specification.js';
 
 export const JournalEntries = new Mongo.Collection(null);
@@ -32,6 +31,7 @@ JournalEntries.helpers({
     return this.amount * dcSign * extraSign;
   },
   transaction() {
+    const Transactions = Mongo.Collection.get('transactions');
     const tx = Transactions.findOne(this.txId);
     if (!tx) Log.warning(`Tx with id ${this.txId} NOT found`);
     return tx;
@@ -66,6 +66,7 @@ if (Meteor.isClient) {
         JournalEntries.remove({ txId: doc._id });
       },
     };
+    const Transactions = Mongo.Collection.get('transactions');
     Transactions.find().observe(callbacks);
   });
 }

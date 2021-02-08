@@ -20,7 +20,6 @@ import { allowedOptions } from '/imports/utils/autoform.js';
 import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -212,20 +211,19 @@ Transactions.helpers({
   },
   journalEntries() {
     const entries = [];
-    if (this.debit) {
-      this.debit.forEach((entry, i) => {
-        entries.push(_.extend({ side: 'debit', txId: this._id, _id: this._id + '#Dr' + i }, entry));
-      });
-    }
-    if (this.credit) {
-      this.credit.forEach((entry, i) => {
-        entries.push(_.extend({ side: 'credit', txId: this._id, _id: this._id + '#Cr' + i }, entry));
-      });
+    if (this.postedAt) {
+      if (this.debit) {
+        this.debit.forEach((entry, i) => {
+          entries.push(_.extend({ side: 'debit', txId: this._id, _id: this._id + '#Dr' + i }, entry));
+        });
+      }
+      if (this.credit) {
+        this.credit.forEach((entry, i) => {
+          entries.push(_.extend({ side: 'credit', txId: this._id, _id: this._id + '#Cr' + i }, entry));
+        });
+      }
     }
     return entries.map(entry => {
-      if (!entry.partnerId) entry.partnerId = this.partnerId;
-      if (!entry.contractId) entry.contractId = this.contractId;
-      if (!entry.parcelId) entry.parcelId = this.parcelId;
       Object.setPrototypeOf(entry, this);
       return JournalEntries._transform(entry);
     });
@@ -272,27 +270,31 @@ Transactions.helpers({
   updateBalances(directionSign = 1) {
   //    if (!doc.complete) return;
     const communityId = this.communityId;
+    const Balances =  Mongo.Collection.get('balances');
     this.journalEntries().forEach((entry) => {
       const leafTag = 'T-' + moment(entry.valueDate).format('YYYY-MM');
   //      entry.account.parents().forEach(account => {
       const account = entry.account;
       const localizer = entry.localizer;
       let partner = entry.partnerId;
-      if (entry.contractId) partner += `/${entry.contractId}`;
+      if (partner && entry.contractId) partner += `/${entry.contractId}`;
       PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
         const changeAmount = entry.amount * directionSign;
         function increaseBalance(selector, side, amount) {
-          const bal = Balances.findOne(selector);
+          const finderSelector = _.extend({ partner: { $exists: false }, localizer: { $exists: false } }, selector);
+          const bal = Balances.findOne(finderSelector);
           const balId = bal ? bal._id : Balances.insert(selector);
           const incObj = {}; incObj[side] = amount;
           Balances.update(balId, { $inc: incObj });
         }
         increaseBalance({ communityId, account, tag }, entry.side, changeAmount);
-        if (localizer) {
-          increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
-        }
-        if (partner) {
-          increaseBalance({ communityId, account, partner, tag }, entry.side, changeAmount);
+        if (Accounts.isPayableOrReceivable(account, communityId)) {
+          if (localizer) {
+            increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
+          }
+          if (partner) {
+            increaseBalance({ communityId, account, partner, tag }, entry.side, changeAmount);
+          }
         }
       });
     });
@@ -324,6 +326,7 @@ Transactions.simpleSchema({ category: 'freeTx' }).i18n('schemaTransactions');
 // --- Before/after actions ---
 
 function checkBalances(docs) {
+  const Balances = Mongo.Collection.get('balances');
   const affectedAccounts = [];
   let communityId;
   docs.forEach((doc) => {
@@ -374,7 +377,9 @@ if (Meteor.isServer) {
 
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
-//    tdoc.updateBalances(+1); no entries yet, so this should happen at the time of posting
+    if (tdoc.postedAt) {
+      tdoc.updateBalances(+1);
+    }
     if (tdoc.category === 'payment') tdoc.registerOnBills(+1);
     const community = tdoc.community();
     if (tdoc.category === 'bill' && !_.contains(community.billsUsed, tdoc.relation)) {
@@ -402,7 +407,7 @@ if (Meteor.isServer) {
     if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
       tdoc.registerOnBills(+1);
     }
-    if (modifierChangesField(modifier, ['debit', 'credit', 'amount', 'valueDate'])) {
+    if (modifierChangesField(modifier, ['debit', 'credit', 'amount', 'valueDate']) || tdoc.postedAt) {
       const oldDoc = Transactions._transform(this.previous);
       const newDoc = tdoc;
       oldDoc.updateBalances(-1);

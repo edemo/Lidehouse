@@ -251,7 +251,7 @@ export const recognize = new ValidatedMethod({
       payAccount: entry.account,
       amount: adjustedEntryAmount,
     };
-    if (partner.outstanding === adjustedEntryAmount) {
+    if (Math.abs(partner.outstanding()) === adjustedEntryAmount) {
       // ---------------------------
       // 2nd grade, 'success' match: The payment exactly matches the outstanding bills of the partner
       // ---------------------------

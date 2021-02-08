@@ -5,6 +5,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkUnique, checkModifier, checkPermissions, } from '/imports/api/method-checks.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -83,8 +85,8 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Parcels, _id);
     checkPermissions(this.userId, 'parcels.remove', doc);
-    const localizer = Localizer.parcelRef2code(doc.ref);
-    checkNullBalance({ communityId: doc.communityId, localizer });
+    const localizer = doc.code || Localizer.parcelRef2code(doc.ref);
+    Balances.checkNullBalance({ communityId: doc.communityId, localizer });
     const activeOwners = Memberships.findActive({ parcelId: _id, role: 'owner' });
     if (activeOwners.count() > 0) {
       throw new Meteor.Error('err_unableToRemove', 'Parcel cannot be deleted while it has active owners',

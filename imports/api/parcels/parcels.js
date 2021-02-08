@@ -173,6 +173,10 @@ Parcels.helpers({
     const Partners = Mongo.Collection.get('partners');
     return this.occupants().fetch().map(o => Partners.findOne(o.partnerId));
   },
+  outstanding() {
+    const Balances = Mongo.Collection.get('balances');
+    return Balances.get({ communityId: this.communityId, localizer: this.code, tag: 'T' }).total();
+  },
   display() {
     return `${this.ref || '?'} (${this.location()}) ${this.type}`;
   },
