@@ -204,7 +204,7 @@ Transactions.categoryHelpers('bill', {
         if (!line) return; // can be null, when a line is deleted from the array
         this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
         let contraAccount = this.relationAccount().code;
-        if (this.relation === 'member') contraAccount += ParcelBillings.findOne(line.billing.id).digit;
+        if (this.relation === 'member' && line.billing) contraAccount += ParcelBillings.findOne(line.billing.id).digit;
         this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer, parcelId: line.parcelId });
       });
     } // else if (accountingMethod === 'cash') >> we have no accounting to do
