@@ -53,7 +53,7 @@ export function parcelFinancesColumns() {
     { data: 'type', title: __('schemaParcels.type.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: 'withFollowers()', title: __('follower parcels') },
-    { data: 'payerContract().outstanding', title: __('schemaBills.outstanding.label') },
+    { data: 'payerContract().outstanding()', title: __('schemaBills.outstanding.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'finances,meters', size: 'sm' }, cell),

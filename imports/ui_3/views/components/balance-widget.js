@@ -27,7 +27,7 @@ Template.Balance_widget.viewmodel({
   },
   balance() {
     const partner = this.partner();
-    return partner && (-1) * partner.outstanding;
+    return partner && (-1) * partner.balance();
   },
   display(balance) {
     const signPrefix = balance > 0 ? '+' : '';

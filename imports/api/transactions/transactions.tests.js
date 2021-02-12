@@ -84,7 +84,7 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: { 
           $set: { 'lines.0.account': '`951', 'lines.0.localizer': '@AP01', 'lines.1.account': '`951', 'lines.1.localizer': '@AP02' } } });
         FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
-        chai.assert.equal(bill.partner().outstanding(), 1300);
+        chai.assert.equal(bill.partner().outstanding('member'), 1300);
 //        chai.assert.equal(bill.contract().outstanding, 1300);
         const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP01' });
         const parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP02' });
@@ -145,7 +145,7 @@ if (Meteor.isServer) {
         chai.assert.equal(tx.amount, 300);
         chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '`861', localizer: '@' }]);
         chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '`454', localizer: '@' }]);
-        chai.assert.equal(bill.partner().outstanding(), -300);
+        chai.assert.equal(bill.partner().outstanding('supplier'), 300);
       });
 
       it('Can register Payments', function () {
@@ -180,14 +180,14 @@ if (Meteor.isServer) {
         chai.assert.isTrue(tx1.isPosted());
         chai.assert.deepEqual(tx1.debit, [{ amount: 100, account: '`454', localizer: '@' }]);
         chai.assert.deepEqual(tx1.credit, [{ amount: 100, account: bankAccount }]);
-        chai.assert.equal(bill.partner().outstanding(), -200);
+        chai.assert.equal(bill.partner().outstanding('supplier'), 200);
 
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
         tx2 = Transactions.findOne(paymentId2);
         chai.assert.isTrue(tx2.isPosted());
         chai.assert.deepEqual(tx2.debit, [{ amount: 200, account: '`454', localizer: '@' }]);
         chai.assert.deepEqual(tx2.credit, [{ amount: 200, account: bankAccount }]);
-        chai.assert.equal(bill.partner().outstanding(), 0);
+        chai.assert.equal(bill.partner().outstanding('supplier'), 0);
       });
 
       it('Can storno a Payment', function () {
@@ -237,10 +237,10 @@ if (Meteor.isServer) {
           { amount: 20, account: '`33', localizer: '@A103', contractId: contract1._id, parcelId: parcel1._id },
           { amount: 80, account: '`31', localizer: '@A104', contractId: contract2._id, parcelId: parcel2._id },
         ]);
-        chai.assert.equal(parcel1.outstanding(), -20);
-        chai.assert.equal(parcel2.outstanding(), -80);
-        chai.assert.equal(contract1.outstanding(), -20);
-        chai.assert.equal(contract2.outstanding(), -80);  // contract2 belongs to other partner, partnerId is required on line and journalEntry
+        chai.assert.equal(parcel1.outstanding('supplier'), 20);
+        chai.assert.equal(parcel2.outstanding('supplier'), 80);
+        chai.assert.equal(contract1.outstanding('supplier'), 20);
+        chai.assert.equal(contract2.outstanding('supplier'), 80);  // contract2 belongs to other partner, partnerId is required on line and journalEntry
       });
     });
 

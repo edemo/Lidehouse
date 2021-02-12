@@ -19,16 +19,31 @@ Meteor.publish('balances.ofAccounts', function balancesOfAccounts(params) {
   }
 
   const periodCodes = PeriodBreakdown.nodeCodes(true); // TODO filter for last year
-  return Balances.find({ communityId, localizer: { $exists: false } });
+  return Balances.find({ communityId, localizer: { $exists: false }, partner: { $exists: false } });
 });
-/*
-// Publishing the balances of all individual Parcels -- Current only
+
+Meteor.publish('balances.inCommunity', function balancesInCommunity(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+  }).validate(params);
+  const { communityId } = params;
+
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('balances.ofAccounts', { communityId })) {
+    return this.ready();
+  }
+  const selector = user.hasPermission('balances.ofLocalizers', { communityId })
+    ? { communityId } : { communityId, localizer: { $exists: false }, partner: { $exists: false } };
+  return Balances.find(selector);
+});
+
+// Publishing the balances of all individual Parcels
 Meteor.publishComposite('balances.ofLocalizers', function balancesOfLocalizers(params) {
   new SimpleSchema({
     communityId: { type: String },
-    limit: { type: Number, decimal: true, optional: true },
+    tag: { type: String, optional: true },
   }).validate(params);
-  const { communityId, limit } = params;
+  const { communityId, tag } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('balances.ofLocalizers', { communityId })) {
@@ -37,17 +52,16 @@ Meteor.publishComposite('balances.ofLocalizers', function balancesOfLocalizers(p
 
   return {
     find() {
-      return Balances.find({ communityId, localizer: { $exists: true }, tag: 'T' },
-        { sort: { amount: -1 }, limit });
+      return Balances.find({ communityId, localizer: { $exists: true }, tag });
     },
     children: [{
       find(balance) {
-        return Parcels.find({ communityId, ref: Localizer.code2parcelRef(balance.localizer) });
+        return Parcels.find({ communityId, code: balance.localizer });
       },
     }],
   };
 });
-
+/*
 // Everyone has access to all of his own parcels' balances
 Meteor.publishComposite('balances.ofSelf', function balancesOfSelf(params) {
   new SimpleSchema({

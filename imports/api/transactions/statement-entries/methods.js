@@ -214,7 +214,7 @@ export const recognize = new ValidatedMethod({
       Log.debug('No partner on statement');
     }
     if (partner) {
-      const possibleRelations = _.filter(partner.relation, r => Transactions.relationSign(r) === Math.sign(entry.amount));
+      const possibleRelations = _.filter(partner.relation, r => Partners.relationSign(r) === Math.sign(entry.amount));
       if (possibleRelations.length > 0) {
         relation = _.find(possibleRelations, r => Transactions.findOne({ communityId, category: 'bill', relation: r, outstanding: { $gt: 0 } }));
       }
@@ -238,6 +238,7 @@ export const recognize = new ValidatedMethod({
       StatementEntries.update(_id, { $set: { match: { confidence: 'danger', tx } } });
       return;
     }
+
     const adjustedEntryAmount = Math.abs(entry.amount);
     const matchingBills = Transactions.find({ communityId, category: 'bill', relation, partnerId: partner._id, outstanding: { $gt: 0 } }, { sort: { issueDate: 1 } }).fetch();
     const paymentDef = Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': relation });
@@ -251,7 +252,7 @@ export const recognize = new ValidatedMethod({
       payAccount: entry.account,
       amount: adjustedEntryAmount,
     };
-    if (Math.abs(partner.outstanding()) === adjustedEntryAmount) {
+    if (Math.abs(partner.balance()) === adjustedEntryAmount) {
       // ---------------------------
       // 2nd grade, 'success' match: The payment exactly matches the outstanding bills of the partner
       // ---------------------------
