@@ -624,6 +624,17 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 35,
+  name: 'Use balances instead of doc.outstanding',
+  up() {
+    Parcels.direct.update({ outstanding: { $exists: true } }, { $unset: { outstanding: '' } }, { validate: false, multi: true });
+    Partners.direct.update({ outstanding: { $exists: true } }, { $unset: { outstanding: '' } }, { validate: false, multi: true });
+    Contracts.direct.update({ outstanding: { $exists: true } }, { $unset: { outstanding: '' } }, { validate: false, multi: true });
+    Balances.ensureAllCorrect();
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

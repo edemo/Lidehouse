@@ -1,12 +1,14 @@
 /* eslint-disable prefer-arrow-callback */
 
 import { Meteor } from 'meteor/meteor';
+import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Parcels } from './parcels.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 
 Parcels.findWithRelatedDocs = function (...args) {
   return {
@@ -53,16 +55,47 @@ Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(param
 Meteor.publishComposite('parcels.outstanding', function parcelsOutstanding(params) {
   new SimpleSchema({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    limit: { type: Number, decimal: true, optional: true },
+    selector: { type: String, allowedValues: ['localizer', 'partner'] },
+    debtorsOnly: { type: Boolean, optional: true },
   }).validate(params);
-  const { communityId, limit } = params;
+  const { communityId, selector, debtorsOnly } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     return this.ready();
   }
 
-  return Parcels.findWithRelatedDocs({ communityId }, { sort: { outstanding: -1 }, limit });
+  const finderSelector = { communityId, [selector]: { $exists: true }, tag: 'T' };
+  if (debtorsOnly) _.extend(finderSelector, { $expr: { $ne: ['$debit', '$credit'] } });
+
+  if (selector === 'partner') {
+    return {
+      find() {
+        return Balances.find(finderSelector);
+      },
+      children: [{
+        find(balance) {
+          return Contracts.find({ partnerId: balance.partner.substring(0, 17), parcelId: { $exists: true } });
+        },
+        children: [{
+          find(contract) {
+            return Parcels.find(contract.parcelId);
+          },
+        }],
+      }],
+    };
+  } else if (selector === 'localizer') {
+    return {
+      find() {
+        return Balances.find(finderSelector);
+      },
+      children: [{
+        find(balance) {
+          return Parcels.find({ communityId, code: balance.localizer });
+        },
+      }],
+    };
+  }
 });
 
 Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
@@ -103,6 +136,10 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
           return Meters.find({ parcelId: parcel._id });
         },
       }],
+    }, {
+      find(membership) {
+        return Balances.find({ communityId, partner: new RegExp('^' + membership.partnerId), tag: 'T' });
+      },
     }],
   };
 });

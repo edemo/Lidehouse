@@ -79,7 +79,7 @@ ViewModel.share({
       selector.relation = this.activePartnerRelation();
       if (this.txStatusSelected().length > 0) selector.status = { $in: this.txStatusSelected() };
       if (this.unreconciledOnly()) {
-        selector.outstanding = { $or: { $exists: false, $gte: 0 } };
+       // selector.outstanding = { $or: { $exists: false, $gte: 0 } };
         selector.seId = { $exists: false };
       }
       selector.valueDate = {};

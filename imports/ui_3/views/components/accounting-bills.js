@@ -68,8 +68,8 @@ Template.Accounting_bills.viewmodel({
     return txs.count();
   },
   countOverduePartners(color) {
-    const partners = Partners.find({ communityId: this.communityId(), relation: this.activePartnerRelation(), outstanding: { $gt: 0 } });
-    const overdues = partners.fetch().filter(partner => partner.mostOverdueDaysColor() === color);
+    const partners = Partners.find({ communityId: this.communityId(), relation: this.activePartnerRelation() });
+    const overdues = partners.fetch().filter(partner => partner.balance() !== 0 && partner.mostOverdueDaysColor() === color);
     return overdues.length;
   },
   txTableDataFn(category) {

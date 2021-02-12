@@ -148,11 +148,17 @@ Parcels.helpers({
   _contractSelector() {
     return { communityId: this.communityId, relation: 'member', parcelId: this._id };
   },
+  contract() {
+    if (this.category !== '@property') return undefined;
+    const Contracts = Mongo.Collection.get('contracts');
+    return Contracts.findOneActive({ communityId: this.communityId, relation: 'member', parcelId: this._id });
+  },
   payerContract() {
     if (this.category !== '@property') return undefined;
     const Contracts = Mongo.Collection.get('contracts');
     const contractSelector = this._contractSelector();
     let payerContract = Contracts.findOneActive(contractSelector);
+    payerContract = payerContract?.billingContract();
     if (!payerContract) { // Contract can be created on the fly, at first payment
       Log.debug('Did not find', contractSelector);
       if (Meteor.isServer) { // will be called from parcelbillings.apply
@@ -173,9 +179,13 @@ Parcels.helpers({
     const Partners = Mongo.Collection.get('partners');
     return this.occupants().fetch().map(o => Partners.findOne(o.partnerId));
   },
-  outstanding() {
+  balance() {
     const Balances = Mongo.Collection.get('balances');
     return Balances.get({ communityId: this.communityId, localizer: this.code, tag: 'T' }).total();
+  },
+  outstanding() {
+    const Partners = Mongo.Collection.get('partners');
+    return this.balance() * Partners.relationSign('member');
   },
   display() {
     return `${this.ref || '?'} (${this.location()}) ${this.type}`;

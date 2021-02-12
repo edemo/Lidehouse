@@ -108,10 +108,13 @@ Contracts.helpers({
     if (this.leadParcelId) return Contracts.findOne({ parcelId: this.leadParcelId });
     else return this;
   },
-  outstanding() {
+  balance() {
     const Balances = Mongo.Collection.get('balances');
     const partner = this.partnerId + '/' + this._id;
     return Balances.get({ communityId: this.communityId, partner, tag: 'T' }).total();
+  },
+  outstanding() {
+    return this.balance() * Partners.relationSign(this.relation);
   },
   toString() {
     if (this.relation === 'member') return `${__('property')} ${this.parcel()?.ref}`;

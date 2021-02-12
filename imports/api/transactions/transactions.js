@@ -120,12 +120,6 @@ Transactions.oppositeSide = function oppositeSide(side) {
   return undefined;
 };
 
-Transactions.relationSign = function relationSign(relation) {
-  if (relation === 'supplier') return -1;
-  else if (relation === 'customer' || relation === 'member') return +1;
-  debugAssert(false, 'No such relation ' + relation); return undefined;
-};
-
 Transactions.setTxdef = function setTxdef(doc, txdef) {
   doc.defId = txdef._id;
   doc.category = txdef.category;
@@ -176,7 +170,7 @@ Transactions.helpers({
     debugAssert(false, 'No such relation ' + this.relation); return undefined;
   },
   relationSign() {
-    return Transactions.relationSign(this.relation);
+    return Partners.relationSign(this.relation);
   },
   isPosted() {
 //    return !!(this.debit && this.credit && this.complete); // calculateComplete()

@@ -22,18 +22,17 @@ import '/imports/ui_3/views/components/balance-report.js';
 import './parcels-finances.html';
 
 Template.Parcels_finances.viewmodel({
-  showAllParcels: true,
+  showAllParcels: false,
   onCreated(instance) {
     const self = this;
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       instance.subscribe('accounts.inCommunity', { communityId });
-      instance.subscribe('contracts.inCommunity', { communityId });
       if (Meteor.userOrNull().hasPermission('transactions.inCommunity', { communityId })) {
         if (self.showAllParcels()) {
-          instance.subscribe('parcels.outstanding', { communityId });
+          instance.subscribe('parcels.outstanding', { communityId, selector: 'partner' });
         } else {
-          instance.subscribe('parcels.outstanding', { communityId, limit: 10 });
+          instance.subscribe('parcels.outstanding', { communityId, selector: 'partner', debtorsOnly: true });
         }
       } else {
         instance.subscribe('parcels.ofSelf', { communityId });

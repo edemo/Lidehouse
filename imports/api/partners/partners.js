@@ -58,7 +58,7 @@ Partners.publicFields = {
   'contact': 0,
 };
 
-Partners.nonModifiableFields = ['communityId', 'userId', 'outstanding'];
+Partners.nonModifiableFields = ['communityId', 'userId'];
 
 
 Meteor.startup(function indexPartners() {
@@ -66,10 +66,15 @@ Meteor.startup(function indexPartners() {
     Partners._ensureIndex({ 'contact.email': 1 }, { sparse: true });
     Partners._ensureIndex({ 'idCard.identifier': 1 }, { sparse: true });
     Partners._ensureIndex({ communityId: 1, 'idCard.name': 1 });
-    Partners._ensureIndex({ communityId: 1, relation: 1, outstanding: -1 });
+    Partners._ensureIndex({ communityId: 1, relation: 1 });
   }
 });
 
+Partners.relationSign = function relationSign(relation) {
+  if (relation === 'supplier') return -1;
+  else if (relation === 'customer' || relation === 'member') return +1;
+  debugAssert(false, 'No such relation ' + relation); return undefined;
+};
 
 Partners.helpers({
   community() {
@@ -147,13 +152,16 @@ Partners.helpers({
     const Transactions = Mongo.Collection.get('transactions');
     return Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $gt: 0 } });
   },
-  outstanding() {
+  balance() {
     // negative amount if relation = supplier
     const Balances = Mongo.Collection.get('balances');
     return Balances.get({ communityId: this.communityId, partner: this._id, tag: 'T' }).total();
   },
+  outstanding(relation = ModalStack.getVar('relation')) {
+    return this.balance() * Partners.relationSign(relation);
+  },
   mostOverdueDays() {
-    if (this.outstanding === 0) return 0;
+    if (this.balance() === 0) return 0;
     const daysOfExpiring = this.outstandingBills().map(bill => bill.overdueDays());
     return Math.max.apply(Math, daysOfExpiring);
   },
