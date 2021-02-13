@@ -282,7 +282,7 @@ Transactions.helpers({
           Balances.update(balId, { $inc: incObj });
         }
         increaseBalance({ communityId, account, tag }, entry.side, changeAmount);
-        if (Accounts.isPayableOrReceivable(account, communityId)) {
+        if (Accounts.isPayableOrReceivable(account, communityId) && (tag.length < 7)) {
           if (localizer) {
             increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
           }
