@@ -20,6 +20,7 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 
 Math.smallerInAbs = function smallerInAbs(a, b) {
   if (a >= 0 && b >= 0) return Math.min(a, b);
@@ -202,15 +203,23 @@ Transactions.categoryHelpers('payment', {
       const bill = Transactions.findOne(billPaid.id);
       if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
       productionAssert(billPaid.amount < 0 === bill.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
-      let linesOrEntries;
-      if (accountingMethod === 'accrual') linesOrEntries = bill[this.relationSide()];
-      else if (accountingMethod === 'cash') linesOrEntries = bill.getLines();
+      const makeEntries = function makeEntries(line, amount) {
+        let relationAccount = line.relationAccount || this.relationAccount().code;
+        if (!line.relationAccount && line.billing) relationAccount += ParcelBillings.findOne(line.billing.id).digit;
+        const newEntry = { amount, localizer: line.localizer, parcelId: line.parcelId, contractId: bill.contractId };
+        this[this.conteerSide()].push(_.extend({ account: relationAccount }, newEntry));
+        if (accountingMethod === 'cash') {
+          const technicalAccount = Accounts.toTechnical(line.account);
+          this[this.relationSide()].push(_.extend({ account: technicalAccount }, newEntry));
+          this[this.conteerSide()].push(_.extend({ account: line.account }, newEntry));
+        }
+      };
 
       if (billPaid.amount === bill.amount) {
-        linesOrEntries.forEach(entry => {
+        bill.getLines().forEach((line) => {
           if (unallocatedAmount === 0) return false;
-          const amount = entry.amount;
-          this[this.conteerSide()].push({ amount: entry.amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+          const amount = line.amount;
+          makeEntries.call(this, line, amount);
           unallocatedAmount -= amount;
         });
       } else if (Math.abs(billPaid.amount) < Math.abs(bill.amount)) {
@@ -219,18 +228,18 @@ Transactions.categoryHelpers('payment', {
           if (payment.id !== this._id) paidBefore += payment.amount;
         });
         let unallocatedFromBill = billPaid.amount;
-        const billEntriesOrLines = Array.oppositeSignsFirst(linesOrEntries, bill.amount, 'amount');
-        billEntriesOrLines.forEach(entry => {
+        const billLines = Array.oppositeSignsFirst(bill.getLines(), bill.amount, 'amount');
+        billLines.forEach(line => {
           if (unallocatedAmount === 0) return false;
           if (paidBefore === 0) {
             let amount;
-            if (bill.amount >= 0) amount = entry.amount >= 0 ? Math.min(entry.amount, unallocatedAmount, unallocatedFromBill) : entry.amount;
-            if (bill.amount < 0) amount = entry.amount < 0 ? Math.max(entry.amount, unallocatedAmount, unallocatedFromBill) : entry.amount;
-            this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+            if (bill.amount >= 0) amount = line.amount >= 0 ? Math.min(line.amount, unallocatedAmount, unallocatedFromBill) : line.amount;
+            if (bill.amount < 0) amount = line.amount < 0 ? Math.max(line.amount, unallocatedAmount, unallocatedFromBill) : line.amount;
+            makeEntries.call(this, line, amount);
             unallocatedAmount -= amount;
             unallocatedFromBill -= amount;
           } else if ((bill.amount >= 0 && paidBefore > 0) || (bill.amount < 0 && paidBefore < 0)) {
-            paidBefore -= entry.amount;
+            paidBefore -= line.amount;
           }
           if ((bill.amount >= 0 && paidBefore < 0) || (bill.amount < 0 && paidBefore > 0)) {
             const remainder = -paidBefore;
@@ -238,7 +247,7 @@ Transactions.categoryHelpers('payment', {
             let amount;
             if (bill.amount >= 0) amount = Math.min(remainder, unallocatedAmount, unallocatedFromBill);
             if (bill.amount < 0) amount = Math.max(remainder, unallocatedAmount, unallocatedFromBill);
-            this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+            makeEntries.call(this, line, amount);
             unallocatedAmount -= amount;
             unallocatedFromBill -= amount;
           }
