@@ -94,7 +94,7 @@ Meters.helpers({
     const length = this.readings.length;
     debugAssert(length >= 1, 'Meters should have at least an initial reading');
     const lastReading = this.readings[length - 1];
-    debugAssert(lastReading.date <= date, 'We dont support estimating in between reading values');
+    productionAssert(lastReading.date <= date, 'err_notAllowed', 'We dont support estimating in between reading values');
     if (length === 1) return lastReading.value; // With only one initial reading, unable estimate consumption
     const previousReading = this.readings[length - 2];
     const usageDays = moment(lastReading.date).diff(moment(previousReading.date), 'days');
