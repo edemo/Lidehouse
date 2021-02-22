@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import rusdiff from 'rus-diff';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
@@ -111,6 +112,7 @@ export const insert = new ValidatedMethod({
     doc = Transactions._transform(doc);
     const communityId = doc.communityId;
     checkPermissions(this.userId, 'transactions.insert', doc);
+    doc.validate?.();
 //  if (doc.category === 'payment') {
 //    doc.getBills?.()?.forEach((bp) => {
 //      const bill = Transactions.findOne(bp.id);
@@ -135,13 +137,6 @@ export const insert = new ValidatedMethod({
       }
       if (!line.parcelId && parcel) line.parcelId = parcel._id;
     });
-    if (doc.category === 'barter') {
-      const supplierBill = doc.supplierBill();
-      const customerBill = doc.customerBill();
-//      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
-      if (supplierBill.relation !== 'supplier') throw new Meteor.Error('Supplier bill is not from a supplier');
-      if (customerBill.relation !== 'customer' && customerBill.relation !== 'member') throw new Meteor.Error('Customer bill is not from a customer/owner');
-    }
 
     const _id = Transactions.insert(doc);
     if (doc.isAutoPosting()) post._execute({ userId: this.userId }, { _id });
@@ -167,6 +162,10 @@ export const update = new ValidatedMethod({
         throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
       }
     }
+    let newDoc = rusdiff.clone(doc);
+    rusdiff.apply(newDoc, modifier);
+    newDoc = Transactions._transform(newDoc);
+    newDoc.validate?.();
     modifier.$set?.lines?.forEach((line, i) => {
       if (line.localizer) {
         const parcel = Localizer.parcelFromCode(line.localizer, doc.communityId);

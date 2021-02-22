@@ -154,8 +154,22 @@ Transactions.categoryHelpers('payment', {
     return this.amount - this.allocatedSomewhere();
   },
   validate() {
-    if (this.unallocated() !== 0) {
-      // The min, max contraint on the schema does not work, because the hook runs after the schema check
+    let billSum = 0;
+    this.getBills().forEach(pb => {
+      const bill = Transactions.findOne(pb.id);
+      if ((bill.outstanding > 0 && pb.amount > bill.outstanding) || (bill.outstanding < 0 && pb.amount < bill.outstanding)) {
+        throw new Meteor.Error('err_sanityCheckFailed', "Bill's payment amount cannot exceed bill's amount", `${pb.amount} - ${bill.outstanding}`);
+      }
+      billSum += pb.amount;
+    });
+    if ((this.amount > 0 && billSum > this.amount) || (this.amount < 0 && billSum < this.amount)) {
+      throw new Meteor.Error('err_sanityCheckFailed', "Lines amounts cannot exceed payment's amount", `${billSum} - ${this.amount}`);
+    }
+    let lineSum = 0;
+    this.getLines().forEach(line => {
+      lineSum += line.amount;
+    });
+    if (this.amount !== lineSum + billSum) {
       throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.unallocated()}`);
     }
     const connectedBillIds = _.pluck(this.getBills(), 'id');
@@ -170,6 +184,7 @@ Transactions.categoryHelpers('payment', {
       if (!pb?.id) return true; // can be null, when a line is deleted from the array
       const bill = Transactions.findOne(pb.id);
       const autoAmount = Math.min(amountToAllocate, bill.outstanding);
+      if (pb.amount > bill.outstanding) pb.amount = autoAmount;
       if (!pb.amount) pb.amount = autoAmount; // we dont override amounts that are specified
       amountToAllocate -= pb.amount;
       if (amountToAllocate === 0) return false;

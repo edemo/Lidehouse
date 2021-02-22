@@ -61,6 +61,13 @@ Transactions.categoryHelpers('barter', {
     );
     return supplierRes + customerRes;
   },
+  validate() {
+    const supplierBill = this.supplierBill();
+    const customerBill = this.customerBill();
+//      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
+    if (supplierBill.relation !== 'supplier') throw new Meteor.Error('Supplier bill is not from a supplier');
+    if (customerBill.relation !== 'customer' && customerBill.relation !== 'member') throw new Meteor.Error('Customer bill is not from a customer/owner');
+  },
 /*
   updateOutstandings(sign) {
     if (Meteor.isClient) return;
