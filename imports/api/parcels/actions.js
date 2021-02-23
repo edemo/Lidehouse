@@ -102,7 +102,7 @@ Parcels.actions = {
     name: 'meters',
     icon: 'fa fa-tachometer',
     color: doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
-    visible: user.hasPermission('meters.insert', doc) || user.hasPermission('meters.inCommunity', doc),
+    visible: user.hasPermission('parcels.details', doc),
     run(event, instance) {
       ModalStack.setVar('parcelId', doc._id);
       Modal.show('Modal', {

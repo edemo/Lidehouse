@@ -52,8 +52,14 @@ Meteor.startup(function indexMoneyAccounts() {
 });
 
 Accounts.isPayableOrReceivable = function isPayableOrReceivable(code, communityId) {
+  if (!code.startsWith('`') || code.startsWith('`0')) return false;
   const category = Accounts.findOne({ code, communityId }).category;
   return (category === 'payable' || category === 'receivable');
+};
+
+Accounts.toTechnical = function toTechnical(account) {
+  debugAssert(account.charAt(0) === '`', 'only CoA accounts have technical accounts');
+  return '`0' + account.substring(1);
 };
 
 Accounts.helpers({

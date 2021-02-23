@@ -81,6 +81,11 @@ Meteor.publishComposite('parcels.outstanding', function parcelsOutstanding(param
           find(contract) {
             return Parcels.find(contract.parcelId);
           },
+          children: [{
+            find(parcel) {
+              return Meters.find({ parcelId: parcel._id });
+            },
+          }],
         }],
       }],
     };
@@ -93,6 +98,11 @@ Meteor.publishComposite('parcels.outstanding', function parcelsOutstanding(param
         find(balance) {
           return Parcels.find({ communityId, code: balance.localizer });
         },
+        children: [{
+          find(parcel) {
+            return Meters.find({ parcelId: parcel._id });
+          },
+        }],
       }],
     };
   }

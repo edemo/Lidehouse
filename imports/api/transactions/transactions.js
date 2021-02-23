@@ -20,7 +20,7 @@ import { allowedOptions } from '/imports/utils/autoform.js';
 import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
+import { PeriodBreakdown, Period } from '/imports/api/transactions/breakdowns/period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
@@ -282,7 +282,7 @@ Transactions.helpers({
           Balances.update(balId, { $inc: incObj });
         }
         increaseBalance({ communityId, account, tag }, entry.side, changeAmount);
-        if (Accounts.isPayableOrReceivable(account, communityId) && (tag.length < 7)) {
+        if (Accounts.isPayableOrReceivable(account, communityId) && (Period.fromTag(tag).type() !== 'month')) {
           if (localizer) {
             increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
           }

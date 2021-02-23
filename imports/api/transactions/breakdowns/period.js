@@ -105,6 +105,10 @@ export class Period {
   toString() {
     return this.label;
   }
+
+  toTag() {
+    return 'T-' + this.label;
+  }
 }
 
 PeriodBreakdown.date2tag = function date2tag(date, tagLetter) {

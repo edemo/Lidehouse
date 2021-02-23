@@ -14,6 +14,7 @@ import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels, chooseParcel } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
@@ -154,7 +155,6 @@ export const BillAndReceiptHelpers = {
     let totalAmount = 0;
     let totalTax = 0;
     this.getLines().forEach(line => {
-      if (!line) return; // can be null, when a line is deleted from the array
       line.amount = Math.round(line.unitPrice * line.quantity);
       if (line.taxPct) {
         line.tax = Math.round((line.amount * line.taxPct) / 100);
@@ -197,17 +197,20 @@ Transactions.categoryHelpers('bill', {
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
 //    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });
-    if (accountingMethod === 'accrual') {
-      this.debit = [];
-      this.credit = [];
-      this.getLines().forEach(line => {
-        if (!line) return; // can be null, when a line is deleted from the array
-        this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
-        let contraAccount = this.relationAccount().code;
-        if (this.relation === 'member') contraAccount += ParcelBillings.findOne(line.billing.id).digit;
-        this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer, parcelId: line.parcelId });
-      });
-    } // else if (accountingMethod === 'cash') >> we have no accounting to do
+    this.debit = [];
+    this.credit = [];
+    this.getLines().forEach(line => {
+      const newEntry = { amount: line.amount, localizer: line.localizer, parcelId: line.parcelId };
+      if (accountingMethod === 'accrual') {
+        this[this.conteerSide()].push(_.extend({ account: line.account }, newEntry));
+      } else {
+        const technicalAccount = Accounts.toTechnical(line.account);
+        this[this.conteerSide()].push(_.extend({ account: technicalAccount }, newEntry));
+      }
+      let relationAccount = this.relationAccount().code;
+      if (line.billing) relationAccount += ParcelBillings.findOne(line.billing.id).digit;
+      this[this.relationSide()].push(_.extend({ account: relationAccount }, newEntry));
+    });
     return { debit: this.debit, credit: this.credit };
   },
   calculateOutstanding() {
