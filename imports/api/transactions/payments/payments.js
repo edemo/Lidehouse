@@ -157,8 +157,12 @@ Transactions.categoryHelpers('payment', {
     let billSum = 0;
     this.getBills().forEach(pb => {
       const bill = Transactions.findOne(pb.id);
-      if ((bill.outstanding > 0 && pb.amount > bill.outstanding) || (bill.outstanding < 0 && pb.amount < bill.outstanding)) {
-        throw new Meteor.Error('err_sanityCheckFailed', "Bill's payment amount cannot exceed bill's amount", `${pb.amount} - ${bill.outstanding}`);
+      productionAssert(pb.amount < 0 === bill.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
+      let amountToPay = bill.outstanding;
+      const savedPayment = _.find(bill.getPayments(), p => p.id === this._id);
+      if (savedPayment) savedPayment > 0 ? amountToPay -= savedPayment.amount : amountToPay += savedPayment.amount;
+      if ((amountToPay > 0 && pb.amount > amountToPay) || (amountToPay < 0 && pb.amount < amountToPay)) {
+        throw new Meteor.Error('err_sanityCheckFailed', "Bill's payment amount cannot exceed bill's amount", `${pb.amount} - ${amountToPay}`);
       }
       billSum += pb.amount;
     });
@@ -166,9 +170,12 @@ Transactions.categoryHelpers('payment', {
       throw new Meteor.Error('err_sanityCheckFailed', "Lines amounts cannot exceed payment's amount", `${billSum} - ${this.amount}`);
     }
     let lineSum = 0;
+    const lineValues = [];
     this.getLines().forEach(line => {
       lineSum += line.amount;
+      lineValues.push(line.amount);
     });
+    productionAssert(lineValues.every((val) => val > 0) || lineValues.every((val) => val < 0), 'err_notAllowed', 'All lines must have the same sign');
     if (this.amount !== lineSum + billSum) {
       throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.unallocated()}`);
     }
@@ -212,21 +219,21 @@ Transactions.categoryHelpers('payment', {
     this.debit = [];
     this.credit = [];
     let unallocatedAmount = this.amount;
-    this[this.relationSide()].push({ amount: this.amount, account: this.payAccount });
+    this.makeEntry(this.relationSide(), { amount: this.amount, account: this.payAccount });
     this.getBills().forEach(billPaid => {
       if (unallocatedAmount === 0) return false;
       const bill = Transactions.findOne(billPaid.id);
       if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
-      productionAssert(billPaid.amount < 0 === bill.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
+      debugAssert(billPaid.amount < 0 === bill.amount < 0, 'Bill amount and its payment must have the same sign');
       const makeEntries = function makeEntries(line, amount) {
         let relationAccount = line.relationAccount || this.relationAccount().code;
         if (!line.relationAccount && line.billing) relationAccount += ParcelBillings.findOne(line.billing.id).digit;
         const newEntry = { amount, localizer: line.localizer, parcelId: line.parcelId, contractId: bill.contractId };
-        this[this.conteerSide()].push(_.extend({ account: relationAccount }, newEntry));
+        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry));
         if (accountingMethod === 'cash') {
           const technicalAccount = Accounts.toTechnical(line.account);
-          this[this.relationSide()].push(_.extend({ account: technicalAccount }, newEntry));
-          this[this.conteerSide()].push(_.extend({ account: line.account }, newEntry));
+          this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, newEntry));
+          this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
         }
       };
 
@@ -272,9 +279,9 @@ Transactions.categoryHelpers('payment', {
     });
     this.getLines().forEach(line => {
       if (unallocatedAmount === 0) return false;
-      productionAssert(unallocatedAmount < 0 === line.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
+      debugAssert(unallocatedAmount < 0 === line.amount < 0, 'All lines must have the same sign');
       const amount = Math.smallerInAbs(line.amount, unallocatedAmount);
-      this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId, contractId: line.contractId });
+      this.makeEntry(this.conteerSide(), { amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId, contractId: line.contractId });
       unallocatedAmount -= amount;
     });
     // Handling the remainder
