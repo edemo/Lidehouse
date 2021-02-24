@@ -23,10 +23,16 @@ Template.app_rootRedirector.onCreated(() => {
       }
     });
   } else {
-    if (Meteor.settings.public.communityId) {
-      Meteor.setTimeout(() => {
-        FlowRouter.go('Community show', { _cid: Meteor.settings.public.communityId });
-      });
+    if (Meteor.settings.public.homepage) {
+      if (Meteor.settings.public.homepage === 'list') {
+        Meteor.setTimeout(() => {
+          FlowRouter.go('Communities list');
+        });
+      } else {
+        Meteor.setTimeout(() => {
+          FlowRouter.go('Community show', { _cid: Meteor.settings.public.homepage });
+        });
+      }
     } else {
       Meteor.setTimeout(() => {
         FlowRouter.go('App intro');
