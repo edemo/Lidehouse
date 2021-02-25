@@ -203,6 +203,17 @@ Transactions.helpers({
     if (this.debit) this.debit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
     if (this.credit) this.credit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
   },
+  makeEntry(side, entry) {
+    let writeSide = side;
+    if (entry.amount < 0) {
+      // if we swap sides for negative entries
+      if (this.status !== 'void') {
+        writeSide = Transactions.oppositeSide(writeSide);
+        entry.amount *= -1;
+      }
+    }
+    this[writeSide].push(entry);
+  },
   journalEntries() {
     const entries = [];
     if (this.postedAt) {

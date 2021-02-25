@@ -202,14 +202,14 @@ Transactions.categoryHelpers('bill', {
     this.getLines().forEach(line => {
       const newEntry = { amount: line.amount, localizer: line.localizer, parcelId: line.parcelId };
       if (accountingMethod === 'accrual') {
-        this[this.conteerSide()].push(_.extend({ account: line.account }, newEntry));
-      } else {
+        this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
+      } else if (accountingMethod === 'cash') {
         const technicalAccount = Accounts.toTechnical(line.account);
-        this[this.conteerSide()].push(_.extend({ account: technicalAccount }, newEntry));
+        this.makeEntry(this.conteerSide(), _.extend({ account: technicalAccount }, newEntry));
       }
       let relationAccount = this.relationAccount().code;
       if (line.billing) relationAccount += ParcelBillings.findOne(line.billing.id).digit;
-      this[this.relationSide()].push(_.extend({ account: relationAccount }, newEntry));
+      this.makeEntry(this.relationSide(), _.extend({ account: relationAccount }, newEntry));
     });
     return { debit: this.debit, credit: this.credit };
   },

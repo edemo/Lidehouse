@@ -36,14 +36,14 @@ Transactions.categoryHelpers('receipt', {
   makeJournalEntries() {
     const self = this;
     function copyLinesInto(txSide) {
-      self.lines.forEach(line => {
-        if (!line) return; // can be null, when a line is deleted from the array
-        txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer });
+      self.getLines().forEach(line => {
+        self.makeEntry(txSide, { amount: line.amount, account: line.account, localizer: line.localizer });
       });
     }
-    this[this.conteerSide()] = []; copyLinesInto(this[this.conteerSide()]);
-    this[this.relationSide()] = [{ account: this.payAccount }];
-
+    this.debit = [];
+    this.credit = [];
+    copyLinesInto(this.conteerSide());
+    this.makeEntry(this.relationSide(), { account: this.payAccount });
     return { debit: this.debit, credit: this.credit };
   },
   displayInSelect() {
