@@ -69,7 +69,7 @@ Txdefs.helpers({
     if (this.category === 'payment') {
       return !this.data.remission; // && _.contains(this.community().billsUsed, this.data.relation);
     }
-    return _.contains([/*'receipt',*/ 'transfer'], this.category);
+    return _.contains(['receipt', 'transfer'], this.category);
   },
   conteerSide() {
     if (this.data.side) return this.data.side;  // opening, closing txs
