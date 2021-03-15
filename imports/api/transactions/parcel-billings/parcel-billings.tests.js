@@ -582,10 +582,10 @@ if (Meteor.isServer) {
           projectedPrice: 78,
           digit: '5',
           localizer: '@',
-          note: 'Test volume',
+          notes: 'Test volume',
         });
         const testParcelBilling = ParcelBillings.findOne(parcelBillingId);
-        const transaction = Transactions.findOne({ note: 'Test volume' });
+        const transaction = Transactions.findOne({ notes: 'Test volume' });
         transaction.debit.forEach((leg) => {
           const parcel = Parcels.findOne({ communityId: transaction.communityId, ref: Localizer.code2parcelRef(leg.localizer) });
           const neededSum = Math.round(parcel.volume * testParcelBilling.projectedPrice);
@@ -608,10 +608,10 @@ if (Meteor.isServer) {
           projectedPrice: 155,
           digit: '6',
           localizer: '@',
-          note: 'Test habitants',
+          notes: 'Test habitants',
         });
         const testParcelBilling = ParcelBillings.findOne(parcelBillingId);
-        const transaction = Transactions.findOne({ note: 'Test habitants' });
+        const transaction = Transactions.findOne({ notes: 'Test habitants' });
         transaction.debit.forEach((leg) => {
           const parcel = Parcels.findOne({ communityId: transaction.communityId, ref: Localizer.code2parcelRef(leg.localizer) });
           const neededSum = Math.round(testParcelBilling.projectedPrice * parcel.habitants);
@@ -642,10 +642,10 @@ if (Meteor.isServer) {
           projectedPrice: 78,
           digit: '4',
           localizer: '@',
-          note: 'one area is missing',
+          notes: 'one area is missing',
         });
         const testParcelBilling = ParcelBillings.findOne(parcelBillingId);
-        const transaction = Transactions.findOne({ note: 'one area is missing'});
+        const transaction = Transactions.findOne({ notes: 'one area is missing'});
         transaction.debit.forEach((leg) => {
           const parcel = Parcels.findOne({ communityId: transaction.communityId, ref: Localizer.code2parcelRef(leg.localizer) });
           const neededSum = Math.round(testParcelBilling.projectedPrice * parcel.area || 0);
@@ -666,10 +666,10 @@ if (Meteor.isServer) {
           projectedPrice: 78,
           digit: '4',
           localizer: '@',
-          note: 'one volume is missing',
+          notes: 'one volume is missing',
         });
         const testParcelBilling = ParcelBillings.findOne(parcelBillingId);
-        const transaction = Transactions.findOne({ note: 'one volume is missing'});
+        const transaction = Transactions.findOne({ notes: 'one volume is missing'});
         transaction.debit.forEach((leg) => {
           const parcel = Parcels.findOne({ communityId: transaction.communityId, ref: Localizer.code2parcelRef(leg.localizer) });
           const neededSum = Math.round(testParcelBilling.projectedPrice * parcel.volume || 0);
@@ -690,10 +690,10 @@ if (Meteor.isServer) {
           projectedPrice: 140,
           digit: '1',
           localizer: '@',
-          note: 'one habitant is missing',
+          notes: 'one habitant is missing',
         });
         const testParcelBilling = ParcelBillings.findOne(parcelBillingId);
-        const transaction = Transactions.findOne({ note: 'one habitant is missing'});
+        const transaction = Transactions.findOne({ notes: 'one habitant is missing'});
         transaction.debit.forEach((leg) => {
           const parcel = Parcels.findOne({ communityId: transaction.communityId, ref: Localizer.code2parcelRef(leg.localizer) });
           const neededSum = Math.round(testParcelBilling.projectedPrice * parcel.habitants || 0);
@@ -717,12 +717,12 @@ if (Meteor.isServer) {
           amount: 150,
           digit: '3',
           localizer: '@',
-          note: 'no parcel details',
+          notes: 'no parcel details',
         });
-        const testParcelBilling = ParcelBillings.findOne({ note: 'no parcel details' });
+        const testParcelBilling = ParcelBillings.findOne({ notes: 'no parcel details' });
         Parcels.find({ communityId: Fixture.demoCommunityId }).count();
         const parcelNumber = Parcels.find({ communityId: Fixture.demoCommunityId }).count();
-        const debitLegs = Transactions.findOne({ note: 'no parcel details'}).debit.length;
+        const debitLegs = Transactions.findOne({ notes: 'no parcel details'}).debit.length;
         chai.assert.equal(parcelNumber, debitLegs);
       });
 

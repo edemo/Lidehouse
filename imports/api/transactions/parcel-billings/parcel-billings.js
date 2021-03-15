@@ -201,5 +201,5 @@ Factory.define('parcelBilling', ParcelBillings, {
   },
   digit: '1',
   localizer: '@',
-  note: faker.random.word(),
+  notes: faker.random.word(),
 });
