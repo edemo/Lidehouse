@@ -6,41 +6,36 @@ import { freshFixture } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Partners } from '../partners/partners';
 
 if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
 
-  describe.only('transactions', function () {
+  describe('transactions', function () {
     this.timeout(15000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
       FixtureA = freshFixture();
       Communities.update(FixtureA.demoCommunityId, { $set: { 'settings.accountingMethod': 'accrual' } });
+      // Need to apply, so the member contracts get created
+      FixtureA.builder.execute(ParcelBillings.methods.apply, { communityId: FixtureA.demoCommunityId, ids: [FixtureA.parcelBilling], date: new Date() });
     });
     after(function () {
     });
 
-    describe('Bills api', function () {
+    describe.only('Bills api', function () {
       let billId;
       let bill;
       before(function () {
         const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[1]);
-        const billingId = FixtureA.builder.create('parcelBilling', { 
-          title: 'Test area',
-          projection: {
-            base: 'area',
-            unitPrice: 300,
-          },
-          digit: '3',
-          localizer: '@',
-        });
         billId = FixtureA.builder.create('bill', {
           relation: 'member',
           partnerId,
-          contractId: Contracts.findOne({ partnerId })?._id,
+          contractId: Contracts.findOne({ partnerId })._id,
           issueDate: new Date('2018-01-05'),
           deliveryDate: new Date('2018-01-02'),
           dueDate: new Date('2018-01-30'),
@@ -51,7 +46,6 @@ if (Meteor.isServer) {
             unitPrice: 300,
             localizer: '@AP01',
             parcelId: FixtureA.dummyParcels[1],
-            billing: { id: billingId },
           }, {
             title: 'Work 2',
             uom: 'month',
@@ -59,7 +53,6 @@ if (Meteor.isServer) {
             unitPrice: 500,
             localizer: '@AP02',
             parcelId: FixtureA.dummyParcels[2],
-            billing: { id: billingId },
           }],
         });
       });
@@ -77,18 +70,24 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.valueDate.getTime(), bill.deliveryDate.getTime());
         chai.assert.equal(bill.getPayments().length, 0);
         chai.assert.equal(bill.isPosted(), false);
-
         chai.assert.equal(bill.outstanding, 1300);
+      });
 
+      it('Updates balances correctly', function () {
+        bill = Transactions.findOne(billId);
         FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
           $set: { 'lines.0.account': '`951', 'lines.0.localizer': '@AP01', 'lines.1.account': '`951', 'lines.1.localizer': '@AP02' } } });
         FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
+
         chai.assert.equal(bill.partner().balance(), -1300);
-//        chai.assert.equal(bill.contract().balance(), -1300);
-        chai.assert.equal(bill.partner().outstanding('member'), 1300);
-//        chai.assert.equal(bill.contract().outstanding(), 1300);
+        chai.assert.equal(bill.contract().balance(), -1300);
+        chai.assert.equal(bill.partner().outstanding('customer'), 1300);
+        chai.assert.equal(bill.partner().outstanding('supplier'), -1300);
+        chai.assert.equal(bill.contract().outstanding(), 1300);
         const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP01' });
         const parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP02' });
+        chai.assert.equal(parcel1.balance(), -300);
+        chai.assert.equal(parcel2.balance(), -1000);
         chai.assert.equal(parcel1.outstanding(), 300);
         chai.assert.equal(parcel2.outstanding(), 1000);
       });

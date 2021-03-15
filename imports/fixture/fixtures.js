@@ -301,6 +301,19 @@ export function insertUnittestFixture(lang) {
   const supplier = demoBuilder.create('supplier', { idCard: { type: 'legal', name: 'Supplier Inc' } });
   const customer = demoBuilder.create('customer', { idCard: { type: 'legal', name: 'Customer Inc' } });
 
+  const supplierContract = demoBuilder.create('contract', { relation: 'supplier', partnerId: supplier });
+  const customerContract = demoBuilder.create('contract', { relation: 'customer', partnerId: customer });
+
+  const parcelBilling = demoBuilder.create('parcelBilling', {
+    title: 'Test area',
+    projection: {
+      base: 'area',
+      unitPrice: 300,
+    },
+    digit: '3',
+    localizer: '@',
+  });
+
   //
 //  otherBuilder.insertLoadsOfFakeMembers(10);
 
@@ -317,6 +330,9 @@ export function insertUnittestFixture(lang) {
     dummyParcels,
     supplier,
     customer,
+    supplierContract,
+    customerContract,
+    parcelBilling,
     builder: demoBuilder,
     partnerId(userId) { return Meteor.users.findOne(userId).partnerId(this.demoCommunityId); },
   };
