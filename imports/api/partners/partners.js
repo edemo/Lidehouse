@@ -158,7 +158,7 @@ Partners.helpers({
     return Balances.get({ communityId: this.communityId, partner: this._id, tag: 'T' }).total();
   },
   outstanding(relation = ModalStack.getVar('relation')) {
-    return this.balance() * Partners.relationSign(relation);
+    return this.balance() * Partners.relationSign(relation) * -1;
   },
   mostOverdueDays() {
     if (this.balance() === 0) return 0;

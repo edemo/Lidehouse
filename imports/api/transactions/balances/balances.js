@@ -106,6 +106,14 @@ Balances.get = function get(def) {
   return result;
 };
 
+Balances.increase = function increase(selector, side, amount) {
+  const finderSelector = _.extend({ partner: { $exists: false }, localizer: { $exists: false } }, selector);
+  const bal = Balances.findOne(finderSelector);
+  const balId = bal ? bal._id : Balances.insert(selector);
+  const incObj = {}; incObj[side] = amount;
+  Balances.update(balId, { $inc: incObj });
+};
+
 Balances.checkNullBalance = function checkNullBalance(def) {
   const bal = Balances.get(def);
   if (bal.total()) {

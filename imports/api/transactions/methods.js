@@ -131,10 +131,6 @@ export const insert = new ValidatedMethod({
 //   }
     doc.getLines?.()?.forEach((line) => {
       const parcel = Localizer.parcelFromCode(line.localizer, communityId);
-      if (!line.contractId && parcel) {
-        const contract = parcel?.payerContract();
-        line.contractId = contract?._id;
-      }
       if (!line.parcelId && parcel) line.parcelId = parcel._id;
     });
 
@@ -169,8 +165,6 @@ export const update = new ValidatedMethod({
     modifier.$set?.lines?.forEach((line, i) => {
       if (line.localizer) {
         const parcel = Localizer.parcelFromCode(line.localizer, doc.communityId);
-        const contract = parcel?.payerContract();
-        line.contractId = contract?._id;
         line.parcelId = parcel?._id;
       }
     });

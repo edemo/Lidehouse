@@ -181,7 +181,7 @@ Parcels.helpers({
   },
   balance() {
     const Balances = Mongo.Collection.get('balances');
-    return Balances.get({ communityId: this.communityId, localizer: this.code, tag: 'T' }).total();
+    return Balances.get({ communityId: this.communityId, account: '`33', localizer: this.code, tag: 'T' }).total();
   },
   outstanding() {
     const Partners = Mongo.Collection.get('partners');

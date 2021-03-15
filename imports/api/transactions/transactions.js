@@ -90,14 +90,13 @@ Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, serialId: 1 });
   Transactions.ensureIndex({ communityId: 1, valueDate: -1 });
   Transactions.ensureIndex({ seId: 1 });
-  Transactions.ensureIndex({ partnerId: 1 }, { sparse: true });
-  Transactions.ensureIndex({ contractId: 1 }, { sparse: true });
+  Transactions.ensureIndex({ partnerId: 1, contractId: 1, valueDate: -1 });
   if (Meteor.isClient && MinimongoIndexing) {
     Transactions._collection._ensureIndex('relation');
   } else if (Meteor.isServer) {
     Transactions._ensureIndex({ communityId: 1, category: 1, relation: 1, serial: 1 });
-    Transactions._ensureIndex({ communityId: 1, deliveryDate: 1 }, { sparse: true });
     Transactions._ensureIndex({ 'bills.id': 1 }, { sparse: true });
+    Transactions._ensureIndex({ 'payments.id': 1 }, { sparse: true });
     Transactions._ensureIndex({ 'debit.account': 1 }, { sparse: true });
     Transactions._ensureIndex({ 'credit.account': 1 }, { sparse: true });
   }
@@ -141,6 +140,11 @@ Transactions.helpers({
   contract() {
     if (this.contractId) return Contracts.findOne(this.contractId);
     return undefined;
+  },
+  partnerContractCode() { // partnerId/contractId
+    let partner = this.partnerId;
+    if (partner && this.contractId) partner += `/${this.contractId}`;
+    return partner;
   },
   txdef() {
     const Txdefs = Mongo.Collection.get('txdefs');
@@ -276,34 +280,31 @@ Transactions.helpers({
   //    if (!doc.complete) return;
     const communityId = this.communityId;
     const Balances =  Mongo.Collection.get('balances');
-    this.journalEntries().forEach((entry) => {
-      const leafTag = 'T-' + moment(entry.valueDate).format('YYYY-MM');
-  //      entry.account.parents().forEach(account => {
-      const account = entry.account;
-      const localizer = entry.localizer;
-      let partner = entry.partnerId;
-      if (partner && entry.contractId) partner += `/${entry.contractId}`;
-      PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+    const leafTag = 'T-' + moment(this.valueDate).format('YYYY-MM');
+    const journalEntries = this.journalEntries();
+    PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+      journalEntries.forEach((entry) => {
+        const account = entry.account;
+        const localizer = entry.localizer;
         const changeAmount = entry.amount * directionSign;
-        function increaseBalance(selector, side, amount) {
-          const finderSelector = _.extend({ partner: { $exists: false }, localizer: { $exists: false } }, selector);
-          const bal = Balances.findOne(finderSelector);
-          const balId = bal ? bal._id : Balances.insert(selector);
-          const incObj = {}; incObj[side] = amount;
-          Balances.update(balId, { $inc: incObj });
-        }
-        increaseBalance({ communityId, account, tag }, entry.side, changeAmount);
-        if (Accounts.isPayableOrReceivable(account, communityId) && (Period.fromTag(tag).type() !== 'month')) {
-          if (localizer) {
-            increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
-          }
-          if (partner) {
-            increaseBalance({ communityId, account, partner, tag }, entry.side, changeAmount);
-          }
+        Balances.increase({ communityId, account, tag }, entry.side, changeAmount);
+        if (localizer) {
+          Balances.increase({ communityId, account, localizer, tag }, entry.side, changeAmount);
         }
       });
     });
     // checkBalances([doc]);
+  },
+  updatePartnerBalances(directionSign = 1) {
+    const leafTag = 'T-' + moment(this.valueDate).format('YYYY-MM');
+    PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+      if (Period.fromTag(tag).type() !== 'month') {
+        this.updatePartnerBalance(directionSign, tag);
+      }
+    });
+  },
+  updatePartnerBalance(directionSign, tag) {
+    // NOP -- will be overwritten in the categories
   },
   makeJournalEntries() {
     // NOP -- will be overwritten in the categories
@@ -384,6 +385,7 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     if (tdoc.postedAt) {
       tdoc.updateBalances(+1);
+      tdoc.updatePartnerBalances(+1);
     }
     if (tdoc.category === 'payment') tdoc.registerOnBills(+1);
     const community = tdoc.community();
@@ -412,17 +414,24 @@ if (Meteor.isServer) {
     if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
       tdoc.registerOnBills(+1);
     }
-    if (modifierChangesField(modifier, ['debit', 'credit', 'amount', 'valueDate']) || tdoc.postedAt) {
-      const oldDoc = Transactions._transform(this.previous);
-      const newDoc = tdoc;
-      oldDoc.updateBalances(-1);
-      newDoc.updateBalances(+1);
+    const oldDoc = Transactions._transform(this.previous);
+    const newDoc = tdoc;
+    if (modifierChangesField(modifier, ['debit', 'credit', 'postedAt'])) {
+      if (oldDoc.postedAt) oldDoc.updateBalances(-1);
+      if (newDoc.postedAt) newDoc.updateBalances(+1);
+    }
+    if (modifierChangesField(modifier, ['partnerId', 'contractId', 'amount', 'valueDate', 'postedAt'])) {
+      if (oldDoc.postedAt) oldDoc.updatePartnerBalances(-1);
+      if (newDoc.postedAt) newDoc.updatePartnerBalances(+1);
     }
   });
 
   Transactions.after.remove(function (userId, doc) {
     const tdoc = this.transform();
-    tdoc.updateBalances(-1);
+    if (tdoc.postedAt) {
+      tdoc.updateBalances(-1);
+      tdoc.updatePartnerBalances(-1);
+    }
     if (tdoc.category === 'payment') tdoc.registerOnBills(-1);
     if (tdoc.seId) StatementEntries.update(tdoc.seId, { $unset: { txId: 0 } });
   });

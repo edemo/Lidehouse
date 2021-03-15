@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
@@ -318,10 +319,14 @@ Transactions.categoryHelpers('payment', {
     });
     return result;
   },
-/*
-  updateOutstandings(sign) {
-    if (Meteor.isClient) return;
+  updatePartnerBalance(directionSign, tag) {
     debugAssert(this.partnerId, 'Cannot process a payment without a partner');
+    const Balances =  Mongo.Collection.get('balances');
+    const changeAmount = directionSign * this.amount;
+    const partner = this.partnerContractCode();
+    const side = this.relationSide();
+    Balances.increase({ communityId: this.communityId, partner, tag }, side, changeAmount);
+    /*
     Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
     this.getBills().forEach(bp => {
       const bill = Transactions.findOne(bp.id);
@@ -340,9 +345,9 @@ Transactions.categoryHelpers('payment', {
       const parcel = Localizer.parcelFromCode(line.localizer, this.communityId);
       if (parcel) {
         Parcels.update(parcel._id, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });
-      } 
-    });
-  },*/
+      }
+    }); */
+  },
   displayInHistory() {
     return __(this.category) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');
   },

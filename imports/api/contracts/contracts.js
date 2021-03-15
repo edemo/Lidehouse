@@ -114,7 +114,7 @@ Contracts.helpers({
     return Balances.get({ communityId: this.communityId, partner, tag: 'T' }).total();
   },
   outstanding() {
-    return this.balance() * Partners.relationSign(this.relation);
+    return this.balance() * Partners.relationSign(this.relation) * -1;
   },
   toString() {
     if (this.relation === 'member') return `${__('property')} ${this.parcel()?.ref}`;
