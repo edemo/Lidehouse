@@ -181,11 +181,11 @@ Parcels.helpers({
   },
   balance() {
     const Balances = Mongo.Collection.get('balances');
-    return Balances.get({ communityId: this.communityId, account: '`33', localizer: this.code, tag: 'T' }).total();
+    return -1 * Balances.get({ communityId: this.communityId, account: '`33', localizer: this.code, tag: 'T' }).total();
   },
   outstanding() {
     const Partners = Mongo.Collection.get('partners');
-    return this.balance() * Partners.relationSign('member');
+    return this.balance() * Partners.relationSign('member') * -1;
   },
   display() {
     return `${this.ref || '?'} (${this.location()}) ${this.type}`;

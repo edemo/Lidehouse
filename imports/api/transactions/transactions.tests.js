@@ -27,11 +27,11 @@ if (Meteor.isServer) {
     after(function () {
     });
 
-    describe.only('Bills api', function () {
+    describe('Bills api', function () {
       let billId;
       let bill;
       before(function () {
-        const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[1]);
+        const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[3]);
         billId = FixtureA.builder.create('bill', {
           relation: 'member',
           partnerId,
