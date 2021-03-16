@@ -776,7 +776,7 @@
     "contractId": {
       "label": "Contract",
       "placeholder": "Choose partner first",
-      "help": "Only needed when a partner has more than one associations with the community."
+      "help": "Only needed when a partner has more than one associations with the community.\nIn case of a pacel owner, the contract is the parcel itself, which is billed (lead parcel)."
     },
     "sourceId": {
       "label": "Source transaction id"

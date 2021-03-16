@@ -35,12 +35,12 @@ Template.Payment_edit.viewmodel({
   defaultDate() {
     return Clock.currentTime();
   },
-  showContractField() {
+/*  showContractField() {
     const doc = this.afDoc();
     const partnerId = AutoForm.getFieldValue('partnerId');
     const selector = { communityId: doc.communityId, relation: doc.relation, partnerId };
     return (partnerId && Contracts.find(selector).count() > 1) ? undefined : 'hidden';
-  },
+  }, */
   reconciling() {
     return ModalStack.getVar('statementEntry');
   },

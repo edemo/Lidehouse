@@ -776,7 +776,7 @@
     "contractId": {
       "label": "Szerződés",
       "placeholder": "Először válassza ki a partnert",
-      "help": "Csak akkor szükséges megadni, ha egy partner több különböző viszonyban is áll a társasházzal. Vagy ha szerződés feltételeit vagy leírását szeretnénk rögzíteni a rendszerben. Általában nem szükséges megadnia."
+      "help": "Csak akkor szükséges megadni, ha egy partner több különböző viszonyban is áll a társasházzal. Vagy ha szerződés feltételeit vagy leírását szeretnénk rögzíteni a rendszerben.\nAlbetét tulajdonos esetében a szerződés az maga az az albetét, amelyre számlázunk (vezér albetét)."
     },
     "sourceId": {
       "label": "Forrás tranzakció azonosítója"
