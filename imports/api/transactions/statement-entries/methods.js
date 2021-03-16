@@ -189,6 +189,7 @@ export const recognize = new ValidatedMethod({
               category: 'payment',
               relation: matchingBill.relation,
               partnerId: matchingBill.partnerId,
+              contractId: matchingBill.contractId,
               defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBill.relation })._id,
               valueDate: entry.valueDate,
               payAccount: entry.account,
@@ -239,6 +240,7 @@ export const recognize = new ValidatedMethod({
       return;
     }
 
+    const contract = partner.contracts(relation)?.[0];
     const adjustedEntryAmount = Math.abs(entry.amount);
     const matchingBills = Transactions.find({ communityId, category: 'bill', relation, partnerId: partner._id, outstanding: { $gt: 0 } }, { sort: { issueDate: 1 } }).fetch();
     const paymentDef = Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': relation });
@@ -247,6 +249,7 @@ export const recognize = new ValidatedMethod({
       category: 'payment',
       relation,
       partnerId: partner._id,
+      contractId: contract?._id,
       defId: paymentDef._id,
       valueDate: entry.valueDate,
       payAccount: entry.account,
@@ -275,11 +278,9 @@ export const recognize = new ValidatedMethod({
         amountToFill -= amount;
       });
       if (amountToFill > 0) {
-        const contract = partner.contracts(relation)?.[0];
         tx.lines = [
           Object.cleanUndefined({
             amount: amountToFill,
-            contractId: contract?._id,
             account: contract?.accounting?.account || paymentDef.conteerCodes()[0],
             localizer: contract?.accounting?.localizer,
           }),
