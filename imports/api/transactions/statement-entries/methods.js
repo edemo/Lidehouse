@@ -84,6 +84,7 @@ export const reconcile = new ValidatedMethod({
     checkPermissions(this.userId, 'statements.reconcile', entry);
     const communityId = entry.communityId;
     const reconciledTx = Transactions.findOne(txId);
+    let newContractId;  // will be filled if a new contract is autocreated now
     if (Meteor.isServer) {
       checkReconcileMatch(entry, reconciledTx);
       const entryName = entry.nameOrType();
@@ -100,8 +101,8 @@ export const reconcile = new ValidatedMethod({
             parcelId = Localizer.parcelFromCode(line.localizer, communityId)._id;
           }
           const doc = Object.cleanUndefined({ communityId, relation: reconciledTx.relation, partnerId: reconciledTx.partnerId, parcelId });
-          const id = Contracts.insert(doc);
-          contract = Contracts.findOne(id);
+          newContractId = Contracts.insert(doc);
+          contract = Contracts.findOne(newContractId);
         }
         if (line.account !== contract.accounting?.account ||
           line.localizer !== contract.accounting?.localizer ||
@@ -111,7 +112,7 @@ export const reconcile = new ValidatedMethod({
         }
       }
     }
-    Transactions.update(txId, { $set: { seId: _id } });
+    Transactions.update(txId, { $set: { seId: _id, contractId: newContractId } });
     StatementEntries.update(_id, { $set: { txId } }); //, $unset: { match: '' }
   },
 });
