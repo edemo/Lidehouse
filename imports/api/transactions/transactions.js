@@ -97,8 +97,8 @@ Meteor.startup(function indexTransactions() {
     Transactions._ensureIndex({ communityId: 1, category: 1, relation: 1, serial: 1 });
     Transactions._ensureIndex({ 'bills.id': 1 }, { sparse: true });
     Transactions._ensureIndex({ 'payments.id': 1 }, { sparse: true });
-    Transactions._ensureIndex({ 'debit.account': 1 }, { sparse: true });
-    Transactions._ensureIndex({ 'credit.account': 1 }, { sparse: true });
+    Transactions._ensureIndex({ 'debit.account': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ 'credit.account': 1, valueDate: -1 }, { sparse: true });
   }
 });
 
