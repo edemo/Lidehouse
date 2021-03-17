@@ -87,7 +87,7 @@ Txdefs.helpers({
       side = def.conteerSide();
       if (sideParam) side = Transactions.oppositeSide(side);
     }
-    if (this.category === 'payment' && !sideParam) {
+    if (this.category === 'payment' && !sideParam && this.community().settings.accountingMethod === 'cash') {
       def = this.correspondingBillDef();
     }
 //    Log.debug('usedDef:', def, 'side:', side);
@@ -136,7 +136,7 @@ Txdefs.codesOf = function codesOf(sideParam) {
   return txdef.conteerCodes(sideParam);
 };
 
-export const chooseConteerAccount = function (sideParam = false) { // false -> tx conteer side, true -> relation side
+export const chooseConteerAccount = function (sideParam = false) { // false -> tx conteer side, true -> other side
   return {
     options() {
       const communityId = ModalStack.getVar('communityId');
