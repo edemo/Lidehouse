@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import rusdiff from 'rus-diff';
 
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -152,11 +152,7 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'transactions.update', doc);
     if (doc.isPosted()) {
-      if (doc.category === 'payment') {
-        checkModifier(doc, modifier, ['bills', 'lines']);
-      } else {
-        throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
-      }
+      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
     }
     let newDoc = rusdiff.clone(doc);
     rusdiff.apply(newDoc, modifier);
@@ -170,6 +166,36 @@ export const update = new ValidatedMethod({
     });
 
     return Transactions.update({ _id }, modifier, { selector: doc });
+  },
+});
+
+export const reallocate = new ValidatedMethod({ // This methods reposts the transaction with a new allocation -- If that should be disallowed, remove this method.
+  name: 'transactions.reallocate',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    modifier: { type: Object, blackbox: true },
+  }).validator(),
+  run({ _id, modifier }) {
+    const doc = checkExists(Transactions, _id);
+    debugAssert(doc.category === 'payment', 'Method reallocate is only available on payments');
+    checkPermissions(this.userId, 'transactions.update', doc);
+    productionAssert(doc.isPosted());
+    checkModifier(doc, modifier, ['bills', 'lines']);
+
+    let newDoc = rusdiff.clone(doc);
+    rusdiff.apply(newDoc, modifier);
+    newDoc = Transactions._transform(newDoc);
+    newDoc.validate?.();
+    modifier.$set?.lines?.forEach((line, i) => {
+      if (line.localizer) {
+        const parcel = Localizer.parcelFromCode(line.localizer, doc.communityId);
+        line.parcelId = parcel?._id;
+      }
+    });
+
+    const result = Transactions.update({ _id }, modifier, { selector: doc });
+    post._execute({ userId: this.userId }, { _id });
+    return result;
   },
 });
 
