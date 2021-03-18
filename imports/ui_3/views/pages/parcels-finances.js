@@ -64,6 +64,7 @@ Template.Parcels_finances.viewmodel({
     });
   },
   defaultBeginDate() {
+//    return moment().startOf('year').format('YYYY-MM-DD');
     return moment().subtract(1, 'year').format('YYYY-MM-DD');
   },
   defaultEndDate() {
