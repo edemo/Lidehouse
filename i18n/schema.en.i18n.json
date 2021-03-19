@@ -505,7 +505,7 @@
     "vote": {
       "choices": {
         "label": "Vote choices",
-        "help": "The voting type may define the choices. If it is not default you can define the choices. First choose the voting type."
+        "help": "The voting type may already define the choices (like in the yes/no case). When it does not, you can define the choices yourself. So always choose the voting type first."
       },
       "procedure": {
         "label": "Voting procedure",
@@ -517,7 +517,7 @@
       },
       "effect": {
         "label": "Voting effect",
-        "help": "Poll does not have a legal effect, it is a preparation for a legal voting or survey on opinions.",
+        "help": "Poll does not have a legal effect, it is a preparation for a legal voting or survey on opinions.\nAnyone can start a poll, but only officers with the proper rights can start a legal voting.",
         "options": {
           "poll": "Poll",
           "legal": "Legal power"
