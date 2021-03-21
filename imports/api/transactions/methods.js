@@ -241,6 +241,6 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 });
 
 Transactions.methods = Transactions.methods || {};
-_.extend(Transactions.methods, { insert, update, post, resend, remove, cloneAccountingTemplates });
+_.extend(Transactions.methods, { insert, update, reallocate, post, resend, remove, cloneAccountingTemplates });
 _.extend(Transactions.methods, crudBatchOps(Transactions));
 Transactions.methods.batch.post = new BatchMethod(Transactions.methods.post);
