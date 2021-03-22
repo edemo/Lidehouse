@@ -200,9 +200,9 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 100);
       });
 
-      it('Can amend a Payment', function () {
+      it('Can reallocate a Payment', function () {
         let payment2 = Transactions.findOne({ category: 'payment', amount: 200 });
-        FixtureA.builder.execute(Transactions.methods.update, { _id: payment2._id, modifier: { $set: {
+        FixtureA.builder.execute(Transactions.methods.reallocate, { _id: payment2._id, modifier: { $set: {
           bills: [{ id: billId, amount: 180 }],
           lines: [{ account: '`88', amount: 20 }],
         } } });
@@ -213,7 +213,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 120);
       });
 
-      it('Can not amend a Payment with wrong amount', function () {
+      it('Can not reallocate a Payment with wrong amount', function () {
         const paymentId3 = FixtureA.builder.create('payment', {
           bills: [{ id: billId, amount: 100 }],
           lines: [{ account: '`861', amount: 150 }],
@@ -225,14 +225,14 @@ if (Meteor.isServer) {
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.outstanding, 20);
         chai.assert.throws(() => {
-          FixtureA.builder.execute(Transactions.methods.update, { _id: paymentId3, modifier: { $set: {
+          FixtureA.builder.execute(Transactions.methods.reallocate, { _id: paymentId3, modifier: { $set: {
             bills: [{ id: billId, amount: 150 }],
             lines: [{ account: '`861', amount: 100 }],
           } } });
         }, 'err_sanityCheckFailed');
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.outstanding, 20);
-        FixtureA.builder.execute(Transactions.methods.update, { _id: paymentId3, modifier: { $set: {
+        FixtureA.builder.execute(Transactions.methods.reallocate, { _id: paymentId3, modifier: { $set: {
           bills: [{ id: billId, amount: 120 }],
           lines: [{ account: '`861', amount: 130 }],
         } } });
