@@ -167,6 +167,9 @@ export function defineTxdefTemplates() {
     debit: ['`871'],
     credit: ['`38'],
   }, {
+    name: 'Partner exchange', // 'Partnerek közötti mozgatás',
+    category: 'exchange',
+  }, /* {
     name: 'Barter', // 'Albetét előírás elengedés',
     category: 'barter',
 //    data: { relation: 'member' },
@@ -174,7 +177,7 @@ export function defineTxdefTemplates() {
     credit: ['`31', '`33'],
 //    debit: ['`9'],
 //    credit: ['`8', '`5'],
-  }, {
+  }, */ {
     name: 'Opening asset',
     category: 'opening',
     data: { side: 'debit' },

@@ -97,8 +97,12 @@ export const merge = new ValidatedMethod({
 
     Contracts.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: destinationDoc, multi: true });
     Memberships.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: { role: 'owner' }, multi: true });
-    Transactions.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: { category: 'bill' }, multi: true });
-    // Balances update happens in Transactions hooks
+    Transactions.find({ partnerId: _id }).forEach(tx => {
+      tx.partnerId = destinationId; // Plus tx.pEntries also need to be regenerated
+      const modifierSet = _.extend({ partnerId: destinationId }, tx.makePartnerEntries());
+      Transactions.update({ _id: tx._id }, { $set: modifierSet }, { selector: { category: 'bill' } });
+    });
+    // Balances update happens in Transactions hooks, when pEntries change
     Balances.remove({ communityId: doc.communityId, partner: new RegExp('^' + _id) });
     Delegations.update({ sourceId: _id }, { $set: { sourceId: destinationId } }, { multi: true });
     Delegations.update({ targetId: _id }, { $set: { targetId: destinationId } }, { multi: true });

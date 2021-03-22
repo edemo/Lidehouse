@@ -51,24 +51,22 @@ Template.Parcel_history.viewmodel({
     const parcelId = this.parcelSelected();
     if (!parcelId) return undefined;
     const parcel = Parcels.findOne(parcelId);
-//    const result = parcel?.payerPartner()?._id;
-    const result = parcel?.payerContract()?._id;
-    return result;
+    return parcel?.payerContract();
   },
   subscribeParams() {
+    const contract = this.contractSelected();
     return {
       communityId: this.communityId(),
-//      partnerId: this.partnerSelected() || null,
-      contractId: this.contractSelected() || null,
+      partnerId: contract?.partnerId || null,
+      contractId: contract?._id || null,
       begin: new Date(this.beginDate()),
       end: new Date(this.endDate()),
     };
   },
   beginBalanceDef() {
-    const contract = Contracts.findOne(this.contractSelected());
     return {
       communityId: this.communityId(),
-      partner: contract?.partnerContractCode(),
+      partner: this.contractSelected()?.code() || null,
     };
   },
   history() {

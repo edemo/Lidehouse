@@ -71,7 +71,10 @@ export const post = new ValidatedMethod({
     if (doc.status !== 'void') { // voided already has the accounting data on it
       const community = Communities.findOne(doc.communityId);
       const accountingMethod = community.settings.accountingMethod;
-      const updateData = doc.makeJournalEntries(accountingMethod);
+      const updateData = _.extend({},
+        doc.makeJournalEntries(accountingMethod),
+        doc.makePartnerEntries(),
+      );
       _.extend(modifier.$set, { status: 'posted', ...updateData });
     }
     const result = Transactions.update(_id, modifier);

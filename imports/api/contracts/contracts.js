@@ -87,8 +87,8 @@ Contracts.helpers({
   partnerName() {
     return this.partner()?.displayName();
   },
-  partnerContractCode() { // partnerId/contractId
-    return `${this.partnerId}/${this._id}`;
+  code() {
+    return Partners.code(this.partnerId, this._id);
   },
   worksheets() {
     const Topics = Mongo.Collection.get('topics');

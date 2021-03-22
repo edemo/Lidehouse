@@ -60,7 +60,6 @@ Partners.publicFields = {
 
 Partners.nonModifiableFields = ['communityId', 'userId'];
 
-
 Meteor.startup(function indexPartners() {
   if (Meteor.isServer) {
     Partners._ensureIndex({ 'contact.email': 1 }, { sparse: true });
@@ -74,6 +73,12 @@ Partners.relationSign = function relationSign(relation) {
   if (relation === 'supplier') return -1;
   else if (relation === 'customer' || relation === 'member') return +1;
   debugAssert(false, 'No such relation ' + relation); return undefined;
+};
+
+Partners.code = function partnerContractCode(partnerId, contractId) { // partnerId/contractId
+  let code = partnerId;
+  if (contractId) code += `/${contractId}`;
+  return code;
 };
 
 Partners.helpers({

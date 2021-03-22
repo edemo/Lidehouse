@@ -294,6 +294,14 @@ Transactions.categoryHelpers('payment', {
     const legs = { debit: this.debit, credit: this.credit };
     return legs;
   },
+  makePartnerEntries() {
+    this.pEntries = [{
+      partner: this.partnerContractCode(),
+      side: this.relationSide(),
+      amount: this.amount,
+    }];
+    return { pEntries: this.pEntries };
+  },
   registerOnBills(direction = +1) {
     const result = [];
     this.getBills().forEach(billPaid => {
@@ -318,35 +326,6 @@ Transactions.categoryHelpers('payment', {
       ));
     });
     return result;
-  },
-  updatePartnerBalance(directionSign, tag) {
-    debugAssert(this.partnerId, 'Cannot process a payment without a partner');
-    const Balances =  Mongo.Collection.get('balances');
-    const changeAmount = directionSign * this.amount;
-    const partner = this.partnerContractCode();
-    const side = this.relationSide();
-    Balances.increase({ communityId: this.communityId, partner, tag }, side, changeAmount);
-    /*
-    Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    this.getBills().forEach(bp => {
-      const bill = Transactions.findOne(bp.id);
-      Contracts.update(bill.contractId, { $inc: { outstanding: (-1) * sign * bp.amount } }, { selector: { relation: 'member' } });
-      bill.getLines().forEach(line => {
-        if (!line) return; // can be null, when a line is deleted from the array
-        const parcel = Localizer.parcelFromCode(line.localizer, this.communityId);
-        if (parcel) {
-          Parcels.update(parcel._id, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });
-        } else debugAssert(this.relation !== 'member', 'Cannot process a parcel payment without parcelId field');
-      });
-    });
-    this.getLines().forEach(line => {
-      if (!line) return; // can be null, when a line is deleted from the array
-      Contracts.update(line.contractId, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { relation: 'member' } });
-      const parcel = Localizer.parcelFromCode(line.localizer, this.communityId);
-      if (parcel) {
-        Parcels.update(parcel._id, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });
-      }
-    }); */
   },
   displayInHistory() {
     return __(this.category) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');

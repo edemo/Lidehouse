@@ -190,5 +190,6 @@ Balances.ensureAllCorrect = function ensureAllCorrect() {
   Balances.remove({});
   Transactions.find({}).forEach((tx) => {
     tx.updateBalances(+1);
+    tx.updatePartnerBalances(+1);
   });
 };

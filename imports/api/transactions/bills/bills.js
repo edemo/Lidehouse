@@ -213,28 +213,18 @@ Transactions.categoryHelpers('bill', {
     });
     return { debit: this.debit, credit: this.credit };
   },
+  makePartnerEntries() {
+    this.pEntries = [{
+      partner: this.partnerContractCode(),
+      side: this.conteerSide(),
+      amount: this.amount,
+    }];
+    return { pEntries: this.pEntries };
+  },
   calculateOutstanding() {
     let paid = 0;
     this.getPayments().forEach(p => paid += p.amount);
     return this.amount - paid;
-  },
-  updatePartnerBalance(directionSign, tag) {
-    debugAssert(this.partnerId, 'Cannot process a bill without a partner');
-    const Balances =  Mongo.Collection.get('balances');
-    const changeAmount = directionSign * this.amount;
-    const partner = this.partnerContractCode();
-    const side = this.conteerSide();
-    Balances.increase({ communityId: this.communityId, partner, tag }, side, changeAmount);
-/*
-    Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
-    Contracts.update(this.contractId, { $inc: { outstanding: directionSign * this.amount } }, { selector: { relation: 'member' } });
-    this.getLines().forEach(line => {
-      if (!line) return; // can be null, when a line is deleted from the array
-      const parcel = Localizer.parcelFromCode(line.localizer, this.communityId);
-      if (parcel) {
-        Parcels.update(parcel._id, { $inc: { outstanding: directionSign * line.amount } }, { selector: { category: '@property' } });
-      } else debugAssert(this.relation !== 'member', `Cannot process a parcel bill without parcelId field: ${JSON.stringify(this)}`);
-    }); */
   },
   displayInSelect() {
     return `${this.serialId} (${this.partner()} ${moment(this.valueDate).format('YYYY.MM.DD')} ${this.outstanding}/${this.amount})`;
