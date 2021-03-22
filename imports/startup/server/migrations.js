@@ -626,8 +626,12 @@ Migrations.add({
 
 Migrations.add({
   version: 35,
-  name: 'Use balances instead of doc.outstanding',
+  name: 'Create partner entries and use balances instead of doc.outstanding',
   up() {
+    Transactions.find({ postedAt: { $exists: true } }).forEach(tx => {
+      const modifier = { $set: tx.makePartnerEntries() };
+      Transactions.direct.update(tx._id, modifier);
+    });
     Parcels.direct.update({ outstanding: { $exists: true } }, { $unset: { outstanding: '' } }, { validate: false, multi: true });
     Partners.direct.update({ outstanding: { $exists: true } }, { $unset: { outstanding: '' } }, { validate: false, multi: true });
     Contracts.direct.update({ outstanding: { $exists: true } }, { $unset: { outstanding: '' } }, { validate: false, multi: true });
