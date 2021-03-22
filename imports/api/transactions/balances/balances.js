@@ -1,13 +1,16 @@
 import { Meteor } from 'meteor/meteor';
+import { moment } from 'meteor/momentjs:moment';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Period } from '/imports/api/transactions/breakdowns/period.js';
 
 export const Balances = new Mongo.Collection('balances');
 
@@ -18,7 +21,7 @@ Balances.defSchema = new SimpleSchema([{
   account: { type: String, optional: true, defaultValue: '`' },
   localizer: { type: String, optional: true },
   partner: { type: String, optional: true },  // format: 'partnerId/contractId'
-  tag: { type: String, optional: true, defaultValue: 'T' },  // can be a period, end of a period, or a publication
+  tag: { type: String, optional: true, defaultValue: 'T' },  // can be for a period: T, end of a period: C, or a publication: P
 }]);
 
 // Definition + values of a balance
@@ -32,6 +35,15 @@ Balances.schema = new SimpleSchema([
 Balances.idSet = ['communityId', 'account', 'localizer', 'tag'];
 
 Balances.helpers({
+  tagType() {
+    return this.tag.split('-')[0];
+  },
+  period() {
+    let periodTag = this.tag.split('-');
+    periodTag.shift();
+    periodTag = periodTag.join('-');
+    return new Period(periodTag);
+  },
   total() {
     return this.debit - this.credit;
   },
@@ -112,6 +124,22 @@ Balances.increase = function increase(selector, side, amount) {
   const balId = bal ? bal._id : Balances.insert(selector);
   const incObj = {}; incObj[side] = amount;
   Balances.update(balId, { $inc: incObj });
+};
+
+Balances.getCumulatedValue = function getCumulatedValue(def, d) {
+  // Given a date in def, returns the cumulated total balance at that date
+  const date = moment(d).startOf('year').subtract(1, 'day');
+  const cBal = Balances.findOne(_.extend(def, { tag: `C-${date.format('YYYY')}` }));
+  if (cBal) return cBal.total();
+  // If no C balance available, we have to calculate it by adding up the T balances
+  let result = 0;
+  const tBals = Balances.find(_.extend(def, { tag: new RegExp('^T-') })).fetch();
+  const prevBals = tBals.filter(b => {
+    const period = b.period();
+    return period.year < date.year && !period.month;
+  });
+  prevBals.map(b => { result += b.total(); });
+  return result;
 };
 
 Balances.checkNullBalance = function checkNullBalance(def) {

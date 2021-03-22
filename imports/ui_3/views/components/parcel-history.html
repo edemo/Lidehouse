@@ -44,7 +44,7 @@
                   <td>{{_ 'Balance'}}</td>
                   <!--td></td-->
               </tr>
-              {{#each tx in transactions}}
+              {{#each tx in history.transactions}}
               <tr>
                   <td>{{displayDate tx.valueDate}}</td>
                   <td class="text-capitalize"><!--a href="{{pathFor 'Transaction show' _txid=tx._id}}"-->{{tx.displayInHistory}}<!--/a--></td>
@@ -60,6 +60,6 @@
             </tbody>
         </table>
     </div>
-    <!--p class="text-center">{{_ 'Total change in this period'}}: <strong>{{displayMoney journalEntries.pop.total}}</strong></p-->
+    <p class="text-center">{{_ 'Balance at the beginning of period'}}: <strong>{{displayMoney history.beginBalance}}</strong></p>
     </div>
 </template>

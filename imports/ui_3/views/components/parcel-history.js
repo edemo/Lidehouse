@@ -7,7 +7,9 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import './parcel-history.html';
 
 Template.Parcel_history.viewmodel({
@@ -34,6 +36,13 @@ Template.Parcel_history.viewmodel({
         }
       });
     },
+    function enforceWholeYear() {
+      const beginDate = moment(this.beginDate());
+      const wholeBeginDate = moment(this.beginDate()).startOf('year');
+      if (!beginDate.isSame(wholeBeginDate)) {
+        this.beginDate(wholeBeginDate.format('YYYY-MM-DD'));
+      }
+    },
   ],
   communityId() {
     return ModalStack.getVar('communityId');
@@ -55,7 +64,16 @@ Template.Parcel_history.viewmodel({
       end: new Date(this.endDate()),
     };
   },
-  transactions() {
+  beginBalanceDef() {
+    const contract = Contracts.findOne(this.contractSelected());
+    return {
+      communityId: this.communityId(),
+      partner: contract?.partnerContractCode(),
+    };
+  },
+  history() {
+    const result = {};
+    result.beginBalance = Balances.getCumulatedValue(this.beginBalanceDef(), this.beginDate());
     const selector = Transactions.makeFilterSelector(this.subscribeParams());
     const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
     let total = 0;
@@ -64,7 +82,8 @@ Template.Parcel_history.viewmodel({
       total += contractAmount;
       return _.extend(tx, { contractAmount, total });
     });
-    return txsWithRunningTotal.reverse();
+    result.transactions = txsWithRunningTotal.reverse();
+    return result;
   },
 });
 
