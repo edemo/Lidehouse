@@ -47,6 +47,12 @@ Transactions.entrySchema = new SimpleSchema([
   // { paymentId: { type: Number, decimal: true, optional: true } }, // index in the bill payments array
 ]);
 
+Transactions.partnerEntrySchema = new SimpleSchema({
+  partner: { type: String },
+  side: { type: String, allowedValues: ['debit', 'credit'] },
+  amount: { type: Number, optional: true },
+});
+
 Transactions.coreSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   category: { type: String, allowedValues: Transactions.categoryValues, autoform: { type: 'hidden' } },
@@ -76,6 +82,7 @@ Transactions.partnerSchema = new SimpleSchema({
 Transactions.legsSchema = {
   debit: { type: [Transactions.entrySchema], optional: true },
   credit: { type: [Transactions.entrySchema], optional: true },
+  pEntries: { type: [Transactions.partnerEntrySchema], optional: true },
   complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
 };
 
@@ -90,7 +97,6 @@ Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, serialId: 1 });
   Transactions.ensureIndex({ communityId: 1, valueDate: -1 });
   Transactions.ensureIndex({ seId: 1 });
-  Transactions.ensureIndex({ partnerId: 1, contractId: 1, valueDate: -1 });
   if (Meteor.isClient && MinimongoIndexing) {
     Transactions._collection._ensureIndex('relation');
   } else if (Meteor.isServer) {
@@ -99,6 +105,7 @@ Meteor.startup(function indexTransactions() {
     Transactions._ensureIndex({ 'payments.id': 1 }, { sparse: true });
     Transactions._ensureIndex({ 'debit.account': 1, valueDate: -1 }, { sparse: true });
     Transactions._ensureIndex({ 'credit.account': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ 'pEntries.partner': 1, valueDate: -1 }, { sparse: true });
   }
 });
 
@@ -116,6 +123,11 @@ Transactions.isValidSide = function isValidSide(side) {
 Transactions.oppositeSide = function oppositeSide(side) {
   if (side === 'debit') return 'credit';
   if (side === 'credit') return 'debit';
+  return undefined;
+};
+Transactions.signOfSide = function signOfSide(side) {
+  if (side === 'debit') return +1;
+  if (side === 'credit') return -1;
   return undefined;
 };
 
@@ -141,10 +153,8 @@ Transactions.helpers({
     if (this.contractId) return Contracts.findOne(this.contractId);
     return undefined;
   },
-  partnerContractCode() { // partnerId/contractId
-    let partner = this.partnerId;
-    if (partner && this.contractId) partner += `/${this.contractId}`;
-    return partner;
+  partnerContractCode() {
+    return Partners.code(this.partnerId, this.contractId);
   },
   txdef() {
     const Txdefs = Mongo.Collection.get('txdefs');
@@ -237,23 +247,15 @@ Transactions.helpers({
       return JournalEntries._transform(entry);
     });
   },
-  getContractAmount(contractId) {
-    let sign = 0;
-    switch (this.category) {
-      case 'bill':
-      case 'receipt': sign = -1; break;
-      case 'payment': sign = +1; break;
-      default: debugAssert(false);
-    }
+  getContractAmount(contract) {
     let amount = 0;
-    if (!contractId || sign === -1) amount = this.amount;
-    else {
-      const side = this.conteerSide();
-      this.journalEntries().forEach(je => {
-        if (je.side === side && je.contractId === contractId) amount += je.amount;
-      });
-    }
-    return sign * amount;
+    this.pEntries.forEach(pe => {
+      if (pe.partner === contract.code()) {
+        const sign = Transactions.signOfSide(pe.side);
+        amount += sign * pe.amount;
+      }
+    });
+    return amount;
   },
   negator() {
     const tx = Object.stringifyClone(this);
@@ -283,7 +285,7 @@ Transactions.helpers({
     const leafTag = 'T-' + moment(this.valueDate).format('YYYY-MM');
     const journalEntries = this.journalEntries();
     PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
-      journalEntries.forEach((entry) => {
+      journalEntries?.forEach((entry) => {
         const account = entry.account;
         const localizer = entry.localizer;
         const changeAmount = entry.amount * directionSign;
@@ -296,17 +298,23 @@ Transactions.helpers({
     // checkBalances([doc]);
   },
   updatePartnerBalances(directionSign = 1) {
+    const communityId = this.communityId;
+    const Balances =  Mongo.Collection.get('balances');
     const leafTag = 'T-' + moment(this.valueDate).format('YYYY-MM');
+    const pEntries = this.pEntries;
     PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
       if (Period.fromTag(tag).type() !== 'month') {
-        this.updatePartnerBalance(directionSign, tag);
+        pEntries?.forEach((entry) => {
+          const changeAmount = entry.amount * directionSign;
+          Balances.increase({ communityId, partner: entry.partner, tag }, entry.side, changeAmount);
+        });
       }
     });
   },
-  updatePartnerBalance(directionSign, tag) {
+  makeJournalEntries() {
     // NOP -- will be overwritten in the categories
   },
-  makeJournalEntries() {
+  makePartnerEntries() {
     // NOP -- will be overwritten in the categories
   },
   fillFromStatementEntry() {
@@ -420,7 +428,7 @@ if (Meteor.isServer) {
       if (oldDoc.postedAt) oldDoc.updateBalances(-1);
       if (newDoc.postedAt) newDoc.updateBalances(+1);
     }
-    if (modifierChangesField(modifier, ['partnerId', 'contractId', 'amount', 'valueDate', 'postedAt'])) {
+    if (modifierChangesField(modifier, ['pEntries', 'postedAt'])) {
       if (oldDoc.postedAt) oldDoc.updatePartnerBalances(-1);
       if (newDoc.postedAt) newDoc.updatePartnerBalances(+1);
     }
@@ -517,6 +525,11 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
     selector['credit.account'] = creditAccount;
     delete selector.creditAccount;
   } else delete selector.creditAccount;
+  if (params.partner) {
+    const partner = withSubs(params.partner);
+    selector['pEntries.partner'] = partner;
+    delete selector.partner;
+  } else delete selector.partner;
 
   if (selector.$and.length === 0) delete selector.$and;
   return selector;

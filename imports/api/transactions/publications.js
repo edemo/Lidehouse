@@ -38,9 +38,13 @@ Meteor.publish('transactions.byPartner', function transactionsInCommunity(params
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     // Normal user can only see his own parcels' transactions
-    if (!partnerId && !contractId) return this.ready();
+    if (!partnerId) return this.ready();
     if (partnerId && Partners.findOne(partnerId).userId !== this.userId) return this.ready();
   }
+
+  params.partner = Partners.code(params.partnerId, params.contractId);
+  delete params.partnerId;
+  delete params.contractId;
 
   const selector = Transactions.makeFilterSelector(params);
   return Transactions.find(selector);

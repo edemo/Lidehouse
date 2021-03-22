@@ -8,15 +8,16 @@ import sinon from 'sinon';
 import { Fraction } from 'fractional';
 import '/imports/startup/both/fractional.js';  // TODO: should be automatic, but not included in tests
 
+import { freshFixture, logDB } from '/imports/api/test-utils.js';
+import { Email } from 'meteor/email';   // We will be mocking it over
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/methods.js';
-import { freshFixture, logDB } from '/imports/api/test-utils.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import '/imports/api/transactions/methods.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import '/imports/api/users/users.js';
-
-import { Email } from 'meteor/email';   // We will be mocking it over
 import { Partners } from './partners';
 
 if (Meteor.isServer) {
@@ -565,32 +566,26 @@ if (Meteor.isServer) {
 
       it('keeps destination partner data, sums relation and outstandings', function (done) {
         const ownershipId = managerInsertsOwner();
-        const billingId = Fixture.builder.create('parcelBilling', { title: 'Test area', projection: { base: 'area', unitPrice: 300 }, digit: '3', localizer: '@' });
-        Fixture.builder.create('bill', {
+        const bill1Id = Fixture.builder.create('bill', {
           relation: 'member',
           partnerId,
           issueDate: new Date('2018-01-05'),
           deliveryDate: new Date('2018-01-02'),
           dueDate: new Date('2018-01-30'),
-          postedAt: new Date('2018-01-30'),
           lines: [{
             title: 'Work 1',
             uom: 'piece',
             quantity: 1,
             unitPrice: 100,
-            billing: { id: billingId },
             account: '`951',
           }],
-          debit: [{ account: '`33', amount: 100 }],
-          credit: [{ account: '`951', amount: 100 }],
         });
-        Fixture.builder.create('bill', {
+        const bill2Id = Fixture.builder.create('bill', {
           relation: 'customer',
           partnerId: partnerId2,
           issueDate: new Date('2018-01-05'),
           deliveryDate: new Date('2018-01-02'),
           dueDate: new Date('2018-01-30'),
-          postedAt: new Date('2018-01-30'),
           lines: [{
             title: 'Work 1',
             uom: 'piece',
@@ -598,9 +593,9 @@ if (Meteor.isServer) {
             unitPrice: 200,
             account: '`952',
           }],
-          debit: [{ account: '`31', amount: 200 }],
-          credit: [{ account: '`952', amount: 200 }],
         });
+        Fixture.builder.execute(Transactions.methods.post, { _id: bill1Id });
+        Fixture.builder.execute(Transactions.methods.post, { _id: bill2Id });
         chai.assert.equal(Partners.findOne(partnerId).outstanding('member'), 100);
         chai.assert.equal(Partners.findOne(partnerId2).outstanding('customer'), 200);
 
