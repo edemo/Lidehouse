@@ -167,7 +167,7 @@ export function defineTxdefTemplates() {
     debit: ['`871'],
     credit: ['`38'],
   }, {
-    name: 'Partner exchange', // 'Partnerek közötti mozgatás',
+    name: 'Partner exchange', // 'Partnerek közötti átvezetés',
     category: 'exchange',
   }, /* {
     name: 'Barter', // 'Albetét előírás elengedés',

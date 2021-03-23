@@ -732,6 +732,7 @@
         "remission": "remission",
         "receipt": "receipt",
         "transfer": "transfer",
+        "exchange": "exchange",
         "opening": "opening",
         "freeTx": "free transaction"
       }
@@ -820,6 +821,24 @@
         }
       }
     },
+    "pEntries": {
+      "label": "Partner entries",
+      "$": {
+        "amount": {
+          "label": "Amount"
+        },
+        "side": {
+          "label": "Side",
+          "options": {
+            "debit": "Debit",
+            "credit": "Credit"
+          }
+        },
+        "partner": {
+          "label": "Partner/Contract"
+        }         
+      }
+    },
     "note": {
       "label": "Notes"
     },
@@ -834,6 +853,12 @@
       "label": "Moving from"
     },
     "toAccount": {
+      "label": "Moving to"
+    },
+    "fromPartner": {
+      "label": "Moving from"
+    },
+    "toPartner": {
       "label": "Moving to"
     },
     "side": {

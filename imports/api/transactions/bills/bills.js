@@ -230,7 +230,7 @@ Transactions.categoryHelpers('bill', {
     return `${this.serialId} (${this.partner()} ${moment(this.valueDate).format('YYYY.MM.DD')} ${this.outstanding}/${this.amount})`;
   },
   displayInHistory() {
-    return __(this.category) + (this.lineCount() ? ` (${this.lineCount()} ${__('item')})` : '');
+    return __(`schemaTransactions.category.options.${this.category}`) + (this.lineCount() ? ` (${this.lineCount()} ${__('item')})` : '');
   },
   overdueDays() {
     const diff = moment().diff(this.dueDate, 'days');

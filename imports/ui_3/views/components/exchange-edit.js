@@ -7,11 +7,19 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
 import { Clock } from '/imports/utils/clock';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import './transfer-edit.html';
+import { Contracts } from '/imports/api/contracts/contracts.js';
+import './exchange-edit.html';
 
-Template.Transfer_edit.viewmodel({
+Template.Exchange_edit.viewmodel({
+//  fromPartnerSelected: '',
+//  toPartnerSelected: '',
+//  partnerContractOptions: [],
   onCreated() {
   },
+//  autorun() {
+//    const communityId = this.afDoc().communityId;
+//    this.partnerContractOptions(Contracts.partnerContractOptions({ communityId }));
+//  },
   afDoc(formId) {
     const doc = Transactions._transform(AutoForm.getDoc(formId));
     return doc;
@@ -22,14 +30,5 @@ Template.Transfer_edit.viewmodel({
   },
   defaultDate() {
     return Clock.currentTime();
-  },
-  reconciling() {
-    return ModalStack.getVar('statementEntry');
-  },
-  originalStatementEntry() {
-    return ModalStack.getVar('statementEntry')?.original;
-  },
-  hiddenWhenReconciling() {
-    return this.reconciling() && 'hidden';
   },
 });

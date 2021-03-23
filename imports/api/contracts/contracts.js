@@ -196,6 +196,17 @@ Contracts.partnerContractOptions = function partnerContractOptions(selector) {
       });
     } else partnerContracts.push([p, null]);
   });
-  const options = partnerContracts.map(pc => ({ label: pc[0].toString() + (pc[1] ? `/${pc[1].toString()}` : ''), value: pc[0]._id + (pc[1] ? `/${pc[1]._id}` : '') }));
+  const options = partnerContracts.map(pc => ({
+    label: Partners.code(pc[0].toString(), pc[1]?.toString()), // pc[0].toString() + (pc[1] ? `/${pc[1].toString()}` : ''),
+    value: Partners.code(pc[0]._id, pc[1]?._id),
+  }));
   return options;
+};
+
+export const choosePartnerContract = {
+  options() {
+    const communityId = ModalStack.getVar('communityId');
+    return Contracts.partnerContractOptions({ communityId });
+  },
+  firstOption: () => __('(Select one)'),
 };
