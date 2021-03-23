@@ -29,7 +29,7 @@ import { StatementEntries } from '/imports/api/transactions/statement-entries/st
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'transfer', 'opening', 'freeTx'];
+Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'exchange', 'transfer', 'opening', 'freeTx'];
 
 Transactions.statuses = {
   draft: { name: 'draft', color: 'warning' },
@@ -326,6 +326,9 @@ Transactions.helpers({
   displayInSelect() {
     return this.serialId;
   },
+  displayInHistory() {
+    return __(`schemaTransactions.category.options.${this.category}`);
+  },
 });
 
 Transactions.attachBaseSchema(Transactions.baseSchema);
@@ -497,12 +500,6 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
   if (params.defId) {
     selector.defId = params.defId;
   } else delete selector.defId;
-  if (params.contractId) {
-    const contractId = params.contractId;
-    const $or = [{ contractId }, { 'credit.contractId': contractId }, { 'debit.contractId': contractId }];
-    selector.$and.push({ $or });
-    delete selector.contractId;
-  }
   if (params.account) {
     const account = withSubs(params.account);
     const $or = [{ 'credit.account': account }, { 'debit.account': account }];
@@ -530,6 +527,15 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
     selector['pEntries.partner'] = partner;
     delete selector.partner;
   } else delete selector.partner;
+  if (params.partnerId) {
+    const partner = Partners.code(params.partnerId, params.contractId);
+    selector['pEntries.partner'] = withSubs(partner);
+    delete selector.partnerId;
+    delete selector.contractId;
+  } else {
+    delete selector.partnerId;
+    delete selector.contractId;
+  }
 
   if (selector.$and.length === 0) delete selector.$and;
   return selector;

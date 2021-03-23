@@ -732,6 +732,7 @@
         "remission": "elengedés",
         "receipt": "nyugta",
         "transfer": "átvezetés",
+        "exchange": "átvezetés partnerek között",
         "opening": "nyitó",
         "freeTx": "könyvelési tranzakció"
       }
@@ -820,6 +821,24 @@
         }
       }
     },
+    "pEntries": {
+      "label": "Partner tételek",
+      "$": {
+        "amount": {
+          "label": "Összeg"
+        },
+        "side": {
+          "label": "Oldal",
+          "options": {
+            "debit": "Tartozik",
+            "credit": "Követel"
+          }
+        },
+        "partner": {
+          "label": "Partner/Szerződés"
+        }         
+      }
+    },
     // Following lines are for the different txdefs
     "supplierBillId": {
       "label": "Bejövő számla, amit beszámítunk"
@@ -831,6 +850,12 @@
       "label": "Átvezetés innen"
     },
     "toAccount": {
+      "label": "Átvezetés ide"
+    },
+    "fromPartner": {
+      "label": "Átvezetés innen"
+    },
+    "toPartner": {
       "label": "Átvezetés ide"
     },
     "side": {

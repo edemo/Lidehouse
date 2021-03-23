@@ -7,15 +7,17 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Partners } from '/imports/api/partners/partners.js';
-import { Contracts } from '/imports/api/contracts/contracts.js';
+import { Partners, choosePartner } from '/imports/api/partners/partners.js';
+import { Contracts, choosePartnerContract } from '/imports/api/contracts/contracts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const exchangeSchema = new SimpleSchema({
-  sourcePartnerId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  sourceContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  targetPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  targetContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+//  fromPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
+//  fromContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  fromPartner: { type: String, autoform: { ...choosePartnerContract } },
+//  toPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
+//  toContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  toPartner: { type: String, autoform: { ...choosePartnerContract } },
 });
 
 Transactions.categoryHelpers('exchange', {
@@ -24,11 +26,11 @@ Transactions.categoryHelpers('exchange', {
   },
   makePartnerEntries() {
     this.pEntries = [{
-      partner: Partners.code(this.sourcePartnerId, this.sourceContractId),
+      partner: this.fromPartner, // Partners.code(this.sourcePartnerId, this.sourceContractId),
       side: 'credit',
       amount: this.amount,
     }, {
-      partner: Partners.code(this.targetPartnerId, this.targetContractId),
+      partner: this.toPartner, // Partners.code(this.targetPartnerId, this.targetContractId),
       side: 'debit',
       amount: this.amount,
     }];
@@ -44,8 +46,8 @@ Transactions.simpleSchema({ category: 'exchange' }).i18n('schemaTransactions');
 
 Factory.define('exchange', Transactions, {
   category: 'exchange',
-  sourcePartnerId: () => Factory.get('member'),
-  targetPartnerId: () => Factory.get('member'),
+  fromPartner: () => Factory.get('member'),
+  toPartner: () => Factory.get('member'),
   valueDate: Clock.currentDate(),
   amount: () => faker.random.number(1000),
 });

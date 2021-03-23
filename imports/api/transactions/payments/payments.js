@@ -328,7 +328,7 @@ Transactions.categoryHelpers('payment', {
     return result;
   },
   displayInHistory() {
-    return __(this.category) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');
+    return __(`schemaTransactions.category.options.${this.category}`) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');
   },
   displayInSelect() {
     return `${this.serialId} (${moment(this.valueDate).format('YYYY.MM.DD')} ${this.partner()} ${this.amount})`;

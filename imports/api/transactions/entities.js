@@ -6,6 +6,7 @@ import '/imports/ui_3/views/components/bill-edit.js';
 import '/imports/ui_3/views/components/payment-view.js';
 import '/imports/ui_3/views/components/payment-edit.js';
 import '/imports/ui_3/views/components/transfer-edit.js';
+import '/imports/ui_3/views/components/exchange-edit.js';
 
 Transactions.entities = {
   bill: {
@@ -22,7 +23,10 @@ Transactions.entities = {
   },
   exchange: {
     name: 'exchange',
-    omitFields: () => ['debit', 'credit'],
+//    viewForm: 'Exchange_view',
+    editForm: 'Exchange_edit',
+    omitFields: () => ['debit', 'credit', 'pEntries'],
+    size: 'lg',
   },
   receipt: {
     name: 'receipt',
