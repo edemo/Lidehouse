@@ -65,7 +65,7 @@ Meteor.publishComposite('parcels.outstanding', function parcelsOutstanding(param
     return this.ready();
   }
 
-  const finderSelector = { communityId, [selector]: { $exists: true }, tag: 'T' };
+  const finderSelector = { communityId, [selector]: { $exists: true } };
   if (debtorsOnly) _.extend(finderSelector, { $expr: { $ne: ['$debit', '$credit'] } });
 
   if (selector === 'partner') {
