@@ -249,8 +249,8 @@ Transactions.helpers({
   },
   getContractAmount(contract) {
     let amount = 0;
-    this.pEntries.forEach(pe => {
-      if (pe.partner === contract.code()) {
+    this.pEntries?.forEach(pe => {
+      if (pe.partner === contract?.code()) {
         const sign = Transactions.signOfPartnerSide(pe.side);
         amount += sign * pe.amount;
       }
