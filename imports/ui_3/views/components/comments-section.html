@@ -86,7 +86,7 @@
         {{/each}}
     </div>
     {{/if}}
-    {{#if photo}}<div><img src="{{absoluteUrl photo}}" class="img-embed"></div>{{/if}}
+    {{> Attachments doc=this}}
     <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
     {{/let}}
 </template>
