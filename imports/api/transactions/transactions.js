@@ -125,7 +125,7 @@ Transactions.oppositeSide = function oppositeSide(side) {
   if (side === 'credit') return 'debit';
   return undefined;
 };
-Transactions.signOfSide = function signOfSide(side) {
+Transactions.signOfPartnerSide = function signOfPartnerSide(side) {
   if (side === 'debit') return +1;
   if (side === 'credit') return -1;
   return undefined;
@@ -249,9 +249,9 @@ Transactions.helpers({
   },
   getContractAmount(contract) {
     let amount = 0;
-    this.pEntries.forEach(pe => {
-      if (pe.partner === contract.code()) {
-        const sign = Transactions.signOfSide(pe.side);
+    this.pEntries?.forEach(pe => {
+      if (pe.partner === contract?.code()) {
+        const sign = Transactions.signOfPartnerSide(pe.side);
         amount += sign * pe.amount;
       }
     });
