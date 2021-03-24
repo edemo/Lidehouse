@@ -128,15 +128,16 @@ Balances.increase = function increase(selector, side, amount) {
 
 Balances.getCumulatedValue = function getCumulatedValue(def, d) {
   // Given a date in def, returns the cumulated total balance at that date
-  const date = moment(d).startOf('year').subtract(1, 'day');
-  const cBal = Balances.findOne(_.extend(def, { tag: `C-${date.format('YYYY')}` }));
+  const date = moment(d);
+  const lastClosingDate = date.startOf('year').subtract(1, 'day');
+  const cBal = Balances.findOne(_.extend(def, { tag: `C-${lastClosingDate.year()}` }));
   if (cBal) return cBal.total();
   // If no C balance available, we have to calculate it by adding up the T balances
   let result = 0;
   const tBals = Balances.find(_.extend(def, { tag: new RegExp('^T-') })).fetch();
   const prevBals = tBals.filter(b => {
     const period = b.period();
-    return period.year < date.year && !period.month;
+    return period.year < date.year() && !period.month;
   });
   prevBals.map(b => { result += b.total(); });
   return result;
