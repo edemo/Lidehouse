@@ -16,6 +16,8 @@ import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
 const receiptSchema = new SimpleSchema([
   Transactions.partnerSchema, {
+    // partnerId overrides non-optional value of transactions, with optional value
+    partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
     // amount overrides non-optional value of transactions, with optional & calculated value
     amount: { type: Number, decimal: true, optional: true },
     tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },

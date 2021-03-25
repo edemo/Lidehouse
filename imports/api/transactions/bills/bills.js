@@ -150,6 +150,20 @@ export const BillAndReceiptHelpers = {
     this.getLines().forEach(line => { if (line && !line.account) result = false; });
     return result;
   },
+  validate() {
+    if (this.partnerId && !this.contractId) { // Auto default to default contract, and create it if not yet exists
+      const selector = { communityId: this.communityId, relation: this.relation, partnerId: this.partnerId, title: { $exists: false } };
+      this.contractId = Contracts.findOne(selector);
+      if (!this.contractId) {
+        delete selector.title;
+        selector.accounting = {
+          account: this.lines[0].account,
+          localizer: this.lines[0].localizer,
+        };
+        this.contractId = Contracts.insert(selector);
+      }
+    }
+  },
   autoFill() {
     if (!this.lines) return;  // when the modifier doesn't touch the lines, should not autoFill
     let totalAmount = 0;
@@ -186,20 +200,6 @@ Transactions.categoryHelpers('bill', {
   },
   net() {
     return this.amount - this.tax;
-  },
-  validate() {
-    if (!this.contractId) { // Auto default to default contract, and create it if not yet exists
-      const selector = { communityId: this.communityId, relation: this.relation, partnerId: this.partnerId, title: { $exists: false } };
-      this.contractId = Contracts.findOne(selector);
-      if (!this.contractId) {
-        delete selector.title;
-        selector.accounting = {
-          account: this.lines[0].account,
-          localizer: this.lines[0].localizer,
-        };
-        this.contractId = Contracts.insert(selector);
-      }
-    }
   },
   fillFromStatementEntry(entry) {
     this.issueDate = entry.valueDate;

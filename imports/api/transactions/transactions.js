@@ -76,7 +76,6 @@ Transactions.partnerSchema = new SimpleSchema({
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...chooseContract } },
-//  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...chooseParcel } },
 });
 
 Transactions.legsSchema = {
