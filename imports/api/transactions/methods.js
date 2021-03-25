@@ -116,22 +116,6 @@ export const insert = new ValidatedMethod({
     const communityId = doc.communityId;
     checkPermissions(this.userId, 'transactions.insert', doc);
     doc.validate?.();
-//  if (doc.category === 'payment') {
-//    doc.getBills?.()?.forEach((bp) => {
-//      const bill = Transactions.findOne(bp.id);
-//      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
-//        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
-//        function setOrCheckEquals(field) {
-//          if (!doc[field]) doc[field] = bill[field];
-//          else if (doc[field] !== bill[field]) {
-//            throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
-//          }
-//        }
-//        setOrCheckEquals('relation');
-//        setOrCheckEquals('partnerId');
-//        setOrCheckEquals('contractId');
-//     });
-//   }
     doc.getLines?.()?.forEach((line) => {
       const parcel = Localizer.parcelFromCode(line.localizer, communityId);
       if (!line.parcelId && parcel) line.parcelId = parcel._id;

@@ -119,9 +119,12 @@ Contracts.helpers({
   outstanding() {
     return this.balance() * Partners.relationSign(this.relation) * -1;
   },
+  displayTitle() {
+    return this.title || __('default');
+  },
   toString() {
     if (this.relation === 'member') return `${__('property')} ${this.parcel()?.ref}`;
-    else return this.title;
+    else return this.displayTitle();
   },
 });
 

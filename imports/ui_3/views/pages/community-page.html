@@ -338,6 +338,9 @@
                 {{#if currentUserHasPermission 'meters.inCommunity' communityIdObject}}
                 <button class="btn btn-default text-capitalize js-meters-list"><i class="fa fa-list"></i> {{_ 'meter'}} {{_ 'list'}}</button>
                 {{/if}}
+                {{#if currentUserHasPermission 'contracts.insert'}}
+                <button class="btn btn-default text-capitalize js-contracts-list"><i class="fa fa-list"></i> {{_ 'contract'}} {{_ 'list'}}</button>
+                {{/if}}
             </div>
         </div>
     </div>

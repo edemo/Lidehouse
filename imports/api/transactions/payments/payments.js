@@ -158,6 +158,13 @@ Transactions.categoryHelpers('payment', {
     let billSum = 0;
     this.getBills().forEach(pb => {
       const bill = Transactions.findOne(pb.id);
+      if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
+      function checkBillMatches(field) {
+        if (bill[field] !== this[field]) {
+          throw new Meteor.Error(`All paid bills need to have same ${field}`, `${bill[field]} !== ${this[field]}`);
+        }
+      }
+      checkBillMatches('relation'); checkBillMatches('partnerId'); checkBillMatches('contractId');
       productionAssert(pb.amount < 0 === bill.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
       let amountToPay = bill.outstanding;
       const savedPayment = _.find(bill.getPayments(), p => p.id === this._id);

@@ -72,7 +72,7 @@ Template.Contracts.events({
     Modal.show('Modal', {
       title: 'contracts',
       body: 'Contracts_datatable',
-      bodyContext: { communityId },
+      bodyContext: { communityId, relations: ['customer', 'supplier'] },
       size: 'lg',
     });
   },
