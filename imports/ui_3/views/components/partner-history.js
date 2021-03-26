@@ -8,20 +8,18 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
-import './parcel-history.html';
+import './partner-history.html';
 
-Template.Parcel_history.viewmodel({
+Template.Partner_history.viewmodel({
   beginDate: '',
   endDate: '',
-  parcelOptions: [],
-  parcelSelected: '',
+  partnerOptions: [],
+  partnerSelected: '',
   status: 'Reconciled',
   onCreated(instance) {
-    ModalStack.setVar('relation', 'member', true);
     instance.autorun(() => {
-      if (this.contractSelected()) {
+      if (this.partnerSelected()) {
         instance.subscribe('transactions.byPartner', this.subscribeParams());
         instance.subscribe('txdefs.inCommunity', { communityId: this.communityId() });
       }
@@ -31,8 +29,8 @@ Template.Parcel_history.viewmodel({
     function defaultOptionSelect() {
       const instance = this.templateInstance;
       instance.autorun(() => {
-        if (this.parcelOptions().length && !this.parcelSelected()) {
-          this.parcelSelected(this.parcelOptions()[0].value);
+        if (this.partnerOptions().length && !this.partnerSelected()) {
+          this.partnerSelected(this.partnerOptions()[0].value);
         }
       });
     },
@@ -47,14 +45,9 @@ Template.Parcel_history.viewmodel({
   communityId() {
     return ModalStack.getVar('communityId');
   },
-  contractSelected() {
-    const parcelId = this.parcelSelected();
-    if (!parcelId) return undefined;
-    const parcel = Parcels.findOne(parcelId);
-    return parcel?.payerContract();
-  },
   subscribeParams() {
-    const contract = this.contractSelected();
+    if (!this.partnerSelected()) return {};
+    const contract = Contracts.findOne(this.partnerSelected());
     return {
       communityId: this.communityId(),
       partnerId: contract?.partnerId || null,
@@ -64,19 +57,23 @@ Template.Parcel_history.viewmodel({
     };
   },
   beginBalanceDef() {
+    if (!this.partnerSelected()) return {};
+    const contract = Contracts.findOne(this.partnerSelected());
     return {
       communityId: this.communityId(),
-      partner: this.contractSelected()?.code() || null,
+      partner: contract?.code() || null,
     };
   },
   history() {
+    if (!this.partnerSelected()) return {};
     const result = {};
+    const contract = Contracts.findOne(this.partnerSelected());
     result.beginBalance = Balances.getCumulatedValue(this.beginBalanceDef(), this.beginDate());
     const selector = Transactions.makeFilterSelector(this.subscribeParams());
     const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
     let total = 0;
     const txsWithRunningTotal = txs.map(tx => {
-      const contractAmount = tx.getContractAmount(this.contractSelected());
+      const contractAmount = tx.getContractAmount(contract);
       total += contractAmount;
       return _.extend(tx, { contractAmount, total });
     });
@@ -85,7 +82,7 @@ Template.Parcel_history.viewmodel({
   },
 });
 
-Template.Parcel_history.events({
+Template.Partner_history.events({
 //  'click .transactions .js-view'(event, instance) {
 //    const id = $(event.target).closest('[data-id]').data('id');
 //    const doc = Transactions.findOne(id);

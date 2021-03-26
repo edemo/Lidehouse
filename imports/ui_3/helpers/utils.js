@@ -20,6 +20,15 @@ export function displayDate(time) {
   return moment.utc(time).format('L');
 }
 
+export function defaultBeginDate() {
+//    return moment().startOf('year').format('YYYY-MM-DD');
+  return moment().subtract(1, 'year').format('YYYY-MM-DD');
+}
+
+export function defaultEndDate() {
+  return moment().format('YYYY-MM-DD');
+}
+
 if (Meteor.isClient) {
   Template.registerHelper('Meteor', function meteor() {
     return Meteor;
@@ -95,6 +104,10 @@ if (Meteor.isClient) {
   });
 
   Template.registerHelper('displayDate', displayDate);
+
+  Template.registerHelper('defaultBeginDate', defaultBeginDate);
+
+  Template.registerHelper('defaultEndDate', defaultEndDate);
 
   Template.registerHelper('displayTimeFrom', function displayTimeFrom(time) {
     // momentjs is not reactive, but TymeSync call makes this reactive
