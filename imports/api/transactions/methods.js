@@ -115,11 +115,17 @@ export const insert = new ValidatedMethod({
     doc = Transactions._transform(doc);
     const communityId = doc.communityId;
     checkPermissions(this.userId, 'transactions.insert', doc);
-    doc.validate?.();
+    if (doc.category === 'payment') {
+      if (!doc.contractId && doc.bills?.length) { // Only happens in tests, the UI enforces contractId input
+        const bill = Transactions.findOne(doc.bills[0].id);
+        doc.contractId = bill.contractId;
+      }
+    }
     doc.getLines?.()?.forEach((line) => {
       const parcel = Localizer.parcelFromCode(line.localizer, communityId);
       if (!line.parcelId && parcel) line.parcelId = parcel._id;
     });
+    doc.validate?.();
 
     const _id = Transactions.insert(doc);
     if (doc.isAutoPosting()) post._execute({ userId: this.userId }, { _id });

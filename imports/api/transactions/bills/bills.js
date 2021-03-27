@@ -153,7 +153,7 @@ export const BillAndReceiptHelpers = {
   validate() {
     if (this.partnerId && !this.contractId) { // Auto default to default contract, and create it if not yet exists
       const selector = { communityId: this.communityId, relation: this.relation, partnerId: this.partnerId, title: { $exists: false } };
-      this.contractId = Contracts.findOne(selector);
+      this.contractId = Contracts.findOne(selector)?._id;
       if (!this.contractId) {
         delete selector.title;
         selector.accounting = {

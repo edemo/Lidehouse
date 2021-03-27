@@ -156,12 +156,13 @@ Transactions.categoryHelpers('payment', {
   },
   validate() {
     let billSum = 0;
+    const payment = this;
     this.getBills().forEach(pb => {
       const bill = Transactions.findOne(pb.id);
       if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
       function checkBillMatches(field) {
-        if (bill[field] !== this[field]) {
-          throw new Meteor.Error(`All paid bills need to have same ${field}`, `${bill[field]} !== ${this[field]}`);
+        if (bill[field] !== payment[field]) {
+          throw new Meteor.Error(`All paid bills need to have same ${field}`, `${bill[field]} !== ${payment[field]}`);
         }
       }
       checkBillMatches('relation'); checkBillMatches('partnerId'); checkBillMatches('contractId');
@@ -236,7 +237,7 @@ Transactions.categoryHelpers('payment', {
       const makeEntries = function makeEntries(line, amount) {
         let relationAccount = line.relationAccount || this.relationAccount().code;
         if (!line.relationAccount && line.billing) relationAccount += ParcelBillings.findOne(line.billing.id).digit;
-        const newEntry = { amount, localizer: line.localizer, parcelId: line.parcelId, contractId: bill.contractId };
+        const newEntry = { amount, localizer: line.localizer, parcelId: line.parcelId };
         this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry));
         if (accountingMethod === 'cash') {
           const technicalAccount = Accounts.toTechnical(line.account);
@@ -289,7 +290,7 @@ Transactions.categoryHelpers('payment', {
       if (unallocatedAmount === 0) return false;
       debugAssert(unallocatedAmount < 0 === line.amount < 0, 'All lines must have the same sign');
       const amount = Math.smallerInAbs(line.amount, unallocatedAmount);
-      this.makeEntry(this.conteerSide(), { amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId, contractId: line.contractId });
+      this.makeEntry(this.conteerSide(), { amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
       unallocatedAmount -= amount;
     });
     // Handling the remainder
