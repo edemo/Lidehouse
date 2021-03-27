@@ -121,12 +121,15 @@ Template.Accounting_bills.viewmodel({
   partnersFilterSelector() {
     const selector = { communityId: this.communityId() };
     selector.relation = this.activePartnerRelation();
-    if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
     return selector;
   },
   partnersTableDataFn() {
     const self = this;
-    return () => Partners.find(self.partnersFilterSelector()).fetch();
+    return () => {
+      let partners = Partners.find(self.partnersFilterSelector()).fetch();
+      if (this.unreconciledOnly()) partners = partners.filter(p => p.outstanding(self.activePartnerRelation()) > 0);
+      return partners;
+    };
   },
   partnersOptionsFn() {
     return () => Object.create({
