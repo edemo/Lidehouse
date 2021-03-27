@@ -86,7 +86,8 @@ export const chooseLocalizerOfPartner = {
     const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
     return sortedOptions;
   },
-  firstOption: () => __('Localizers'),
+//  firstOption: () => __('Localizers'),
+  firstOption: false,
 };
 
 const billPaidSchema = {
