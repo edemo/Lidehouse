@@ -17,7 +17,7 @@ if (Meteor.isServer) {
   let demoPartner;
   let demoParcel;
   let demoUserEmail;
-  xdescribe('demohouse', function () {
+  describe('demohouse', function () {
     this.timeout(3 * 60 * 1000);
     before(function () {
       emptyFixture();

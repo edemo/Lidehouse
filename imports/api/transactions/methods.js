@@ -41,12 +41,6 @@ function runPositingRules(context, doc) {
 }
 */
 
-function checkBillIsPosted(billId) {
-  if (!billId) throw new Meteor.Error('Bill has to exist first');
-  const bill = checkExists(Transactions, billId);
-  if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
-}
-
 export const post = new ValidatedMethod({
   name: 'transactions.post',
   validate: new SimpleSchema({
@@ -57,15 +51,7 @@ export const post = new ValidatedMethod({
     checkPermissions(this.userId, 'transactions.post', doc);
 // Allowing repost action
 //   if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
-
-    if (doc.category === 'bill' || doc.category === 'receipt') {
-      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
-    } else if (doc.category === 'payment') {
-      doc.getBills().forEach(bp => checkBillIsPosted(bp.id));
-    } else if (doc.category === 'barter') {
-      checkBillIsPosted(doc.supplierBillId);
-      checkBillIsPosted(doc.customerBillId);
-    }
+    doc.validateForPost?.();
 
     const modifier = { $set: { postedAt: new Date() } };
     if (doc.status !== 'void') { // voided already has the accounting data on it

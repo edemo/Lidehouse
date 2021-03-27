@@ -154,12 +154,16 @@ Transactions.categoryHelpers('payment', {
   unallocated() {
     return this.amount - this.allocatedSomewhere();
   },
+  hasConteerData() {
+    let result = true;
+    this.getLines().forEach(line => { if (line && !line.account) result = false; });
+    return result;
+  },
   validate() {
     let billSum = 0;
     const payment = this;
     this.getBills().forEach(pb => {
       const bill = Transactions.findOne(pb.id);
-      if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
       function checkBillMatches(field) {
         if (bill[field] !== payment[field]) {
           throw new Meteor.Error(`All paid bills need to have same ${field}`, `${bill[field]} !== ${payment[field]}`);
@@ -192,6 +196,13 @@ Transactions.categoryHelpers('payment', {
     if (connectedBillIds.length !== _.uniq(connectedBillIds).length) {
       throw new Meteor.Error('err_notAllowed', 'Same bill may not be selected multiple times', `connectedBillIds: ${connectedBillIds}`);
     }
+  },
+  validateForPost() {
+    this.getBills().forEach(pb => {
+      const bill = Transactions.findOne(pb.id);
+      if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
+    });
+    if (!this.hasConteerData()) throw new Meteor.Error('Payment has to be account assigned first');
   },
   autoAllocate() {
     if (!this.amount) return;
