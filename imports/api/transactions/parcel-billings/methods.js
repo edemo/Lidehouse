@@ -73,7 +73,7 @@ export const apply = new ValidatedMethod({
               // TODO: Estimation if no reading available
               line.quantity = 0;
               const lastBilling = activeMeter.lastBilling(); delete lastBilling.billId;
-              const lastReading = activeMeter.lastReading();
+              const lastReading = activeMeter.lastReading(date);
               // ----- date ------ lastBilling ------ now |
 //              if (date < lastBilling.date) throw new Meteor.Error('err_notAllowed', 'Cannot bill a consumption based billing at a time earlier than the last billing', `${date} < ${lastBilling.date}`);
               // ---- lastBilling -----earlierReading ----- date ------ lastReading ------ now |

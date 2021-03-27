@@ -76,8 +76,16 @@ Meters.helpers({
   startReading() {
     return _.first(this.readings);
   },
-  lastReading() {
-    return _.last(this.readings);
+  lastReading(date) {
+    debugAssert(this.readings.length >= 1, 'Meters should have at least an initial reading');
+    if (!date) return _.last(this.readings);
+    let lastReading;
+    this.readings.forEach(r => {
+      if (r.date <= date) lastReading = r;
+      else return false;
+    });
+    productionAssert(lastReading, `Meter ${this.toString()} has no reading before date ${date}. Looks like it did not exist at that time.`);
+    return lastReading;
   },
   lastBilling() {
     if (!this.billings || !this.billings.length) return this.startReading();
@@ -90,23 +98,35 @@ Meters.helpers({
     if (elapsedDays > 90) return 'warning';
     return '';
   },
-  getEstimatedConsumptionSinceLastReading(date = Clock.currentDate()) {
-    const length = this.readings.length;
-    debugAssert(length >= 1, 'Meters should have at least an initial reading');
-    const lastReading = this.readings[length - 1];
-    productionAssert(lastReading.date <= date, 'err_notAllowed', 'We dont support estimating in between reading values');
-    if (length === 1) return lastReading.value; // With only one initial reading, unable estimate consumption
-    const previousReading = this.readings[length - 2];
-    const usageDays = moment(lastReading.date).diff(moment(previousReading.date), 'days');
-    if (usageDays === 0) return 0;
-    debugAssert(usageDays > 0, 'No negative days between reading');
-    const usage = lastReading.value - previousReading.value;
-    const elapsedDays = moment(date).diff(moment(lastReading.date), 'days');
-    const estimate = (usage / usageDays) * elapsedDays;
-    return estimate;
-  },
   getEstimatedValue(date = Clock.currentDate()) {
-    return this.lastReading().value + this.getEstimatedConsumptionSinceLastReading(date);
+    let lastReading;      // The last reading before this date
+    let lastReadingIndex;
+    this.readings.forEach((r, i) => {
+      if (r.date <= date) { lastReading = r; lastReadingIndex = i; }
+    });
+    productionAssert(lastReading, 'Cannot estimate before any reading data is available');
+    if (this.readings.length > lastReadingIndex + 1) { // If there are readings after the estimation date
+      const nextReading = this.readings[lastReadingIndex + 1];
+      const proportion = moment(date).diff(moment(lastReading.date), 'days')
+                        / moment(nextReading.date).diff(moment(lastReading.date), 'days');
+      return lastReading.value + (nextReading.value - lastReading.value) * proportion;
+    }
+    // Else we are estimating after the very last reading
+    if (lastReadingIndex === 0) return lastReading.value; // With only one initial reading, unable estimate consumption
+    const previousReading = this.readings[lastReadingIndex - 1];
+    const usageDays = moment(lastReading.date).diff(moment(previousReading.date), 'days');
+    let estimatedConsumption;
+    if (usageDays === 0) estimatedConsumption = 0;
+    else {
+      debugAssert(usageDays > 0, 'Reading dates have to monotonically increase');
+      const usage = lastReading.value - previousReading.value;
+      const elapsedDays = moment(date).diff(moment(lastReading.date), 'days');
+      estimatedConsumption = (usage / usageDays) * elapsedDays;
+    }
+    return lastReading.value + estimatedConsumption;
+  },
+  toString() {
+    return `${this.idenfitier}(${this.parcel()})`;
   },
 });
 

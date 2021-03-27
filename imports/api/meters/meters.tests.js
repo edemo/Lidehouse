@@ -70,7 +70,6 @@ if (Meteor.isServer) {
         chai.assert.equal(elapsedDays, 41);
         const estimatedConsumption = (10 / usageDays) * elapsedDays;
         chai.assert.equal(estimatedConsumption, 6.507936507936508);
-        chai.assert.equal(meter.getEstimatedConsumptionSinceLastReading(new Date('2018-06-15')), estimatedConsumption);
         chai.assert.equal(meter.getEstimatedValue(new Date('2018-06-15')), 10 + estimatedConsumption);
       });
 
@@ -105,8 +104,12 @@ if (Meteor.isServer) {
         chai.assert.equal(elapsedDays, 24);
         const estimatedConsumption = (5 / usageDays) * elapsedDays;
         chai.assert.equal(estimatedConsumption, 3.75);
-        chai.assert.equal(meter.getEstimatedConsumptionSinceLastReading(new Date('2018-06-30')), estimatedConsumption);
         chai.assert.equal(meter.getEstimatedValue(new Date('2018-06-30')), 15 + estimatedConsumption);
+      });
+
+      it('Can estimate between readings', function () {
+        const meter = Meters.findOne(meterId);
+        chai.assert.equal(meter.getEstimatedValue(new Date('2018-05-21')), 12.5);
       });
 
       it('Can create new meter /without activeTime - and it starts with 0 at currentDate', function () {
