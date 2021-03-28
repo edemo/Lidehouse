@@ -227,7 +227,7 @@
         "value": {
           "label": "Óraállás",
           "help": "Kérjük figyeljen a tizedesvessző megfelelő helyére, hogy a helyes állást rögzítsük",
-          "placeholder": "(pl. 1234,05)"
+          "placeholder": "(pl. 1234,205)"
         },
         "photo": {
           "label": "Fénykép (ha csatolni szeretne)",

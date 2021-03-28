@@ -11,7 +11,7 @@ export function statementEntriesColumns() {
     { data: 'valueDate', title: __('schemaStatementEntries.valueDate.label'), render: Render.formatDate },
     { data: 'refType', title: __('schemaStatementEntries.refType.label') },
     { data: 'name', title: __('schemaStatementEntries.name.label') },
-    { data: 'amount', title: __('schemaStatementEntries.amount.label'), render: Render.formatNumber },
+    { data: 'amount', title: __('schemaStatementEntries.amount.label'), render: Render.formatNumber(0) },
     { data: 'note', title: __('schemaStatementEntries.note.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,

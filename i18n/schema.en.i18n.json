@@ -227,7 +227,7 @@
         "value": {
           "label": "Reading value",
           "help": "Please put in the decimal separator correctly",
-          "placeholder": "(eg 1234,05)"
+          "placeholder": "(eg 1234.205)"
         },
         "photo": {
           "label": "Photo (if applicable)",

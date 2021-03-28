@@ -25,7 +25,7 @@ export function parcelColumns() {
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label') },
     { data: 'lot', title: __('schemaParcels.lot.label') },
-    { data: 'area', title: __('schemaParcels.area.label') },
+    { data: 'area', title: __('schemaParcels.area.label'), render: Render.formatNumber(2) },
     { data: 'units', title: __('schemaParcels.units.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,

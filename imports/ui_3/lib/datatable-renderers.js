@@ -16,9 +16,12 @@ export const Render = Meteor.isServer ? {} : {
       return cellData.toString().split(',').map(text => __(`${scope}.options.${text}`)).join(',');
     };
   },
-  formatNumber: $.fn.dataTable.render.number(() => numeral.languageData().delimiters.thousands, () => numeral.languageData().delimiters.decimal, 0),
-  // numeral.format() not good here, as it renders a string into the cell, so sorting/filtering will not work correctly on this column
-  // https://datatables.net/manual/data/renderers#Number-helper
+  formatNumber(decimals) {
+    const numeralData = numeral.languageData();
+    return $.fn.dataTable.render.number(numeralData.delimiters.thousands, numeralData.delimiters.decimal, decimals);
+    // numeral.format() not good here, as it renders a string into the cell, so sorting/filtering will not work correctly on this column
+    // https://datatables.net/manual/data/renderers#Number-helper
+  },
   formatDate(cellData, renderType, currentRow) {
     if (!cellData) return '---';
     return moment.utc(cellData).format('YYYY.MM.DD');
