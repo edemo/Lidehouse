@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
+
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -12,7 +13,8 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Parcels } from '../../api/parcels/parcels';
+import { Parcels } from '/imports/api/parcels/parcels';
+import { displayNumber } from './utils.js';
 
 export function label(value, color, icon) {
   if (value === undefined) return undefined;
@@ -36,8 +38,8 @@ export function displayMeterService(name) {
   return label(name, 'default');
 }
 
-export function displayReading(value) {
-  return label(value, 'info');
+export function displayReading(value, decimals) {
+  return label(displayNumber(value, decimals), 'info');
 }
 
 export function displayOutstanding(value) {

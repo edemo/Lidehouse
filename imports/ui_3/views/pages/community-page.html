@@ -118,7 +118,7 @@
                         <td>{{>Active_period collection='meters' doc=this}}</td>
                         <td>{{_ 'schemaMeters.lastRead.label'}}:
                             <small>{{displayDate this.lastReading.date}}</small> 
-                            {{{displayReading this.lastReading.value}}}
+                            {{{displayReading this.lastReading.value this.decimals}}}
                             {{>Action_buttons_group collection='meters' doc=this actions='registerReading,editReadings' size='sm'}}
                         </td>
                         <td class="text-right">

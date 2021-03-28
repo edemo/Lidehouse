@@ -15,6 +15,10 @@ export function displayMoney(number) {
   return numeral(number).format('0,0$');
 }
 
+export function displayNumber(number, decimals = 0) {
+  return numeral(number).format('0,0.' + '0'.repeat(decimals));
+}
+
 export function displayDate(time) {
   if (!time) return '---';
   return moment.utc(time).format('L');
@@ -86,9 +90,7 @@ if (Meteor.isClient) {
 
   Template.registerHelper('negativeClass', negativeClass);
 
-  Template.registerHelper('displayNumber', function displayNumber(number) {
-    return numeral(number).format('0,0');
-  });
+  Template.registerHelper('displayNumber', displayNumber);
 
   Template.registerHelper('currentTime', function currentTime() {
     return moment().format('L LT');
