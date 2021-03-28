@@ -94,7 +94,7 @@ Partners.actions = {
   }),
   merge: (options, doc, user = Meteor.userOrNull()) => {
     const destinationId = doc.idCard?.name &&
-      Partners.findOne({ _id: { $ne: doc._id }, 'idCard.name': doc.idCard.name })?._id;
+      Partners.findOne({ _id: { $ne: doc._id }, communityId: doc.communityId, 'idCard.name': doc.idCard.name })?._id;
     return {
       name: 'merge',
       icon: 'fa fa-compress',
