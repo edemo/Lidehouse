@@ -780,6 +780,7 @@
   "publish balances": "publikálja az aktuális egyenlegeket",
   "import data": "importálja az adatokat",
   "update partner": "megváltoztatja a partner adatokat",
+  "registerReading meter": "rögzíti a mérőóraállást",
 
   "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
@@ -797,6 +798,7 @@
   "This will publish the current account balances": "Ezzel a jelen pillanatban élő számlaegyenlegek lesznek mostantól láthatóak a tulajdonosok felé mutatott kimutatásokban",
   "This transaction has been already posted before": "Ezt a tranzakciót korábban már könyvelésbe küldte",
   "This will send the bill again": "Ezzel ismételten elküldi a számlát a tranzakciós partnernek",
+  "The reading is much higher than expected": "A leolvasott érték jelentősen nagyobb a vártnál",
 
   "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",
