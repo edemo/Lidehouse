@@ -767,6 +767,7 @@
   "resend email": "újra küldi az emailt",
   "delete meter": "törli a mérőórát",
   "remind outstandings": "elküldi a hátralék emlékeztetőt",
+  "delete partner": "törli a partnert",
   "delete contract": "törli a szerződést",
   "enable delegations": "engedélyezi a bejövő meghatalmazásokat",
   "disable delegations": "visszautasítja a bejövő meghatalmazásokat",
@@ -798,7 +799,7 @@
   "This will publish the current account balances": "Ezzel a jelen pillanatban élő számlaegyenlegek lesznek mostantól láthatóak a tulajdonosok felé mutatott kimutatásokban",
   "This transaction has been already posted before": "Ezt a tranzakciót korábban már könyvelésbe küldte",
   "This will send the bill again": "Ezzel ismételten elküldi a számlát a tranzakciós partnernek",
-  "The reading is much higher than expected": "A leolvasott érték jelentősen nagyobb a vártnál",
+  "The reading is much higher than expected": "A leolvasott érték jelentősen nagyobb a vártnál. Elképzelhető, hogy rossz helyre tette a tizedes vesszőt. Biztos hogy rögzíti ezt az állást?",
 
   "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",
