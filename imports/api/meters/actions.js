@@ -130,6 +130,14 @@ Meters.batchActions = {
 
 //-----------------------------------------------
 
+function isTooLargeValue(doc) {
+  const meter = Meters.findOne(doc._id);
+  const lastReadingValue = meter.lastReading()?.value;
+  const lastDifference = meter.lastBilling()?.value || lastReadingValue - meter.readings[meter.readings.length - 2]?.value;
+  if (lastDifference > 0 && (doc.reading.value - lastReadingValue) > (lastDifference * 10)) return true;
+  return false;
+}
+
 AutoForm.addModalHooks('af.meter.insert');
 AutoForm.addModalHooks('af.meter.update');
 AutoForm.addModalHooks('af.meter.registerReading');
@@ -149,6 +157,13 @@ AutoForm.addHooks('af.meter.update', {
 AutoForm.addHooks('af.meter.registerReading', {
   formToDoc(doc) {
     doc._id = ModalStack.getVar('meterId');
+    if (isTooLargeValue(doc)) {
+      Modal.confirmAndCall(Meters.methods.registerReading, doc, {
+        action: 'registerReading meter',
+        message: 'The reading is much higher than expected',
+      }, (res) => { if (res) Modal.hide(this.template.parent()); });
+      return false;
+    }
     return doc;
   },
 });
