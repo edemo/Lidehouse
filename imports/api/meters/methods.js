@@ -15,12 +15,12 @@ export const insert = new ValidatedMethod({
   run(doc) {
     checkPermissionsWithApprove(this.userId, 'meters.insert', doc);
 
-    const MetersStage = Meters.Stage();
-    const _id = MetersStage.insert(doc);
-    sanityCheckOnlyOneActiveAtAllTimes(MetersStage, { parcelId: doc.parcelId, service: doc.service });
-    MetersStage.commit();
-
-    return _id;
+//    const MetersStage = Meters.Stage();
+//    const _id = MetersStage.insert(doc);
+//    sanityCheckOnlyOneActiveAtAllTimes(MetersStage, { parcelId: doc.parcelId, service: doc.service });
+//    MetersStage.commit();
+//    return _id;
+    return Meters.insert(doc);
   },
 });
 
@@ -36,13 +36,13 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['identifier', 'billings'], true);
     checkPermissions(this.userId, 'meters.update', doc);
 
-    const MetersStage = Meters.Stage();
-    const result = MetersStage.update(_id, modifier);
-    const newDoc = MetersStage.findOne(_id);
-    sanityCheckOnlyOneActiveAtAllTimes(MetersStage, { parcelId: newDoc.parcelId, service: newDoc.service });
-    MetersStage.commit();
-
-    return result;
+//    const MetersStage = Meters.Stage();
+//    const result = MetersStage.update(_id, modifier);
+//    const newDoc = MetersStage.findOne(_id);
+//    sanityCheckOnlyOneActiveAtAllTimes(MetersStage, { parcelId: newDoc.parcelId, service: newDoc.service });
+//    MetersStage.commit();
+//    return result;
+    Meters.update(_id, modifier);
   },
 });
 

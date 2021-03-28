@@ -514,16 +514,14 @@ if (Meteor.isServer) {
         assertBilled('2018-05-05', 'consumption', 0);
       });
 
-      it('Cannot register two meters for the same service concurrently. But for another service, its OK to have another meter.', function () {
-        chai.assert.throws(() =>
-          Fixture.builder.create('meter', {
-            parcelId: meteredParcelId,
-            identifier: 'CW-02020202',
-            service: 'coldWater',
-            uom: 'l',
-            activeTime: { begin: new Date('2018-07-01') },
-          })
-        );
+      it('Can register two meters for the same service concurrently. Also for another service, its OK to have another meter.', function () {
+        Fixture.builder.create('meter', {
+          parcelId: meteredParcelId,
+          identifier: 'CW-02020202',
+          service: 'coldWater',
+          uom: 'l',
+          activeTime: { begin: new Date('2018-07-01') },
+        });
         Fixture.builder.create('meter', {
           parcelId: meteredParcelId,
           identifier: 'HW-02020202',
