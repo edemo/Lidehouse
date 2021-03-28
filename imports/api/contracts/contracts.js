@@ -12,6 +12,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { noUpdate } from '/imports/utils/autoform.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners, choosePartner, choosePartnerOfParcel } from '/imports/api/partners/partners.js';
 import { Parcels, chooseParcel, chooseProperty } from '/imports/api/parcels/parcels.js';
@@ -26,7 +27,7 @@ Contracts.accountingSchema = new SimpleSchema({
 
 Contracts.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
+  relation: { type: String, allowedValues: Relations.values, autoform: { type: 'hidden' } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...noUpdate, ...choosePartner } },
   accounting: { type: Contracts.accountingSchema, optional: true },
 });

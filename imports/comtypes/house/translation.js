@@ -103,14 +103,22 @@ export const HouseTranslation = {
           "help": "Depending on this, the accounting transactions are generated differently from bills and payments. Never change this setting during the fiscal year.",
           "options": {
             "accrual": "Accrual",
-            "cash": 'Cash'
+            "cash": "Cash"
           }
         },
         "subjectToVat": {
           "label": "Under VAT"
         },
         "paymentsWoStatement": {
-          "label": "Can register payment without bank statement"
+          "label": "Payments can be registered without a bank statement"
+        },
+        "paymentsToBills": {
+          "label": "Payments need to be reconciled to the bills",
+          "options": {
+            "customer": "Customers",
+            "supplier": "Suppliers",
+            "member": "Owners"
+          }
         }
       }
     },
@@ -327,7 +335,15 @@ export const HouseTranslation = {
           "label": "ÁFA körben van"
         },
         "paymentsWoStatement": {
-          "label": "Fizetés rögzíthető bankkivonat nélkül is"
+          "label": "Számla fizetése rögzíthető bankkivonat nélkül is"
+        },
+        "paymentsToBills": {
+          "label": "Számla fizetéseket a számlákhoz kell egyeztetni",
+          "options": {
+            "customer": "Vevőknél",
+            "supplier": "Szállítóknál",
+            "member": "Tulajdonosoknál"
+          }
         }
       }
     },

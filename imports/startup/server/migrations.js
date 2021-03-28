@@ -5,6 +5,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
 
 import { productionAssert } from '/imports/utils/assert.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -669,6 +670,15 @@ Migrations.add({
     Balances.ensureAllCorrect();
   },
 });
+
+Migrations.add({
+  version: 37,
+  name: 'Communities get paymentsToBills setting',
+  up() {
+    Communities.update({}, { $set: { 'settings.paymentsToBills': Relations.mainValues } }, { validate: false, multi: true });
+  },
+});
+
 
 // Use only direct db operations to avoid unnecessary hooks!
 

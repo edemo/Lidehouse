@@ -21,6 +21,7 @@ import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/acc
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { PeriodBreakdown, Period } from '/imports/api/transactions/breakdowns/period.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
@@ -73,7 +74,7 @@ Transactions.coreSchema = {
 };
 
 Transactions.partnerSchema = new SimpleSchema({
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
+  relation: { type: String, allowedValues: Relations.values, autoform: { type: 'hidden' } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...chooseContract } },
 });

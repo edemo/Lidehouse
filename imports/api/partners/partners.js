@@ -10,6 +10,7 @@ import rusdiff from 'rus-diff';
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -35,12 +36,10 @@ const IdCardSchema = new SimpleSchema({
   mothersName: { type: String, optional: true },
 });
 
-Partners.relationValues = ['supplier', 'customer', 'member'];
-
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   ref: { type: String, optional: true, autoform: { type: 'hidden' } },  // only used when importing from external system
-  relation: { type: [String], allowedValues: Partners.relationValues, autoform: { type: 'select-checkbox-inline' } },
+  relation: { type: [String], allowedValues: Relations.values, autoform: { type: 'select-checkbox-inline' } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   idCard: { type: IdCardSchema, optional: true },
   contact: { type: ContactSchema, optional: true },

@@ -11,6 +11,7 @@ import { allowedOptions, imageUpload } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Relations } from '/imports/api/core/relations.js';
 
 export const Communities = new Mongo.Collection('communities');
 
@@ -18,7 +19,6 @@ const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
 Communities.statusValues = ['sandbox', 'live', 'official'];
 Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'documents'];
-Communities.relationValues = ['supplier', 'customer', 'member']; // exact copy of Partners.relationValues
 
 Communities.settingsSchema = new SimpleSchema({
   modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', checked: true } },
@@ -26,9 +26,11 @@ Communities.settingsSchema = new SimpleSchema({
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   parcelRefFormat: { type: String, optional: true },
   topicAgeDays: { type: Number, decimal: true, defaultValue: 90 },
+  // accounting
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions() },
   subjectToVat: { type: Boolean, optional: true },
   paymentsWoStatement: { type: Boolean, optional: true },
+  paymentsToBills: { type: [String], allowedValues: Relations.values, defaultValue: Relations.mainValues, autoform: { type: 'select-checkbox-inline' } },
 });
 
 Communities.schema = new SimpleSchema([{
@@ -43,7 +45,7 @@ Communities.schema = new SimpleSchema([{
   settings: { type: Communities.settingsSchema },
   // cached fields:
   parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
-  billsUsed: { type: [String], defaultValue: [], allowedValues: Communities.relationValues, autoform: { omit: true } },
+  billsUsed: { type: [String], defaultValue: [], allowedValues: Relations.values, autoform: { omit: true } },
 }]);
 
 Communities.listingsFields = {
