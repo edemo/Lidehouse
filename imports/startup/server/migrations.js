@@ -632,14 +632,13 @@ Migrations.add({
     Transactions.find({ category: 'bill' }).forEach(doc => {
       if (!doc.contractId) {
         doc.validate(); // creates default contract, if no contractId on bill
-        Transactions.direct.update(doc._id, { $set: { contractId: doc.contractId } });
+        Transactions.direct.update(doc._id, { $set: { contractId: doc.contractId } }, { selector: doc, validate: false });
       }
     });
     Transactions.find({ category: 'payment' }).forEach(doc => {
       doc.getBills?.()?.forEach((bp) => {
         const bill = Transactions.findOne(bp.id);
         if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
-        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
         function setOrCheckEquals(field) {
           if (!doc[field]) doc[field] = bill[field];
           else if (doc[field] !== bill[field]) {
