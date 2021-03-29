@@ -626,7 +626,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 36,
+  version: 35,
   name: 'Ensure all bills and payments have a contractId, and they match',
   up() {
     Transactions.find({ category: 'bill' }).forEach(doc => {
@@ -650,8 +650,9 @@ Migrations.add({
       doc.lines?.forEach((line) => {
         delete line.contractId;
       });
+      const id = doc._id;
       delete doc._id;
-      Transactions.direct.update(doc._id, { $set: doc });
+      Transactions.direct.update(id, { $set: doc });
     });
   },
 });
