@@ -630,7 +630,10 @@ Migrations.add({
   name: 'Ensure all bills and payments have a contractId, and they match',
   up() {
     Transactions.find({ category: 'bill' }).forEach(doc => {
-      doc.validate(); // creates default contract, if no contractId on bill
+      if (!doc.contractId) {
+        doc.validate(); // creates default contract, if no contractId on bill
+        Transactions.direct.update(doc._id, { $set: { contractId: doc.contractId } });
+      }
     });
     Transactions.find({ category: 'payment' }).forEach(doc => {
       doc.getBills?.()?.forEach((bp) => {
@@ -648,6 +651,7 @@ Migrations.add({
         setOrCheckEquals('contractId');
       });
       doc.lines?.forEach((line) => {
+        if (!doc.contractId) doc.contractId = line.contractId;
         delete line.contractId;
       });
       const id = doc._id;
