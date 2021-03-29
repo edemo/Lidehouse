@@ -8,6 +8,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
+import { defaultBeginDate, defaultEndDate } from '/imports/ui_3/helpers/utils.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { toggle } from '/imports/api/utils';
@@ -62,8 +63,8 @@ ViewModel.share({
     },
     setDefaultFilter() {
       this.txStatusSelected(['draft', 'posted']);
-      this.beginDate(moment().startOf('year').format('YYYY-MM-DD'));
-      this.endDate(moment().format('YYYY-MM-DD'));
+      this.beginDate(defaultBeginDate());
+      this.endDate(defaultEndDate());
       this.unreconciledOnly(false);
       this.partnerContractSelected('');
       this.localizerSelected('');
@@ -72,8 +73,8 @@ ViewModel.share({
       if (this.txStatusSelected()[0] !== 'draft' ||
           this.txStatusSelected()[1] !== 'posted' ||
           this.unreconciledOnly() !== false ||
-          this.beginDate() !== moment().startOf('year').format('YYYY-MM-DD') ||
-          this.endDate() !== moment().format('YYYY-MM-DD') ||
+          this.beginDate() !== defaultBeginDate() ||
+          this.endDate() !== defaultEndDate() ||
           this.partnerContractSelected() ||
           this.localizerSelected()) return true;
       return false;
