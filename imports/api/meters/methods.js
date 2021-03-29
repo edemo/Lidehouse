@@ -127,6 +127,10 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Meters, _id);
     checkPermissions(this.userId, 'meters.remove', doc);
+    if (doc.unbilledReadAmount()) { // cannot be positive or negative either
+      throw new Meteor.Error('err_unableToRemove', 'Meter cannot be deleted while it has unbilled amount',
+       `Unbilled amount: {${doc.unbilledReadAmount()}}`);
+    }
     Meters.remove(_id);
   },
 });

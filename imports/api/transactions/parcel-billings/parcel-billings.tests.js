@@ -23,7 +23,7 @@ chai.assert.equalDate = function equalDate(d1, d2) {
 if (Meteor.isServer) {
   let Fixture;
 
-  describe('parcel billings', function () {
+  describe.only('parcel billings', function () {
     this.timeout(25000);
     let applyParcelBillings;
     let postParcelBillings;
@@ -531,16 +531,9 @@ if (Meteor.isServer) {
         });
       });
 
-      xit('Cannot remove a meter which has unbilled amount', function () {
-        registerReading('2018-06-30', 30);
-        chai.assert.throws(() =>
-          Fixture.builder.execute(Meters.methods.remove, { _id: meterId })
-        , 'err_notAllowed');
-        applyParcelBillings('2018-06-30'); postParcelBillings('2018-06-30');
-      });
-
       it('Can archive a meter which has no unbilled amount', function () {
         Fixture.builder.execute(Meters.methods.update, { _id: meterId, modifier: { $set: { 'activeTime.end': new Date('2018-06-30') } } });
+        chai.assert.isUndefined(Meters.findOneActive(meterId));
       });
 
       it('Can use a new meter that measures in a different uom', function () {
@@ -555,9 +548,8 @@ if (Meteor.isServer) {
       });
 
       it('Cannot bill while some meters are in an unsupported uom', function () {
-        chai.assert.throws(() =>
-          applyParcelBillings('2018-07-30')
-        , 'err_invalidData');
+        chai.assert.throws(() => applyParcelBillings('2018-07-30'),
+          'err_invalidData');
       });
 
       it('Can bill in different uom', function () {
@@ -566,6 +558,11 @@ if (Meteor.isServer) {
         registerReading('2018-07-20', 2);
         applyParcelBillings('2018-07-30'); postParcelBillings('2018-07-30');
         assertBilled('2018-07-30', 'consumption', 3);
+      });
+
+      it('Cannot remove a meter which has unbilled amount', function () {
+        chai.assert.throws(() => Fixture.builder.execute(Meters.methods.remove, { _id: meterId }),
+          'err_unableToRemove');
       });
     });
 /*

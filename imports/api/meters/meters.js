@@ -88,7 +88,7 @@ Meters.helpers({
     return lastReading;
   },
   lastBilling() {
-    if (!this.billings || !this.billings.length) return this.startReading();
+    if (!this.billings?.length) return this.startReading();
     return _.last(this.billings);
   },
   lastReadingColor() {
@@ -97,6 +97,16 @@ Meters.helpers({
     const elapsedDays = moment().diff(moment(lastReadingDate), 'days');
     if (elapsedDays > 90) return 'warning';
     return '';
+  },
+  unbilledReadAmount() {
+    const lastBilling = this.lastBilling();
+    const lastReading = this.lastReading();
+    return lastReading.value - lastBilling.value;
+  },
+  unbilledEstimatedAmount() {
+    const lastBilling = this.lastBilling();
+    const estimatedValue = this.getEstimatedValue();
+    return estimatedValue - lastBilling.value;
   },
   getEstimatedValue(date = Clock.currentDate()) {
     let lastReading;      // The last reading before this date
