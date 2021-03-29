@@ -13,7 +13,7 @@ export function journalEntriesColumns() {
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'account', title: __('Account'), render: displayAccountText },
     { data: 'side', title: __('Side'), render: cellData => __(`schemaTransactions.${cellData}.label`).charAt(0) },
-    { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
+    { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber(0) },
     { data: 'transaction().serialId', title: __('transaction') + ' ' + __('schemaTransactions.serialId.label') },
   //  { data: '_id', title: __('Action buttons'), render: Render.actionButtons,,
   //    createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,

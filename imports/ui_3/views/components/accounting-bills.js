@@ -61,15 +61,17 @@ Template.Accounting_bills.viewmodel({
   },
   count(category, kind) {
     const selector = { communityId: this.communityId(), category, relation: this.activePartnerRelation() };
-    if (kind === 'outstanding') selector.outstanding = { $gt: 0 };
-    else if (kind === 'unposted') selector.postedAt = { $exists: false };
+    if (kind === 'outstanding') {
+      if (!_.contains(this.community()?.settings.paymentsToBills, this.activePartnerRelation())) return 0;
+      selector.outstanding = { $gt: 0 };
+    } else if (kind === 'unposted') selector.postedAt = { $exists: false };
     else if (kind === 'unreconciled') selector.seId = { $exists: false };
     const txs = Transactions.find(selector);
     return txs.count();
   },
   countOverduePartners(color) {
-    const partners = Partners.find({ communityId: this.communityId(), relation: this.activePartnerRelation(), outstanding: { $gt: 0 } });
-    const overdues = partners.fetch().filter(partner => partner.mostOverdueDaysColor() === color);
+    const partners = Partners.find({ communityId: this.communityId(), relation: this.activePartnerRelation() });
+    const overdues = partners.fetch().filter(partner => partner.balance() !== 0 && partner.mostOverdueDaysColor() === color);
     return overdues.length;
   },
   txTableDataFn(category) {
@@ -121,12 +123,15 @@ Template.Accounting_bills.viewmodel({
   partnersFilterSelector() {
     const selector = { communityId: this.communityId() };
     selector.relation = this.activePartnerRelation();
-    if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
     return selector;
   },
   partnersTableDataFn() {
     const self = this;
-    return () => Partners.find(self.partnersFilterSelector()).fetch();
+    return () => {
+      let partners = Partners.find(self.partnersFilterSelector()).fetch();
+      if (this.unreconciledOnly()) partners = partners.filter(p => p.outstanding(self.activePartnerRelation()) > 0);
+      return partners;
+    };
   },
   partnersOptionsFn() {
     return () => Object.create({

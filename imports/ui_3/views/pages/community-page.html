@@ -118,7 +118,7 @@
                         <td>{{>Active_period collection='meters' doc=this}}</td>
                         <td>{{_ 'schemaMeters.lastRead.label'}}:
                             <small>{{displayDate this.lastReading.date}}</small> 
-                            {{{displayReading this.lastReading.value}}}
+                            {{{displayReading this.lastReading.value this.decimals}}}
                             {{>Action_buttons_group collection='meters' doc=this actions='registerReading,editReadings' size='sm'}}
                         </td>
                         <td class="text-right">
@@ -268,7 +268,7 @@
                     </div>
                     <div>
                         <div class="ibox-content no-padding border-left-right">
-                            <img alt="image" class="img-responsive" src="{{community.avatar}}">
+                            <img alt="image" class="img-responsive center max-height-avatar" src="{{community.avatar}}">
                         </div>
                         <div class="ibox-content profile-content">
                             <h4><strong>{{community.name}}</strong></h4>
@@ -337,6 +337,9 @@
                 {{/if}}
                 {{#if currentUserHasPermission 'meters.inCommunity' communityIdObject}}
                 <button class="btn btn-default text-capitalize js-meters-list"><i class="fa fa-list"></i> {{_ 'meter'}} {{_ 'list'}}</button>
+                {{/if}}
+                {{#if currentUserHasPermission 'contracts.insert'}}
+                <button class="btn btn-default text-capitalize js-contracts-list"><i class="fa fa-list"></i> {{_ 'contract'}} {{_ 'list'}}</button>
                 {{/if}}
             </div>
         </div>

@@ -10,11 +10,11 @@ import rusdiff from 'rus-diff';
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
 
@@ -36,12 +36,10 @@ const IdCardSchema = new SimpleSchema({
   mothersName: { type: String, optional: true },
 });
 
-Partners.relationValues = ['supplier', 'customer', 'member'];
-
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   ref: { type: String, optional: true, autoform: { type: 'hidden' } },  // only used when importing from external system
-  relation: { type: [String], allowedValues: Partners.relationValues, autoform: { type: 'select-checkbox-inline' } },
+  relation: { type: [String], allowedValues: Relations.values, autoform: { type: 'select-checkbox-inline' } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   idCard: { type: IdCardSchema, optional: true },
   contact: { type: ContactSchema, optional: true },
@@ -59,18 +57,28 @@ Partners.publicFields = {
   'contact': 0,
 };
 
-Partners.nonModifiableFields = ['communityId', 'userId', 'outstanding'];
-
+Partners.nonModifiableFields = ['communityId', 'userId'];
 
 Meteor.startup(function indexPartners() {
   if (Meteor.isServer) {
     Partners._ensureIndex({ 'contact.email': 1 }, { sparse: true });
     Partners._ensureIndex({ 'idCard.identifier': 1 }, { sparse: true });
     Partners._ensureIndex({ communityId: 1, 'idCard.name': 1 });
-    Partners._ensureIndex({ communityId: 1, relation: 1, outstanding: -1 });
+    Partners._ensureIndex({ communityId: 1, relation: 1 });
   }
 });
 
+Partners.relationSign = function relationSign(relation) {
+  if (relation === 'supplier') return -1;
+  else if (relation === 'customer' || relation === 'member') return +1;
+  debugAssert(false, 'No such relation ' + relation); return undefined;
+};
+
+Partners.code = function partnerContractCode(partnerId, contractId) { // partnerId/contractId
+  let code = partnerId;
+  if (contractId) code += `/${contractId}`;
+  return code;
+};
 
 Partners.helpers({
   community() {
@@ -148,10 +156,18 @@ Partners.helpers({
     const Transactions = Mongo.Collection.get('transactions');
     return Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $gt: 0 } });
   },
+  balance() {
+    // negative amount if relation = supplier
+    const Balances = Mongo.Collection.get('balances');
+    return Balances.get({ communityId: this.communityId, partner: this._id, tag: 'T' }).total();
+  },
+  outstanding(relation = ModalStack.getVar('relation')) {
+    return this.balance() * Partners.relationSign(relation) * -1;
+  },
   mostOverdueDays() {
-    if (this.outstanding === 0) return 0;
+    if (this.balance() === 0) return 0;
     const daysOfExpiring = this.outstandingBills().map(bill => bill.overdueDays());
-    return Math.max.apply(Math, daysOfExpiring);
+    return daysOfExpiring.length > 0 ? Math.max.apply(Math, daysOfExpiring) : 0;
   },
   mostOverdueDaysColor() {
     const days = this.mostOverdueDays();
@@ -165,7 +181,6 @@ Partners.helpers({
 });
 
 Partners.attachSchema(Partners.schema);
-Partners.attachBehaviour(AccountingLocation);
 Partners.attachBehaviour(Timestamped);
 
 Partners.simpleSchema().i18n('schemaPartners');

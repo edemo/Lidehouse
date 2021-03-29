@@ -8,6 +8,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from './memberships.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 
 Meteor.publishComposite('memberships.ofUser', function membershipsOfUser(params) {
   new SimpleSchema({
@@ -29,6 +31,15 @@ Meteor.publishComposite('memberships.ofUser', function membershipsOfUser(params)
       find(membership) {
         return Partners.find({ _id: membership.partnerId });
       },
+      children: [{
+        find(partner) {
+          return Balances.find({ communityId: partner.communityId, partner: new RegExp('^' + partner._id) });
+        },
+      }, {
+        find(partner) {
+          return Contracts.find({ partnerId: partner._id });
+        },
+      }],
     }, {
       find(membership) {
         return Parcels.find({ _id: membership.parcelId });

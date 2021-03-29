@@ -1,6 +1,6 @@
 <template name="Parcels_finances">
     <!-- Page heading -->
-    {{> Page_heading title=(_ 'Parcels finances')}}
+    {{> Page_heading title=(_ 'Parcel history')}}
 
     <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
@@ -93,8 +93,7 @@
             {{>iboxTools}}
         </div>  
         <div class="ibox-content">
-            {{>Parcel_history beginDate=defaultBeginDate endDate=defaultEndDate parcelOptions=parcelChoices parcelSelected=parcelToView}}
-            <!--{{>Account_history sign=-1 beginDate=defaultBeginDate endDate=defaultEndDate localizerOptions=parcelChoices localizerSelected=parcelToView}}-->
+            {{>Partner_history beginDate=defaultBeginDate endDate=defaultEndDate partnerOptions=contractChoices partnerSelected=contractToView}}
         </div>
     </div>
     </div>

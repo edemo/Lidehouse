@@ -10,7 +10,7 @@ export function defineTxdefTemplates() {
     name: 'Supplier bill', // 'Bejövő számla',
     category: 'bill',
     data: { relation: 'supplier' },
-    debit: ['`1', '`5', '`8'],
+    debit: ['`1', '`5', '`8', '`434'],
     credit: ['`454'],
 /*
   }, {
@@ -29,7 +29,7 @@ export function defineTxdefTemplates() {
     name: 'Supplier payment', // 'Bejövő számla kifizetése',
     category: 'payment',
     data: { relation: 'supplier' },
-    debit: ['`454'],
+    debit: ['`454', '`434'],
     credit: ['`38'],
   }, {
 //    Not really needed. When paying bills we always know what bills are we intending to pay
@@ -49,13 +49,13 @@ export function defineTxdefTemplates() {
     category: 'bill',
     data: { relation: 'customer' },
     debit: ['`31'],
-    credit: ['`9'],
+    credit: ['`9', '`431'],
   }, {
     name: 'Customer payment', // 'Kimenő számla befolyás',
     category: 'payment',
     data: { relation: 'customer' },
-    debit: ['`38', '`43'],
-    credit: ['`31'],
+    debit: ['`38'],
+    credit: ['`31', '`431'],
   }, {
 //    name: 'Customer payment identification', // 'Kimenő számla befolyás azonosítása',
 //    category: 'identification',
@@ -111,17 +111,17 @@ export function defineTxdefTemplates() {
     category: 'transfer',
     debit: ['`38'],
     credit: ['`38'],
-  }, {
+  }, /* {
     name: 'Unidentified income', // "Nem azonosított bevétel",
-    category: 'transfer',
+    category: 'freeTx',
     debit: ['`38'],
     credit: ['`43'],
   }, {
     name: 'Unidentified expense', // "Nem azonosított kiadás",
-    category: 'transfer',
+    category: 'freeTx',
     debit: ['`43'],
     credit: ['`38'],
-  }, {
+  }, */
   /*
   // Készpénz felvétel bankszámláról
     name: 'Cash withdraw', // 'Készpénz felvétel',
@@ -137,8 +137,8 @@ export function defineTxdefTemplates() {
   }, {
 */
 
-// Single entry accouting
-
+  // Receipt accouting
+  {
     name: 'Income receipt', // 'Bevétel',
     category: 'receipt',
     data: { relation: 'customer' },
@@ -150,23 +150,26 @@ export function defineTxdefTemplates() {
     data: { relation: 'supplier' },
     debit: ['`1', '`5', '`8'],
     credit: ['`38'],
+  }, /* {
+    name: 'Income identification', // 'Bevétel beazonosítás',
+    category: 'freeTx',
+    debit: ['`431'],
+    credit: ['`4', '`9'],
   }, {
-/*    name: 'Income identification', // '',
-    category: 'receipt',
-    debit: ['`43'],
-    credit: ['`9'],
-  }, {
-    name: 'Parcel payment identification', // '',
-    category: 'payment',
-    debit: ['`43'],
-    credit: ['`9'],
-  }, {*/
+    name: 'Expense identification', // 'Kiadás azonosítás',
+    category: 'freeTx',
+    debit: ['`434'],
+    credit: ['`1', '`5', '`8'],
+  }, */{
     name: 'Bank fee expense', // 'Kamat  és bank  költség elszámolás',
     category: 'receipt',
     data: { relation: 'supplier' },
     debit: ['`871'],
     credit: ['`38'],
   }, {
+    name: 'Partner exchange', // 'Partnerek közötti átvezetés',
+    category: 'exchange',
+  }, /* {
     name: 'Barter', // 'Albetét előírás elengedés',
     category: 'barter',
 //    data: { relation: 'member' },
@@ -174,7 +177,7 @@ export function defineTxdefTemplates() {
     credit: ['`31', '`33'],
 //    debit: ['`9'],
 //    credit: ['`8', '`5'],
-  }, {
+  }, */ {
     name: 'Opening asset',
     category: 'opening',
     data: { side: 'debit' },

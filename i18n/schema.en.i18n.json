@@ -183,6 +183,9 @@
           "low": "Every new comment and status update on topics"
         }
       },
+      "getBillEmail": {
+        "label": "I would like to receive emails about the invoices issued to me"
+      },
       "newsletter": {
         "label": "I would like to receive the newsletter about the application"
       }
@@ -224,7 +227,7 @@
         "value": {
           "label": "Reading value",
           "help": "Please put in the decimal separator correctly",
-          "placeholder": "(eg 1234,05)"
+          "placeholder": "(eg 1234.205)"
         },
         "photo": {
           "label": "Photo (if applicable)",
@@ -502,7 +505,7 @@
     "vote": {
       "choices": {
         "label": "Vote choices",
-        "help": "The voting type may define the choices. If it is not default you can define the choices. First choose the voting type."
+        "help": "The voting type may already define the choices (like in the yes/no case). When it does not, you can define the choices yourself. So always choose the voting type first."
       },
       "procedure": {
         "label": "Voting procedure",
@@ -514,7 +517,7 @@
       },
       "effect": {
         "label": "Voting effect",
-        "help": "Poll does not have a legal effect, it is a preparation for a legal voting or survey on opinions.",
+        "help": "Poll does not have a legal effect, it is a preparation for a legal voting or survey on opinions.\nAnyone can start a poll, but only officers with the proper rights can start a legal voting.",
         "options": {
           "poll": "Poll",
           "legal": "Legal power"
@@ -729,6 +732,7 @@
         "remission": "remission",
         "receipt": "receipt",
         "transfer": "transfer",
+        "exchange": "exchange",
         "opening": "opening",
         "freeTx": "free transaction"
       }
@@ -773,7 +777,7 @@
     "contractId": {
       "label": "Contract",
       "placeholder": "Choose partner first",
-      "help": "Only needed when a partner has more than one associations with the community."
+      "help": "Only needed when a partner has more than one associations with the community.\nIn case of a pacel owner, the contract is the parcel itself, which is billed (lead parcel)."
     },
     "sourceId": {
       "label": "Source transaction id"
@@ -817,6 +821,24 @@
         }
       }
     },
+    "pEntries": {
+      "label": "Partner entries",
+      "$": {
+        "amount": {
+          "label": "Amount"
+        },
+        "side": {
+          "label": "Side",
+          "options": {
+            "debit": "Debit",
+            "credit": "Credit"
+          }
+        },
+        "partner": {
+          "label": "Partner/Contract"
+        }         
+      }
+    },
     "note": {
       "label": "Notes"
     },
@@ -831,6 +853,12 @@
       "label": "Moving from"
     },
     "toAccount": {
+      "label": "Moving to"
+    },
+    "fromPartner": {
+      "label": "Moving from"
+    },
+    "toPartner": {
       "label": "Moving to"
     },
     "side": {

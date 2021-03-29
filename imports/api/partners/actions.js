@@ -5,14 +5,14 @@ import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
+import { defaultBeginDate, defaultEndDate } from '/imports/ui_3/helpers/utils.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { userUnlinkNeeded } from '/imports/api/partners/methods.js';
-import './methods.js';
+import { userUnlinkNeeded } from './methods.js';
 
 Partners.actions = {
   new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
@@ -57,6 +57,25 @@ Partners.actions = {
       });
     },
   }),
+  history: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'history',
+    icon: 'fa fa-money',
+    visible: user.hasPermission('partners.inCommunity', doc),
+    run(event, instance) {
+      const contracts = doc.contracts();
+      Modal.show('Modal', {
+        title: 'Partner history',
+        body: 'Partner_history',
+        bodyContext: {
+          beginDate: defaultBeginDate(),
+          endDate: defaultEndDate(),
+          partnerOptions: contracts.map(c => ({ label: c.toString(), value: c._id })),
+//          partnerSelected: ,
+        },
+        size: 'lg',
+      });
+    },
+  }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
@@ -75,7 +94,7 @@ Partners.actions = {
   }),
   merge: (options, doc, user = Meteor.userOrNull()) => {
     const destinationId = doc.idCard?.name &&
-      Partners.findOne({ _id: { $ne: doc._id }, 'idCard.name': doc.idCard.name })?._id;
+      Partners.findOne({ _id: { $ne: doc._id }, communityId: doc.communityId, 'idCard.name': doc.idCard.name })?._id;
     return {
       name: 'merge',
       icon: 'fa fa-compress',

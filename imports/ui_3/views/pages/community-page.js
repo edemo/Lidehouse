@@ -37,6 +37,7 @@ import '/imports/ui_3/views/blocks/active-period.js';
 import '/imports/ui_3/views/blocks/menu-overflow-guard.js';
 import '/imports/ui_3/views/components/partners-datatable.js';
 import '/imports/ui_3/views/components/meters-datatable.js';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import './community-page.html';
 
 Template.Roleships_box.viewmodel({
@@ -259,7 +260,7 @@ Template.Parcels_box.events({
 
 Template.Community_page.events({
   'click .js-partners-list'(event, instance) {
-    const communityId = instance.viewmodel.communityId();
+    const communityId = ModalStack.getVar('communityId');
     Modal.show('Modal', {
       title: 'partners',
       body: 'Partners_datatable',
@@ -268,11 +269,20 @@ Template.Community_page.events({
     });
   },
   'click .js-meters-list'(event, instance) {
-    const communityId = instance.viewmodel.communityId();
+    const communityId = ModalStack.getVar('communityId');
     Modal.show('Modal', {
       title: 'meters',
       body: 'Meters_datatable',
       bodyContext: { communityId },
+      size: 'lg',
+    });
+  },
+  'click .js-contracts-list'(event, instance) {
+    const communityId = ModalStack.getVar('communityId');
+    Modal.show('Modal', {
+      title: 'contracts',
+      body: 'Contracts_datatable',
+      bodyContext: { communityId, relations: ['member'] },
       size: 'lg',
     });
   },

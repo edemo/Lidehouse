@@ -14,7 +14,6 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { FreeFields } from '/imports/api/behaviours/free-fields.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -149,11 +148,17 @@ Parcels.helpers({
   _contractSelector() {
     return { communityId: this.communityId, relation: 'member', parcelId: this._id };
   },
+  contract() {
+    if (this.category !== '@property') return undefined;
+    const Contracts = Mongo.Collection.get('contracts');
+    return Contracts.findOneActive({ communityId: this.communityId, relation: 'member', parcelId: this._id });
+  },
   payerContract() {
     if (this.category !== '@property') return undefined;
     const Contracts = Mongo.Collection.get('contracts');
     const contractSelector = this._contractSelector();
     let payerContract = Contracts.findOneActive(contractSelector);
+    payerContract = payerContract?.billingContract();
     if (!payerContract) { // Contract can be created on the fly, at first payment
       Log.debug('Did not find', contractSelector);
       if (Meteor.isServer) { // will be called from parcelbillings.apply
@@ -173,6 +178,14 @@ Parcels.helpers({
   partners() {
     const Partners = Mongo.Collection.get('partners');
     return this.occupants().fetch().map(o => Partners.findOne(o.partnerId));
+  },
+  balance() {
+    const Balances = Mongo.Collection.get('balances');
+    return -1 * Balances.get({ communityId: this.communityId, account: '`33', localizer: this.code, tag: 'T' }).total();
+  },
+  outstanding() {
+    const Partners = Mongo.Collection.get('partners');
+    return this.balance() * Partners.relationSign('member') * -1;
   },
   display() {
     return `${this.ref || '?'} (${this.location()}) ${this.type}`;
@@ -274,7 +287,6 @@ _.extend(Parcels, {
 
 Parcels.attachBaseSchema(Parcels.baseSchema);
 // Parcels.attachBehaviour(FreeFields);
-Parcels.attachBehaviour(AccountingLocation);
 Parcels.attachBehaviour(Timestamped);
 
 Parcels.attachVariantSchema(Parcels.physicalSchema, { selector: { category: '@property' } });

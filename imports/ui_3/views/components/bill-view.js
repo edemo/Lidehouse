@@ -16,6 +16,10 @@ Template.Bill_view.viewmodel({
   isBill() {
     return this.templateInstance.data.doc.category === 'bill';
   },
+  showPayments() {
+    const doc = this.reactiveDoc();
+    return doc.payments.length;
+  },
   parcelRef(parcelId) {
     const parcel = Parcels.findOne(parcelId);
     return parcel && parcel.ref;

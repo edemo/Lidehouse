@@ -1,13 +1,16 @@
 import { Meteor } from 'meteor/meteor';
+import { moment } from 'meteor/momentjs:moment';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Period } from '/imports/api/transactions/breakdowns/period.js';
 
 export const Balances = new Mongo.Collection('balances');
 
@@ -15,9 +18,10 @@ export const Balances = new Mongo.Collection('balances');
 Balances.defSchema = new SimpleSchema([{
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   // phase: { type: String, defaultValue: 'done', allowedValues: ['real', 'plan'] },
-  account: { type: String },
+  account: { type: String, optional: true, defaultValue: '`' },
   localizer: { type: String, optional: true },
-  tag: { type: String },  // can be a period, end of a period, or a publication
+  partner: { type: String, optional: true },  // format: 'partnerId/contractId'
+  tag: { type: String, optional: true, defaultValue: 'T' },  // can be for a period: T, end of a period: C, or a publication: P
 }]);
 
 // Definition + values of a balance
@@ -31,6 +35,15 @@ Balances.schema = new SimpleSchema([
 Balances.idSet = ['communityId', 'account', 'localizer', 'tag'];
 
 Balances.helpers({
+  tagType() {
+    return this.tag.split('-')[0];
+  },
+  period() {
+    let periodTag = this.tag.split('-');
+    periodTag.shift();
+    periodTag = periodTag.join('-');
+    return new Period(periodTag);
+  },
   total() {
     return this.debit - this.credit;
   },
@@ -53,9 +66,9 @@ Balances.helpers({
         case '1':
         case '2':
         case '3':
+        case '5':
         case '8': displaySign = +1; break;
         case '4':
-        case '5':
         case '9': displaySign = -1; break;
         default: break;
       }
@@ -65,7 +78,7 @@ Balances.helpers({
 });
 
 Meteor.startup(function indexBalances() {
-  Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, tag: 1 });
+  Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, partner: 1, tag: 1 });
 });
 
 Balances.attachSchema(Balances.schema);
@@ -77,11 +90,11 @@ Balances.get = function get(def) {
 
 //  This version is slower in gathering sub-accounts first,
 //  but minimongo indexing does not handle sorting, so in fact might be faster after all
-  if (def.localizer) {
-    const parcel = Parcels.findOne({ communityId: def.communityId, code: def.localizer });
-    debugAssert(parcel.isLeaf()); // Currently not prepared for upward cascading localizer
+//  if (def.localizer) {
+//    const parcel = Parcels.findOne({ communityId: def.communityId, code: def.localizer });
+//    debugAssert(parcel.isLeaf()); // Currently not prepared for upward cascading localizer
     // If you want to know the balance of a whole floor or building, the transaction update has to trace the localizer's parents too
-  }
+//  }
 /*  leafs.forEach(leaf => {
     const balance = Balances.findOne({/
       communityId: def.communityId,
@@ -95,14 +108,47 @@ Balances.get = function get(def) {
   // Aggregating sub-accounts balances with regexp
   const subdef = _.clone(def);
   if (def.account !== undefined) subdef.account = new RegExp('^' + def.account);
-//  if (def.localizer) subdef.localizer = new RegExp('^' + def.localizer);
-  subdef.localizer = def.localizer ? def.localizer : { $exists: false };
+  subdef.localizer = def.localizer ? new RegExp('^' + def.localizer) : { $exists: false };
+  subdef.partner = def.partner ? new RegExp('^' + def.partner) : { $exists: false };
   Balances.find(subdef).forEach((balance) => {
     result.debit += balance.debit;
     result.credit += balance.credit;
   });
   result = Balances._transform(result);
   return result;
+};
+
+Balances.increase = function increase(selector, side, amount) {
+  const finderSelector = _.extend({ partner: { $exists: false }, localizer: { $exists: false } }, selector);
+  const bal = Balances.findOne(finderSelector);
+  const balId = bal ? bal._id : Balances.insert(selector);
+  const incObj = {}; incObj[side] = amount;
+  Balances.update(balId, { $inc: incObj });
+};
+
+Balances.getCumulatedValue = function getCumulatedValue(def, d) {
+  // Given a date in def, returns the cumulated total balance at that date
+  const date = moment(d);
+  const lastClosingDate = date.startOf('year').subtract(1, 'day');
+  const cBal = Balances.findOne(_.extend(def, { tag: `C-${lastClosingDate.year()}` }));
+  if (cBal) return cBal.total();
+  // If no C balance available, we have to calculate it by adding up the T balances
+  let result = 0;
+  const tBals = Balances.find(_.extend(def, { tag: new RegExp('^T-') })).fetch();
+  const prevBals = tBals.filter(b => {
+    const period = b.period();
+    return period.year < date.year() && !period.month;
+  });
+  prevBals.map(b => { result += b.total(); });
+  return result;
+};
+
+Balances.checkNullBalance = function checkNullBalance(def) {
+  const bal = Balances.get(def);
+  if (bal.total()) {
+    throw new Meteor.Error('err_unableToRemove',
+      'Accounting location cannot be deleted while it has outstanding balance', `Outstanding: {${bal.total()}}`);
+  }
 };
 
 function timeTagMatches(valueDate, tag) {
@@ -137,5 +183,14 @@ Balances.checkAllCorrect = function checkAllCorrect() {
   Balances.find({ tag: 'T' }).forEach((bal) => {
     delete bal._id;
     Balances.checkCorrect(bal);
+  });
+};
+
+Balances.ensureAllCorrect = function ensureAllCorrect() {
+  if (Meteor.isClient) return;
+  Balances.remove({});
+  Transactions.find({}).forEach((tx) => {
+    tx.updateBalances(+1);
+    tx.updatePartnerBalances(+1);
   });
 };

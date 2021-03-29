@@ -14,6 +14,9 @@ import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { chooseBill } from '/imports/api/transactions/bills/bills.js';
 
+// DEPRECATED
+// We use bills and payments to do a barter, through a virtual barter payAccount
+
 const barterSchema = new SimpleSchema({
 //  supplier: { type: Transactions.partnerSchema },
 //  customer: { type: Transactions.partnerSchema },
@@ -61,23 +64,12 @@ Transactions.categoryHelpers('barter', {
     );
     return supplierRes + customerRes;
   },
-  updateOutstandings(sign) {
-    if (Meteor.isClient) return;
-    debugAssert(this.supplierBillId && this.customerBillId, 'Cannot process a barter without connecting it to a bills first');
+  validate() {
     const supplierBill = this.supplierBill();
     const customerBill = this.customerBill();
-    debugAssert(supplierBill.partnerId && customerBill.partnerId, 'Cannot process a barter without partners');
-    Partners.update(supplierBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    Contracts.update(supplierBill.contractId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    Partners.update(customerBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    Contracts.update(customerBill.contractId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    if (customerBill.relation === 'member') {
-      customerBill.lines.forEach(line => {
-        if (!line) return; // can be null, when a line is deleted from the array
-        debugAssert(line.parcelId, 'Cannot process a parcel barter without parcelId field');
-        Parcels.update(line.parcelId, { $inc: { outstanding: (-1) * sign * line.amount } });
-      });
-    }
+//      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
+    if (supplierBill.relation !== 'supplier') throw new Meteor.Error('Supplier bill is not from a supplier');
+    if (customerBill.relation !== 'customer' && customerBill.relation !== 'member') throw new Meteor.Error('Customer bill is not from a customer/owner');
   },
 });
 

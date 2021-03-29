@@ -11,6 +11,8 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { toggle } from '/imports/api/utils';
+import { Relations } from '/imports/api/core/relations.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
 import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
@@ -42,11 +44,14 @@ ViewModel.share({
     communityId() {
       return ModalStack.getVar('communityId');
     },
+    community() {
+      return Communities.findOne(this.communityId());
+    },
     transactionStatuses() {
       return Object.values(Transactions.statuses);
     },
     relationValues() {
-      return Partners.relationValues;
+      return Relations.values;
     },
     activeButton(field, value) {
       const selected = this[`${field}Selected`]();
@@ -79,7 +84,7 @@ ViewModel.share({
       selector.relation = this.activePartnerRelation();
       if (this.txStatusSelected().length > 0) selector.status = { $in: this.txStatusSelected() };
       if (this.unreconciledOnly()) {
-        selector.outstanding = { $or: { $exists: false, $gte: 0 } };
+       // selector.outstanding = { $or: { $exists: false, $gte: 0 } };
         selector.seId = { $exists: false };
       }
       selector.valueDate = {};

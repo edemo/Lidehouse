@@ -5,6 +5,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
 
 import { productionAssert } from '/imports/utils/assert.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -615,6 +616,73 @@ Migrations.add({
     });
   },
 });
+
+Migrations.add({
+  version: 34,
+  name: 'Get bill emails setting on user profile',
+  up() {
+    Meteor.users.direct.update({ 'settings.getBillEmail': { $exists: false } }, { $set: { 'settings.getBillEmail': true } }, { multi: true });
+  },
+});
+
+Migrations.add({
+  version: 35,
+  name: 'Ensure all bills and payments have a contractId, and they match',
+  up() {
+    Transactions.find({ category: 'bill' }).forEach(doc => {
+      if (!doc.contractId) {
+        doc.validate(); // creates default contract, if no contractId on bill
+        Transactions.direct.update(doc._id, { $set: { contractId: doc.contractId } }, { selector: doc, validate: false });
+      }
+    });
+    Transactions.find({ category: 'payment' }).forEach(doc => {
+      doc.getBills?.()?.forEach((bp) => {
+        const bill = Transactions.findOne(bp.id);
+        if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
+        function setOrCheckEquals(field) {
+          if (!doc[field]) doc[field] = bill[field];
+          else if (doc[field] !== bill[field]) {
+            throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
+          }
+        }
+        setOrCheckEquals('relation');
+        setOrCheckEquals('partnerId');
+        setOrCheckEquals('contractId');
+      });
+      doc.lines?.forEach((line) => {
+        if (!doc.contractId) doc.contractId = line.contractId;
+        delete line.contractId;
+      });
+      const id = doc._id;
+      delete doc._id;
+      Transactions.direct.update(id, { $set: doc });
+    });
+  },
+});
+
+Migrations.add({
+  version: 36,
+  name: 'Create partner entries and use balances instead of doc.outstanding',
+  up() {
+    Transactions.find({ postedAt: { $exists: true } }).forEach(tx => {
+      const pEntries = tx.makePartnerEntries();
+      if (pEntries) Transactions.direct.update(tx._id, { $set: pEntries }); 
+    });
+    Parcels.direct.update({ outstanding: { $exists: true } }, { $unset: { outstanding: '' } }, { validate: false, multi: true });
+    Partners.direct.update({ outstanding: { $exists: true } }, { $unset: { outstanding: '' } }, { validate: false, multi: true });
+    Contracts.direct.update({ outstanding: { $exists: true } }, { $unset: { outstanding: '' } }, { validate: false, multi: true });
+    Balances.ensureAllCorrect();
+  },
+});
+
+Migrations.add({
+  version: 37,
+  name: 'Communities get paymentsToBills setting',
+  up() {
+    Communities.update({}, { $set: { 'settings.paymentsToBills': Relations.mainValues } }, { validate: false, multi: true });
+  },
+});
+
 
 // Use only direct db operations to avoid unnecessary hooks!
 

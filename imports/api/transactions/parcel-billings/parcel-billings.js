@@ -161,7 +161,7 @@ ParcelBillings.helpers({
       case 'absolute': return 1;
       case 'area': return (parcel.area || 0);
       case 'volume': return (parcel.volume || 0);
-      case 'habitants': return (parcel.payerContract()?.habitants || 0);
+      case 'habitants': return (parcel.contract()?.habitants || 0);
       default: debugAssert(false, 'No such projection base'); return undefined;
     }
   },
@@ -201,5 +201,5 @@ Factory.define('parcelBilling', ParcelBillings, {
   },
   digit: '1',
   localizer: '@',
-  note: faker.random.word(),
+  notes: faker.random.word(),
 });

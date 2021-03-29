@@ -20,8 +20,8 @@ import { allowedOptions } from '/imports/utils/autoform.js';
 import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
+import { PeriodBreakdown, Period } from '/imports/api/transactions/breakdowns/period.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
@@ -30,7 +30,7 @@ import { StatementEntries } from '/imports/api/transactions/statement-entries/st
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'transfer', 'opening', 'freeTx'];
+Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'exchange', 'transfer', 'opening', 'freeTx'];
 
 Transactions.statuses = {
   draft: { name: 'draft', color: 'warning' },
@@ -47,6 +47,12 @@ Transactions.entrySchema = new SimpleSchema([
   // { billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true } },
   // { paymentId: { type: Number, decimal: true, optional: true } }, // index in the bill payments array
 ]);
+
+Transactions.partnerEntrySchema = new SimpleSchema({
+  partner: { type: String },
+  side: { type: String, allowedValues: ['debit', 'credit'] },
+  amount: { type: Number, optional: true },
+});
 
 Transactions.coreSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
@@ -68,15 +74,15 @@ Transactions.coreSchema = {
 };
 
 Transactions.partnerSchema = new SimpleSchema({
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
+  relation: { type: String, allowedValues: Relations.values, autoform: { type: 'hidden' } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...chooseContract } },
-//  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...chooseParcel } },
 });
 
 Transactions.legsSchema = {
   debit: { type: [Transactions.entrySchema], optional: true },
   credit: { type: [Transactions.entrySchema], optional: true },
+  pEntries: { type: [Transactions.partnerEntrySchema], optional: true },
   complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
 };
 
@@ -91,16 +97,15 @@ Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, serialId: 1 });
   Transactions.ensureIndex({ communityId: 1, valueDate: -1 });
   Transactions.ensureIndex({ seId: 1 });
-  Transactions.ensureIndex({ partnerId: 1 }, { sparse: true });
-  Transactions.ensureIndex({ contractId: 1 }, { sparse: true });
   if (Meteor.isClient && MinimongoIndexing) {
     Transactions._collection._ensureIndex('relation');
   } else if (Meteor.isServer) {
     Transactions._ensureIndex({ communityId: 1, category: 1, relation: 1, serial: 1 });
-    Transactions._ensureIndex({ communityId: 1, deliveryDate: 1 }, { sparse: true });
     Transactions._ensureIndex({ 'bills.id': 1 }, { sparse: true });
-    Transactions._ensureIndex({ 'debit.account': 1 }, { sparse: true });
-    Transactions._ensureIndex({ 'credit.account': 1 }, { sparse: true });
+    Transactions._ensureIndex({ 'payments.id': 1 }, { sparse: true });
+    Transactions._ensureIndex({ 'debit.account': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ 'credit.account': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ 'pEntries.partner': 1, valueDate: -1 }, { sparse: true });
   }
 });
 
@@ -120,11 +125,10 @@ Transactions.oppositeSide = function oppositeSide(side) {
   if (side === 'credit') return 'debit';
   return undefined;
 };
-
-Transactions.relationSign = function relationSign(relation) {
-  if (relation === 'supplier') return -1;
-  else if (relation === 'customer' || relation === 'member') return +1;
-  debugAssert(false, 'No such relation ' + relation); return undefined;
+Transactions.signOfPartnerSide = function signOfPartnerSide(side) {
+  if (side === 'debit') return +1;
+  if (side === 'credit') return -1;
+  return undefined;
 };
 
 Transactions.setTxdef = function setTxdef(doc, txdef) {
@@ -148,6 +152,9 @@ Transactions.helpers({
   contract() {
     if (this.contractId) return Contracts.findOne(this.contractId);
     return undefined;
+  },
+  partnerContractCode() {
+    return Partners.code(this.partnerId, this.contractId);
   },
   txdef() {
     const Txdefs = Mongo.Collection.get('txdefs');
@@ -177,7 +184,7 @@ Transactions.helpers({
     debugAssert(false, 'No such relation ' + this.relation); return undefined;
   },
   relationSign() {
-    return Transactions.relationSign(this.relation);
+    return Partners.relationSign(this.relation);
   },
   isPosted() {
 //    return !!(this.debit && this.credit && this.complete); // calculateComplete()
@@ -185,9 +192,6 @@ Transactions.helpers({
   },
   isReconciled() {
     return (!!this.seId);
-  },
-  hasOutstanding() {
-    return (!!this.outstanding);
   },
   reconciledEntry() {
     return this.seId && StatementEntries.findOne(this.seId);
@@ -213,43 +217,45 @@ Transactions.helpers({
     if (this.debit) this.debit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
     if (this.credit) this.credit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
   },
+  makeEntry(side, entry) {
+    let writeSide = side;
+    if (entry.amount < 0) {
+      // if we swap sides for negative entries
+      if (this.status !== 'void') {
+        writeSide = Transactions.oppositeSide(writeSide);
+        entry.amount *= -1;
+      }
+    }
+    this[writeSide].push(entry);
+  },
   journalEntries() {
     const entries = [];
-    if (this.debit) {
-      this.debit.forEach((entry, i) => {
-        entries.push(_.extend({ side: 'debit', txId: this._id, _id: this._id + '#Dr' + i }, entry));
-      });
-    }
-    if (this.credit) {
-      this.credit.forEach((entry, i) => {
-        entries.push(_.extend({ side: 'credit', txId: this._id, _id: this._id + '#Cr' + i }, entry));
-      });
+    if (this.postedAt) {
+      if (this.debit) {
+        this.debit.forEach((entry, i) => {
+          entries.push(_.extend({ side: 'debit', txId: this._id, _id: this._id + '#Dr' + i }, entry));
+        });
+      }
+      if (this.credit) {
+        this.credit.forEach((entry, i) => {
+          entries.push(_.extend({ side: 'credit', txId: this._id, _id: this._id + '#Cr' + i }, entry));
+        });
+      }
     }
     return entries.map(entry => {
-      if (!entry.partnerId) entry.partnerId = this.partnerId;
-      if (!entry.contractId) entry.contractId = this.contractId;
-      if (!entry.parcelId) entry.parcelId = this.parcelId;
       Object.setPrototypeOf(entry, this);
       return JournalEntries._transform(entry);
     });
   },
-  getContractAmount(contractId) {
-    let sign = 0;
-    switch (this.category) {
-      case 'bill':
-      case 'receipt': sign = -1; break;
-      case 'payment': sign = +1; break;
-      default: debugAssert(false);
-    }
+  getContractAmount(contract) {
     let amount = 0;
-    if (!contractId || sign === -1) amount = this.amount;
-    else {
-      const side = this.conteerSide();
-      this.journalEntries().forEach(je => {
-        if (je.side === side && je.contractId === contractId) amount += je.amount;
-      });
-    }
-    return sign * amount;
+    this.pEntries?.forEach(pe => {
+      if (pe.partner === contract?.code()) {
+        const sign = Transactions.signOfPartnerSide(pe.side);
+        amount += sign * pe.amount;
+      }
+    });
+    return amount;
   },
   negator() {
     const tx = Object.stringifyClone(this);
@@ -275,31 +281,40 @@ Transactions.helpers({
   updateBalances(directionSign = 1) {
   //    if (!doc.complete) return;
     const communityId = this.communityId;
-    this.journalEntries().forEach((entry) => {
-      const leafTag = 'T-' + moment(entry.valueDate).format('YYYY-MM');
-  //      entry.account.parents().forEach(account => {
-      const account = entry.account;
-      const localizer = entry.localizer;
-      PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+    const Balances =  Mongo.Collection.get('balances');
+    const leafTag = 'T-' + moment(this.valueDate).format('YYYY-MM');
+    const journalEntries = this.journalEntries();
+    PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+      journalEntries?.forEach((entry) => {
+        const account = entry.account;
+        const localizer = entry.localizer;
         const changeAmount = entry.amount * directionSign;
-        function increaseBalance(selector, side, amount) {
-          const bal = Balances.findOne(selector);
-          const balId = bal ? bal._id : Balances.insert(selector);
-          const incObj = {}; incObj[side] = amount;
-          Balances.update(balId, { $inc: incObj });
-        }
-        increaseBalance({ communityId, account, tag }, entry.side, changeAmount);
+        Balances.increase({ communityId, account, tag }, entry.side, changeAmount);
         if (localizer) {
-          increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
+          Balances.increase({ communityId, account, localizer, tag }, entry.side, changeAmount);
         }
       });
     });
     // checkBalances([doc]);
   },
-  updateOutstandings() {
-    // NOP -- will be overwritten in the categories
+  updatePartnerBalances(directionSign = 1) {
+    const communityId = this.communityId;
+    const Balances =  Mongo.Collection.get('balances');
+    const leafTag = 'T-' + moment(this.valueDate).format('YYYY-MM');
+    const pEntries = this.pEntries;
+    PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+      if (Period.fromTag(tag).type() !== 'month') {
+        pEntries?.forEach((entry) => {
+          const changeAmount = entry.amount * directionSign;
+          Balances.increase({ communityId, partner: entry.partner, tag }, entry.side, changeAmount);
+        });
+      }
+    });
   },
   makeJournalEntries() {
+    // NOP -- will be overwritten in the categories
+  },
+  makePartnerEntries() {
     // NOP -- will be overwritten in the categories
   },
   fillFromStatementEntry() {
@@ -310,6 +325,9 @@ Transactions.helpers({
   },
   displayInSelect() {
     return this.serialId;
+  },
+  displayInHistory() {
+    return __(`schemaTransactions.category.options.${this.category}`);
   },
 });
 
@@ -325,6 +343,7 @@ Transactions.simpleSchema({ category: 'freeTx' }).i18n('schemaTransactions');
 // --- Before/after actions ---
 
 function checkBalances(docs) {
+  const Balances = Mongo.Collection.get('balances');
   const affectedAccounts = [];
   let communityId;
   docs.forEach((doc) => {
@@ -375,9 +394,11 @@ if (Meteor.isServer) {
 
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
-    tdoc.updateBalances(+1);
+    if (tdoc.postedAt) {
+      tdoc.updateBalances(+1);
+      tdoc.updatePartnerBalances(+1);
+    }
     if (tdoc.category === 'payment') tdoc.registerOnBills(+1);
-    tdoc.updateOutstandings(+1);
     const community = tdoc.community();
     if (tdoc.category === 'bill' && !_.contains(community.billsUsed, tdoc.relation)) {
       Communities.update(community._id, { $push: { billsUsed: tdoc.relation } });
@@ -404,20 +425,24 @@ if (Meteor.isServer) {
     if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
       tdoc.registerOnBills(+1);
     }
-    if (modifierChangesField(modifier, ['debit', 'credit', 'amount', 'valueDate'])) {
-      const oldDoc = Transactions._transform(this.previous);
-      const newDoc = tdoc;
-      oldDoc.updateBalances(-1);
-      newDoc.updateBalances(+1);
-      oldDoc.updateOutstandings(-1);
-      newDoc.updateOutstandings(+1);
+    const oldDoc = Transactions._transform(this.previous);
+    const newDoc = tdoc;
+    if (modifierChangesField(modifier, ['debit', 'credit', 'postedAt'])) {
+      if (oldDoc.postedAt) oldDoc.updateBalances(-1);
+      if (newDoc.postedAt) newDoc.updateBalances(+1);
+    }
+    if (modifierChangesField(modifier, ['pEntries', 'postedAt'])) {
+      if (oldDoc.postedAt) oldDoc.updatePartnerBalances(-1);
+      if (newDoc.postedAt) newDoc.updatePartnerBalances(+1);
     }
   });
 
   Transactions.after.remove(function (userId, doc) {
     const tdoc = this.transform();
-    tdoc.updateBalances(-1);
-    tdoc.updateOutstandings(-1);
+    if (tdoc.postedAt) {
+      tdoc.updateBalances(-1);
+      tdoc.updatePartnerBalances(-1);
+    }
     if (tdoc.category === 'payment') tdoc.registerOnBills(-1);
     if (tdoc.seId) StatementEntries.update(tdoc.seId, { $unset: { txId: 0 } });
   });
@@ -475,12 +500,6 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
   if (params.defId) {
     selector.defId = params.defId;
   } else delete selector.defId;
-  if (params.contractId) {
-    const contractId = params.contractId;
-    const $or = [{ contractId }, { 'credit.contractId': contractId }, { 'debit.contractId': contractId }];
-    selector.$and.push({ $or });
-    delete selector.contractId;
-  }
   if (params.account) {
     const account = withSubs(params.account);
     const $or = [{ 'credit.account': account }, { 'debit.account': account }];
@@ -503,6 +522,20 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
     selector['credit.account'] = creditAccount;
     delete selector.creditAccount;
   } else delete selector.creditAccount;
+  if (params.partner) {
+    const partner = withSubs(params.partner);
+    selector['pEntries.partner'] = partner;
+    delete selector.partner;
+  } else delete selector.partner;
+  if (params.partnerId) {
+    const partner = Partners.code(params.partnerId, params.contractId);
+    selector['pEntries.partner'] = withSubs(partner);
+    delete selector.partnerId;
+    delete selector.contractId;
+  } else {
+    delete selector.partnerId;
+    delete selector.contractId;
+  }
 
   if (selector.$and.length === 0) delete selector.$and;
   return selector;

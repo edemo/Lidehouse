@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
@@ -20,6 +21,7 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 
 Math.smallerInAbs = function smallerInAbs(a, b) {
   if (a >= 0 && b >= 0) return Math.min(a, b);
@@ -84,7 +86,8 @@ export const chooseLocalizerOfPartner = {
     const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
     return sortedOptions;
   },
-  firstOption: () => __('Localizers'),
+//  firstOption: () => __('Localizers'),
+  firstOption: false,
 };
 
 const billPaidSchema = {
@@ -152,15 +155,55 @@ Transactions.categoryHelpers('payment', {
   unallocated() {
     return this.amount - this.allocatedSomewhere();
   },
+  hasConteerData() {
+    let result = true;
+    this.getLines().forEach(line => { if (line && !line.account) result = false; });
+    return result;
+  },
   validate() {
-    if (this.unallocated() !== 0) {
-      // The min, max contraint on the schema does not work, because the hook runs after the schema check
+    let billSum = 0;
+    const payment = this;
+    this.getBills().forEach(pb => {
+      const bill = Transactions.findOne(pb.id);
+      function checkBillMatches(field) {
+        if (bill[field] !== payment[field]) {
+          throw new Meteor.Error(`All paid bills need to have same ${field}`, `${bill[field]} !== ${payment[field]}`);
+        }
+      }
+      checkBillMatches('relation'); checkBillMatches('partnerId'); checkBillMatches('contractId');
+      productionAssert(pb.amount < 0 === bill.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
+      let amountToPay = bill.outstanding;
+      const savedPayment = _.find(bill.getPayments(), p => p.id === this._id);
+      if (savedPayment) savedPayment > 0 ? amountToPay -= savedPayment.amount : amountToPay += savedPayment.amount;
+      if ((amountToPay > 0 && pb.amount > amountToPay) || (amountToPay < 0 && pb.amount < amountToPay)) {
+        throw new Meteor.Error('err_sanityCheckFailed', "Bill's payment amount cannot exceed bill's amount", `${pb.amount} - ${amountToPay}`);
+      }
+      billSum += pb.amount;
+    });
+    if ((this.amount > 0 && billSum > this.amount) || (this.amount < 0 && billSum < this.amount)) {
+      throw new Meteor.Error('err_sanityCheckFailed', "Lines amounts cannot exceed payment's amount", `${billSum} - ${this.amount}`);
+    }
+    let lineSum = 0;
+    const lineValues = [];
+    this.getLines().forEach(line => {
+      lineSum += line.amount;
+      lineValues.push(line.amount);
+    });
+    productionAssert(lineValues.every((val) => val > 0) || lineValues.every((val) => val < 0), 'err_notAllowed', 'All lines must have the same sign');
+    if (this.amount !== lineSum + billSum) {
       throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.unallocated()}`);
     }
     const connectedBillIds = _.pluck(this.getBills(), 'id');
     if (connectedBillIds.length !== _.uniq(connectedBillIds).length) {
       throw new Meteor.Error('err_notAllowed', 'Same bill may not be selected multiple times', `connectedBillIds: ${connectedBillIds}`);
     }
+  },
+  validateForPost() {
+    this.getBills().forEach(pb => {
+      const bill = Transactions.findOne(pb.id);
+      if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
+    });
+    if (!this.hasConteerData()) throw new Meteor.Error('Payment has to be account assigned first');
   },
   autoAllocate() {
     if (!this.amount) return;
@@ -169,6 +212,7 @@ Transactions.categoryHelpers('payment', {
       if (!pb?.id) return true; // can be null, when a line is deleted from the array
       const bill = Transactions.findOne(pb.id);
       const autoAmount = Math.min(amountToAllocate, bill.outstanding);
+      if (pb.amount > bill.outstanding) pb.amount = autoAmount;
       if (!pb.amount) pb.amount = autoAmount; // we dont override amounts that are specified
       amountToAllocate -= pb.amount;
       if (amountToAllocate === 0) return false;
@@ -196,21 +240,29 @@ Transactions.categoryHelpers('payment', {
     this.debit = [];
     this.credit = [];
     let unallocatedAmount = this.amount;
-    this[this.relationSide()].push({ amount: this.amount, account: this.payAccount });
+    this.makeEntry(this.relationSide(), { amount: this.amount, account: this.payAccount });
     this.getBills().forEach(billPaid => {
       if (unallocatedAmount === 0) return false;
       const bill = Transactions.findOne(billPaid.id);
       if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
-      productionAssert(billPaid.amount < 0 === bill.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
-      let linesOrEntries;
-      if (accountingMethod === 'accrual') linesOrEntries = bill[this.relationSide()];
-      else if (accountingMethod === 'cash') linesOrEntries = bill.getLines();
+      debugAssert(billPaid.amount < 0 === bill.amount < 0, 'Bill amount and its payment must have the same sign');
+      const makeEntries = function makeEntries(line, amount) {
+        let relationAccount = line.relationAccount || this.relationAccount().code;
+        if (!line.relationAccount && line.billing) relationAccount += ParcelBillings.findOne(line.billing.id).digit;
+        const newEntry = { amount, localizer: line.localizer, parcelId: line.parcelId };
+        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry));
+        if (accountingMethod === 'cash') {
+          const technicalAccount = Accounts.toTechnical(line.account);
+          this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, newEntry));
+          this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
+        }
+      };
 
       if (billPaid.amount === bill.amount) {
-        linesOrEntries.forEach(entry => {
+        bill.getLines().forEach((line) => {
           if (unallocatedAmount === 0) return false;
-          const amount = entry.amount;
-          this[this.conteerSide()].push({ amount: entry.amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+          const amount = line.amount;
+          makeEntries.call(this, line, amount);
           unallocatedAmount -= amount;
         });
       } else if (Math.abs(billPaid.amount) < Math.abs(bill.amount)) {
@@ -219,18 +271,18 @@ Transactions.categoryHelpers('payment', {
           if (payment.id !== this._id) paidBefore += payment.amount;
         });
         let unallocatedFromBill = billPaid.amount;
-        const billEntriesOrLines = Array.oppositeSignsFirst(linesOrEntries, bill.amount, 'amount');
-        billEntriesOrLines.forEach(entry => {
+        const billLines = Array.oppositeSignsFirst(bill.getLines(), bill.amount, 'amount');
+        billLines.forEach(line => {
           if (unallocatedAmount === 0) return false;
           if (paidBefore === 0) {
             let amount;
-            if (bill.amount >= 0) amount = entry.amount >= 0 ? Math.min(entry.amount, unallocatedAmount, unallocatedFromBill) : entry.amount;
-            if (bill.amount < 0) amount = entry.amount < 0 ? Math.max(entry.amount, unallocatedAmount, unallocatedFromBill) : entry.amount;
-            this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+            if (bill.amount >= 0) amount = line.amount >= 0 ? Math.min(line.amount, unallocatedAmount, unallocatedFromBill) : line.amount;
+            if (bill.amount < 0) amount = line.amount < 0 ? Math.max(line.amount, unallocatedAmount, unallocatedFromBill) : line.amount;
+            makeEntries.call(this, line, amount);
             unallocatedAmount -= amount;
             unallocatedFromBill -= amount;
           } else if ((bill.amount >= 0 && paidBefore > 0) || (bill.amount < 0 && paidBefore < 0)) {
-            paidBefore -= entry.amount;
+            paidBefore -= line.amount;
           }
           if ((bill.amount >= 0 && paidBefore < 0) || (bill.amount < 0 && paidBefore > 0)) {
             const remainder = -paidBefore;
@@ -238,7 +290,7 @@ Transactions.categoryHelpers('payment', {
             let amount;
             if (bill.amount >= 0) amount = Math.min(remainder, unallocatedAmount, unallocatedFromBill);
             if (bill.amount < 0) amount = Math.max(remainder, unallocatedAmount, unallocatedFromBill);
-            this[this.conteerSide()].push({ amount, account: entry.account, localizer: entry.localizer, parcelId: entry.parcelId, contractId: bill.contractId });
+            makeEntries.call(this, line, amount);
             unallocatedAmount -= amount;
             unallocatedFromBill -= amount;
           }
@@ -248,9 +300,9 @@ Transactions.categoryHelpers('payment', {
     });
     this.getLines().forEach(line => {
       if (unallocatedAmount === 0) return false;
-      productionAssert(unallocatedAmount < 0 === line.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
+      debugAssert(unallocatedAmount < 0 === line.amount < 0, 'All lines must have the same sign');
       const amount = Math.smallerInAbs(line.amount, unallocatedAmount);
-      this[this.conteerSide()].push({ amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId, contractId: line.contractId });
+      this.makeEntry(this.conteerSide(), { amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
       unallocatedAmount -= amount;
     });
     // Handling the remainder
@@ -261,6 +313,14 @@ Transactions.categoryHelpers('payment', {
     }
     const legs = { debit: this.debit, credit: this.credit };
     return legs;
+  },
+  makePartnerEntries() {
+    this.pEntries = [{
+      partner: this.partnerContractCode(),
+      side: this.relationSide(),
+      amount: this.amount,
+    }];
+    return { pEntries: this.pEntries };
   },
   registerOnBills(direction = +1) {
     const result = [];
@@ -287,32 +347,8 @@ Transactions.categoryHelpers('payment', {
     });
     return result;
   },
-  updateOutstandings(sign) {
-    if (Meteor.isClient) return;
-    debugAssert(this.partnerId, 'Cannot process a payment without a partner');
-    Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    this.getBills().forEach(bp => {
-      const bill = Transactions.findOne(bp.id);
-      Contracts.update(bill.contractId, { $inc: { outstanding: (-1) * sign * bp.amount } }, { selector: { relation: 'member' } });
-      bill.getLines().forEach(line => {
-        if (!line) return; // can be null, when a line is deleted from the array
-        const parcel = Localizer.parcelFromCode(line.localizer, this.communityId);
-        if (parcel) {
-          Parcels.update(parcel._id, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });
-        } else debugAssert(this.relation !== 'member', 'Cannot process a parcel payment without parcelId field');
-      });
-    });
-    this.getLines().forEach(line => {
-      if (!line) return; // can be null, when a line is deleted from the array
-      Contracts.update(line.contractId, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { relation: 'member' } });
-      const parcel = Localizer.parcelFromCode(line.localizer, this.communityId);
-      if (parcel) {
-        Parcels.update(parcel._id, { $inc: { outstanding: (-1) * sign * line.amount } }, { selector: { category: '@property' } });
-      } 
-    });
-  },
   displayInHistory() {
-    return __(this.category) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');
+    return __(`schemaTransactions.category.options.${this.category}`) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');
   },
   displayInSelect() {
     return `${this.serialId} (${moment(this.valueDate).format('YYYY.MM.DD')} ${this.partner()} ${this.amount})`;

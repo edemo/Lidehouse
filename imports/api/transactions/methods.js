@@ -2,8 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import rusdiff from 'rus-diff';
 
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -40,12 +41,6 @@ function runPositingRules(context, doc) {
 }
 */
 
-function checkBillIsPosted(billId) {
-  if (!billId) throw new Meteor.Error('Bill has to exist first');
-  const bill = checkExists(Transactions, billId);
-  if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
-}
-
 export const post = new ValidatedMethod({
   name: 'transactions.post',
   validate: new SimpleSchema({
@@ -56,21 +51,16 @@ export const post = new ValidatedMethod({
     checkPermissions(this.userId, 'transactions.post', doc);
 // Allowing repost action
 //   if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
-
-    if (doc.category === 'bill' || doc.category === 'receipt') {
-      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
-    } else if (doc.category === 'payment') {
-      doc.getBills().forEach(bp => checkBillIsPosted(bp.id));
-    } else if (doc.category === 'barter') {
-      checkBillIsPosted(doc.supplierBillId);
-      checkBillIsPosted(doc.customerBillId);
-    }
+    doc.validateForPost?.();
 
     const modifier = { $set: { postedAt: new Date() } };
     if (doc.status !== 'void') { // voided already has the accounting data on it
       const community = Communities.findOne(doc.communityId);
       const accountingMethod = community.settings.accountingMethod;
-      const updateData = doc.makeJournalEntries(accountingMethod);
+      const updateData = _.extend({},
+        doc.makeJournalEntries(accountingMethod),
+        doc.makePartnerEntries(),
+      );
       _.extend(modifier.$set, { status: 'posted', ...updateData });
     }
     const result = Transactions.update(_id, modifier);
@@ -83,7 +73,7 @@ export const post = new ValidatedMethod({
           });
         }
       });
-      sendBillEmail(doc);
+      if (doc.relation === 'member') sendBillEmail(doc);
     }
 
     return result;
@@ -98,7 +88,7 @@ export const resend = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
-    if (Meteor.isServer && doc.category === 'bill') {
+    if (Meteor.isServer && doc.category === 'bill' && doc.relation === 'member') {
       sendBillEmail(doc);
     }
   },
@@ -111,37 +101,17 @@ export const insert = new ValidatedMethod({
     doc = Transactions._transform(doc);
     const communityId = doc.communityId;
     checkPermissions(this.userId, 'transactions.insert', doc);
-//  if (doc.category === 'payment') {
-//    doc.getBills?.()?.forEach((bp) => {
-//      const bill = Transactions.findOne(bp.id);
-//      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
-//        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
-//        function setOrCheckEquals(field) {
-//          if (!doc[field]) doc[field] = bill[field];
-//          else if (doc[field] !== bill[field]) {
-//            throw new Meteor.Error(`All paid bills need to have same ${field}`, `${doc[field]} !== ${bill[field]}`);
-//          }
-//        }
-//        setOrCheckEquals('relation');
-//        setOrCheckEquals('partnerId');
-//        setOrCheckEquals('contractId');
-//     });
-//   }
+    if (doc.category === 'payment') {
+      if (!doc.contractId && doc.bills?.length) { // Only happens in tests, the UI enforces contractId input
+        const bill = Transactions.findOne(doc.bills[0].id);
+        doc.contractId = bill.contractId;
+      }
+    }
     doc.getLines?.()?.forEach((line) => {
       const parcel = Localizer.parcelFromCode(line.localizer, communityId);
-      if (!line.contractId && parcel) {
-        const contract = parcel?.payerContract();
-        line.contractId = contract?._id;
-      }
       if (!line.parcelId && parcel) line.parcelId = parcel._id;
     });
-    if (doc.category === 'barter') {
-      const supplierBill = doc.supplierBill();
-      const customerBill = doc.customerBill();
-//      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
-      if (supplierBill.relation !== 'supplier') throw new Meteor.Error('Supplier bill is not from a supplier');
-      if (customerBill.relation !== 'customer' && customerBill.relation !== 'member') throw new Meteor.Error('Customer bill is not from a customer/owner');
-    }
+    doc.validate?.();
 
     const _id = Transactions.insert(doc);
     if (doc.isAutoPosting()) post._execute({ userId: this.userId }, { _id });
@@ -161,22 +131,50 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'transactions.update', doc);
     if (doc.isPosted()) {
-      if (doc.category === 'payment') {
-        checkModifier(doc, modifier, ['bills', 'lines']);
-      } else {
-        throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
-      }
+      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
     }
+    let newDoc = rusdiff.clone(doc);
+    rusdiff.apply(newDoc, modifier);
+    newDoc = Transactions._transform(newDoc);
+    newDoc.validate?.();
     modifier.$set?.lines?.forEach((line, i) => {
       if (line.localizer) {
         const parcel = Localizer.parcelFromCode(line.localizer, doc.communityId);
-        const contract = parcel?.payerContract();
-        line.contractId = contract?._id;
         line.parcelId = parcel?._id;
       }
     });
 
     return Transactions.update({ _id }, modifier, { selector: doc });
+  },
+});
+
+export const reallocate = new ValidatedMethod({ // This methods reposts the transaction with a new allocation -- If that should be disallowed, remove this method.
+  name: 'transactions.reallocate',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    modifier: { type: Object, blackbox: true },
+  }).validator(),
+  run({ _id, modifier }) {
+    const doc = checkExists(Transactions, _id);
+    debugAssert(doc.category === 'payment', 'Method reallocate is only available on payments');
+    checkPermissions(this.userId, 'transactions.update', doc);
+    productionAssert(doc.isPosted());
+    checkModifier(doc, modifier, ['bills', 'lines']);
+
+    let newDoc = rusdiff.clone(doc);
+    rusdiff.apply(newDoc, modifier);
+    newDoc = Transactions._transform(newDoc);
+    newDoc.validate?.();
+    modifier.$set?.lines?.forEach((line, i) => {
+      if (line.localizer) {
+        const parcel = Localizer.parcelFromCode(line.localizer, doc.communityId);
+        line.parcelId = parcel?._id;
+      }
+    });
+
+    const result = Transactions.update({ _id }, modifier, { selector: doc });
+    post._execute({ userId: this.userId }, { _id });
+    return result;
   },
 });
 
@@ -222,6 +220,6 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 });
 
 Transactions.methods = Transactions.methods || {};
-_.extend(Transactions.methods, { insert, update, post, resend, remove, cloneAccountingTemplates });
+_.extend(Transactions.methods, { insert, update, post, reallocate, resend, remove, cloneAccountingTemplates });
 _.extend(Transactions.methods, crudBatchOps(Transactions));
 Transactions.methods.batch.post = new BatchMethod(Transactions.methods.post);

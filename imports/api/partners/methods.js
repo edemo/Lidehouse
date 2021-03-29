@@ -6,7 +6,7 @@ import { _ } from 'meteor/underscore';
 import rusdiff from 'rus-diff';
 
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { checkNoOutstanding } from '/imports/api/behaviours/accounting-location.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { sendOutstandingsEmail } from '/imports/email/outstandings-send.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -89,17 +89,21 @@ export const merge = new ValidatedMethod({
     }
     const $set = _.deepExtend({}, doc, destinationDoc);
     delete $set.relation;
-    delete $set.outstanding;
     Mongo.Collection.stripAdministrativeFields($set);
     const modifier = {
       $set: _.extend($set, { relation: _.union(doc.relation, destinationDoc.relation) }),
-      $inc: { outstanding: doc.outstanding },
     };
     Partners.update(destinationId, modifier, { selector: destinationDoc });
 
     Contracts.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: destinationDoc, multi: true });
     Memberships.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: { role: 'owner' }, multi: true });
-    Transactions.update({ partnerId: _id }, { $set: { partnerId: destinationId } }, { selector: { category: 'bill' }, multi: true });
+    Transactions.find({ partnerId: _id }).forEach(tx => {
+      tx.partnerId = destinationId; // Plus tx.pEntries also need to be regenerated
+      const modifierSet = _.extend({ partnerId: destinationId }, tx.makePartnerEntries());
+      Transactions.update({ _id: tx._id }, { $set: modifierSet }, { selector: { category: 'bill' } });
+    });
+    // Balances update happens in Transactions hooks, when pEntries change
+    Balances.remove({ communityId: doc.communityId, partner: new RegExp('^' + _id) });
     Delegations.update({ sourceId: _id }, { $set: { sourceId: destinationId } }, { multi: true });
     Delegations.update({ targetId: _id }, { $set: { targetId: destinationId } }, { multi: true });
     if (Meteor.isServer) {
@@ -128,7 +132,7 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Partners, _id);
     checkPermissions(this.userId, 'partners.remove', doc);
-    checkNoOutstanding(doc);
+    Balances.checkNullBalance({ communityId: doc.communityId, partner: doc._id });
     const membership = Memberships.findOne({ partnerId: _id });
     if (membership) throw new Meteor.Error('err_unableToRemove', `Partner ${_id} may not be removed, until membership ${membership._id} is using it.`);
     const transaction = Transactions.findOne({ partnerId: _id });

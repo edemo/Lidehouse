@@ -11,8 +11,8 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { AccountingLocation } from '/imports/api/behaviours/accounting-location.js';
 import { noUpdate } from '/imports/utils/autoform.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners, choosePartner, choosePartnerOfParcel } from '/imports/api/partners/partners.js';
 import { Parcels, chooseParcel, chooseProperty } from '/imports/api/parcels/parcels.js';
@@ -27,7 +27,7 @@ Contracts.accountingSchema = new SimpleSchema({
 
 Contracts.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: { type: 'hidden' } },
+  relation: { type: String, allowedValues: Relations.values, autoform: { type: 'hidden' } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...noUpdate, ...choosePartner } },
   accounting: { type: Contracts.accountingSchema, optional: true },
 });
@@ -88,6 +88,9 @@ Contracts.helpers({
   partnerName() {
     return this.partner()?.displayName();
   },
+  code() {
+    return Partners.code(this.partnerId, this._id);
+  },
   worksheets() {
     const Topics = Mongo.Collection.get('topics');
     return Topics.find({ communityId: this.communityId, 'ticket.contractId': this._id });
@@ -109,9 +112,20 @@ Contracts.helpers({
     if (this.leadParcelId) return Contracts.findOne({ parcelId: this.leadParcelId });
     else return this;
   },
+  balance() {
+    const Balances = Mongo.Collection.get('balances');
+    const partner = this.partnerId + '/' + this._id;
+    return Balances.get({ communityId: this.communityId, partner, tag: 'T' }).total();
+  },
+  outstanding() {
+    return this.balance() * Partners.relationSign(this.relation) * -1;
+  },
+  displayTitle() {
+    return this.title || __('default');
+  },
   toString() {
     if (this.relation === 'member') return `${__('property')} ${this.parcel()?.ref}`;
-    else return this.title;
+    else return this.displayTitle();
   },
 });
 
@@ -124,7 +138,6 @@ Communities.helpers({
 Contracts.attachBaseSchema(Contracts.baseSchema);
 Contracts.attachBehaviour(Timestamped);
 Contracts.attachBehaviour(ActivePeriod);
-Contracts.attachBehaviour(AccountingLocation);
 
 Contracts.attachVariantSchema(Contracts.detailsSchema, { selector: { relation: 'customer' } });
 Contracts.attachVariantSchema(Contracts.detailsSchema, { selector: { relation: 'supplier' } });
@@ -187,6 +200,17 @@ Contracts.partnerContractOptions = function partnerContractOptions(selector) {
       });
     } else partnerContracts.push([p, null]);
   });
-  const options = partnerContracts.map(pc => ({ label: pc[0].toString() + (pc[1] ? `/${pc[1].toString()}` : ''), value: pc[0]._id + (pc[1] ? `/${pc[1]._id}` : '') }));
+  const options = partnerContracts.map(pc => ({
+    label: Partners.code(pc[0].toString(), pc[1]?.toString()), // pc[0].toString() + (pc[1] ? `/${pc[1].toString()}` : ''),
+    value: Partners.code(pc[0]._id, pc[1]?._id),
+  }));
   return options;
+};
+
+export const choosePartnerContract = {
+  options() {
+    const communityId = ModalStack.getVar('communityId');
+    return Contracts.partnerContractOptions({ communityId });
+  },
+  firstOption: () => __('(Select one)'),
 };

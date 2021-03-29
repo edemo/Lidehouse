@@ -14,6 +14,10 @@ Template.Payment_view.viewmodel({
   reactiveDoc() {
     return Transactions.findOne(this.templateInstance.data.doc._id);
   },
+  showBills() {
+    const doc = this.reactiveDoc();
+    return doc.bills.length;
+  },
   displayBill(bp) {
     const bill = Transactions.findOne(bp.id);
     return bill?.serialId;

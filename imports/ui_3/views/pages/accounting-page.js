@@ -1,6 +1,7 @@
 /* globals document */
 import { Template } from 'meteor/templating';
 
+import { Communities } from '/imports/api/communities/communities.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -22,6 +23,7 @@ Template.Accounting_page.viewmodel({
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
       instance.subscribe('accounts.inCommunity', { communityId });
+      instance.subscribe('balances.inCommunity', { communityId });
       instance.subscribe('parcels.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
       const selector = {
@@ -36,6 +38,9 @@ Template.Accounting_page.viewmodel({
   },
   communityId() {
     return getActiveCommunityId();
+  },
+  community() {
+    return Communities.findOne(this.communityId());
   },
   noAccountsDefined() {
     if (!Template.instance().subscriptionsReady()) return false;
@@ -53,7 +58,11 @@ Template.Accounting_page.viewmodel({
   },
   countOutstandingBills() {
     const communityId = this.communityId();
-    const txs = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
+    const community = this.community();
+    if (!community) return 0;
+    const txs = Transactions.find({ communityId, category: 'bill', $and:
+      [{ outstanding: { $gt: 0 } }, { relation: { $in: community.settings.paymentsToBills } }],
+    });
     return txs.count();
   },
   countUnreconciledEntries() {

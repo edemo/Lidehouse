@@ -14,6 +14,7 @@ import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels, chooseParcel } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
@@ -149,12 +150,28 @@ export const BillAndReceiptHelpers = {
     this.getLines().forEach(line => { if (line && !line.account) result = false; });
     return result;
   },
+  validate() {
+    if (this.partnerId && !this.contractId) { // Auto default to default contract, and create it if not yet exists
+      const selector = { communityId: this.communityId, relation: this.relation, partnerId: this.partnerId, title: { $exists: false } };
+      this.contractId = Contracts.findOne(selector)?._id;
+      if (!this.contractId) {
+        delete selector.title;
+        selector.accounting = {
+          account: this.lines[0].account,
+          localizer: this.lines[0].localizer,
+        };
+        this.contractId = Contracts.insert(selector);
+      }
+    }
+  },
+  validateForPost() {
+    if (!this.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
+  },
   autoFill() {
     if (!this.lines) return;  // when the modifier doesn't touch the lines, should not autoFill
     let totalAmount = 0;
     let totalTax = 0;
     this.getLines().forEach(line => {
-      if (!line) return; // can be null, when a line is deleted from the array
       line.amount = Math.round(line.unitPrice * line.quantity);
       if (line.taxPct) {
         line.tax = Math.round((line.amount * line.taxPct) / 100);
@@ -197,42 +214,40 @@ Transactions.categoryHelpers('bill', {
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
 //    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });
-    if (accountingMethod === 'accrual') {
-      this.debit = [];
-      this.credit = [];
-      this.getLines().forEach(line => {
-        if (!line) return; // can be null, when a line is deleted from the array
-        this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
-        let contraAccount = this.relationAccount().code;
-        if (this.relation === 'member') contraAccount += ParcelBillings.findOne(line.billing.id).digit;
-        this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer, parcelId: line.parcelId });
-      });
-    } // else if (accountingMethod === 'cash') >> we have no accounting to do
+    this.debit = [];
+    this.credit = [];
+    this.getLines().forEach(line => {
+      const newEntry = { amount: line.amount, localizer: line.localizer, parcelId: line.parcelId };
+      if (accountingMethod === 'accrual') {
+        this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
+      } else if (accountingMethod === 'cash') {
+        const technicalAccount = Accounts.toTechnical(line.account);
+        this.makeEntry(this.conteerSide(), _.extend({ account: technicalAccount }, newEntry));
+      }
+      let relationAccount = this.relationAccount().code;
+      if (line.billing) relationAccount += ParcelBillings.findOne(line.billing.id).digit;
+      this.makeEntry(this.relationSide(), _.extend({ account: relationAccount }, newEntry));
+    });
     return { debit: this.debit, credit: this.credit };
+  },
+  makePartnerEntries() {
+    this.pEntries = [{
+      partner: this.partnerContractCode(),
+      side: this.conteerSide(),
+      amount: this.amount,
+    }];
+    return { pEntries: this.pEntries };
   },
   calculateOutstanding() {
     let paid = 0;
     this.getPayments().forEach(p => paid += p.amount);
     return this.amount - paid;
   },
-  updateOutstandings(directionSign) {
-    if (Meteor.isClient) return;
-    debugAssert(this.partnerId, 'Cannot process a bill without a partner');
-    Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
-    Contracts.update(this.contractId, { $inc: { outstanding: directionSign * this.amount } }, { selector: { relation: 'member' } });
-    this.getLines().forEach(line => {
-      if (!line) return; // can be null, when a line is deleted from the array
-      const parcel = Localizer.parcelFromCode(line.localizer, this.communityId);
-      if (parcel) {
-        Parcels.update(parcel._id, { $inc: { outstanding: directionSign * line.amount } }, { selector: { category: '@property' } });
-      } else debugAssert(this.relation !== 'member', `Cannot process a parcel bill without parcelId field: ${JSON.stringify(this)}`);
-    });
-  },
   displayInSelect() {
     return `${this.serialId} (${this.partner()} ${moment(this.valueDate).format('YYYY.MM.DD')} ${this.outstanding}/${this.amount})`;
   },
   displayInHistory() {
-    return __(this.category) + (this.lineCount() ? ` (${this.lineCount()} ${__('item')})` : '');
+    return __(`schemaTransactions.category.options.${this.category}`) + (this.lineCount() ? ` (${this.lineCount()} ${__('item')})` : '');
   },
   overdueDays() {
     const diff = moment().diff(this.dueDate, 'days');

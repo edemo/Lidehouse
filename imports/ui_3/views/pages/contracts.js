@@ -4,6 +4,7 @@ import { $ } from 'meteor/jquery';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -30,7 +31,7 @@ Template.Contracts.viewmodel({
     });
   },
   relationValues() {
-    return _.without(Partners.relationValues, 'member');
+    return Relations.mainValues;
   },
   activeClass(partnerRelation) {
     return (this.activePartnerRelation() === partnerRelation) && 'btn-primary active';
@@ -72,7 +73,7 @@ Template.Contracts.events({
     Modal.show('Modal', {
       title: 'contracts',
       body: 'Contracts_datatable',
-      bodyContext: { communityId },
+      bodyContext: { communityId, relations: ['customer', 'supplier'] },
       size: 'lg',
     });
   },

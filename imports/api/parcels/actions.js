@@ -102,7 +102,7 @@ Parcels.actions = {
     name: 'meters',
     icon: 'fa fa-tachometer',
     color: doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
-    visible: user.hasPermission('meters.insert', doc) || user.hasPermission('meters.inCommunity', doc),
+    visible: user.hasPermission('parcels.details', doc),
     run(event, instance) {
       ModalStack.setVar('parcelId', doc._id);
       Modal.show('Modal', {
@@ -159,7 +159,7 @@ Parcels.actions = {
     visible: user.hasPermission('parcels.inCommunity', doc),
     href: '#view-target',
     run(event, instance) {
-      Session.set('parcelToView', doc._id);
+      Session.set('contractToView', doc.payerContract()._id);
     },
   }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({

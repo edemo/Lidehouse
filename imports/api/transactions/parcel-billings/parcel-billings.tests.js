@@ -23,7 +23,7 @@ chai.assert.equalDate = function equalDate(d1, d2) {
 if (Meteor.isServer) {
   let Fixture;
 
-  describe('parcel billings', function () {
+  describe.only('parcel billings', function () {
     this.timeout(25000);
     let applyParcelBillings;
     let postParcelBillings;
@@ -149,9 +149,12 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 2);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test floor', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 25, quantity: 30, localizer: '@A103' });
-        chai.assert.equal(payer3.outstanding, bills[0].amount);
         assertBillDetails(bills[1], { payerPartnerId: payerPartner4Id, linesLength: 1, lineTitle: 'Test floor', linePeriod: '2018-01' });
         assertLineDetails(bills[1].lines[0], { uom: 'm2', unitPrice: 25, quantity: 40, localizer: '@A104' });
+        chai.assert.equal(payer3.outstanding('member'), 0);
+
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(payer3.outstanding('member'), bills[0].amount);
       });
 
       it('can apply billing to a certain parcel type', function() {
@@ -172,7 +175,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test type', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 100, quantity: 20, localizer: '@AP02' });
-        chai.assert.equal(payer3.outstanding, bills[0].amount);
+        chai.assert.equal(payer3.outstanding('member'), 0);
+
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(payer3.outstanding('member'), bills[0].amount);
       });
 
       it('can apply billing to a certain parcel group', function() {
@@ -193,7 +199,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test group', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 100, quantity: 20, localizer: '@AP02' });
-        chai.assert.equal(payer3.outstanding, bills[0].amount);
+        chai.assert.equal(payer3.outstanding('member'), 0);
+
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(payer3.outstanding('member'), bills[0].amount);
       });
 
       it('can apply multiple projections', function () {
@@ -248,9 +257,12 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner4Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'person', unitPrice: 5000, quantity: 4, localizer: '@A104' });
-        chai.assert.equal(parcel4.payerPartner().outstanding, 5000 * 4);
-        chai.assert.equal(parcel4.payerContract().outstanding, 5000 * 4);
-        chai.assert.equal(parcel4.outstanding, 5000 * 4);
+        chai.assert.equal(parcel4.payerPartner().outstanding('member'), 0);
+
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(parcel4.payerPartner().outstanding('member'), 5000 * 4);
+        chai.assert.equal(parcel4.payerContract().outstanding(), 5000 * 4);
+        chai.assert.equal(parcel4.outstanding(), 5000 * 4);
 
         Transactions.remove({});
         const meteredParcelId = Fixture.dummyParcels[3];
@@ -263,8 +275,12 @@ if (Meteor.isServer) {
         const billMetered = Transactions.findOne({ category: 'bill', partnerId: meteredParcel.payerPartner()._id });
         assertBillDetails(billMetered, { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-02' });
         assertLineDetails(billMetered.lines[0], { uom: 'm3', unitPrice: 600, quantity: 14.903, localizer: '@A103' });
-        chai.assert.equal(meteredParcel.payerPartner().outstanding, billMetered.amount);
-        chai.assert.equal(meteredParcel.outstanding, billMetered.amount);
+        chai.assert.equal(meteredParcel.payerPartner().outstanding('member'), 0);
+        chai.assert.equal(meteredParcel.outstanding(), 0);
+
+        postParcelBillings('2018-02-12');
+        chai.assert.equal(meteredParcel.payerPartner().outstanding('member'), billMetered.amount);
+        chai.assert.equal(meteredParcel.outstanding(), billMetered.amount);
       });
 
       it('bills follower parcel\'s parcel-billing to lead parcel\'s payer', function () {
@@ -286,9 +302,14 @@ if (Meteor.isServer) {
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'One follower parcel', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 15, quantity: 10, localizer: '@AP01' });
         chai.assert.equal(bills[0].amount, 150);
-        chai.assert.equal(leadParcel.payerPartner().outstanding, bills[0].lines[0].amount);
-        chai.assert.equal(followerParcel.outstanding, bills[0].lines[0].amount);
-        chai.assert.equal(leadParcel.outstanding, 0);
+        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), 0);
+
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), bills[0].lines[0].amount);
+        // chai.assert.equal(Balances.get({ communityId, partner: followerParcel.payerPartner()._id, tag: 'T' }).total(), bills[0].lines[0].amount);
+        // parcel.payerPartner() can only identify leadParcel's partner, as follower parcel's contract does not have partnerId, only leadParcelId
+        chai.assert.equal(leadParcel.outstanding(), 0);
+        chai.assert.equal(followerParcel.outstanding(), bills[0].lines[0].amount);
       });
 
       it('bills the then owner for given apply date', function () {
@@ -329,9 +350,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test absolute', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'piece', unitPrice: 500, quantity: 1, localizer: '@A103' });
-        chai.assert.equal(formerPayer.outstanding, bills[0].amount);
-        chai.assert.equal(formerPayer.outstanding, parcel.outstanding);
-        chai.assert.equal(laterPayer.outstanding, 0);
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(formerPayer.outstanding('member'), bills[0].amount);
+        chai.assert.equal(parcel.outstanding(), bills[0].amount);
+        chai.assert.equal(laterPayer.outstanding('member'), 0);
 
         Transactions.remove({});
         applyParcelBillings('2018-03-12');
@@ -342,9 +364,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills2.length, 1);
         assertBillDetails(bills2[0], { payerPartnerId: laterpayerPartnerId, linesLength: 1, lineTitle: 'Test absolute', linePeriod: '2018-03' });
         assertLineDetails(bills2[0].lines[0], { uom: 'piece', unitPrice: 500, quantity: 1, localizer: '@A103' });
-        chai.assert.equal(laterPayer.outstanding, bills2[0].amount);
-        chai.assert.equal(laterPayer.outstanding, parcel.outstanding);
-        chai.assert.equal(formerPayer.outstanding, 0);
+        postParcelBillings('2018-03-12');
+        chai.assert.equal(laterPayer.outstanding('member'), bills2[0].amount);
+        chai.assert.equal(parcel.outstanding(), bills2[0].amount);
+        chai.assert.equal(formerPayer.outstanding('member'), 0);
       });
 
       xit('will not apply for same period twice', function () {
@@ -491,16 +514,14 @@ if (Meteor.isServer) {
         assertBilled('2018-05-05', 'consumption', 0);
       });
 
-      it('Cannot register two meters for the same service concurrently. But for another service, its OK to have another meter.', function () {
-        chai.assert.throws(() =>
-          Fixture.builder.create('meter', {
-            parcelId: meteredParcelId,
-            identifier: 'CW-02020202',
-            service: 'coldWater',
-            uom: 'l',
-            activeTime: { begin: new Date('2018-07-01') },
-          })
-        );
+      it('Can register two meters for the same service concurrently. Also for another service, its OK to have another meter.', function () {
+        Fixture.builder.create('meter', {
+          parcelId: meteredParcelId,
+          identifier: 'CW-02020202',
+          service: 'coldWater',
+          uom: 'l',
+          activeTime: { begin: new Date('2018-07-01') },
+        });
         Fixture.builder.create('meter', {
           parcelId: meteredParcelId,
           identifier: 'HW-02020202',
@@ -510,16 +531,9 @@ if (Meteor.isServer) {
         });
       });
 
-      xit('Cannot remove a meter which has unbilled amount', function () {
-        registerReading('2018-06-30', 30);
-        chai.assert.throws(() =>
-          Fixture.builder.execute(Meters.methods.remove, { _id: meterId })
-        , 'err_notAllowed');
-        applyParcelBillings('2018-06-30'); postParcelBillings('2018-06-30');
-      });
-
       it('Can archive a meter which has no unbilled amount', function () {
         Fixture.builder.execute(Meters.methods.update, { _id: meterId, modifier: { $set: { 'activeTime.end': new Date('2018-06-30') } } });
+        chai.assert.isUndefined(Meters.findOneActive(meterId));
       });
 
       it('Can use a new meter that measures in a different uom', function () {
@@ -534,9 +548,8 @@ if (Meteor.isServer) {
       });
 
       it('Cannot bill while some meters are in an unsupported uom', function () {
-        chai.assert.throws(() =>
-          applyParcelBillings('2018-07-30')
-        , 'err_invalidData');
+        chai.assert.throws(() => applyParcelBillings('2018-07-30'),
+          'err_invalidData');
       });
 
       it('Can bill in different uom', function () {
@@ -545,6 +558,11 @@ if (Meteor.isServer) {
         registerReading('2018-07-20', 2);
         applyParcelBillings('2018-07-30'); postParcelBillings('2018-07-30');
         assertBilled('2018-07-30', 'consumption', 3);
+      });
+
+      it('Cannot remove a meter which has unbilled amount', function () {
+        chai.assert.throws(() => Fixture.builder.execute(Meters.methods.remove, { _id: meterId }),
+          'err_unableToRemove');
       });
     });
 /*
@@ -559,10 +577,10 @@ if (Meteor.isServer) {
           projectedPrice: 78,
           digit: '5',
           localizer: '@',
-          note: 'Test volume',
+          notes: 'Test volume',
         });
         const testParcelBilling = ParcelBillings.findOne(parcelBillingId);
-        const transaction = Transactions.findOne({ note: 'Test volume' });
+        const transaction = Transactions.findOne({ notes: 'Test volume' });
         transaction.debit.forEach((leg) => {
           const parcel = Parcels.findOne({ communityId: transaction.communityId, ref: Localizer.code2parcelRef(leg.localizer) });
           const neededSum = Math.round(parcel.volume * testParcelBilling.projectedPrice);
@@ -585,10 +603,10 @@ if (Meteor.isServer) {
           projectedPrice: 155,
           digit: '6',
           localizer: '@',
-          note: 'Test habitants',
+          notes: 'Test habitants',
         });
         const testParcelBilling = ParcelBillings.findOne(parcelBillingId);
-        const transaction = Transactions.findOne({ note: 'Test habitants' });
+        const transaction = Transactions.findOne({ notes: 'Test habitants' });
         transaction.debit.forEach((leg) => {
           const parcel = Parcels.findOne({ communityId: transaction.communityId, ref: Localizer.code2parcelRef(leg.localizer) });
           const neededSum = Math.round(testParcelBilling.projectedPrice * parcel.habitants);
@@ -619,10 +637,10 @@ if (Meteor.isServer) {
           projectedPrice: 78,
           digit: '4',
           localizer: '@',
-          note: 'one area is missing',
+          notes: 'one area is missing',
         });
         const testParcelBilling = ParcelBillings.findOne(parcelBillingId);
-        const transaction = Transactions.findOne({ note: 'one area is missing'});
+        const transaction = Transactions.findOne({ notes: 'one area is missing'});
         transaction.debit.forEach((leg) => {
           const parcel = Parcels.findOne({ communityId: transaction.communityId, ref: Localizer.code2parcelRef(leg.localizer) });
           const neededSum = Math.round(testParcelBilling.projectedPrice * parcel.area || 0);
@@ -643,10 +661,10 @@ if (Meteor.isServer) {
           projectedPrice: 78,
           digit: '4',
           localizer: '@',
-          note: 'one volume is missing',
+          notes: 'one volume is missing',
         });
         const testParcelBilling = ParcelBillings.findOne(parcelBillingId);
-        const transaction = Transactions.findOne({ note: 'one volume is missing'});
+        const transaction = Transactions.findOne({ notes: 'one volume is missing'});
         transaction.debit.forEach((leg) => {
           const parcel = Parcels.findOne({ communityId: transaction.communityId, ref: Localizer.code2parcelRef(leg.localizer) });
           const neededSum = Math.round(testParcelBilling.projectedPrice * parcel.volume || 0);
@@ -667,10 +685,10 @@ if (Meteor.isServer) {
           projectedPrice: 140,
           digit: '1',
           localizer: '@',
-          note: 'one habitant is missing',
+          notes: 'one habitant is missing',
         });
         const testParcelBilling = ParcelBillings.findOne(parcelBillingId);
-        const transaction = Transactions.findOne({ note: 'one habitant is missing'});
+        const transaction = Transactions.findOne({ notes: 'one habitant is missing'});
         transaction.debit.forEach((leg) => {
           const parcel = Parcels.findOne({ communityId: transaction.communityId, ref: Localizer.code2parcelRef(leg.localizer) });
           const neededSum = Math.round(testParcelBilling.projectedPrice * parcel.habitants || 0);
@@ -694,12 +712,12 @@ if (Meteor.isServer) {
           amount: 150,
           digit: '3',
           localizer: '@',
-          note: 'no parcel details',
+          notes: 'no parcel details',
         });
-        const testParcelBilling = ParcelBillings.findOne({ note: 'no parcel details' });
+        const testParcelBilling = ParcelBillings.findOne({ notes: 'no parcel details' });
         Parcels.find({ communityId: Fixture.demoCommunityId }).count();
         const parcelNumber = Parcels.find({ communityId: Fixture.demoCommunityId }).count();
-        const debitLegs = Transactions.findOne({ note: 'no parcel details'}).debit.length;
+        const debitLegs = Transactions.findOne({ notes: 'no parcel details'}).debit.length;
         chai.assert.equal(parcelNumber, debitLegs);
       });
 

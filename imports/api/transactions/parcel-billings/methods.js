@@ -27,7 +27,7 @@ function display(reading) {
   return `${reading.value.round(3)} (${displayDate(reading.date)})`; /* parcelBilling.consumption.decimals */
 }
 
-function lineDetails(currentBilling, lastBilling, lastReading) {
+function lineDetails(meter, currentBilling, lastBilling, lastReading) {
   let result = '';
   result += `  Legutóbbi számlázott óraállás: ${display(lastBilling)}`;
   result += `  Most számlázott óraállás: ${display(currentBilling)}`;
@@ -36,6 +36,7 @@ function lineDetails(currentBilling, lastBilling, lastReading) {
   } else {
     result += `  Utolsó leolvasás: ${display(lastReading)}`;
   }
+  result += ` Mérőóra: ${meter.identifier}`;
   return result;
 }
 
@@ -59,13 +60,39 @@ export const apply = new ValidatedMethod({
         const parcels = parcelBilling.parcelsToBill().filter(b => activeParcels.find(a => a._id === b._id));
         parcels.forEach((parcel) => {
           productionAssert(parcel, 'Could not find parcel - Please check if parcel ref matches the building+floor+door exactly');
-          const line = {
-            billing: { id: parcelBilling._id, period: billingPeriod.label },
-          };
-          let activeMeter;
+          function addLineToBill(line) {
+            productionAssert(line.uom && _.isDefined(line.quantity), 'A billing needs at least one of consumption or projection.');
+            if (line.quantity === 0) return; // Should not create bill for zero amount
+            line.title = parcelBilling.title;
+            line.amount = line.quantity * line.unitPrice;
+            line.account = Accounts.findOne({ communityId, category: 'income', name: 'Owner payins' }).code + parcelBilling.digit;
+            line.parcelId = parcel._id;
+            line.localizer = parcel.code;
+            line.billing = { id: parcelBilling._id, period: billingPeriod.label };
+
+            // Creating the bill - adding line to the bill
+            const leadParcel = parcel.leadParcel();
+            billsToSend[leadParcel._id] = billsToSend[leadParcel._id] || {
+              communityId: parcelBilling.communityId,
+              category: 'bill',
+              relation: 'member',
+              defId: Txdefs.findOne({ communityId, category: 'bill', 'data.relation': 'member' })._id,
+    //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
+              partnerId: leadParcel.payerPartner()._id,
+              contractId: leadParcel.payerContract()._id,
+              issueDate: Clock.currentDate(),
+              deliveryDate: date,
+              dueDate: moment(date).add(BILLING_DUE_DAYS, 'days').toDate(),
+              lines: [],
+            };
+            billsToSend[leadParcel._id].lines.push(line);
+          }
+
+          let activeMeters = [];
           if (parcelBilling.consumption) {
-            activeMeter = Meters.findOneActive({ parcelId: parcel._id, service: parcelBilling.consumption.service });
-            if (activeMeter) {
+            activeMeters = Meters.findActive({ parcelId: parcel._id, service: parcelBilling.consumption.service }).fetch();
+            activeMeters.forEach(activeMeter => {
+              const line = {};
               const charge = parcelBilling.consumption.charges.find(c => c.uom === activeMeter.uom);
               if (!charge) throw new Meteor.Error('err_invalidData', `The meter ${activeMeter.identifier} has to match the same uom, that the billing applies to`);
               line.uom = charge.uom;
@@ -73,50 +100,24 @@ export const apply = new ValidatedMethod({
               // TODO: Estimation if no reading available
               line.quantity = 0;
               const lastBilling = activeMeter.lastBilling(); delete lastBilling.billId;
-              const lastReading = activeMeter.lastReading();
-              // ----- date ------ lastBilling ------ now |
-//              if (date < lastBilling.date) throw new Meteor.Error('err_notAllowed', 'Cannot bill a consumption based billing at a time earlier than the last billing', `${date} < ${lastBilling.date}`);
-              // ---- lastBilling -----earlierReading ----- date ------ lastReading ------ now |
-//              if (date < lastReading.date) throw new Meteor.Error('err_notAllowed', 'Cannot bill a consumption based billing at a time earlier than the last reading', `${date} < ${lastReading.date}`);
-              // ---- lastBilling -----lastReading ----- date ------ now |
-              // ---- lastReading -----lastBilling ----- date ------ now |
+              const lastReading = activeMeter.lastReading(date);
+              if (date < lastBilling.date) throw new Meteor.Error('err_invalidData', `The meter ${activeMeter.identifier} was already billed at a later date: ${lastBilling.date}`);
               const value = activeMeter.getEstimatedValue(date);
               const currentBilling = { date, value };
               line.metering = { id: activeMeter._id, start: lastBilling, end: currentBilling };
               line.quantity = (currentBilling.value - lastBilling.value).round(3); /* parcelBilling.consumption.decimals */
-              line.details = lineDetails(currentBilling, lastBilling, lastReading);
-            }
+              line.details = lineDetails(activeMeter, currentBilling, lastBilling, lastReading);
+              addLineToBill(line);
+            });
           }
-          if (!activeMeter) {
+          if (!activeMeters.length) {
             productionAssert(parcelBilling.projection, `Parcel ${parcel.ref} has no meter for billing ${parcelBilling.title}, and no projection is set up for this billing.`);
+            const line = {};
             line.unitPrice = parcelBilling.projection.unitPrice;
             line.uom = parcelBilling.projectionUom();
             line.quantity = parcelBilling.projectionQuantityOf(parcel);
+            addLineToBill(line);
           }
-          productionAssert(line.uom && _.isDefined(line.quantity), 'A billing needs at least one of consumption or projection.');
-          if (line.quantity === 0) return; // Should not create bill for zero amount
-          line.title = parcelBilling.title;
-          line.amount = line.quantity * line.unitPrice;
-          line.account = Accounts.findOne({ communityId, category: 'income', name: 'Owner payins' }).code + parcelBilling.digit;
-          line.parcelId = parcel._id;
-          line.localizer = parcel.code;
-
-          // Creating the bill - adding line to the bill
-          const leadParcel = parcel.leadParcel();
-          billsToSend[leadParcel._id] = billsToSend[leadParcel._id] || {
-            communityId: parcelBilling.communityId,
-            category: 'bill',
-            relation: 'member',
-            defId: Txdefs.findOne({ communityId, category: 'bill', 'data.relation': 'member' })._id,
-  //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
-            partnerId: leadParcel.payerPartner()._id,
-            contractId: leadParcel.payerContract()._id,
-            issueDate: Clock.currentDate(),
-            deliveryDate: date,
-            dueDate: moment(date).add(BILLING_DUE_DAYS, 'days').toDate(),
-            lines: [],
-          };
-          billsToSend[leadParcel._id].lines.push(line);
         });
 
         ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: { date, period: billingPeriod.label } } });

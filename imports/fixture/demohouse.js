@@ -986,7 +986,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
     digit: Accounts.findPayinDigitByName('Rendkivüli befizetés előírás'),
     localizer: '@',
-    note: __('demo.transactions.note.0'),
+    notes: __('demo.transactions.notes.0'),
     activeTime: {
       begin: new Date(`${lastYear}-08-01`),
       end: new Date(`${lastYear}-08-31`),
@@ -1188,7 +1188,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 //      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
     }],
     payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
-    note: __('demo.transactions.note.1'),
+    notes: __('demo.transactions.notes.1'),
   });
 
   builder.create('income', {
@@ -1203,7 +1203,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 //      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
     }],
     payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
-    note: __('demo.transactions.note.2'),
+    notes: __('demo.transactions.notes.2'),
   });
 
   builder.create('income', {
@@ -1218,7 +1218,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 //      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
     }],
     payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
-    note: __('demo.transactions.note.3'),
+    notes: __('demo.transactions.notes.3'),
   });
 
   builder.create('income', {
@@ -1232,7 +1232,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       account: Accounts.findOne({ communityId, category: 'liability', name: 'Hosszú lejáratú bank hitel' }).code,
     }],
     payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Savings account' }).code,
-    note: __('demo.transactions.note.4'),
+    notes: __('demo.transactions.notes.4'),
   });
 
   // == Expenses

@@ -10,7 +10,6 @@ import { _ } from 'meteor/underscore';
 import { sanityCheckAtLeastOneActive } from '/imports/api/behaviours/active-period.js';
 import { Log } from '/imports/utils/log.js';
 import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
-import { checkNoOutstanding } from '/imports/api/behaviours/accounting-location.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -164,7 +163,6 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    checkNoOutstanding(doc);
     const MembershipsStage = Memberships.Stage();
     const result = MembershipsStage.remove(_id);
     if (doc.role === 'admin') {

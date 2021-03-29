@@ -17,15 +17,17 @@ export function sendBillEmail(bill) {
   }
   const user = partner.user();
 
-  EmailSender.send({
-    to: emailAddress,
-    subject: EmailTemplateHelpers.subject('New bill', user, community),
-    template: 'Bill_Email',
-    data: {
-      user,
-      community,
-      bill,
-      ...Bill_Email.layoutData,
-    },
-  });
+  if (!user || user.settings.getBillEmail) {
+    EmailSender.send({
+      to: emailAddress,
+      subject: EmailTemplateHelpers.subject('New bill', user, community),
+      template: 'Bill_Email',
+      data: {
+        user,
+        community,
+        bill,
+        ...Bill_Email.layoutData,
+      },
+    });
+  }
 }

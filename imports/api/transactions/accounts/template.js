@@ -34,6 +34,7 @@ export function defineAccountTemplates() {
     { code: '`382', name: 'Checking account', category: 'bank', primary: true }, // Folyószámla
     { code: '`383', name: 'Savings account', category: 'bank', primary: false }, // Megtakarítási számla
     { code: '`384', name: 'LTP', category: 'bank', primary: false }, // FUNDAMENTA
+    { code: '`389', name: 'Barter account', category: 'bank', primary: false }, // Barter számla
     { code: '`39', name: 'AKTÍV IDŐBELI ELHATÁROLÁSOK', category: 'asset' },
     // 4
     { code: '`4', name: 'Liabilities', category: 'liability', locked: true, sign: -1 },  // FORRÁSOK

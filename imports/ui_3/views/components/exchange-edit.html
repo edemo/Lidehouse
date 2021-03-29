@@ -1,0 +1,48 @@
+<template name="Exchange_edit">
+    {{#let afDoc=afDoc}}
+    <div class="row">
+        <!-- hidden, needed for autoform doc data -->
+        {{> afQuickField name="communityId" type="hidden"}}
+        {{> afQuickField name="category" type="hidden"}}
+        {{> afQuickField name="defId" type="hidden"}}
+        {{> afQuickField name="relation" type="hidden"}}
+        <!-- hidden, needed for autoform doc data -->
+        <div class="col-sm-7">
+            {{> afQuickField name="valueDate" defaultValue=defaultDate}}
+        </div>
+        <div class="col-sm-5 pull-right">
+            {{#if afDoc.serialId}}
+                <h4>{{_ afDoc.txdef.name}}:
+                <span class="text-navy">{{afDoc.serialId}}</span></h4>
+            {{/if}}
+            {{> afQuickField name="amount"}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            {{> afQuickField name="fromPartner"}}
+        </div>
+        <div class="col-sm-6">
+            {{> afQuickField name="toPartner"}}
+        </div>
+    </div>
+    <!--div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="control-label text-capitalize" for="partner">{{_ 'partner'}}/{{_ 'contract'}}</label>
+                <select id="fromPartner" name="fromPartner" {{b 'options: partnerContractOptions, value: fromPartnerSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="control-label text-capitalize" for="partner">{{_ 'partner'}}/{{_ 'contract'}}</label>
+                <select id="toPartner" name="toPartner" {{b 'options: partnerContractOptions, value: toPartnerSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+            </div>
+        </div>
+    </div-->
+
+    <div class="well m-t">
+        {{> afQuickField name="notes"}}
+    </div>
+    {{/let}}
+</template>

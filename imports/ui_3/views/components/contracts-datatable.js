@@ -18,7 +18,8 @@ Template.Contracts_datatable.viewmodel({
   },
   tableDataFn() {
     const communityId = this.templateInstance.data.communityId;
-    return () => Contracts.find({ communityId }).fetch();
+    const relations = this.templateInstance.data.relations;
+    return () => Contracts.find({ communityId, relation: { $in: relations } }).fetch();
   },
   optionsFn() {
     return () => ({

@@ -29,7 +29,7 @@ export function digestImportJsons(jsons, phase) {
   tdocs.forEach(doc => {
     collection.simpleSchema(doc).clean(doc);
     collection.simpleSchema(doc).validate(doc);
-    delete doc.outstanding; // TODO: where should the removal of such default values happen?
+    // TODO: where should the removal of calculated  values happen?
   });
   return { docs, tdocs }; // docs are translated, parsed -- tdocs are transformed and validated as well
 }

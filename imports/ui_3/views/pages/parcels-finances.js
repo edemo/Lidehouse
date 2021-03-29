@@ -14,7 +14,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/account-history.js';
-import '/imports/ui_3/views/components/parcel-history.js';
+import '/imports/ui_3/views/components/partner-history.js';
 import '/imports/ui_3/views/common/ibox-tools.js';
 import '/imports/ui_3/views/components/balance-widget.js';
 import '/imports/ui_3/views/components/meters-widget.js';
@@ -22,18 +22,18 @@ import '/imports/ui_3/views/components/balance-report.js';
 import './parcels-finances.html';
 
 Template.Parcels_finances.viewmodel({
-  showAllParcels: true,
+  showAllParcels: false,
   onCreated(instance) {
+    ModalStack.setVar('relation', 'member', true);
     const self = this;
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       instance.subscribe('accounts.inCommunity', { communityId });
-      instance.subscribe('contracts.inCommunity', { communityId });
       if (Meteor.userOrNull().hasPermission('transactions.inCommunity', { communityId })) {
         if (self.showAllParcels()) {
-          instance.subscribe('parcels.outstanding', { communityId });
+          instance.subscribe('parcels.outstanding', { communityId, selector: 'partner' });
         } else {
-          instance.subscribe('parcels.outstanding', { communityId, limit: 10 });
+          instance.subscribe('parcels.outstanding', { communityId, selector: 'partner', debtorsOnly: true });
         }
       } else {
         instance.subscribe('parcels.ofSelf', { communityId });
@@ -41,34 +41,24 @@ Template.Parcels_finances.viewmodel({
     });
   },
   onDestroyed() {
-    Session.set('parcelToView');
+    Session.set('contractToView');
   },
-  parcelToView() {
-    return Session.get('parcelToView');
+  contractToView() {
+    return Session.get('contractToView');
   },
-  myLeadParcels() {
+  myParcels() {
     const communityId = ModalStack.getVar('communityId');
     const user = Meteor.user();
     if (!user || !communityId) return [];
-    return user.ownedLeadParcels(communityId);
+    return user.ownedParcels(communityId);
   },
-  parcelChoices() {
+  contractChoices() {
     const communityId = ModalStack.getVar('communityId');
     const parcels = Meteor.userOrNull().hasPermission('balances.ofLocalizers', { communityId }) ?
-      Parcels.find({ communityId, category: '@property', approved: true }).fetch().filter(p => !p.isLed()) : this.myLeadParcels();
-    return parcels.map((parcel) => {
-      return {
-        label: parcel.display(),
-        value: parcel._id,
-//        value: Localizer.parcelRef2code(parcel.ref),
-      };
-    });
-  },
-  defaultBeginDate() {
-    return moment().subtract(1, 'year').format('YYYY-MM-DD');
-  },
-  defaultEndDate() {
-    return moment().format('YYYY-MM-DD');
+      Parcels.find({ communityId, category: '@property', approved: true }) : this.myParcels();
+    let contracts = parcels.map(parcel => parcel.payerContract());
+    contracts = _.uniq(contracts, false, c => c._id);
+    return contracts.map(c => ({ label: c.toString(), value: c._id }));
   },
   parcelFinancesTableDataFn() {
     const communityId = ModalStack.getVar('communityId');

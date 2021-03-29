@@ -6,10 +6,11 @@ import { freshFixture } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Communities } from '/imports/api/communities/communities.js';
-
+import { Partners } from '../partners/partners';
 
 if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
@@ -20,6 +21,8 @@ if (Meteor.isServer) {
 //      FixtureC = freshFixture('Cash accounting house');
       FixtureA = freshFixture();
       Communities.update(FixtureA.demoCommunityId, { $set: { 'settings.accountingMethod': 'accrual' } });
+      // Need to apply, so the member contracts get created
+      FixtureA.builder.execute(ParcelBillings.methods.apply, { communityId: FixtureA.demoCommunityId, ids: [FixtureA.parcelBilling], date: new Date() });
     });
     after(function () {
     });
@@ -28,11 +31,11 @@ if (Meteor.isServer) {
       let billId;
       let bill;
       before(function () {
-        const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[1]);
+        const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[3]);
         billId = FixtureA.builder.create('bill', {
           relation: 'member',
           partnerId,
-          contractId: Contracts.findOne({ partnerId })?._id,
+          contractId: Contracts.findOne({ partnerId })._id,
           issueDate: new Date('2018-01-05'),
           deliveryDate: new Date('2018-01-02'),
           dueDate: new Date('2018-01-30'),
@@ -67,14 +70,26 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.valueDate.getTime(), bill.deliveryDate.getTime());
         chai.assert.equal(bill.getPayments().length, 0);
         chai.assert.equal(bill.isPosted(), false);
-
         chai.assert.equal(bill.outstanding, 1300);
-        chai.assert.equal(bill.partner().outstanding, 1300);
-//        chai.assert.equal(bill.contract().outstanding, 1300);
+      });
+
+      it('Updates balances correctly', function () {
+        bill = Transactions.findOne(billId);
+        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+          $set: { 'lines.0.account': '`951', 'lines.0.localizer': '@AP01', 'lines.1.account': '`951', 'lines.1.localizer': '@AP02' } } });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
+
+        chai.assert.equal(bill.partner().balance(), -1300);
+        chai.assert.equal(bill.contract().balance(), -1300);
+        chai.assert.equal(bill.partner().outstanding('customer'), 1300);
+        chai.assert.equal(bill.partner().outstanding('supplier'), -1300);
+        chai.assert.equal(bill.contract().outstanding(), 1300);
         const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP01' });
         const parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP02' });
-        chai.assert.equal(parcel1.outstanding, 300);
-        chai.assert.equal(parcel2.outstanding, 1000);
+        chai.assert.equal(parcel1.balance(), -300);
+        chai.assert.equal(parcel2.balance(), -1000);
+        chai.assert.equal(parcel1.outstanding(), 300);
+        chai.assert.equal(parcel2.outstanding(), 1000);
       });
     });
 
@@ -104,7 +119,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.isPosted(), false);
 
         chai.assert.equal(bill.outstanding, 300);
-        chai.assert.equal(bill.partner().outstanding, 300);
+        // chai.assert.equal(bill.partner().outstanding(), 300); // partner.outstanding() is calculated only on posted tx
       });
 
       it('Can not post without accounts', function () {
@@ -130,6 +145,7 @@ if (Meteor.isServer) {
         chai.assert.equal(tx.amount, 300);
         chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '`861', localizer: '@' }]);
         chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '`454', localizer: '@' }]);
+        chai.assert.equal(bill.partner().outstanding('supplier'), 300);
       });
 
       it('Can register Payments', function () {
@@ -139,14 +155,12 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.getPayments().length, 1);
         chai.assert.equal(bill.outstanding, 200);
-        chai.assert.equal(bill.partner().outstanding, 200);
 
         const paymentId2 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 200 }], amount: 200, partnerId: FixtureA.supplier, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.getPayments().length, 2);
         chai.assert.equal(bill.outstanding, 0);
-        chai.assert.equal(bill.partner().outstanding, 0);
 
         let tx1 = Transactions.findOne(paymentId1);
         chai.assert.equal(tx1.category, 'payment');
@@ -166,12 +180,14 @@ if (Meteor.isServer) {
         chai.assert.isTrue(tx1.isPosted());
         chai.assert.deepEqual(tx1.debit, [{ amount: 100, account: '`454', localizer: '@' }]);
         chai.assert.deepEqual(tx1.credit, [{ amount: 100, account: bankAccount }]);
+        chai.assert.equal(bill.partner().outstanding('supplier'), 200);
 
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
         tx2 = Transactions.findOne(paymentId2);
         chai.assert.isTrue(tx2.isPosted());
         chai.assert.deepEqual(tx2.debit, [{ amount: 200, account: '`454', localizer: '@' }]);
         chai.assert.deepEqual(tx2.credit, [{ amount: 200, account: bankAccount }]);
+        chai.assert.equal(bill.partner().outstanding('supplier'), 0);
       });
 
       it('Can storno a Payment', function () {
@@ -184,9 +200,9 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 100);
       });
 
-      it('Can amend a Payment', function () {
+      it('Can reallocate a Payment', function () {
         let payment2 = Transactions.findOne({ category: 'payment', amount: 200 });
-        FixtureA.builder.execute(Transactions.methods.update, { _id: payment2._id, modifier: { $set: {
+        FixtureA.builder.execute(Transactions.methods.reallocate, { _id: payment2._id, modifier: { $set: {
           bills: [{ id: billId, amount: 180 }],
           lines: [{ account: '`88', amount: 20 }],
         } } });
@@ -196,34 +212,62 @@ if (Meteor.isServer) {
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.outstanding, 120);
       });
+
+      it('Can not reallocate a Payment with wrong amount', function () {
+        const paymentId3 = FixtureA.builder.create('payment', {
+          bills: [{ id: billId, amount: 100 }],
+          lines: [{ account: '`861', amount: 150 }],
+          amount: 250,
+          partnerId: FixtureA.supplier,
+          valueDate: Clock.currentTime(),
+          payAccount: '`381' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId3 });
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.outstanding, 20);
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.reallocate, { _id: paymentId3, modifier: { $set: {
+            bills: [{ id: billId, amount: 150 }],
+            lines: [{ account: '`861', amount: 100 }],
+          } } });
+        }, 'err_sanityCheckFailed');
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.outstanding, 20);
+        FixtureA.builder.execute(Transactions.methods.reallocate, { _id: paymentId3, modifier: { $set: {
+          bills: [{ id: billId, amount: 120 }],
+          lines: [{ account: '`861', amount: 130 }],
+        } } });
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.outstanding, 0);
+      });
     });
 
     describe('Non-bill allocation', function () {
-      it('Can create a Payment which is not allocated to bills', function () {
+      xit('Can create a Payment which is not allocated to bills', function () {
         const bankAccount = '`381';
-        const paymentId = FixtureA.builder.create('payment', {
-          amount: 100, relation: 'member', partnerId: FixtureA.supplier, valueDate: Clock.currentTime(), payAccount: bankAccount, lines: [
-            { amount: 20, account: '`820', localizer: '@A103' },
-            { amount: 80, account: '`880', localizer: '@A104' },
-          ],
-        });
-        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
-        const tx = Transactions.findOne(paymentId);
         const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'A103' });
         const parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'A104' });
         const contract1 = parcel1.payerContract(); chai.assert.isDefined(contract1);
         const contract2 = parcel2.payerContract(); chai.assert.isDefined(contract2);
 
+        const paymentId = FixtureA.builder.create('payment', {
+          amount: 100, relation: 'member', partnerId: parcel1.payerContract().partner()._id, valueDate: Clock.currentTime(), payAccount: bankAccount, lines: [
+            { amount: 20, account: '`33', localizer: '@A103' },
+            { amount: 80, account: '`31', localizer: '@A104' },
+          ],
+        });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
+        const tx = Transactions.findOne(paymentId);
+
         chai.assert.isTrue(tx.isPosted());
         chai.assert.deepEqual(tx.debit, [{ amount: 100, account: bankAccount }]);
         chai.assert.deepEqual(tx.credit, [
-          { amount: 20, account: '`820', localizer: '@A103', contractId: contract1._id, parcelId: parcel1._id },
-          { amount: 80, account: '`880', localizer: '@A104', contractId: contract2._id, parcelId: parcel2._id },
+          { amount: 20, account: '`33', localizer: '@A103', parcelId: parcel1._id },
+          { amount: 80, account: '`31', localizer: '@A104', parcelId: parcel2._id },
         ]);
-        chai.assert.equal(parcel1.outstanding, -20);
-        chai.assert.equal(parcel2.outstanding, -80);
-        chai.assert.equal(contract1.outstanding, -20);
-        chai.assert.equal(contract2.outstanding, -80);
+        chai.assert.equal(parcel1.outstanding('supplier'), 20);
+        chai.assert.equal(parcel2.outstanding('supplier'), 80);
+        chai.assert.equal(contract1.outstanding('supplier'), 20);
+        chai.assert.equal(contract2.outstanding('supplier'), 80);  // contract2 belongs to other partner, partnerId is required on line and journalEntry
       });
     });
 
@@ -335,6 +379,16 @@ if (Meteor.isServer) {
         const billId2 = createBill([billLineNeg, billLinePos2, billLinePos1]); // -100, 250, 300
         FixtureA.builder.execute(Transactions.methods.post, { _id: billId1 });
         FixtureA.builder.execute(Transactions.methods.post, { _id: billId2 });
+        const bill1 = Transactions.findOne(billId1);
+        chai.assert.deepEqual(bill1.debit, [
+          { amount: 300, account: '`331', localizer, parcelId },
+          { amount: 250, account: '`3324', localizer, parcelId },
+          { amount: 100, account: '`9524', localizer, parcelId }]);
+        chai.assert.deepEqual(bill1.credit, [
+          { amount: 300, account: '`951', localizer, parcelId },
+          { amount: 250, account: '`9524', localizer, parcelId },
+          { amount: 100, account: '`3324', localizer, parcelId }]);
+
         const paymentId1 = FixtureA.builder.create('payment', {
           relation: 'member',
           bills: [{ id: billId1, amount: 210 }],
@@ -344,9 +398,10 @@ if (Meteor.isServer) {
           payAccount: '`381' });
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId1 });
         const payment1 = Transactions.findOne(paymentId1);
-        chai.assert.deepEqual(payment1.debit, [{ amount: 210, account: '`381' }]);
+        chai.assert.deepEqual(payment1.debit, [
+          { amount: 210, account: '`381' },
+          { amount: 100, account: '`3324', localizer, parcelId }]);
         chai.assert.deepEqual(payment1.credit, [
-          { amount: -100, account: '`3324', localizer, parcelId },
           { amount: 300, account: '`331', localizer, parcelId },
           { amount: 10, account: '`3324', localizer, parcelId }]);
 
@@ -359,10 +414,11 @@ if (Meteor.isServer) {
           payAccount: '`381' });
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
         const payment2 = Transactions.findOne(paymentId2);
-        chai.assert.deepEqual(payment2.debit, [{ amount: 690, account: '`381' }]);
+        chai.assert.deepEqual(payment2.debit, [
+          { amount: 690, account: '`381' },
+          { amount: 100, account: '`3324', localizer, parcelId }]);
         chai.assert.deepEqual(payment2.credit, [
           { amount: 240, account: '`3324', localizer, parcelId },
-          { amount: -100, account: '`3324', localizer, parcelId },
           { amount: 250, account: '`3324', localizer, parcelId },
           { amount: 300, account: '`331', localizer, parcelId }]);
       });
@@ -382,10 +438,11 @@ if (Meteor.isServer) {
           payAccount: '`381' });
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
         const payment = Transactions.findOne(paymentId);
-        chai.assert.deepEqual(payment.debit, [{ amount: 100, account: '`381' }]);
+        chai.assert.deepEqual(payment.debit, [
+          { amount: 100, account: '`381' },
+          { amount: 100, account: '`3324', localizer, parcelId },
+          { amount: 100, account: '`3324', localizer, parcelId }]);
         chai.assert.deepEqual(payment.credit, [
-          { amount: -100, account: '`3324', localizer, parcelId },
-          { amount: -100, account: '`3324', localizer, parcelId },
           { amount: 300, account: '`331', localizer, parcelId }]);
       });
 
@@ -402,10 +459,10 @@ if (Meteor.isServer) {
           payAccount: '`381' });
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
         const payment = Transactions.findOne(paymentId);
-        chai.assert.deepEqual(payment.debit, [{ amount: -200, account: '`381' }]);
-        chai.assert.deepEqual(payment.credit, [
-          { amount: -100, account: '`3324', localizer, parcelId },
-          { amount: -100, account: '`3324', localizer, parcelId }]);
+        chai.assert.deepEqual(payment.debit, [
+          { amount: 100, account: '`3324', localizer, parcelId },
+          { amount: 100, account: '`3324', localizer, parcelId }]);
+        chai.assert.deepEqual(payment.credit, [{ amount: 200, account: '`381' }]);
       });
 
       // BA+, A<, B1, P0-P1
@@ -453,12 +510,13 @@ if (Meteor.isServer) {
           payAccount: '`381' });
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
         const payment = Transactions.findOne(paymentId);
-        chai.assert.deepEqual(payment.debit, [{ amount: -20, account: '`381' }]);
+        chai.assert.deepEqual(payment.debit, [
+          { amount: 100, account: '`3324', localizer, parcelId },
+          { amount: 100, account: '`3324', localizer, parcelId },
+          { amount: 70, account: '`3324', localizer, parcelId }]);
         chai.assert.deepEqual(payment.credit, [
-          { amount: 250, account: '`3324', localizer, parcelId },
-          { amount: -100, account: '`3324', localizer, parcelId },
-          { amount: -100, account: '`3324', localizer, parcelId },
-          { amount: -70, account: '`3324', localizer, parcelId }]);
+          { amount: 20, account: '`381' },
+          { amount: 250, account: '`3324', localizer, parcelId }]);
 
         const paymentId2 = FixtureA.builder.create('payment', {
           relation: 'member',
@@ -469,10 +527,8 @@ if (Meteor.isServer) {
           payAccount: '`381' });
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
         const payment2 = Transactions.findOne(paymentId2);
-        chai.assert.deepEqual(payment2.debit, [{ amount: -30, account: '`381' }]);
-        chai.assert.deepEqual(payment2.credit, [
-          { amount: -30, account: '`3324', localizer, parcelId },
-        ]);
+        chai.assert.deepEqual(payment2.debit, [{ amount: 30, account: '`3324', localizer, parcelId }]);
+        chai.assert.deepEqual(payment2.credit, [{ amount: 30, account: '`381' }]);
       });
 
       it('assigned to bill and remainder in a line', function () {
@@ -499,7 +555,7 @@ if (Meteor.isServer) {
           relation: 'member',
           lines: [
             { amount: 20, account: '`331' },
-            { amount: 80, account: '`3324', localizer }, // contractId is autoCalculated from localizer at insert
+            { amount: 80, account: '`3324', localizer },
           ],
           amount: 100,
           partnerId,
@@ -509,21 +565,21 @@ if (Meteor.isServer) {
         const payment = Transactions.findOne(paymentId);
         chai.assert.deepEqual(payment.debit, [{ amount: 100, account: '`381' }]);
         chai.assert.deepEqual(payment.credit, [{ amount: 20, account: '`331' },
-          { amount: 80, account: '`3324', localizer, contractId: payment.lines[1].contractId, parcelId }]);
+          { amount: 80, account: '`3324', localizer, parcelId }]);
       });
 
       it('throws for non allocated remainder ', function () {
         const billId = createBill([billLinePos1, billLinePos2]);
         FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
-        const paymentId = FixtureA.builder.create('payment', {
-          relation: 'member',
-          bills: [{ id: billId, amount: 550 }],
-          amount: 1000,
-          partnerId,
-          valueDate: Clock.currentTime(),
-          payAccount: '`381' });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
+          FixtureA.builder.create('payment', {
+            relation: 'member',
+            bills: [{ id: billId, amount: 550 }],
+            amount: 1000,
+            partnerId,
+            valueDate: Clock.currentTime(),
+            payAccount: '`381',
+          });
         }, 'err_notAllowed');
       });
 
@@ -536,8 +592,15 @@ if (Meteor.isServer) {
           const billId = createBill([billLinePos1, billLinePos2]);
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
           const bill = Transactions.findOne(billId);
-          chai.assert.isUndefined(bill.debit);
-          chai.assert.isUndefined(bill.credit);
+          chai.assert.deepEqual(bill.debit, [
+            { amount: 300, account: '`331', localizer, parcelId },
+            { amount: 250, account: '`3324', localizer, parcelId },
+          ]);
+          chai.assert.deepEqual(bill.credit, [
+            { amount: 300, account: '`0951', localizer, parcelId },
+            { amount: 250, account: '`09524', localizer, parcelId },
+          ]);
+
           const paymentId = FixtureA.builder.create('payment', {
             relation: 'member',
             bills: [{ id: billId, amount: 550 }],
@@ -547,9 +610,17 @@ if (Meteor.isServer) {
             payAccount: '`381' });
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
           const payment = Transactions.findOne(paymentId);
-          chai.assert.deepEqual(payment.debit, [{ amount: 550, account: '`381' }]);
-          chai.assert.deepEqual(payment.credit, [{ amount: 300, account: '`951', localizer, parcelId },
-            { amount: 250, account: '`9524', localizer, parcelId }]);
+          chai.assert.deepEqual(payment.debit, [
+            { amount: 550, account: '`381' },
+            { amount: 300, account: '`0951', localizer, parcelId },
+            { amount: 250, account: '`09524', localizer, parcelId },
+          ]);
+          chai.assert.deepEqual(payment.credit, [
+            { amount: 300, account: '`331', localizer, parcelId },
+            { amount: 300, account: '`951', localizer, parcelId },
+            { amount: 250, account: '`3324', localizer, parcelId },
+            { amount: 250, account: '`9524', localizer, parcelId },
+          ]);
         });
 
         it('negative item, part payment, assigned to more bills', function () {
@@ -557,6 +628,17 @@ if (Meteor.isServer) {
           const billId2 = createBill([billLineNeg, billLinePos2, billLinePos1]); // -100, 250, 300
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId1 });
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId2 });
+          const bill = Transactions.findOne(billId1);
+          chai.assert.deepEqual(bill.debit, [
+            { amount: 300, account: '`331', localizer, parcelId },
+            { amount: 250, account: '`3324', localizer, parcelId },
+            { amount: 100, account: '`09524', localizer, parcelId },
+          ]);
+          chai.assert.deepEqual(bill.credit, [
+            { amount: 300, account: '`0951', localizer, parcelId },
+            { amount: 250, account: '`09524', localizer, parcelId },
+            { amount: 100, account: '`3324', localizer, parcelId },
+          ]);
           const paymentId1 = FixtureA.builder.create('payment', {
             relation: 'member',
             bills: [{ id: billId1, amount: 210 }],
@@ -566,11 +648,20 @@ if (Meteor.isServer) {
             payAccount: '`381' });
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId1 });
           const payment1 = Transactions.findOne(paymentId1);
-          chai.assert.deepEqual(payment1.debit, [{ amount: 210, account: '`381' }]);
+          chai.assert.deepEqual(payment1.debit, [
+            { amount: 210, account: '`381' },
+            { amount: 100, account: '`3324', localizer, parcelId },
+            { amount: 100, account: '`9524', localizer, parcelId },
+            { amount: 300, account: '`0951', localizer, parcelId },
+            { amount: 10, account: '`09524', localizer, parcelId },
+          ]);
           chai.assert.deepEqual(payment1.credit, [
-            { amount: -100, account: '`9524', localizer, parcelId },
+            { amount: 100, account: '`09524', localizer, parcelId },
+            { amount: 300, account: '`331', localizer, parcelId },
             { amount: 300, account: '`951', localizer, parcelId },
-            { amount: 10, account: '`9524', localizer, parcelId }]);
+            { amount: 10, account: '`3324', localizer, parcelId },
+            { amount: 10, account: '`9524', localizer, parcelId },
+          ]);
 
           const paymentId2 = FixtureA.builder.create('payment', {
             relation: 'member',
@@ -581,12 +672,23 @@ if (Meteor.isServer) {
             payAccount: '`381' });
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
           const payment2 = Transactions.findOne(paymentId2);
-          chai.assert.deepEqual(payment2.debit, [{ amount: 690, account: '`381' }]);
+          chai.assert.deepEqual(payment2.debit, [
+            { amount: 690, account: '`381' },
+            { amount: 240, account: '`09524', localizer, parcelId },
+            { amount: 100, account: '`3324', localizer, parcelId },
+            { amount: 100, account: '`9524', localizer, parcelId },
+            { amount: 250, account: '`09524', localizer, parcelId },
+            { amount: 300, account: '`0951', localizer, parcelId },
+          ]);
           chai.assert.deepEqual(payment2.credit, [
+            { amount: 240, account: '`3324', localizer, parcelId },
             { amount: 240, account: '`9524', localizer, parcelId },
-            { amount: -100, account: '`9524', localizer, parcelId },
+            { amount: 100, account: '`09524', localizer, parcelId },
+            { amount: 250, account: '`3324', localizer, parcelId },
             { amount: 250, account: '`9524', localizer, parcelId },
-            { amount: 300, account: '`951', localizer, parcelId }]);
+            { amount: 300, account: '`331', localizer, parcelId },
+            { amount: 300, account: '`951', localizer, parcelId },
+          ]);
         });
 
         it('assigned to bill and remainder in a line', function () {
@@ -602,10 +704,18 @@ if (Meteor.isServer) {
             payAccount: '`381' });
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
           const payment = Transactions.findOne(paymentId);
-          chai.assert.deepEqual(payment.debit, [{ amount: 1000, account: '`381' }]);
-          chai.assert.deepEqual(payment.credit, [{ amount: 300, account: '`951', localizer, parcelId },
+          chai.assert.deepEqual(payment.debit, [
+            { amount: 1000, account: '`381' },
+            { amount: 300, account: '`0951', localizer, parcelId },
+            { amount: 250, account: '`09524', localizer, parcelId },
+          ]);
+          chai.assert.deepEqual(payment.credit, [
+            { amount: 300, account: '`331', localizer, parcelId },
+            { amount: 300, account: '`951', localizer, parcelId },
+            { amount: 250, account: '`3324', localizer, parcelId },
             { amount: 250, account: '`9524', localizer, parcelId },
-            { amount: 450, account: '`952', localizer, contractId: payment.lines[0].contractId, parcelId }]);
+            { amount: 450, account: '`952', localizer, parcelId },
+          ]);
         });
       });
     });

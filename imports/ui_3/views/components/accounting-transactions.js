@@ -79,8 +79,13 @@ Template.Accounting_transactions.viewmodel({
     const selector = this.subscribeSelector();
     delete selector.relation; // relation has only effect on the bills page
     if (this.txdefSelected()) selector.defId = this.txdefSelected();
-    if (this.debitAccountSelected()) selector.debitAccount = '\\^' + this.debitAccountSelected() + '\\';
-    if (this.creditAccountSelected()) selector.creditAccount = '\\^' + this.creditAccountSelected() + '\\';
+    if (_.contains(this.txStatusSelected(), 'draft')) {
+      if (this.debitAccountSelected()?.length > 1) selector.debitAccount = '\\^' + this.debitAccountSelected() + '\\';
+      if (this.creditAccountSelected()?.length > 1) selector.creditAccount = '\\^' + this.creditAccountSelected() + '\\';
+    } else {
+      if (this.debitAccountSelected()) selector.debitAccount = '\\^' + this.debitAccountSelected() + '\\';
+      if (this.creditAccountSelected()) selector.creditAccount = '\\^' + this.creditAccountSelected() + '\\';
+    }
     return selector;
   },
   transactionsTableDataFn() {

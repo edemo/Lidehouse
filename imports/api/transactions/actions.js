@@ -110,7 +110,7 @@ Transactions.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: doc && (!doc.isPosted() || doc.category === 'payment') // payment is allowed to be reallocated
+    visible: doc && !doc.isPosted()
       && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
       && user.hasPermission('transactions.update', doc),
     run() {
@@ -170,7 +170,7 @@ Transactions.actions = {
       }
     },
   }),
-  repost: (options, doc, user = Meteor.userOrNull()) => ({
+/*  repost: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'repost',
     icon: 'fa fa-check-square-o',
     visible: doc && doc.isPosted() && user.hasPermission('transactions.post', doc),
@@ -182,6 +182,30 @@ Transactions.actions = {
         body: 'Transaction_view',
         bodyContext: { doc },
         size: 'lg',
+      });
+    },
+  }), */
+  reallocate: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'reallocate',
+    icon: 'fa fa-edit',
+    visible: doc && doc.isPosted() && (doc.category === 'payment') && user.hasPermission('transactions.update', doc),
+    run() {
+      const entity = Transactions.entities[doc.entityName()];
+      Modal.show('Autoform_modal', {
+        body: entity.editForm,
+        bodyContext: { doc },
+        // --- --- --- ---
+        id: `af.${entity.name}.update`,
+        schema: Transactions.simpleSchema({ category: entity.name }),
+        fields: entity.fields,
+        omitFields: entity.omitFields && entity.omitFields(),
+        doc,
+        type: 'method-update',
+        meteormethod: 'transactions.reallocate',
+        singleMethodArgument: true,
+        // --- --- --- ---
+        size: entity.size || 'md',
+//        validation: entity.editForm ? 'blur' : undefined,
       });
     },
   }),

@@ -8,15 +8,16 @@ import sinon from 'sinon';
 import { Fraction } from 'fractional';
 import '/imports/startup/both/fractional.js';  // TODO: should be automatic, but not included in tests
 
+import { freshFixture, logDB } from '/imports/api/test-utils.js';
+import { Email } from 'meteor/email';   // We will be mocking it over
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/methods.js';
-import { freshFixture, logDB } from '/imports/api/test-utils.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import '/imports/api/transactions/methods.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import '/imports/api/users/users.js';
-
-import { Email } from 'meteor/email';   // We will be mocking it over
 import { Partners } from './partners';
 
 if (Meteor.isServer) {
@@ -554,26 +555,57 @@ if (Meteor.isServer) {
           relation: ['member'],
           idCard: { type: 'natural', name: 'Jim John' },
           contact: { email: 'partner@demotest.hu' },
-          outstanding: 100,
         });
         partnerId2 = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
           communityId: Fixture.demoCommunityId,
           relation: ['customer'],
           idCard: { type: 'natural', name: 'Jim John James' },
           contact: { address: 'Buffalo, Bull street' },
-          outstanding: 200,
         });
       });
 
       it('keeps destination partner data, sums relation and outstandings', function (done) {
         const ownershipId = managerInsertsOwner();
+        const bill1Id = Fixture.builder.create('bill', {
+          relation: 'member',
+          partnerId,
+          issueDate: new Date('2018-01-05'),
+          deliveryDate: new Date('2018-01-02'),
+          dueDate: new Date('2018-01-30'),
+          lines: [{
+            title: 'Work 1',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 100,
+            account: '`951',
+          }],
+        });
+        const bill2Id = Fixture.builder.create('bill', {
+          relation: 'customer',
+          partnerId: partnerId2,
+          issueDate: new Date('2018-01-05'),
+          deliveryDate: new Date('2018-01-02'),
+          dueDate: new Date('2018-01-30'),
+          lines: [{
+            title: 'Work 1',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 200,
+            account: '`952',
+          }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: bill1Id });
+        Fixture.builder.execute(Transactions.methods.post, { _id: bill2Id });
+        chai.assert.equal(Partners.findOne(partnerId).outstanding('member'), 100);
+        chai.assert.equal(Partners.findOne(partnerId2).outstanding('customer'), 200);
+
         Partners.methods.merge._execute({ userId: Fixture.demoManagerId }, { _id: partnerId, destinationId: partnerId2 });
 
         chai.assert.isUndefined(Partners.findOne(partnerId));
         const partner = Partners.findOne(partnerId2);
         chai.assert.equal(partner.idCard.name, 'Jim John James');
         chai.assert.deepEqual(partner.contact, { email: 'partner@demotest.hu', address: 'Buffalo, Bull street' });
-        chai.assert.equal(partner.outstanding, 300);
+        chai.assert.equal(partner.outstanding('customer'), 300);
         chai.assert.deepEqual(partner.relation, ['member', 'customer']);
         const ownership = Memberships.findOne(ownershipId);
         chai.assert.equal(ownership.partnerId, partnerId2);

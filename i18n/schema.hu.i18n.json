@@ -183,6 +183,9 @@
           "low": "Minden témáról, hozzászólásról és téma változásról"
         }
       },
+      "getBillEmail": {
+        "label": "Email értesítést kérek a számomra kiállított számlákról"
+      },
       "newsletter": {
         "label": "Szeretnék feliratkozni az applikációval kapcsolatos hírlevélre"
       }
@@ -224,7 +227,7 @@
         "value": {
           "label": "Óraállás",
           "help": "Kérjük figyeljen a tizedesvessző megfelelő helyére, hogy a helyes állást rögzítsük",
-          "placeholder": "(pl. 1234,05)"
+          "placeholder": "(pl. 1234,205)"
         },
         "photo": {
           "label": "Fénykép (ha csatolni szeretne)",
@@ -502,7 +505,7 @@
     "vote": {
       "choices": {
         "label": "Választási lehetőségek",
-        "help": "A szavazás típusa (például igen-nem szavazás esetén) meghatározhatja a választási lehetőségeket. Ha nem, akkor ön adhatja hozzá a lehetséges válaszokat. Előszőr tehát mindenképpen válassza meg a típust."
+        "help": "A szavazás típusa meghatározhatja a választási lehetőségeket (például igen-nem szavazás esetén). Amikor nem, akkor ön adhatja meg a lehetséges válaszokat. Előszőr tehát mindenképpen válassza meg a típust."
       },
       "procedure": {
         "label": "Szavazás menete",
@@ -514,7 +517,7 @@
       },
       "effect": {
         "label": "Szavazás hatása",
-        "help": "A közvéleménykutató szavazásnak nincsen jogi következménye, nem eredményez jogerős határozatot, csak előkészít egy későbbi jogerős szavazást, vagy felméri az álláspontokat.",
+        "help": "A közvéleménykutató szavazásnak nincsen jogi következménye, nem eredményez jogerős határozatot, csak előkészít egy későbbi jogerős szavazást, vagy felméri az álláspontokat.\nJogerős szavazást csak erre jogosult tisztségviselő indíthat, közvéleménykutatót viszont bárki.",
         "options": {
           "poll": "Közvéleménykutatás",
           "legal": "Jogerős szavazás"
@@ -727,8 +730,9 @@
         "bill": "számla",
         "payment": "fizetés",
         "remission": "elengedés",
-        "receipt": "nyugta",
+        "receipt": "elszámolás",
         "transfer": "átvezetés",
+        "exchange": "átvezetés partnerek között",
         "opening": "nyitó",
         "freeTx": "könyvelési tranzakció"
       }
@@ -773,7 +777,7 @@
     "contractId": {
       "label": "Szerződés",
       "placeholder": "Először válassza ki a partnert",
-      "help": "Csak akkor szükséges megadni, ha egy partner több különböző viszonyban is áll a társasházzal. Vagy ha szerződés feltételeit vagy leírását szeretnénk rögzíteni a rendszerben. Általában nem szükséges megadnia."
+      "help": "Csak akkor szükséges megadni, ha egy partner több különböző viszonyban is áll a társasházzal. Vagy ha szerződés feltételeit vagy leírását szeretnénk rögzíteni a rendszerben.\nAlbetét tulajdonos esetében a szerződés az maga az az albetét, amelyre számlázunk (vezér albetét)."
     },
     "sourceId": {
       "label": "Forrás tranzakció azonosítója"
@@ -817,6 +821,24 @@
         }
       }
     },
+    "pEntries": {
+      "label": "Partner tételek",
+      "$": {
+        "amount": {
+          "label": "Összeg"
+        },
+        "side": {
+          "label": "Oldal",
+          "options": {
+            "debit": "Tartozik",
+            "credit": "Követel"
+          }
+        },
+        "partner": {
+          "label": "Partner/Szerződés"
+        }         
+      }
+    },
     // Following lines are for the different txdefs
     "supplierBillId": {
       "label": "Bejövő számla, amit beszámítunk"
@@ -828,6 +850,12 @@
       "label": "Átvezetés innen"
     },
     "toAccount": {
+      "label": "Átvezetés ide"
+    },
+    "fromPartner": {
+      "label": "Átvezetés innen"
+    },
+    "toPartner": {
       "label": "Átvezetés ide"
     },
     "side": {

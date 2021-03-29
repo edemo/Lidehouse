@@ -15,9 +15,22 @@ export function displayMoney(number) {
   return numeral(number).format('0,0$');
 }
 
+export function displayNumber(number, decimals = 0) {
+  return numeral(number).format('0,0.' + '0'.repeat(decimals));
+}
+
 export function displayDate(time) {
   if (!time) return '---';
   return moment.utc(time).format('L');
+}
+
+export function defaultBeginDate() {
+//    return moment().startOf('year').format('YYYY-MM-DD');
+  return moment().subtract(1, 'year').format('YYYY-MM-DD');
+}
+
+export function defaultEndDate() {
+  return moment().format('YYYY-MM-DD');
 }
 
 if (Meteor.isClient) {
@@ -77,9 +90,7 @@ if (Meteor.isClient) {
 
   Template.registerHelper('negativeClass', negativeClass);
 
-  Template.registerHelper('displayNumber', function displayNumber(number) {
-    return numeral(number).format('0,0');
-  });
+  Template.registerHelper('displayNumber', displayNumber);
 
   Template.registerHelper('currentTime', function currentTime() {
     return moment().format('L LT');
@@ -95,6 +106,10 @@ if (Meteor.isClient) {
   });
 
   Template.registerHelper('displayDate', displayDate);
+
+  Template.registerHelper('defaultBeginDate', defaultBeginDate);
+
+  Template.registerHelper('defaultEndDate', defaultEndDate);
 
   Template.registerHelper('displayTimeFrom', function displayTimeFrom(time) {
     // momentjs is not reactive, but TymeSync call makes this reactive

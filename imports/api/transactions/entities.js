@@ -6,6 +6,7 @@ import '/imports/ui_3/views/components/bill-edit.js';
 import '/imports/ui_3/views/components/payment-view.js';
 import '/imports/ui_3/views/components/payment-edit.js';
 import '/imports/ui_3/views/components/transfer-edit.js';
+import '/imports/ui_3/views/components/exchange-edit.js';
 
 Transactions.entities = {
   bill: {
@@ -20,9 +21,12 @@ Transactions.entities = {
     editForm: 'Payment_edit',
     size: 'lg',
   },
-  barter: {
-    name: 'barter',
-    omitFields: () => ['debit', 'credit'],
+  exchange: {
+    name: 'exchange',
+//    viewForm: 'Exchange_view',
+    editForm: 'Exchange_edit',
+    omitFields: () => ['debit', 'credit', 'pEntries'],
+    size: 'lg',
   },
   receipt: {
     name: 'receipt',
@@ -34,14 +38,15 @@ Transactions.entities = {
     name: 'transfer',
 //    viewForm: 'Transfer_view',
     editForm: 'Transfer_edit',
-    omitFields: () => ['debit', 'credit'],
+    omitFields: () => ['debit', 'credit', 'pEntries'],
     size: 'lg',
   },
   opening: {
     name: 'opening',
-    omitFields: () => ['debit', 'credit'],
+    omitFields: () => ['debit', 'credit', 'pEntries'],
   },
   freeTx: {
     name: 'freeTx',
+    omitFields: () => ['pEntries'],
   },
 };
