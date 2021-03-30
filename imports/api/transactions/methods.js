@@ -7,6 +7,7 @@ import rusdiff from 'rus-diff';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
+import { Clock } from '/imports/utils/clock.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Meters } from '/imports/api/meters/meters.js';
@@ -192,7 +193,7 @@ export const remove = new ValidatedMethod({
       result = null;
     } else if (doc.status === 'posted') {
       Transactions.update(doc._id, { $set: { status: 'void' } });
-      result = Transactions.insert(_.extend(doc.negator(), { status: 'void' }));
+      result = Transactions.insert(_.extend(doc.negator(), { issueDate: Clock.currentDate(), status: 'void' }));
       const resultTx = Transactions.findOne(result);
       if (resultTx.isAutoPosting()) post._execute({ userId: this.userId }, { _id: result });
     } else if (doc.status === 'void') {
