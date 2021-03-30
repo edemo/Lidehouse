@@ -246,16 +246,16 @@ Transactions.actions = {
     },
   }),
   connectPayment: (options, doc, user = Meteor.userOrNull()) => {
-    const connectablePayment = doc.category === 'bill' &&
-      Transactions.findOne({ communityId: doc.communityId, category: 'payment', partnerId: doc.partnerId/*, outstanding: { $gte: 0 } */});
+    const connectablePayment = doc.outstanding && (doc.category === 'bill') &&
+      Transactions.findOne({ communityId: doc.communityId, category: 'payment', partnerId: doc.partnerId, outstanding: { $gt: 0 } });
     return {
       name: 'connectPayment',
       icon: 'fa fa-credit-card',
       color: 'warning',
-      visible: connectablePayment && doc.outstanding && user.hasPermission('transactions.update', doc),
+      visible: connectablePayment && user.hasPermission('transactions.update', doc),
       run() {
         ModalStack.setVar('billId', doc._id);
-        Transactions.actions.edit({}, connectablePayment).run();
+        Transactions.actions.reallocate({}, connectablePayment).run();
       },
     };
   },
