@@ -56,7 +56,7 @@ Template.Parcels_finances.viewmodel({
     const communityId = ModalStack.getVar('communityId');
     const parcels = Meteor.userOrNull().hasPermission('balances.ofLocalizers', { communityId }) ?
       Parcels.find({ communityId, category: '@property', approved: true }) : this.myParcels();
-    let contracts = parcels.map(parcel => parcel.payerContract());
+    let contracts = parcels.map(parcel => parcel.payerContract()).filter(c => c);
     contracts = _.uniq(contracts, false, c => c._id);
     return contracts.map(c => ({ label: c.toString(), value: c._id }));
   },
