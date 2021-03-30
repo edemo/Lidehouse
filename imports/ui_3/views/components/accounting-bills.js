@@ -129,7 +129,7 @@ Template.Accounting_bills.viewmodel({
     const self = this;
     return () => {
       let partners = Partners.find(self.partnersFilterSelector()).fetch();
-      if (this.unreconciledOnly()) partners = partners.filter(p => p.outstanding(self.activePartnerRelation()) > 0);
+      if (self.unreconciledOnly()) partners = partners.filter(p => p.balance());
       return partners;
     };
   },
