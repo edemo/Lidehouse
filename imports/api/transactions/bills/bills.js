@@ -103,7 +103,7 @@ Bills.extensionSchema = new SimpleSchema([
     dueDate: { type: Date },
     paymentMethod: { type: String, optional: true, allowedValues: ['cash', 'bank'] },
     payments: { type: [Bills.paymentSchema], defaultValue: [] },
-    outstanding: { type: Number, decimal: true, min: 0, optional: true },
+    outstanding: { type: Number, decimal: true, optional: true },
   //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
   },
 ]);

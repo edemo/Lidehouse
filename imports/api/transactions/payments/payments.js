@@ -119,7 +119,7 @@ const paymentSchema = new SimpleSchema([
   Payments.extensionSchema, {
     bills: { type: [Payments.billPaidSchema], optional: true },
     lines: { type: [Payments.lineSchema], optional: true },
-    outstanding: { type: Number, decimal: true, min: 0, optional: true },
+    outstanding: { type: Number, decimal: true, optional: true },
   },
 ]);
 
