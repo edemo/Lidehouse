@@ -23,7 +23,7 @@ chai.assert.equalDate = function equalDate(d1, d2) {
 if (Meteor.isServer) {
   let Fixture;
 
-  describe.only('parcel billings', function () {
+  describe('parcel billings', function () {
     this.timeout(25000);
     let applyParcelBillings;
     let postParcelBillings;

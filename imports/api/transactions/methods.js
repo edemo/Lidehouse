@@ -158,13 +158,16 @@ export const reallocate = new ValidatedMethod({ // This methods reposts the tran
     const doc = checkExists(Transactions, _id);
     debugAssert(doc.category === 'payment', 'Method reallocate is only available on payments');
     checkPermissions(this.userId, 'transactions.update', doc);
-    productionAssert(doc.isPosted());
+    if (!doc.isPosted()) {
+      throw new Meteor.Error('err_permissionDenied', 'Reallocation only available after posting', { _id, modifier });
+    }
     checkModifier(doc, modifier, ['bills', 'lines']);
 
     let newDoc = rusdiff.clone(doc);
     rusdiff.apply(newDoc, modifier);
     newDoc = Transactions._transform(newDoc);
     newDoc.validate?.();
+    newDoc.validateForPost?.();
     modifier.$set?.lines?.forEach((line, i) => {
       if (line.localizer) {
         const parcel = Localizer.parcelFromCode(line.localizer, doc.communityId);

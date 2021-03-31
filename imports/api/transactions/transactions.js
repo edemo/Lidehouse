@@ -380,6 +380,15 @@ function autoValueUpdate(doc, modifier, fieldName, autoValue) {
   modifier.$set[fieldName] = autoValue(newDoc);
 }
 
+function difference(array1, array2) {
+  const result = [];
+  array1.forEach(elem1 => {
+    const foundInArray2 = _.find(array2, (elem2 => _.isEqual(elem1, elem2)));
+    if (!foundInArray2) result.push(elem1);
+  });
+  return result;
+}
+
 if (Meteor.isServer) {
   Transactions.before.insert(function (userId, doc) {
     const tdoc = this.transform();
@@ -398,7 +407,7 @@ if (Meteor.isServer) {
       tdoc.updateBalances(+1);
       tdoc.updatePartnerBalances(+1);
     }
-    if (tdoc.category === 'payment') tdoc.registerOnBills(+1);
+    if (tdoc.category === 'payment') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, +1));
     const community = tdoc.community();
     if (tdoc.category === 'bill' && !_.contains(community.billsUsed, tdoc.relation)) {
       Communities.update(community._id, { $push: { billsUsed: tdoc.relation } });
@@ -422,11 +431,12 @@ if (Meteor.isServer) {
   Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {
     const tdoc = this.transform();
 //    tdoc.checkAccountsExist();
-    if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
-      tdoc.registerOnBills(+1);
-    }
     const oldDoc = Transactions._transform(this.previous);
     const newDoc = tdoc;
+    if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
+      difference(oldDoc.getBills(), newDoc.getBills()).forEach(bp => oldDoc.registerOnBill(bp, -1));
+      difference(newDoc.getBills(), oldDoc.getBills()).forEach(bp => newDoc.registerOnBill(bp, +1));
+    }
     if (modifierChangesField(modifier, ['debit', 'credit', 'postedAt'])) {
       if (oldDoc.postedAt) oldDoc.updateBalances(-1);
       if (newDoc.postedAt) newDoc.updateBalances(+1);

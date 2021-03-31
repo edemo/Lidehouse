@@ -322,30 +322,28 @@ Transactions.categoryHelpers('payment', {
     }];
     return { pEntries: this.pEntries };
   },
-  registerOnBills(direction = +1) {
-    const result = [];
-    this.getBills().forEach(billPaid => {
-      const bill = Transactions.findOne(billPaid.id);
-      const paymentOnBill = _.extend({}, billPaid);
-      paymentOnBill.id = this._id; // replacing the bill._id with the payment._id
-      const oldPayments = bill.getPayments();
-      const found = _.find(oldPayments, p => p.id === this._id);
-      let newPayments;
-      if (direction > 0) {
-        if (found) {
-          found.amount = paymentOnBill.amount;
-          newPayments = oldPayments;
-        } else newPayments = oldPayments.concat([paymentOnBill]);
-      } else {
-        if (found) found.amount = 0;
+  registerOnBill(billPaid, direction = +1) {
+    const bill = Transactions.findOne(billPaid.id);
+    const paymentOnBill = _.extend({}, billPaid);
+    paymentOnBill.id = this._id; // replacing the bill._id with the payment._id
+
+    const oldPayments = bill.getPayments();
+    const found = _.find(oldPayments, p => p.id === this._id);
+
+    let newPayments;
+    if (direction === +1) {
+      if (found) {
+        found.amount = paymentOnBill.amount;
         newPayments = oldPayments;
-      }
-      result.push(Transactions.update(bill._id,
-        { $set: { payments: newPayments } },
-        { selector: { category: 'bill' } },
-      ));
-    });
-    return result;
+      } else newPayments = oldPayments.concat([paymentOnBill]);
+    } else if (direction === -1) {
+      if (found) found.amount = 0;
+      newPayments = oldPayments;
+    }
+    Transactions.update(bill._id,
+      { $set: { payments: newPayments } },
+      { selector: { category: 'bill' } },
+    );
   },
   displayInHistory() {
     return __(`schemaTransactions.category.options.${this.category}`) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');

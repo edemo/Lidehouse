@@ -255,7 +255,9 @@ Transactions.actions = {
       visible: connectablePayment && user.hasPermission('transactions.update', doc),
       run() {
         ModalStack.setVar('billId', doc._id);
-        Transactions.actions.reallocate({}, connectablePayment).run();
+        if (connectablePayment.isPosted()) {
+          Transactions.actions.reallocate({}, connectablePayment).run();
+        } else Transactions.actions.edit({}, connectablePayment).run();
       },
     };
   },
