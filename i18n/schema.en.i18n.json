@@ -757,6 +757,10 @@
       "label": "Amount",
       "placeholder": "(eg. 14560)"
     },
+    "rounding": {
+      "label": "Rounding",
+      "placeholder": "(eg. 0.1)"
+    },
     "serial": {
       "label": "Serial"
     },

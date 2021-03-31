@@ -10,6 +10,7 @@ import { Clock } from '/imports/utils/clock';
 import '/imports/api/partners/actions.js';
 import '/imports/api/contracts/actions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import '/imports/api/transactions/actions.js';
 import './payment-edit.html';
@@ -34,6 +35,11 @@ Template.Payment_edit.viewmodel({
   },
   defaultDate() {
     return Clock.currentTime();
+  },
+  cashPayAccount() {
+    const account = Accounts.getByCode(AutoForm.getFieldValue('payAccount'));
+    if (account?.category === 'cash') return true;
+    return false;
   },
 /*  showContractField() {
     const doc = this.afDoc();

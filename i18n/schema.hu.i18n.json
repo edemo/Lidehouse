@@ -757,6 +757,10 @@
       "label": "Összeg",
       "placeholder": "(pl. 14560)"
     },
+    "rounding": {
+      "label": "Kerekítés",
+      "placeholder": "(pl. 2)"
+    },
     "serial": {
       "label": "Sorszám"
     },

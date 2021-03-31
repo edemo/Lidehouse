@@ -25,8 +25,10 @@ export function momentWithoutTZ(time) {
   return dateObj;
 }
 
+const smallestCurrencyUnit = 5;
+
 export function equalWithinRounding(amount1, amount2) {
-  return Math.abs(amount1 - amount2) < 5;
+  return Math.abs(amount1 - amount2) < smallestCurrencyUnit / 2;
 }
 
 export function isFieldDeleted(doc, modifier, field) {

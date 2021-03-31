@@ -9,6 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Log } from '/imports/utils/log.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
 // The autoform needs to see these, to handle new events on it
 import '/imports/api/partners/actions.js';
@@ -45,6 +46,12 @@ Template.Bill_edit.viewmodel({
     const index = afLine.name.split('.')[1];
 //    Log.debug(AutoForm.getFieldValue('lines')[index]);
     return AutoForm.getFieldValue('lines')[index];
+  },
+  cashPayAccount() {
+    if (this.isBill()) return false;
+    const account = Accounts.getByCode(AutoForm.getFieldValue('payAccount'));
+    if (account?.category === 'cash') return true;
+    return false;
   },
   reconciling() {
     return ModalStack.getVar('statementEntry');
