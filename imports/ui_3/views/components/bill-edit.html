@@ -62,7 +62,7 @@
                     <span>{{> afQuickField name="dueDate" defaultValue=defaultDueDate}}</span>
                 {{else}} <!-- isReceipt -->
                     <span>{{> afQuickField name="valueDate" type=hiddenWhenReconciling defaultValue=defaultDate}}</span>
-                    <span>{{> afQuickField name="payAccount" type=hiddenWhenReconciling}}</span>
+                    <span class="js-autofill">{{> afQuickField name="payAccount" type=hiddenWhenReconciling}}</span>
                 {{/if}}
             </p>
 
@@ -131,6 +131,12 @@
             <td>{{afDoc.tax}}</td>
         </tr>
         {{/if}}
+        {{#if cashPayAccount}}
+        <tr>
+            <td></td>
+            <td class="js-autofill">{{> afQuickField name="rounding"}} </td>
+        </tr>
+        {{/if}}  
         <tr>
             <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
             <td>{{afDoc.amount}}</td>
@@ -160,6 +166,9 @@
                 </tr>
             </tbody>
         </table>
+        {{#if cashPayAccount}}
+            {{> afQuickField name="rounding"}} 
+        {{/if}}
     </div>
     {{/if}}
 

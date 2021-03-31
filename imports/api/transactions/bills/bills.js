@@ -180,6 +180,7 @@ export const BillAndReceiptHelpers = {
       }
       totalAmount += line.amount;
     });
+    if (this.rounding) totalAmount += this.rounding;
     this.amount = totalAmount;
     this.tax = totalTax;
   },

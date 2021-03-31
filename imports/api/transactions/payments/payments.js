@@ -137,7 +137,7 @@ Transactions.categoryHelpers('payment', {
     return this.getBills().length;
   },
   calculateOutstanding() {
-    return this.amount - this.allocatedToBills();
+    return this.amountWoRounding() - this.allocatedToBills();
   },
   allocatedToBills() {
     let allocated = 0;
@@ -189,8 +189,8 @@ Transactions.categoryHelpers('payment', {
       lineSum += line.amount;
       lineValues.push(line.amount);
     });
-    productionAssert(lineValues.every((val) => val > 0) || lineValues.every((val) => val < 0), 'err_notAllowed', 'All lines must have the same sign');
-    if (this.amount !== lineSum + billSum) {
+    productionAssert(lineValues.every((val) => val >= 0) || lineValues.every((val) => val <= 0), 'err_notAllowed', 'All lines must have the same sign');
+    if (this.amountWoRounding() !== lineSum + billSum) {
       throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.unallocated()}`);
     }
     const connectedBillIds = _.pluck(this.getBills(), 'id');
@@ -217,6 +217,11 @@ Transactions.categoryHelpers('payment', {
       amountToAllocate -= pb.amount;
       if (amountToAllocate === 0) return false;
     });
+    if (Accounts.getByCode(this.payAccount)?.category === 'cash'
+      && amountToAllocate && equalWithinRounding(0, amountToAllocate)) {
+      this.rounding = amountToAllocate;
+      amountToAllocate -= this.rounding;
+    }
     this.getLines().forEach(line => {
       if (!line) return true; // can be null, when a line is deleted from the array
       if (line.amount && line.amount < amountToAllocate) {
@@ -239,7 +244,7 @@ Transactions.categoryHelpers('payment', {
   makeJournalEntries(accountingMethod) {
     this.debit = [];
     this.credit = [];
-    let unallocatedAmount = this.amount;
+    let unallocatedAmount = this.amountWoRounding();
     this.makeEntry(this.relationSide(), { amount: this.amount, account: this.payAccount });
     this.getBills().forEach(billPaid => {
       if (unallocatedAmount === 0) return false;
@@ -305,12 +310,10 @@ Transactions.categoryHelpers('payment', {
       this.makeEntry(this.conteerSide(), { amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
       unallocatedAmount -= amount;
     });
-    // Handling the remainder
     if (unallocatedAmount) { // still has remainder
-      if (equalWithinRounding(unallocatedAmount, 0)) {
-        this[this.conteerSide()].push({ amount: unallocatedAmount, account: '`99' });
-      } else throw new Meteor.Error('err_notAllowed', 'Payment accounting can only be done, when all amount is allocated');
+      throw new Meteor.Error('err_notAllowed', 'Payment accounting can only be done, when all amount is allocated');
     }
+    if (this.rounding) this.makeEntry(this.conteerSide(), { amount: this.rounding, account: '`99' });
     const legs = { debit: this.debit, credit: this.credit };
     return legs;
   },
@@ -318,7 +321,7 @@ Transactions.categoryHelpers('payment', {
     this.pEntries = [{
       partner: this.partnerContractCode(),
       side: this.relationSide(),
-      amount: this.amount,
+      amount: this.amountWoRounding(),
     }];
     return { pEntries: this.pEntries };
   },

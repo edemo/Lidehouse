@@ -59,6 +59,7 @@ Transactions.coreSchema = {
   category: { type: String, allowedValues: Transactions.categoryValues, autoform: { type: 'hidden' } },
   valueDate: { type: Date },
   amount: { type: Number, decimal: true },
+  rounding: { type: Number, decimal: true, optional: true },
   defId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
 //  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
@@ -163,6 +164,9 @@ Transactions.helpers({
   },
   entityName() {
     return this.category;
+  },
+  amountWoRounding() {
+    return this.amount - (this.rounding || 0);
   },
   getSide(side) {
     debugAssert(side === 'debit' || side === 'credit');

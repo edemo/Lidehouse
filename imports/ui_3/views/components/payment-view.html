@@ -68,10 +68,12 @@
 
     <table class="table invoice-total">
         <tbody>
-        <!--tr>
-            <td><strong>{{_ 'Allocated'}} :</strong></td>
-            <td class="nowrap">{{displayMoney rDoc.allocated}}</td>
-        </tr-->
+        {{#if rDoc.rounding}}
+        <tr>
+            <td><strong>{{_ 'schemaTransactions.rounding.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney rDoc.rounding}}</td>
+        </tr>
+        {{/if}}
         <tr>
             <td><strong>{{_ 'Overpayment'}} :</strong></td>
             <td class="nowrap">{{displayMoney rDoc.outstanding}}</td>

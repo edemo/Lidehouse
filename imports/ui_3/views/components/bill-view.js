@@ -17,8 +17,9 @@ Template.Bill_view.viewmodel({
     return this.templateInstance.data.doc.category === 'bill';
   },
   showPayments() {
+    if (!this.isBill()) return false;
     const doc = this.reactiveDoc();
-    return doc.payments.length;
+    return doc.getPayments().length;
   },
   parcelRef(parcelId) {
     const parcel = Parcels.findOne(parcelId);
