@@ -157,6 +157,7 @@ Transactions.categoryHelpers('payment', {
   },
   hasConteerData() {
     let result = true;
+    if (!this.payAccount) result = false;
     this.getLines().forEach(line => { if (line && !line.account) result = false; });
     return result;
   },
