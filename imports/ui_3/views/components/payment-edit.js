@@ -60,9 +60,9 @@ Template.Payment_edit.viewmodel({
 });
 
 function autoFill(formId) {
-  const sourceDoc = Transactions._transform(AutoForm.getDoc(formId));
-  const formDoc = Transactions._transform(AutoForm.getFormValues(formId).insertDoc);
-  const doc = _.extend(sourceDoc, formDoc);
+  const sourceDoc = AutoForm.getDoc(formId);
+  const formDoc = AutoForm.getFormValues(formId).insertDoc;
+  const doc = Transactions._transform(_.extend(sourceDoc, formDoc));
   doc.autoAllocate();
   AutoForm.setDoc(doc, formId);
 }
