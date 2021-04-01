@@ -68,7 +68,7 @@ Parcels.actions = {
     color: (() => {
       let colorClass = '';
       if (Memberships.findOneActive({ parcelId: doc._id, approved: false })) colorClass = 'danger';
-      else {
+      else if (Memberships.findOneActive({ parcelId: doc._id })) {
         const representor = Memberships.findOneActive({ parcelId: doc._id, 'ownership.representor': true });
         if (representor) {
           if (!representor.accepted) {
@@ -81,6 +81,8 @@ Parcels.actions = {
             else colorClass = 'info';
           }
         }
+      } else  {   // no active membership at all
+        colorClass = 'danger';
       }
       return colorClass;
     })(),
@@ -120,6 +122,7 @@ Parcels.actions = {
     name: 'memberContract',
     icon: 'fa fa-handshake-o',
     visible: user.hasPermission('parcels.details', doc),
+    color: Contracts.findOneActive({ parcelId: doc._id }) ? '' : 'info',
     run(event, instance) {
       ModalStack.setVar('parcelId', doc._id);
       Modal.show('Modal', {
