@@ -212,8 +212,13 @@ Transactions.categoryHelpers('payment', {
     this.getBills().forEach(pb => {
       if (!pb?.id) return true; // can be null, when a line is deleted from the array
       const bill = Transactions.findOne(pb.id);
-      const autoAmount = Math.min(amountToAllocate, bill.outstanding);
-      if (pb.amount > bill.outstanding) pb.amount = autoAmount;
+      let billOutstanding = bill.outstanding;
+      if (this._id && bill.payments) {
+        const originalPayment = bill.getPayments().filter(p => p.id === this._id)[0];
+        if (originalPayment) billOutstanding = bill.outstanding + originalPayment.amount;
+      }
+      const autoAmount = Math.min(amountToAllocate, billOutstanding);
+      if (pb.amount > billOutstanding) pb.amount = autoAmount;
       if (!pb.amount) pb.amount = autoAmount; // we dont override amounts that are specified
       amountToAllocate -= pb.amount;
       if (amountToAllocate === 0) return false;
@@ -222,7 +227,7 @@ Transactions.categoryHelpers('payment', {
       && amountToAllocate && equalWithinRounding(0, amountToAllocate)) {
       this.rounding = amountToAllocate;
       amountToAllocate -= this.rounding;
-    }
+    } else if (this.rounding) this.rounding = 0;
     this.getLines().forEach(line => {
       if (!line) return true; // can be null, when a line is deleted from the array
       if (line.amount && line.amount < amountToAllocate) {

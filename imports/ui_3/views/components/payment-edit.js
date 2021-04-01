@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
@@ -59,7 +60,9 @@ Template.Payment_edit.viewmodel({
 });
 
 function autoFill(formId) {
-  const doc = Transactions._transform(AutoForm.getFormValues(formId).insertDoc);
+  const sourceDoc = AutoForm.getDoc(formId);
+  const formDoc = AutoForm.getFormValues(formId).insertDoc;
+  const doc = Transactions._transform(_.extend(sourceDoc, formDoc));
   doc.autoAllocate();
   AutoForm.setDoc(doc, formId);
 }
