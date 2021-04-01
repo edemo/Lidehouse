@@ -8,6 +8,9 @@ const schema = new SimpleSchema({
 schema.i18n('schemaNoted');
 
 const helpers = {
+  choppedNotes() {
+    return this.notes?.substring(0, 25);
+  },
 };
 
 export const Noted = { name: 'Noted',

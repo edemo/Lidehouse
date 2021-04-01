@@ -31,7 +31,7 @@ export function transactionColumns() {
     { data: 'credit', title: __('schemaTransactions.credit.label'), render: Render.journalEntries },
     { data: 'partner()', title: __('Partner') },
 //    { data: 'ref', title: __('schemaTransactions.ref.label') },
-    { data: 'note', title: __('schemaTransactions.note.label') },
+    { data: 'choppedNotes()', title: __('schemaNoted.notes.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'transactions', actions: '', size: 'sm' }, cell),

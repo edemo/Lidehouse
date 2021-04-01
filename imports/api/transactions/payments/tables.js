@@ -19,7 +19,7 @@ export function paymentsColumns() {
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber(0) },
     { data: 'outstanding', title: __('schemaPayments.outstanding.label'), render: Render.formatNumber(0) },
     { data: 'payAccount', title: __('schemaTransactions.payAccount.label'), render: displayAccount },
-    { data: 'note', title: __('schemaTransactions.note.label') },
+    { data: 'choppedNotes()', title: __('schemaNoted.notes.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.payment }, actions: '', size: 'sm' }, cell),
