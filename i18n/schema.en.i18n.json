@@ -843,9 +843,6 @@
         }         
       }
     },
-    "note": {
-      "label": "Notes"
-    },
     // Following lines are for the different txdefs
     "supplierBillId": {
       "label": "Supplier bill being bartered"
@@ -1247,10 +1244,6 @@
     "group": {
       "label": "Group, the billing applies to",
       "help": "Choose a group if you'd like to apply to that group, but not the others."
-    },
-    "note": {
-      "label": "Note",
-      "placeholder": "(eg. reminder)"
     },
     "appliedAt": {
       "label": "Applied at"
