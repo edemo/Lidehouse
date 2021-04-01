@@ -114,6 +114,7 @@
                 <tbody>
                     {{#each rows}}
                     <tr data-id="{{_id}}">
+                        <td>{{{this.identifier}}}</td>
                         <td>{{{displayMeterService this.service}}}</td>
                         <td>{{>Active_period collection='meters' doc=this}}</td>
                         <td>{{_ 'schemaMeters.lastRead.label'}}:
