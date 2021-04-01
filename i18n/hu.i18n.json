@@ -800,6 +800,7 @@
   "This transaction has been already posted before": "Ezt a tranzakciót korábban már könyvelésbe küldte",
   "This will send the bill again": "Ezzel ismételten elküldi a számlát a tranzakciós partnernek",
   "The reading is much higher than expected": "A leolvasott érték jelentősen nagyobb a vártnál. Elképzelhető, hogy rossz helyre tette a tizedes vesszőt. Biztos hogy rögzíti ezt az állást?",
+  "editMeterReadingsWarning": "Ön most közvetlenül szerkeszti a(z) [__identifier__](__service__) mérőóra korábbi leolvasásait.\nNem javasoljuk hogy változtasson vagy töröljön már kiszámlázott óraállást, ugyanis ezzel a már kiállított számlákra nem fog hatni, és így a leolvasások nem lesznek többé összhangban a kiállított számlákkal.",
 
   "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",

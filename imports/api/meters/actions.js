@@ -74,6 +74,7 @@ Meters.actions = {
         collection: Meters,
         fields: ['readings'],
         doc,
+        description: __('editMeterReadingsWarning', doc),
         type: 'method-update',
         meteormethod: 'meters.update',
         singleMethodArgument: true,
@@ -90,6 +91,7 @@ Meters.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.meter.registerReading',
         schema: Meters.registerReadingSchema,
+        doc,
         type: 'method',
         meteormethod: 'meters.registerReading',
       });

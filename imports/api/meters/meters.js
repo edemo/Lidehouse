@@ -146,10 +146,13 @@ Meters.attachBehaviour(Timestamped);
 
 Meters.registerReadingSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  identifier: { type: String, optional: true, autoform: { readonly: true } },
+  service: { type: String, optional: true, autoform: { readonly: true } },
   reading: { type: Meters.unapprovedReadingSchema },
 });
 
 Meters.simpleSchema().i18n('schemaMeters');
+Meters.registerReadingSchema.i18n('schemaMeters');
 Meters.registerReadingSchema.i18n('schemaReadings');
 
 // --- Factory ---
