@@ -228,6 +228,17 @@ if (Meteor.isServer) {
     }
   });
 
+  Memberships.after.insert(function (userId, doc) {
+    const tdoc = this.transform(doc);
+    const contract = tdoc.contract();
+    if (!contract && tdoc.isRepresentor()) {  // create a default billing contract for representors
+      try {
+        delete tdoc._id;
+        Contracts.insert(_.extend(tdoc, { relation: 'member' }));
+      } catch (err) {}
+    }
+  });
+
   Memberships.before.update(function (userId, doc, fieldNames, modifier, options) {
   });
 
