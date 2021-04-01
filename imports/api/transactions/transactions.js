@@ -457,7 +457,7 @@ if (Meteor.isServer) {
       tdoc.updateBalances(-1);
       tdoc.updatePartnerBalances(-1);
     }
-    if (tdoc.category === 'payment') tdoc.registerOnBills(-1);
+    if (tdoc.category === 'payment') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, -1));
     if (tdoc.seId) StatementEntries.update(tdoc.seId, { $unset: { txId: 0 } });
   });
 }
