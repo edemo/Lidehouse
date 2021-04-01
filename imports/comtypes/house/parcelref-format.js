@@ -12,6 +12,10 @@ export const ParcelRefFormat = {
   createRefFromFields(format, doc) {
     let ref = '';
     switch (format) {
+      case 'fdd':
+        ref += doc.floor;
+        ref += doc.door;
+        break;
       case 'bfdd':
         ref += doc.building;
         ref += doc.floor;
@@ -42,6 +46,10 @@ export const ParcelRefFormat = {
     const ref = doc.ref;
     const extract = {};
     switch (format) {
+      case 'fdd':
+        extract.floor = ref[0];
+        extract.door = ref[1] + ref[2];
+        break;
       case 'bfdd':
         extract.building = ref[0];
         extract.floor = ref[1];
