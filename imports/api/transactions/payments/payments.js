@@ -213,9 +213,9 @@ Transactions.categoryHelpers('payment', {
       if (!pb?.id) return true; // can be null, when a line is deleted from the array
       const bill = Transactions.findOne(pb.id);
       let billOutstanding = bill.outstanding;
-      if (this._id && bill.payments) {
-        const originalPayment = bill.getPayments().filter(p => p.id === this._id)[0];
-        if (originalPayment) billOutstanding = bill.outstanding + originalPayment.amount;
+      if (this._id) {   // if this is not insert operation, the payment may already be on the bill
+        const thisPaymentOnBill = bill.payments?.find(p => p.id === this._id);
+        if (thisPaymentOnBill) billOutstanding += thisPaymentOnBill.amount;
       }
       const autoAmount = Math.min(amountToAllocate, billOutstanding);
       if (pb.amount > billOutstanding) pb.amount = autoAmount;
