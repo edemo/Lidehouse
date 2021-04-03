@@ -32,7 +32,7 @@ const chooseFromExistingParcelTypes = {
     const parcelTypes = Communities.findOne(communityId).parcelTypeValues();
     return parcelTypes?.map(pt => ({ label: pt, value: pt })) || [];
   },
-  firstOption: () => __('All'),
+  type: 'select-checkbox',
 };
 
 const chooseFromExistingGroups = {
@@ -83,7 +83,7 @@ ParcelBillings.schema = new SimpleSchema({
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
   digit: { type: String, autoform: { ...Accounts.choosePayinType } },
   localizer: { type: String, autoform: { ...Parcels.choosePhysical } },
-  type: { type: String, optional: true, autoform: { ...chooseFromExistingParcelTypes } },
+  type: { type: [String], autoform: { ...chooseFromExistingParcelTypes } },
   group: { type: String, optional: true, autoform: { ...chooseFromExistingGroups } },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
 });
@@ -142,7 +142,7 @@ ParcelBillings.helpers({
   parcelsToBill() {
     const selector = { communityId: this.communityId, category: '@property' };
     if (this.localizer) selector.code = new RegExp('^' + this.localizer);
-    if (this.type) selector.type = this.type;
+    if (this.type) selector.type = { $in: this.type };
     if (this.group) selector.group = this.group;
     const parcels = Parcels.find(selector).fetch();
     return parcels;

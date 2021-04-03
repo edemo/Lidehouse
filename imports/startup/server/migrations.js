@@ -683,6 +683,18 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 38,
+  name: 'Parcel billling type can have multiple values',
+  up() {
+    ParcelBillings.find({}).forEach(billing => {
+      let newBilllingType;
+      if (billing.type) newBilllingType = [billing.type];
+      else newBilllingType = billing.community().parcelTypeValues();
+      ParcelBillings.direct.update(billing._id, { $set: { type: newBilllingType } });
+    });
+  },
+});
 
 // Use only direct db operations to avoid unnecessary hooks!
 
