@@ -136,7 +136,6 @@ Memberships.helpers({
     return Partners.findOne(this.partnerId);
   },
   contract() {
-    debugAssert(this.active); // Don't ask archived memberships for this relation
     return Contracts.findOneActive({ partnerId: this.partnerId, parcelId: this.parcelId });
   },
   user() {
@@ -229,21 +228,16 @@ if (Meteor.isServer) {
     }
   });
 
-  Memberships.after.insert(function (userId, doc) {
-  });
-
   Memberships.before.update(function (userId, doc, fieldNames, modifier, options) {
   });
 
   Memberships.after.update(function (userId, doc, fieldNames, modifier, options) {
-    if (doc.active) {
-      const tdoc = this.transform(doc);
-      const contract = tdoc.contract();
-      if (contract) {  // keep contract's (active time) in sync
-        try { // throws Error: After filtering out keys not in the schema, your modifier is now empty
-          Contracts.update(contract._id, modifier, { selector: { relation: 'member' } });
-        } catch (err) {}
-      }
+    const tdoc = this.transform(doc);
+    const contract = tdoc.contract();
+    if (contract) {  // keep contract's (active time) in sync
+      try { // throws Error: After filtering out keys not in the schema, your modifier is now empty
+        Contracts.update(contract._id, modifier, { selector: { relation: 'member' } });
+      } catch (err) {}
     }
   });
 

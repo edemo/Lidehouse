@@ -166,7 +166,7 @@ if (Meteor.isServer) {
           },
           digit: '2',
           // localizer: '@',
-          type: 'storage',
+          type: ['storage'],
         });
 
         applyParcelBillings('2018-01-12');

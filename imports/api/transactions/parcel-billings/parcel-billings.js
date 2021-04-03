@@ -83,7 +83,7 @@ ParcelBillings.schema = new SimpleSchema({
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
   digit: { type: String, autoform: { ...Accounts.choosePayinType } },
   localizer: { type: String, autoform: { ...Parcels.choosePhysical } },
-  type: { type: [String], autoform: { ...chooseFromExistingParcelTypes } },
+  type: { type: [String], optional: true, autoform: { ...chooseFromExistingParcelTypes } },
   group: { type: String, optional: true, autoform: { ...chooseFromExistingGroups } },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
 });
