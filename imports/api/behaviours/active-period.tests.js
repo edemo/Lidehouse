@@ -3,7 +3,6 @@
 
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
-import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { Factory } from 'meteor/dburles:factory';
 

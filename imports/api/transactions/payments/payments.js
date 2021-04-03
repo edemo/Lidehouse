@@ -223,7 +223,7 @@ Transactions.categoryHelpers('payment', {
       amountToAllocate -= pb.amount;
       if (amountToAllocate === 0) return false;
     });
-    if (Accounts.getByCode(this.payAccount)?.category === 'cash'
+    if (Accounts.getByCode(this.payAccount, this.communityId)?.category === 'cash'
       && amountToAllocate && equalWithinRounding(0, amountToAllocate)) {
       this.rounding = amountToAllocate;
       amountToAllocate -= this.rounding;
@@ -346,7 +346,7 @@ Transactions.categoryHelpers('payment', {
         newPayments = oldPayments;
       } else newPayments = oldPayments.concat([paymentOnBill]);
     } else if (direction === -1) {
-      if (found) found.amount = 0;
+      if (found) found.amount = 0;  // We do not remove the record, so that the records indexes remain stable
       newPayments = oldPayments;
     }
     Transactions.update(bill._id,

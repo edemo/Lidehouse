@@ -197,6 +197,9 @@ Transactions.categoryHelpers('bill', {
   paymentCount() {
     return this.getPayments().length;
   },
+  hasPayments() {
+    return this.getPayments().find(p => p.amount);  // Zero amount payments, are removed payments
+  },
   paymentDate() {
     const payment = _.last(this.getPayments());
     const paymentTx = payment && Transactions.findOne(payment.id);

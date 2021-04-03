@@ -2,6 +2,8 @@
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { moment } from 'meteor/momentjs:moment';
+import { _ } from 'meteor/underscore';
+
 import { freshFixture } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -10,6 +12,8 @@ import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Partners } from '../partners/partners';
 
 if (Meteor.isServer) {
@@ -27,10 +31,16 @@ if (Meteor.isServer) {
     after(function () {
     });
 
-    describe('Bills api', function () {
+    describe('Bills/Payments api & partner balances', function () {
       let billId;
       let bill;
+      let paymentId;
+      let payment;
+      let parcel1;
+      let parcel2;
       before(function () {
+        parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP01' });
+        parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP02' });
         const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[3]);
         billId = FixtureA.builder.create('bill', {
           relation: 'member',
@@ -44,14 +54,16 @@ if (Meteor.isServer) {
             uom: 'piece',
             quantity: 1,
             unitPrice: 300,
-            localizer: '@AP01',
+            account: '`951',
+            localizer: parcel1.code,
             parcelId: FixtureA.dummyParcels[1],
           }, {
             title: 'Work 2',
             uom: 'month',
             quantity: 2,
             unitPrice: 500,
-            localizer: '@AP02',
+            account: '`951',
+            localizer: parcel2.code,
             parcelId: FixtureA.dummyParcels[2],
           }],
         });
@@ -60,7 +72,7 @@ if (Meteor.isServer) {
         Transactions.remove(billId);
       });
 
-      it('Fills calculated values correctly', function () {
+      it('AutoFills bill values correctly', function () {
         bill = Transactions.findOne(billId);
 
         chai.assert.equal(bill.lines.length, 2);
@@ -73,19 +85,128 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 1300);
       });
 
-      it('Updates balances correctly', function () {
+      it('AutoFills payment values correctly - without rounding (Bank payAccount)', function () {
         bill = Transactions.findOne(billId);
-        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
-          $set: { 'lines.0.account': '`951', 'lines.0.localizer': '@AP01', 'lines.1.account': '`951', 'lines.1.localizer': '@AP02' } } });
+        const memberPaymentDef = Txdefs.findOne({ communityId: FixtureA.communityId, category: 'payment', 'data.relation': 'member' });
+        const bankAccount = Accounts.findOne({ communityId: FixtureA.communityId, category: 'bank' });
+        payment = FixtureA.builder.build('payment', {
+          defId: memberPaymentDef._id,
+          relation: bill.relation,
+          partnerId: bill.partnerId,
+          contractId: bill.contractId,
+          valueDate: bill.valueDate,
+          amount: bill.amount + 2,
+          payAccount: bankAccount.code,
+          bills: [{
+            id: billId,
+            amount: 0,  // will be auto allocated to the full amount
+          }],
+        });
+        payment = Transactions._transform(payment);
+        payment.autoAllocate();
+
+        chai.assert.equal(payment.bills.length, 1);
+        chai.assert.equal(payment.bills[0].id, billId);
+        chai.assert.equal(payment.bills[0].amount, bill.amount);
+        chai.assert.equal(payment.lines.length, 1);
+        chai.assert.equal(payment.lines[0].amount, 2);
+        chai.assert.isUndefined(payment.rounding);
+
+        paymentId = FixtureA.builder.execute(Transactions.methods.insert, payment);
+      });
+
+      it('Links payment to bill correctly', function () {
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.getPayments().length, 1);
+        chai.assert.deepEqual(bill.payments[0], { id: paymentId, amount: bill.amount });
+        chai.assert.equal(bill.isPosted(), false);
+        chai.assert.equal(bill.outstanding, 0);
+      });
+
+      it('Cannot remove a draft bill, while it links to payment', function () {
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.remove, { _id: billId });
+        });
+      });
+
+      it('Can remove a draft payment, and it delinks payment from bill', function () {
+        FixtureA.builder.execute(Transactions.methods.remove, { _id: paymentId });
+        payment = Transactions.findOne(paymentId);
+        chai.assert.isUndefined(payment);
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.getPayments().length, 1);
+        chai.assert.deepEqual(bill.payments[0], { id: paymentId, amount: 0 });
+        chai.assert.equal(bill.outstanding, 1300);
+      });
+
+      it('Can remove a draft bill, if it does not link to payments', function () {
+        bill = Transactions.findOne(billId);
+        const billClone = _.extend({}, bill);
+        FixtureA.builder.execute(Transactions.methods.remove, { _id: billId });
+        bill = Transactions.findOne(billId);
+        chai.assert.isUndefined(bill);
+
+        billId = FixtureA.builder.execute(Transactions.methods.insert, billClone);
+      });
+
+      it('AutoFills payment values correctly - with rounding (Cash payAccount)', function () {
+        bill = Transactions.findOne(billId);
+        const memberPaymentDef = Txdefs.findOne({ communityId: FixtureA.communityId, category: 'payment', 'data.relation': 'member' });
+        const cashAccount = Accounts.findOne({ communityId: FixtureA.communityId, category: 'cash' });
+        payment = FixtureA.builder.build('payment', {
+          defId: memberPaymentDef._id,
+          relation: bill.relation,
+          partnerId: bill.partnerId,
+          contractId: bill.contractId,
+          valueDate: bill.valueDate,
+          amount: bill.amount + 2,
+          payAccount: cashAccount.code,
+          bills: [{
+            id: billId,
+            amount: 0,  // will be auto allocated to the full amount
+          }],
+        });
+        payment = Transactions._transform(payment);
+        payment.autoAllocate();
+
+        chai.assert.equal(payment.bills.length, 1);
+        chai.assert.equal(payment.bills[0].id, billId);
+        chai.assert.equal(payment.bills[0].amount, bill.amount);
+        chai.assert.isUndefined(payment.lines);
+        chai.assert.equal(payment.rounding, 2);
+
+        paymentId = FixtureA.builder.execute(Transactions.methods.insert, payment);
+      });
+
+      it('Links second payment to bill correctly', function () {
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.getPayments().length, 2);
+        chai.assert.equal(bill.payments[0].amount, 0);
+        chai.assert.deepEqual(bill.payments[1], { id: paymentId, amount: bill.amount });
+        chai.assert.equal(bill.isPosted(), false);
+        chai.assert.equal(bill.outstanding, 0);
+      });
+
+      it('Bill updates partner balances correctly', function () {
+        // Before posting, the balances are not effected
+        chai.assert.equal(bill.partner().balance(), 0);
+        chai.assert.equal(bill.contract().balance(), 0);
+        chai.assert.equal(bill.partner().outstanding('customer'), 0);
+        chai.assert.equal(bill.partner().outstanding('supplier'), 0);
+        chai.assert.equal(bill.contract().outstanding(), 0);
+        chai.assert.equal(parcel1.balance(), 0);
+        chai.assert.equal(parcel2.balance(), 0);
+        chai.assert.equal(parcel1.outstanding(), 0);
+        chai.assert.equal(parcel2.outstanding(), 0);
+
         FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
+        bill = Transactions.findOne(billId);
 
         chai.assert.equal(bill.partner().balance(), -1300);
         chai.assert.equal(bill.contract().balance(), -1300);
         chai.assert.equal(bill.partner().outstanding('customer'), 1300);
         chai.assert.equal(bill.partner().outstanding('supplier'), -1300);
         chai.assert.equal(bill.contract().outstanding(), 1300);
-        const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP01' });
-        const parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP02' });
         chai.assert.equal(parcel1.balance(), -300);
         chai.assert.equal(parcel2.balance(), -1000);
         chai.assert.equal(parcel1.outstanding(), 300);
