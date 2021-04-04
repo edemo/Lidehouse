@@ -198,6 +198,9 @@ Transactions.categoryHelpers('bill', {
     return this.getPayments().length;
   },
   hasPayments() {
+    return this.getPayments().reduce((sum, p) => sum + p.amount, 0);
+  },
+  hadPayments() {
     return this.getPayments().find(p => p.amount);  // Zero amount payments, are removed payments
   },
   paymentDate() {

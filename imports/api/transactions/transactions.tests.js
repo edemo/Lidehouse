@@ -31,11 +31,12 @@ if (Meteor.isServer) {
     after(function () {
     });
 
-    describe('Bills/Payments api & partner balances', function () {
+    describe.only('Bills outstanding lifecycle', function () {
       let billId;
       let bill;
       let paymentId;
       let payment;
+      let storno;
       let parcel1;
       let parcel2;
       before(function () {
@@ -85,7 +86,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 1300);
       });
 
-      it('AutoFills payment values correctly - without rounding (Bank payAccount)', function () {
+      it('AutoAllocates payment correctly - without rounding (Bank payAccount)', function () {
         bill = Transactions.findOne(billId);
         const memberPaymentDef = Txdefs.findOne({ communityId: FixtureA.communityId, category: 'payment', 'data.relation': 'member' });
         const bankAccount = Accounts.findOne({ communityId: FixtureA.communityId, category: 'bank' });
@@ -123,13 +124,35 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 0);
       });
 
-      it('Cannot remove a draft bill, while it links to payment', function () {
+      it('Cannot remove a draft bill, while it links to a payment', function () {
         chai.assert.throws(() => {
           FixtureA.builder.execute(Transactions.methods.remove, { _id: billId });
-        });
+        }, 'err_unableToRemove');
       });
 
-      it('Can remove a draft payment, and it delinks payment from bill', function () {
+      it('Can modify a draft bill and a draft payment', function () {
+        const contractId = bill.contractId;
+        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+          $set: { contractId: null },
+        } });
+        bill = Transactions.findOne(billId);
+        chai.assert.isNull(bill.contractId);
+
+        FixtureA.builder.execute(Transactions.methods.update, { _id: paymentId, modifier: {
+          $set: { contractId: null },
+        } });
+        payment = Transactions.findOne(paymentId);
+        chai.assert.isNull(payment.contractId);
+
+        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+          $set: { contractId },
+        } });
+        FixtureA.builder.execute(Transactions.methods.update, { _id: paymentId, modifier: {
+          $set: { contractId },
+        } });
+      });
+
+      it('Can remove a draft payment, and it delinks it from bill', function () {
         FixtureA.builder.execute(Transactions.methods.remove, { _id: paymentId });
         payment = Transactions.findOne(paymentId);
         chai.assert.isUndefined(payment);
@@ -139,7 +162,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 1300);
       });
 
-      it('Can remove a draft bill, if it does not link to payments', function () {
+      it('Can remove a draft bill, when it does not link to any payments', function () {
         bill = Transactions.findOne(billId);
         const billClone = _.extend({}, bill);
         FixtureA.builder.execute(Transactions.methods.remove, { _id: billId });
@@ -149,7 +172,7 @@ if (Meteor.isServer) {
         billId = FixtureA.builder.execute(Transactions.methods.insert, billClone);
       });
 
-      it('AutoFills payment values correctly - with rounding (Cash payAccount)', function () {
+      it('AutoAllocates payment correctly - with rounding (Cash payAccount)', function () {
         bill = Transactions.findOne(billId);
         const memberPaymentDef = Txdefs.findOne({ communityId: FixtureA.communityId, category: 'payment', 'data.relation': 'member' });
         const cashAccount = Accounts.findOne({ communityId: FixtureA.communityId, category: 'cash' });
@@ -188,7 +211,7 @@ if (Meteor.isServer) {
       });
 
       it('Bill updates partner balances correctly', function () {
-        // Before posting, the balances are not effected
+        // Before posting, the balances are not yet effected
         chai.assert.equal(bill.partner().balance(), 0);
         chai.assert.equal(bill.contract().balance(), 0);
         chai.assert.equal(bill.partner().outstanding('customer'), 0);
@@ -212,9 +235,98 @@ if (Meteor.isServer) {
         chai.assert.equal(parcel1.outstanding(), 300);
         chai.assert.equal(parcel2.outstanding(), 1000);
       });
+
+      it('Cannot modify a posted bill', function () {
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+            $set: { contractId: null },
+          } });
+        }, 'err_permissionDenied');
+      });
+
+      it('Payment updates partner balances correctly', function () {
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
+
+        chai.assert.equal(bill.partner().balance(), 0);
+        chai.assert.equal(bill.contract().balance(), 0);
+        chai.assert.equal(bill.partner().outstanding('customer'), 0);
+        chai.assert.equal(bill.partner().outstanding('supplier'), 0);
+        chai.assert.equal(bill.contract().outstanding(), 0);
+        chai.assert.equal(parcel1.balance(), 0);
+        chai.assert.equal(parcel2.balance(), 0);
+        chai.assert.equal(parcel1.outstanding(), 0);
+        chai.assert.equal(parcel2.outstanding(), 0);
+      });
+
+      it('Cannot modify a posted payment', function () {
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.update, { _id: paymentId, modifier: {
+            $set: { conrtractId: null },
+          } });
+        }, 'err_permissionDenied');
+      });
+
+      it('Cannot storno a posted bill, while it links to a LIVE payment', function () {
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.remove, { _id: billId });
+        }, 'err_unableToRemove');
+      });
+
+      it('Can storno a posted payment, and it delinks it from bill', function () {
+        FixtureA.builder.execute(Transactions.methods.remove, { _id: paymentId });
+        payment = Transactions.findOne(paymentId);
+        chai.assert.isDefined(payment);
+        chai.assert.equal(payment.status, 'void');
+        chai.assert.equal(payment.amount, 1302);
+        storno = Transactions.findOne({ serialId: payment.serialId + '/STORNO' });
+        chai.assert.isDefined(storno);
+        chai.assert.equal(storno.status, 'void');
+        chai.assert.equal(storno.amount, -1302);
+
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.getPayments().length, 3);
+        chai.assert.equal(bill.payments[0].amount, 0);
+        chai.assert.equal(bill.payments[1].amount, 1300);
+        chai.assert.equal(bill.payments[2].amount, -1300);
+        chai.assert.equal(bill.outstanding, 1300);
+        chai.assert.equal(bill.partner().balance(), -1300);
+        chai.assert.equal(bill.contract().balance(), -1300);
+      });
+
+      it('Can storno a posted bill, when it does not link to any LIVE payments', function () {
+        bill = Transactions.findOne(billId);
+        const billClone = _.extend({}, bill);
+        FixtureA.builder.execute(Transactions.methods.remove, { _id: billId });
+        bill = Transactions.findOne(billId);
+        chai.assert.isDefined(bill);
+        chai.assert.equal(bill.status, 'void');
+        chai.assert.equal(bill.amount, 1300);
+        storno = Transactions.findOne({ serialId: bill.serialId + '/STORNO' });
+        chai.assert.isDefined(storno);
+        chai.assert.equal(storno.status, 'void');
+        chai.assert.equal(storno.amount, -1300);
+
+        chai.assert.equal(bill.outstanding, 1300);
+        chai.assert.equal(bill.partner().balance(), 0);
+        chai.assert.equal(bill.contract().balance(), 0);
+      });
+
+      it('Cannot remove a storno for a bill or payment', function () {
+        storno = Transactions.findOne({ serialId: bill.serialId + '/STORNO' });
+        chai.assert.isDefined(storno);
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.remove, { _id: storno._id });
+        }, 'err_permissionDenied');
+
+        storno = Transactions.findOne({ serialId: payment.serialId + '/STORNO' });
+        chai.assert.isDefined(storno);
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.remove, { _id: storno._id });
+        }, 'err_permissionDenied');
+      });
     });
 
-    describe('Bills lifecycle with accrual method', function () {
+    describe('Bills accounting lifecycle with accrual method', function () {
       let billId;
       let bill;
       before(function () {
