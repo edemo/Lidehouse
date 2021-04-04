@@ -20,7 +20,7 @@ if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
 
   describe('transactions', function () {
-    this.timeout(15000);
+    this.timeout(35000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
       FixtureA = freshFixture();
@@ -31,7 +31,7 @@ if (Meteor.isServer) {
     after(function () {
     });
 
-    describe.only('Bills outstanding lifecycle', function () {
+    describe('Bills outstanding lifecycle', function () {
       let billId;
       let bill;
       let paymentId;
@@ -71,6 +71,7 @@ if (Meteor.isServer) {
       });
       after(function () {
         Transactions.remove(billId);
+        Transactions.remove(paymentId);
       });
 
       it('AutoFills bill values correctly', function () {
@@ -309,6 +310,8 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 1300);
         chai.assert.equal(bill.partner().balance(), 0);
         chai.assert.equal(bill.contract().balance(), 0);
+
+        billId = FixtureA.builder.execute(Transactions.methods.insert, billClone);
       });
 
       it('Cannot remove a storno for a bill or payment', function () {
@@ -324,9 +327,33 @@ if (Meteor.isServer) {
           FixtureA.builder.execute(Transactions.methods.remove, { _id: storno._id });
         }, 'err_permissionDenied');
       });
+
+      it('Can exchange balance between partners', function () {
+        const otherPartnerId = FixtureA.partnerId(FixtureA.dummyUsers[4]);
+        const otherPartner = Partners.findOne(otherPartnerId);
+        chai.assert.equal(bill.partner().balance(), -1300);
+        chai.assert.equal(bill.contract().balance(), -1300);
+        chai.assert.equal(otherPartner.balance(), 0);
+
+        const exchangeId = FixtureA.builder.create('transaction', {
+          category: 'exchange',
+//          relation: 'member',
+          fromPartner: otherPartnerId,
+          toPartner: bill.partnerId + '/' + bill.contractId,
+          amount: 1000,
+        });
+        chai.assert.equal(bill.partner().balance(), -1300);
+        chai.assert.equal(bill.contract().balance(), -1300);
+        chai.assert.equal(otherPartner.balance(), 0);
+
+        FixtureA.builder.execute(Transactions.methods.post, { _id: exchangeId });
+        chai.assert.equal(bill.partner().balance(), -300);
+        chai.assert.equal(bill.contract().balance(), -300);
+        chai.assert.equal(otherPartner.balance(), -1000);
+      });
     });
 
-    describe('Bills accounting lifecycle with accrual method', function () {
+    describe('Bills accounting lifecycle with Accrual method', function () {
       let billId;
       let bill;
       before(function () {
@@ -352,7 +379,8 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.isPosted(), false);
 
         chai.assert.equal(bill.outstanding, 300);
-        // chai.assert.equal(bill.partner().outstanding(), 300); // partner.outstanding() is calculated only on posted tx
+        chai.assert.isUndefined(bill.debit);
+        chai.assert.isUndefined(bill.credit);
       });
 
       it('Can not post without accounts', function () {
@@ -367,8 +395,12 @@ if (Meteor.isServer) {
         }, 'Bill has to be account assigned first');
       });
 
-      it('Can post - creates tx in accountig', function () {
+      it('Bill can be posted - it creates journal entries in accountig', function () {
         FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: { $set: { 'lines.0.account': '`861', 'lines.0.localizer': '@' } } });
+        bill = Transactions.findOne(billId);
+        chai.assert.isUndefined(bill.debit);
+        chai.assert.isUndefined(bill.credit);
+
         FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.isPosted(), true);
@@ -474,8 +506,8 @@ if (Meteor.isServer) {
       });
     });
 
-    describe('Non-bill allocation', function () {
-      xit('Can create a Payment which is not allocated to bills', function () {
+    xdescribe('Non-bill allocation', function () {
+      it('Can create a Payment which is not allocated to bills', function () {
         const bankAccount = '`381';
         const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'A103' });
         const parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'A104' });
@@ -816,7 +848,7 @@ if (Meteor.isServer) {
         }, 'err_notAllowed');
       });
 
-      describe('cash accountingMethod', function () {
+      describe('Bills accounting lifecycle with Cash accountingMethod', function () {
         before(function () {
           Communities.update(FixtureA.demoCommunityId, { $set: { 'settings.accountingMethod': 'cash' } });
         });
