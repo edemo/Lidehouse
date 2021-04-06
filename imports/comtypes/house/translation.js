@@ -223,12 +223,12 @@ export const HouseTranslation = {
 
   hu:
   {
-    "community": "ház",
+    "community": "Társasház",
     "Community finder": "Házkereső",
     "Join a community": "Csatlakozás egy házhoz",
     "Create a community": "Létrehozok egy házat",
-    "Community finder note": "Ha létrehoz egy új közösséget, ön lesz az Adminisztrátor!",
-    "Community finder text": ["Itt láthatja azokat a rendszerünkben létrehozott házakat, melyek fogadnak még új tagokat. ",
+    "Community finder note": "Ha létrehoz egy új társasházat, ön lesz az Adminisztrátor!",
+    "Community finder text": ["Itt láthatja azokat a rendszerünkben létrehozott társasházakat, melyek fogadnak még új tagokat. ",
       "Ha megtalálja saját házát a listában és még nem tagja a közösségnek, a ház adatlapján csatlakozási kérelmet adhat be, melyet a ház vezetői hagyhatnak jóvá. ",
       "Ha a háza még nem található meg a rendszerben, akkor létrehozhatja azt és meghívhatja lakótársait is, hogy csatlakozzanak."],
 
