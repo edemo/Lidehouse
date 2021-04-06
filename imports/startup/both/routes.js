@@ -18,6 +18,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/brand/landing-page-covid.js';
   import '/imports/ui_3/views/brand/privacy.js';
   import '/imports/ui_3/views/brand/terms.js';
+  import '/imports/ui_3/views/brand/manual.js';
   import '/imports/ui_3/views/pages/demo-login.js';
   import '/imports/ui_3/views/pages/profile-form.js';
   import '/imports/ui_3/views/pages/user-show.js';
@@ -109,6 +110,13 @@ defineRoute('/terms', {
   name: 'Terms',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Terms_page' });
+  },
+});
+
+defineRoute('/manual', {
+  name: 'Manual',
+  action() {
+    BlazeLayout.render('Blank_layout', { content: 'Manual_page' });
   },
 });
 

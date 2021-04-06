@@ -1,0 +1,7 @@
+<template name="Manual_page">
+    {{#if (equals (fromSettings 'deployment') 'marina')}}
+    {{> Manual_local}}
+    {{else}}
+    {{> Manual_local}}
+    {{/if}}
+  </template>
