@@ -397,7 +397,7 @@ function difference(array1, array2) {
 if (Meteor.isServer) {
   Transactions.before.insert(function (userId, doc) {
     const tdoc = this.transform();
-    tdoc.checkAccountsExist();
+    if (tdoc.category === 'freeTx') tdoc.checkAccountsExist();
     tdoc.complete = tdoc.calculateComplete();
     tdoc.autoFill?.();
     if (tdoc.category === 'bill' || tdoc.category === 'payment') {
@@ -435,7 +435,7 @@ if (Meteor.isServer) {
 
   Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {
     const tdoc = this.transform();
-//    tdoc.checkAccountsExist();
+    if (tdoc.category === 'freeTx') tdoc.checkAccountsExist();
     const oldDoc = Transactions._transform(this.previous);
     const newDoc = tdoc;
     if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
