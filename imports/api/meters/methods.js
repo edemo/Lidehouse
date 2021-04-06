@@ -33,7 +33,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Meters, _id);
-    checkModifier(doc, modifier, ['identifier', 'billings'], true);
+    checkModifier(doc, modifier, ['billings'], true);
     checkPermissions(this.userId, 'meters.update', doc);
 
 //    const MetersStage = Meters.Stage();
