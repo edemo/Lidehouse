@@ -198,10 +198,12 @@ export const remove = new ValidatedMethod({
       Transactions.remove(_id);
       result = null;
     } else if (doc.status === 'posted') {
-      Transactions.update(doc._id, { $set: { status: 'void' } });
+      // This block should happen all or none
       result = Transactions.insert(_.extend(doc.negator(), { issueDate: Clock.currentDate(), status: 'void' }));
+      Transactions.update(doc._id, { $set: { status: 'void' } });
       const resultTx = Transactions.findOne(result);
       if (resultTx.isAutoPosting()) post._execute({ userId: this.userId }, { _id: result });
+      //
     } else if (doc.status === 'void') {
       throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');
     } else debugAssert(false, `No such tx status: ${doc.status}`);
