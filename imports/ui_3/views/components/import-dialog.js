@@ -41,7 +41,7 @@ const launchNextPhase = function launchNextPhase(vm) {
     onOK() {
       const viewmodel = this;
       if (viewmodel.savingEnabled()) viewmodel.savePhase();
-      const jsons = XLSX.utils.sheet_to_json(viewmodel.getImportableSheet(), { blankRows: false }).map(flatten.unflatten);
+      const jsons = XLSX.utils.sheet_to_json(viewmodel.getImportableSheet(), { blankrows: false }).map(flatten.unflatten);
       const digest = digestImportJsons(jsons, phase);
       phase.docs = digest.docs;
 
@@ -103,7 +103,7 @@ ViewModel.share({
       return _.without(this.possibleColumns(), ...this.usedColumns());
     },
     table() {
-      const html = XLSX.utils.sheet_to_html(this.worksheet(), { editable: true });
+      const html = XLSX.utils.sheet_to_html(this.worksheet(), { editable: true, blankrows: false });
       return html;
     },
     worksheet() {

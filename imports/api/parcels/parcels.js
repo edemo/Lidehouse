@@ -91,6 +91,9 @@ Parcels.helpers({
   entityName() {
     return this.category;
   },
+  community() {
+    return Communities.findOne(this.communityId);
+  },
   leadParcelId() {
     const Contracts = Mongo.Collection.get('contracts');
     const contract = Contracts.findOneActive({ parcelId: this._id });
@@ -199,9 +202,6 @@ Parcels.helpers({
   toString() {
     return this.ref || this.location();
   },
-  community() {
-    return Communities.findOne(this.communityId);
-  },
   totalunits() {
     const community = this.community();
     return community && community.totalunits;
@@ -304,8 +304,15 @@ Parcels.simpleSchema({ category: '#tag' }).i18n('schemaParcels');
 
 function updateCommunity(parcel, revertSign = 1) {
   if (!parcel.type) return;
-  const modifier = {}; modifier.$inc = {};
-  modifier.$inc[`parcels.${parcel.type}`] = revertSign;
+  const community = Communities.findOne(parcel.communityId);
+  const modifier = {};
+  if (community.parcels[parcel.type] === -1 * revertSign) {
+    modifier.$unset = {};
+    modifier.$unset[`parcels.${parcel.type}`] = '';
+  } else {
+    modifier.$inc = {};
+    modifier.$inc[`parcels.${parcel.type}`] = revertSign;
+  }
   Communities.update(parcel.communityId, modifier);
 }
 
