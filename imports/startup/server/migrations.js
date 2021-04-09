@@ -696,6 +696,20 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 39,
+  name: 'Bills get a relationAccount',
+  up() {
+    Transactions.find({ category: 'bill' }).forEach(bill => {
+      if (!bill.relationAccount) {
+        const txdef = bill.txdef();
+        const relationAccount = txdef.conteerCodes(true)[0];
+        Transactions.direct.update(bill._id, { $set: { relationAccount } }, { selector: { category: 'bill' } });
+      }
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

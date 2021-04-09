@@ -872,6 +872,9 @@
     "account": {
       "label": "Account"
     },
+    "relationAccount": {
+      "label": "Account"
+    },
     "payAccount": {
       "label": "Money account"
     },

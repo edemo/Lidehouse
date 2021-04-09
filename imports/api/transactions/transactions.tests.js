@@ -47,6 +47,7 @@ if (Meteor.isServer) {
           relation: 'member',
           partnerId,
           contractId: Contracts.findOne({ partnerId })._id,
+          relationAccount: '`33',
           issueDate: new Date('2018-01-05'),
           deliveryDate: new Date('2018-01-02'),
           dueDate: new Date('2018-01-30'),
@@ -360,6 +361,7 @@ if (Meteor.isServer) {
         billId = FixtureA.builder.create('bill', {
           relation: 'supplier',
           partnerId: FixtureA.supplier,
+          relationAccount: '`454',
           lines: [{
             title: 'The Work',
             uom: 'piece',
@@ -386,13 +388,13 @@ if (Meteor.isServer) {
       it('Can not post without accounts', function () {
         chai.assert.throws(() => {
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
-        }, 'Bill has to be account assigned first');
+        }, 'err_notAllowed');
       });
 
       xit('Can not registerPayment without accounts', function () {
         chai.assert.throws(() => {
           FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 300 }], amount: 300, valueDate: Clock.currentTime() });
-        }, 'Bill has to be account assigned first');
+        }, 'err_notAllowed');
       });
 
       it('Bill can be posted - it creates journal entries in accountig', function () {
@@ -566,6 +568,7 @@ if (Meteor.isServer) {
           const billId = FixtureA.builder.create('bill', {
             relation: 'member',
             partnerId,
+            relationAccount: '`33',
             issueDate: new Date('2020-01-05'),
             deliveryDate: new Date('2020-01-02'),
             dueDate: new Date('2020-01-30'),

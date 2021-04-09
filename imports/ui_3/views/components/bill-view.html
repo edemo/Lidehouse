@@ -12,7 +12,12 @@
         <div class="col-xs-6">
             <h5>{{_ 'issuer'}}:</h5>
             <address>
-                {{>Bill_partner rDoc.issuer}}
+                {{>Bill_partner rDoc.issuer}}<br/>
+                {{#if isBill}}
+                {{#if (equals rDoc.relationSign -1)}}
+                    {{{displayAccount rDoc.relationAccount activeCommunityId}}}
+                {{/if}}
+                {{/if}}
             </address>
         </div>
 
@@ -24,7 +29,12 @@
             </h4>
             <h5>{{_ 'receiver'}}:</h5>
             <address>
-                {{>Bill_partner rDoc.receiver}}
+                {{>Bill_partner rDoc.receiver}}<br/>
+                {{#if isBill}}
+                {{#if (equals rDoc.relationSign 1)}}
+                    {{{displayAccount rDoc.relationAccount activeCommunityId}}}
+                {{/if}}
+                {{/if}}
             </address>
             <p>
                 {{#if isBill}}

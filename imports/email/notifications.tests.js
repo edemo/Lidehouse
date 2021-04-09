@@ -274,7 +274,12 @@ if (Meteor.isServer) {
       it('Sends new bill', function () {
         partnerId = Fixture.builder.create('member', { creatorId: Fixture.demoManagerId });
         const partner = Partners.findOne(partnerId);
-        billId = Fixture.builder.create('bill', { creatorId: Fixture.demoManagerId, partnerId, relation: 'member' });
+        billId = Fixture.builder.create('bill', {
+          creatorId: Fixture.demoManagerId,
+          partnerId,
+          relation: 'member',
+          relationAccount: '`33',
+        });
         const bill = Transactions.findOne(billId);
         sinon.assert.notCalled(EmailSender.send);
 
@@ -287,7 +292,12 @@ if (Meteor.isServer) {
 
       it('Doesnt send bill to suppliers', function () {
         partnerId = Fixture.builder.create('supplier', { creatorId: Fixture.demoManagerId });
-        billId = Fixture.builder.create('bill', { creatorId: Fixture.demoManagerId, partnerId, relation: 'supplier' });
+        billId = Fixture.builder.create('bill', { 
+          creatorId: Fixture.demoManagerId,
+          partnerId,
+          relation: 'supplier',
+          relationAccount: '`454',
+        });
 
         Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: billId });
         sinon.assert.notCalled(EmailSender.send);

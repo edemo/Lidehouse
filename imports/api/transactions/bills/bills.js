@@ -102,6 +102,7 @@ Bills.extensionSchema = new SimpleSchema([
     deliveryDate: { type: Date },
     dueDate: { type: Date },
     paymentMethod: { type: String, optional: true, allowedValues: ['cash', 'bank'] },
+    relationAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
     payments: { type: [Bills.paymentSchema], defaultValue: [] },
     outstanding: { type: Number, decimal: true, optional: true },
   //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
@@ -145,11 +146,6 @@ export const BillAndReceiptHelpers = {
   otherTxSide() {
     return Transactions.oppositeSide(this.matchingTxSide());
   },
-  hasConteerData() {
-    let result = true;
-    this.getLines().forEach(line => { if (line && !line.account) result = false; });
-    return result;
-  },
   validate() {
     if (this.partnerId && !this.contractId) { // Auto default to default contract, and create it if not yet exists
       const selector = { communityId: this.communityId, relation: this.relation, partnerId: this.partnerId, title: { $exists: false } };
@@ -165,7 +161,7 @@ export const BillAndReceiptHelpers = {
     }
   },
   validateForPost() {
-    if (!this.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
+    if (!this.hasConteerData()) throw new Meteor.Error('err_notAllowed', 'Bill has to be account assigned first');
   },
   autoFill() {
     if (!this.lines) return;  // when the modifier doesn't touch the lines, should not autoFill
@@ -211,6 +207,11 @@ Transactions.categoryHelpers('bill', {
   net() {
     return this.amount - this.tax;
   },
+  lineRelationAccount(line) {
+    let account = line.relationAccount || this.relationAccount;
+    if (!line.relationAccount && line.billing) account += ParcelBillings.findOne(line.billing.id).digit;
+    return account;
+  },
   fillFromStatementEntry(entry) {
     this.issueDate = entry.valueDate;
     this.deliveryDate = entry.valueDate;
@@ -231,8 +232,7 @@ Transactions.categoryHelpers('bill', {
         const technicalAccount = Accounts.toTechnical(line.account);
         this.makeEntry(this.conteerSide(), _.extend({ account: technicalAccount }, newEntry));
       }
-      let relationAccount = this.relationAccount().code;
-      if (line.billing) relationAccount += ParcelBillings.findOne(line.billing.id).digit;
+      const relationAccount = this.lineRelationAccount(line);
       this.makeEntry(this.relationSide(), _.extend({ account: relationAccount }, newEntry));
     });
     return { debit: this.debit, credit: this.credit };
@@ -244,6 +244,13 @@ Transactions.categoryHelpers('bill', {
       amount: this.amount,
     }];
     return { pEntries: this.pEntries };
+  },
+  hasConteerData() {
+    let result = true;
+    this.getLines().forEach(line => { if (line) {
+      if (!line.account || (!line.relationAccount && !this.relationAccount)) result = false;
+    } });
+    return result;
   },
   calculateOutstanding() {
     let paid = 0;

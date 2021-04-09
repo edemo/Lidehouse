@@ -43,8 +43,8 @@ Transactions.categoryHelpers('barter', {
     }
     // TODO: this does not work for parcel bills, needs payin digit
     if (accountingMethod === 'accrual') {
-      this.debit = [{ account: supplierBill.relationAccount().code }];
-      this.credit = [{ account: customerBill.relationAccount().code }];
+      this.debit = [{ account: supplierBill.relationAccount }];
+      this.credit = [{ account: customerBill.relationAccount }];
     } else if (accountingMethod === 'cash') {
       copyLinesInto(this.debit, supplierBill);
       copyLinesInto(this.credit, customerBill);
@@ -70,6 +70,10 @@ Transactions.categoryHelpers('barter', {
 //      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bill has to be account assigned first');
     if (supplierBill.relation !== 'supplier') throw new Meteor.Error('Supplier bill is not from a supplier');
     if (customerBill.relation !== 'customer' && customerBill.relation !== 'member') throw new Meteor.Error('Customer bill is not from a customer/owner');
+  },
+  validateForPost() {
+    this.supplierBill().validateForPost();
+    this.customerBill().validateForPost();
   },
 });
 

@@ -569,6 +569,7 @@ if (Meteor.isServer) {
         const bill1Id = Fixture.builder.create('bill', {
           relation: 'member',
           partnerId,
+          relationAccount: '`33',
           issueDate: new Date('2018-01-05'),
           deliveryDate: new Date('2018-01-02'),
           dueDate: new Date('2018-01-30'),
@@ -583,6 +584,7 @@ if (Meteor.isServer) {
         const bill2Id = Fixture.builder.create('bill', {
           relation: 'customer',
           partnerId: partnerId2,
+          relationAccount: '`31',
           issueDate: new Date('2018-01-05'),
           deliveryDate: new Date('2018-01-02'),
           dueDate: new Date('2018-01-30'),

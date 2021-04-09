@@ -258,8 +258,7 @@ Transactions.categoryHelpers('payment', {
       if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
       debugAssert(billPaid.amount < 0 === bill.amount < 0, 'Bill amount and its payment must have the same sign');
       const makeEntries = function makeEntries(line, amount) {
-        let relationAccount = line.relationAccount || this.relationAccount().code;
-        if (!line.relationAccount && line.billing) relationAccount += ParcelBillings.findOne(line.billing.id).digit;
+        const relationAccount = bill.lineRelationAccount(line);
         const newEntry = { amount, localizer: line.localizer, parcelId: line.parcelId };
         this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry));
         if (accountingMethod === 'cash') {

@@ -870,7 +870,10 @@
       }
     },
     "account": {
-      "label": "Számla"
+      "label": "Főkönyvi számla"
+    },
+    "relationAccount": {
+      "label": "Könyvelési számla"
     },
     "payAccount": {
       "label": "Pénz számla"

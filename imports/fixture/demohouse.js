@@ -1068,6 +1068,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       // amount: 282600,
       partnerId: supplier2,
       contractId: contract2,
+      relationAccount: '`454',
       lines: [{
         title: 'Épület takarítás',
         uom: 'hónap',
@@ -1086,6 +1087,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         amount: 282600,
         valueDate: new Date(`${lastYear}-${mm}-25`),
         partnerId: supplier2,
+        relationAccount: '`454',
         payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
       });
     }
@@ -1097,6 +1099,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date(`${lastYear}-03-15`),
     partnerId: customer0,
     contractId: contract10,
+    relationAccount: '`31',
     lines: [{
       title: 'Reklámfelület bérleti díj',
       uom: 'year',

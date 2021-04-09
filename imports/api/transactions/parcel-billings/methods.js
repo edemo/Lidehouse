@@ -47,6 +47,8 @@ export const apply = new ValidatedMethod({
   run({ communityId, date, ids, localizer, withFollowers }) {
     if (Meteor.isClient) return;
     checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
+    const relationAccount = Accounts.getByName('Members', communityId).code;
+    const incomeAccount = Accounts.getByName('Owner payins', communityId).code;
     ActiveTimeMachine.runAtTime(date, () => {
       const billsToSend = {}; // parcelId => his bill
       const activeParcelBillings = ids
@@ -65,7 +67,7 @@ export const apply = new ValidatedMethod({
             if (line.quantity === 0) return; // Should not create bill for zero amount
             line.title = parcelBilling.title;
             line.amount = line.quantity * line.unitPrice;
-            line.account = Accounts.findOne({ communityId, category: 'income', name: 'Owner payins' }).code + parcelBilling.digit;
+            line.account = incomeAccount + parcelBilling.digit;
             line.parcelId = parcel._id;
             line.localizer = parcel.code;
             line.billing = { id: parcelBilling._id, period: billingPeriod.label };
@@ -80,6 +82,7 @@ export const apply = new ValidatedMethod({
     //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
               partnerId: leadParcel.payerPartner()._id,
               contractId: leadParcel.payerContract()._id,
+              relationAccount,
               issueDate: Clock.currentDate(),
               deliveryDate: date,
               dueDate: moment(date).add(BILLING_DUE_DAYS, 'days').toDate(),

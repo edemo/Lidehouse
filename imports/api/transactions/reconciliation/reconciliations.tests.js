@@ -31,6 +31,7 @@ if (Meteor.isServer) {
         billId = Fixture.builder.create('bill', {
           relation: 'supplier',
           partnerId: Fixture.supplier,
+          relationAccount: '`454',
           lines: [{
             title: 'The Work',
             uom: 'piece',
@@ -46,6 +47,7 @@ if (Meteor.isServer) {
         billId2 = Fixture.builder.create('bill', {
           relation: 'supplier',
           partnerId: Fixture.supplier,
+          relationAccount: '`454',
           lines: [{
             title: 'The Work A',
             uom: 'piece',
@@ -341,6 +343,7 @@ if (Meteor.isServer) {
         billId = Fixture.builder.create('bill', {
           relation: 'supplier',
           partnerId: Fixture.supplier,
+          relationAccount: '`454',
           lines: [{
             title: 'The Work',
             uom: 'piece',
@@ -356,6 +359,7 @@ if (Meteor.isServer) {
         billId2 = Fixture.builder.create('bill', {
           relation: 'supplier',
           partnerId: Fixture.supplier,
+          relationAccount: '`454',
           lines: [{
             title: 'The Work A',
             uom: 'piece',
@@ -406,6 +410,7 @@ if (Meteor.isServer) {
         billId = Fixture.builder.create('bill', {
           relation: 'supplier',
           partnerId: Fixture.supplier,
+          relationAccount: '`454',
           lines: [{
             title: 'The Work',
             uom: 'piece',
@@ -421,6 +426,7 @@ if (Meteor.isServer) {
         billId2 = Fixture.builder.create('bill', {
           relation: 'supplier',
           partnerId: Fixture.supplier,
+          relationAccount: '`454',
           lines: [{
             title: 'The Work A',
             uom: 'piece',
@@ -520,6 +526,7 @@ if (Meteor.isServer) {
         const billId3 = Fixture.builder.create('bill', {
           relation: 'supplier',
           partnerId: Fixture.supplier,
+          relationAccount: '`454',
           lines: [{
             title: 'Next Work',
             uom: 'piece',

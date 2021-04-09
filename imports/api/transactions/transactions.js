@@ -172,11 +172,6 @@ Transactions.helpers({
     debugAssert(side === 'debit' || side === 'credit');
     return this[side] || [];
   },
-  relationAccount() {
-    const communityId = this.communityId;
-    const name = (this.relation + 's').capitalize();
-    return Accounts.findOne({ communityId, name });
-  },
   conteerSide() {
     if (this.relation === 'supplier') return 'debit';
     else if (this.relation === 'customer' || this.relation === 'member') return 'credit';

@@ -49,6 +49,14 @@ Transactions.categoryHelpers('receipt', {
     if (this.rounding) this.makeEntry(this.conteerSide(), { amount: this.rounding, account: '`99' });
     return { debit: this.debit, credit: this.credit };
   },
+  hasConteerData() {
+    let result = true;
+    if (!this.payAccount) result = false;
+    this.getLines().forEach(line => {
+      if (line && !line.account) result = false;
+    });
+    return result;
+  },
   displayInSelect() {
     return `${this.serialId} (${moment(this.valueDate).format('YYYY.MM.DD')} ${this.partner()} ${this.amount})`;
   },
