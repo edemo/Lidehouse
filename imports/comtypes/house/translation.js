@@ -124,10 +124,10 @@ export const HouseTranslation = {
     },
     "schemaParcels": {
       "_": {
-        "label": "Parcel"
+        "label": "Place"
       },
       "category": {
-        "label": "Category",
+        "label": "Kind of place",
         "options": {
           "@property": "Property",
           "@common": "Common area",
@@ -136,12 +136,12 @@ export const HouseTranslation = {
         }
       },
       "serial": {
-        "label": "Parcel serial",
+        "label": "Serial",
         "placeholder": "(eg. 34)",
         "help": "The serial number of the property. An integer that grows, and lets you sort your list."
       },
       "ref": {
-        "label": "Parcel reference",
+        "label": "Reference",
         "placeholder": "(eg. B405 or II/4)",
         "help": "An abritrary but unique reference within the community"
       },
@@ -349,10 +349,10 @@ export const HouseTranslation = {
     },
     "schemaParcels": {
       "_": {
-        "label": "Albetét"
+        "label": "Hely"
       },
       "category": {
-        "label": "Kategória",
+        "label": "Hely jellege",
         "options": {
           "@property": "Albetét",
           "@common": "Közös tulajdon",
@@ -361,12 +361,12 @@ export const HouseTranslation = {
         }
       },
       "serial": {
-        "label": "Albetét sorszám",
+        "label": "Sorszám",
         "placeholder": "(pl. 34)",
         "help": "Egyedi sorszám, mely segít sorba rendezni a helyeinket. A helyrajzi szám utolsó száma például kíválóan alkalmas erre."
       },
       "ref": {
-        "label": "Albetét azonosító",
+        "label": "Azonosító",
         "placeholder": "(pl. B405 vagy II/4)",
         "help": "Egyedi név, mellyel hivatkozni lehet erre a helyre"
       },
