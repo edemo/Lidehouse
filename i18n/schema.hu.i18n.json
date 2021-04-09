@@ -725,15 +725,15 @@
       "label": "Tranzakció"
     },
     "category": {
-      "label": "Kategória",
+      "label": "Tranzakció főtípus",
       "options": {
         "bill": "számla",
         "payment": "fizetés",
         "remission": "elengedés",
         "receipt": "elszámolás",
-        "transfer": "átvezetés",
+        "transfer": "átvezetés számlák között",
         "exchange": "átvezetés partnerek között",
-        "opening": "nyitó",
+        "opening": "nyitás/zárás",
         "freeTx": "könyvelési tranzakció"
       }
     },
@@ -933,7 +933,46 @@
   "schemaTxdefs": {
     "name": {
       "label": "Tranzakció típus neve",
-      "placeholder": ""
+      "placeholder": "(pl. Áru számla)"
+    },
+    "category": {
+      "label": "Főtípus",
+      "options": {
+        "bill": "számla",
+        "payment": "fizetés",
+        "remission": "elengedés",
+        "receipt": "elszámolás",
+        "transfer": "átvezetés számlák között",
+        "exchange": "átvezetés partnerek között",
+        "opening": "nyitás/zárás",
+        "freeTx": "könyvelési tranzakció"
+      }
+    },
+    "data": {
+      "label": "Megadható paraméterek",
+      "relation": {
+        "label": "Partner viszony",
+        "placeholder": "(Válasszon a listából)",
+        "help": "Akkor szükséges ha a főtípus számla vagy fizetés.",
+        "options": {
+          "supplier": "Szállító",
+          "customer": "Vevő",
+          "member": "Tagság"
+        }
+      },
+      "side": {
+        "label": "Oldal",
+        "placeholder": "(Válasszon a listából)",
+        "help": "Akkor szükséges ha a főtípus nyitás/zárás.",
+        "options": {
+          "debit": "Tartozik",
+          "credit": "Követel"
+        }
+      },
+      "remission": {
+        "label": "Elengedés?",
+        "help": "Akkor szükséges ha a főtípus fizetés."
+      }      
     },
     "debit": {
       "label": "Tartozik",

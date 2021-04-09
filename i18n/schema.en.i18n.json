@@ -733,7 +733,7 @@
         "receipt": "receipt",
         "transfer": "transfer",
         "exchange": "exchange",
-        "opening": "opening",
+        "opening": "opening/closing",
         "freeTx": "free transaction"
       }
     },
@@ -934,6 +934,43 @@
     "name": {
       "label": "Transaction type name",
       "placeholder": ""
+    },
+    "category": {
+      "label": "Main category",
+      "options": {
+        "bill": "bill",
+        "payment": "payment",
+        "remission": "remission",
+        "receipt": "receipt",
+        "transfer": "transfer between accounts",
+        "exchange": "exchange between partners",
+        "opening": "opening/closing",
+        "freeTx": "free accounting operation"
+      }
+    },
+    "data": {
+      "label": "Optional parameters",
+      "relation": {
+        "label": "Partner relation",
+        "help": "Needed if main category is bill or payment.",
+        "options": {
+          "supplier": "Supplier",
+          "customer": "Customer",
+          "member": "Member"
+        }
+      },
+      "side": {
+        "label": "Oldal",
+        "help": "Needed if main category is opening/closing.",
+        "options": {
+          "debit": "Tartozik",
+          "credit": "Követel"
+        }
+      },
+      "remission": {
+        "label": "Remission?",
+        "help": "Can be used if main category is payment."
+      }      
     },
     "debit": {
       "label": "Debited",

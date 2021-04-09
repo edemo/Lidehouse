@@ -9,6 +9,7 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -29,11 +30,17 @@ Txdefs.clone = function clone(name, communityId) {
   return Txdefs.insert(doc);
 };
 
+Txdefs.dataSchema = new SimpleSchema({
+  relation: { type: String, allowedValues: Relations.values, optional: true  },  // for bill, payment
+  side: { type: String, allowedValues: ['debit', 'credit'], optional: true  },   // for opening, closing
+  remission: { type: Boolean, optional: true  },                                 // for payment
+});
+
 Txdefs.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   name: { type: String, max: 100 },
-  category: { type: String, max: 15, optional: true, autoform: { omit: true } }, // Name of the entity
-  data: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // Default data values
+  category: { type: String, allowedValues: Transactions.categoryValues },
+  data: { type: Txdefs.dataSchema, optional: true },
   debit: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
   credit: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
 });

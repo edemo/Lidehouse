@@ -51,13 +51,13 @@ Template.Accounting_bills.viewmodel({
       default: debugAssert(false, 'No such bill relation'); return undefined;
     }
   },
-  findTxdef(category) {
-    const txdef = Txdefs.findOne({
+  findTxdefs(category) {
+    const txdefs = Txdefs.find({
       communityId: this.communityId(),
       category,
       'data.relation': this.activePartnerRelation(),
     });
-    return txdef || {};
+    return txdefs || {};
   },
   count(category, kind) {
     const selector = { communityId: this.communityId(), category, relation: this.activePartnerRelation() };
@@ -145,7 +145,8 @@ Template.Accounting_bills.viewmodel({
 Template.Accounting_bills.events({
   'click .js-new'(event, instance) {
     const entity = $(event.target).closest('[data-entity]').data('entity');
-    const txdef = instance.viewmodel.findTxdef(entity);
+    const defId = $(event.target).closest('[data-defid]').data('defid');
+    const txdef = Txdefs.findOne(defId);
     Transactions.actions.new({ entity, txdef }).run(event, instance);
   },
   'click .js-apply'(event, instance) {

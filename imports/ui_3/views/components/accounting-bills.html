@@ -18,12 +18,12 @@
                           <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.relation.options.' activePartnerRelation)}}</strong> <b class="caret"></b>
                       </a>
                       <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
-                          {{#let txdef=(findTxdef 'bill')}}
-                          <li><a href="" class="js-new" data-entity="bill"> {{_ 'new'}} {{_ txdef.name}}</a></li>
-                          {{/let}}
-                          {{#let txdef=(findTxdef 'receipt')}}
-                          <li><a href="" class="js-new" data-entity="receipt"> {{_ 'new'}} {{_ txdef.name}}</a></li>
-                          {{/let}}
+                          {{#each txdef in (findTxdefs 'bill')}}
+                          <li><a href="" class="js-new" data-defid={{txdef._id}} data-entity="bill"> {{_ 'new'}} {{_ txdef.name}}</a></li>
+                          {{/each}}
+                          {{#each txdef in (findTxdefs 'receipt')}}
+                          <li><a href="" class="js-new" data-defid={{txdef._id}} data-entity="receipt"> {{_ 'new'}} {{_ txdef.name}}</a></li>
+                          {{/each}}
                       </ul>
                       {{>Action_buttons_group collection='transactions' actions='import' size='md'}}
                   </div>
