@@ -12,14 +12,14 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const transferSchema = new SimpleSchema({
   amount: { type: Number, decimal: true, autoform: { readonly() { return !!ModalStack.getVar('statementEntry'); } } }, // same as Tx, but we need the readonly added
-  fromAccount: { type: String, optional: true, autoform: chooseConteerAccount('credit') },
   toAccount: { type: String, optional: true, autoform: chooseConteerAccount('debit') },
+  fromAccount: { type: String, optional: true, autoform: chooseConteerAccount('credit') },
 });
 
 Transactions.categoryHelpers('transfer', {
   fillFromStatementEntry(entry) {
-    if (entry.amount <= 0) this.fromAccount = entry.account;
     if (entry.amount >= 0) this.toAccount = entry.account;
+    if (entry.amount <= 0) this.fromAccount = entry.account;
   },
   makeJournalEntries() {
     this.debit = [{ account: this.toAccount }];

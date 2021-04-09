@@ -69,7 +69,7 @@ Template.Accounting_transactions.viewmodel({
   ],
   txdefs() {
     const communityId = ModalStack.getVar('communityId');
-    const txdefs = Txdefs.find({ communityId }).fetch().filter(c => c.isAccountantTx());
+    const txdefs = Txdefs.find({ communityId }, { sort: { createdAt: 1 } }).fetch().filter(c => c.isAccountantTx());
     return txdefs;
   },
   optionsOf(accountCode) {

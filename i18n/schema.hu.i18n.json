@@ -851,16 +851,16 @@
       "label": "Kimenő számla, amibe beszámítunk"
     },
     "fromAccount": {
-      "label": "Átvezetés innen"
+      "label": "Átvezetés innen (K)"
     },
     "toAccount": {
-      "label": "Átvezetés ide"
+      "label": "Átvezetés ide (T)"
     },
     "fromPartner": {
-      "label": "Átvezetés innen"
+      "label": "Átvezetés innen (K)"
     },
     "toPartner": {
-      "label": "Átvezetés ide"
+      "label": "Átvezetés ide (T)"
     },
     "side": {
       "label": "Oldal",

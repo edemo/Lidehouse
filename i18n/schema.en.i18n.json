@@ -851,16 +851,16 @@
       "label": "Customer bill being bartered"
     },
     "fromAccount": {
-      "label": "Moving from"
+      "label": "Moving from (Cr)"
     },
     "toAccount": {
-      "label": "Moving to"
+      "label": "Moving to (Dr)"
     },
     "fromPartner": {
-      "label": "Moving from"
+      "label": "Moving from (Cr)"
     },
     "toPartner": {
-      "label": "Moving to"
+      "label": "Moving to (Dr)"
     },
     "side": {
       "label": "Side",

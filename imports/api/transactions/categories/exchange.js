@@ -12,12 +12,12 @@ import { Contracts, choosePartnerContract } from '/imports/api/contracts/contrac
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const exchangeSchema = new SimpleSchema({
-//  fromPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
-//  fromContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  fromPartner: { type: String, autoform: { ...choosePartnerContract } },
 //  toPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
 //  toContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   toPartner: { type: String, autoform: { ...choosePartnerContract } },
+//  fromPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
+//  fromContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  fromPartner: { type: String, autoform: { ...choosePartnerContract } },
 });
 
 Transactions.categoryHelpers('exchange', {
@@ -26,12 +26,12 @@ Transactions.categoryHelpers('exchange', {
   },
   makePartnerEntries() {
     this.pEntries = [{
-      partner: this.fromPartner, // Partners.code(this.sourcePartnerId, this.sourceContractId),
-      side: 'credit',
-      amount: this.amount,
-    }, {
       partner: this.toPartner, // Partners.code(this.targetPartnerId, this.targetContractId),
       side: 'debit',
+      amount: this.amount,
+    }, {
+      partner: this.fromPartner, // Partners.code(this.sourcePartnerId, this.sourceContractId),
+      side: 'credit',
       amount: this.amount,
     }];
     return { pEntries: this.pEntries };
