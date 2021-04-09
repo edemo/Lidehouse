@@ -16,6 +16,7 @@ import { allowedOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { FreeFields } from '/imports/api/behaviours/free-fields.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
@@ -184,8 +185,7 @@ Parcels.helpers({
     return -1 * Balances.get({ communityId: this.communityId, account: '`33', localizer: this.code, tag: 'T' }).total();
   },
   outstanding() {
-    const Partners = Mongo.Collection.get('partners');
-    return this.balance() * Partners.relationSign('member') * -1;
+    return this.balance() * Relations.sign('member') * -1;
   },
   display() {
     return `${this.ref || '?'} (${this.location()}) ${this.type}`;

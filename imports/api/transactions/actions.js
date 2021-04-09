@@ -247,7 +247,7 @@ Transactions.actions = {
   }),
   connectPayment: (options, doc, user = Meteor.userOrNull()) => {
     const connectablePayment = doc.outstanding && (doc.category === 'bill') &&
-      Transactions.findOne({ communityId: doc.communityId, category: 'payment', partnerId: doc.partnerId, outstanding: { $gt: 0 } });
+      Transactions.findOne({ communityId: doc.communityId, category: 'payment', partnerId: doc.partnerId, outstanding: { $ne: 0 } });
     return {
       name: 'connectPayment',
       icon: 'fa fa-credit-card',

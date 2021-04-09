@@ -61,7 +61,7 @@ Template.Accounting_page.viewmodel({
     const community = this.community();
     if (!community) return 0;
     const txs = Transactions.find({ communityId, category: 'bill', $and:
-      [{ outstanding: { $gt: 0 } }, { relation: { $in: community.settings.paymentsToBills } }],
+      [{ outstanding: { $ne: 0 } }, { relation: { $in: community.settings.paymentsToBills } }],
     });
     return txs.count();
   },

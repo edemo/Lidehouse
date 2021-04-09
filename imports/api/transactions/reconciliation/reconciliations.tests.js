@@ -380,7 +380,7 @@ if (Meteor.isServer) {
         Transactions.remove({ category: 'bill' });
       });
 
-      it('Handles Entry without partner', function () {
+      it('Does not recognize Entry without partner', function () {
         entryId = Fixture.builder.create('statementEntry', {
           account: bankAccount,
           valueDate: Clock.currentDate(),
@@ -389,10 +389,7 @@ if (Meteor.isServer) {
 
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
         const entry = StatementEntries.findOne(entryId);
-        chai.assert.equal(entry.match.confidence, 'danger');
-        chai.assert.isUndefined(entry.match.tx.category);
-        chai.assert.isUndefined(entry.match.tx.defId);
-        chai.assert.equal(entry.match.tx.amount, 300);
+        chai.assert.isUndefined(entry.match);
       });
     });
 
@@ -455,9 +452,7 @@ if (Meteor.isServer) {
 
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
         const entry = StatementEntries.findOne(entryId);
-        chai.assert.equal(entry.match.confidence, 'danger');
-        chai.assert.isUndefined(entry.match.tx.category);
-        chai.assert.equal(entry.match.tx.amount, 300);
+        chai.assert.isUndefined(entry.match);
 
         Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId });
         chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 0);
@@ -574,10 +569,13 @@ if (Meteor.isServer) {
 
         bill3 = Transactions.findOne(billId3);
         chai.assert.equal(bill3.amount, 500);
-        chai.assert.equal(bill3.getPayments().length, 2);
+        // no guessing for matching bills in info match
+        /* chai.assert.equal(bill3.getPayments().length, 2);
         chai.assert.equal(bill3.getPaymentTransactions()[0].isReconciled(), true);
         chai.assert.equal(bill3.outstanding, 300);
-        Fixture.builder.execute(Transactions.methods.post, { _id: bill3.getPayments()[1].id });
+        Fixture.builder.execute(Transactions.methods.post, { _id: bill3.getPayments()[1].id }); */
+        const payment4 = Transactions.findOne({ category: 'payment', 'lines.0': { $exists: true } });
+        Fixture.builder.execute(Transactions.methods.post, { _id: payment4._id });
         chai.assert.equal(bill3.partner().outstanding('supplier'), 300);
       });
     });

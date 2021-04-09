@@ -95,11 +95,29 @@ Number.prototype.round = function round(places) {
   return +(Math.round(this + 'e+' + places) + 'e-' + places);
 };
 
+Math.smallerInAbs = function smallerInAbs(a, b) {
+  if (a >= 0 && b >= 0) return Math.min(a, b);
+  else if (a <= 0 && b <= 0) return Math.max(a, b);
+  // debugAssert(false); 
+  return undefined;
+};
+
 // Sometimes you don't know if you are dealing with an array or a cursor. 
 // So by calling fetch, you can make sure it becomes an Array
 Array.prototype.fetch = function fetch() { return this; };
 
 Array.prototype.count = function count() { return this.length; };
+
+Array.prototype.oppositeSignsFirst = function oppositeSignsFirst(number, key) {
+  const negatives = [];
+  const positives = [];
+  this.forEach(elem => {
+    if (elem < 0 || elem[key] < 0) negatives.push(elem);
+    else positives.push(elem);
+  });
+  if (number >= 0) return negatives.concat(positives);
+  else return positives.concat(negatives);
+};
 
 _.isDefined = function isDefined(obj) { // underscore did not have this
   return obj !== undefined;

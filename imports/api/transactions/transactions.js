@@ -188,7 +188,7 @@ Transactions.helpers({
     debugAssert(false, 'No such relation ' + this.relation); return undefined;
   },
   relationSign() {
-    return Partners.relationSign(this.relation);
+    return Relations.sign(this.relation);
   },
   isPosted() {
 //    return !!(this.debit && this.credit && this.complete); // calculateComplete()

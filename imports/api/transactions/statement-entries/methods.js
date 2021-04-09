@@ -11,6 +11,7 @@ import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
 import { equalWithinRounding } from '/imports/api/utils.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Recognitions } from '/imports/api/transactions/reconciliation/recognitions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -139,7 +140,7 @@ export const autoReconcile = new ValidatedMethod({
   run({ _id }) {
     const entry = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.reconcile', entry);
-    if (entry.match.confidence === 'primary' || entry.match.confidence === 'success' || entry.match.confidence === 'info') {
+    if (entry.match?.confidence === 'primary' || entry.match?.confidence === 'success' || entry.match?.confidence === 'info') {
       let txId = entry.match.txId;
       if (!txId && entry.match.tx) {
         txId = Transactions.methods.insert._execute({ userId: this.userId }, entry.match.tx);
@@ -216,34 +217,24 @@ export const recognize = new ValidatedMethod({
       Log.debug('No partner on statement');
     }
     if (partner) {
-      const possibleRelations = _.filter(partner.relation, r => Partners.relationSign(r) === Math.sign(entry.amount));
-      if (possibleRelations.length > 0) {
-        relation = _.find(possibleRelations, r => Transactions.findOne({ communityId, category: 'bill', relation: r, outstanding: { $gt: 0 } }));
+      if (partner.relation.length === 1) relation = partner.relation[0];
+      else {
+        const possibleRelations = _.filter(partner.relation, r => Relations.sign(r) === Math.sign(entry.amount));
+        if (possibleRelations.length > 1) {
+          relation = _.find(possibleRelations, r => Transactions.findOne({ communityId, category: 'bill', relation: r, outstanding: { $ne: 0 } }));
+        }
+        if (!relation) relation = possibleRelations[0];
       }
-      if (!relation) relation = possibleRelations[0];
     } else {
       Log.debug('No appropriate relation of partner');
     }
     if (!partner || !relation) {
-      // ---------------------------
-      // 4th grade, 'danger' match: No partner and tx type information, we can only provide some guesses
-      // ---------------------------
-      const tx = {
-        communityId,
-        amount: Math.abs(entry.amount),
-        valueDate: entry.valueDate,
-        title: entry.note,
-        // Further values will be filled based on the entry, on the client when the txdef is selected
-      };
-      Log.info('Danger not found partner, recommendation');
-      Log.debug(tx);
-      StatementEntries.update(_id, { $set: { match: { confidence: 'danger', tx } } });
       return;
     }
 
     const contract = partner.contracts(relation)?.[0];
-    const adjustedEntryAmount = Math.abs(entry.amount);
-    const matchingBills = Transactions.find({ communityId, category: 'bill', relation, partnerId: partner._id, outstanding: { $gt: 0 } }, { sort: { issueDate: 1 } }).fetch();
+    const adjustedEntryAmount = entry.amount * Relations.sign(relation);
+    const matchingBills = Transactions.find({ communityId, category: 'bill', relation, partnerId: partner._id, outstanding: { $ne: 0 } }, { sort: { issueDate: 1 } }).fetch();
     const paymentDef = Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': relation });
     const tx = {
       communityId,
@@ -256,7 +247,7 @@ export const recognize = new ValidatedMethod({
       payAccount: entry.account,
       amount: adjustedEntryAmount,
     };
-    if (Math.abs(partner.balance()) === adjustedEntryAmount) {
+    if (entry.amount === partner.balance() * -1) {
       // ---------------------------
       // 2nd grade, 'success' match: The payment exactly matches the outstanding bills of the partner
       // ---------------------------
@@ -272,21 +263,21 @@ export const recognize = new ValidatedMethod({
       // ---------------------------
       tx.bills = []; tx.lines = [];
       let amountToFill = adjustedEntryAmount;
-      matchingBills.forEach(bill => {
+      /* matchingBills.forEach(bill => {
         if (amountToFill === 0) return false;
         const amount = Math.min(amountToFill, bill.outstanding);
         tx.bills.push({ id: bill._id, amount });
         amountToFill -= amount;
       });
-      if (amountToFill > 0) {
-        tx.lines = [
-          Object.cleanUndefined({
-            amount: amountToFill,
-            account: contract?.accounting?.account || paymentDef.conteerCodes()[0],
-            localizer: contract?.accounting?.localizer,
-          }),
-        ];
-      }
+      if (amountToFill > 0) { */
+      tx.lines = [
+        Object.cleanUndefined({
+          amount: amountToFill,
+          account: contract?.accounting?.account || paymentDef.conteerCodes()[0],
+          localizer: contract?.accounting?.localizer,
+        }),
+      ];
+      // }
       Log.info('Info match with bills', matchingBills.length);
       Log.debug(tx);
       StatementEntries.update(_id, { $set: { match: { confidence: 'info', tx } } });

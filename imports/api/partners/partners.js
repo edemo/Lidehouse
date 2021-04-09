@@ -68,12 +68,6 @@ Meteor.startup(function indexPartners() {
   }
 });
 
-Partners.relationSign = function relationSign(relation) {
-  if (relation === 'supplier') return -1;
-  else if (relation === 'customer' || relation === 'member') return +1;
-  debugAssert(false, 'No such relation ' + relation); return undefined;
-};
-
 Partners.code = function partnerContractCode(partnerId, contractId) { // partnerId/contractId
   let code = partnerId;
   if (contractId) code += `/${contractId}`;
@@ -154,7 +148,7 @@ Partners.helpers({
   },
   outstandingBills() {
     const Transactions = Mongo.Collection.get('transactions');
-    return Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $gt: 0 } });
+    return Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $ne: 0 } });
   },
   balance() {
     // negative amount if relation = supplier
@@ -162,7 +156,7 @@ Partners.helpers({
     return Balances.get({ communityId: this.communityId, partner: this._id, tag: 'T' }).total();
   },
   outstanding(relation = ModalStack.getVar('relation')) {
-    return this.balance() * Partners.relationSign(relation) * -1;
+    return this.balance() * Relations.sign(relation) * -1;
   },
   mostOverdueDays() {
     if (this.balance() === 0) return 0;

@@ -10,6 +10,7 @@ import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
@@ -112,8 +113,12 @@ StatementEntries.actions = {
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc) && (options.txdef || doc.match?.tx?.defId),
     run() {
       ModalStack.setVar('statementEntry', doc);
-
-      const insertTx = doc.match?.tx || {};
+      const insertTx = doc.match?.tx || {
+        communityId: doc.communityId,
+        amount: doc.amount * (Relations.sign(options.txdef?.data.relation) || 1),
+        valueDate: doc.valueDate,
+        title: doc.note,
+      };
       let txdef;
       if (options.txdef) {
         txdef = options.txdef;
