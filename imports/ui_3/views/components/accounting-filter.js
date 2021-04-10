@@ -30,7 +30,7 @@ import './accounting-filter.html';
 ViewModel.share({
   accountingFilter: {
     txStatusSelected: [],
-    unreconciledOnly: false,
+    unreconciledOnly: true,
     activePartnerRelation: 'supplier',  // only on bills page
     beginDate: '',
     endDate: '',
@@ -66,27 +66,31 @@ ViewModel.share({
       this.txStatusSelected(['draft', 'posted']);
       this.beginDate(defaultBeginDate());
       this.endDate(defaultEndDate());
-      this.unreconciledOnly(false);
+      this.unreconciledOnly(true);
       this.partnerContractSelected('');
       this.localizerSelected('');
     },
     hasFilters() {
       if (this.txStatusSelected()[0] !== 'draft' ||
           this.txStatusSelected()[1] !== 'posted' ||
-          this.unreconciledOnly() !== false ||
+          this.unreconciledOnly() !== true ||
           this.beginDate() !== defaultBeginDate() ||
           this.endDate() !== defaultEndDate() ||
           this.partnerContractSelected() ||
           this.localizerSelected()) return true;
       return false;
     },
-    subscribeSelector() {
+    subscribeSelector(category) {
       const communityId = this.communityId();
       const selector = { communityId };
       selector.relation = this.activePartnerRelation();
       if (this.txStatusSelected().length > 0) selector.status = { $in: this.txStatusSelected() };
       if (this.unreconciledOnly()) {
-        selector.outstanding = { $ne: 0 };
+        if (category === 'bill') selector.outstanding = { $ne: 0 };
+        else if (category === 'receipt') selector.seId = { $exists: false };
+        else if (category === 'payment') {
+          selector.$or = [{ outstanding: { $ne: 0 } }, { seId: { $exists: false } }];
+        }
       }
       selector.valueDate = {};
       if (this.beginDate()) selector.valueDate.$gte = new Date(this.beginDate());
@@ -100,7 +104,7 @@ ViewModel.share({
       return selector;
     },
     filterSelector(category) {
-      const selector = this.subscribeSelector();
+      const selector = this.subscribeSelector(category);
       selector.category = category;
       return selector;
     },
