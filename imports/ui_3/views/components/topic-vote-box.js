@@ -41,7 +41,7 @@ Template.Topic_vote_body.onRendered(function () {
       });
       return self.waypoint && self.waypoint.disable();
     },
-    context: document.getElementById('wrapper'),
+   // context: document.getElementById('wrapper'), // needed if wrapper height is 100vh for webview
     offset: '80%',
   });
 });
