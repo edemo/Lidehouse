@@ -587,6 +587,7 @@
   "Insert bill": "Számla rögzítése",
   "Full": "Teljes",
   "Remainder": "Maradék",
+  "unreconciledOnlyHelp": "Számlák közül csak azok, amik pénzügyileg rendezetlenek. Fizetések közül csak azok, amik nincsenek számlákhoz egyeztetve vagy nincsenek bankkivonathoz egyeztetve. Partnerek közül csak azok, akiknek kinnlevősége van. Egyszóval csak azok a tételek, amikkel még teendő van.",
 
   // docstore
   "Show": "Listázva",
