@@ -13,6 +13,8 @@ Package.onUse(function(api) {
     'theme.datatables.min.css',
   	'dataTables.select.min.js',
     'dataTables.select.min.css',
+  	'fixedHeader.dataTables.min.js',
+  	'fixedHeader.dataTables.min.css',
     'datatables_i18n.js',
   	'reactive-datatables.js',
   	'reactive-datatable-template.html',

@@ -12,6 +12,7 @@ ReactiveDatatable = function(options) {
 			targets: '_all',
 			defaultContent: '–––'
 		}],
+		fixedHeader: true,
 //		stateLoadParams: function(settings, data) {
 			// Make it easy to change to the stored page on .update()
 //			self.page = data.start / data.length;
