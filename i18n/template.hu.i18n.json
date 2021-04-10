@@ -1,6 +1,6 @@
 {
   // accounts
-  "COA": "Számlatükör",
+  "ChartOfAccounts": "Számlatükör",
   "Chart of Accounts": "Főkönyvi számlák",
   "Incomes" : "BEVÉTELEK",
   "Expenses" : "RÁFORDÍTÁSOK",

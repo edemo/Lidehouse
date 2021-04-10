@@ -222,15 +222,14 @@ export const recognize = new ValidatedMethod({
         const possibleRelations = _.filter(partner.relation, r => Relations.sign(r) === Math.sign(entry.amount));
         if (possibleRelations.length > 1) {
           relation = _.find(possibleRelations, r => Transactions.findOne({ communityId, category: 'bill', relation: r, outstanding: { $ne: 0 } }));
-        }
-        if (!relation) relation = possibleRelations[0];
+        } else if (possibleRelations.length === 1) {
+          relation = possibleRelations[0];
+        } else Log.debug('No appropriate relation of partner');
       }
     } else {
-      Log.debug('No appropriate relation of partner');
+      Log.debug('No appropriate partner found');
     }
-    if (!partner || !relation) {
-      return;
-    }
+    if (!partner || !relation) return;
 
     const contract = partner.contracts(relation)?.[0];
     const adjustedEntryAmount = entry.amount * Relations.sign(relation);
