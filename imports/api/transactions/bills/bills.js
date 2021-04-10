@@ -297,7 +297,7 @@ Factory.define('bill', Transactions, {
 export const chooseBill = {
   options() {
     const communityId = ModalStack.getVar('communityId');
-    const bills = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
+    const bills = Transactions.find({ communityId, category: 'bill', outstanding: { $ne: 0 } });
     const options = bills.map(function option(bill) {
       return { label: `${bill.serialId} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
     });

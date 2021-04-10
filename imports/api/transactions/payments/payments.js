@@ -23,23 +23,6 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 
-Math.smallerInAbs = function smallerInAbs(a, b) {
-  if (a >= 0 && b >= 0) return Math.min(a, b);
-  else if (a <= 0 && b <= 0) return Math.max(a, b);
-  debugAssert(false); return undefined;
-};
-
-Array.oppositeSignsFirst = function oppositeSignsFirst(inputArray, number, key) {
-  const negatives = [];
-  const positives = [];
-  inputArray.forEach(elem => {
-    if (elem < 0 || elem[key] < 0) negatives.push(elem);
-    else positives.push(elem);
-  });
-  if (number >= 0) return negatives.concat(positives);
-  else return positives.concat(negatives);
-};
-
 export const Payments = {};
 
 export const chooseBillOfPartner = {
@@ -51,7 +34,7 @@ export const chooseBillOfPartner = {
 //    const bills = Transactions.find({ communityId, category: 'bill', relation, outstanding: { $gt: 0, $lte: amount } });
 //    const billByProximity = _.sortBy(bills.fetch(), b => (b.oustanding - amount));
     const onFormAllocatedBillIds = _.pluck(AutoForm.getFieldValue('bills'), 'id');
-    const selector = { communityId, category: 'bill', relation, partnerId, status: { $ne: 'void' }, outstanding: { $gt: 0 }, _id: { $nin: onFormAllocatedBillIds } };
+    const selector = { communityId, category: 'bill', relation, partnerId, status: { $ne: 'void' }, outstanding: { $ne: 0 }, _id: { $nin: onFormAllocatedBillIds } };
     const bills = Transactions.find(Object.cleanUndefined(selector), { sort: { createdAt: -1 } });
     const options = bills.map(function option(bill) {
       return { label: bill.displayInSelect(), value: bill._id };
@@ -181,8 +164,8 @@ Transactions.categoryHelpers('payment', {
       }
       billSum += pb.amount;
     });
-    if ((this.amount > 0 && billSum > this.amount) || (this.amount < 0 && billSum < this.amount)) {
-      throw new Meteor.Error('err_sanityCheckFailed', "Lines amounts cannot exceed payment's amount", `${billSum} - ${this.amount}`);
+    if ((this.amount >= 0 && billSum > this.amount) || (this.amount <= 0 && billSum < this.amount)) {
+      throw new Meteor.Error('err_sanityCheckFailed', "Bills' amounts cannot exceed payment's amount", `${billSum} - ${this.amount}`);
     }
     let lineSum = 0;
     const lineValues = [];
@@ -191,6 +174,9 @@ Transactions.categoryHelpers('payment', {
       lineValues.push(line.amount);
     });
     productionAssert(lineValues.every((val) => val >= 0) || lineValues.every((val) => val <= 0), 'err_notAllowed', 'All lines must have the same sign');
+    if ((this.amount >= 0 && lineSum > this.amount) || (this.amount <= 0 && lineSum < this.amount)) {
+      throw new Meteor.Error('err_sanityCheckFailed', "Lines amounts cannot exceed payment's amount", `${lineSum} - ${this.amount}`);
+    }
     if (this.amountWoRounding() !== lineSum + billSum) {
       throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.unallocated()}`);
     }
@@ -217,8 +203,9 @@ Transactions.categoryHelpers('payment', {
         const thisPaymentOnBill = bill.payments?.find(p => p.id === this._id);
         if (thisPaymentOnBill) billOutstanding += thisPaymentOnBill.amount;
       }
-      const autoAmount = Math.min(amountToAllocate, billOutstanding);
-      if (pb.amount > billOutstanding) pb.amount = autoAmount;
+      const sameSign = Math.sign(amountToAllocate) === Math.sign(billOutstanding);
+      const autoAmount = sameSign ? Math.smallerInAbs(amountToAllocate, billOutstanding) : 0;
+      if (Math.abs(pb.amount) > Math.abs(billOutstanding)) pb.amount = autoAmount;
       if (!pb.amount) pb.amount = autoAmount; // we dont override amounts that are specified
       amountToAllocate -= pb.amount;
       if (amountToAllocate === 0) return false;
@@ -281,7 +268,7 @@ Transactions.categoryHelpers('payment', {
           if (payment.id !== this._id) paidBefore += payment.amount;
         });
         let unallocatedFromBill = billPaid.amount;
-        const billLines = Array.oppositeSignsFirst(bill.getLines(), bill.amount, 'amount');
+        const billLines = bill.getLines().oppositeSignsFirst(bill.amount, 'amount');
         billLines.forEach(line => {
           if (unallocatedAmount === 0) return false;
           if (paidBefore === 0) {
