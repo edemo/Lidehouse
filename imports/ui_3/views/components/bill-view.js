@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { displayAccount, displayLocalizer } from '/imports/ui_3/helpers/api-display.js';
 import '/imports/api/transactions/actions.js';
 
 import './bill-view.html';
@@ -27,5 +28,13 @@ Template.Bill_view.viewmodel({
   },
   findTx(id) {
     return Transactions.findOne(id);
+  },
+  displayAccount(code, communityId) {
+    if (!Meteor.user().hasPermission('transactions.inCommunity')) return '';
+    return displayAccount(code, communityId);
+  },
+  displayLocalizer(code, communityId) {
+    if (!Meteor.user().hasPermission('transactions.inCommunity')) return '';
+    return displayLocalizer(code, communityId);
   },
 });

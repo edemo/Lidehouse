@@ -1,6 +1,7 @@
 /* eslint-disable no-extend-native */
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
+import { moment } from 'meteor/momentjs:moment';
 import deepExtend from 'deep-extend';
 
 // Source: https://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
@@ -117,6 +118,14 @@ Array.prototype.oppositeSignsFirst = function oppositeSignsFirst(number, key) {
   });
   if (number >= 0) return negatives.concat(positives);
   else return positives.concat(negatives);
+};
+
+Date.newUTC = function newUTCDate(...params) {
+  return moment.utc(...params).toDate();
+};
+
+Date.formatUTC = function formatUTCDate(date, format) {
+  return moment.utc(date).format(format);
 };
 
 _.isDefined = function isDefined(obj) { // underscore did not have this

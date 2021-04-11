@@ -988,13 +988,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     localizer: '@',
     notes: __('demo.transactions.notes.0'),
     activeTime: {
-      begin: new Date(`${lastYear}-08-01`),
-      end: new Date(`${lastYear}-08-31`),
+      begin: Date.newUTC(`${lastYear}-08-01`),
+      end: Date.newUTC(`${lastYear}-08-31`),
     },
   });
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
-    Clock.setSimulatedTime(new Date(`${lastYear}-${mm}-12`));
+    Clock.setSimulatedTime(Date.newUTC(`${lastYear}-${mm}-12`));
     builder.execute(ParcelBillings.methods.apply, { communityId, date: Clock.currentDate() });
   });
 
@@ -1002,7 +1002,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   builder.everybodyPaysTheirBills();
 
   // Some unpaid bills (so we can show the parcels that are in debt)
-  Clock.setSimulatedTime(new Date(`${lastYear}-12-20`));
+  Clock.setSimulatedTime(Date.newUTC(`${lastYear}-12-20`));
   const extraBillingId = builder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
     projection: {
@@ -1012,16 +1012,16 @@ export function insertDemoHouse(lang, demoOrTest) {
     digit: Accounts.findPayinDigitByName('Rendkivüli befizetés előírás'),
     localizer: '@',
     activeTime: {
-      begin: new Date(`${lastYear}-12-01`),
-      end: new Date(`${lastYear}-12-31`),
+      begin: Date.newUTC(`${lastYear}-12-01`),
+      end: Date.newUTC(`${lastYear}-12-31`),
     },
   });
-  builder.execute(ParcelBillings.methods.apply, { communityId, ids: [extraBillingId], date: new Date(`${lastYear}-12-20`) });
+  builder.execute(ParcelBillings.methods.apply, { communityId, ids: [extraBillingId], date: Date.newUTC(`${lastYear}-12-20`) });
 
   // Unidentified payin
   builder.create('statementEntry', {
     account: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
-    valueDate: new Date(`${lastYear}-12-30`),
+    valueDate: Date.newUTC(`${lastYear}-12-30`),
     amount: 24500,
     name: 'Gipsz Jakab',
     note: 'Sógoromnak fizetem be mert elutazott Madridba',
@@ -1041,7 +1041,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   ];
   openings.forEach((opening) => {
     builder.create('opening', {
-      valueDate: new Date(`${lastYear}-01-01`),
+      valueDate: Date.newUTC(`${lastYear}-01-01`),
       side: 'debit',
       amount: opening[2],
       account: Accounts.findOne({ communityId, category: opening[0], name: opening[1] }).code,
@@ -1050,7 +1050,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
     builder.create('transfer', {
-      valueDate: new Date(`${lastYear}-${mm}-01`),
+      valueDate: Date.newUTC(`${lastYear}-${mm}-01`),
       amount: 100000,  
       fromAccount: '`382',
       toAccount: '`384',
@@ -1062,9 +1062,9 @@ export function insertDemoHouse(lang, demoOrTest) {
   ['03', '06', '09', '12'].forEach(mm => {
     const billId = builder.create('bill', {
       relation: 'supplier',
-      issueDate: new Date(`${lastYear}-${mm}-15`),
-      deliveryDate: new Date(`${lastYear}-${mm}-05`),
-      dueDate: new Date(`${lastYear}-${mm}-30`),
+      issueDate: Date.newUTC(`${lastYear}-${mm}-15`),
+      deliveryDate: Date.newUTC(`${lastYear}-${mm}-05`),
+      dueDate: Date.newUTC(`${lastYear}-${mm}-30`),
       // amount: 282600,
       partnerId: supplier2,
       contractId: contract2,
@@ -1085,7 +1085,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         relation: 'supplier',
         bills: [{ id: billId, amount: 282600 }],
         amount: 282600,
-        valueDate: new Date(`${lastYear}-${mm}-25`),
+        valueDate: Date.newUTC(`${lastYear}-${mm}-25`),
         partnerId: supplier2,
         relationAccount: '`454',
         payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
@@ -1096,7 +1096,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // An Invoice, half paid
   const invoiceId = builder.create('bill', {
     relation: 'customer',
-    valueDate: new Date(`${lastYear}-03-15`),
+    valueDate: Date.newUTC(`${lastYear}-03-15`),
     partnerId: customer0,
     contractId: contract10,
     relationAccount: '`31',
@@ -1114,7 +1114,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     relation: 'customer',
     bills: [{ id: invoiceId, amount: 25000 }],
     amount: 25000,
-    valueDate: new Date(`${lastYear}-03-25`),
+    valueDate: Date.newUTC(`${lastYear}-03-25`),
     partnerId: customer0,
     payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
   });
@@ -1151,7 +1151,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   builder.create('income', {
     partnerId: partnerStudio,
-    valueDate: new Date(`${lastYear}-06-01`),
+    valueDate: Date.newUTC(`${lastYear}-06-01`),
     lines: [{
       title: 'Forgatási bérleti díj',
       uom: 'db',
@@ -1166,7 +1166,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
     builder.create('income', {
       partnerId: partnerBank,
-      valueDate: new Date(`${lastYear}-${mm}-01`),
+      valueDate: Date.newUTC(`${lastYear}-${mm}-01`),
       lines: [{
         title: 'Banki kamat',
         uom: 'hó',
@@ -1181,7 +1181,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   builder.create('income', {
     partnerId: partnerBank,
-    valueDate: new Date(`${lastYear}-09-15`),
+    valueDate: Date.newUTC(`${lastYear}-09-15`),
     lines: [{
       title: 'Állami támogatás tetőfelújításra',
       uom: 'db',
@@ -1196,7 +1196,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   builder.create('income', {
     partnerId: customer0,
-    valueDate: new Date(`${lastYear}-05-10`),
+    valueDate: Date.newUTC(`${lastYear}-05-10`),
     lines: [{
       title: 'Antenna hely bérleti díj',
       uom: 'év',
@@ -1211,7 +1211,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   builder.create('income', {
     partnerId: partnerCustomer,
-    valueDate: new Date(`${lastYear}-10-15`),
+    valueDate: Date.newUTC(`${lastYear}-10-15`),
     lines: [{
       title: '???',
       uom: '?',
@@ -1226,7 +1226,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   builder.create('income', {
     partnerId: partnerBank,
-    valueDate: new Date(`${lastYear}-07-21`),
+    valueDate: Date.newUTC(`${lastYear}-07-21`),
     lines: [{
       title: 'Banki hitel',
       uom: 'db',
@@ -1241,7 +1241,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // == Expenses
   builder.create('expense', {
     partnerId: supplier0,
-    valueDate: new Date(`${lastYear}-01-10`),
+    valueDate: Date.newUTC(`${lastYear}-01-10`),
     lines: [{
       title: 'Kazán',
       uom: 'db',
@@ -1256,7 +1256,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   for (let mm = 1; mm < 13; mm++) {
     builder.create('expense', {
       partnerId: partnerKozmu,
-      valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
+      valueDate: Date.newUTC(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       lines: [{
         title: 'Víz fogyasztás',
         uom: 'm3',
@@ -1270,7 +1270,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
     builder.create('expense', {
       partnerId: partnerKozmu,
-      valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
+      valueDate: Date.newUTC(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       lines: [{
         title: 'Csatorna díj',
         uom: 'hó',
@@ -1284,7 +1284,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
     builder.create('expense', {
       partnerId: partnerKozmu,
-      valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '07', '08', '10'])}`),
+      valueDate: Date.newUTC(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '07', '08', '10'])}`),
       lines: [{
         title: 'Áram fogyasztás',
         uom: 'mért',

@@ -258,7 +258,7 @@ Transactions.categoryHelpers('bill', {
     return this.amount - paid;
   },
   displayInSelect() {
-    return `${this.serialId} (${this.partner()} ${moment(this.valueDate).format('YYYY.MM.DD')} ${this.outstanding}/${this.amount})`;
+    return `${this.serialId} (${this.partner()} ${Date.formatUTC(this.valueDate, 'YYYY.MM.DD')} ${this.outstanding}/${this.amount})`;
   },
   displayInHistory() {
     return __(`schemaTransactions.category.options.${this.category}`) + (this.lineCount() ? ` (${this.lineCount()} ${__('item')})` : '');
