@@ -68,21 +68,14 @@ Parcels.actions = {
     color: (() => {
       let colorClass = '';
       if (Memberships.findOneActive({ parcelId: doc._id, approved: false })) colorClass = 'danger';
-      else if (Memberships.findOneActive({ parcelId: doc._id })) {
-        const representor = Memberships.findOneActive({ parcelId: doc._id, 'ownership.representor': true });
+      else {
+        const representor = doc.representorOrFirstOwner();
         if (representor) {
           if (!representor.accepted) {
             if (!representor.userId) colorClass = 'warning';
             else colorClass = 'info';
           }
-        } else {  // no representor
-          if (Memberships.findOneActive({ parcelId: doc._id, accepted: false })) {
-            if (Memberships.findOneActive({ parcelId: doc._id, userId: { $exists: false } })) colorClass = 'warning';
-            else colorClass = 'info';
-          }
-        }
-      } else  {   // no active membership at all
-        colorClass = 'danger';
+        } else colorClass = 'danger';
       }
       return colorClass;
     })(),

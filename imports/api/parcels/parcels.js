@@ -145,6 +145,9 @@ Parcels.helpers({
   representor() {
     return this.representors().fetch()[0];
   },
+  representorOrFirstOwner() {
+    return this.representor() || this.owners().fetch()[0];
+  },
   _payerMembership() {
     const payer = this.representor() || this.owners().fetch()[0];
     return payer;
