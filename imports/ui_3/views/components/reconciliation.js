@@ -40,7 +40,7 @@ Template.Reconciliation.onRendered(function () {
     if (!hasSuchUnreconlicedTx) {
       if (!instance.data.newTransactionLaunched) {
         instance.data.newTransactionLaunched = true;
-        Transactions.actions.new({}, {}).run();
+        Transactions.actions.new({}, { defId, category: txdef.category, relation: txdef.data.relation }).run();
       }
     }
   });
