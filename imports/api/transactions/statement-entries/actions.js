@@ -113,23 +113,24 @@ StatementEntries.actions = {
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc) && (options.txdef || doc.match?.tx?.defId),
     run() {
       ModalStack.setVar('statementEntry', doc);
-      let txdef, insertTx;
+      let txdef, newTx;
       if (options.txdef) {
         txdef = options.txdef;
-        insertTx = {
+        newTx = {
           communityId: doc.communityId,
           valueDate: doc.valueDate,
           title: doc.note,
         };
-        Transactions.setTxdef(insertTx, txdef);
+        Transactions.setTxdef(newTx, txdef);
       } else {
         debugAssert(doc.match.tx);
         txdef = Txdefs.findOne(doc.match.tx.defId);
-        insertTx = doc.match.tx;
+        newTx = doc.match.tx;
       }
+      ModalStack.setVar('newDoc', newTx);
 
       if (doc.community().settings.paymentsWoStatement) {
-        const reconciliationDoc = { _id: doc._id, defId: insertTx.defId, txId: doc.match?.txId };
+        const reconciliationDoc = { _id: doc._id, defId: newTx.defId, txId: doc.match?.txId };
         Modal.show('Autoform_modal', {
           body: 'Reconciliation',
           bodyContext: { doc: reconciliationDoc },
@@ -143,7 +144,7 @@ StatementEntries.actions = {
           size: 'lg',
         });
       } else {
-        Transactions.actions.new({ txdef }, insertTx).run();
+        Transactions.actions.new({ txdef }, newTx).run();
         ModalStack.autorun((computation) => {
           const result = ModalStack.readResult('root', `af.${txdef.category}.insert`, true);
           if (result) {

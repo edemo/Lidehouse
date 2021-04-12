@@ -1,5 +1,4 @@
 /* global AutoForm */
-//import { ReactiveVar } from 'meteor/reactive-var';
 
 Template.afQuickField.helpers({
   isGroup: function afQuickFieldIsGroup() {
@@ -82,7 +81,9 @@ Template.afQuickField.events({
     var collection = Factory.get(entity).collection;
     const options = { entity: collection.entities && collection.entities[entity], splitable() { return false; } };
 //    Object.setPrototypeOf(options, new ActionOptions(collection));
-    collection.actions.new(options).run(event, instance);
+    const modalStack = Session.get('modalStack'); // TODO: ModalStack should be its own package, and autoform should use it
+    const doc = modalStack[modalStack.length - 1].context.newDoc;
+    collection.actions.new(options, doc).run(event, instance);
   },
   'click .js-view'(event, instance) {
     var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
