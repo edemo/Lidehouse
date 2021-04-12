@@ -18,8 +18,13 @@ const transferSchema = new SimpleSchema({
 
 Transactions.categoryHelpers('transfer', {
   fillFromStatementEntry(entry) {
-    if (entry.amount >= 0) this.toAccount = entry.account;
-    if (entry.amount <= 0) this.fromAccount = entry.account;
+    if (entry.amount >= 0) {
+      this.toAccount = entry.account;
+      this.amount = entry.amount;
+    } else {
+      this.fromAccount = entry.account;
+      this.amount = -1 * entry.amount;
+    }
   },
   makeJournalEntries() {
     this.debit = [{ account: this.toAccount }];

@@ -88,28 +88,31 @@ export const reconcile = new ValidatedMethod({
     let newContractId;  // will be filled if a new contract is autocreated now
     if (Meteor.isServer) {
       checkReconcileMatch(entry, reconciledTx);
-      const entryName = entry.nameOrType();
-      if (reconciledTx.partnerId && entryName && entryName !== reconciledTx.partner().idCard.name) {
-        Recognitions.setName(entryName, reconciledTx.partner().idCard.name, { communityId });
-      }
-      if (reconciledTx.lines?.length === 1) {
-        let contract = reconciledTx.contract() || reconciledTx.partner().contracts(reconciledTx.relation).fetch()[0];
-        const line = reconciledTx.lines[0];
-        if (!contract) {
-          let parcelId;
-          if (reconciledTx.relation === 'member') {
-            if (!line.localizer) throw new Meteor.Error('err_notAllowed', 'Need to provide a location');
-            parcelId = Localizer.parcelFromCode(line.localizer, communityId)._id;
-          }
-          const doc = Object.cleanUndefined({ communityId, relation: reconciledTx.relation, partnerId: reconciledTx.partnerId, parcelId });
-          newContractId = Contracts.insert(doc);
-          contract = Contracts.findOne(newContractId);
+      if (reconciledTx.category === 'payment') {
+        // Machine learning the accounting
+        const entryName = entry.nameOrType();
+        if (reconciledTx.partnerId && entryName && entryName !== reconciledTx.partner().idCard.name) {
+          Recognitions.setName(entryName, reconciledTx.partner().idCard.name, { communityId });
         }
-        if (line.account !== contract.accounting?.account ||
-          line.localizer !== contract.accounting?.localizer ||
-          (reconciledTx.relation === 'member' && !contract.parcelId)) {
-          const modifier = { $set: { 'accounting.account': line.account, 'accounting.localizer': line.localizer } };
-          Contracts.update(contract._id, modifier, { selector: { relation: contract.relation } });
+        if (reconciledTx.lines?.length === 1) {
+          let contract = reconciledTx.contract() || reconciledTx.partner().contracts(reconciledTx.relation).fetch()[0];
+          const line = reconciledTx.lines[0];
+          if (!contract) {
+            let parcelId;
+            if (reconciledTx.relation === 'member') {
+              if (!line.localizer) throw new Meteor.Error('err_notAllowed', 'Need to provide a location');
+              parcelId = Localizer.parcelFromCode(line.localizer, communityId)._id;
+            }
+            const doc = Object.cleanUndefined({ communityId, relation: reconciledTx.relation, partnerId: reconciledTx.partnerId, parcelId });
+            newContractId = Contracts.insert(doc);
+            contract = Contracts.findOne(newContractId);
+          }
+          if (line.account !== contract.accounting?.account ||
+            line.localizer !== contract.accounting?.localizer ||
+            (reconciledTx.relation === 'member' && !contract.parcelId)) {
+            const modifier = { $set: { 'accounting.account': line.account, 'accounting.localizer': line.localizer } };
+            Contracts.update(contract._id, modifier, { selector: { relation: contract.relation } });
+          }
         }
       }
     }

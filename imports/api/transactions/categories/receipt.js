@@ -12,6 +12,7 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Bills, BillAndReceiptHelpers } from '/imports/api/transactions/bills/bills.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
 const receiptSchema = new SimpleSchema([
@@ -31,9 +32,10 @@ const receiptSchema = new SimpleSchema([
 Transactions.categoryHelpers('receipt', {
   ...BillAndReceiptHelpers,
   fillFromStatementEntry(entry) {
+    this.amount = entry.amount * Relations.sign(this.relation);
     this.payAccount = entry.account;
     const title =  entry.note || __(this.txdef().name);
-    this.lines = [{ title, quantity: 1, unitPrice: Math.abs(entry.amount) }];
+    this.lines = [{ title, quantity: 1, unitPrice: this.amount }];
   },
   makeJournalEntries() {
     const self = this;

@@ -17,7 +17,7 @@ import { LocationTagsSchema } from '/imports/api/transactions/account-specificat
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Partners } from '/imports/api/partners/partners.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -232,7 +232,9 @@ Transactions.categoryHelpers('payment', {
     }
   },
   fillFromStatementEntry(entry) {
+    this.amount = entry.amount * Relations.sign(this.relation);
     this.payAccount = entry.account;
+    this.lines = [{ amount: this.amount }];
   },
   makeJournalEntries(accountingMethod) {
     this.debit = [];

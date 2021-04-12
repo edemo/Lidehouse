@@ -18,7 +18,7 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels, chooseParcel } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
-import { Partners } from '/imports/api/partners/partners.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 
 export const Bills = {};
@@ -213,6 +213,7 @@ Transactions.categoryHelpers('bill', {
     return account;
   },
   fillFromStatementEntry(entry) {
+    this.amount = entry.amount * Relations.sign(this.relation);
     this.issueDate = entry.valueDate;
     this.deliveryDate = entry.valueDate;
     this.dueDate = entry.valueDate;

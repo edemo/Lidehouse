@@ -113,19 +113,19 @@ StatementEntries.actions = {
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc) && (options.txdef || doc.match?.tx?.defId),
     run() {
       ModalStack.setVar('statementEntry', doc);
-      const insertTx = doc.match?.tx || {
-        communityId: doc.communityId,
-        amount: doc.amount * (Relations.sign(options.txdef?.data.relation) || 1),
-        valueDate: doc.valueDate,
-        title: doc.note,
-      };
-      let txdef;
+      let txdef, insertTx;
       if (options.txdef) {
         txdef = options.txdef;
+        insertTx = {
+          communityId: doc.communityId,
+          valueDate: doc.valueDate,
+          title: doc.note,
+        };
         Transactions.setTxdef(insertTx, txdef);
       } else {
-        debugAssert(insertTx.defId);
-        txdef = Txdefs.findOne(insertTx.defId);
+        debugAssert(doc.match.tx);
+        txdef = Txdefs.findOne(doc.match.tx.defId);
+        insertTx = doc.match.tx;
       }
 
       if (doc.community().settings.paymentsWoStatement) {
