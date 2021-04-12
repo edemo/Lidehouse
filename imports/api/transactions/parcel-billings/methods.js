@@ -21,7 +21,7 @@ import { displayDate } from '/imports/ui_3/helpers/utils.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
-export const BILLING_DUE_DAYS = 10;
+export const BILLING_DUE_DAYS = 8;
 
 function display(reading) {
   return `${reading.value.round(3)} (${displayDate(reading.date)})`; /* parcelBilling.consumption.decimals */
@@ -74,6 +74,7 @@ export const apply = new ValidatedMethod({
 
             // Creating the bill - adding line to the bill
             const leadParcel = parcel.leadParcel();
+            const issueDate = Clock.currentDate();
             billsToSend[leadParcel._id] = billsToSend[leadParcel._id] || {
               communityId: parcelBilling.communityId,
               category: 'bill',
@@ -83,9 +84,9 @@ export const apply = new ValidatedMethod({
               partnerId: leadParcel.payerPartner()._id,
               contractId: leadParcel.payerContract()._id,
               relationAccount,
-              issueDate: Clock.currentDate(),
+              issueDate,
               deliveryDate: date,
-              dueDate: moment(date).add(BILLING_DUE_DAYS, 'days').toDate(),
+              dueDate: moment(issueDate).add(BILLING_DUE_DAYS, 'days').toDate(),
               lines: [],
             };
             billsToSend[leadParcel._id].lines.push(line);
