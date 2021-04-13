@@ -400,7 +400,8 @@
     "accounting": {
       "label": "Alapértelmezett könyvelés",
       "account": {
-        "label": "Főkönyvi szám"
+        "label": "Főkönyvi szám",
+        "help": "A rendszer automatikusan ezt fogja elsőként felajánlani ehhez a szerződéshez, amikor az egyeztetés során ez a szerződés kerül kiválasztásra. Így gyorsabban lehet dolgozni."
       },
       "localizer": {
         "label": "Könyvelési hely"

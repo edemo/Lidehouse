@@ -41,7 +41,8 @@ ViewModel.share({
     autorun() {
       const communityId = this.communityId();
       this.localizerOptions(Parcels.nodeOptionsOf(communityId, ''));
-      this.partnerContractOptions([{ label: __('All'), value: '' }].concat(Contracts.partnerContractOptions({ communityId })));
+      const partnerContractSelector = { communityId, relation: ModalStack.getVar('relation') };
+      this.partnerContractOptions([{ label: __('All'), value: '' }].concat(Contracts.partnerContractOptions(partnerContractSelector)));
     },
     communityId() {
       return ModalStack.getVar('communityId');

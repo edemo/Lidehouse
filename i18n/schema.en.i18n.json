@@ -400,7 +400,8 @@
     "accounting": {
       "label": "Default accounting",
       "account": {
-        "label": "Account"
+        "label": "Account",
+        "help": "The system will try to save you typing, by offering this account, when this contract is identified at recociliation."
       },
       "localizer": {
         "label": "Location"
