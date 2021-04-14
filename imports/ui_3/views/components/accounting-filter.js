@@ -81,33 +81,27 @@ ViewModel.share({
           this.localizerSelected()) return true;
       return false;
     },
-    subscribeSelector(category) {
+    filterSelector(category) {
       const communityId = this.communityId();
-      const selector = { communityId };
-      selector.relation = this.activePartnerRelation();
+      const selector = {
+        communityId,
+        category,
+        begin: new Date(this.beginDate()),
+        end: new Date(this.endDate()),
+        partner: this.partnerContractSelected(),
+        relation: this.activePartnerRelation(),
+        localizer: this.localizerSelected(),
+        $and: [],
+      };
       if (this.txStatusSelected().length > 0) selector.status = { $in: this.txStatusSelected() };
       if (this.unreconciledOnly()) {
         if (category === 'bill') selector.outstanding = { $ne: 0 };
         else if (category === 'receipt') selector.seId = { $exists: false };
         else if (category === 'payment') {
-          selector.$or = [{ outstanding: { $ne: 0 } }, { seId: { $exists: false } }];
+          selector.$and.push({ $or: [{ outstanding: { $ne: 0 } }, { seId: { $exists: false } }] });
         }
       }
-      selector.valueDate = {};
-      if (this.beginDate()) selector.valueDate.$gte = new Date(this.beginDate());
-      if (this.endDate()) selector.valueDate.$lte = new Date(this.endDate());
-      if (this.partnerContractSelected()) {
-        const pc = this.partnerContractSelected().split('/');
-        if (pc[0]) selector.partnerId = pc[0];
-        if (pc[1]) selector.contractId = pc[1];
-      }
-      if (this.localizerSelected()) selector.localizer = '\\^' + this.localizerSelected() + '\\';
-      return selector;
-    },
-    filterSelector(category) {
-      const selector = this.subscribeSelector(category);
-      selector.category = category;
-      return selector;
+      return Transactions.makeFilterSelector(selector);
     },
   },
 });

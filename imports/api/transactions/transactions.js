@@ -492,7 +492,8 @@ Factory.define('freeTx', Transactions, {
 // ------------------- Publications utility
 
 function withSubs(code) {
-  return code[0] === '\\' ? new RegExp(code.split('\\')[1]) : code;
+  return new RegExp('^' + code);
+  //code[0] === '\\' ? new RegExp(code.split('\\')[1]) : code;
 }
 
 function dateFilter(begin, end) {
@@ -504,7 +505,7 @@ function dateFilter(begin, end) {
 
 Transactions.makeFilterSelector = function makeFilterSelector(params) {
   const selector = _.clone(params);
-  selector.$and = [];
+  selector.$and = selector.$and || [];
   if (params.begin || params.end) selector.valueDate = dateFilter(params.begin, params.end);
   delete selector.begin; delete selector.end;
   if (params.defId) {
@@ -548,7 +549,7 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
   }
 
   if (selector.$and.length === 0) delete selector.$and;
-  return selector;
+  return Object.cleanUndefined(selector);
 };
 
 JournalEntries.makeFilterSelector = function makeFilterSelector(params) {
