@@ -1253,7 +1253,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
   });
 
-  for (let mm = 1; mm < 13; mm++) {
+  ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
     builder.create('expense', {
       partnerId: partnerKozmu,
       valueDate: Date.newUTC(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
@@ -1295,7 +1295,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
       payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
     });
-  }
+  });
 
   builder.postAllTransactions();
   Clock.clear();
