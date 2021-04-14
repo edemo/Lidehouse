@@ -36,8 +36,10 @@ Template.Accounting_transactions.viewmodel({
 //  amount: undefined,
   onCreated(instance) {
   },
-  communityId() {
-    return ModalStack.getVar('communityId');
+  accountSelected(side) {
+    if (side === 'debit') return this.debitAccountSelected();
+    else if (side === 'credit') return this.creditAccountSelected();
+    else return undefined;
   },
   autorun: [
     function setTxdefOptions() {
@@ -59,12 +61,8 @@ Template.Accounting_transactions.viewmodel({
       this.debitAccountOptions(debitAccountOptions);
       const creaditAccountOptions = txdef ? Accounts.nodeOptionsOf(communityId, txdef.credit) : coa.nodeOptions();
       this.creditAccountOptions(creaditAccountOptions);
-      if (!this.debitAccountSelected() && this.debitAccountOptions() && this.debitAccountOptions().length > 0) {
-        this.debitAccountSelected(this.debitAccountOptions()[0].value);
-      }
-      if (!this.creditAccountSelected() && this.creditAccountOptions() && this.creditAccountOptions().length > 0) {
-        this.creditAccountSelected(this.creditAccountOptions()[0].value);
-      }
+      this.debitAccountSelected('`');
+      this.creditAccountSelected('`');
     },
   ],
   txdefs() {
@@ -78,14 +76,22 @@ Template.Accounting_transactions.viewmodel({
   transactionsFilterSelector() {
     const selector = this.filterSelector();
     delete selector.relation; // relation has only effect on the bills page
-    if (this.txdefSelected()) selector.defId = this.txdefSelected();
-    if (_.contains(this.txStatusSelected(), 'draft')) {
-      if (this.debitAccountSelected()?.length > 1) selector.debitAccount = this.debitAccountSelected();
-      if (this.creditAccountSelected()?.length > 1) selector.creditAccount = this.creditAccountSelected();
-    } else {
-      if (this.debitAccountSelected()) selector.debitAccount = this.debitAccountSelected();
-      if (this.creditAccountSelected()) selector.creditAccount = this.creditAccountSelected();
+    const defId = this.txdefSelected();
+    let txdef;
+    if (defId) {
+      selector.defId = defId;
+      txdef = Txdefs.findOne(defId);
     }
+    ['debit', 'credit'].forEach(side => {
+      let accountSelected = this.accountSelected(side);
+      const userSelectedAnAccount = accountSelected?.length > 1;
+      if (userSelectedAnAccount && txdef?.category === 'bill' && this.community().settings.accountingMethod === 'cash' && side === txdef.conteerSide()) {
+        accountSelected = Accounts.toTechnical(accountSelected);
+      }
+      if (userSelectedAnAccount || !_.contains(this.txStatusSelected(), 'draft')) {
+        selector[`${side}Account`] = accountSelected;
+      }
+    });
     return Transactions.makeFilterSelector(selector);
   },
   transactionsTableDataFn() {

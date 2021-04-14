@@ -79,8 +79,8 @@ Txdefs.helpers({
     return _.contains(['receipt', 'transfer'], this.category);
   },
   conteerSide() {
-    if (this.data.side) return this.data.side;  // opening, closing txs
-    const relation = this.data.relation;        // bill, payment, receipt txs
+    if (this.data?.side) return this.data.side;  // opening, closing txs
+    const relation = this.data?.relation;        // bill, payment, receipt txs
     if (relation === 'supplier') return 'debit';
     if (relation === 'customer' || relation === 'member') return 'credit';
     return undefined;

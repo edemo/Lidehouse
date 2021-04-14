@@ -50,7 +50,7 @@ export function displayAccountText(code) {
   if (!code) return '';
   const collection = code.charAt(0) === '`' ? Accounts : Parcels;
   const account = collection.getByCode(code);
-  return account && account.displayAccount();
+  return account?.displayAccount() || code;
 }
 
 export function displayAccount(code) {
