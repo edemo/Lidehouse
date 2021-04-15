@@ -46,7 +46,7 @@ Templates.clone = function clone(id, communityId) {
   const template = Templates.findOne(id);
   if (!template) {
     Log.info('Templates:', Templates.find({}).fetch());
-    throw new Meteor.Error(`No such template ${id}`);
+    throw new Meteor.Error('err_notExists', 'No such object', { template: id });
   }
   if (template.accounts) {
     template.accounts.forEach(doc => importAccount(communityId, doc));

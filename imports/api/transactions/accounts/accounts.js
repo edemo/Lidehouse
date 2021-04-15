@@ -95,7 +95,7 @@ Accounts.helpers({
 _.extend(Accounts, {
   checkExists(communityId, code) {
     if (!code || !Accounts.findOne({ communityId, code })) {
-      throw new Meteor.Error('err_notExists', `No such account: ${code}`);
+      throw new Meteor.Error('err_notExists', 'No such account', { code });
     }
   },
   coa(communityId = getActiveCommunityId()) {

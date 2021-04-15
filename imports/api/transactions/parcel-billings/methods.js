@@ -98,14 +98,14 @@ export const apply = new ValidatedMethod({
             activeMeters.forEach(activeMeter => {
               const line = {};
               const charge = parcelBilling.consumption.charges.find(c => c.uom === activeMeter.uom);
-              if (!charge) throw new Meteor.Error('err_invalidData', `The meter ${activeMeter.identifier} has to match the same uom, that the billing applies to`);
+              if (!charge) throw new Meteor.Error('err_invalidData', 'The meter has to match the same uom, that the billing applies to', { identifier: activeMeter.identifier });
               line.uom = charge.uom;
               line.unitPrice = charge.unitPrice;
               // TODO: Estimation if no reading available
               line.quantity = 0;
               const lastBilling = activeMeter.lastBilling(); delete lastBilling.billId;
               const lastReading = activeMeter.lastReading(date);
-              if (date < lastBilling.date) throw new Meteor.Error('err_invalidData', `The meter ${activeMeter.identifier} was already billed at a later date: ${lastBilling.date}`);
+              if (date < lastBilling.date) throw new Meteor.Error('err_invalidData', 'The meter was already billed at a later date', { identifier: activeMeter.identifier, lastBillingDate: lastBilling.date });
               const value = activeMeter.getEstimatedValue(date);
               const currentBilling = { date, value };
               line.metering = { id: activeMeter._id, start: lastBilling, end: currentBilling };
@@ -115,7 +115,7 @@ export const apply = new ValidatedMethod({
             });
           }
           if (!activeMeters.length) {
-            productionAssert(parcelBilling.projection, `Parcel ${parcel.ref} has no meter for billing ${parcelBilling.title}, and no projection is set up for this billing.`);
+            if (!parcelBilling.projection) throw new Meteor.Error('err_invalidData', 'Parcel has no meter for billing, and no projection is set up for this billing.', { parcel: parcel.ref, parcelBilling: parcelBilling.title });
             const line = {};
             line.unitPrice = parcelBilling.projection.unitPrice;
             line.uom = parcelBilling.projectionUom();

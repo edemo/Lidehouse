@@ -151,11 +151,11 @@ Transactions.categoryHelpers('payment', {
       const bill = Transactions.findOne(pb.id);
       function checkBillMatches(field) {
         if (bill[field] !== payment[field]) {
-          throw new Meteor.Error(`All paid bills need to have same ${field}`, `${bill[field]} !== ${payment[field]}`);
+          throw new Meteor.Error('err_sanityCheckFailed', 'All paid bills need to have same field', `field: ${field}, ${bill[field]} !== ${payment[field]}`);
         }
       }
       checkBillMatches('relation'); checkBillMatches('partnerId'); checkBillMatches('contractId');
-      productionAssert(pb.amount < 0 === bill.amount < 0, 'err_notAllowed', 'Bill amount and its payment must have the same sign');
+      productionAssert(pb.amount < 0 === bill.amount < 0, 'Bill amount and its payment must have the same sign');
       let amountToPay = bill.outstanding;
       const savedPayment = _.find(bill.getPayments(), p => p.id === this._id);
       if (savedPayment) savedPayment > 0 ? amountToPay -= savedPayment.amount : amountToPay += savedPayment.amount;
@@ -173,12 +173,12 @@ Transactions.categoryHelpers('payment', {
       lineSum += line.amount;
       lineValues.push(line.amount);
     });
-    productionAssert(lineValues.every((val) => val >= 0) || lineValues.every((val) => val <= 0), 'err_notAllowed', 'All lines must have the same sign');
+    productionAssert(lineValues.every((val) => val >= 0) || lineValues.every((val) => val <= 0), 'All lines must have the same sign');
     if ((this.amount >= 0 && lineSum > this.amount) || (this.amount <= 0 && lineSum < this.amount)) {
       throw new Meteor.Error('err_sanityCheckFailed', "Lines amounts cannot exceed payment's amount", `${lineSum} - ${this.amount}`);
     }
     if (this.amountWoRounding() !== lineSum + billSum) {
-      throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', `unallocated: ${this.unallocated()}`);
+      throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', { unallocated: this.unallocated() });
     }
     const connectedBillIds = _.pluck(this.getBills(), 'id');
     if (connectedBillIds.length !== _.uniq(connectedBillIds).length) {
@@ -244,7 +244,7 @@ Transactions.categoryHelpers('payment', {
     this.getBills().forEach(billPaid => {
       if (unallocatedAmount === 0) return false;
       const bill = Transactions.findOne(billPaid.id);
-      if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
+      if (!bill.isPosted()) throw new Meteor.Error('err_notAllowed', 'Bill has to be posted first');
       debugAssert(billPaid.amount < 0 === bill.amount < 0, 'Bill amount and its payment must have the same sign');
       const makeEntries = function makeEntries(line, amount) {
         const relationAccount = bill.lineRelationAccount(line);

@@ -67,7 +67,7 @@ export class Parser {
               return cellValue;
             } catch (err) {
               const parcel = Parcels.findOne({ communityId: doc.communityId, ref: cellValue.toString() });
-              productionAssert(parcel, `No parcel with this ref ${cellValue}`);
+              productionAssert(parcel, 'No parcel with this ref', { cellValue });
               return parcel?._id;
             }
           }
@@ -78,11 +78,11 @@ export class Parser {
             } catch (err) {
               if (isNaN(cellValue)) {  // name
                 const partner = Partners.findOne({ communityId: doc.communityId, 'idCard.name': cellValue });
-                productionAssert(partner, `No partner with this name ${cellValue}`);
+                productionAssert(partner, 'No partner with this name', { cellValue });
                 return partner?._id;
               } else {                // ref number
                 const partner = Partners.findOne({ communityId: doc.communityId, ref: cellValue });
-                productionAssert(partner, `No partner with this ref ${cellValue}`);
+                productionAssert(partner, 'No partner with this ref', { cellValue });
                 return partner?._id;
               }
             }
@@ -92,7 +92,7 @@ export class Parser {
       }
       case 'Object':
       case 'Array': return cellValue;
-      default: productionAssert(false, `Don't know how to parse ${typeName}`); return undefined;
+      default: productionAssert(false, 'Dont know how to parse', { typeName }); return undefined;
     }
   }
 

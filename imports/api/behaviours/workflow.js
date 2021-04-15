@@ -88,13 +88,13 @@ export const defaultWorkflow = {
 
 function checkStatusStartAllowed(topic, status) {
   if (!_.contains(topic.possibleStartStatuses().map(s => s.name), status)) {
-    throw new Meteor.Error('err_permissionDenied', `Topic ${topic._id} cannot start in ${status}`, topic.toString());
+    throw new Meteor.Error('err_permissionDenied', 'Topic cannot start in this status', { topic: topic.toString(), status });
   }
 }
 
 function checkStatusChangeAllowed(topic, statusTo) {
   if (!_.contains(topic.possibleNextStatuses().map(s => s.name), statusTo)) {
-    throw new Meteor.Error('err_permissionDenied', `Topic ${topic._id} cannot move from ${topic.status} into status ${statusTo}`, topic.toString());
+    throw new Meteor.Error('err_permissionDenied', 'Topic cannot move from this status into that status', { topic: topic.toString(), statusFrom: topic.status, statusTo });
   }
 }
 

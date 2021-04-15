@@ -42,7 +42,7 @@ export const insert = new ValidatedMethod({
     checkPermissions(this.userId, 'partners.insert', doc);
     if (doc.contact && doc.contact.email) {
       const partner = Partners.findOne({ communityId: doc.communityId, 'contact.email': doc.contact.email });
-      if (partner) throw new Meteor.Error('err_alreadyExists', `Partner with this email address already exists, you can select this person from the dropdown: ${partner.displayName()}`);
+      if (partner) throw new Meteor.Error('err_alreadyExists', 'Partner with this email address already exists, you can select this person from the dropdown', { partner: partner.displayName() });
     }
     const _id = Partners.insert(doc);
     return _id;
@@ -63,7 +63,7 @@ export const update = new ValidatedMethod({
     const newContactEmail = modifier.$set?.['contact.email'];
     if (newContactEmail && newContactEmail !== doc.contact?.email) {
       const partner = Partners.findOne({ _id: { $ne: doc._id }, communityId: doc.communityId, 'contact.email': newContactEmail });
-      if (partner) throw new Meteor.Error('err_alreadyExists', `Partner with this email address already exists: ${partner.displayName()}`);
+      if (partner) throw new Meteor.Error('err_alreadyExists', 'Partner with this email address already exists, you can select this person from the dropdown', { partner: partner.displayName() });
     }
     if (Meteor.isServer && userUnlinkNeeded(doc, modifier)) {
       if (!modifier.$unset) modifier.$unset = {};
@@ -134,11 +134,11 @@ export const remove = new ValidatedMethod({
     checkPermissions(this.userId, 'partners.remove', doc);
     Balances.checkNullBalance({ communityId: doc.communityId, partner: doc._id });
     const membership = Memberships.findOne({ partnerId: _id });
-    if (membership) throw new Meteor.Error('err_unableToRemove', `Partner ${_id} may not be removed, until membership ${membership._id} is using it.`);
+    if (membership) throw new Meteor.Error('err_unableToRemove', 'Partner may not be removed, until membership is using it.', { partner: _id, membership: membership._id });
     const transaction = Transactions.findOne({ partnerId: _id });
-    if (transaction) throw new Meteor.Error('err_unableToRemove', `Partner ${_id} may not be removed, until transaction ${transaction._id} is using it.`);
+    if (transaction) throw new Meteor.Error('err_unableToRemove', 'Partner may not be removed, until transaction is using it.', { partner: _id, transaction: transaction._id });
     const contract = Contracts.findOne({ partnerId: _id });
-    if (contract) throw new Meteor.Error('err_unableToRemove', `Partner ${_id} may not be removed, until contract ${contract._id} is using it.`);
+    if (contract) throw new Meteor.Error('err_unableToRemove', 'Partner may not be removed, until contract is using it.', { partner: _id, contract: contract._id });
     return Partners.remove(_id);
   },
 });

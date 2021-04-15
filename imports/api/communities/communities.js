@@ -113,7 +113,7 @@ Communities.helpers({
   },
   admin() {
     const user = this.userWithRole('admin');
-    productionAssert(user, `Community was found without an admin: ${this._id}`);
+    productionAssert(user, 'Community was found without an admin', { id: this._id });
     return user;
   },
   treasurer() {

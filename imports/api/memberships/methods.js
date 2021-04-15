@@ -22,8 +22,7 @@ function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
   if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?)
   const permissionName = entityOf(roleOfNewMember) + '.update';
   if (!user.hasPermission(permissionName, { communityId })) {
-    throw new Meteor.Error('err_permissionDenied',
-      `No permission to add membership, roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
+    throw new Meteor.Error('err_permissionDenied', 'No permission to add membership', { roleOfNewMember, userId, communityId });
   }
 }
 
@@ -34,16 +33,14 @@ function checkParcelMembershipsSanity(parcelId, memberships) {
   // Parcel can have only one representor
   const representorsCount = memberships.find({ communityId: parcel.communityId, active: true, approved: true, parcelId, role: 'owner', 'ownership.representor': true }).length;
   if (representorsCount > 1) {
-    throw new Meteor.Error('err_sanityCheckFailed', 'Parcel can have only one representor',
-      `Trying to set ${representorsCount} for parcel ${parcel._id}`);
+    throw new Meteor.Error('err_sanityCheckFailed', 'Parcel can have only one representor', { representorsCount, parcel: parcel._id });
   }
   // Ownership share cannot exceed 1
   let ownedShare = new Fraction(0);
   memberships.find({ parcelId, active: true, approved: true, role: 'owner' })
     .forEach(p => ownedShare = ownedShare.add(p.ownership.share));
   if (ownedShare.numerator > ownedShare.denominator) {
-    throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1',
-      `New total shares would become: ${ownedShare}, for parcel ${parcel._id}`);
+    throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1', { ownedShare, parcel: parcel._id });
   }
   // Following check is not good, if we have activePeriods (same guy can have same role at a different time)
   // checkNotExists(Memberships, { communityId: doc.communityId, role: doc.role, parcelId: doc.parcelId, partnerId: doc.partnerId });
@@ -57,8 +54,7 @@ export const insert = new ValidatedMethod({
     // Users can submit non-approved membership requests, just for themselves
     if (!doc.approved) {
       if (doc.userId && doc.userId !== this.userId) {
-        throw new Meteor.Error('err_permissionDenied',
-          `No permission to perform this activity: memberships.insert: ${doc}, user: ${this.userId}`);
+        throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity', { method: 'memberships.insert', doc, userId: this.userId });
       }
       // Nothing else to check. Things will be checked when it gets approved by community admin/manager.
       if (doc.community() && !doc.community().needsJoinApproval()) {

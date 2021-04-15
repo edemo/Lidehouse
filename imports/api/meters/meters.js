@@ -84,7 +84,7 @@ Meters.helpers({
       if (r.date <= date) lastReading = r;
       else return false;
     });
-    productionAssert(lastReading, `Meter ${this.toString()} has no reading before date ${date}. Looks like it did not exist at that time.`);
+    productionAssert(lastReading, 'Meter has no reading before the date. Looks like it did not exist at that time.', { meter: this.toString(), date });
     return lastReading;
   },
   lastBilling() {

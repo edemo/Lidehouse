@@ -170,7 +170,7 @@ Parcels.helpers({
       Log.debug('Did not find', contractSelector);
       if (Meteor.isServer) { // will be called from parcelbillings.apply
         const payerMembership = this._payerMembership();
-        productionAssert(payerMembership, 'err_invalidData', `Unable to pay for parcel ${this.ref} - no owner found`);
+        productionAssert(payerMembership, 'Unable to pay for parcel - no owner found', { parcel: this.ref });
         contractSelector.partnerId = payerMembership.partnerId;
         const contractId = Contracts.insert(contractSelector);
         payerContract = Contracts.findOne(contractId);
@@ -238,7 +238,7 @@ _.extend(Parcels, {
   // Almost a duplicate of Accounts functions, to use Parcels as localizer
   checkExists(communityId, code) {
     if (!code || !Parcels.findOne({ communityId, code })) {
-      throw new Meteor.Error('err_notExists', `No such parcel: ${code}`);
+      throw new Meteor.Error('err_notExists', 'No such parcel', { code });
     }
   },
   all(communityId) {

@@ -247,12 +247,12 @@ Breakdowns.helpers({
   nodeByCode(code) {
     if (!code) return this.root();
     const node = this.root()._nodeMap[code];
-    if (!node) throw new Meteor.Error(`Looking for ${code} in ${this.name}`, 'Cannot find breakdown node by code', this.nodeNames());
+    if (!node) throw new Meteor.Error('err_invalidData', 'Cannot find breakdown node by code', { Looking: code, in: this.name, names: this.nodeNames() });
     return node;
   },
   findNodeByName(name) {  // warning!! Name is not a unique id,  and searching is inefficient
     const node = this.nodes().find(l => l.name === name);
-    if (!node) throw new Meteor.Error(`Looking for ${name} in ${this.name}`, 'Cannot find breakdown node by name', this.nodeNames());
+    if (!node) throw new Meteor.Error('err_invalidData', 'Cannot find breakdown node by name', { Looking: name, in: this.name, names: this.nodeNames() });
     return node;
   },
   nodesOf(code, leafsOnly) {

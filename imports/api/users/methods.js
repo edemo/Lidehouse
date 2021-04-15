@@ -19,8 +19,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Meteor.users, _id);
     if (_id !== this.userId) {
-      throw new Meteor.Error('err_permissionDenied', 
-        `No permission to perform this activity: users.update, userId: ${this.userId}, _id: ${_id}`);
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity', { method: 'users.update', userId: this.userId, _id });
     }
     checkModifier(doc, modifier, ['emails', 'status', 'services', 'heartbeat'], true);
     const newUsername = modifier.$set.username;
@@ -39,8 +38,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     if (_id !== this.userId) {
-      throw new Meteor.Error('err_permissionDenied',
-        `No permission to perform this activity: user.remove, userId: ${this.userId}, _id: ${_id}`);
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity', { method: 'users.remove', userId: this.userId, _id });
     }
     // We are not removing the user document, because many references to it would be dangling
     // Just blanking out the personal user data

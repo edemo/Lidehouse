@@ -69,12 +69,12 @@ export const ParcelRefFormat = {
         break;
       case 'F/D':    // IV/6 means, IV floor, 6 door
         const splitted = ref.split('/');
-        productionAssert(splitted.length === 2, `Invalid parcel ref: ${ref}`);
+        productionAssert(splitted.length === 2, 'Invalid parcel ref', { ref });
         extract.type = 'Lakás';
         extract.floor = splitted[0];
         extract.door = splitted[1];
         break;
-      default: productionAssert(false, `Unknown parcel ref format: ${format}`);
+      default: productionAssert(false, 'Unknown parcel ref format', { format });
     }
     return _.extend(extract, doc);  // The doc fields can override what we calculate
   },

@@ -11,9 +11,9 @@ export function debugAssert(expr, msg) {
   }
 }
 
-export function productionAssert(expr, err, msg) {
+export function productionAssert(expr, msg, details) {
   if (!expr) {
-    Log.error('Release assertion failed:', msg);
-    throw new Meteor.Error(err, msg, expr);
+    Log.error('Production assertion failed:', msg);
+    throw new Meteor.Error('err_notAllowed', msg, details);
   }
 }
