@@ -62,6 +62,7 @@
             <br>
             {{#if Template.subscriptionsReady}}
             {{> ReactiveDatatable tableData=parcelFinancesTableDataFn options=parcelFinancesOptionsFn }}
+            {{> Disclaimer}}
             {{else}}
             {{_ 'Loading'}}...
             {{/if}}

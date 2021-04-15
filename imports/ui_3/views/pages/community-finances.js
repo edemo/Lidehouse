@@ -20,6 +20,8 @@ import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/balance-report.js';
+import '/imports/ui_3/views/components/disclaimer.js';
+
 import './community-finances.html';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
@@ -94,13 +96,6 @@ const minusColors = [
     pointBorderColor: "#fff",
   },
 ];
-
-Template.Disclaimer.helpers({
-  publishDate() {
-    const publishedBalance = Balances.findOne({ tag: 'T' }, { sort: { updatedAt: -1 } });
-    return publishedBalance?.updatedAt || new Date('2000-01-01');
-  },
-});
 
 Template.Community_finances.viewmodel({
   displayBankBalancesFrom: Meteor.settings.public.deployment === 'marina' ? 'C' : 'T',

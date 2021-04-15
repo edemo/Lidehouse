@@ -8,6 +8,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { equalWithinRounding } from '/imports/api/utils.js';
 
 import { Partners } from '/imports/api/partners/partners.js';
+import { Balances } from '/imports/api/transactions/balances/balances';
 import '/imports/api/users/users.js';
 import './balance-widget.html';
 
@@ -19,11 +20,14 @@ Template.Balance_widget.viewmodel({
     const partnerId = user && user.partnerId(communityId);
     this.templateInstance.subscribe('transactions.byPartner', { communityId, partnerId });
   },
-  partner() {
+  partnerId() {
     const user = Meteor.user();
     const communityId = getActiveCommunityId();
     const partnerId = user.partnerId(communityId);
-    return Partners.findOne(partnerId);
+    return partnerId;
+  },
+  partner() {
+    return Partners.findOne(this.partnerId());
   },
   balance() {
     const partner = this.partner();
@@ -56,5 +60,8 @@ Template.Balance_widget.viewmodel({
     if (balance < 0) return 'glyphicon glyphicon-exclamation-sign';
     return 'fa fa-thumbs-up';
   },
+  publishDate() {
+    const bal = Balances.findOne({ communityId: this.partner()?.communityId, partner: new RegExp('^' + this.partnerId()), tag: 'T' });
+    return bal?.updatedAt || new Date('2000-01-01');
+  },
 });
-

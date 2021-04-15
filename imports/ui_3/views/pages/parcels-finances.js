@@ -19,6 +19,8 @@ import '/imports/ui_3/views/common/ibox-tools.js';
 import '/imports/ui_3/views/components/balance-widget.js';
 import '/imports/ui_3/views/components/meters-widget.js';
 import '/imports/ui_3/views/components/balance-report.js';
+import '/imports/ui_3/views/components/disclaimer.js';
+
 import './parcels-finances.html';
 
 Template.Parcels_finances.viewmodel({
