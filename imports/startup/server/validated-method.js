@@ -1,16 +1,12 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { CollectionHooks } from 'meteor/matb33:collection-hooks';
-import { Log } from '/imports/utils/log.js';
+import { PerformanceLogger } from '/imports/utils/performance-logger.js';
 
 ValidatedMethod.prototype._mdgExecute = ValidatedMethod.prototype._execute;
 
-ValidatedMethod.prototype._execute = function (...args) {
+ValidatedMethod.prototype._execute = function _execute(...args) {
   CollectionHooks.defaultUserId = args[0].userId;
-  Log.debug('Invoking', this.name);
-  const start = Date.now();
-  const result = this._mdgExecute(...args);
-  const finish = Date.now();
-  Log.info('Method', this.name, finish - start, 'ms', args[0].userId);
+  const result = PerformanceLogger.call(this.name, this._mdgExecute, this, ...args);
   CollectionHooks.defaultUserId = undefined;
   return result;
 };

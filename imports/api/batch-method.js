@@ -7,6 +7,7 @@ import rusdiff from 'rus-diff';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
+//import { PerformanceLogger } from '/imports/utils/performance-logger.js';
 import { newBundledErrors } from '/imports/utils/errors.js';
 import { checkPermissions } from '/imports/api/method-checks.js';
 
@@ -25,6 +26,7 @@ export class BatchMethod extends ValidatedMethod {
       run({ args }) {
         if (Meteor.isClient) return {}; // Batch methods are not simulated on the client, just executed on the server
 //        Log.info("running batch with", args.length, ":", args[0]);
+//        PerformanceLogger.startAggregation();
         const userId = this.userId;
 //        checkPermissions(userId, method.name, { communityId });  // Whoever has perm for the method, can do it in batch as well
         const results = [];
@@ -40,6 +42,7 @@ export class BatchMethod extends ValidatedMethod {
             errors.push(err);
           }
         });
+//        PerformanceLogger.stopAggregation();
         if (errors.length) throw newBundledErrors(errors);
         else return results;
       },
