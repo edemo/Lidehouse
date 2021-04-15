@@ -188,9 +188,9 @@ Transactions.categoryHelpers('payment', {
   validateForPost() {
     this.getBills().forEach(pb => {
       const bill = Transactions.findOne(pb.id);
-      if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
+      if (!bill.isPosted()) throw new Meteor.Error('err_notAllowed', 'Bill has to be posted first');
     });
-    if (!this.hasConteerData()) throw new Meteor.Error('Payment has to be account assigned first');
+    if (!this.hasConteerData()) throw new Meteor.Error('err_notAllowed', 'Transaction has to be account assigned first');
   },
   autoAllocate() {
     if (!this.amount) return;

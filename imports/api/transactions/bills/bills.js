@@ -161,7 +161,7 @@ export const BillAndReceiptHelpers = {
     }
   },
   validateForPost() {
-    if (!this.hasConteerData()) throw new Meteor.Error('err_notAllowed', 'Bill has to be account assigned first');
+    if (!this.hasConteerData()) throw new Meteor.Error('err_notAllowed', 'Transaction has to be account assigned first');
   },
   autoFill() {
     if (!this.lines) return;  // when the modifier doesn't touch the lines, should not autoFill
