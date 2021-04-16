@@ -152,7 +152,7 @@ export const HouseTranslation = {
       "code": {
         "label": "Accounting code",
         "placeholder": "(eg. @B for building B)",
-        "help": "The accounting code can be anz unique character sequence. When codes share the same beginning sequence, they are sub-codes of that parent code. We recommend using using @ for physical location, and then follw with a convention like, bulding, floor, door. If you don't supply a code, the system will use the ref as the accounting code."
+        "help": "The accounting code can be anz unique character sequence. When codes share the same beginning sequence, they are sub-codes of that parent code. We recommend using using @ for physical location, and then follw with a convention like, bulding, floor, door. If you don't supply a code, the system will use '@'+Reference as the accounting code."
       },
       "units": {
         "label": "Voting share units",
@@ -172,15 +172,16 @@ export const HouseTranslation = {
       },
       "type": {
         "label": "Type",
-        "placeholder": "(eg. Apartment or Storage)",
-        "flat": "Apartment",
-        "parking": "Parking",
-        "storage": "Storage",
-        "cellar": "Cellar",
-        "attic": "Attic",
-        "shop": "Shop",
-        "office": "Office",
-        "other": "Other"
+        "placeholder": "(eg. Apartment or Parking space)",
+        "help": "We can create the parcel billings by type.",
+          "flat": "Apartment",
+          "parking": "Parking",
+          "storage": "Storage",
+          "cellar": "Cellar",
+          "attic": "Attic",
+          "shop": "Shop",
+          "office": "Office",
+          "other": "Other"
       },
       "group": {
         "label": "Group",
@@ -377,7 +378,7 @@ export const HouseTranslation = {
       "code": {
         "label": "Könyvelési kód",
         "placeholder": "(pl. @B a B épülethez)",
-        "help": "A könyvelési kód tetszőleges karakter sorozat lehet. Ha nem ad meg kódot, akkor a @+'Elnevezést' fogja használni a rendszer könyvelési kódnak. Amikor azonos karakterekkel kezdődik egy másik kód, akkor az az al-kódja a másik helynek, ezzel lehet hierarchiába rendezni a helyeinket. Érdemes ezért konvenciót használni, mint pl @ jelöli a fizikai helyeket, és ezt követheti az épület, az emelet majd az ajtó kódja."
+        "help": "A könyvelési kód tetszőleges karakter sorozat lehet. Ha nem ad meg kódot, akkor a @+'Azonosítót' fogja használni a rendszer könyvelési kódnak. Amikor azonos karakterekkel kezdődik egy másik kód, akkor az az al-kódja a másik helynek, ezzel lehet hierarchiába rendezni a helyeinket. Érdemes ezért konvenciót használni, mint pl @ jelöli a fizikai helyeket, és ezt követheti az épület, az emelet majd az ajtó kódja."
       },
       "units": {
         "label": "Tulajdoni hányad",
@@ -397,15 +398,16 @@ export const HouseTranslation = {
       },
       "type": {
         "label": "Típus",
-        "placeholder": "(pl. Lakás vagy Tároló",
-        "flat": "Lakás",
-        "parking": "Parkoló",
-        "storage": "Tároló",
-        "cellar": "Pince",
-        "attic": "Padlás",
-        "shop": "Üzlet",
-        "office": "Iroda",
-        "other": "Egyéb"
+        "placeholder": "(pl. Lakás vagy Tároló)",
+        "help": "A típus alapján is tudjuk az előírásokat elkészíteni.",
+          "flat": "Lakás",
+          "parking": "Parkoló",
+          "storage": "Tároló",
+          "cellar": "Pince",
+          "attic": "Padlás",
+          "shop": "Üzlet",
+          "office": "Iroda",
+          "other": "Egyéb"
       },
       "group": {
         "label": "Csoport",
