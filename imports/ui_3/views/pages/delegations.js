@@ -105,7 +105,7 @@ Template.Delegations.helpers({
 });
 
 Template.Delegations.events({
-  'click .js-new'(event) {
+  'click .js-create'(event) {
     Delegations.actions.new({}, { sourceId: getActivePartnerId(), communityId: getActiveCommunityId() }).run();
   },
   'click #allow'(event) {

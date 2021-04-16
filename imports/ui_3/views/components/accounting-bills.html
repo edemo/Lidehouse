@@ -11,7 +11,7 @@
                   <button class="btn btn-white btn-sm js-edit-defs" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i><strong> {{_ 'Edit parcel billings'}}</strong></button>
                   {{/unless}}
                 {{else}}
-                  <!--button class="btn btn-primary btn-sm js-new transactions" data-entity='bill'><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.relation.options.' activePartnerRelation)}}</strong></button-->
+                  <!--button class="btn btn-primary btn-sm js-create transactions" data-entity='bill'><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.relation.options.' activePartnerRelation)}}</strong></button-->
                   <!--button class="btn btn-white btn-sm js-import transactions"  data-entity='bill' title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button-->
                   <div class="dropdown transactions">
                       <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
@@ -19,10 +19,10 @@
                       </a>
                       <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
                           {{#each txdef in (findTxdefs 'bill')}}
-                          <li><a href="" class="js-new" data-defid={{txdef._id}} data-entity="bill"> {{_ 'new'}} {{_ txdef.name}}</a></li>
+                          <li><a href="" class="js-create" data-defid={{txdef._id}} data-entity="bill"> {{_ 'new'}} {{_ txdef.name}}</a></li>
                           {{/each}}
                           {{#each txdef in (findTxdefs 'receipt')}}
-                          <li><a href="" class="js-new" data-defid={{txdef._id}} data-entity="receipt"> {{_ 'new'}} {{_ txdef.name}}</a></li>
+                          <li><a href="" class="js-create" data-defid={{txdef._id}} data-entity="receipt"> {{_ 'new'}} {{_ txdef.name}}</a></li>
                           {{/each}}
                       </ul>
                       {{>Action_buttons_group collection='transactions' actions='import' size='md'}}

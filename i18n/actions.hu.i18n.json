@@ -1,0 +1,50 @@
+{
+  "entities": {
+    "parcel": {
+      "label": "hely",
+      "it": "a helyet"
+    },
+    "@property": {
+      "label": "albetét",
+      "it": "az albetétet"
+    },
+    "membership": {
+      "label": "tagság",
+      "it": "a tagságot"
+    },
+    "ownership": {
+      "label": "tulajdon viszony",
+      "it": "a tulajdon viszonyt"
+    }
+  },
+  "actions": {
+    "create": {
+      "label": "új",
+      "do": "létrehozza",
+      "doing": "létrehozása",
+      "done": "létrehozva"
+    },
+    "import": {
+      "label": "import",
+      "do": "importál",
+      "doing": "importálása"
+    },
+    "view": {
+      "label": "megtekintés",
+      "do": "megtekinti",
+      "doing": "megtekintése"
+    },
+    "edit": {
+      "label": "szerkesztés",
+      "do": "szerkeszti",
+      "doing": "szerkesztése",
+      "done": "adatok módosítva"
+    },
+    "delete": {
+      "label": "törlés",
+      "do": "törli",
+      "doing": "törlése",
+      "done": "törölve"
+    }
+  }
+}

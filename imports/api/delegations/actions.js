@@ -13,15 +13,15 @@ import { Delegations } from './delegations.js';
 import './methods.js';
 
 Delegations.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     visible: user.hasPermission('delegations.insert', doc),
     run() {
       const communityId = ModalStack.getVar('communityId');
       const omitFields = user.hasPermission('delegations.forOthers', { communityId }) ? [] : ['sourceId'];
       Modal.show('Autoform_modal', {
-        id: 'af.delegation.insert',
+        id: 'af.delegation.create',
         collection: Delegations,
         omitFields,
         doc,
@@ -52,7 +52,7 @@ Delegations.actions = {
       const communityId = ModalStack.getVar('communityId');
       const omitFields = user.hasPermission('delegations.forOthers', { communityId }) ? [] : ['sourceId'];
       Modal.show('Autoform_modal', {
-        id: 'af.delegation.update',
+        id: 'af.delegation.edit',
         collection: Delegations,
         omitFields,
         doc,
@@ -80,9 +80,9 @@ Delegations.actions = {
 
 //-----------------------------------------------
 
-AutoForm.addModalHooks('af.delegation.insert');
-AutoForm.addModalHooks('af.delegation.update');
-AutoForm.addHooks('af.delegation.insert', {
+AutoForm.addModalHooks('af.delegation.create');
+AutoForm.addModalHooks('af.delegation.edit');
+AutoForm.addHooks('af.delegation.create', {
   formToDoc(doc) {
     if (!doc.sourceId) doc.sourceId = getActivePartnerId();
     return doc;

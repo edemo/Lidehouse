@@ -5,7 +5,7 @@
     <div class="wrapper wrapper-content animated fadeInUp">
 
         {{#if currentUserHasPermission 'contracts.insert'}}
-          <button class="btn btn-primary btn-sm pull-right m-md js-new contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
+          <button class="btn btn-primary btn-sm pull-right m-md js-create contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
         {{/if}}
         <div class="btn-group m-b-md">
           {{#each relation in relationValues}}

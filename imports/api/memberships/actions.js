@@ -16,8 +16,8 @@ import './entities.js';
 import './methods.js';
 
 Memberships.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
 //    icon: options => (Array.isArray(options.entity) ? 'fa fa-plus' : ''),
     icon: 'fa fa-plus',
     color: 'primary',
@@ -28,7 +28,7 @@ Memberships.actions = {
       const entity = options.entity;
       doc.parcelId = ModalStack.getVar('parcelId');
       Modal.show('Autoform_modal', {
-        id: `af.${entity.name}.insert`,
+        id: `af.${entity.name}.create`,
         schema: entity.schema,
         omitFields: entity.omitFields,
         doc,
@@ -66,7 +66,7 @@ Memberships.actions = {
     run() {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
-        id: `af.${doc.entityName()}.update`,
+        id: `af.${doc.entityName()}.edit`,
         schema: entity.schema,
         omitFields: entity.omitFields,
         doc,
@@ -127,15 +127,15 @@ Memberships.actions = {
 AutoForm.addModalHooks('af.membership.period');
 
 _.each(Memberships.entities, (entity, entityName) => {
-  AutoForm.addModalHooks(`af.${entityName}.insert`);
-  AutoForm.addModalHooks(`af.${entityName}.update`);
+  AutoForm.addModalHooks(`af.${entityName}.create`);
+  AutoForm.addModalHooks(`af.${entityName}.edit`);
 
-  AutoForm.addHooks(`af.${entityName}.insert`, {
+  AutoForm.addHooks(`af.${entityName}.create`, {
     formToDoc(doc) {
       return doc;
     },
   });
-  AutoForm.addHooks(`af.${entityName}.update`, {
+  AutoForm.addHooks(`af.${entityName}.edit`, {
     formToModifier(modifier) {
       modifier.$set.approved = true;
       return modifier;

@@ -44,8 +44,8 @@ function statusChangeSchema(doc, statusName) {
 }
 
 Topics.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     color: 'primary',
     label: (options.splitable() ? `${__('new')}  ${__(options.category)}` :
@@ -57,7 +57,7 @@ Topics.actions = {
       Modal.show('Autoform_modal', {
         body: options.entity.form,
         // --- autoform ---
-        id: `af.${entity.name}.insert`,
+        id: `af.${entity.name}.create`,
         schema: entity.schema,
         fields: entity.inputFields,
         doc,
@@ -90,7 +90,7 @@ Topics.actions = {
       Modal.show('Autoform_modal', {
         body: entity.form,
         // --- autoform ---
-        id: `af.${doc.entityName()}.update`,
+        id: `af.${doc.entityName()}.edit`,
         schema: entity.schema,
         fields,
         omitFields: entity.omitFields,
@@ -212,12 +212,12 @@ Topics.batchActions = {
 //-------------------------------------------------------
 
 _.each(Topics.entities, (entity, entityName) => {
-  AutoForm.addModalHooks(`af.${entityName}.insert`);
-  AutoForm.addModalHooks(`af.${entityName}.update`);
+  AutoForm.addModalHooks(`af.${entityName}.create`);
+  AutoForm.addModalHooks(`af.${entityName}.edit`);
   AutoForm.addModalHooks(`af.${entityName}.statusUpdate`);
   AutoForm.addModalHooks(`af.${entityName}.statusChange`);
 
-  AutoForm.addHooks(`af.${entityName}.insert`, {
+  AutoForm.addHooks(`af.${entityName}.create`, {
     formToDoc(doc) {
       _.each(entity.implicitFields, (value, key) => {
         Object.setByString(doc, key, (typeof value === 'function') ? value() : value);

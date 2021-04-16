@@ -79,7 +79,7 @@ Template.Payment_edit.events({
       instance.viewmodel.billsView(instance.viewmodel.afDoc(formId).bills?.length);
     }, 1000);
   },
-  'click .js-new[data-entity="bill"]'(event, instance) {
+  'click .js-create[data-entity="bill"]'(event, instance) {
     const paymentDef = instance.data.doc.txdef();
     const billDef = paymentDef.correspondingBillDef();
     const doc = {

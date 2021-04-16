@@ -41,8 +41,8 @@ function prefillDocWhenReconciling(doc) {
 }
 */
 Transactions.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'create',
     label: `${__('new') + ' ' + __('transaction')}`,
     icon: 'fa fa-plus',
     color: 'primary',
@@ -66,7 +66,7 @@ Transactions.actions = {
         bodyContext: { doc },
         onRendered: fillFromStatementEntry,
         // --- --- --- ---
-        id: `af.${entity.name}.insert`,
+        id: `af.${entity.name}.create`,
         schema: Transactions.simpleSchema(doc),
         fields: entity.fields,
         omitFields: entity.omitFields && entity.omitFields(),
@@ -119,7 +119,7 @@ Transactions.actions = {
         body: entity.editForm,
         bodyContext: { doc },
         // --- --- --- ---
-        id: `af.${entity.name}.update`,
+        id: `af.${entity.name}.edit`,
         schema: Transactions.simpleSchema({ category: entity.name }),
         fields: entity.fields,
         omitFields: entity.omitFields && entity.omitFields(),
@@ -195,7 +195,7 @@ Transactions.actions = {
         body: entity.editForm,
         bodyContext: { doc },
         // --- --- --- ---
-        id: `af.${entity.name}.update`,
+        id: `af.${entity.name}.edit`,
         schema: Transactions.simpleSchema({ category: entity.name }),
         fields: entity.fields,
         omitFields: entity.omitFields && entity.omitFields(),
@@ -290,10 +290,10 @@ Transactions.batchActions = {
 //-------------------------------------------------
 
 Transactions.categoryValues.forEach(category => {
-  AutoForm.addModalHooks(`af.${category}.insert`);
-  AutoForm.addModalHooks(`af.${category}.update`);
+  AutoForm.addModalHooks(`af.${category}.create`);
+  AutoForm.addModalHooks(`af.${category}.edit`);
 
-  AutoForm.addHooks(`af.${category}.insert`, {
+  AutoForm.addHooks(`af.${category}.create`, {
     docToForm(doc) {
       return doc;
     },
@@ -320,7 +320,7 @@ Transactions.categoryValues.forEach(category => {
     },
   });
 
-  AutoForm.addHooks(`af.${category}.update`, {
+  AutoForm.addHooks(`af.${category}.edit`, {
 /*
   formToModifier(modifier) {
     try {

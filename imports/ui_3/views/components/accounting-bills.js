@@ -143,7 +143,7 @@ Template.Accounting_bills.viewmodel({
 });
 
 Template.Accounting_bills.events({
-  'click .js-new'(event, instance) {
+  'click .js-create'(event, instance) {
     const entity = $(event.target).closest('[data-entity]').data('entity');
     const defId = $(event.target).closest('[data-defid]').data('defid');
     const txdef = Txdefs.findOne(defId);

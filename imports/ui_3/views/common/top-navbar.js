@@ -130,7 +130,7 @@ Template.Top_navbar.events({
     ModalStack.setVar('communityId', newCommunityId, true);
     displayMessage('success', `${newCommunity.name} ${__('selected')}`);
   },
-  'click .js-new.community'() {
+  'click .js-create.community'() {
     Communities.actions.new().run();
   },
   'click .js-logout'() {

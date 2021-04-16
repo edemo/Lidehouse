@@ -1,0 +1,39 @@
+{
+  "entities": {
+    "parcel": {
+      "label": "parcel",
+      "it": "the parcel"
+    },
+    "@property": {
+      "label": "property",
+      "it": "the property"
+    },
+    "membership": {
+      "label": "membership",
+      "it": "the membership"
+    },
+    "ownership": {
+      "label": "ownership",
+      "it": "the ownership"
+    }
+  },
+  "actions": {
+    "create": {
+      "label": "new"
+    },
+    "import": {
+      "label": "import"
+    },
+    "view": {
+      "label": "view"
+    },
+    "edit": {
+      "label": "edit"
+    },
+    "delete": {
+      "label": "delete",
+      "do": "deletes",
+      "done": "deleted"
+    }
+  }
+}

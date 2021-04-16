@@ -39,8 +39,8 @@
                         {{#if currentUserHasPermission 'accounts.insert'}}
                         <div class="row">
                             <div class="pull-right m-b-sm m-r-md">
-                                {{>Action_buttons_group collection='accounts' actions='new' size='md' options=(obj '{ "entity": "bankAccount" }')}}
-                                {{>Action_buttons_group collection='accounts' actions='new' size='md' options=(obj '{ "entity": "cashAccount" }')}}
+                                {{>Action_buttons_group collection='accounts' actions='create' size='md' options=(obj '{ "entity": "bankAccount" }')}}
+                                {{>Action_buttons_group collection='accounts' actions='create' size='md' options=(obj '{ "entity": "cashAccount" }')}}
                                 <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i> {{_ 'Upload balances'}}</button>
                             </div>
                         </div>
@@ -81,7 +81,7 @@
                       {{#LazyTab}}    
                         <div class="row">
                             <div class="pull-right m-b-sm m-r-md">
-                                {{>Action_buttons_group collection='accounts' actions='new' size='md' options=(obj '{ "entity": "simpleAccount" }')}}
+                                {{>Action_buttons_group collection='accounts' actions='create' size='md' options=(obj '{ "entity": "simpleAccount" }')}}
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -93,7 +93,7 @@
                       {{#LazyTab}}
                         <div class="row">
                             <div class="pull-right m-b-sm m-r-md">
-                                {{>Action_buttons_group collection='parcels' actions='new' size='md' options=(obj '{ "entity": ["@group","#tag"] }')}}
+                                {{>Action_buttons_group collection='parcels' actions='create' size='md' options=(obj '{ "entity": ["@group","#tag"] }')}}
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -108,7 +108,7 @@
                         {{#if currentUserHasPermission 'accounts.insert'}}
                         <div class="row">
                         <div class="col-xs-12 text-center">
-                            <a href="" class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
+                            <a href="" class="btn btn-primary js-create"><i class="fa fa-plus"></i> {{_ 'create'}} {{_ 'breakdown'}}</a>
                         </div>
                         </div>
                         {{/if}}
@@ -118,7 +118,7 @@
                         {{#if currentUserHasPermission 'accounts.insert'}}
                         <div class="row">
                             <div class="pull-right m-b-sm m-r-md">
-                                {{>Action_buttons_group collection='txdefs' actions='new' size='md'}}
+                                {{>Action_buttons_group collection='txdefs' actions='create' size='md'}}
                             </div>
                         </div>
                         {{/if}}

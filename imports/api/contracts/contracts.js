@@ -168,7 +168,7 @@ export const chooseContract = {
   relation: 'contract',
   value() {
     const selfId = AutoForm.getFormId();
-    const result = ModalStack.readResult(selfId, 'af.contract.insert');
+    const result = ModalStack.readResult(selfId, 'af.contract.create');
     if (result) return result;
     const communityId = AutoForm.getFieldValue('communityId');
     const relation = AutoForm.getFieldValue('relation');

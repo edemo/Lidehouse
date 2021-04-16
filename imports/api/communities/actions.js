@@ -15,13 +15,13 @@ import { Communities } from './communities.js';
 import './methods.js';
 
 Communities.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     visible: user.hasPermission('communities.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.community.insert',
+        id: 'af.community.create',
         collection: Communities,
         type: 'method',
         meteormethod: 'communities.insert',
@@ -47,7 +47,7 @@ Communities.actions = {
     visible: user.hasPermission('communities.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.community.update',
+        id: 'af.community.edit',
         collection: Communities,
         doc,
         type: 'method-update',
@@ -62,7 +62,7 @@ Communities.actions = {
     visible: user.hasPermission('communities.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.community.update',
+        id: 'af.community.edit',
         collection: Communities,
         fields: ['activeTime'],
         doc,
@@ -93,7 +93,7 @@ Communities.actions = {
       } else {
         Modal.show('Autoform_modal', {
           title: 'pleaseSupplyParcelData',
-          id: 'af.@property.insert.unapproved',
+          id: 'af.@property.create.unapproved',
           schema: Parcels.simpleSchema({ category: '@property' }),
           doc: { communityId },
           fields: ['communityId', 'ref', 'type', 'building', 'floor', 'door'],
@@ -118,10 +118,10 @@ Communities.actions = {
 
 //-----------------------------------------------
 
-AutoForm.addModalHooks('af.community.insert');
-AutoForm.addModalHooks('af.community.update');
+AutoForm.addModalHooks('af.community.create');
+AutoForm.addModalHooks('af.community.edit');
 
-AutoForm.addHooks('af.community.insert', {
+AutoForm.addHooks('af.community.create', {
   formToDoc(doc) {
     if (doc.settings.modules.length === Communities.availableModules.length) delete doc.settings.modules;
     return doc;

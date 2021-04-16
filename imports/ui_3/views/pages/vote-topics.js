@@ -45,7 +45,7 @@ Template.Vote_topics.viewmodel({
 });
 
 Template.Vote_topics.events({
-  'click .js-new'(event) {
+  'click .js-create'(event) {
     const doc = { communityId: getActiveCommunityId() };
     const options = { entity: Topics.entities.vote };
     Object.setPrototypeOf(options, new ActionOptions(Topics));

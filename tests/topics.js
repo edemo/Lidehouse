@@ -16,7 +16,7 @@ describe('topic ui', () => {
   it('can create a topic', () => {
     const initialCount = countTopics();
 
-    browser.click('.js-new-topic');
+    browser.click('.js-create-topic');
 
     assert.equal(countTopics(), initialCount + 1);
   });

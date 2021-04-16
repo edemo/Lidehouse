@@ -28,7 +28,7 @@ Template.Reconciliation.onRendered(function () {
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return;
     const txdef = Txdefs.findOne(defId);
-    const result = ModalStack.readResult('af.statementEntry.reconcile', `af.${txdef.category}.insert`);
+    const result = ModalStack.readResult('af.statementEntry.reconcile', `af.${txdef.category}.create`);
     if (result) {
       Meteor.setTimeout(() => {
         computation.stop();

@@ -10,13 +10,13 @@ import { Agendas } from './agendas.js';
 import { joinLiveChat } from '/imports/ui_3/views/common/live-chat.js';
 
 Agendas.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     visible: user.hasPermission('agendas.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.agenda.insert',
+        id: 'af.agenda.create',
         collection: Agendas,
         doc,
         type: 'method',
@@ -43,7 +43,7 @@ Agendas.actions = {
     visible: user.hasPermission('agendas.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.agenda.update',
+        id: 'af.agenda.edit',
         collection: Agendas,
         doc,
         type: 'method-update',
@@ -103,5 +103,5 @@ Agendas.actions = {
 
 //-----------------------------------------------
 
-AutoForm.addModalHooks('af.agenda.insert');
-AutoForm.addModalHooks('af.agenda.update');
+AutoForm.addModalHooks('af.agenda.create');
+AutoForm.addModalHooks('af.agenda.edit');

@@ -29,7 +29,7 @@ export const chooseTransaction = {
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return undefined;
     const category = Txdefs.findOne(defId).category;
-    return ModalStack.readResult(selfId, `af.${category}.insert`);
+    return ModalStack.readResult(selfId, `af.${category}.create`);
   },
   options() {
     const communityId = ModalStack.getVar('communityId');

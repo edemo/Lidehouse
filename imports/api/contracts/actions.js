@@ -13,8 +13,8 @@ import { Contracts } from './contracts.js';
 import './methods.js';
 
 Contracts.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     label: __('new') + ' ' + __('contract'),
     icon: 'fa fa-plus',
     color: 'primary',
@@ -27,7 +27,7 @@ Contracts.actions = {
       const parcelId = AutoForm.getFieldValue('parcelId') || ModalStack.getVar('parcelId');
       if (parcelId) _.extend(doc, { parcelId });
       Modal.show('Autoform_modal', {
-        id: 'af.contract.insert',
+        id: 'af.contract.create',
         schema: Contracts.simpleSchema(doc),
         doc,
         type: 'method',
@@ -60,7 +60,7 @@ Contracts.actions = {
     visible: user.hasPermission('contracts.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.contract.update',
+        id: 'af.contract.edit',
         schema: Contracts.simpleSchema(doc),
         doc,
         type: 'method-update',
@@ -75,7 +75,7 @@ Contracts.actions = {
     visible: user.hasPermission('contracts.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.contract.update',
+        id: 'af.contract.edit',
         schema: ActivePeriod.schema,
         fields: ['activeTime'],
         doc,
@@ -104,5 +104,5 @@ Contracts.batchActions = {
 
 //-------------------------------------------------------
 
-AutoForm.addModalHooks('af.contract.insert');
-AutoForm.addModalHooks('af.contract.update');
+AutoForm.addModalHooks('af.contract.create');
+AutoForm.addModalHooks('af.contract.edit');

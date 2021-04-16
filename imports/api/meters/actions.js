@@ -12,15 +12,15 @@ import { Meters } from './meters.js';
 import './methods.js';
 
 Meters.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     label: __('new') + ' ' + __('meter'),
     icon: 'fa fa-plus',
     color: 'primary',
     visible: user.hasPermission('meters.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.meter.insert',
+        id: 'af.meter.create',
         collection: Meters,
         doc,
         omitFields: ['readings'],
@@ -54,7 +54,7 @@ Meters.actions = {
     visible: user.hasPermission('meters.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.meter.update',
+        id: 'af.meter.edit',
         collection: Meters,
         omitFields: ['readings'],
         doc,
@@ -70,7 +70,7 @@ Meters.actions = {
     visible: user.hasPermission('meters.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.meter.update',
+        id: 'af.meter.edit',
         collection: Meters,
         fields: ['readings'],
         doc,
@@ -103,7 +103,7 @@ Meters.actions = {
     visible: user.hasPermission('meters.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.meter.update',
+        id: 'af.meter.edit',
         collection: Meters,
         fields: ['activeTime'],
         doc,
@@ -139,17 +139,17 @@ function isTooLargeValue(doc) {
   return false;
 }
 
-AutoForm.addModalHooks('af.meter.insert');
-AutoForm.addModalHooks('af.meter.update');
+AutoForm.addModalHooks('af.meter.create');
+AutoForm.addModalHooks('af.meter.edit');
 AutoForm.addModalHooks('af.meter.registerReading');
-AutoForm.addHooks('af.meter.insert', {
+AutoForm.addHooks('af.meter.create', {
   formToDoc(doc) {
     doc.parcelId = ModalStack.getVar('parcelId');
     //    doc.approved = true;
     return doc;
   },
 });
-AutoForm.addHooks('af.meter.update', {
+AutoForm.addHooks('af.meter.edit', {
   formToModifier(modifier) {
     //    modifier.$set.approved = true;
     return modifier;

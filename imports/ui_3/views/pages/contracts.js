@@ -50,9 +50,9 @@ Template.Contracts.viewmodel({
 });
 
 Template.Contracts.events({
-  ...(actionHandlers(Partners,'new')),
-  ...(actionHandlers(Contracts, 'new')),
-  'click .topics .js-new, .topics .js-import'(event) {
+  ...(actionHandlers(Partners,'create')),
+  ...(actionHandlers(Contracts, 'create')),
+  'click .topics .js-create, .topics .js-import'(event) {
     const entityName = $(event.target).closest('[data-entity]').data('entity');
     const entity = Topics.entities[entityName];
     const contractId = $(event.target).closest('[data-id]').data('id');

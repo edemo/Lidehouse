@@ -9,7 +9,7 @@ import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { votingEditInstance } from '/imports/ui_3/views/modals/voting-edit.js';
 import '/imports/api/topics/entities.js';
 
-AutoForm.addHooks('af.vote.insert', {
+AutoForm.addHooks('af.vote.create', {
   formToDoc(doc) {
     Tracker.nonreactive(() => {   // AutoForm will run the formToDoc each time any field on the form, like the vote.type is simply queried (maybe so that if its a calculated field, it gets calculated)
       doc.createdAt = Clock.currentTime();
@@ -25,7 +25,7 @@ AutoForm.addHooks('af.vote.insert', {
   },
 });
 
-AutoForm.addHooks('af.vote.update', {
+AutoForm.addHooks('af.vote.edit', {
   formToModifier(modifier) {
     delete modifier.$set.createdAt;
     delete modifier.$set.closesAt;

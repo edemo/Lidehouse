@@ -15,8 +15,8 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { userUnlinkNeeded } from './methods.js';
 
 Partners.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     label: `${__('new') + ' ' + __('partner')}`,
     icon: 'fa fa-plus',
     color: 'primary',
@@ -30,7 +30,7 @@ Partners.actions = {
       if (statementEntry) _.deepExtend(doc, { idCard: { name: statementEntry.name } });
 
       Modal.show('Autoform_modal', {
-        id: 'af.partner.insert',
+        id: 'af.partner.create',
         collection: Partners,
         doc,
         type: 'method',
@@ -83,7 +83,7 @@ Partners.actions = {
     visible: user.hasPermission('partners.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.partner.update',
+        id: 'af.partner.edit',
         collection: Partners,
         doc,
         type: 'method-update',
@@ -147,11 +147,11 @@ Partners.batchActions = {
 
 //-------------------------------------------------------
 
-AutoForm.addModalHooks('af.partner.insert');
-AutoForm.addModalHooks('af.partner.update');
+AutoForm.addModalHooks('af.partner.create');
+AutoForm.addModalHooks('af.partner.edit');
 AutoForm.addModalHooks('af.partner.merge');
 
-AutoForm.addHooks('af.partner.update', {
+AutoForm.addHooks('af.partner.edit', {
   before: {
     'method-update'(modifier) {
       if (userUnlinkNeeded(this.currentDoc, modifier)) {

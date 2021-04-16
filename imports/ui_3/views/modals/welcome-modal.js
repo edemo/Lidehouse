@@ -7,7 +7,7 @@ import { __ } from '/imports/localization/i18n.js';
 
 export function showWelcomeModal() {
   Modal.show('Autoform_modal', {
-    id: 'af.settings.update',
+    id: 'af.settings.edit',
     title: __('welcome'),
     description: __('welcomeMessage'),
     collection: Meteor.users,
@@ -19,8 +19,8 @@ export function showWelcomeModal() {
   });
 }
 
-AutoForm.addModalHooks('af.settings.update');
-AutoForm.addHooks('af.settings.update', {
+AutoForm.addModalHooks('af.settings.edit');
+AutoForm.addHooks('af.settings.edit', {
   docToForm(doc) {
     doc.settings.notiFrequency = 'weekly';
     return doc;

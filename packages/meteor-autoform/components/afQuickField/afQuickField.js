@@ -75,7 +75,7 @@ Template.afQuickField.onRendered(function() {
 
 //### droka extension ###//
 Template.afQuickField.events({
-  'click .js-new'(event, instance) {
+  'click .js-create'(event, instance) {
     var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
     var entity = c.atts.relation;
     var collection = Factory.get(entity).collection;
