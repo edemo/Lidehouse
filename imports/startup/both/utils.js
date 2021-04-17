@@ -120,6 +120,10 @@ Array.prototype.oppositeSignsFirst = function oppositeSignsFirst(number, key) {
   else return positives.concat(negatives);
 };
 
+Date.equal = function equal(date1, date2) {
+  return date1?.valueOf() === date2?.valueOf();
+};
+
 Date.newUTC = function newUTCDate(...params) {
   return moment.utc(...params).toDate();
 };

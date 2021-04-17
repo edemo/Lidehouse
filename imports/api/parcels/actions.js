@@ -115,7 +115,14 @@ Parcels.actions = {
     name: 'memberContract',
     icon: 'fa fa-handshake-o',
     visible: user.hasPermission('parcels.details', doc),
-    color: Contracts.findOneActive({ parcelId: doc._id }) ? '' : 'info',
+    color: (() => {
+      const active = Contracts.findOneActive({ parcelId: doc._id });
+      if (active) {
+        const pre = active.predecessor();
+        if (pre && !Date.equal(pre?.activeTime?.end, active?.activeTime?.begin)) return 'danger';
+        else return '';
+      } else return 'info';
+    })(),
     run(event, instance) {
       ModalStack.setVar('parcelId', doc._id);
       Modal.show('Modal', {

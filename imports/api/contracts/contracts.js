@@ -70,10 +70,12 @@ Contracts.publicFields = {
 
 Meteor.startup(function indexContracts() {
   Contracts.ensureIndex({ partnerId: 1 });
-  Contracts.ensureIndex({ parcelId: 1 });
   Contracts.ensureIndex({ leadParcelId: 1 });
   if (Meteor.isServer) {
     Contracts._ensureIndex({ communityId: 1, relation: 1 });
+    Contracts._ensureIndex({ parcelId: 1, 'activeTime.end': -1 });
+  } else {
+    Contracts.ensureIndex({ parcelId: 1 });
   }
 });
 
@@ -106,6 +108,11 @@ Contracts.helpers({
   leadParcel() {
     if (this.leadParcelId) return Parcels.findOne(this.leadParcelId);
     return undefined;
+  },
+  predecessor() {
+    if (!this.activeTime?.begin) return undefined;
+    const result = Contracts.findOne({ parcelId: this.parcelId, 'activeTime.end': { $lte: this.activeTime.begin } }, { sort: { 'activeTime.end': -1 } });
+    return result;
   },
   billingContract() {
     debugAssert(this.parcelId);
