@@ -9,13 +9,16 @@ import { JournalEntries } from '/imports/api/transactions/journal-entries/journa
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
+import '/imports/ui_3/views/blocks/help-icon.js';
+
 import './partner-history.html';
 
 Template.Partner_history.viewmodel({
   beginDate: '',
   endDate: '',
-  partnerOptions: [],
-  partnerSelected: '',
+  partnerOptions: [],   // should rename to contractOptions
+  partnerSelected: '',  // should rename to contractSelected
+  contractToView: '',
   status: 'Reconciled',
   onCreated(instance) {
     instance.autorun(() => {
@@ -34,6 +37,11 @@ Template.Partner_history.viewmodel({
         }
       });
     },
+    function setContractToView() {
+      if (this.partnerSelected()) {
+        this.contractToView(this.partnerSelected());
+      }
+    },
     function enforceWholeYear() {
       const beginDate = moment(this.beginDate());
       const wholeBeginDate = moment(this.beginDate()).startOf('year');
@@ -46,8 +54,8 @@ Template.Partner_history.viewmodel({
     return ModalStack.getVar('communityId');
   },
   subscribeParams() {
-    if (!this.partnerSelected()) return {};
-    const contract = Contracts.findOne(this.partnerSelected());
+    if (!this.contractToView()) return {};
+    const contract = Contracts.findOne(this.contractToView());
     return {
       communityId: this.communityId(),
       partnerId: contract?.partnerId || null,
@@ -57,17 +65,17 @@ Template.Partner_history.viewmodel({
     };
   },
   beginBalanceDef() {
-    if (!this.partnerSelected()) return {};
-    const contract = Contracts.findOne(this.partnerSelected());
+    if (!this.contractToView()) return {};
+    const contract = Contracts.findOne(this.contractToView());
     return {
       communityId: this.communityId(),
       partner: contract?.code() || null,
     };
   },
   history() {
-    if (!this.partnerSelected()) return {};
+    if (!this.contractToView()) return {};
     const result = {};
-    const contract = Contracts.findOne(this.partnerSelected());
+    const contract = Contracts.findOne(this.contractToView());
     result.beginBalance = Balances.getCumulatedValue(this.beginBalanceDef(), this.beginDate());
     const selector = Transactions.makeFilterSelector(this.subscribeParams());
     const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
@@ -78,6 +86,7 @@ Template.Partner_history.viewmodel({
       return _.extend(tx, { contractAmount, total });
     });
     result.transactions = txsWithRunningTotal.reverse();
+    result.predecessor = contract.predecessor();
     return result;
   },
 });
@@ -88,4 +97,8 @@ Template.Partner_history.events({
 //    const doc = Transactions.findOne(id);
 //    Transactions.actions.view({}, doc).run();
 //  },
+  'click .js-predecessor'(event, instance) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    instance.viewmodel.contractToView(id);
+  },
 });

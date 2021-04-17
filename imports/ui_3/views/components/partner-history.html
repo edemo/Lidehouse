@@ -61,5 +61,10 @@
         </table>
     </div>
     <p class="text-center">{{_ 'Balance at the beginning of period'}}: <strong>{{displayMoney history.beginBalance}}</strong></p>
+    {{#if (not (not history.predecessor))}}
+    <a class="btn btn-block btn-default js-predecessor" data-id={{history.predecessor._id}}>{{_ 'Balance from predecessor'}}: <strong>{{displayMoney history.predecessor.balance}}</strong>
+        {{>Help_icon name="predecessor-balance" title=(_ 'predecessorBalanceHelp')}}
+    </a>
+    {{/if}}
     </div>
 </template>

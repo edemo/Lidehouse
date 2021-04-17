@@ -547,6 +547,8 @@
   "Partner history": "Partner története",
   "Total change in this period": "Egyenleg változása az adott időszak alatt",
   "Balance at the beginning of period": "Egyenleg az időszak kezdetekor",
+  "Balance from predecessor": "Jogelőd egyenlege",
+  "predecessorBalanceHelp": "A jogelőd egyenlegét a jogutódnak kell megfizetnie, ha nem kért nullás igazolást az átvételkor",
   "Select account to view": "Válasszon megtekintendő számlát",
   "Your Parcel Balance": "Túlfizetés/Hátralék",
   "You have overpayment": "Önnek túlfizetése van",
