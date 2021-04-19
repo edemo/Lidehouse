@@ -128,7 +128,7 @@ Parcels.helpers({
     return Meters.findActive({ communityId: this.communityId, parcelId: this._id });
   },
   oldestReadMeter() {
-    return _.last(this.meters().fetch().sort(m => m.lastReading().date.getTime()));
+    return _.sortBy(this.meters().fetch(), m => m.lastReadingDate().getTime())[0];
   },
   occupants() {
     const Memberships = Mongo.Collection.get('memberships');

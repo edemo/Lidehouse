@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
+import { _ } from 'meteor/underscore';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
 import './meters-widget.html';
@@ -16,7 +17,7 @@ Template.Meters_widget.viewmodel({
     return user.ownedParcels(communityId);
   },
   oldestReadMeter() {
-    const meter = this.ownedParcels().map(p => p.oldestReadMeter()).sort(m => m.lastReading().date)[0];
+    const meter = _.sortBy(this.ownedParcels().map(p => p.oldestReadMeter()), m => m.lastReadingDate().getTime())[0];
     return meter;
   },
   lastReadingDate() {

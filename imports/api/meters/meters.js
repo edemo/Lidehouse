@@ -91,9 +91,13 @@ Meters.helpers({
     if (!this.billings?.length) return this.startReading();
     return _.last(this.billings);
   },
+  lastReadingDate() {
+    return this.readings.length < 2 ? new Date(0) : this.lastReading().date;
+    // The first reading is always the installation reading, so if it has 1 reading, it was never read
+  },
   lastReadingColor() {
+    if (this.readings.length < 2) return 'danger';
     const lastReadingDate = this.lastReading().date;
-    if (!lastReadingDate) return 'danger';
     const elapsedDays = moment().diff(moment(lastReadingDate), 'days');
     if (elapsedDays > 90) return 'warning';
     return '';
