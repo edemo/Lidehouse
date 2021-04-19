@@ -39,7 +39,7 @@ const IdCardSchema = new SimpleSchema({
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   ref: { type: String, optional: true, autoform: { type: 'hidden' } },  // only used when importing from external system
-  relation: { type: [String], allowedValues: Relations.values, autoform: { type: 'select-checkbox-inline' } },
+  relation: { type: [String], optional: true, allowedValues: Relations.values, autoform: { type: 'select-checkbox-inline' } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   idCard: { type: IdCardSchema, optional: true },
   contact: { type: ContactSchema, optional: true },

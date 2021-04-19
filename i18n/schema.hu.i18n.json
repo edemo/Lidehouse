@@ -958,7 +958,7 @@
         "options": {
           "supplier": "Szállító",
           "customer": "Vevő",
-          "member": "Tagság"
+          "member": "Tulajdonos"
         }
       },
       "side": {
@@ -998,7 +998,7 @@
       "options": {
         "supplier": "Szállító",
         "customer": "Vevő",
-        "member": "Tagság"
+        "member": "Tulajdonos"
       }
     },
     "userId": {
