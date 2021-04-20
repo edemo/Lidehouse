@@ -304,6 +304,10 @@
       "label": "folder",
       "it": "the folder"
     },
+    "shareddoc": {
+      "label": "document",
+      "it": "the document"
+    },
     "settings": {
       "label": "settings",
       "it": "the settings"

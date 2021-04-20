@@ -43,15 +43,15 @@ Template.Autoform_modal.viewmodel({
     const data = this.templateInstance.data;
     if (data.title) return data.title;
     const id = afId2details(data.id);
+    if (id.action === 'statusChange') {
+      id.entity = 'statusChange';
+      id.action = 'create';
+    }
     let entityName = __(`entities.${id.entity}.label`);
     if (_.contains(Transactions.categoryValues, id.entity)) {
       const defId = Template.instance().data.doc.defId;
       const txdef = Txdefs.findOne(defId);
       entityName = __(txdef.name);
-    }
-    if (id.action === 'statusChange') {
-      id.entity = 'statusChange';
-      id.action = 'create';
     }
     if (id.action === 'create') return __('new') + ' ' + entityName + ' ' + __('insertion');
     else {

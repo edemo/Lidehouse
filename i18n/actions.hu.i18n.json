@@ -304,6 +304,10 @@
       "label": "mappa",
       "it": "a mappát"
     },
+    "shareddoc": {
+      "label": "dokumentum",
+      "it": "a dokumentumot"
+    },
     "settings": {
       "label": "beállítások",
       "it": "a beállításokat"
