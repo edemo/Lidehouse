@@ -86,7 +86,7 @@ Template.Payment_edit.events({
       relation: AutoForm.getFieldValue('relation'),
       partnerId: AutoForm.getFieldValue('partnerId'),
     };
-    Transactions.actions.new({ entity: 'bill', txdef: billDef }, doc).run(event, instance);
+    Transactions.actions.create({ entity: 'bill', txdef: billDef }, doc).run(event, instance);
   },
   'click .js-view-mode'(event, instance) {
     instance.viewmodel.billsView(true);

@@ -35,6 +35,7 @@ Comments.actions = {
   }),
   inplaceEdit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'inplaceEdit',
+    label: 'edit',
     icon: 'fa fa-pencil',
     visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
     run() { /* NOP -- 'comments.inplaceEdit is not used as command');*/ },
@@ -105,7 +106,8 @@ Comments.actions = {
     visible: doc?.entityName && user.hasPermission(`${doc.entityName()}.remove`, doc),
     run() {
       Modal.confirmAndCall(Comments.methods.remove, { _id: doc._id }, {
-        action: `delete ${doc.entityName()}`,
+        action: 'delete',
+        entity: doc.entityName(),
         message: 'It will disappear forever',
       });
     },

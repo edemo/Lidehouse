@@ -72,8 +72,9 @@ Accounts.actions = {
     visible: user.hasPermission('accounts.remove', doc),
     run() {
       Modal.confirmAndCall(Accounts.methods.remove, { _id: doc._id }, {
-        action: 'delete moneyAccount',
-        message: 'Some accounting transactions might be connecting to it',
+        action: 'delete',
+        entity: doc.entityName(),
+        message: __('Some accounting transactions might be connected to it'),
       });
     },
   }),

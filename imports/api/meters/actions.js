@@ -66,6 +66,7 @@ Meters.actions = {
   }),
   editReadings: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'editReadings',
+    label: 'editReadings',
     icon: 'fa fa-pencil',
     visible: user.hasPermission('meters.update', doc),
     run() {
@@ -119,7 +120,8 @@ Meters.actions = {
     visible: user.hasPermission('meters.remove', doc),
     run() {
       Modal.confirmAndCall(Meters.methods.remove, { _id: doc._id }, {
-        action: 'delete meter',
+        action: 'delete',
+        entity: 'meter',
         message: 'You should rather archive it',
       });
     },
@@ -160,7 +162,8 @@ AutoForm.addHooks('af.meter.registerReading', {
     doc._id = ModalStack.getVar('meterId');
     if (isTooLargeValue(doc)) {
       Modal.confirmAndCall(Meters.methods.registerReading, doc, {
-        action: 'registerReading meter',
+        action: 'registerReading',
+        entity: 'meter',
         message: 'The reading is much higher than expected',
       }, (res) => { if (res) Modal.hide(this.template.parent()); });
       return false;

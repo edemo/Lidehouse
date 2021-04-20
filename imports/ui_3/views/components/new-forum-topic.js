@@ -29,7 +29,7 @@ Template.New_forum_topic.events({
     };
     const options = { entity: Topics.entities['forum'] };
     Object.setPrototypeOf(options, new ActionOptions(Topics));
-    Topics.actions.new(options, doc).run(event, instance);
+    Topics.actions.create(options, doc).run(event, instance);
     vm.titleValue(''); vm.textValue('');
   },
   'click .js-send'(event, instance) {

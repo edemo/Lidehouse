@@ -141,6 +141,7 @@
   "memberContract": "számlázás",
   "delegation": "meghatalmazás",
   "delegations": "meghatalmazások",
+  "topics": "témák",
   "ticket": "hibajegy",
   "tickets": "hibajegyek",
   "work": "munka",
@@ -280,7 +281,7 @@
   "insertion": "felvitele",
 
   // import
-  "importing data": "%s adatok importálása",
+  "importing data": "%s importálása",
   "Import format": "Import formátum",
   "default": "alapértelmezett",
   "Importable columns": "Importálható oszlopok",
@@ -493,6 +494,7 @@
   "Start date": "Kezdés dátuma",
 
   // finances
+  "finances": "pénzügyek",
   "Side": "Oldal",
   "Income": "Bevétel",
   "Expense": "Kiadás",
@@ -535,6 +537,7 @@
   "'s chart": " eloszlása",
   "'s history": " alakulása",
   "Balance": "Egyenleg",
+  "balances": "egyenlegek",
   "ParcelBalance": "Túlfizetés/Hátralék",
   "Parcel balances": "Albetétek egyenlege",
   "My parcel balances": "Albetéteim egyenlege",
@@ -588,6 +591,7 @@
   "Full": "Teljes",
   "Remainder": "Maradék",
   "unreconciledOnlyHelp": "Számlák közül csak azok, amik pénzügyileg rendezetlenek. Fizetések közül csak azok, amik nincsenek számlákhoz egyeztetve vagy nincsenek bankkivonathoz egyeztetve. Partnerek közül csak azok, akiknek kinnlevősége van. Egyszóval csak azok a tételek, amikkel még teendő van.",
+  "Some accounting transactions might be connected to it": "Egyes tranzakciók kapcsolódhatnak hozzá.",
 
   // docstore
   "Show": "Listázva",

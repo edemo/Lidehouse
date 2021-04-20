@@ -1,5 +1,145 @@
 {
+ "actions": {
+    "create": {
+      "label": "new",
+      "do": "create",
+      "doing": "create",
+      "done": "created"
+    },
+    "view": {
+      "label": "view",
+      "do": "view",
+      "doing": "view"
+    },
+    "edit": {
+      "label": "edit",
+      "do": "edit",
+      "doing": "edit",
+      "done": "edited"
+    },
+    "delete": {
+      "label": "delete",
+      "do": "delete",
+      "doing": "delete",
+      "done": "deleted"
+    }, 
+    "import": {
+      "label": "import",
+      "do": "import",
+      "doing": "import",
+      "done": "imported"
+    },
+    "move": {
+      "label": "move",
+      "do": "move",
+      "doing": "move",
+      "done": "moved"
+    },
+    "merge": {
+      "label": "merge",
+      "do": "merge",
+      "doing": "merge",
+      "done": "merged"
+    },
+    "apply": {
+      "label": "apply",
+      "do": "apply",
+      "doing": "apply",
+      "done": "applied"
+    },
+    "post": {
+      "label": "post",
+      "do": "post",
+      "doing": "post",
+      "done": "posted"
+    },
+    "reconcile": {
+      "label": "reconcile",
+      "do": "reconcile",
+      "doing": "reconcile",
+      "done": "reconciled"
+    },
+    "registerReading": {
+      "label": "register reading",
+      "do": "register reading of",
+      "doing": "register reading",
+      "done": "reading registered"
+    },
+    "statusChange": {
+      "label": "change status",
+      "do": "change status of",
+      "doing": "change status",
+      "done": "status changed"
+    },
+    "statusUpdate": {
+      "label": "update status",
+      "do": "update status of",
+      "doing": "update status",
+      "done": "status updated"
+    },
+    "period": {
+      "label": "update period",
+      "do": "update period of",
+      "doing": "update period",
+      "done": "period updated"
+    },
+    "invite": {
+      "label": "invite",
+      "do": "invite",
+      "doing": "invite",
+      "done": "invited"
+    },
+    "send": {
+      "label": "send",
+      "do": "send",
+      "doing": "send",
+      "done": "sent"
+    },
+    "resend": {
+      "label": "resend",
+      "do": "resend",
+      "doing": "resend",
+      "done": "resent"
+    },
+    "repost": {
+      "label": "repost",
+      "do": "repost",
+      "doing": "repost",
+      "done": "reposted"
+    },
+    "recognize": {
+      "label": "recognize",
+      "do": "recognize",
+      "done": "recognized"
+    },
+    "autoReconcile": {
+      "label": "auto reconcile",
+      "do": "auto reconcile",
+      "done": "auto reconciled"
+    } ,
+   "revoke": {
+      "do": "revoke",
+      "done": "revoked"
+    },
+    "refuse": {
+      "do": "refuse",
+      "done": "refused"
+    },
+    "enable": {
+      "do": "enable",
+      "done": "enabled"
+    },    
+    "disable": {
+      "do": "disable",
+      "done": "disabled"
+    }
+  },
+
   "entities": {
+    "community": {
+      "label": "community",
+      "it": "the community"
+    },
     "parcel": {
       "label": "parcel",
       "it": "the parcel"
@@ -8,6 +148,18 @@
       "label": "property",
       "it": "the property"
     },
+    "@common": {
+      "label": "common property",
+      "it": "the common property"
+    },
+    "@group": {
+      "label": "group",
+      "it": "the group"
+    },
+    "#tag": {
+      "label": "tag",
+      "it": "the tag"
+    },
     "membership": {
       "label": "membership",
       "it": "the membership"
@@ -15,25 +167,162 @@
     "ownership": {
       "label": "ownership",
       "it": "the ownership"
-    }
-  },
-  "actions": {
-    "create": {
-      "label": "new"
     },
-    "import": {
-      "label": "import"
+    "benefactorship": {
+      "label": "benefactorship",
+      "it": "the benefactorship"
     },
-    "view": {
-      "label": "view"
+    "roleship": {
+      "label": "roleship",
+      "it": "the roleship"
     },
-    "edit": {
-      "label": "edit"
+    "delegation": {
+      "label": "delegation",
+      "it": "the delegation"
     },
-    "delete": {
-      "label": "delete",
-      "do": "deletes",
-      "done": "deleted"
+    "partner": {
+      "label": "partner",
+      "it": "the partner"
+    },
+    "contract": {
+      "label": "contract",
+      "it": "the contract"
+    },
+    "agenda": {
+      "label": "agenda",
+      "it": "the agenda"
+    },
+    "topic": {
+      "label": "topic",
+      "it": "the topic"
+    },
+    "forum": {
+      "label": "forum topic",
+      "it": "the forum topic"
+    },
+    "vote": {
+      "label": "vote",
+      "it": "the vote"
+    },
+    "news": {
+      "label": "news",
+      "it": "the news"
+    },
+    "ticket": {
+      "label": "ticket",
+      "it": "the ticket"
+    },
+    "issue": {
+      "label": "issue",
+      "it": "the issue"
+    },
+    "maintenance": {
+      "label": "maintenance",
+      "it": "the maintenance"
+    },
+    "upgrade": {
+      "label": "upgrade",
+      "it": "the upgrade"
+    },
+    "comment": {
+      "label": "comment",
+      "it": "the comment"
+    },
+    "statusChange": {
+      "label": "status change",
+      "it": "the status change"
+    },
+    "pointAt": {
+      "label": "pointer",
+      "it": "the pointer"
+    },
+    "meter": {
+      "label": "meter",
+      "it": "the meter"
+    },
+    "parcelBilling": {
+      "label": "parcel billing",
+      "it": "the parcel billing"
+    },
+    "transaction": {
+      "label": "transaction",
+      "it": "the transaction"
+    },
+    "bill": {
+      "label": "bill",
+      "it": "the bill"
+    },
+    "payment": {
+      "label": "payment",
+      "it": "the payment"
+    },
+    "exchange": {
+      "label": "exchange",
+      "it": "the exchange"
+    },
+    "receipt": {
+      "label": "receipt",
+      "it": "the receipt"
+    },
+    "transfer": {
+      "label": "transfer",
+      "it": "the transfer"
+    },
+    "opening": {
+      "label": "opening/closing",
+      "it": "the opening/closing"
+    },    
+    "freeTx": {
+      "label": "transaction",
+      "it": "the transaction"
+    },
+    "statementEntry": {
+      "label": "statement entry",
+      "it": "the statement entry"
+    },
+    "txdef": {
+      "label": "transaction type",
+      "it": "the transaction type"
+    },
+    "simpleAccount": {
+      "label": "account",
+      "it": "the account"
+    },
+    "cashAccount": {
+      "label": "cash account",
+      "it": "the cash account"
+    },
+    "bankAccount": {
+      "label": "bank account",
+      "it": "the bank account"
+    },
+    "outstandings reminder": {
+      "label": "outstandings reminder",
+      "it": "outstandings reminder"
+    },
+    "sharedfolder": {
+      "label": "folder",
+      "it": "the folder"
+    },
+    "settings": {
+      "label": "settings",
+      "it": "the settings"
+    },
+    "user": {
+      "label": "user",
+      "it": "the user"
+    },
+    "email": {
+      "label": "email",
+      "it": "the email"
+    },
+    "data": {
+      "label": "data",
+      "it": "the data"
+    },
+    "document": {
+      "label": "document",
+      "it": "the documentum"
     }
   }
 }

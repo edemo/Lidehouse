@@ -135,7 +135,8 @@ Template.Shareddoc_store.events({
     const a = event.target.closest('a');
     const _id = $(a).data('id');
     Modal.confirmAndCall(removeSharedfolders, { _id }, {
-      action: 'delete sharedfolder',
+      action: 'delete',
+      entity: 'sharedfolder',
       message: 'This will delete all contained files as well',
     });
   },

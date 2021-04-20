@@ -7,6 +7,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Agendas } from './agendas.js';
+import './methods.js';
 import { joinLiveChat } from '/imports/ui_3/views/common/live-chat.js';
 
 Agendas.actions = {
@@ -58,13 +59,15 @@ Agendas.actions = {
     visible: user.hasPermission('agendas.remove', doc),
     run() {
       Modal.confirmAndCall(Agendas.methods.remove, { _id: doc._id }, {
-        action: 'delete agenda',
+        action: 'delete',
+        entity: 'agenda',
         message: 'This will not delete topics',
       });
     },
   }),
   videoCall: (options, doc, user = Meteor.userOrNull()) => ({
     name: doc.live ? 'video end' : 'video call',
+    label: doc.live ? 'video end' : 'video call',
     icon: 'fa fa-video-camera',
     visible: !doc.closed() && user.hasPermission('agendas.insert', doc),
     run() {
@@ -86,8 +89,9 @@ Agendas.actions = {
   }),
   videoJoin: (options, doc, user = Meteor.userOrNull()) => ({
     name: Session.get('joinedVideo') ? 'leave video' : 'join video',
+    label: Session.get('joinedVideo') ? 'leave video' : 'join video',
     icon: 'fa fa-video-camera',
-    visible: (doc.live || Session.get('joinedVideo')) && user.hasPermission('agendas.inCommunity', doc),
+    visible: (doc.live) && user.hasPermission('agendas.inCommunity', doc),
     run() {
       $('iframe[id*="jitsiConferenceFrame"]').remove();
       if (Session.get('joinedVideo')) {

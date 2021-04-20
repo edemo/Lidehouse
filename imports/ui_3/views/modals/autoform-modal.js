@@ -10,6 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { getCurrentUserLang } from '/imports/api/users/users.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import './autoform-modal.html';
@@ -42,17 +43,21 @@ Template.Autoform_modal.viewmodel({
     const data = this.templateInstance.data;
     if (data.title) return data.title;
     const id = afId2details(data.id);
+    let entityName = __(`entities.${id.entity}.label`);
     if (_.contains(Transactions.categoryValues, id.entity)) {
       const defId = Template.instance().data.doc.defId;
       const txdef = Txdefs.findOne(defId);
-      id.object = txdef.name;
+      entityName = __(txdef.name);
     }
     if (id.action === 'statusChange') {
       id.entity = 'statusChange';
       id.action = 'create';
     }
-    if (id.action === 'create') return __('new') + ' ' + __(`entities.${id.entity}.label`) + ' ' + __('insertion');
-    else return __(`entities.${id.entity}.label`) + ' ' + __(`actions.${id.action}.doing`);
+    if (id.action === 'create') return __('new') + ' ' + entityName + ' ' + __('insertion');
+    else {
+      if (getCurrentUserLang() === 'en') return __(`actions.${id.action}.do`) + ' ' + entityName;
+      else return entityName + ' ' + __(`actions.${id.action}.doing`);
+    }
   },
   debugInfo() {
     const data = this.templateInstance.data;

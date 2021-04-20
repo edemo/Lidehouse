@@ -137,7 +137,7 @@
   "Join request submitted": "Join request submitted to community %s",
   "Join request notification": "Your join request needs to be approved by the managers. Until your request becomes approved, you will not be able to see data and interact with the community.",
   "Vote casted": "Vote casted succesfully",
-  "You should rather archive it" : "You should rather edit the active period, and set an end date, so the data is still searchable. DElete it only if it was created by mistake!",
+  "You should rather archive it" : "You should rather edit the active period, and set an end date, so the data is still searchable. Delete it only if it was created by mistake!",
   "pageNotFoundMessage": "The %s you are looking for cannot be found. This could be because it has been deleted since. Or you might not have the necessary permissions to view it.",
 
   "actionDone_insert": "inserted",

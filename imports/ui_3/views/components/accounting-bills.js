@@ -147,7 +147,7 @@ Template.Accounting_bills.events({
     const entity = $(event.target).closest('[data-entity]').data('entity');
     const defId = $(event.target).closest('[data-defid]').data('defid');
     const txdef = Txdefs.findOne(defId);
-    Transactions.actions.new({ entity, txdef }).run(event, instance);
+    Transactions.actions.create({ entity, txdef }).run(event, instance);
   },
   'click .js-apply'(event, instance) {
     ParcelBillings.actions.apply().run();

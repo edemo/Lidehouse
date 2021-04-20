@@ -29,7 +29,7 @@ Parcels.actions = {
     label: (options.splitable() ? `${__('new') + ' ' + __('parcel')}`
       : `${__('new')} ${__('schemaParcels.category.options.' + options.entity.name)}`),
     visible: user.hasPermission('parcels.insert', doc),
-    subActions: options.splitable() && options.split().map(opts => Parcels.actions.new(opts.fetch(), doc, user)),
+    subActions: options.splitable() && options.split().map(opts => Parcels.actions.create(opts.fetch(), doc, user)),
     run() {
       let entity = options.entity;
       if (typeof entity === 'string') entity = Parcels.entities[entity];
@@ -64,6 +64,7 @@ Parcels.actions = {
   }),
   occupants: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'occupants',
+    label: 'occupants',
     icon: (doc && doc.isLed() ? 'fa fa-user-o' : 'fa fa-user'),
     color: (() => {
       let colorClass = '';
@@ -95,6 +96,7 @@ Parcels.actions = {
   }),
   meters: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'meters',
+    label: 'meters',
     icon: 'fa fa-tachometer',
     color: doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
     visible: user.hasPermission('parcels.details', doc),
@@ -113,6 +115,7 @@ Parcels.actions = {
   }),
   contracts: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'memberContract',
+    label: 'memberContract',
     icon: 'fa fa-handshake-o',
     visible: user.hasPermission('parcels.details', doc),
     color: Contracts.findOneActive({ parcelId: doc._id }) ? '' : 'info',
@@ -151,6 +154,7 @@ Parcels.actions = {
   }),
   finances: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'finances',
+    label: 'finances',
     icon: 'fa fa-eye',
     visible: user.hasPermission('parcels.inCommunity', doc),
     href: '#view-target',

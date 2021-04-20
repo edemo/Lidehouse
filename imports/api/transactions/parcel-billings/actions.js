@@ -107,7 +107,8 @@ ParcelBillings.actions = {
     visible: user.hasPermission('parcelBillings.remove', doc),
     run() {
       Modal.confirmAndCall(ParcelBillings.methods.remove, { _id: doc._id }, {
-        action: 'delete parcelBilling',
+        action: 'delete',
+        entity: 'parcelBilling',
         message: 'It will disappear forever',
       });
     },

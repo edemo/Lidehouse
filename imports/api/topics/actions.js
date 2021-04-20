@@ -51,7 +51,7 @@ Topics.actions = {
     label: (options.splitable() ? `${__('new')}  ${__(options.category)}` :
       (options.entity.name === 'issue' ? __('Report issue') : `${__('new')} ${__(options.entity.name)}`)),
     visible: options.splitable() ? true : user.hasPermission(`${options.entity.name}.insert`, doc),
-    subActions: options.splitable() && options.split().map(opts => Topics.actions.new(opts.fetch(), doc, user)),
+    subActions: options.splitable() && options.split().map(opts => Topics.actions.create(opts.fetch(), doc, user)),
     run() {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
@@ -198,7 +198,8 @@ Topics.actions = {
     visible: doc?.entityName && user.hasPermission(`${doc.entityName()}.remove`, doc),
     run() {
       Modal.confirmAndCall(Topics.methods.remove, { _id: doc._id }, {
-        action: `delete ${doc.entityName()}`,
+        action: 'delete',
+        entity: doc.entityName(),
         message: 'It will disappear forever',
       });
     },
