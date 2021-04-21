@@ -52,8 +52,8 @@ export const apply = new ValidatedMethod({
     ActiveTimeMachine.runAtTime(date, () => {
       const billsToSend = {}; // parcelId => his bill
       const activeParcelBillings = ids
-        ? ParcelBillings.findActive({ communityId, _id: { $in: ids } })
-        : ParcelBillings.findActive({ communityId });
+        ? ParcelBillings.findActive({ communityId, _id: { $in: ids } }, { sort: { rank: 1 } })
+        : ParcelBillings.findActive({ communityId }, { sort: { rank: 1 } });
       const billingPeriod = Period.monthOfDate(date);
       const activeParcels = ParcelBillings.filterParcels(communityId, localizer, withFollowers);
       activeParcelBillings.forEach((parcelBilling) => {
