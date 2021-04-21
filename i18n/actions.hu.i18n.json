@@ -65,6 +65,12 @@
       "doing": "leolvasás rögzítése",
       "done": "leolvasás rögzítve"
     },
+    "editReadings": {
+      "label": "korábbi leolvasások módosítása",
+      "do": "módosítja a korábbi leolvasásokat",
+      "doing": "korábbi leolvasásainak módosítása",
+      "done": "korábbi leolvasásai módosítva"
+    },
     "statusChange": {
       "label": "státusz váltás",
       "do": "más státuszba teszi",

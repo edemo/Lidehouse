@@ -15,7 +15,7 @@
       "label": "edit",
       "do": "edit",
       "doing": "edit",
-      "done": "edited"
+      "done": "modified"
     },
     "delete": {
       "label": "delete",
@@ -64,6 +64,12 @@
       "do": "register reading of",
       "doing": "register reading",
       "done": "reading registered"
+    },
+    "editReadings": {
+      "label": "edit previous readings",
+      "do": "edit previous readings of",
+      "doing": "edit previous readings",
+      "done": "previous readings modified"
     },
     "statusChange": {
       "label": "change status",

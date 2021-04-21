@@ -66,12 +66,11 @@ Meters.actions = {
   }),
   editReadings: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'editReadings',
-    label: 'editReadings',
-    icon: 'fa fa-pencil',
+    icon: 'fa fa-pencil-square-o',
     visible: user.hasPermission('meters.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.meter.edit',
+        id: 'af.meter.editReadings',
         collection: Meters,
         fields: ['readings'],
         doc,
@@ -143,6 +142,7 @@ function isTooLargeValue(doc) {
 
 AutoForm.addModalHooks('af.meter.create');
 AutoForm.addModalHooks('af.meter.edit');
+AutoForm.addModalHooks('af.meter.editReadings');
 AutoForm.addModalHooks('af.meter.registerReading');
 AutoForm.addHooks('af.meter.create', {
   formToDoc(doc) {
