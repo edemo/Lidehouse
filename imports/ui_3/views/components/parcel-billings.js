@@ -23,8 +23,10 @@ Template.Parcel_billings.viewmodel({
     return ModalStack.getVar('communityId');
   },
   tableContent() {
+    const communityId = this.communityId();
     return {
       collection: 'parcelBillings',
+      selector: { communityId },
       options() {
         return () => ({
           columns: parcelBillingColumns(),

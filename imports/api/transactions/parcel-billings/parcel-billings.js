@@ -85,6 +85,7 @@ ParcelBillings.schema = new SimpleSchema({
   localizer: { type: String, autoform: { ...Parcels.choosePhysical } },
   type: { type: [String], optional: true, autoform: { ...chooseFromExistingParcelTypes } },
   group: { type: String, optional: true, autoform: { ...chooseFromExistingGroups } },
+  rank: { type: Number, defaultValue: 1, autoform: { defaultValue: 1 } },
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
 });
 
@@ -94,12 +95,12 @@ const chooseParcelBilling = {
     const activeParcelBillingId = ModalStack.getVar('parcelBillingId');
     const parcelBillings = activeParcelBillingId
       ? ParcelBillings.find(activeParcelBillingId)
-      : ParcelBillings.findActive({ communityId });
+      : ParcelBillings.findActive({ communityId }, { sort: { rank: 1 } });
     const options = parcelBillings.map(function option(pb) {
       return { label: pb.toString(), value: pb._id };
     });
-    const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
-    return sortedOptions;
+   // const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+    return options;
   },
 };
 
@@ -125,6 +126,7 @@ ParcelBillings.applySchema = new SimpleSchema({
 
 Meteor.startup(function indexParcelBillings() {
   ParcelBillings.ensureIndex({ communityId: 1 });
+  ParcelBillings.ensureIndex({ rank: 1 });
 });
 
 ParcelBillings.filterParcels = function filterParcels(communityId, localizer, withFollowers) {

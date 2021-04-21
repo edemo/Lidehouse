@@ -10,6 +10,7 @@ import './actions.js';
 
 export function parcelBillingColumns() {
   const columns = [
+    { data: 'rank', title: __('schemaParcelBillings.rank.label'), visible: false },
     { data: 'title', title: __('schemaParcelBillings.title.label') },
 //    { data: 'digit', title: __('schemaParcelBillings.digit.label') },
 //    { data: 'localizer', title: __('schemaParcelBillings.localizer.label'), render: l => displayLocalizer(l, communityId) },
