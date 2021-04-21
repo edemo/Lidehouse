@@ -105,8 +105,8 @@ Template.Delegations.helpers({
 });
 
 Template.Delegations.events({
-  'click .js-new'(event) {
-    Delegations.actions.new({}, { sourceId: getActivePartnerId(), communityId: getActiveCommunityId() }).run();
+  'click .js-create'(event) {
+    Delegations.actions.create({}, { sourceId: getActivePartnerId(), communityId: getActiveCommunityId() }).run();
   },
   'click #allow'(event) {
     event.preventDefault();
@@ -115,7 +115,8 @@ Template.Delegations.events({
       'This will let others to delegate to you' :
       'This will refuse all existing delegations';
     Modal.confirmAndCall(allowDelegations, { value }, {
-      action: value ? 'enable delegations' : 'disable delegations',
+      action: value ? 'enable' : 'disable',
+      entity: 'delegation',
       message,
     });
   },

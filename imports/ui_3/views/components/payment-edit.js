@@ -79,14 +79,14 @@ Template.Payment_edit.events({
       instance.viewmodel.billsView(instance.viewmodel.afDoc(formId).bills?.length);
     }, 1000);
   },
-  'click .js-new[data-entity="bill"]'(event, instance) {
+  'click .js-create[data-entity="bill"]'(event, instance) {
     const paymentDef = instance.data.doc.txdef();
     const billDef = paymentDef.correspondingBillDef();
     const doc = {
       relation: AutoForm.getFieldValue('relation'),
       partnerId: AutoForm.getFieldValue('partnerId'),
     };
-    Transactions.actions.new({ entity: 'bill', txdef: billDef }, doc).run(event, instance);
+    Transactions.actions.create({ entity: 'bill', txdef: billDef }, doc).run(event, instance);
   },
   'click .js-view-mode'(event, instance) {
     instance.viewmodel.billsView(true);

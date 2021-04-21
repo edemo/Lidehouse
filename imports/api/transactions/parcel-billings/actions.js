@@ -12,13 +12,13 @@ import { ParcelBillings } from './parcel-billings.js';
 import './methods.js';
 
 ParcelBillings.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     visible: user.hasPermission('parcelBillings.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.parcelBilling.insert',
+        id: 'af.parcelBilling.create',
         collection: ParcelBillings,
         doc,
         type: 'method',
@@ -45,7 +45,7 @@ ParcelBillings.actions = {
     visible: user.hasPermission('parcelBillings.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.parcelBilling.update',
+        id: 'af.parcelBilling.edit',
         collection: ParcelBillings,
         doc,
         type: 'method-update',
@@ -60,7 +60,7 @@ ParcelBillings.actions = {
     visible: user.hasPermission('parcelBillings.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.parcelBilling.update',
+        id: 'af.parcelBilling.edit',
         schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
@@ -107,7 +107,8 @@ ParcelBillings.actions = {
     visible: user.hasPermission('parcelBillings.remove', doc),
     run() {
       Modal.confirmAndCall(ParcelBillings.methods.remove, { _id: doc._id }, {
-        action: 'delete parcelBilling',
+        action: 'delete',
+        entity: 'parcelBilling',
         message: 'It will disappear forever',
       });
     },
@@ -116,11 +117,11 @@ ParcelBillings.actions = {
 
 //--------------------------------------------------
 
-AutoForm.addModalHooks('af.parcelBilling.insert');
-AutoForm.addModalHooks('af.parcelBilling.update');
+AutoForm.addModalHooks('af.parcelBilling.create');
+AutoForm.addModalHooks('af.parcelBilling.edit');
 AutoForm.addModalHooks('af.parcelBilling.apply');
 
-AutoForm.addHooks('af.parcelBilling.update', {
+AutoForm.addHooks('af.parcelBilling.edit', {
   formToModifier(modifier) {
     // TODO: nasty hack to trick autoform - AF is trying to $unset these, and then throws error, that these values are mandatory
     if (modifier.$unset) {

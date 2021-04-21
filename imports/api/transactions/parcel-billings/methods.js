@@ -63,7 +63,7 @@ export const apply = new ValidatedMethod({
         parcels.forEach((parcel) => {
           productionAssert(parcel, 'Could not find parcel - Please check if parcel ref matches the building+floor+door exactly');
           function addLineToBill(line) {
-            productionAssert(line.uom && _.isDefined(line.quantity), 'A billing needs at least one of consumption or projection.');
+            productionAssert(line.uom && _.isDefined(line.quantity), 'A billing needs at least one of consumption or projection');
             if (line.quantity === 0) return; // Should not create bill for zero amount
             line.title = parcelBilling.title;
             line.amount = line.quantity * line.unitPrice;
@@ -115,7 +115,7 @@ export const apply = new ValidatedMethod({
             });
           }
           if (!activeMeters.length) {
-            if (!parcelBilling.projection) throw new Meteor.Error('err_invalidData', 'Parcel has no meter for billing, and no projection is set up for this billing.', { parcel: parcel.ref, parcelBilling: parcelBilling.title });
+            if (!parcelBilling.projection) throw new Meteor.Error('err_invalidData', 'Parcel has no meter for billing, and no projection is set up for this billing', { parcel: parcel.ref, parcelBilling: parcelBilling.title });
             const line = {};
             line.unitPrice = parcelBilling.projection.unitPrice;
             line.uom = parcelBilling.projectionUom();

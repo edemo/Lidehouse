@@ -85,7 +85,7 @@
       <div class="ibox-content">
           <div class="feed-activity-list">
               <div class="text-right">
-                  {{>Action_buttons_group collection='topics' actions='new' options=(obj '{ "entity": "news" }') size='md'}}
+                  {{>Action_buttons_group collection='topics' actions='create' options=(obj '{ "entity": "news" }') size='md'}}
               </div>
               {{#each topics 'news' false}}
                   {{>News_topic this}}

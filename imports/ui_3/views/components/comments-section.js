@@ -93,7 +93,7 @@ Template.Comments_section.events({
     };
     const options = {};
     Object.setPrototypeOf(options, new ActionOptions(Comments));
-    Comments.actions.new(options, doc).run(event, instance);
+    Comments.actions.create(options, doc).run(event, instance);
     vm.commentText('');
   },
   'click .social-comment .js-send'(event, instance) {

@@ -257,7 +257,7 @@ Template.Worksheets.viewmodel({
 });
 
 Template.Worksheets.events({ 
-  ...(actionHandlers(Topics, 'new,view')),
+  ...(actionHandlers(Topics, 'create,view')),
   'click .js-mode'(event, instance) {
     const oldVal = instance.viewmodel.calendarView();
     instance.viewmodel.calendarView(!oldVal);

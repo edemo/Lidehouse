@@ -22,19 +22,19 @@ import './methods.js';
 import './entities.js';
 
 Parcels.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     color: 'primary',
     label: (options.splitable() ? `${__('new') + ' ' + __('parcel')}`
       : `${__('new')} ${__('schemaParcels.category.options.' + options.entity.name)}`),
     visible: user.hasPermission('parcels.insert', doc),
-    subActions: options.splitable() && options.split().map(opts => Parcels.actions.new(opts.fetch(), doc, user)),
+    subActions: options.splitable() && options.split().map(opts => Parcels.actions.create(opts.fetch(), doc, user)),
     run() {
       let entity = options.entity;
       if (typeof entity === 'string') entity = Parcels.entities[entity];
       Modal.show('Autoform_modal', {
-        id: `af.${entity.name}.insert`,
+        id: `af.${entity.name}.create`,
         schema: entity.schema,
         doc,
         type: 'method',
@@ -64,6 +64,7 @@ Parcels.actions = {
   }),
   occupants: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'occupants',
+    label: 'occupants',
     icon: (doc && doc.isLed() ? 'fa fa-user-o' : 'fa fa-user'),
     color: (() => {
       let colorClass = '';
@@ -95,6 +96,7 @@ Parcels.actions = {
   }),
   meters: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'meters',
+    label: 'meters',
     icon: 'fa fa-tachometer',
     color: doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
     visible: user.hasPermission('parcels.details', doc),
@@ -113,6 +115,7 @@ Parcels.actions = {
   }),
   contracts: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'memberContract',
+    label: 'memberContract',
     icon: 'fa fa-handshake-o',
     visible: user.hasPermission('parcels.details', doc),
     color: (() => {
@@ -138,7 +141,7 @@ Parcels.actions = {
       if (!contract) {
         contract = doc._contractSelector();
         Modal.show('Autoform_modal', {
-          id: 'af.contract.insert',
+          id: 'af.contract.create',
           schema: Contracts.simpleSchema(contract),
           doc: contract,
           type: 'method',
@@ -146,7 +149,7 @@ Parcels.actions = {
         });
       } else {
         Modal.show('Autoform_modal', {
-          id: 'af.contract.update',
+          id: 'af.contract.edit',
           schema: Contracts.simpleSchema(contract),
           doc: contract,
           type: 'method-update',
@@ -158,6 +161,7 @@ Parcels.actions = {
   }),
   finances: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'finances',
+    label: 'finances',
     icon: 'fa fa-eye',
     visible: user.hasPermission('parcels.inCommunity', doc),
     href: '#view-target',
@@ -173,7 +177,7 @@ Parcels.actions = {
     run() {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
-        id: `af.${entity.name}.update`,
+        id: `af.${entity.name}.edit`,
         schema: entity.schema,
         doc,
         type: 'method-update',
@@ -189,7 +193,7 @@ Parcels.actions = {
     run() {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
-        id: `af.${entity.name}.update`,
+        id: `af.${entity.name}.edit`,
         schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
@@ -204,7 +208,8 @@ Parcels.actions = {
     visible: user.hasPermission('parcels.remove', doc),
     run() {
       Modal.confirmAndCall(Parcels.methods.remove, { _id: doc._id }, {
-        action: 'delete parcel',
+        action: 'delete',
+        entity: doc.entityName(),
         message: 'You should rather archive it',
       });
     },
@@ -248,16 +253,16 @@ function onJoinParcelInsertSuccess(parcelId) {
 }
 
 Parcels.categoryValues.forEach(category => {
-  AutoForm.addModalHooks(`af.${category}.insert`);
-  AutoForm.addModalHooks(`af.${category}.update`);
+  AutoForm.addModalHooks(`af.${category}.create`);
+  AutoForm.addModalHooks(`af.${category}.edit`);
 
-  AutoForm.addHooks(`af.${category}.insert`, {
+  AutoForm.addHooks(`af.${category}.create`, {
     formToDoc(doc) {
       doc.category = category;
       return doc;
     },
   });
-  AutoForm.addHooks(`af.${category}.update`, {
+  AutoForm.addHooks(`af.${category}.edit`, {
     formToModifier(modifier) {
       modifier.$set.approved = true;
       return modifier;
@@ -265,8 +270,8 @@ Parcels.categoryValues.forEach(category => {
   });
 });
 
-AutoForm.addModalHooks('af.@property.insert.unapproved');
-AutoForm.addHooks('af.@property.insert.unapproved', {
+AutoForm.addModalHooks('af.@property.create.unapproved');
+AutoForm.addHooks('af.@property.create.unapproved', {
   formToDoc(doc) {
     doc.approved = false;
     doc.category = '@property';

@@ -28,7 +28,7 @@ Template.Reconciliation.onRendered(function () {
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return;
     const txdef = Txdefs.findOne(defId);
-    const result = ModalStack.readResult('af.statementEntry.reconcile', `af.${txdef.category}.insert`);
+    const result = ModalStack.readResult('af.statementEntry.reconcile', `af.${txdef.category}.create`);
     if (result) {
       Meteor.setTimeout(() => {
         computation.stop();
@@ -41,7 +41,7 @@ Template.Reconciliation.onRendered(function () {
       if (!instance.data.newTransactionLaunched) {
         instance.data.newTransactionLaunched = true;
         const newTx = {}; Transactions.setTxdef(newTx, txdef);
-        Transactions.actions.new({}, newTx).run();
+        Transactions.actions.create({}, newTx).run();
       }
     }
   });

@@ -40,5 +40,5 @@ Template.Parcel_billings.viewmodel({
 
 
 Template.Parcel_billings.events(
-  actionHandlers(ParcelBillings, 'new')
+  actionHandlers(ParcelBillings, 'create')
 );

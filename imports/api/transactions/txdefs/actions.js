@@ -9,15 +9,15 @@ import { Txdefs } from './txdefs.js';
 import './methods.js';
 
 Txdefs.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     color: 'primary',
     label: `${__('new')} ${__('txdef')}`,
     visible: user.hasPermission('accounts.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.txdef.insert',
+        id: 'af.txdef.create',
         collection: Txdefs,
         doc,
         type: 'method',
@@ -44,7 +44,7 @@ Txdefs.actions = {
     visible: user.hasPermission('accounts.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.txdef.update',
+        id: 'af.txdef.edit',
         collection: Txdefs,
         doc,
         type: 'method-update',
@@ -59,7 +59,8 @@ Txdefs.actions = {
     visible: user.hasPermission('accounts.remove', doc),
     run() {
       Modal.confirmAndCall(Txdefs.methods.remove, { _id: doc._id }, {
-        action: 'delete txdef',
+        action: 'delete',
+        entity: 'txdef',
       });
     },
   }),
@@ -67,7 +68,7 @@ Txdefs.actions = {
 
 //------------------------------------------------------
 
-AutoForm.addModalHooks('af.txdef.insert');
-AutoForm.addModalHooks('af.txdef.update');
+AutoForm.addModalHooks('af.txdef.create');
+AutoForm.addModalHooks('af.txdef.edit');
 
 

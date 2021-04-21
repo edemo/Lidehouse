@@ -375,7 +375,7 @@ export const chooseParcel = function (code = '') {
     relation: '#tag',
     value() {
       const selfId = AutoForm.getFormId();
-      const value = ModalStack.readResult(selfId, 'af.#tag.insert');
+      const value = ModalStack.readResult(selfId, 'af.#tag.create');
       return value;
     },
     options() {

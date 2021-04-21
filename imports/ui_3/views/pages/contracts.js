@@ -50,9 +50,9 @@ Template.Contracts.viewmodel({
 });
 
 Template.Contracts.events({
-  ...(actionHandlers(Partners,'new')),
-  ...(actionHandlers(Contracts, 'new')),
-  'click .topics .js-new, .topics .js-import'(event) {
+  ...(actionHandlers(Partners,'create')),
+  ...(actionHandlers(Contracts, 'create')),
+  'click .topics .js-create, .topics .js-import'(event) {
     const entityName = $(event.target).closest('[data-entity]').data('entity');
     const entity = Topics.entities[entityName];
     const contractId = $(event.target).closest('[data-id]').data('id');
@@ -61,7 +61,7 @@ Template.Contracts.events({
     const doc = { communityId: getActiveCommunityId() };
     doc.ticket = { contractId, partnerId };
     Object.setPrototypeOf(options, new ActionOptions(Topics));
-    Topics.actions.new(options, doc).run();
+    Topics.actions.create(options, doc).run();
   },
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');

@@ -110,9 +110,9 @@ Template.Shareddoc_store.events({
     const _id = $(a).data('id');
     Template.instance().viewmodel.activeFolderId(_id);
   },
-  'click .js-new'(event) {
+  'click .js-create'(event) {
     Modal.show('Autoform_modal', {
-      id: 'af.sharedfolder.insert',
+      id: 'af.sharedfolder.create',
       collection: Sharedfolders,
       doc: defaultNewDoc(),
       type: 'method',
@@ -123,7 +123,7 @@ Template.Shareddoc_store.events({
     const a = event.target.closest('a');
     const _id = $(a).data('id');
     Modal.show('Autoform_modal', {
-      id: 'af.sharedfolder.update',
+      id: 'af.sharedfolder.edit',
       collection: Sharedfolders,
       doc: Sharedfolders.findOne(_id),
       type: 'method-update',
@@ -135,11 +135,12 @@ Template.Shareddoc_store.events({
     const a = event.target.closest('a');
     const _id = $(a).data('id');
     Modal.confirmAndCall(removeSharedfolders, { _id }, {
-      action: 'delete sharedfolder',
+      action: 'delete',
+      entity: 'sharedfolder',
       message: 'This will delete all contained files as well',
     });
   },
 });
 
-AutoForm.addModalHooks('af.sharedfolder.insert');
-AutoForm.addModalHooks('af.sharedfolder.update');
+AutoForm.addModalHooks('af.sharedfolder.create');
+AutoForm.addModalHooks('af.sharedfolder.edit');

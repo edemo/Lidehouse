@@ -11,15 +11,15 @@ import { Parcelships } from './parcelships.js';
 import './methods.js';
 
 Parcelships.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     label: __('new') + ' ' + __('parcelship'),
     visible: user.hasPermission('parcelships.insert', doc),
     run() {
       doc.parcelId = ModalStack.getVar('parcelId');
       Modal.show('Autoform_modal', {
-        id: 'af.parcelship.insert',
+        id: 'af.parcelship.create',
         collection: Parcelships,
         doc,
         omitFields: [],
@@ -47,7 +47,7 @@ Parcelships.actions = {
     visible: user.hasPermission('parcelships.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.parcelship.update',
+        id: 'af.parcelship.edit',
         collection: Parcelships,
         omitFields: ['leadParcelId'],
         doc,
@@ -63,7 +63,7 @@ Parcelships.actions = {
     visible: user.hasPermission('parcelships.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.parcelship.update',
+        id: 'af.parcelship.edit',
         collection: Parcelships,
         fields: ['activeTime'],
         doc,
@@ -88,15 +88,15 @@ Parcelships.actions = {
 
 //-----------------------------------------------
 
-AutoForm.addModalHooks('af.parcelship.insert');
-AutoForm.addModalHooks('af.parcelship.update');
-AutoForm.addHooks('af.parcelship.insert', {
+AutoForm.addModalHooks('af.parcelship.create');
+AutoForm.addModalHooks('af.parcelship.edit');
+AutoForm.addHooks('af.parcelship.create', {
   formToDoc(doc) {
     //    doc.approved = true;
     return doc;
   },
 });
-AutoForm.addHooks('af.parcelship.update', {
+AutoForm.addHooks('af.parcelship.edit', {
   formToModifier(modifier) {
     delete modifier.$set.leadParcelId; // not working
     return modifier;

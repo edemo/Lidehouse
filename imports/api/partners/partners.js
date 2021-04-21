@@ -267,7 +267,7 @@ export const choosePartner = {
   relation: 'partner',
   value() {
     const selfId = AutoForm.getFormId();
-    const value = ModalStack.readResult(selfId, 'af.partner.insert');
+    const value = ModalStack.readResult(selfId, 'af.partner.create');
     return value;
   },
   options() {

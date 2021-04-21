@@ -11,7 +11,8 @@ Shareddocs.actions = {
     visible: user.hasPermission('shareddocs.remove', doc),
     run(event, instance) {
       Modal.confirmAndCall(Shareddocs.methods.remove, { _id: doc._id }, {
-        action: 'delete shareddoc',
+        action: 'delete',
+        entity: 'shareddoc',
         message: 'It will disappear forever',
       });
     },

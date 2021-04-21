@@ -15,8 +15,8 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { userUnlinkNeeded } from './methods.js';
 
 Partners.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     label: `${__('new') + ' ' + __('partner')}`,
     icon: 'fa fa-plus',
     color: 'primary',
@@ -30,7 +30,7 @@ Partners.actions = {
       if (statementEntry) _.deepExtend(doc, { idCard: { name: statementEntry.name } });
 
       Modal.show('Autoform_modal', {
-        id: 'af.partner.insert',
+        id: 'af.partner.create',
         collection: Partners,
         doc,
         type: 'method',
@@ -59,6 +59,7 @@ Partners.actions = {
   }),
   history: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'history',
+    label: 'history',
     icon: 'fa fa-money',
     visible: user.hasPermission('partners.inCommunity', doc),
     run(event, instance) {
@@ -83,7 +84,7 @@ Partners.actions = {
     visible: user.hasPermission('partners.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.partner.update',
+        id: 'af.partner.edit',
         collection: Partners,
         doc,
         type: 'method-update',
@@ -114,6 +115,7 @@ Partners.actions = {
   },
   remindOutstandings: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'remindOutstandings',
+    label: 'remindOutstandings',
     color: doc.mostOverdueDaysColor(),
     icon: 'fa fa-exclamation',
     visible: user.hasPermission('partners.remindOutstandings', doc) && (ModalStack.getVar('relation') !== 'supplier') && doc.mostOverdueDays(),
@@ -122,7 +124,8 @@ Partners.actions = {
         displayMessage('warning', 'No contact email set for this partner');
       } else {
         Modal.confirmAndCall(Partners.methods.remindOutstandings, { _id: doc._id }, {
-          action: 'remind outstandings',
+          action: 'send',
+          entity: 'outstandings reminder',
           message: __('Sending outstandings reminder', doc.displayName() || __('undefined')),
         });
       }
@@ -134,7 +137,8 @@ Partners.actions = {
     visible: user.hasPermission('partners.remove', doc),
     run() {
       Modal.confirmAndCall(Partners.methods.remove, { _id: doc._id }, {
-        action: 'delete partner',
+        action: 'delete',
+        entity: 'partner',
         message: 'It will disappear forever',
       });
     },
@@ -147,16 +151,17 @@ Partners.batchActions = {
 
 //-------------------------------------------------------
 
-AutoForm.addModalHooks('af.partner.insert');
-AutoForm.addModalHooks('af.partner.update');
+AutoForm.addModalHooks('af.partner.create');
+AutoForm.addModalHooks('af.partner.edit');
 AutoForm.addModalHooks('af.partner.merge');
 
-AutoForm.addHooks('af.partner.update', {
+AutoForm.addHooks('af.partner.edit', {
   before: {
     'method-update'(modifier) {
       if (userUnlinkNeeded(this.currentDoc, modifier)) {
         Modal.confirmAndCall(Partners.methods.update, { _id: this.docId, modifier }, {
-          action: 'update partner',
+          action: 'edit',
+          entity: 'partner',
           message: 'Changing partner email address will unlink user',
         }, (res) => { if (res) Modal.hide(this.template.parent()); });
         return false;

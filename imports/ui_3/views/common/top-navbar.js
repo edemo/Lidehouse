@@ -130,8 +130,8 @@ Template.Top_navbar.events({
     ModalStack.setVar('communityId', newCommunityId, true);
     displayMessage('success', `${newCommunity.name} ${__('selected')}`);
   },
-  'click .js-new.community'() {
-    Communities.actions.new().run();
+  'click .js-create.community'() {
+    Communities.actions.create().run();
   },
   'click .js-logout'() {
     Meteor.logout(function onLogout(err) {

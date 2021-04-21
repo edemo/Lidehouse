@@ -55,14 +55,15 @@ Template.Profile_form.viewmodel({
   events: {
     'click .js-delete'(event, instance) {
       Modal.confirmAndCall(removeUser, { _id: Meteor.userId() }, {
-        action: 'delete user',
+        action: 'delete',
+        entity: 'user',
         message: 'deleteUserWarning',
       });
     },
   },
 });
 
-AutoForm.addHooks('af.user.update', {
+AutoForm.addHooks('af.user.edit', {
   docToForm(doc) {
     doc.email = doc.emails ? doc.emails[0].address : doc.email; // Autoform tries to retain doc values after a "hot code push"
     Session.set('userEmailAddress', doc.email);

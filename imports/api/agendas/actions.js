@@ -7,16 +7,17 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Agendas } from './agendas.js';
+import './methods.js';
 import { joinLiveChat } from '/imports/ui_3/views/common/live-chat.js';
 
 Agendas.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     visible: user.hasPermission('agendas.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.agenda.insert',
+        id: 'af.agenda.create',
         collection: Agendas,
         doc,
         type: 'method',
@@ -43,7 +44,7 @@ Agendas.actions = {
     visible: user.hasPermission('agendas.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.agenda.update',
+        id: 'af.agenda.edit',
         collection: Agendas,
         doc,
         type: 'method-update',
@@ -58,13 +59,15 @@ Agendas.actions = {
     visible: user.hasPermission('agendas.remove', doc),
     run() {
       Modal.confirmAndCall(Agendas.methods.remove, { _id: doc._id }, {
-        action: 'delete agenda',
+        action: 'delete',
+        entity: 'agenda',
         message: 'This will not delete topics',
       });
     },
   }),
   videoCall: (options, doc, user = Meteor.userOrNull()) => ({
     name: doc.live ? 'video end' : 'video call',
+    label: doc.live ? 'video end' : 'video call',
     icon: 'fa fa-video-camera',
     visible: !doc.closed() && user.hasPermission('agendas.insert', doc),
     run() {
@@ -86,8 +89,9 @@ Agendas.actions = {
   }),
   videoJoin: (options, doc, user = Meteor.userOrNull()) => ({
     name: Session.get('joinedVideo') ? 'leave video' : 'join video',
+    label: Session.get('joinedVideo') ? 'leave video' : 'join video',
     icon: 'fa fa-video-camera',
-    visible: (doc.live || Session.get('joinedVideo')) && user.hasPermission('agendas.inCommunity', doc),
+    visible: (doc.live) && user.hasPermission('agendas.inCommunity', doc),
     run() {
       $('iframe[id*="jitsiConferenceFrame"]').remove();
       if (Session.get('joinedVideo')) {
@@ -103,5 +107,5 @@ Agendas.actions = {
 
 //-----------------------------------------------
 
-AutoForm.addModalHooks('af.agenda.insert');
-AutoForm.addModalHooks('af.agenda.update');
+AutoForm.addModalHooks('af.agenda.create');
+AutoForm.addModalHooks('af.agenda.edit');

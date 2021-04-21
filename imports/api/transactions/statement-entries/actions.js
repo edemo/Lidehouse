@@ -21,14 +21,14 @@ import './methods.js';
 import { Transactions } from '../transactions.js';
 
 StatementEntries.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     visible: user.hasPermission('statements.insert', doc),
     run(event, instance) {
 //      ModalStack.setVar('account', instance.viewmodel.accountSelected());
       Modal.show('Autoform_modal', {
-        id: 'af.statementEntry.insert',
+        id: 'af.statementEntry.create',
         collection: StatementEntries,
         omitFields: ['original', 'match'],
         doc: {
@@ -87,7 +87,7 @@ StatementEntries.actions = {
     visible: user.hasPermission('statements.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.statementEntry.update',
+        id: 'af.statementEntry.edit',
         collection: StatementEntries,
         omitFields: ['original', 'match'],
         doc,
@@ -144,9 +144,9 @@ StatementEntries.actions = {
           size: 'lg',
         });
       } else {
-        Transactions.actions.new({ txdef }, newTx).run();
+        Transactions.actions.create({ txdef }, newTx).run();
         ModalStack.autorun((computation) => {
-          const result = ModalStack.readResult('root', `af.${txdef.category}.insert`, true);
+          const result = ModalStack.readResult('root', `af.${txdef.category}.create`, true);
           if (result) {
             Meteor.defer(() => {
               computation.stop();
@@ -166,6 +166,7 @@ StatementEntries.actions = {
   }),
   unReconcile: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'unReconcile',
+    label: 'unReconcile',
     icon: 'fa fa-times',
     visible: doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
     run() {
@@ -195,6 +196,7 @@ StatementEntries.actions = {
   }),
   transaction: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'transaction',
+    label: 'transaction',
     icon: 'fa fa-link',
     visible: doc.isReconciled() && user.hasPermission('transactions.inCommunity', doc),
     run() {
@@ -216,7 +218,8 @@ StatementEntries.actions = {
     visible: user.hasPermission('transactions.remove', doc),
     run() {
       Modal.confirmAndCall(StatementEntries.methods.remove, { _id: doc._id }, {
-        action: 'delete statementEntry',
+        action: 'delete',
+        entity: 'statementEntry',
       });
     },
   }),
@@ -238,18 +241,18 @@ StatementEntries.batchActions = {
 
 //--------------------------------------------------------
 
-AutoForm.addModalHooks('af.statementEntry.insert');
-AutoForm.addModalHooks('af.statementEntry.update');
+AutoForm.addModalHooks('af.statementEntry.create');
+AutoForm.addModalHooks('af.statementEntry.edit');
 AutoForm.addModalHooks('af.statementEntry.reconcile');
 
-AutoForm.addHooks('af.statementEntry.insert', {
+AutoForm.addHooks('af.statementEntry.create', {
   docToForm(doc) {
 //    doc.account = ModalStack.getVar('account');
     return doc;
   },
 });
 
-AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.insert', 'af.statementEntry.update'], {
+AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.create', 'af.statementEntry.edit'], {
   formToDoc(doc) {
     if (doc.original) doc.original = JSON.parse(doc.original);
     if (doc.match) doc.match = JSON.parse(doc.match);

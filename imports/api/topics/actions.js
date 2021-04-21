@@ -44,20 +44,20 @@ function statusChangeSchema(doc, statusName) {
 }
 
 Topics.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     color: 'primary',
     label: (options.splitable() ? `${__('new')}  ${__(options.category)}` :
       (options.entity.name === 'issue' ? __('Report issue') : `${__('new')} ${__(options.entity.name)}`)),
     visible: options.splitable() ? true : user.hasPermission(`${options.entity.name}.insert`, doc),
-    subActions: options.splitable() && options.split().map(opts => Topics.actions.new(opts.fetch(), doc, user)),
+    subActions: options.splitable() && options.split().map(opts => Topics.actions.create(opts.fetch(), doc, user)),
     run() {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
         body: options.entity.form,
         // --- autoform ---
-        id: `af.${entity.name}.insert`,
+        id: `af.${entity.name}.create`,
         schema: entity.schema,
         fields: entity.inputFields,
         doc,
@@ -90,7 +90,7 @@ Topics.actions = {
       Modal.show('Autoform_modal', {
         body: entity.form,
         // --- autoform ---
-        id: `af.${doc.entityName()}.update`,
+        id: `af.${doc.entityName()}.edit`,
         schema: entity.schema,
         fields,
         omitFields: entity.omitFields,
@@ -198,7 +198,8 @@ Topics.actions = {
     visible: doc?.entityName && user.hasPermission(`${doc.entityName()}.remove`, doc),
     run() {
       Modal.confirmAndCall(Topics.methods.remove, { _id: doc._id }, {
-        action: `delete ${doc.entityName()}`,
+        action: 'delete',
+        entity: doc.entityName(),
         message: 'It will disappear forever',
       });
     },
@@ -212,12 +213,12 @@ Topics.batchActions = {
 //-------------------------------------------------------
 
 _.each(Topics.entities, (entity, entityName) => {
-  AutoForm.addModalHooks(`af.${entityName}.insert`);
-  AutoForm.addModalHooks(`af.${entityName}.update`);
+  AutoForm.addModalHooks(`af.${entityName}.create`);
+  AutoForm.addModalHooks(`af.${entityName}.edit`);
   AutoForm.addModalHooks(`af.${entityName}.statusUpdate`);
   AutoForm.addModalHooks(`af.${entityName}.statusChange`);
 
-  AutoForm.addHooks(`af.${entityName}.insert`, {
+  AutoForm.addHooks(`af.${entityName}.create`, {
     formToDoc(doc) {
       _.each(entity.implicitFields, (value, key) => {
         Object.setByString(doc, key, (typeof value === 'function') ? value() : value);

@@ -13,13 +13,13 @@ import '/imports/api/users/users.js';
 import './methods.js';
 
 Comments.actions = {
-  new: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     visible: user.hasPermission(`comment.insert`, doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.comment.insert',
+        id: 'af.comment.create',
         schema: Comments.simpleSchema({ category: 'comment' }),
         doc,
         type: 'method',
@@ -35,6 +35,7 @@ Comments.actions = {
   }),
   inplaceEdit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'inplaceEdit',
+    label: 'edit',
     icon: 'fa fa-pencil',
     visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
     run() { /* NOP -- 'comments.inplaceEdit is not used as command');*/ },
@@ -45,7 +46,7 @@ Comments.actions = {
     visible: doc && user.hasPermission(`${doc.entityName()}.update`, doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.comment.update',
+        id: 'af.comment.edit',
         schema: Comments.simpleSchema({ category: 'comment' }),
         doc,
         type: 'method-update',
@@ -105,7 +106,8 @@ Comments.actions = {
     visible: doc?.entityName && user.hasPermission(`${doc.entityName()}.remove`, doc),
     run() {
       Modal.confirmAndCall(Comments.methods.remove, { _id: doc._id }, {
-        action: `delete ${doc.entityName()}`,
+        action: 'delete',
+        entity: doc.entityName(),
         message: 'It will disappear forever',
       });
     },
@@ -114,6 +116,6 @@ Comments.actions = {
 
 //-------------------------------------------------------
 
-AutoForm.addModalHooks('af.comment.insert');
-AutoForm.addModalHooks('af.comment.update');
+AutoForm.addModalHooks('af.comment.create');
+AutoForm.addModalHooks('af.comment.edit');
 AutoForm.addModalHooks('af.comment.move');

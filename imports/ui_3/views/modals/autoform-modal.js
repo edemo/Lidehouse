@@ -10,6 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { getCurrentUserLang } from '/imports/api/users/users.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import './autoform-modal.html';
@@ -20,13 +21,13 @@ import './autoform-modal.html';
 export function afId2details(id) {
   // AutoFormId convention is 'af.object.action'
   const split = id.split('.');
-  const object = split[1];
+  const entity = split[1];
   const action = split[2];
-  return { object, action };
+  return { entity, action };
 }
 
 export function details2afId(details) {
-  return `af.${details.object}.${details.action}`;
+  return `af.${details.entity}.${details.action}`;
 }
 
 Template.Autoform_modal.viewmodel({
@@ -42,19 +43,21 @@ Template.Autoform_modal.viewmodel({
     const data = this.templateInstance.data;
     if (data.title) return data.title;
     const id = afId2details(data.id);
-    if (_.contains(Transactions.categoryValues, id.object)) {
+    if (id.action === 'statusChange') {
+      id.entity = 'statusChange';
+      id.action = 'create';
+    }
+    let entityName = __(`entities.${id.entity}.label`);
+    if (_.contains(Transactions.categoryValues, id.entity)) {
       const defId = Template.instance().data.doc.defId;
       const txdef = Txdefs.findOne(defId);
-      id.object = txdef.name;
+      entityName = __(txdef.name);
     }
-    if (id.action === 'statusChange') {
-      id.object = 'statusChange';
-      id.action = 'insert';
+    if (id.action === 'create') return __('new') + ' ' + entityName + ' ' + __('insertion');
+    else {
+      if (getCurrentUserLang() === 'en') return __(`actions.${id.action}.do`) + ' ' + entityName;
+      else return entityName + ' ' + __(`actions.${id.action}.doing`);
     }
-    if (id.action === 'insert') return __('new') + ' ' + __(id.object) + ' ' + __('insertion');
-    else if (id.action === 'update') return __(id.object) + ' ' + __('editing data');
-    else if (id.action === 'view') return __(id.object) + ' ' + __('viewing data');
-    else return __(id.object) + ' ' + __(id.action);
   },
   debugInfo() {
     const data = this.templateInstance.data;
@@ -79,8 +82,8 @@ AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {
       ModalStack.recordResult(afId, result);
       Modal.hide(this.template.parent());
       const id = afId2details(afId);
-      const actionNameDone = 'actionDone_' + id.action;
-      displayMessage('success', __(id.object) + ' ' + __(actionNameDone));
+      const successMessage = __(`entities.${id.entity}.label`) + ' ' + __(`actions.${id.action}.done`);
+      displayMessage('success', successMessage.capitalize());
 //      const callback = ModalStack.getCallback();
 //      if (callback) Meteor.timeout(() => Meteor.call(callback.method, callback.params), 500);
     },

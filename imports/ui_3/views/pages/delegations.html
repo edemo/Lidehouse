@@ -58,7 +58,7 @@
             <p>
               {{_ 'A házban lévő összes aktív meghatalmazás listája'}}<br>
             </p>
-            <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
+            <a href="" class="btn btn-primary btn-sm m-b-md js-create"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
             {{#if delegations.count}}
                 <br>
                 {{> ReactiveDatatable tableData=delegationsDataFn options=delegationsOptionsFn}}
@@ -94,7 +94,7 @@
                           {{_ 'delegationsFromMeInstructions2'}}
                         </p>
                         {{#if Template.subscriptionsReady}}
-                        <a href="" class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
+                        <a href="" class="btn btn-primary btn-sm pull-right js-create"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
                         {{#if delegationsFromMe.count}}
                             {{>Delegation_list items=delegationsFromMe}}
                         {{else}}

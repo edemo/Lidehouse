@@ -12,15 +12,15 @@ import { Meters } from './meters.js';
 import './methods.js';
 
 Meters.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     label: __('new') + ' ' + __('meter'),
     icon: 'fa fa-plus',
     color: 'primary',
     visible: user.hasPermission('meters.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.meter.insert',
+        id: 'af.meter.create',
         collection: Meters,
         doc,
         omitFields: ['readings'],
@@ -54,7 +54,7 @@ Meters.actions = {
     visible: user.hasPermission('meters.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.meter.update',
+        id: 'af.meter.edit',
         collection: Meters,
         omitFields: ['readings'],
         doc,
@@ -66,11 +66,11 @@ Meters.actions = {
   }),
   editReadings: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'editReadings',
-    icon: 'fa fa-pencil',
+    icon: 'fa fa-pencil-square-o',
     visible: user.hasPermission('meters.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.meter.update',
+        id: 'af.meter.editReadings',
         collection: Meters,
         fields: ['readings'],
         doc,
@@ -103,7 +103,7 @@ Meters.actions = {
     visible: user.hasPermission('meters.update', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.meter.update',
+        id: 'af.meter.edit',
         collection: Meters,
         fields: ['activeTime'],
         doc,
@@ -119,7 +119,8 @@ Meters.actions = {
     visible: user.hasPermission('meters.remove', doc),
     run() {
       Modal.confirmAndCall(Meters.methods.remove, { _id: doc._id }, {
-        action: 'delete meter',
+        action: 'delete',
+        entity: 'meter',
         message: 'You should rather archive it',
       });
     },
@@ -139,17 +140,18 @@ function isTooLargeValue(doc) {
   return false;
 }
 
-AutoForm.addModalHooks('af.meter.insert');
-AutoForm.addModalHooks('af.meter.update');
+AutoForm.addModalHooks('af.meter.create');
+AutoForm.addModalHooks('af.meter.edit');
+AutoForm.addModalHooks('af.meter.editReadings');
 AutoForm.addModalHooks('af.meter.registerReading');
-AutoForm.addHooks('af.meter.insert', {
+AutoForm.addHooks('af.meter.create', {
   formToDoc(doc) {
     doc.parcelId = ModalStack.getVar('parcelId');
     //    doc.approved = true;
     return doc;
   },
 });
-AutoForm.addHooks('af.meter.update', {
+AutoForm.addHooks('af.meter.edit', {
   formToModifier(modifier) {
     //    modifier.$set.approved = true;
     return modifier;
@@ -160,7 +162,8 @@ AutoForm.addHooks('af.meter.registerReading', {
     doc._id = ModalStack.getVar('meterId');
     if (isTooLargeValue(doc)) {
       Modal.confirmAndCall(Meters.methods.registerReading, doc, {
-        action: 'registerReading meter',
+        action: 'registerReading',
+        entity: 'meter',
         message: 'The reading is much higher than expected',
       }, (res) => { if (res) Modal.hide(this.template.parent()); });
       return false;

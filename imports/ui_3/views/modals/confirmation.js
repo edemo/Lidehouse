@@ -10,7 +10,7 @@ import './confirmation.html';
 
 Template.Confirmation.helpers({
   okButtonText(action) {
-    if (action.split(' ')[0] === 'delete') return __('delete');
+    if (action === 'delete') return __('actions.delete.label');
     return __('ok');
   },
 });
@@ -25,8 +25,8 @@ Template.Confirmation.events({
 });
 
 Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options, callback) {
-  const split = options.action.split(' ');
-  const translatedDoneMessage = __(split[1]) + ' ' + __(`actionDone_${split[0]}`);
+  const successMessage = options.notification ||
+    __(`entities.${options.entity}.label`) + ' ' + __(`actions.${options.action}.done`);
   Modal.show('Confirmation', _.extend({}, options, {
     onOK() {
       method.call(params, function handler(err, res) {
@@ -35,7 +35,7 @@ Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options, cal
           displayError(err);
         } else {
           Modal.hide();
-          displayMessage('success', options.notification || translatedDoneMessage);
+          displayMessage('success', successMessage.capitalize());
           if (callback) callback(true, res);
         }
       });

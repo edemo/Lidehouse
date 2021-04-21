@@ -90,5 +90,5 @@ Template.Accounting_reconciliation.viewmodel({
 });
 
 Template.Accounting_reconciliation.events({
-  ...(actionHandlers(StatementEntries, 'new,import')),
+  ...(actionHandlers(StatementEntries, 'create,import')),
 });

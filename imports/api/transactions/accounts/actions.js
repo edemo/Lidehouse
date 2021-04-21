@@ -12,8 +12,8 @@ import './entities.js';
 import './methods.js';
 
 Accounts.actions = {
-  new: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
-    name: 'new',
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
     icon: 'fa fa-plus',
     color: 'primary',
     label: `${__('new')}  ${__(options.entity.name)}`,
@@ -24,7 +24,7 @@ Accounts.actions = {
     run() {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
-        id: `af.${entity.name}.insert`,
+        id: `af.${entity.name}.create`,
         schema: options.entity.schema,
         doc,
         type: 'method',
@@ -56,7 +56,7 @@ Accounts.actions = {
       const entityName = doc.entityName();
       const entity = Accounts.entities[entityName];
       Modal.show('Autoform_modal', {
-        id: `af.${entityName}.update`,
+        id: `af.${entityName}.edit`,
         schema: Accounts.simpleSchema(doc),
         omitFields: ['category'],
         doc,
@@ -72,8 +72,9 @@ Accounts.actions = {
     visible: user.hasPermission('accounts.remove', doc),
     run() {
       Modal.confirmAndCall(Accounts.methods.remove, { _id: doc._id }, {
-        action: 'delete moneyAccount',
-        message: 'Some accounting transactions might be connecting to it',
+        action: 'delete',
+        entity: doc.entityName(),
+        message: __('Some accounting transactions might be connected to it'),
       });
     },
   }),
@@ -86,9 +87,9 @@ Accounts.batchActions = {
 //-----------------------------------------------
 
 _.each(Accounts.entities, (entity, entityName) => {
-  AutoForm.addModalHooks(`af.${entityName}.insert`);
-  AutoForm.addModalHooks(`af.${entityName}.update`);
-  AutoForm.addHooks(`af.${entityName}.insert`, {
+  AutoForm.addModalHooks(`af.${entityName}.create`);
+  AutoForm.addModalHooks(`af.${entityName}.edit`);
+  AutoForm.addHooks(`af.${entityName}.create`, {
     formToDoc(doc) {
       if (doc.code && doc.code.charAt(0) !== '`') doc.code = '`' + doc.code;
       return doc;

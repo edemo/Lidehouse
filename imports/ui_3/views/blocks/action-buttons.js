@@ -104,7 +104,7 @@ export function actionHandlers(collection, actionNames) {
 const buttonHelpers = {
   title() {
     const action = this.templateInstance.data.action;
-    const btnText = (action.label) ? action.label : action.name;
+    const btnText = (action.label) ? action.label : `actions.${action.name}.label`;
     return __(btnText).capitalize();
   },
   large() {
@@ -148,7 +148,7 @@ const buttonHelpers = {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);
     const actionFuncs = this.templateInstance.data.actions
       ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
-      : _.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block');
+      : _.omit(collection.actions, 'create', 'import', 'like', 'mute', 'block');
     const actions = _.map(actionFuncs, a => a(this.getOptions(), this.getDoc(), Meteor.userOrNull()));
     return actions;
   },

@@ -13,9 +13,9 @@ import '/imports/ui_3/views/modals/confirmation.js';
 
 import '/imports/api/topics/entities.js';
 
-AutoForm.addHooks('af.maintenance.insert', {
+AutoForm.addHooks('af.maintenance.create', {
   onSubmit(doc) {
-    AutoForm.validateForm('af.maintenance.insert');
+    AutoForm.validateForm('af.maintenance.create');
     const moreDates = doc.moreDates || [];
     delete doc.moreDates;
     const afContext = this;

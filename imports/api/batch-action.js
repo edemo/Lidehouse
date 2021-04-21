@@ -35,6 +35,7 @@ export class BatchAction {
       }),
     }, {
       action: this.sampleAction.name,
+      entity: docs[0]?.entityName() || 'document',
       message: __('This operation will be performed on many documents', docs.length),
     });
   }

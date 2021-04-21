@@ -36,7 +36,7 @@
     <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
     <h2>{{_ 'officers'}}</h2>
     <div class="pull-right">
-        {{>Action_buttons_group collection='memberships' actions='new' size='md' options=(obj '{ "entity": "roleship" }')}}
+        {{>Action_buttons_group collection='memberships' actions='create' size='md' options=(obj '{ "entity": "roleship" }')}}
     </div> 
     <p>
         {{_ 'List of officers'}} - <i class="fa fa-user"></i> {{officers.length}}<br>
@@ -93,7 +93,7 @@
         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
         <h2>{{_ 'occupants'}}</h2>
         <div class="pull-right">
-            {{>Action_buttons_group collection='memberships' actions='new' size='md' options=(obj '{ "entity": ["ownership","benefactorship"] }')}}
+            {{>Action_buttons_group collection='memberships' actions='create' size='md' options=(obj '{ "entity": ["ownership","benefactorship"] }')}}
             {{>Action_buttons_group collection='memberships' actions='import' size='md'}}
         </div>
         <p>
@@ -139,7 +139,7 @@
         <h2>{{_ 'meters'}}</h2>
         {{#if or (currentUserHasPermission 'meters.insert' communityIdObject) (currentUserHasPermission 'parcels.details' communityIdObject)}}
         <div class="btn-group pull-right">
-            {{>Action_buttons_group collection='meters' actions='new,import' size='md'}}
+            {{>Action_buttons_group collection='meters' actions='create,import' size='md'}}
         </div>
         {{/if}}
         <p>
@@ -190,7 +190,7 @@
         <h2>{{_ 'memberContract'}}</h2>
         {{#if or (currentUserHasPermission 'contracts.insert' communityIdObject) (currentUserHasPermission 'parcels.details' communityIdObject)}}
         <div class="btn-group pull-right">
-            {{>Action_buttons_group collection='contracts' actions='new,import' size='md'}}
+            {{>Action_buttons_group collection='contracts' actions='create,import' size='md'}}
         </div>
         {{/if}}
         <p>
@@ -212,7 +212,7 @@
             {{#unless showAllParcels}}
             <button class="btn btn-primary btn-sm js-show-all"><strong> {{_ 'Show all parcels'}}</strong></button>
             {{/unless}}
-            {{>Action_buttons_group collection='parcels' actions='new,import' options=(obj '{"entity": "@property"}') size='md'}}
+            {{>Action_buttons_group collection='parcels' actions='create,import' options=(obj '{"entity": "@property"}') size='md'}}
         </div>
         <p>
             {{#if showAllParcels}}
