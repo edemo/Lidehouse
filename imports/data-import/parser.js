@@ -33,20 +33,20 @@ export class Parser {
             utc = moment.utc([d.y, d.m - 1, d.d]);
           }
         }
-        if (!utc?.isValid()) throw new Meteor.Error('err_invalidData', `Invalid date in import: ${cellValue}`);
+        if (!utc?.isValid()) throw new Meteor.Error('err_invalidData', 'Invalid date in import', { cellValue });
         return utc.toDate();
       }
       case 'Fraction': {
         if (cellValue instanceof Fraction) return cellValue;
         const fraction = new Fraction(cellValue);
-        if (!fraction) throw new Meteor.Error('err_invalidData', `Invalid fraction in import: ${cellValue}`);
+        if (!fraction) throw new Meteor.Error('err_invalidData', 'Invalid fraction in import', { cellValue });
         return fraction;
       }
       case 'Number': {
         if (cellValue instanceof Number) return cellValue;
         if (!cellValue) return 0;
         const number = schemaValue.decimal ? parseFloat(cellValue) : parseInt(cellValue, 10);
-        if (isNaN(number)) throw new Meteor.Error('err_invalidData', `Invalid number in import: ${cellValue}`);
+        if (isNaN(number)) throw new Meteor.Error('err_invalidData', 'Invalid number in import', { cellValue });
         return number;
       }
       case 'Boolean': {

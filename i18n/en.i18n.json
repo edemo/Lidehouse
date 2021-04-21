@@ -47,15 +47,18 @@
   "feature": "New feature recommendation",
 
   // errors and messages
-  "err_notLoggedIn": "Must be logged in",
-  "err_permissionDenied": "You don't have permission",
   "err_notImplemented": "This feature is not available",
   "err_notExists": "Object doesn't exist",
   "err_alreadyExists": "Object already exists",
-  "err_unableToRemove": "Object cannot be deleted",
+  "err_permissionDenied": "You don't have permission",
+  "err_notLoggedIn": "Must be logged in",
   "err_otherPartyNotAllowed": "No permission by other party",
+  "err_unableToRemove": "Object cannot be deleted",
   "err_sanityCheckFailed": "Data input is invalid",
   "err_notAllowed": "Value is not allowed",
+  "err_invalidData": "Invalid data",
+  "err_constraint": "Value does not meet constraints",
+  "err_notAvailable": "Not available",
   "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
 
   "youNeedToSaveYourChanges": "Your changes only take effect once you press the Save button at the bottom",
