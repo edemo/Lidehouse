@@ -710,6 +710,18 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 40,
+  name: 'Parcelbillings get a rank',
+  up() {
+    Communities.find({}).forEach(community => {
+      ParcelBillings.find({ communityId: community._id }, { sort: { createdAt: 1 } }).forEach((billing, index) => {
+        ParcelBillings.direct.update(billing._id, { $set: { rank: index + 1 } });
+      });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

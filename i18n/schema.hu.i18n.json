@@ -1291,6 +1291,10 @@
       "label": "Csoport, amire előrunk",
       "help": "Válasszon csoportot, ha csak egy adott csoportra kell előírni a költséget, a többire nem."
     },
+    "rank": {
+      "label": "Rangsorszám",
+      "help": "A kivetés a rangsorszám szerint halad. A díjbekérő számlán ebben a sorrendben lesznek a sorok."
+    },
     "appliedAt": {
       "label": "Kivetések ideje"
     },
