@@ -55,7 +55,8 @@ Template.Profile_form.viewmodel({
   events: {
     'click .js-delete'(event, instance) {
       Modal.confirmAndCall(removeUser, { _id: Meteor.userId() }, {
-        action: 'delete user',
+        action: 'delete',
+        entity: 'user',
         message: 'deleteUserWarning',
       });
     },

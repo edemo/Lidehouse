@@ -59,7 +59,8 @@ Txdefs.actions = {
     visible: user.hasPermission('accounts.remove', doc),
     run() {
       Modal.confirmAndCall(Txdefs.methods.remove, { _id: doc._id }, {
-        action: 'delete txdef',
+        action: 'delete',
+        entity: 'txdef',
       });
     },
   }),

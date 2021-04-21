@@ -36,12 +36,13 @@ Meteor.users.actions = {
   }),
   delegation: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delegation',
+    label: 'delegation',
     icon: 'fa fa-share',
     visible: true,
     href: FlowRouter.path('Delegations'),
     run() {
       const communityId = getActiveCommunityId();
-      Delegations.actions.new({}, { targetId: doc.partnerId(communityId) }).run();
+      Delegations.actions.create({}, { targetId: doc.partnerId(communityId) }).run();
     },
   }),
   block: (options, doc, user = Meteor.userOrNull()) => ({

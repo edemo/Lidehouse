@@ -91,7 +91,8 @@ Contracts.actions = {
     visible: user.hasPermission('contracts.remove', doc),
     run() {
       Modal.confirmAndCall(Contracts.methods.remove, { _id: doc._id }, {
-        action: 'delete contract',
+        action: 'delete',
+        entity: 'contract',
         message: 'It will disappear forever',
       });
     },

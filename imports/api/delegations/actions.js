@@ -68,11 +68,12 @@ Delegations.actions = {
     visible: user._id === doc.sourceUserId() || user._id === doc.targetUserId()
       || user.hasPermission('delegations.remove', doc),
     run() {
-      let action = 'delete delegation';
-      if (doc.targetUserId() === user._id) action = 'refuse delegation';
-      if (doc.sourceUserId() === user._id) action = 'revoke delegation';
+      let action = 'delete';
+      if (doc.targetUserId() === user._id) action = 'refuse';
+      if (doc.sourceUserId() === user._id) action = 'revoke';
       Modal.confirmAndCall(Delegations.methods.remove, { _id: doc._id }, {
         action,
+        entity: 'delegation',
       });
     },
   }),

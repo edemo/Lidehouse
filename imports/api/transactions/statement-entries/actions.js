@@ -144,7 +144,7 @@ StatementEntries.actions = {
           size: 'lg',
         });
       } else {
-        Transactions.actions.new({ txdef }, newTx).run();
+        Transactions.actions.create({ txdef }, newTx).run();
         ModalStack.autorun((computation) => {
           const result = ModalStack.readResult('root', `af.${txdef.category}.create`, true);
           if (result) {
@@ -166,6 +166,7 @@ StatementEntries.actions = {
   }),
   unReconcile: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'unReconcile',
+    label: 'unReconcile',
     icon: 'fa fa-times',
     visible: doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
     run() {
@@ -195,6 +196,7 @@ StatementEntries.actions = {
   }),
   transaction: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'transaction',
+    label: 'transaction',
     icon: 'fa fa-link',
     visible: doc.isReconciled() && user.hasPermission('transactions.inCommunity', doc),
     run() {
@@ -216,7 +218,8 @@ StatementEntries.actions = {
     visible: user.hasPermission('transactions.remove', doc),
     run() {
       Modal.confirmAndCall(StatementEntries.methods.remove, { _id: doc._id }, {
-        action: 'delete statementEntry',
+        action: 'delete',
+        entity: 'statementEntry',
       });
     },
   }),

@@ -49,7 +49,7 @@ Template.Vote_topics.events({
     const doc = { communityId: getActiveCommunityId() };
     const options = { entity: Topics.entities.vote };
     Object.setPrototypeOf(options, new ActionOptions(Topics));
-    Topics.actions.new(options, doc).run();
+    Topics.actions.create(options, doc).run();
   },
   'click .js-filter'(event, instance) {
     $(event.target).blur();

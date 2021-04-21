@@ -23,7 +23,7 @@ Memberships.actions = {
     color: 'primary',
     label: options.splitable() ? `${__('new')}  ${__('occupant')}` : `${__('new')} ${__(options.entity.name)}`,
     visible: options.splitable() ? true : user.hasPermission(`${options.entity.name}.insert`, doc),
-    subActions: options.splitable() && options.split().map(opts => Memberships.actions.new(opts.fetch(), doc, user)),
+    subActions: options.splitable() && options.split().map(opts => Memberships.actions.create(opts.fetch(), doc, user)),
     run() {
       const entity = options.entity;
       doc.parcelId = ModalStack.getVar('parcelId');
@@ -100,12 +100,15 @@ Memberships.actions = {
     run() {
       const partner = doc.partner();
       const email = partner && partner.contact && partner.contact.email;
-      const action = 'invite user';
       if (!doc.userId && !email) {
         displayMessage('warning', 'No contact email set for this partner');
       } else {
         const message = !doc.userId ? __('Connecting user', email) : (doc.user()?.isVerified() ? __('Linking user') : __('Reconnecting user'));
-        Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, { action, message });
+        Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, {
+          action: 'invite',
+          entity: 'user',
+          message,
+        });
       }
     },
   }),
@@ -115,7 +118,8 @@ Memberships.actions = {
     visible: doc?.entityName && user.hasPermission(`${doc.entityName()}.remove`, doc),
     run() {
       Modal.confirmAndCall(Memberships.methods.remove, { _id: doc._id }, {
-        action: `delete ${doc.entityName()}`,
+        action: 'delete',
+        entity: doc.entityName(),
         message: doc.entityName() !== 'roleship' && 'You should rather archive it',
       });
     },

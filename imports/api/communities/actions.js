@@ -109,7 +109,8 @@ Communities.actions = {
     visible: user.hasPermission('communities.remove', doc),
     run() {
       Modal.confirmAndCall(Communities.methods.remove, { _id: doc._id }, {
-        action: 'delete community',
+        action: 'delete',
+        entity: 'community',
         message: 'It will disappear forever',
       });
     },

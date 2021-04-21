@@ -135,5 +135,10 @@
       "Meghatalmazott: __formerTargetPerson__",
       "Meghatalmazás tárgya: __formerScopeObject__\n"
     ]
-  }
+  },
+
+  "was inserted": "rögzítésre került",
+  "was updated": "módosításra került",
+  "was removed": "TÖRLÉSRE került"
+
 }

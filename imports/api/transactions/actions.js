@@ -157,7 +157,8 @@ Transactions.actions = {
 //        } else {
         doc.makeJournalEntries(doc.community().settings.accountingMethod);
         Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
-          action: 'post transaction',
+          action: 'post',
+          entity: 'transaction',
 //            message: 'This will create the following journal entries',
           body: 'Transaction_view',
           bodyContext: { doc },
@@ -177,7 +178,8 @@ Transactions.actions = {
     run() {
       doc.makeJournalEntries(doc.community().settings.accountingMethod);
       Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
-        action: 'repost transaction',
+        action: 'repost',
+        entity: 'transaction',
 //            message: 'This will create the following journal entries',
         body: 'Transaction_view',
         bodyContext: { doc },
@@ -187,6 +189,7 @@ Transactions.actions = {
   }), */
   reallocate: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'reallocate',
+    label: 'reallocate',
     icon: 'fa fa-edit',
     visible: doc && doc.isPosted() && (doc.category === 'payment') && user.hasPermission('transactions.update', doc),
     run() {
@@ -215,13 +218,15 @@ Transactions.actions = {
     visible: doc && doc.isPosted() && user.hasPermission('transactions.resend', doc),
     run() {
       Modal.confirmAndCall(Transactions.methods.resend, { _id: doc._id }, {
-        action: 'resend email',
+        action: 'resend',
+        entity: 'email',
         message: 'This will send the bill again',
       });
     },
   }),
   registerPayment: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'registerPayment',
+    label: 'registerPayment',
     icon: 'fa fa-credit-card',
     color: 'info',
     visible: doc.community().settings.paymentsWoStatement && doc?.category === 'bill' && doc.outstanding
@@ -242,7 +247,7 @@ Transactions.actions = {
         bills: [{ id: doc._id, amount: doc.outstanding }],
       };
 //      const paymentDoc = Transactions._transform(paymentTx);
-      Transactions.actions.new(paymentOptions, paymentTx).run();
+      Transactions.actions.create(paymentOptions, paymentTx).run();
     },
   }),
   connectPayment: (options, doc, user = Meteor.userOrNull()) => {
@@ -250,6 +255,7 @@ Transactions.actions = {
       Transactions.findOne({ communityId: doc.communityId, category: 'payment', partnerId: doc.partnerId, outstanding: { $ne: 0 } });
     return {
       name: 'connectPayment',
+      label: 'connectPayment',
       icon: 'fa fa-credit-card',
       color: 'warning',
       visible: connectablePayment && user.hasPermission('transactions.update', doc),
@@ -269,7 +275,8 @@ Transactions.actions = {
       && (doc.isPosted() ? user.hasPermission('transactions.post', doc) : true),
     run() {
       Modal.confirmAndCall(Transactions.methods.remove, { _id: doc._id }, {
-        action: 'delete transaction',
+        action: 'delete',
+        entity: 'transaction',
         message: doc.isPosted() ? 'Remove not possible after posting' : 'It will disappear forever',
       });
     },

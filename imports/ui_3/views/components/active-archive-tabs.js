@@ -15,7 +15,7 @@ function extendSelector(content, extensionObject) {
 Template.Active_archive_tabs.viewmodel({
   activeOrApproved() {
     if (this.hasTab('unapproved')) return __('Approved');
-    return __('Active');
+    return __('active').capitalize();
   },
   hasTab(tabType) {
     const tabs = this.templateInstance.data.tabs;

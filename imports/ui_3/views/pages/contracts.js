@@ -61,7 +61,7 @@ Template.Contracts.events({
     const doc = { communityId: getActiveCommunityId() };
     doc.ticket = { contractId, partnerId };
     Object.setPrototypeOf(options, new ActionOptions(Topics));
-    Topics.actions.new(options, doc).run();
+    Topics.actions.create(options, doc).run();
   },
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');

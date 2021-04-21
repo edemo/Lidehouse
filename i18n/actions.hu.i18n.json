@@ -1,33 +1,10 @@
 {
-  "entities": {
-    "parcel": {
-      "label": "hely",
-      "it": "a helyet"
-    },
-    "@property": {
-      "label": "albetét",
-      "it": "az albetétet"
-    },
-    "membership": {
-      "label": "tagság",
-      "it": "a tagságot"
-    },
-    "ownership": {
-      "label": "tulajdon viszony",
-      "it": "a tulajdon viszonyt"
-    }
-  },
   "actions": {
     "create": {
       "label": "új",
       "do": "létrehozza",
       "doing": "létrehozása",
       "done": "létrehozva"
-    },
-    "import": {
-      "label": "import",
-      "do": "importál",
-      "doing": "importálása"
     },
     "view": {
       "label": "megtekintés",
@@ -45,6 +22,311 @@
       "do": "törli",
       "doing": "törlése",
       "done": "törölve"
+    },
+    "import": {
+      "label": "import",
+      "do": "importálja",
+      "doing": "importálása",
+      "done": "importálva"
+    },
+    "move": {
+      "label": "áthelyezés",
+      "do": "áthelyezi",
+      "doing": "áthelyezése",
+      "done": "áthelyezve"
+    },
+    "merge": {
+      "label": "beleolvasztás",
+      "do": "beleolvasztja",
+      "doing": "beleolvasztása",
+      "done": "beleolvasztva"
+    },
+    "apply": {
+      "label": "kivetés",
+      "do": "kiveti",
+      "doing": "kivetése",
+      "done": "kivetve"
+    },
+    "post": {
+      "label": "könyvelésbe küldés",
+      "do": "könyvelésbe küldi",
+      "doing": "könyvelésbe küldése",
+      "done": "könyvelésbe küldve"
+    },
+    "reconcile": {
+      "label": "egyeztetés",
+      "do": "egyezteti",
+      "doing": "egyeztetése",
+      "done": "egyeztetve"
+    },
+    "registerReading": {
+      "label": "leolvasás",
+      "do": "rögzíti",
+      "doing": "leolvasás rögzítése",
+      "done": "leolvasás rögzítve"
+    },
+    "statusChange": {
+      "label": "státusz váltás",
+      "do": "más státuszba teszi",
+      "doing": "státusz váltása",
+      "done": "státusza módosítva"
+    },
+    "statusUpdate": {
+      "label": "státusz frissítés",
+      "do": "frissíti",
+      "doing": "státusz frissítése",
+      "done": "státusz frissítve"
+    },
+    "period": {
+      "label": "időszak módosítás",
+      "do": "módosítja",
+      "doing": "időszak módosítása",
+      "done": "időszak módosítva"
+    },
+    "invite": {
+      "label": "meghívás",
+      "do": "meghívja",
+      "doing": "meghívása",
+      "done": "meghívásra került"
+    },
+    "send": {
+      "label": "küldés",
+      "do": "elküldi",
+      "doing": "küldése",
+      "done": "elküldve"
+    },
+    "resend": {
+      "label": "újra kiküldés",
+      "do": "újra kiküldi",
+      "doing": "újra kiküldése",
+      "done": "újra kiküldve"
+    },
+    "repost": {
+      "label": "újrakönyvelés",
+      "do": "újrakönyveli",
+      "doing": "újrakönyvelése",
+      "done": "újrakönyvelve"
+    },
+    "recognize": {
+      "label": "felismerés",
+      "do": "felismerteti",
+      "done": "felismerve"
+    },
+    "autoReconcile": {
+      "label": "automatikus egyeztetés",
+      "do": "automatikusan egyezteti",
+      "done": "automatikusan egyeztetve"
+    } ,
+   "revoke": {
+      "do": "visszavonja",
+      "done": "visszavonva"
+    },
+    "refuse": {
+      "do": "visszautasítja",
+      "done": "visszautasítva"
+    },
+    "enable": {
+      "do": "engedélyezi",
+      "done": "engedélyezve"
+    },    
+    "disable": {
+      "do": "visszautasítja",
+      "done": "visszautasítva"
+    }
+  },
+
+  "entities": {
+    "community": {
+      "label": "közösség",
+      "it": "a közösséget"
+    },
+    "parcel": {
+      "label": "hely",
+      "it": "a helyet"
+    },
+    "@property": {
+      "label": "albetét",
+      "it": "az albetétet"
+    },
+    "@common": {
+      "label": "közös tulajdon",
+      "it": "a közös tulajdont"
+    },
+    "@group": {
+      "label": "gyűjtő",
+      "it": "a gyűjtőt"
+    },
+    "#tag": {
+      "label": "elszámolási egység",
+      "it": "az elszámolási egységet"
+    },
+    "membership": {
+      "label": "tagság",
+      "it": "a tagságot"
+    },
+    "ownership": {
+      "label": "tulajdonviszony",
+      "it": "a tulajdonviszonyt"
+    },
+    "benefactorship": {
+      "label": "használati viszony",
+      "it": "a használati viszonyt"
+    },
+    "roleship": {
+      "label": "tisztség",
+      "it": "a tisztséget"
+    },
+    "delegation": {
+      "label": "meghatalmazás",
+      "it": "a meghatalmazást"
+    },
+    "partner": {
+      "label": "partner",
+      "it": "a partnert"
+    },
+    "contract": {
+      "label": "szerződés",
+      "it": "a szerződést"
+    },
+    "agenda": {
+      "label": "közgyűlés",
+      "it": "a közgyűlést"
+    },
+    "topic": {
+      "label": "téma",
+      "it": "a témát"
+    },
+    "forum": {
+      "label": "fórumtéma",
+      "it": "a fórumtémát"
+    },
+    "vote": {
+      "label": "szavazás",
+      "it": "a szavazást"
+    },
+    "news": {
+      "label": "hirdetmény",
+      "it": "a hirdetményt"
+    },
+    "ticket": {
+      "label": "hibajegy",
+      "it": "a hibajegyet"
+    },
+    "issue": {
+      "label": "hibajegy",
+      "it": "a hibajegyet"
+    },
+    "maintenance": {
+      "label": "karbantartás",
+      "it": "a karbantartást"
+    },
+    "upgrade": {
+      "label": "felújítás",
+      "it": "a felújítást"
+    },
+    "comment": {
+      "label": "hozzászólás",
+      "it": "a hozzászólást"
+    },
+    "statusChange": {
+      "label": "státusz váltás",
+      "it": "a státusz váltást"
+    },
+    "pointAt": {
+      "label": "mutató",
+      "it": "a mutatót"
+    },
+    "meter": {
+      "label": "mérőóra",
+      "it": "a mérőórát"
+    },
+    "parcelBilling": {
+      "label": "előírás",
+      "it": "az előírást"
+    },
+    "transaction": {
+      "label": "tranzakció",
+      "it": "a tranzakciót"
+    },
+    "bill": {
+      "label": "számla",
+      "it": "a számlát"
+    },
+    "payment": {
+      "label": "fizetés",
+      "it": "a fizetést"
+    },
+    "exchange": {
+      "label": "partnerek közötti átvezetés",
+      "it": "a partnerek közötti átvezetést"
+    },
+    "receipt": {
+      "label": "elszámolás",
+      "it": "az elszámolást"
+    },
+    "transfer": {
+      "label": "számlák közötti átvezetés",
+      "it": "a számlák közötti átvezetést"
+    },
+    "opening": {
+      "label": "nyitás/zárás",
+      "it": "a nyitást/zárást"
+    },    
+    "freeTx": {
+      "label": "könyvelési tranzakció",
+      "it": "a könyvelési tranzakciót"
+    },
+    "statementEntry": {
+      "label": "kivonat tétel",
+      "it": "a kivonat tételt"
+    },
+    "txdef": {
+      "label": "tranzakció típus",
+      "it": "a tranzakció típust"
+    },
+    "simpleAccount": {
+      "label": "főkönyvi számla",
+      "it": "a főkönyvi számlát"
+    },
+    "cashAccount": {
+      "label": "pénztár",
+      "it": "a pénztárt"
+    },
+    "bankAccount": {
+      "label": "bankszámla",
+      "it": "a bankszámlát"
+    },
+    "outstandings reminder": {
+      "label": "hátralék emlékeztető",
+      "it": "a hátralék emlékeztetőt"
+    },
+    "sharedfolder": {
+      "label": "mappa",
+      "it": "a mappát"
+    },
+    "shareddoc": {
+      "label": "dokumentum",
+      "it": "a dokumentumot"
+    },
+    "settings": {
+      "label": "beállítások",
+      "it": "a beállításokat"
+    },
+    "user": {
+      "label": "felhasználó",
+      "it": "a felhasználót"
+    },
+    "email": {
+      "label": "email",
+      "it": "az emailt"
+    },
+    "data": {
+      "label": "adatok",
+      "it": "az adatokat"
+    },
+    "document": {
+      "label": "dokumentum",
+      "it": "a dokumentumot"
     }
   }
 }
