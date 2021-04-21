@@ -125,8 +125,7 @@ ParcelBillings.applySchema = new SimpleSchema({
 });
 
 Meteor.startup(function indexParcelBillings() {
-  ParcelBillings.ensureIndex({ communityId: 1 });
-  ParcelBillings.ensureIndex({ rank: 1 });
+  ParcelBillings.ensureIndex({ communityId: 1, rank: 1 });
 });
 
 ParcelBillings.filterParcels = function filterParcels(communityId, localizer, withFollowers) {
