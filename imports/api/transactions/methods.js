@@ -192,7 +192,7 @@ export const remove = new ValidatedMethod({
     checkPermissions(this.userId, 'transactions.remove', doc);
     let result;
     if (doc.category === 'bill' && doc.hasPayments()) {
-      throw new Meteor.Error('err_unableToRemove', 'Not possible to remove bill, while it has payments. Remove the payments first.');
+      throw new Meteor.Error('err_unableToRemove', 'Not possible to remove bill, while it has payments, remove the payments first');
     }
     if (doc.status === 'draft') {
       Transactions.remove(_id);

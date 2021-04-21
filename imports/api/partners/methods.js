@@ -134,11 +134,11 @@ export const remove = new ValidatedMethod({
     checkPermissions(this.userId, 'partners.remove', doc);
     Balances.checkNullBalance({ communityId: doc.communityId, partner: doc._id });
     const membership = Memberships.findOne({ partnerId: _id });
-    if (membership) throw new Meteor.Error('err_unableToRemove', 'Partner may not be removed, until membership is using it.', { partner: _id, membership: membership._id });
+    if (membership) throw new Meteor.Error('err_unableToRemove', 'Partner may not be removed, until membership is using it', { partner: _id, membership: membership._id });
     const transaction = Transactions.findOne({ partnerId: _id });
-    if (transaction) throw new Meteor.Error('err_unableToRemove', 'Partner may not be removed, until transaction is using it.', { partner: _id, transaction: transaction._id });
+    if (transaction) throw new Meteor.Error('err_unableToRemove', 'Partner may not be removed, until transaction is using it', { partner: _id, transaction: transaction._id });
     const contract = Contracts.findOne({ partnerId: _id });
-    if (contract) throw new Meteor.Error('err_unableToRemove', 'Partner may not be removed, until contract is using it.', { partner: _id, contract: contract._id });
+    if (contract) throw new Meteor.Error('err_unableToRemove', 'Partner may not be removed, until contract is using it', { partner: _id, contract: contract._id });
     return Partners.remove(_id);
   },
 });

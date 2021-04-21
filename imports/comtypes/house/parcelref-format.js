@@ -36,7 +36,7 @@ export const ParcelRefFormat = {
       case 'F/D':
         ref += doc.floor + '/' + doc.door;
         break;
-      default: productionAssert(false, `Unknown parcel ref format: ${format}`);
+      default: productionAssert(false, 'Unknown parcel ref format', { format });
     }
     return ref;
   },

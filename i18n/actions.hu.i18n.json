@@ -281,8 +281,8 @@
       "it": "a kivonat tételt"
     },
     "txdef": {
-      "label": "tranzakció típus",
-      "it": "a tranzakció típust"
+      "label": "gazdasági esemény",
+      "it": "a gazdasági eseményt"
     },
     "simpleAccount": {
       "label": "főkönyvi számla",

@@ -739,7 +739,7 @@
       }
     },
     "defId": {
-      "label": "Tranzakció típus"
+      "label": "Gazdasági esemény"
     },
     "status": {
       "label": "Státusz",
@@ -933,7 +933,7 @@
   },
   "schemaTxdefs": {
     "name": {
-      "label": "Tranzakció típus neve",
+      "label": "Gazdasági esemény neve",
       "placeholder": "(pl. Áru számla)"
     },
     "category": {

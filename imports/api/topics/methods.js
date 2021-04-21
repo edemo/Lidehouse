@@ -62,7 +62,7 @@ export const move = new ValidatedMethod({
   }).validator(),
   run({ _id, destinationId }) {
     const doc = checkExists(Topics, _id);
-    if (doc.category !== 'forum') throw new Meteor.Error('err_permissionDenied', 'Only forum topic may be moved.');
+    if (doc.category !== 'forum') throw new Meteor.Error('err_permissionDenied', 'Only forum topic may be moved');
     checkPermissions(this.userId, 'comment.move', doc);
     if (Meteor.isServer) {
       const community = Communities.findOne(doc.communityId);
