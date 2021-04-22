@@ -67,7 +67,7 @@ export const update = new ValidatedMethod({
 
     const ParcelsStage = Parcels.Stage();
     const result = ParcelsStage.update({ _id }, modifier, { selector: doc });
-    const newDoc = Parcels.findOne(_id);
+    const newDoc = ParcelsStage.findOne(_id);
     checkUnique(ParcelsStage, newDoc);
     checkCommunityParcelsSanity(newDoc.communityId, ParcelsStage);
     ParcelsStage.commit();

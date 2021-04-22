@@ -35,7 +35,7 @@ if (Meteor.isServer) {
   const past10 = moment().subtract(10, 'weeks').toDate();
   const past11 = moment().subtract(11, 'weeks').toDate();
 
-  describe('contracts', function () {
+  describe.only('contracts', function () {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
@@ -124,15 +124,21 @@ if (Meteor.isServer) {
         done();
       });
 
+      it('can\'t have a contract with the same begin and end date', function (done) {
+        chai.assert.throws(() => {
+          Fixture.builder.execute(Contracts.methods.update, { _id: contractId, modifier: { $set: { 'activeTime.end': past3 } } });
+        }, 'notAllowed');
+        done();
+      });
+
       it('can\'t update an active contract, if there is a closed one with a newer closing date', function (done) {
-        Fixture.builder.execute(Contracts.methods.update, { _id: contractId, modifier: { $set: { 'activeTime.end': past3 } } });
+        Fixture.builder.execute(Contracts.methods.update, { _id: contractId, modifier: { $set: { 'activeTime.end': past2 } } });
         const contractId3 =  Fixture.builder.create('memberContract', { parcelId, leadParcelId, activeTime: { begin: now } });
         chai.assert.throws(() => {
           Fixture.builder.execute(Contracts.methods.update, { _id: contractId3, modifier: { $set: { 'activeTime.begin': past8 } } });
         }, 'err_sanityCheckFailed');
         done();
       });
-
     });
   });
 }
