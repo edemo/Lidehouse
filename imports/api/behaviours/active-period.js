@@ -85,15 +85,15 @@ Mongo.Collection.prototype.findOneActive = function findOneActive(selector, opti
 };
 
 const indexes = function indexActivePeriod(collection) {
-  collection.ensureIndex({ active: 1 });
-  if (Meteor.isServer) {
-    collection._ensureIndex({ 'activeTime.begin': 1 }, { sparse: true });
-    collection._ensureIndex({ 'activeTime.end': 1 }, { sparse: true });
-  }
+//  collection.ensureIndex({ active: 1 });
+//  if (Meteor.isServer) {
+//    collection._ensureIndex({ 'activeTime.begin': 1 }, { sparse: true });
+//    collection._ensureIndex({ 'activeTime.end': 1 }, { sparse: true });
+//  }
 };
 
 export const ActivePeriod = { name: 'ActivePeriod',
-  schema, helpers, methods, hooks, indexes,
+  schema, helpers, methods, hooks, /*indexes,*/
 };
 
 ActivePeriod.fields = [

@@ -72,7 +72,7 @@ Meteor.startup(function indexContracts() {
   Contracts.ensureIndex({ partnerId: 1 });
   Contracts.ensureIndex({ leadParcelId: 1 });
   if (Meteor.isServer) {
-    Contracts._ensureIndex({ communityId: 1, relation: 1 });
+    Contracts._ensureIndex({ communityId: 1, relation: 1, active: 1 });
     Contracts._ensureIndex({ parcelId: 1, 'activeTime.end': -1 }, { sparse: true });
   } else {
     Contracts.ensureIndex({ parcelId: 1 });
