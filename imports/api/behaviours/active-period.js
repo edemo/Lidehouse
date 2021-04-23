@@ -24,7 +24,6 @@ const TimePeriodSchema = new SimpleSchema({
       const beginDate = this.field('activeTime.begin').value;
       const endDate = this.value;
       const nowDate = new Date();
-//      console.log(":::Custom validation:::");
       if (endDate && endDate <= beginDate) return 'notAllowed';
       if (endDate && endDate > nowDate) return 'notAllowed';  // We can allow this if needed, if we set up a timer
       return undefined;
