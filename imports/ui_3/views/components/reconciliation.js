@@ -36,8 +36,11 @@ Template.Reconciliation.onRendered(function () {
         Modal.hide(instance.parent(3));
       }, 1000);
     }
-    const hasSuchUnreconlicedTx = Transactions.findOne({ defId, seId: { $exists: false } });
-    if (!hasSuchUnreconlicedTx) {
+    let hasChoosableTx;
+    if (txdef.category === 'transfer') {
+      hasChoosableTx = Transactions.find({ defId }).fetch().filter(tx => tx.seId?.length < 2).length;
+    } else hasChoosableTx = Transactions.findOne({ defId, seId: { $exists: false } });
+    if (!hasChoosableTx) {
       if (!instance.data.newTransactionLaunched) {
         instance.data.newTransactionLaunched = true;
         const newTx = {}; Transactions.setTxdef(newTx, txdef);

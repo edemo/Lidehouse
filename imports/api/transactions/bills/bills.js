@@ -26,7 +26,7 @@ export const Bills = {};
 export const choosePayment = {
   options() {
     const communityId = ModalStack.getVar('communityId');
-    const payments = Transactions.find({ communityId, category: 'payment', seId: { $exists: false } });
+    const payments = Transactions.find({ communityId, category: 'payment', outstanding: { $ne: 0 } });
     const options = payments.map(function option(payment) {
       return { label: `${payment.partner()} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note || ''}`, value: payment._id };
     });

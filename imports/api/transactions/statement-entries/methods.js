@@ -116,7 +116,7 @@ export const reconcile = new ValidatedMethod({
         }
       }
     }
-    Transactions.update(txId, { $set: { seId: _id, contractId: newContractId } });
+    Transactions.update(txId, { $push: { seId: _id }, $set: { contractId: newContractId } });
     StatementEntries.update(_id, { $set: { txId } }); //, $unset: { match: '' }
   },
 });
@@ -130,7 +130,7 @@ export const unReconcile = new ValidatedMethod({
     const entry = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.reconcile', entry);
     StatementEntries.update(_id, { $unset: { txId: '' } });
-    Transactions.update({ seId: entry._id }, { $unset: { seId: '' } });
+    Transactions.update({ seId: entry._id }, { $pull: { seId: entry._id } });
     StatementEntries.methods.recognize._execute({ userId: this.userId }, { _id });
   },
 });

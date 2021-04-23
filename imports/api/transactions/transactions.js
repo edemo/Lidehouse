@@ -71,7 +71,7 @@ Transactions.coreSchema = {
 //  },
   status: { type: String, defaultValue: 'draft', allowedValues: Transactions.statusValues, autoform: { omit: true } },
   postedAt: { type: Date, optional: true, autoform: { omit: true } },
-  seId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
+  seId: { type: [String], regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
 };
 
 Transactions.partnerSchema = new SimpleSchema({
@@ -104,9 +104,9 @@ Meteor.startup(function indexTransactions() {
     Transactions._ensureIndex({ communityId: 1, category: 1, relation: 1, serial: 1 });
     Transactions._ensureIndex({ 'bills.id': 1 }, { sparse: true });
     Transactions._ensureIndex({ 'payments.id': 1 }, { sparse: true });
-    Transactions._ensureIndex({ 'debit.account': 1, valueDate: -1 }, { sparse: true });
-    Transactions._ensureIndex({ 'credit.account': 1, valueDate: -1 }, { sparse: true });
-    Transactions._ensureIndex({ 'pEntries.partner': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ communityId: 1, 'debit.account': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ communityId: 1, 'credit.account': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ communityId: 1, 'pEntries.partner': 1, valueDate: -1 }, { sparse: true });
   }
 });
 
@@ -190,10 +190,8 @@ Transactions.helpers({
     return !!(this.postedAt);
   },
   isReconciled() {
-    return (!!this.seId);
-  },
-  reconciledEntry() {
-    return this.seId && StatementEntries.findOne(this.seId);
+    if (this.category === 'transfer') return (this.seId?.length === 2);
+    else return (this.seId?.length === 1);
   },
   isSolidified() {
     const now = moment(new Date());
@@ -454,7 +452,7 @@ if (Meteor.isServer) {
       tdoc.updatePartnerBalances(-1);
     }
     if (tdoc.category === 'payment') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, -1));
-    if (tdoc.seId) StatementEntries.update(tdoc.seId, { $unset: { txId: 0 } });
+    tdoc.seId?.forEach(seId => StatementEntries.update(seId, { $unset: { txId: 0 } }));
   });
 }
 

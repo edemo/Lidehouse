@@ -28,14 +28,17 @@ export const chooseTransaction = {
     const selfId = AutoForm.getFormId();
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return undefined;
-    const category = Txdefs.findOne(defId).category;
-    return ModalStack.readResult(selfId, `af.${category}.create`);
+    const txdef = Txdefs.findOne(defId);
+    return ModalStack.readResult(selfId, `af.${txdef.category}.create`);
   },
   options() {
     const communityId = ModalStack.getVar('communityId');
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return [];
-    const txs = Transactions.find({ communityId, defId, status: { $ne: 'void' }, seId: { $exists: false } });
+    const txdef = Txdefs.findOne(defId);
+    const selector = { communityId, defId, status: { $ne: 'void' } };
+    if (txdef.category !== 'transfer') selector.seId = { $exists: false };
+    const txs = Transactions.find(selector);
     const options = txs.map(tx => ({ label: tx.displayInSelect(), value: tx._id }));
     return options;
   },
