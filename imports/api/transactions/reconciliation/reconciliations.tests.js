@@ -1,3 +1,4 @@
+/* eslint-disable one-var, one-var-declaration-per-line */
 /* eslint-env mocha */
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
@@ -330,6 +331,60 @@ if (Meteor.isServer) {
         chai.assert.equal(bill2.outstanding, 0);
         Fixture.builder.execute(Transactions.methods.post, { _id: bill2.getPayments()[0].id });
         chai.assert.equal(bill2.partner().outstanding('supplier'), 0);
+      });
+    });
+
+    describe.only('Transfer reconciliation', function () {
+      const bankAccount1 = '`381';
+      const bankAccount2 = '`382';
+      let transferId, seId1, seId2;
+      let tx, se1, se2;
+
+      it('Can reconcile a transfer tx to both bank statements', function () {
+        const seIdWrongAmount = Fixture.builder.create('statementEntry', {
+          account: bankAccount1, amount: -120500,
+        });
+        seId1 = Fixture.builder.create('statementEntry', {
+          account: bankAccount1, amount: 120500,
+        });
+        seId2 = Fixture.builder.create('statementEntry', {
+          account: bankAccount2, amount: -120500,
+        });
+        transferId = Fixture.builder.create('transfer', {
+          toAccount: bankAccount1, fromAccount: bankAccount2, amount: 120500,
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: transferId });
+
+        chai.assert.throws(() => {
+          Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: seIdWrongAmount, txId: transferId });
+        }, 'err_notAllowed');
+
+        tx = Transactions.findOne(transferId);
+        se1 = StatementEntries.findOne(seId1);
+        chai.assert.isFalse(tx.isReconciled());
+        chai.assert.isFalse(se1.isReconciled());
+
+        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: seId1, txId: transferId });
+        tx = Transactions.findOne(transferId);
+        se1 = StatementEntries.findOne(seId1);
+        chai.assert.isFalse(tx.isReconciled());
+        chai.assert.isTrue(se1.isReconciled());
+
+        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: seId2, txId: transferId });
+        tx = Transactions.findOne(transferId);
+        se2 = StatementEntries.findOne(seId2);
+        chai.assert.isTrue(tx.isReconciled());
+        chai.assert.isTrue(se2.isReconciled());
+      });
+
+      it('Can remove tx and keeps statements in sync', function () {
+        Fixture.builder.execute(Transactions.methods.remove, { _id: transferId });
+        tx = Transactions.findOne(transferId);
+        se1 = StatementEntries.findOne(seId1);
+        se2 = StatementEntries.findOne(seId2);
+        chai.assert.equal(tx.status, 'void');
+        chai.assert.isFalse(se1.isReconciled());
+        chai.assert.isFalse(se2.isReconciled());
       });
     });
 

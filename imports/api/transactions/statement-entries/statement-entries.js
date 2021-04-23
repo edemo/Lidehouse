@@ -6,6 +6,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
+import { Clock } from '/imports/utils/clock.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
@@ -70,7 +71,7 @@ StatementEntries.simpleSchema().i18n('schemaStatementEntries');
 
 Factory.define('statementEntry', StatementEntries, {
   account: '31',
-  valueDate: () => new Date(),
+  valueDate: () => Clock.currentDate(),
   name: () => faker.random.word(),
   ref: () => faker.random.uuid(),
   note: () => faker.random.word(),

@@ -38,7 +38,8 @@ export const chooseTransaction = {
     const txdef = Txdefs.findOne(defId);
     const selector = { communityId, defId, status: { $ne: 'void' } };
     if (txdef.category !== 'transfer') selector.seId = { $exists: false };
-    const txs = Transactions.find(selector);
+    let txs = Transactions.find(selector);
+    if (txdef.category === 'transfer') txs = txs.fetch().filter(tx => !tx.isReconciled());
     const options = txs.map(tx => ({ label: tx.displayInSelect(), value: tx._id }));
     return options;
   },

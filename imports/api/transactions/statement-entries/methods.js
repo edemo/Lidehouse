@@ -53,6 +53,7 @@ export const update = new ValidatedMethod({
 
 function checkReconcileMatch(entry, transaction) {
   function throwMatchError(mismatch, entryVal, txVal) {
+    Log.info('Reconcliatin mismatch', JSON.stringify(mismatch));
     Log.info('entry', JSON.stringify(entry));
     Log.info('transaction', JSON.stringify(transaction));
     throw new Meteor.Error('err_notAllowed', 'Cannot reconcile entry with transaction - values not match', { mismatch, txVal, entryVal });
