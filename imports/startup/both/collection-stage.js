@@ -54,9 +54,8 @@ CollectionStage.prototype.findOne = function findOne(selector, options) {
 };
 
 CollectionStage.prototype.insert = function insert(doc) {
+  this._collection.simpleSchema(doc)?.validate(doc);  // needed to check doc validity, before sanity
   const _id = this._fresh.insert(doc);
-//  console.log("Validating INSERT", doc);
-  this._collection.simpleSchema(doc).validate(doc);  // needed to check doc validity, before sanity
   this._operations.push({ operation: this._collection.insert, params: [_.extend(doc, { _id })] });
 //    Log.debug('insert', this._toString());
   return _id;
@@ -66,15 +65,9 @@ CollectionStage.prototype.update = function update(selector, modifier, options) 
   const collectionVersions = this._collection.find(selector);
   collectionVersions.forEach(doc => {
     if (!this._fresh.findOne(doc._id)) this._fresh.insert(doc);
+    this._collection.simpleSchema(doc)?.validate(modifier, { modifier: true });  // needed to check doc validity, before sanity
   });
   const freshResult = this._fresh.update(selector, modifier, options);
-  const stagedVersions = this.find(selector);
-  stagedVersions.forEach(doc => {
-//    console.log("Validating UUPDATED", doc);
-//    console.log("Schema", this._collection.simpleSchema(doc));
-    this._collection.simpleSchema(doc).validate(doc);  // needed to check doc validity, before sanity
-//    console.log("Validating finished", doc);
-  });
   this._operations.push({ operation: this._collection.update, params: [selector, modifier, options] });
 //    Log.debug('update', this._toString());
   return freshResult;

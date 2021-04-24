@@ -35,7 +35,7 @@ if (Meteor.isServer) {
   const past10 = moment().subtract(10, 'weeks').toDate();
   const past11 = moment().subtract(11, 'weeks').toDate();
 
-  describe.only('contracts', function () {
+  describe('contracts', function () {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
@@ -126,8 +126,8 @@ if (Meteor.isServer) {
 
       it('can\'t have a contract with the same begin and end date', function (done) {
         chai.assert.throws(() => {
-          Fixture.builder.execute(Contracts.methods.update, { _id: contractId, modifier: { $set: { 'activeTime.end': past3 } } });
-        }, 'notAllowed');
+          Fixture.builder.execute(Contracts.methods.update, { _id: contractId, modifier: { $set: { 'activeTime.begin': past3, 'activeTime.end': past3 } } });
+        }, 'validation-error');
         done();
       });
 
