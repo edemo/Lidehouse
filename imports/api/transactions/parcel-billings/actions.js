@@ -71,7 +71,7 @@ ParcelBillings.actions = {
   }),
   apply: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'apply',
-    icon: 'fa fa-calendar-plus-o',
+    icon: 'fa fa-money', // fa-calendar-plus-o',
     visible: user.hasPermission('parcelBillings.apply', doc),
     run() {
       const communityId = ModalStack.getVar('communityId');

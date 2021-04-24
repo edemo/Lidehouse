@@ -72,6 +72,7 @@ Mongo.Collection.prototype.findActive = function findActive(selector, options) {
   if (selector.active || selector.activeTime) {
     return this.find(selector, options);
   }
+  if (typeof selector == 'string') selector = { _id: selector };
   const timedSelector = _.extend(ActiveTimeMachine.selector(), selector);
   return this.find(timedSelector, options);
 };
@@ -80,6 +81,7 @@ Mongo.Collection.prototype.findOneActive = function findOneActive(selector, opti
   if (selector.active || selector.activeTime) {
     return this.findOne(selector, options);
   }
+  if (typeof selector == 'string') selector = { _id: selector };
   const timedSelector = _.extend(ActiveTimeMachine.selector(), selector);
   return this.findOne(timedSelector, options);
 };
