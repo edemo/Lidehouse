@@ -130,17 +130,20 @@ Parcels.helpers({
   oldestReadMeter() {
     return _.sortBy(this.meters().fetch(), m => m.lastReadingDate().getTime())[0];
   },
-  occupants() {
+  occupants(active = true) {
     const Memberships = Mongo.Collection.get('memberships');
-    return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId() });
+    const selector = { communityId: this.communityId, approved: true, parcelId: this.leadParcelId() };
+    return active ? Memberships.findActive(selector) : Memberships.find(selector);
   },
-  owners() {
+  owners(active = true) {
     const Memberships = Mongo.Collection.get('memberships');
-    return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId(), role: 'owner' });
+    const selector = { communityId: this.communityId, approved: true, parcelId: this.leadParcelId(), role: 'owner' };
+    return active ? Memberships.findActive(selector) : Memberships.find(selector);
   },
-  representors() {
+  representors(active = true) {
     const Memberships = Mongo.Collection.get('memberships');
-    return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId(), role: 'owner', 'ownership.representor': true });
+    const selector = { communityId: this.communityId, approved: true, parcelId: this.leadParcelId(), role: 'owner', 'ownership.representor': true };
+    return active ? Memberships.findActive(selector) : Memberships.find(selector);
   },
   representor() {
     return this.representors().fetch()[0];
@@ -182,9 +185,9 @@ Parcels.helpers({
   payerPartner() {
     return this.payerContract()?.partner();
   },
-  partners() {
+  partners(active = true) {
     const Partners = Mongo.Collection.get('partners');
-    return this.occupants().fetch().map(o => Partners.findOne(o.partnerId));
+    return this.occupants(active).fetch().map(o => Partners.findOne(o.partnerId));
   },
   balance() {
     const Balances = Mongo.Collection.get('balances');
