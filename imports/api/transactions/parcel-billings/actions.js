@@ -132,3 +132,9 @@ AutoForm.addHooks('af.parcelBilling.edit', {
   },
 });
 
+AutoForm.addHooks('af.parcelBilling.apply', {
+  formToDoc(doc) {
+    if (!doc.ids) doc.ids = []; // When we dont select any, it should mean we dont apply any
+    return doc;
+  },
+});
