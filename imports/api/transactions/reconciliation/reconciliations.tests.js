@@ -334,7 +334,7 @@ if (Meteor.isServer) {
       });
     });
 
-    describe.only('Transfer reconciliation', function () {
+    describe('Transfer reconciliation', function () {
       const bankAccount1 = '`381';
       const bankAccount2 = '`382';
       let transferId, seId1, seId2;

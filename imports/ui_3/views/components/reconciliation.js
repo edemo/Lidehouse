@@ -38,7 +38,7 @@ Template.Reconciliation.onRendered(function () {
     }
     let hasChoosableTx;
     if (txdef.category === 'transfer') {
-      hasChoosableTx = Transactions.find({ defId }).fetch().filter(tx => tx.seId?.length < 2).length;
+      hasChoosableTx = Transactions.find({ defId }).fetch().filter(tx => !tx.seId || tx.seId.length < 2).length;
     } else hasChoosableTx = Transactions.findOne({ defId, seId: { $exists: false } });
     if (!hasChoosableTx) {
       if (!instance.data.newTransactionLaunched) {
