@@ -131,7 +131,10 @@ export const unReconcile = new ValidatedMethod({
     const entry = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.reconcile', entry);
     StatementEntries.update(_id, { $unset: { txId: '' } });
-    Transactions.update({ seId: entry._id }, { $pull: { seId: entry._id } });
+    Transactions.find({ seId: entry._id }).forEach(tx => {
+      if (tx.seId.length > 1) Transactions.update({ _id: tx._id }, { $pull: { seId: entry._id } });
+      else Transactions.update({ _id: tx._id }, { $unset: { seId: '' } });
+    });
     StatementEntries.methods.recognize._execute({ userId: this.userId }, { _id });
   },
 });
