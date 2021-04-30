@@ -8,11 +8,11 @@ import './account-history.html';
 
 Template.Account_history.viewmodel({
   sign: +1,
-  beginDate: '',
-  endDate: '',
-  accountSelected: '',
+  beginDate: undefined,
+  endDate: undefined,
+  accountSelected: undefined,
   accountOptions: [],
-  localizerSelected: '',
+  localizerSelected: undefined,
   localizerOptions: [],
   status: 'Reconciled',
   onCreated(instance) {
@@ -39,9 +39,9 @@ Template.Account_history.viewmodel({
       communityId,
       begin: new Date(this.beginDate()),
       end: new Date(this.endDate()),
+      account: this.accountSelected(),
+      localizer: this.localizerSelected(),
     };
-    if (this.accountSelected()) selector.account = '\\^' + this.accountSelected() + '\\';
-    if (this.localizerSelected()) selector.localizer = '\\^' + this.localizerSelected() + '\\';
     return selector;
   },
   journalEntries() {
