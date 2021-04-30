@@ -71,7 +71,7 @@ ParcelBillings.actions = {
   }),
   apply: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'apply',
-    icon: 'fa fa-calendar-plus-o',
+    icon: 'fa fa-money', // fa-calendar-plus-o',
     visible: user.hasPermission('parcelBillings.apply', doc),
     run() {
       const communityId = ModalStack.getVar('communityId');
@@ -132,3 +132,9 @@ AutoForm.addHooks('af.parcelBilling.edit', {
   },
 });
 
+AutoForm.addHooks('af.parcelBilling.apply', {
+  formToDoc(doc) {
+    if (!doc.ids) doc.ids = []; // When we dont select any, it should mean we dont apply any
+    return doc;
+  },
+});

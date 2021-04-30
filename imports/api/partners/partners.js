@@ -297,7 +297,7 @@ export const choosePartnerOfParcel = {
     const parcelId = AutoForm.getFieldValue('parcelId') || ModalStack.getVar('parcelId');
     if (!parcelId) return [];
     const parcel = Parcels.findOne(parcelId);
-    const partners = parcel.partners();
+    const partners = parcel.partners(false);
     const options = partners.map(function option(p) {
       return { label: (p.displayName() + ', ' + p.activeRoles().map(role => __(role)).join(', ')), value: p._id };
     });

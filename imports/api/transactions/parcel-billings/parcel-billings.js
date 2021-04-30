@@ -13,6 +13,7 @@ import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { ActiveTimeMachine } from '/imports/api/behaviours/active-time-machine';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -93,9 +94,13 @@ const chooseParcelBilling = {
   options() {
     const communityId = ModalStack.getVar('communityId');
     const activeParcelBillingId = ModalStack.getVar('parcelBillingId');
-    const parcelBillings = activeParcelBillingId
-      ? ParcelBillings.find(activeParcelBillingId)
-      : ParcelBillings.findActive({ communityId }, { sort: { rank: 1 } });
+    const date = AutoForm.getFieldValue('date') || new Date();
+    let parcelBillings;
+    ActiveTimeMachine.runAtTime(date, () => {
+      parcelBillings = activeParcelBillingId
+        ? ParcelBillings.find(activeParcelBillingId)
+        : ParcelBillings.findActive({ communityId }, { sort: { rank: 1 } });
+    });
     const options = parcelBillings.map(function option(pb) {
       return { label: pb.toString(), value: pb._id };
     });

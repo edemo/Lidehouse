@@ -4,7 +4,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Log } from '/imports/utils/log.js';
+import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 import { ActiveTimeMachine } from './active-time-machine';
 
@@ -24,7 +24,7 @@ const TimePeriodSchema = new SimpleSchema({
       const beginDate = this.field('activeTime.begin').value;
       const endDate = this.value;
       const nowDate = new Date();
-      if (endDate && endDate < beginDate) return 'notAllowed';
+      if (endDate && endDate <= beginDate) return 'notAllowed';
       if (endDate && endDate > nowDate) return 'notAllowed';  // We can allow this if needed, if we set up a timer
       return undefined;
     },
@@ -72,6 +72,7 @@ Mongo.Collection.prototype.findActive = function findActive(selector, options) {
   if (selector.active || selector.activeTime) {
     return this.find(selector, options);
   }
+  if (typeof selector == 'string') selector = { _id: selector };
   const timedSelector = _.extend(ActiveTimeMachine.selector(), selector);
   return this.find(timedSelector, options);
 };
@@ -80,20 +81,20 @@ Mongo.Collection.prototype.findOneActive = function findOneActive(selector, opti
   if (selector.active || selector.activeTime) {
     return this.findOne(selector, options);
   }
+  if (typeof selector == 'string') selector = { _id: selector };
   const timedSelector = _.extend(ActiveTimeMachine.selector(), selector);
   return this.findOne(timedSelector, options);
 };
 
 const indexes = function indexActivePeriod(collection) {
-  collection.ensureIndex({ active: 1 });
-  if (Meteor.isServer) {
-    collection._ensureIndex({ 'activeTime.begin': 1 }, { sparse: true });
-    collection._ensureIndex({ 'activeTime.end': 1 }, { sparse: true });
-  }
+//  collection.ensureIndex({ active: 1 });
+//  if (Meteor.isServer) {
+//    collection._ensureIndex({ 'activeTime.end': 1 }, { sparse: true });
+//  }
 };
 
 export const ActivePeriod = { name: 'ActivePeriod',
-  schema, helpers, methods, hooks, indexes,
+  schema, helpers, methods, hooks, /*indexes,*/
 };
 
 ActivePeriod.fields = [
@@ -109,13 +110,12 @@ ActivePeriod.modifiableFields = [
 ];
 
 export function sanityCheckOnlyOneActiveAtAllTimes(collection, selector) {
-  let docs = collection.find(selector, { sort: { 'activeTime.begin': 1 } }).fetch();
-  docs = _.sortBy(docs, d => d.activeTime && d.activeTime.begin); // a second sort is needed, because CollectionStage can break the sort
+  const docs = collection.find(selector, { sort: { 'activeTime.end': 1 } });
   docs.forEach((doc, i) => {
+    debugAssert(doc.getActiveTime().end > doc.getActiveTime().begin, 'End should be after Begin', { doc });
     if (!docs[i + 1]) return;
     if (doc.getActiveTime().end > docs[i + 1].getActiveTime().begin) {
-      Log.debug('doc1:', docs[i + 1], 'doc2:', doc);
-      throw new Meteor.Error('err_sanityCheckFailed', 'Cannot have two documents active at the same time', `time: ${doc.getActiveTime().end}, doc: ${doc}`);
+      throw new Meteor.Error('err_sanityCheckFailed', 'Cannot have two documents active at the same time', { time: doc.getActiveTime().end, doc1: docs[i + 1], doc2: doc });
     }
   });
 }

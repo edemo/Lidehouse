@@ -8,6 +8,7 @@ function CollectionStage(collection) {
   this._collection = collection;
   this._fresh = new Mongo.Collection(null);
   this._fresh._transform = collection._transform;
+  // Should we attach the collections's schema here? Rather than validate by hand in the insert, update.
   this._trash = []; // ids only
   this._operations = [];
   // some of the api needs to be copied over
@@ -35,14 +36,25 @@ CollectionStage.prototype.find = function find(selector, options) {
   // find should return only docs that are not in the trash,
   results = _.reject(results, doc => _.contains(this._trash, doc._id));
 //    Log.debug('results', results);
+  if (options?.sort) {
+    const sortKey = Object.keys(options.sort)[0];
+    const sortValue = Object.values(options.sort)[0];
+    if (sortKey && (sortValue === +1 || sortValue === -1)) {
+      results = _.sortBy(results, doc => Object.getByString(doc, sortKey));
+      if (sortValue === -1) {
+        results = results.reverse();
+      }
+    }
+  }
   return results;
 };
 
 CollectionStage.prototype.findOne = function findOne(selector, options) {
-  return this.find(selector)[0];
+  return this.find(selector, options)[0];
 };
 
 CollectionStage.prototype.insert = function insert(doc) {
+  this._collection.simpleSchema(doc)?.validate(doc);  // needed to check doc validity, before sanity
   const _id = this._fresh.insert(doc);
   this._operations.push({ operation: this._collection.insert, params: [_.extend(doc, { _id })] });
 //    Log.debug('insert', this._toString());
@@ -53,9 +65,9 @@ CollectionStage.prototype.update = function update(selector, modifier, options) 
   const collectionVersions = this._collection.find(selector);
   collectionVersions.forEach(doc => {
     if (!this._fresh.findOne(doc._id)) this._fresh.insert(doc);
+    this._collection.simpleSchema(doc)?.validate(modifier, { modifier: true });  // needed to check doc validity, before sanity
   });
   const freshResult = this._fresh.update(selector, modifier, options);
-
   this._operations.push({ operation: this._collection.update, params: [selector, modifier, options] });
 //    Log.debug('update', this._toString());
   return freshResult;

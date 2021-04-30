@@ -60,7 +60,7 @@ Meters.schema = new SimpleSchema({
 Meters.idSet = ['communityId', 'identifier'];
 
 Meteor.startup(function indexParcels() {
-  Meters.ensureIndex({ communityId: 1 });
+  Meters.ensureIndex({ communityId: 1, active: 1 });
   Meters.ensureIndex({ parcelId: 1 });
   Meters.ensureIndex({ identifier: 1 });
 });

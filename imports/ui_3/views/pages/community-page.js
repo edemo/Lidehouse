@@ -84,9 +84,10 @@ Template.Meters_box.viewmodel({
     return parcel ? parcel.display() : __('unknown');
   },
   metersContent() {
-    const communityId = this.templateInstance.data.community._id;
-    const parcelId = this.templateInstance.data.parcel._id;
-    const selector = { communityId, parcelId };
+    const community = this.templateInstance.data.community;
+    const parcel = this.templateInstance.data.parcel;
+    const selector = { communityId: community._id };
+    if (parcel) selector.parcelId = parcel._id;
     return { collection: 'meters', selector };
   },
 });
