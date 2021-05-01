@@ -114,7 +114,7 @@ StatementEntries.actions = {
     run() {
       ModalStack.setVar('statementEntry', doc);
       let txdef, newTx;
-      if (options.txdef) {
+      if (options.txdef) {  // when we come from the reconcile method and selected a txdef
         txdef = options.txdef;
         newTx = {
           communityId: doc.communityId,
@@ -122,7 +122,7 @@ StatementEntries.actions = {
           title: doc.note,
         };
         Transactions.setTxdef(newTx, txdef);
-      } else {
+      } else {            // when we come from the suggested match reconciliation
         debugAssert(doc.match.tx);
         txdef = Txdefs.findOne(doc.match.tx.defId);
         newTx = doc.match.tx;

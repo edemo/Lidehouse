@@ -81,9 +81,7 @@ Template.afQuickField.events({
     var collection = Factory.get(entity).collection;
     const options = { entity: collection.entities && collection.entities[entity], splitable() { return false; } };
 //    Object.setPrototypeOf(options, new ActionOptions(collection));
-    const modalStack = Session.get('modalStack'); // TODO: ModalStack should be its own package, and autoform should use it
-    const doc = modalStack[modalStack.length - 1].context.newDoc;
-    collection.actions.create(options, doc).run(event, instance);
+    collection.actions.create(options).run(event, instance);
   },
   'click .js-view'(event, instance) {
     var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");

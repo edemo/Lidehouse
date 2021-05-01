@@ -217,8 +217,10 @@ Transactions.categoryHelpers('bill', {
     this.issueDate = entry.valueDate;
     this.deliveryDate = entry.valueDate;
     this.dueDate = entry.valueDate;
-    const title =  entry.note || __(this.txdef().name);
-    this.lines = [{ title, quantity: 1, unitPrice: Math.abs(entry.amount) }];
+    if (!this.lines) {
+      const title =  entry.note || __(this.txdef().name);
+      this.lines = [{ title, quantity: 1, unitPrice: Math.abs(entry.amount) }];
+    }
   },
   makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;

@@ -234,7 +234,7 @@ Transactions.categoryHelpers('payment', {
   fillFromStatementEntry(entry) {
     this.amount = entry.amount * Relations.sign(this.relation);
     this.payAccount = entry.account;
-    this.lines = [{ amount: this.amount }];
+    if (!this.bills && !this.lines) this.lines = [{ amount: this.amount }];
   },
   makeJournalEntries(accountingMethod) {
     this.debit = [];

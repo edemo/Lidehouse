@@ -48,7 +48,8 @@ Transactions.actions = {
     color: 'primary',
     visible: user.hasPermission('transactions.insert', doc),
     run() {
-      doc = _.extend(defaultNewDoc(), doc);
+      const modalStackNewDoc = ModalStack.getVar('newDoc');
+      doc = _.extend(defaultNewDoc(), modalStackNewDoc, doc);
       const entity = figureOutEntity(options, doc);
       doc = Transactions._transform(doc);
       const fillFromStatementEntry = function fillFromStatementEntry(instance) {

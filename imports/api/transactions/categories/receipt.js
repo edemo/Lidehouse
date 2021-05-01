@@ -34,8 +34,10 @@ Transactions.categoryHelpers('receipt', {
   fillFromStatementEntry(entry) {
     this.amount = entry.amount * Relations.sign(this.relation);
     this.payAccount = entry.account;
-    const title =  entry.note || __(this.txdef().name);
-    this.lines = [{ title, quantity: 1, unitPrice: this.amount }];
+    if (!this.lines) {
+      const title =  entry.note || __(this.txdef().name);
+      this.lines = [{ title, quantity: 1, unitPrice: this.amount }];
+    }
   },
   makeJournalEntries() {
     const self = this;
