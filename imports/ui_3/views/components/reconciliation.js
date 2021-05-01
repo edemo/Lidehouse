@@ -36,10 +36,11 @@ Template.Reconciliation.onRendered(function () {
         Modal.hide(instance.parent(3));
       }, 1000);
     }
+    const communityId = txdef.communityId;
     let hasChoosableTx;
     if (txdef.category === 'transfer') {
-      hasChoosableTx = Transactions.find({ defId }).fetch().filter(tx => !tx.seId || tx.seId.length < 2).length;
-    } else hasChoosableTx = Transactions.findOne({ defId, seId: { $exists: false } });
+      hasChoosableTx = Transactions.find({ communityId, defId, status: { $ne: 'void' } }).fetch().filter(tx => !tx.seId || tx.seId.length < 2).length;
+    } else hasChoosableTx = Transactions.findOne({ communityId, defId, status: { $ne: 'void' }, seId: { $exists: false } });
     if (!hasChoosableTx) {
       if (!instance.data.newTransactionLaunched) {
         instance.data.newTransactionLaunched = true;
