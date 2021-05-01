@@ -885,7 +885,7 @@
   },
   "schemaStatementEntries": {
     "_": {
-      "label": "StatementEntry"
+      "label": "Statement Entry"
     },
     "time": {
       "label": "Time of transaction",

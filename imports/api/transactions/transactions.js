@@ -327,6 +327,13 @@ Transactions.helpers({
   displayInHistory() {
     return __(`schemaTransactions.category.options.${this.category}`);
   },
+  displayInStatement() {
+    const partner = this.partner();
+    const contract = this.contract();
+    return this.displayInHistory()
+      + (partner ? '<br>' + partner.toString() : '')
+      + (contract ? '<br>' + contract.toString() : '');
+  },
 });
 
 Transactions.attachBaseSchema(Transactions.baseSchema);

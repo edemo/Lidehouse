@@ -262,7 +262,9 @@ Transactions.categoryHelpers('bill', {
     return `${this.serialId} (${this.partner()} ${Date.formatUTC(this.valueDate, 'YYYY.MM.DD')} ${this.outstanding}/${this.amount})`;
   },
   displayInHistory() {
-    return __(`schemaTransactions.category.options.${this.category}`) + (this.lineCount() ? ` (${this.lineCount()} ${__('item')})` : '');
+    const def = this.txdef();
+    const defName = def ? __(def.name) : __(`schemaTransactions.category.options.${this.category}`);
+    return defName + (this.lineCount() ? ` (${this.lineCount()} ${__('item')})` : '');
   },
   overdueDays() {
     const diff = moment().diff(this.dueDate, 'days');

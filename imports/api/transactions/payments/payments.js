@@ -342,11 +342,13 @@ Transactions.categoryHelpers('payment', {
       { selector: { category: 'bill' } },
     );
   },
-  displayInHistory() {
-    return __(`schemaTransactions.category.options.${this.category}`) + (this.bills ? ` (${this.bills.length} ${__('item')})` : '');
-  },
   displayInSelect() {
     return `${this.serialId} (${moment(this.valueDate).format('YYYY.MM.DD')} ${this.partner()} ${this.amount})`;
+  },
+  displayInHistory() {
+    const def = this.txdef();
+    const defName = def ? __(def.name) : __(`schemaTransactions.category.options.${this.category}`);
+    return defName + (this.bills?.length ? ` (${this.bills.length} ${__('bill')})` : '');
   },
 });
 

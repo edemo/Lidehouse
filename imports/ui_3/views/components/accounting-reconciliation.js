@@ -11,7 +11,7 @@ import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Statements } from '/imports/api/transactions/statements/statements.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
-import { statementEntriesColumns } from '/imports/api/transactions/statement-entries/tables.js';
+import { statementEntriesWithJournalEntriesColumns  } from '/imports/api/transactions/statement-entries/tables.js';
 import { allStatementEntriesActions } from '/imports/api/transactions/statement-entries/actions.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
@@ -80,7 +80,7 @@ Template.Accounting_reconciliation.viewmodel({
   },
   statementEntriesOptionsFn() {
     return () => Object.create({
-      columns: statementEntriesColumns(),
+      columns: statementEntriesWithJournalEntriesColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       ...DatatablesExportButtons,

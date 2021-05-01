@@ -51,12 +51,34 @@ StatementEntries.helpers({
   isReconciled() {
     return !!this.txId;
   },
-  transaction() {
+  reconciledTransaction() {
     const Transactions = Mongo.Collection.get('transactions');
     return this.txId && Transactions.findOne(this.txId);
   },
+  transaction() {
+    let tx;
+    const Transactions = Mongo.Collection.get('transactions');
+    if (this.txId) tx = Transactions.findOne(this.txId);  // reconciled tx
+    else if (this.match?.txId) tx = Transactions.findOne(this.match.txId);
+    else if (this.match?.tx) {
+      tx = Transactions._transform(this.match.tx);
+    }
+    return tx;
+  },
   impliedRelation() {
     return (this.amount > 0) ? 'customer' : 'supplier';
+  },
+  display() {
+    return `${this.refType || '---'}<br>${this.name}<br>${this.note || ''}`;
+  },
+  displayMatch() {
+    const classes = ['text-capitalize'];
+    if (!this.isReconciled()) classes.push('text-muted');
+    const tx = this.transaction();
+    if (!tx) return '';
+    const text = tx.displayInStatement();
+    if (!tx._id) classes.push('text-italic');
+    return text && `<span class="${classes.join(' ')}">${text}</span>`;
   },
 });
 

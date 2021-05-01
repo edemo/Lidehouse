@@ -196,9 +196,9 @@ StatementEntries.actions = {
   }),
   transaction: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'transaction',
-    label: 'transaction',
-    icon: 'fa fa-link',
-    visible: doc.isReconciled() && user.hasPermission('transactions.inCommunity', doc),
+    label: 'view transaction',
+    icon: 'fa fa-eye',
+    visible: doc.transaction()?._id && user.hasPermission('transactions.inCommunity', doc),
     run() {
       Transactions.actions.view(options, doc.transaction()).run();
     },
@@ -207,7 +207,7 @@ StatementEntries.actions = {
     name: 'post',
     icon: 'fa fa-check-square-o',
     color: 'warning',
-    visible: doc.transaction() && !(doc.transaction().isPosted()) && user.hasPermission('transactions.post', doc),
+    visible: doc.transaction()?._id && !(doc.transaction().isPosted()) && user.hasPermission('transactions.post', doc),
     run() {
       Transactions.actions.post(options, doc.transaction()).run();
     },

@@ -22,3 +22,27 @@ export function statementEntriesColumns() {
 
   return columns;
 }
+
+export function statementEntriesWithJournalEntriesColumns() {
+  const columns = [
+    { data: 'valueDate', title: __('schemaStatementEntries.valueDate.label'), render: Render.formatDate },
+    { data: '_id', render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'statementEntries', actions: 'view', size: 'sm' }, cell),
+    },
+    { data: 'display()', title: __('schemaStatementEntries._.label') },
+    { data: 'amount', title: __('schemaStatementEntries.amount.label'), render: Render.formatNumber(0) },
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'statementEntries', actions: 'reconcile,matchedReconcile,unReconcile', size: 'sm' }, cell),
+    },
+//    { data: 'isReconciled()', /* title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
+    { data: '_id', render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'statementEntries', actions: 'transaction,post', size: 'sm' }, cell),
+    },
+    { data: 'displayMatch()', title: __('schemaTransactions._.label') },
+  ];
+
+  return columns;
+}
