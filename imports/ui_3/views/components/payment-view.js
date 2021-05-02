@@ -16,7 +16,11 @@ Template.Payment_view.viewmodel({
   },
   showBills() {
     const doc = this.reactiveDoc();
-    return doc.bills.length;
+    return doc.bills?.length;
+  },
+  showLines() {
+    const doc = this.reactiveDoc();
+    return doc.lines?.length;
   },
   displayBill(bp) {
     const bill = Transactions.findOne(bp.id);

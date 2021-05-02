@@ -43,6 +43,8 @@
             </tbody>
         </table>
     </div><!-- /table-responsive -->
+    {{/if}}
+    {{#if showLines}}
     <div class="table-responsive m-t">
         <table class="table invoice-table">
             <thead>
@@ -65,6 +67,7 @@
             </tbody>
         </table>
     </div>
+    {{/if}}
 
     <table class="table invoice-total">
         <tbody>
@@ -74,17 +77,18 @@
             <td class="nowrap">{{displayMoney rDoc.rounding}}</td>
         </tr>
         {{/if}}
+        {{#if (and showBills showLines) }}
         <tr>
             <td><strong>{{_ 'Overpayment'}} :</strong></td>
             <td class="nowrap">{{displayMoney rDoc.outstanding}}</td>
         </tr>
+        {{/if}}
         <tr>
             <td><strong>{{_ 'schemaTransactions.amount.label'}} :</strong></td>
             <td class="nowrap">{{displayMoney rDoc.amount}}</td>
         </tr>
         </tbody>
     </table>
-    {{/if}}
 
     <div class="text-right" data-id="{{rDoc._id}}">
       {{>Action_buttons_group collection='transactions' doc=rDoc actions='edit,delete,post' size='xl'}}

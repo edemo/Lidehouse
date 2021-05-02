@@ -23,7 +23,7 @@ Transactions.entities = {
   },
   exchange: {
     name: 'exchange',
-//    viewForm: 'Exchange_view',
+    viewForm: 'Exchange_edit',
     editForm: 'Exchange_edit',
     omitFields: () => ['debit', 'credit', 'pEntries'],
     size: 'lg',
@@ -36,7 +36,7 @@ Transactions.entities = {
   },
   transfer: {
     name: 'transfer',
-//    viewForm: 'Transfer_view',
+    viewForm: 'Transfer_edit',
     editForm: 'Transfer_edit',
     omitFields: () => ['debit', 'credit', 'pEntries'],
     size: 'lg',
