@@ -32,7 +32,7 @@ export function statementEntriesWithJournalEntriesColumns() {
     },
     { data: 'display()', title: __('schemaStatementEntries._.label') },
     { data: 'amount', title: __('schemaStatementEntries.amount.label'), render: Render.formatNumber(0) },
-    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+    { data: '_id', title: __('reconcile'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'statementEntries', actions: 'reconcile,matchedReconcile,unReconcile', size: 'sm' }, cell),
     },

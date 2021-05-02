@@ -325,7 +325,9 @@ Transactions.helpers({
     return this.serialId;
   },
   displayInHistory() {
-    return __(`schemaTransactions.category.options.${this.category}`);
+    const def = this.txdef();
+    if (!def) return '';
+    return __(def.name);
   },
   displayInStatement() {
     const partner = this.partner();
