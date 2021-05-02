@@ -15,6 +15,12 @@ import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/ui_3/views/components/transaction-view.js';
+import '/imports/ui_3/views/components/bill-view.js';
+import '/imports/ui_3/views/components/bill-edit.js';
+import '/imports/ui_3/views/components/payment-view.js';
+import '/imports/ui_3/views/components/payment-edit.js';
+import '/imports/ui_3/views/components/transfer-edit.js';
+import '/imports/ui_3/views/components/exchange-edit.js';
 
 import './entities.js';
 import './methods.js';

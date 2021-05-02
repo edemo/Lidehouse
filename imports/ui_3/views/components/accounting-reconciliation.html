@@ -89,4 +89,11 @@
         </div>
     </div-->
     {{/if}}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            {{#if currentUserHasPermission 'statements.reconcile' communityIdObject}}
+            <button class="btn btn-default text-capitalize js-edit"><i class="fa fa-list"></i> {{_ 'entities.recognition.label'}}</button>
+            {{/if}}
+        </div>
+    </div>
 </template>

@@ -13,6 +13,8 @@ import { Statements } from '/imports/api/transactions/statements/statements.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { statementEntriesWithJournalEntriesColumns  } from '/imports/api/transactions/statement-entries/tables.js';
 import { allStatementEntriesActions } from '/imports/api/transactions/statement-entries/actions.js';
+import { Recognitions } from '/imports/api/transactions/reconciliation/recognitions.js';
+import '/imports/api/transactions/reconciliation/actions.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import '/imports/ui_3/views/components/accounting-filter.js';
@@ -57,8 +59,14 @@ Template.Accounting_reconciliation.viewmodel({
       ...DatatablesExportButtons,
     });
   },*/
+  communityId() {
+    return getActiveCommunityId();
+  },
+  communityIdObject() {
+    return { communityId: this.communityId() };
+  },
   statementEntriesFilterSelector() {
-    const selector = { 
+    const selector = {
       communityId: getActiveCommunityId(),
       account: this.accountSelected(),
       valueDate: {},
@@ -90,5 +98,10 @@ Template.Accounting_reconciliation.viewmodel({
 });
 
 Template.Accounting_reconciliation.events({
+  'click .js-edit'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    const recognition = Recognitions.findOne({ communityId });
+    Recognitions.actions.edit({}, recognition).run(event, instance);
+  },
   ...(actionHandlers(StatementEntries, 'create,import')),
 });

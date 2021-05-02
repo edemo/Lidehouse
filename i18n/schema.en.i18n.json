@@ -931,6 +931,12 @@
       "help": "Select an existing (unreconciled) transaction, or create a new one now, that you will reconcile with."
     }
   },
+  "schemaRecognitions": {
+    "names": {
+      "label": "Bank partner name recognition",
+      "help": "You can set here, how the bank partner names on the left will be recognized among the registered partner names of the system."
+    }
+  },
   "schemaTxdefs": {
     "name": {
       "label": "Transaction type name",

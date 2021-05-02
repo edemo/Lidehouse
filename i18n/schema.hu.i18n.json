@@ -931,6 +931,12 @@
       "help": "Amennyiben a kivonat tételhez tartozó tranzakció már létre lett hozva, válassza ki a listából, ha még nem létezik, akkor hozza létre most új tranzakcióként."
     }
   },
+  "schemaRecognitions": {
+    "names": {
+      "label": "Banki partner nevek felismerése",
+      "help": "Itt beállíthatja hogy a bal oldalon megadott banki partner nevek, milyen társasházi partnerként ismerődjenek fel."
+    }
+  },
   "schemaTxdefs": {
     "name": {
       "label": "Gazdasági esemény neve",

@@ -717,6 +717,7 @@
   "No partner with this name": "Nincs ilyen nevű partner",
   "No partner with this ref": "Nincs ilyen azonosítójú partner",
   "Dont know how to parse": "Az elemző nem ismeri fel ezt a típust",
+  "Not a valid json": "Nem beolvasható JSON",
 
   "logout": "kilépés",
   "login": "belépés",

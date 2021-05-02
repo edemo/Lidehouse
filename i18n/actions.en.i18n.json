@@ -286,6 +286,10 @@
       "label": "statement entry",
       "it": "the statement entry"
     },
+    "recognition": {
+      "label": "recognition rules",
+      "it": "the recognition rules"
+    },
     "txdef": {
       "label": "transaction type",
       "it": "the transaction type"

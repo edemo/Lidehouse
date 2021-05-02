@@ -286,6 +286,10 @@
       "label": "kivonat tétel",
       "it": "a kivonat tételt"
     },
+    "recognition": {
+      "label": "felismerési szabályok",
+      "it": "a felismerési szabályokat"
+    },
     "txdef": {
       "label": "gazdasági esemény",
       "it": "a gazdasági eseményt"

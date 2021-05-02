@@ -189,7 +189,7 @@ StatementEntries.actions = {
   recognize: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'recognize',
     icon: 'fa fa-question',
-    visible: user.hasPermission('statements.reconcile', doc),
+    visible: !doc.match && user.hasPermission('statements.reconcile', doc),
     run() {
       StatementEntries.methods.recognize.call({ _id: doc._id });
     },
@@ -229,7 +229,6 @@ StatementEntries.dummyDoc = {
   communityId: getActiveCommunityId,
   isReconciled() { return false; },
   transaction() { return { isPosted() { return false; } }; },
-  match: {},
 };
 
 StatementEntries.batchActions = {

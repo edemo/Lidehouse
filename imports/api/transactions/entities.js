@@ -1,12 +1,4 @@
-import { Transactions } from "./transactions";
-import { Session } from 'meteor/session';
-import { __ } from '/imports/localization/i18n.js';
-import '/imports/ui_3/views/components/bill-view.js';
-import '/imports/ui_3/views/components/bill-edit.js';
-import '/imports/ui_3/views/components/payment-view.js';
-import '/imports/ui_3/views/components/payment-edit.js';
-import '/imports/ui_3/views/components/transfer-edit.js';
-import '/imports/ui_3/views/components/exchange-edit.js';
+import { Transactions } from './transactions.js';
 
 Transactions.entities = {
   bill: {

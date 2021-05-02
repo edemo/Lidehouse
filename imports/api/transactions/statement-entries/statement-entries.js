@@ -82,9 +82,6 @@ StatementEntries.helpers({
   },
 });
 
-Meteor.startup(function indexStatements() {
-});
-
 StatementEntries.attachSchema(StatementEntries.schema);
 
 StatementEntries.simpleSchema().i18n('schemaStatementEntries');

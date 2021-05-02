@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { debugAssert } from '/imports/utils/assert.js';
 import { replaceDotsInString } from '/imports/api/utils';
 
@@ -12,6 +13,16 @@ if (Meteor.isClient) {
 }
 
 export const Recognitions = new Mongo.Collection('recognitions');
+
+Recognitions.schema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  names: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
+});
+
+Recognitions.attachSchema(Recognitions.schema);
+
+Recognitions.simpleSchema().i18n('schemaRecognitions');
+
 
 Meteor.startup(function indexSettings() {
   if (Meteor.isServer) {
