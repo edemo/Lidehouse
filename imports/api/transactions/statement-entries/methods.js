@@ -86,6 +86,7 @@ export const reconcile = new ValidatedMethod({
     checkPermissions(this.userId, 'statements.reconcile', entry);
     const communityId = entry.communityId;
     const reconciledTx = Transactions.findOne(txId);
+    debugAssert(!reconciledTx.seId || (reconciledTx.seId.length < 2 && reconciledTx.category === 'transfer'), 'Transaction already reconciled');
     let newContractId;  // will be filled if a new contract is autocreated now
     if (Meteor.isServer) {
       checkReconcileMatch(entry, reconciledTx);
