@@ -189,7 +189,7 @@ StatementEntries.actions = {
   recognize: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'recognize',
     icon: 'fa fa-question',
-    visible: !doc.match && user.hasPermission('statements.reconcile', doc),
+    visible: user.hasPermission('statements.reconcile', doc),
     run() {
       StatementEntries.methods.recognize.call({ _id: doc._id });
     },
@@ -207,7 +207,7 @@ StatementEntries.actions = {
     name: 'post',
     icon: 'fa fa-check-square-o',
     color: 'warning',
-    visible: doc.transaction()?._id && !(doc.transaction().isPosted()) && user.hasPermission('transactions.post', doc),
+    visible: doc.isReconciled() && !doc.transaction().isPosted() && user.hasPermission('transactions.post', doc),
     run() {
       Transactions.actions.post(options, doc.transaction()).run();
     },
