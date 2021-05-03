@@ -934,7 +934,11 @@
   "schemaRecognitions": {
     "names": {
       "label": "Banki partner nevek felismerése",
-      "help": "Itt beállíthatja hogy a bal oldalon megadott banki partner nevek, milyen társasházi partnerként ismerődjenek fel."
+      "help": "Itt beállíthatja hogy a bal oldalon megadott banki partner nevek, milyen társasházi partner névként ismerődjenek fel."
+    },
+    "BANs": {
+      "label": "Bankszámlaszámok felismerése",
+      "help": "Itt beállíthatja hogy a bal oldalon megadott bankszámlaszámok, milyen társasházi bankszámlaszámként ismerődjenek fel."
     }
   },
   "schemaTxdefs": {

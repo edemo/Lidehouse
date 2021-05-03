@@ -934,7 +934,11 @@
   "schemaRecognitions": {
     "names": {
       "label": "Bank partner name recognition",
-      "help": "You can set here, how the bank partner names on the left will be recognized among the registered partner names of the system."
+      "help": "You can set here, how the bank partner names on the left will be recognized among the registered partner names of the community."
+    },
+    "BANs": {
+      "label": "Bank account number recognition",
+      "help": "You can set here, how the bank account numbers on the left will be recognized among the registered bank account numbers of the community."
     }
   },
   "schemaTxdefs": {

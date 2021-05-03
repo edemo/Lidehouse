@@ -6,6 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { freshFixture } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Communities } from '/imports/api/communities/communities.js';
 
@@ -13,7 +14,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 if (Meteor.isServer) {
   let Fixture;
 
-  describe('reconciliation', function () {
+  describe.only('reconciliation', function () {
     this.timeout(15000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
@@ -26,7 +27,6 @@ if (Meteor.isServer) {
       let billId, billId2;
       let bill, bill2;
 //      let statementId;
-      const bankAccount = '`381';
 
       beforeEach(function () {
         billId = Fixture.builder.create('bill', {
@@ -69,7 +69,7 @@ if (Meteor.isServer) {
         bill2 = Transactions.findOne(billId2);
 
 /*        statementId = Fixture.builder.create('statement', {
-          account: bankAccount,
+          account: '`381',
           startDate: moment().subtract(1, 'month').toDate(),
           endDate: new Date(),
           startBalance: 0,
@@ -83,7 +83,7 @@ if (Meteor.isServer) {
       });
 
       it('Can pay bill by registering a payment tx - later a statementEntry will be matched to it', function () {
-        const paymentId = Fixture.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: bankAccount });
+        const paymentId = Fixture.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: '`381' });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.getPayments().length, 1);
@@ -94,7 +94,7 @@ if (Meteor.isServer) {
 
         const txId1 = bill.getPayments()[0].id;
         const entryId1 = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
           amount: -100,
@@ -108,7 +108,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 200);
         chai.assert.equal(bill.partner().outstanding('supplier'), 200 + 200);
 
-        const paymentId2 = Fixture.builder.create('payment', { bills: [{ id: billId, amount: 200 }], amount: 200, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: bankAccount });
+        const paymentId2 = Fixture.builder.create('payment', { bills: [{ id: billId, amount: 200 }], amount: 200, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: '`381' });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.getPayments().length, 2);
@@ -119,7 +119,7 @@ if (Meteor.isServer) {
 
         const txId2 = bill.getPayments()[1].id;
         const entryId2 = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
           amount: -200,
@@ -133,12 +133,12 @@ if (Meteor.isServer) {
       });
 
       it('Can NOT reconcile statementEntry with different relation, amount or date', function () {
-        Fixture.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: bankAccount });
+        Fixture.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: '`381' });
         bill = Transactions.findOne(billId);
         const txId = bill.getPayments()[0].id;
 /*        
         const entryIdWrongRelation = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Customer Inc',
           amount: -100,
@@ -148,7 +148,7 @@ if (Meteor.isServer) {
         }, 'err_notAllowed');
 */
         const entryIdWrongAccount = Fixture.builder.create('statementEntry', {
-          account: bankAccount + '1',
+          account: '`381' + '1',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
           amount: -100,
@@ -158,7 +158,7 @@ if (Meteor.isServer) {
         }, 'err_notAllowed');
 
         const entryIdWrongAmount = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
           amount: -110,
@@ -168,7 +168,7 @@ if (Meteor.isServer) {
         }, 'err_notAllowed');
 
         const entryIdWrongSign = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
           amount: 100,
@@ -178,7 +178,7 @@ if (Meteor.isServer) {
         }, 'err_notAllowed');
 
         const entryIdWrongDate = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: moment().subtract(3, 'week').toDate(),
           name: 'Supplier Inc',
           amount: -100,
@@ -191,7 +191,7 @@ if (Meteor.isServer) {
       it('Can primary auto reconcile when bill serial provided - exact amount', function () {
         chai.assert.isTrue(!!bill.serialId);
         const entryId = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
           note: bill.serialId,
@@ -226,7 +226,7 @@ if (Meteor.isServer) {
       xit('Can primary auto reconcile when bill serial provided - rounded lower amount', function () {
         chai.assert.isTrue(!!bill.serialId);
         const entryId = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
           note: bill.serialId,
@@ -262,7 +262,7 @@ if (Meteor.isServer) {
       xit('Can primary auto reconcile when bill serial provided - rounded higher amount', function () {
         chai.assert.isTrue(!!bill.serialId);
         const entryId = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
           note: bill.serialId,
@@ -297,7 +297,7 @@ if (Meteor.isServer) {
 
       it('Can secondary auto reconcile when bills outstandings match - exact amount', function () {
         const entryId = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
           note: bill.serialId,
@@ -335,23 +335,24 @@ if (Meteor.isServer) {
     });
 
     describe('Transfer reconciliation', function () {
-      const bankAccount1 = '`381';
-      const bankAccount2 = '`382';
       let transferId, seId1, seId2;
       let tx, se1, se2;
+      after(function () {
+        Transactions.remove({ category: 'transfer' });
+      });
 
       it('Can reconcile a transfer tx to both bank statements', function () {
         const seIdWrongAmount = Fixture.builder.create('statementEntry', {
-          account: bankAccount1, amount: -120500,
+          account: '`381', amount: -120500,
         });
         seId1 = Fixture.builder.create('statementEntry', {
-          account: bankAccount1, amount: 120500,
+          account: '`381', amount: 120500,
         });
         seId2 = Fixture.builder.create('statementEntry', {
-          account: bankAccount2, amount: -120500,
+          account: '`382', amount: -120500,
         });
         transferId = Fixture.builder.create('transfer', {
-          toAccount: bankAccount1, fromAccount: bankAccount2, amount: 120500,
+          toAccount: '`381', fromAccount: '`382', amount: 120500,
         });
         Fixture.builder.execute(Transactions.methods.post, { _id: transferId });
 
@@ -392,7 +393,6 @@ if (Meteor.isServer) {
       let billId, billId2;
       let bill, bill2;
       let entryId, entryId2;
-      const bankAccount = '`381';
 
       before(function () {
         billId = Fixture.builder.create('bill', {
@@ -441,7 +441,7 @@ if (Meteor.isServer) {
 
       it('Does not recognize Entry without partner', function () {
         entryId = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           amount: -300,
         });
@@ -456,7 +456,6 @@ if (Meteor.isServer) {
       let billId, billId2;
       let bill, bill2;
       let entryId, entryId2;
-      const bankAccount = '`381';
 
       before(function () {
         billId = Fixture.builder.create('bill', {
@@ -505,7 +504,7 @@ if (Meteor.isServer) {
 
       it('[1] Entry has unknown partner name - will not be auto reconciled', function () {
         entryId = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'SUPPLIER INC - Official name',
           amount: -300,
@@ -529,7 +528,7 @@ if (Meteor.isServer) {
           relation: 'supplier',
           amount: 300,
           valueDate: Clock.currentDate(),
-          payAccount: bankAccount,
+          payAccount: '`381',
           partnerId: Fixture.supplier,
           bills: [{ id: billId, amount: 300 }],
         });
@@ -550,7 +549,7 @@ if (Meteor.isServer) {
 
       it('[3] Next enrty with same partnerName - will be recognized', function () {
         entryId = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'SUPPLIER INC - Official name',
           amount: -200,
@@ -588,7 +587,7 @@ if (Meteor.isServer) {
         });
         Fixture.builder.execute(Transactions.methods.post, { _id: billId3 });
         const entryId3 = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier.Inc.',
           amount: -100,
@@ -597,7 +596,7 @@ if (Meteor.isServer) {
           relation: 'supplier',
           amount: 100,
           valueDate: Clock.currentDate(),
-          payAccount: bankAccount,
+          payAccount: '`381',
           partnerId: Fixture.supplier,
           bills: [{ id: billId3, amount: 100 }],
         });
@@ -616,7 +615,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill3.partner().outstanding('supplier'), 400);
 
         const entryId4 = Fixture.builder.create('statementEntry', {
-          account: bankAccount,
+          account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier.Inc.',
           amount: -100,
@@ -639,6 +638,65 @@ if (Meteor.isServer) {
         const payment4 = Transactions.findOne({ category: 'payment', 'lines.0': { $exists: true } });
         Fixture.builder.execute(Transactions.methods.post, { _id: payment4._id });
         chai.assert.equal(bill3.partner().outstanding('supplier'), 300);
+      });
+
+      it('[1] Entry has unknown bank account number - will not be auto reconciled', function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`382',
+          contraBAN: '1234-5678',
+          valueDate: Clock.currentDate(),
+          amount: -300,
+        });
+        const entry = StatementEntries.findOne(entryId);
+        let bankAccountDoc = Accounts.findOne({ communityId: entry.communityId, code: '`383' });
+
+        chai.assert.isUndefined(bankAccountDoc.BAN);
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        chai.assert.isUndefined(entry.match);
+
+        Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId });
+        chai.assert.equal(Transactions.find({ category: 'transfer' }).count(), 0);
+
+        Fixture.builder.execute(Accounts.methods.update, { _id: bankAccountDoc._id, modifier: { $set: { BAN: 'IBAN-1234-5678' } } });
+        bankAccountDoc = Accounts.findOne({ communityId: entry.communityId, code: '`383' });
+        chai.assert.equal(bankAccountDoc.BAN, 'IBAN-1234-5678');
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        chai.assert.isUndefined(entry.match);
+      });
+
+      it('[2] ... but can be reconciled by hand', function () {
+        const transferId = Fixture.builder.create('transfer', {
+          amount: 300,
+          valueDate: Clock.currentDate(),
+          toAccount: '`383',
+          fromAccount: '`382',
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: transferId });
+        chai.assert.equal(Transactions.find({ category: 'transfer' }).count(), 1);
+
+        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId, txId: transferId });
+        const entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.isReconciled(), true);
+      });
+
+      it('[3] Next enrty with same BAN - will be recognized', function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`382',
+          contraBAN: '1234-5678',
+          valueDate: Clock.currentDate(),
+          amount: -500,
+        });
+
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        const entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.match?.confidence, 'success');
+        chai.assert.equal(entry.match?.tx?.category, 'transfer');
+        chai.assert.equal(entry.match?.tx?.amount, 500);
+        chai.assert.equal(entry.match?.tx?.toAccount, '`383');
+        chai.assert.equal(entry.match?.tx?.fromAccount, '`382');
+
+        Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId });
+        chai.assert.equal(Transactions.find({ category: 'transfer' }).count(), 2);
       });
     });
   });

@@ -16,6 +16,7 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Recognitions } from '/imports/api/transactions/reconciliation/recognitions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { reconciliationSchema } from '/imports/api/transactions/reconciliation/reconciliation.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
@@ -86,15 +87,15 @@ export const reconcile = new ValidatedMethod({
     checkPermissions(this.userId, 'statements.reconcile', entry);
     const communityId = entry.communityId;
     const reconciledTx = Transactions.findOne(txId);
-    debugAssert(!reconciledTx.seId || (reconciledTx.seId.length < 2 && reconciledTx.category === 'transfer'), 'Transaction already reconciled');
     let newContractId;  // will be filled if a new contract is autocreated now
     if (Meteor.isServer) {
       checkReconcileMatch(entry, reconciledTx);
       if (reconciledTx.category === 'payment') {
+        debugAssert(!reconciledTx.seId, 'Transaction already reconciled');
         // Machine learning the accounting
         const entryName = entry.nameOrType();
         if (reconciledTx.partnerId && entryName && entryName !== reconciledTx.partner().idCard.name) {
-          Recognitions.setName(entryName, reconciledTx.partner().idCard.name, { communityId });
+          Recognitions.set('name', entryName, reconciledTx.partner().idCard.name, { communityId });
         }
         if (reconciledTx.lines?.length === 1) {
           let contract = reconciledTx.contract() || reconciledTx.partner().contracts(reconciledTx.relation).fetch()[0];
@@ -115,6 +116,13 @@ export const reconcile = new ValidatedMethod({
             const modifier = { $set: { 'accounting.account': line.account, 'accounting.localizer': line.localizer } };
             Contracts.update(contract._id, modifier, { selector: { relation: contract.relation } });
           }
+        }
+      } else if (reconciledTx.category === 'transfer') {
+        debugAssert(!reconciledTx.seId || reconciledTx.seId.length < 2, 'Transaction already reconciled');
+        const contraAccountField = entry.amount > 0 ? 'fromAccount' : 'toAccount';
+        const contraBankAccount = Accounts.findOne({ communityId, category: 'bank', code: reconciledTx[contraAccountField] });
+        if (contraBankAccount?.BAN && entry.contraBAN && contraBankAccount.BAN !== entry.contraBAN) {
+          Recognitions.set('BAN', entry.contraBAN, contraBankAccount.BAN, { communityId });
         }
       }
     }
@@ -219,7 +227,7 @@ export const recognize = new ValidatedMethod({
     const entryName = entry.nameOrType();
     if (entryName) {
       Log.debug('Looking for partner', entryName, 'in', entry.communityId);
-      const recognizedName = Recognitions.getName(entryName, { communityId }) || entryName;
+      const recognizedName = Recognitions.get('name', entryName, { communityId }) || entryName;
       partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': recognizedName });
     } else {
       Log.debug('No partner on statement');
@@ -237,7 +245,33 @@ export const recognize = new ValidatedMethod({
     } else {
       Log.debug('No appropriate partner found');
     }
-    if (!partner || !relation) return;
+    if (!partner || !relation) {
+      const recognizedContraBAN = (entry.contraBAN && Recognitions.get('BAN', entry.contraBAN, { communityId })) || entry.contraBAN;
+      const contraBankAccount = recognizedContraBAN && Accounts.findOne({ communityId, category: 'bank', BAN: recognizedContraBAN });
+      if (contraBankAccount) {
+        const tx = {
+          communityId,
+          category: 'transfer',
+          defId: Txdefs.findOne({ communityId, category: 'transfer' })._id,
+          valueDate: entry.valueDate,
+          amount: Math.abs(entry.amount),
+        };
+        if (entry.amount > 0) {
+          tx.toAccount = entry.account;
+          tx.fromAccount = contraBankAccount.code;
+        } else {
+          tx.toAccount = contraBankAccount.code;
+          tx.fromAccount = entry.account;
+        }
+        // ---------------------------
+        // 2nd grade, 'success' match: Transfer
+        // ---------------------------
+        Log.info('Success match transfer');
+        Log.debug(tx);
+        StatementEntries.update(_id, { $set: { match: { confidence: 'success', tx } } });
+      }
+      return;
+    }
 
     const contract = partner.contracts(relation)?.[0];
     const adjustedEntryAmount = entry.amount * Relations.sign(relation);
