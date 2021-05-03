@@ -722,6 +722,22 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 41,
+  name: 'seId becomes an Array',
+  up() {
+    Transactions.find({ seId: { $exists: true } }).forEach(tx => {
+      let modifier;
+      if (typeof tx.seId === 'string') {
+        modifier = { $set: { seId: [tx.seId] } };
+      } else if (Array.isArray(tx.seId) && tx.seId.length === 0) {
+        modifier = { $unset: { seId: '' } };
+      }
+      if (modifier) Transactions.direct.update(tx._id, modifier);
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {
