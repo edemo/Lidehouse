@@ -394,10 +394,12 @@ if (Meteor.isServer) {
       let meterId;
       let registerReading;
       let assertBilled;
+      let daysWoEstimation;  // days between reading and billing without estimation, see meters.getEstimatedValue())
       before(function () {
         Meters.remove({});
         ParcelBillings.remove({});
         Transactions.remove({});
+        daysWoEstimation = 5;
 
         parcelBillingId = Fixture.builder.create('parcelBilling', {
           title: 'Test consumption',
@@ -481,8 +483,13 @@ if (Meteor.isServer) {
       });
 
       it('Can bill based on estimating', function () {
-        applyParcelBillings('2018-03-02'); postParcelBillings('2018-03-02');
-        assertBilled('2018-03-02', 'consumption', 0.263);
+        applyParcelBillings('2018-03-25'); postParcelBillings('2018-03-25');
+        assertBilled('2018-03-25', 'consumption', 6.316);
+      });
+
+      it('Doesnt bill again for what it was already billed for', function () {
+        applyParcelBillings('2018-03-25'); postParcelBillings('2018-03-25');
+        assertBilled('2018-03-25', 'consumption', 0);
       });
 
       xit('Cannot accidentally bill for same period twice', function () {
@@ -492,21 +499,31 @@ if (Meteor.isServer) {
         assertBilled('2018-03-24', 'consumption', 0);
       });
 
-      it('Can bill based on billing and estimation at the same time', function () {
-        registerReading('2018-04-01', 20);
-        applyParcelBillings('2018-04-05'); postParcelBillings('2018-04-05');
-        assertBilled('2018-04-05', 'consumption', 11.027);
+      it('Will bill based only on reading for specified elapsed days', function (done) {
+        registerReading('2018-03-31', 20);
+        if (!daysWoEstimation) done();
+        const dd = daysWoEstimation < 10 ? `0${daysWoEstimation}` : daysWoEstimation;
+        applyParcelBillings(`2018-04-${dd}`); postParcelBillings(`2018-04-${dd}`);
+        assertBilled(`2018-04-${dd}`, 'consumption', 3.684);
+        revertParcelBillings(`2018-04-${dd}`); postParcelBillings(`2018-04-${dd}`);
+        assertBilled(`2018-04-${dd}`, 'consumption', -3.684);
+        done();
       });
 
-      it('Doesnt bill again for what it was already billed for', function () {
-        applyParcelBillings('2018-04-05'); postParcelBillings('2018-04-05');
-        assertBilled('2018-04-05', 'consumption', 0);
+      it('Can bill based on reading and estimation at the same time', function () {
+        const days = daysWoEstimation ? daysWoEstimation + 1 : 5;
+        const consumption = ((0.33333 * days) + 3.684).round(3);
+        const dd = days < 10 ? `0${days}` : days;
+        applyParcelBillings(`2018-04-${dd}`); postParcelBillings(`2018-04-${dd}`);
+        assertBilled(`2018-04-${dd}`, 'consumption', consumption);
       });
 
       it('Can do refund (bill a negative amount)', function () {
+        const billedDays = daysWoEstimation ? daysWoEstimation + 1 : 5;
+        const consumption = (0.3333 * billedDays).round(3);
         registerReading('2018-04-25', 20);  // same reading as before - no consumption
         applyParcelBillings('2018-04-25'); postParcelBillings('2018-04-25');
-        assertBilled('2018-04-25', 'consumption', -1.29);
+        assertBilled('2018-04-25', 'consumption', -1 * consumption);
       });
 
       it('Can estimate when no consumption in the flat', function () {
