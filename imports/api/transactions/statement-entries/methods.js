@@ -181,7 +181,7 @@ export const recognize = new ValidatedMethod({
     // 0th grade - 'direct' match: We find an existing payment tx, which can be mathched to this entry
     // ---------------------------
     if (community.settings.paymentsWoStatement) {
-      const matchingTx = Transactions.findOne({ valueDate: entry.valueDate, amount: Math.abs(entry.amount) });
+      const matchingTx = Transactions.findOne({ communityId, valueDate: entry.valueDate, amount: Math.abs(entry.amount) });
       if (matchingTx) {
         Log.info('Direct match with payment', matchingTx._id);
         Log.debug(matchingTx);
