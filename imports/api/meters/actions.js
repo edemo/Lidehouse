@@ -136,7 +136,7 @@ Meters.batchActions = {
 function isTooLargeValue(doc) {
   const meter = Meters.findOne(doc._id);
   const estimatedValue = meter.getEstimatedValue();
-  if (estimatedValue > 0 && doc.reading.value > (estimatedValue * 10)) return true;
+  if (estimatedValue > 0 && doc.reading.value > (estimatedValue * 9)) return true;
   return false;
 }
 
