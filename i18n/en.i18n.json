@@ -1,4 +1,8 @@
 {  
+  "appName": "honline",
+  "appDescription": "Online Transparent Condominium Management",
+  "Demo under construction": "Just a moment, <br>our colleagues at the Demo Building <br>are now constructing your demo apartment...",
+
   // for packages
   "markdownHelp": "In tte editor window, you may use markdown directives. Markdown directives can be typed in, or be applied to a selection, by selecting some text and then pressing one of the format buttons. The preview button shows you how the final text will look like. For a full list of applicable markdown directives, press this question mark.",
 
