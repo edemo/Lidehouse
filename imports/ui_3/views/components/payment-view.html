@@ -43,6 +43,7 @@
             </tbody>
         </table>
     </div><!-- /table-responsive -->
+    {{/if}}
     <div class="table-responsive m-t">
         <table class="table invoice-table">
             <thead>
@@ -84,7 +85,6 @@
         </tr>
         </tbody>
     </table>
-    {{/if}}
 
     <div class="text-right" data-id="{{rDoc._id}}">
       {{>Action_buttons_group collection='transactions' doc=rDoc actions='edit,delete,post' size='xl'}}
