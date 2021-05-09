@@ -9,6 +9,7 @@ import '/imports/api/transactions/actions.js';
 import './bill-view.html';
 
 Template.Bill_view.viewmodel({
+  showAccounting: false,
   onCreated(instance) {
   },
   reactiveDoc() {
@@ -36,5 +37,11 @@ Template.Bill_view.viewmodel({
   displayLocalizer(code, communityId) {
     if (!Meteor.user().hasPermission('transactions.inCommunity')) return '';
     return displayLocalizer(code, communityId);
+  },
+});
+
+Template.Bill_view.events({
+  'click .js-show-accounting'(event, instance) {
+    instance.viewmodel.showAccounting(true);
   },
 });

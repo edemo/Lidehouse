@@ -36,6 +36,6 @@ Template.registerHelper('pageIsPrintable', function pageIsPrintable() {
 
 Template.registerHelper('modalIsPrintable', function modalIsPrintable(id) {
   const details = afId2details(id);
-  if (details.object === 'bill' && details.action === 'view') return true;
+  if (details.entity === 'bill' && details.action === 'view') return true;
   return false;
 });

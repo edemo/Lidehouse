@@ -13,7 +13,7 @@
             <h5>{{_ 'issuer'}}:</h5>
             <address>
                 {{>Bill_partner rDoc.issuer}}<br/>
-                {{#if isBill}}
+                {{#if (and isBill showAccounting)}}
                 {{#if (equals rDoc.relationSign -1)}}
                     {{{displayAccount rDoc.relationAccount activeCommunityId}}}
                 {{/if}}
@@ -22,7 +22,7 @@
         </div>
 
         <div class="col-xs-6 text-right">
-            <h4>
+            <h4 class="js-show-accounting">
               {{{displayTxStatus rDoc.status rDoc}}} 
               {{_ (or rDoc.txdef.name 'schemaTransactions.serialId.label')}}:
               <span class="text-navy">{{rDoc.serialId}}</span>
@@ -30,7 +30,7 @@
             <h5>{{_ 'receiver'}}:</h5>
             <address>
                 {{>Bill_partner rDoc.receiver}}<br/>
-                {{#if isBill}}
+                {{#if (and isBill showAccounting)}}
                 {{#if (equals rDoc.relationSign 1)}}
                     {{{displayAccount rDoc.relationAccount activeCommunityId}}}
                 {{/if}}
@@ -79,7 +79,7 @@
                         </strong>
                         </div>
                         <small>{{line.details}}</small>
-                        {{#if currentUserHasPermission 'transactions.post'}}<br>
+                        {{#if showAccounting}}<br>
                             {{{displayAccount line.account activeCommunityId}}}
                             {{{displayLocalizer line.localizer activeCommunityId}}}
                         {{/if}}
