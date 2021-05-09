@@ -179,9 +179,9 @@ StatementEntries.actions = {
   }),
   autoReconcile: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'autoReconcile',
-    icon: 'fa fa-external-link',
-    color: 'primary',
-    visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
+    icon: 'fa fa-link',
+    color: doc.match?.confidence,
+    visible: !doc.isReconciled() && _.contains(['primary', 'success', 'info'], doc.match?.confidence) && user.hasPermission('statements.reconcile', doc),
     run() {
       StatementEntries.methods.autoReconcile.call({ _id: doc._id });
     },

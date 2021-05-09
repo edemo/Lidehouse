@@ -39,7 +39,7 @@ export function statementEntriesWithJournalEntriesColumns() {
 //    { data: 'isReconciled()', /* title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
     { data: '_id', render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'statementEntries', actions: 'transaction,post', size: 'sm' }, cell),
+        { doc: cellData, collection: 'statementEntries', actions: 'transaction,autoReconcile,post', size: 'sm' }, cell),
     },
     { data: 'displayMatch()', title: __('schemaTransactions._.label') },
   ];

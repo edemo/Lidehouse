@@ -166,6 +166,18 @@ export const autoReconcile = new ValidatedMethod({
   },
 });
 
+function matchWithExistingOrCreateTx(se, tx, confidence) {
+  Log.debug(tx);
+  const selector = tx; // _.omit(tx, 'contract', 'lines');
+  const community = se.community();
+  const existingTx = (community.settings.paymentsWoStatement || tx.category === 'transfer')
+    && Transactions.find(selector).fetch().filter(t => !t.isReconciled())[0];
+  const $set = { match: { confidence } };
+  if (existingTx) $set.match.txId = existingTx._id;
+  else $set.match.tx = tx;
+  StatementEntries.update(se._id, { $set });
+}
+
 export const recognize = new ValidatedMethod({
   name: 'statementEntries.recognize',
   validate: new SimpleSchema({
@@ -177,48 +189,63 @@ export const recognize = new ValidatedMethod({
     const communityId = entry.communityId;
     const community = Communities.findOne(communityId);
     Log.info('Trying to recognize statement entry:', _id);
+    let serialId;
+    let matchingBill;
+    if (entry.note) {
+      const noteSplit = entry.note.deaccent().toUpperCase().split(' ');
+      const regex = TAPi18n.__('BIL', {}, community.settings.language) + '/';
+      serialId = noteSplit.find(s => s.startsWith(regex));
+      if (serialId) {
+        Log.debug('Serial id:', serialId);
+        matchingBill = Transactions.findOne({ communityId: entry.communityId, serialId });
+        Log.debug('Matching bill:', matchingBill);
+      }
+    }
     // ---------------------------
     // 0th grade - 'direct' match: We find an existing payment tx, which can be mathched to this entry
     // ---------------------------
     if (community.settings.paymentsWoStatement) {
-      const matchingTx = Transactions.findOne({ communityId, valueDate: entry.valueDate, amount: Math.abs(entry.amount) });
-      if (matchingTx) {
-        Log.info('Direct match with payment', matchingTx._id);
-        Log.debug(matchingTx);
-        StatementEntries.update(_id, { $set: { match: { confidence: 'direct', txId: matchingTx._id } } });
+      const matchingTxs = Transactions.find({ communityId, category: 'payment', valueDate: entry.valueDate, amount: Math.abs(entry.amount) }).fetch();
+      if (matchingTxs) {
+        let matchingTx;
+        let confidence;
+        if (matchingBill) matchingTx = matchingTxs.find(tx => tx.bills?.[0]?.id === matchingBill._id);
+        if (matchingTx) confidence = 'primary';
+        else {
+          matchingTx = matchingTxs[0];
+          confidence = 'info';
+        }
+        if (matchingTx) {
+          Log.info('Direct match with payment', matchingTx._id);
+          Log.debug(matchingTx);
+          StatementEntries.update(_id, { $set: { match: { confidence, txId: matchingTx._id } } });
+          return;
+        }
       }
     }
     // ---------------------------
     // 1st grade - 'primary' match: We find the correct BILL REF in the NOTE
     // ---------------------------
-    if (entry.note) {
-      const noteSplit = entry.note.deaccent().toUpperCase().split(' ');
-      const regex = TAPi18n.__('BIL', {}, community.settings.language) + '/';
-      const serialId = noteSplit.find(s => s.startsWith(regex));
-      Log.debug('Serial id:', serialId);
-      if (serialId) {
-        const matchingBill = Transactions.findOne({ communityId: entry.communityId, serialId });
-        Log.debug('Matching bill:', matchingBill);
-        if (matchingBill) {
-          const adjustedEntryAmount = matchingBill.relationSign() * entry.amount;
-          if (equalWithinRounding(matchingBill.outstanding, adjustedEntryAmount)) {
-            const tx = {
-              communityId,
-              category: 'payment',
-              relation: matchingBill.relation,
-              partnerId: matchingBill.partnerId,
-              contractId: matchingBill.contractId,
-              defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBill.relation })._id,
-              valueDate: entry.valueDate,
-              payAccount: entry.account,
-              amount: adjustedEntryAmount,
-              bills: [{ id: matchingBill._id, amount: matchingBill.outstanding }],
-            };
-            Log.info('Primary match with bill', matchingBill._id);
-            Log.debug(tx);
-            StatementEntries.update(_id, { $set: { match: { confidence: 'primary', tx } } });
-            return;
-          }
+    if (serialId) {
+      if (matchingBill) {
+        const adjustedEntryAmount = matchingBill.relationSign() * entry.amount;
+        if (equalWithinRounding(matchingBill.outstanding, adjustedEntryAmount)) {
+          const tx = {
+            communityId,
+            category: 'payment',
+            relation: matchingBill.relation,
+            partnerId: matchingBill.partnerId,
+            contractId: matchingBill.contractId,
+            defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBill.relation })._id,
+            valueDate: entry.valueDate,
+            payAccount: entry.account,
+            amount: adjustedEntryAmount,
+            bills: [{ id: matchingBill._id, amount: matchingBill.outstanding }],
+          };
+          Log.info('Primary match with bill', matchingBill._id);
+          Log.debug(tx);
+          StatementEntries.update(_id, { $set: { match: { confidence: 'primary', tx } } });
+          return;
         }
       }
     }
@@ -267,8 +294,7 @@ export const recognize = new ValidatedMethod({
         // 2nd grade, 'success' match: Transfer
         // ---------------------------
         Log.info('Success match transfer');
-        Log.debug(tx);
-        StatementEntries.update(_id, { $set: { match: { confidence: 'success', tx } } });
+        matchWithExistingOrCreateTx(entry, tx, 'success');
       }
       return;
     }
