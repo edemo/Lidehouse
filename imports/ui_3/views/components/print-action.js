@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -14,12 +15,15 @@ Template.registerHelper('print', function print() {
     name: 'print',
     icon: 'fa fa-print',
     label: 'print',
-    run() {
-      if (ModalStack.active()) {
-        $('#wrapper').addClass('no-height');
-        window.print();
-        $('#wrapper').removeClass('no-height');
-      } else window.print();
+    run(event, instance) {
+      instance.viewmodel.parent().children()[1].showAccounting?.(false);  // Print button is now outside the bill view, on the header of the Autoform_modal.
+      Meteor.defer(() => {                                                // And we would like to turn off the accounting tags on the bill view.
+        if (ModalStack.active()) {
+          $('#wrapper').addClass('no-height');
+          window.print();
+          $('#wrapper').removeClass('no-height');
+        } else window.print();
+      });
     },
   };
 });
