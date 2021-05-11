@@ -48,7 +48,7 @@ Template.Accounting_page.viewmodel({
   },
   countUnpostedTxs() {
     const communityId = this.communityId();
-    const txs = Transactions.find({ communityId, postedAt: { $exists: false } });
+    const txs = Transactions.find({ communityId, status: 'draft' });
     return txs.count();
   },
   countUnreconciledTxs() {
