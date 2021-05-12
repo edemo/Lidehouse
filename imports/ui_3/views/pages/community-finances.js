@@ -102,7 +102,7 @@ Template.Community_finances.viewmodel({
   accountToView: '`382',
   communityId() { return ModalStack.getVar('communityId'); },
   community() { return Communities.findOne(this.communityId()); },
-  startTag: 'T-2019-01',
+  startTag: 'T-2020-01',
   endTag: PeriodBreakdown.currentMonthTag(),
   startIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.startTag()); },
   endIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.endTag()); },
