@@ -1,14 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
-import { Factory } from 'meteor/dburles:factory';
 
 import { debugAssert } from '/imports/utils/assert.js';
 
 let getDefaultSelector;
 if (Meteor.isClient) {
-  import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-  getDefaultSelector = () => ({ userId: Meteor.userId(), communityId: getActiveCommunityId() });
+  getDefaultSelector = () => ({ userId: Meteor.userId() });
 } else {
   getDefaultSelector = () => debugAssert(false, 'On the server side, you need to supply a setting selector');
 }
@@ -22,19 +20,21 @@ Meteor.startup(function indexSettings() {
 });
 
 Settings.get = function get(name, selector = getDefaultSelector()) {
-  const setting = Settings.findOne(selector);
+  const extendedSelector = _.extend({ communityId: { $exists: false } }, selector);
+  const setting = Settings.findOne(extendedSelector);
   if (!setting) return undefined;
   return Object.getByString(setting, name);
 };
 
 Settings.set = function set(name, value, selector = getDefaultSelector()) {
-  const setting = Settings.findOne(selector);
+  const extendedSelector = _.extend({ communityId: { $exists: false } }, selector);
+  const setting = Settings.findOne(extendedSelector);
   const settingId = setting ? setting._id : Settings.insert(selector);
   Settings.update(settingId, { $set: { [name]: value } });
 };
 
 Settings.allow({
-  insert(userId, doc) { return Meteor.users.findOne(userId)?.hasPermission('parcels.details', doc); },
+  insert(userId, doc) { return doc.userId === userId; },
   update(userId, doc) { return doc.userId === userId; },
   remove(userId, doc) { return doc.userId === userId; },
 });

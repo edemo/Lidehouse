@@ -14,6 +14,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { doubleScroll } from '/imports/ui_3/lib/double-scroll.js';
 import { Settings } from '/imports/api/settings/settings.js';
+import '/imports/ui_3/lib/active-community.js';
 import { Conductors, getConductor } from '/imports/data-import/conductors.js';
 import { digestImportJsons } from '/imports/data-import/digest.js';
 import '/imports/ui_3/views/blocks/help-icon.js';
@@ -129,9 +130,9 @@ ViewModel.share({
     },
     savePhase() {
       const conductor = this.conductor();
-      Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`, this.columnMapping());
-//      Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`, this.headerRow());
-      Settings.set(`import.${conductor.name}.${conductor.phaseIndex}.sheetName`, this.sheetName());
+      Settings.setForCommunity(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`, this.columnMapping());
+//      Settings.setForCommunity(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`, this.headerRow());
+      Settings.setForCommunity(`import.${conductor.name}.${conductor.phaseIndex}.sheetName`, this.sheetName());
     },
   },
 });
@@ -213,9 +214,9 @@ Template.Import_preview.viewmodel({
   onCreated(instance) {
     const conductor = this.conductor();
     debugAssert(conductor.phaseIndex >= 0);
-    this.columnMapping(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`) || {});
-//    this.headerRow(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`) || 1);
-    this.sheetName(Settings.get(`import.${conductor.name}.${conductor.phaseIndex}.sheetName`) || this.workbook().SheetNames[0]);
+    this.columnMapping(Settings.getForCommunity(`import.${conductor.name}.${conductor.phaseIndex}.columnMapping`) || {});
+//    this.headerRow(Settings.getForCommunity(`import.${conductor.name}.${conductor.phaseIndex}.headerRow`) || 1);
+    this.sheetName(Settings.getForCommunity(`import.${conductor.name}.${conductor.phaseIndex}.sheetName`) || this.workbook().SheetNames[0]);
   },
   onRendered(instance) {
     const vm = this;
