@@ -148,7 +148,7 @@ const buttonHelpers = {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);
     const actionFuncs = this.templateInstance.data.actions
       ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
-      : _.omit(collection.actions, 'create', 'import', 'like', 'mute', 'block');
+      : _.omit(collection.actions, 'create', 'import', 'like');
     const actions = _.map(actionFuncs, a => a(this.getOptions(), this.getDoc(), Meteor.userOrNull()));
     return actions;
   },
