@@ -1,6 +1,6 @@
 /* eslint-disable quotes, quote-props, comma-dangle */
 
-export const HouseTranslation = {
+export const CondominiumTranslation = {
 
   en:
   {

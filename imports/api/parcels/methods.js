@@ -7,7 +7,7 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkUnique, checkModifier, checkPermissions, } from '/imports/api/method-checks.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
+import { ParcelRefFormat } from '/imports/comtypes/condominium/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
