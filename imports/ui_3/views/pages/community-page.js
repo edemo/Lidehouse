@@ -60,6 +60,9 @@ Template.Occupants_table.viewmodel({
 });
 
 Template.Occupants_box.viewmodel({
+  onCreated() {
+    ModalStack.setVar('relation', 'member', true);
+  },
   membershipsContent() {
     const parcelId = this.templateInstance.data.parcel._id;
     const selector = { parcelId };
@@ -100,6 +103,9 @@ Template.Contracts_table.viewmodel({
 });
 
 Template.Contracts_box.viewmodel({
+  onCreated() {
+    ModalStack.setVar('relation', 'member', true);
+  },
   parcelDisplay() {
     const parcel = this.templateInstance.data.parcel;
     return parcel ? parcel.display() : __('unknown');
@@ -161,9 +167,6 @@ Template.Parcels_box.viewmodel({
 });
 
 Template.Community_page.viewmodel({
-  onCreated() {
-    ModalStack.setVar('relation', 'member', true);
-  },
   onRendered() {
     // Add slimscroll to element
     $('.full-height-scroll').slimscroll({

@@ -1001,7 +1001,7 @@
     },
     "relation": {
       "label": "Partner relation",
-      "help": "A person can have multiple partner relations with the community. Member includes all owners and officers, so all persons with system permissions.",
+      "help": "A person can have multiple partner relations with a community. Leave empty, if there is no financial relationship with this partner.",
       "options": {
         "supplier": "Supplier",
         "customer": "Customer",

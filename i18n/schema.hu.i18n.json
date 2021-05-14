@@ -1004,7 +1004,7 @@
     "relation": {
       "label": "Partner viszony",
       "placeholder": "(Válasszon a listából)",
-      "help": "A szállítók és vevők a közösség gazdasági partnerei. A tagság pedig minden olyan tisztség amivel jogosultságok járnak (tulajdonos, bérlő, számvizsgáló, stb). Egy személy egyszerre több fajta partneri viszonyban is lehet a közösséggel.",
+      "help": "A szállítók és vevők a közösség gazdasági partnerei, a tulajdonosok fizetik a közös költségeket. Egy személy egyszerre több fajta partneri viszonyban is lehet a közösséggel. Ha nincs a pertnerrel pénzügyi viszony, akkor nem kell egyiket sem megjelölni.",
       "options": {
         "supplier": "Szállító",
         "customer": "Vevő",
