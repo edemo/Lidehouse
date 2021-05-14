@@ -7,7 +7,7 @@ import { numeral } from 'meteor/numeral:numeral';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { monthTags, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
@@ -98,7 +98,6 @@ const minusColors = [
 ];
 
 Template.Community_finances.viewmodel({
-  displayBankBalancesFrom: Meteor.settings.public.deployment === 'marina' ? 'C' : 'T',
   accountToView: '`382',
   communityId() { return ModalStack.getVar('communityId'); },
   community() { return Communities.findOne(this.communityId()); },
@@ -120,7 +119,9 @@ Template.Community_finances.viewmodel({
   onRendered(instance) {
   },
   tagLetter(account) {
-    if (account.startsWith('`38')) return this.displayBankBalancesFrom();
+    if (account.startsWith('`38')) {
+      return getActiveCommunity()?.settings.bankBalancesUploaded ? 'C' : 'T';
+    }
     return 'T';
   },
   aggregate(array, startValue) {
