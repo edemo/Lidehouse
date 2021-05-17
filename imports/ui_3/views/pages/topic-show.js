@@ -59,8 +59,10 @@ Template.Topic_show.helpers({
     }
   },
   redirectToDestination(destinationId) {
+    const instance = Template.instance();
     Meteor.setTimeout(function () {
       FlowRouter.go('Topic show', { _tid: destinationId });
+      instance.subscribe('topics.byId', { _id: destinationId });
     }, 3000);
   },
 });
