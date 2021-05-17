@@ -33,6 +33,11 @@ export const Clock = {
   date(...args) {
     return Clock._moment(...args).endOf('date').toDate();
   },
+  runAt(time, func) {
+    _simulatedTime = time;
+    func();
+    _simulatedTime = null;
+  },
   // WARNING: Calling these methods will make everyone see a modified Time.
   // Dont forget to call clear() after you are done!!!
   setSimulatedTime(time) {

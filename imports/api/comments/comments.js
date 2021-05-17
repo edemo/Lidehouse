@@ -88,6 +88,13 @@ if (Meteor.isServer) {
     Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
   });
 
+  Comments.after.update(function (userId, doc, fieldNames, modifier, options) {
+    if (this.previous.topicId !== doc.topicId) {
+      Topics.update(this.previous.topicId, { $inc: { commentCounter: -1 } });
+      Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
+    }
+  });
+
   Comments.after.remove(function (userId, doc) {
     Topics.update(doc.topicId, { $inc: { commentCounter: -1 } });
   });
