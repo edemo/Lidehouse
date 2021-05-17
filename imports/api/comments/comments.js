@@ -83,22 +83,21 @@ Comments.helpers({
 });
 
 // --- Before/after actions ---
-if (Meteor.isServer) {
-  Comments.after.insert(function (userId, doc) {
+
+Comments.after.insert(function (userId, doc) {
+  Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
+});
+
+Comments.after.update(function (userId, doc, fieldNames, modifier, options) {
+  if (this.previous.topicId !== doc.topicId) {
+    Topics.update(this.previous.topicId, { $inc: { commentCounter: -1 } });
     Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
-  });
+  }
+});
 
-  Comments.after.update(function (userId, doc, fieldNames, modifier, options) {
-    if (this.previous.topicId !== doc.topicId) {
-      Topics.update(this.previous.topicId, { $inc: { commentCounter: -1 } });
-      Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
-    }
-  });
-
-  Comments.after.remove(function (userId, doc) {
-    Topics.update(doc.topicId, { $inc: { commentCounter: -1 } });
-  });
-}
+Comments.after.remove(function (userId, doc) {
+  Topics.update(doc.topicId, { $inc: { commentCounter: -1 } });
+});
 
 Comments.moveSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
