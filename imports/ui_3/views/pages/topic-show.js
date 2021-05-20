@@ -17,8 +17,10 @@ import '../components/revision-history.js';
 import './topic-show.html';
 
 Template.Topic_show.onCreated(function topicShowOnCreated() {
-  const topicId = FlowRouter.getParam('_tid');
-  this.subscribe('topics.byId', { _id: topicId });  // brings all comments with it
+  this.autorun(() => {
+    const topicId = FlowRouter.getParam('_tid');
+    this.subscribe('topics.byId', { _id: topicId });  // brings all comments with it
+  });
 });
 
 Template.Topic_show.helpers({
@@ -59,10 +61,8 @@ Template.Topic_show.helpers({
     }
   },
   redirectToDestination(destinationId) {
-    const instance = Template.instance();
     Meteor.setTimeout(function () {
       FlowRouter.go('Topic show', { _tid: destinationId });
-      instance.subscribe('topics.byId', { _id: destinationId });
     }, 3000);
   },
 });
