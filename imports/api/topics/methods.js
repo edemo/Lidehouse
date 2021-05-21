@@ -70,10 +70,13 @@ export const move = new ValidatedMethod({
         mergeLastSeen(user, doc._id, destinationId);
       });
     }
-    Comments.direct.insert(_.extend({}, doc, {
+    const movedDoc = _.extend({}, doc, {
       category: 'comment',
       topicId: destinationId,
-    }));
+    });
+    Comments.direct.insert(movedDoc); // timestamped hooks should not run
+    // Comments._hookAspects.insert.after[0].aspect(this.userId, movedDoc);
+    Topics.update(destinationId, { $inc: { commentCounter: 1 } });
     doc.comments().forEach((comment) => {
       Comments.update(comment._id, { $set: { topicId: destinationId } });
     });
