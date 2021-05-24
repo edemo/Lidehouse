@@ -105,6 +105,14 @@ Math.smallerInAbs = function smallerInAbs(a, b) {
 
 // Sometimes you don't know if you are dealing with an array or a cursor. 
 // So by calling fetch, you can make sure it becomes an Array
+Array.difference = function difference(array1, array2) {
+  const result = [];
+  array1.forEach(elem1 => {
+    const foundInArray2 = _.find(array2, (elem2 => _.isEqual(elem1, elem2)));
+    if (!foundInArray2) result.push(elem1);
+  });
+  return result;
+};
 Array.prototype.fetch = function fetch() { return this; };
 
 Array.prototype.count = function count() { return this.length; };

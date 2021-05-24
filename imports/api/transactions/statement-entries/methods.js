@@ -127,7 +127,7 @@ export const reconcile = new ValidatedMethod({
       }
     }
     Transactions.update(txId, { $push: { seId: _id }, $set: { contractId: newContractId } });
-    StatementEntries.update(_id, { $set: { txId } }); //, $unset: { match: '' }
+    StatementEntries.update(_id, { $push: { txId } }); //, $unset: { match: '' }
   },
 });
 
@@ -140,10 +140,11 @@ export const unReconcile = new ValidatedMethod({
     const entry = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.reconcile', entry);
     StatementEntries.update(_id, { $unset: { txId: '' } });
-    Transactions.find({ seId: entry._id }).forEach(tx => {
-      if (tx.seId.length > 1) Transactions.update({ _id: tx._id }, { $pull: { seId: entry._id } });
-      else Transactions.update({ _id: tx._id }, { $unset: { seId: '' } });
-    });
+//    Transactions.find({ seId: entry._id }).forEach(tx => {
+//      if (tx.seId.length > 1) Transactions.update({ _id: tx._id }, { $pull: { seId: entry._id } });
+//      else Transactions.update({ _id: tx._id }, { $unset: { seId: '' } });
+//    });
+    Transactions.update({ seId: entry._id }, { $pull: { seId: entry._id } }, { multi: true });
     StatementEntries.methods.recognize._execute({ userId: this.userId }, { _id });
   },
 });

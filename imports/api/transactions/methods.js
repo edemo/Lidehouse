@@ -208,7 +208,7 @@ export const remove = new ValidatedMethod({
       throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');
     } else debugAssert(false, `No such tx status: ${doc.status}`);
 
-    StatementEntries.update({ txId: _id }, { $unset: { txId: '' } }, { multi: true });
+    StatementEntries.update({ txId: _id }, { $pull: { txId: _id } }, { multi: true });
     return result;
   },
 });

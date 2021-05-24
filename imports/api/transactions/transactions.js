@@ -6,13 +6,13 @@ import { moment } from 'meteor/momentjs:moment';
 import { Factory } from 'meteor/dburles:factory';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import faker from 'faker';
-import rusdiff from 'rus-diff';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Clock } from '/imports/utils/clock.js';
+import { modifierChangesField, autoValueUpdate } from '/imports/api/mongo-utils.js';
 import { Noted } from '/imports/api/behaviours/noted.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
@@ -366,36 +366,6 @@ function checkBalances(docs) {
 
 // --- Before/after actions ---
 
-function modifierChangesField(modifier, fields) {
-  let result = false;
-  function checkOperator(operator) {
-    _.each(operator, (value, key) => {
-      if (_.contains(fields, key)) result = true;
-    });
-  }
-  checkOperator(modifier.$set);
-  checkOperator(modifier.$sunset);
-  checkOperator(modifier.$inc);
-  return result;
-}
-
-function autoValueUpdate(doc, modifier, fieldName, autoValue) {
-  let newDoc = rusdiff.clone(doc);
-  if (modifier) rusdiff.apply(newDoc, modifier);
-  newDoc = Transactions._transform(newDoc);
-  modifier.$set = modifier.$set || {};
-  modifier.$set[fieldName] = autoValue(newDoc);
-}
-
-function difference(array1, array2) {
-  const result = [];
-  array1.forEach(elem1 => {
-    const foundInArray2 = _.find(array2, (elem2 => _.isEqual(elem1, elem2)));
-    if (!foundInArray2) result.push(elem1);
-  });
-  return result;
-}
-
 if (Meteor.isServer) {
   Transactions.before.insert(function (userId, doc) {
     const tdoc = this.transform();
@@ -423,14 +393,14 @@ if (Meteor.isServer) {
 
   Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
     const tdoc = this.transform();
-    autoValueUpdate(doc, modifier, 'complete', d => d.calculateComplete());
+    autoValueUpdate(Transactions, doc, modifier, 'complete', d => d.calculateComplete());
     if (doc.category === 'bill' || doc.category === 'receipt' || doc.category === 'payment') {
       const newDoc = Transactions._transform(_.extend({ category: doc.category }, modifier.$set));
       newDoc.autoFill?.();
       _.extend(modifier, { $set: newDoc });
       if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
         || (doc.category === 'payment' && newDoc.bills)) {
-        autoValueUpdate(doc, modifier, 'outstanding', d => d.calculateOutstanding());
+        autoValueUpdate(Transactions, doc, modifier, 'outstanding', d => d.calculateOutstanding());
       }
     }
   });
@@ -441,8 +411,8 @@ if (Meteor.isServer) {
     const oldDoc = Transactions._transform(this.previous);
     const newDoc = tdoc;
     if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
-      difference(oldDoc.getBills(), newDoc.getBills()).forEach(bp => oldDoc.registerOnBill(bp, -1));
-      difference(newDoc.getBills(), oldDoc.getBills()).forEach(bp => newDoc.registerOnBill(bp, +1));
+      Array.difference(oldDoc.getBills(), newDoc.getBills()).forEach(bp => oldDoc.registerOnBill(bp, -1));
+      Array.difference(newDoc.getBills(), oldDoc.getBills()).forEach(bp => newDoc.registerOnBill(bp, +1));
     }
     if (modifierChangesField(modifier, ['debit', 'credit', 'postedAt'])) {
       if (oldDoc.postedAt) oldDoc.updateBalances(-1);
@@ -461,7 +431,7 @@ if (Meteor.isServer) {
       tdoc.updatePartnerBalances(-1);
     }
     if (tdoc.category === 'payment') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, -1));
-    tdoc.seId?.forEach(seId => StatementEntries.update(seId, { $unset: { txId: 0 } }));
+    tdoc.seId?.forEach(seId => StatementEntries.update(seId, { $pull: { txId: tdoc._id } }));
   });
 }
 

@@ -1,5 +1,4 @@
 import { _ } from 'meteor/underscore';
-import rusdiff from 'rus-diff';
 import { checkExists } from '/imports/api/method-checks.js';
 
 export function toggleElementInArray(collection, id, arrayName, element) {
@@ -29,13 +28,6 @@ const smallestCurrencyUnit = 5;
 
 export function equalWithinRounding(amount1, amount2) {
   return Math.abs(amount1 - amount2) < smallestCurrencyUnit / 2;
-}
-
-export function isFieldDeleted(doc, modifier, field) {
-  const newDoc = rusdiff.clone(doc);
-  rusdiff.apply(newDoc, modifier);
-  if (Object.getByString(doc, field) && !Object.getByString(newDoc, field)) return true;
-  return false;
 }
 
 export function replaceDotsInString(dottedString, newChar = '\\u002e') {

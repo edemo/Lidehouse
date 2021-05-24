@@ -73,7 +73,7 @@ Template.Accounting_reconciliation.viewmodel({
     };
     if (this.beginDate()) selector.valueDate.$gte = new Date(this.beginDate());
     if (this.endDate()) selector.valueDate.$lte = new Date(this.endDate());
-    if (this.unreconciledOnly()) selector.txId = { $exists: false };
+    if (this.unreconciledOnly()) selector.reconciled = false;
     return selector;
   },
   statementEntriesTableDataFn() {

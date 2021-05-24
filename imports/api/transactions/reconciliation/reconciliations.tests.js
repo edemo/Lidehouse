@@ -78,6 +78,7 @@ if (Meteor.isServer) {
 */
       });
       afterEach(function () {
+        StatementEntries.remove({});
         Transactions.remove({ category: 'payment' });
         Transactions.remove({ category: 'bill' });
       });

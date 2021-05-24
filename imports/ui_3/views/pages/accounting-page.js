@@ -67,7 +67,7 @@ Template.Accounting_page.viewmodel({
   },
   countUnreconciledEntries() {
     const communityId = this.communityId();
-    const ses = StatementEntries.find({ communityId, txId: { $exists: false } });
+    const ses = StatementEntries.find({ communityId, reconciled: false });
     return ses.count();
   },
 });

@@ -7,6 +7,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { Clock } from '/imports/utils/clock.js';
+import { autoValueUpdate } from '/imports/api/mongo-utils.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
@@ -27,7 +28,8 @@ StatementEntries.schema = new SimpleSchema({
   row: { type: Number, optional: true }, // Row number within the statement
   original: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
   match: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  txId: { type: [String], regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  reconciled: { type: Boolean, optional: true, autoform: { omit: true } }, // calculated in hooks
 });
 
 StatementEntries.idSet = ['communityId', 'valueDate', 'ref', 'refType'];
@@ -49,16 +51,30 @@ StatementEntries.helpers({
     return this.name || this.refType;
   },
   isReconciled() {
-    return !!this.txId;
+    return this.reconciled;
+  },
+  calculateReconciled() {
+    console.log('calculateReconciled');
+    const Transactions = Mongo.Collection.get('transactions');
+    let sumTxAmount = 0;
+    console.log('txId', this.txId);
+    this.txId?.forEach(_id => {
+      console.log('looking for _id', _id);
+      console.log('Transactions', Transactions.find({}).fetch());
+      sumTxAmount += Transactions.findOne(_id)?.amount;
+    });
+    console.log('sumTxAmount', sumTxAmount);
+    console.log('amount', this.amount);
+    return Math.abs(sumTxAmount) === Math.abs(this.amount);
   },
   reconciledTransaction() {
     const Transactions = Mongo.Collection.get('transactions');
-    return this.txId && Transactions.findOne(this.txId);
+    return this.txId?.length && Transactions.findOne(this.txId[0]);
   },
   transaction() {
     let tx;
     const Transactions = Mongo.Collection.get('transactions');
-    if (this.txId) tx = Transactions.findOne(this.txId);  // reconciled tx
+    if (this.txId?.length) tx = Transactions.findOne(this.txId[0]);  // first reconciled tx
     else if (this.match?.txId) tx = Transactions.findOne(this.match.txId);
     else if (this.match?.tx) {
       tx = Transactions._transform(this.match.tx);
@@ -85,6 +101,21 @@ StatementEntries.helpers({
 StatementEntries.attachSchema(StatementEntries.schema);
 
 StatementEntries.simpleSchema().i18n('schemaStatementEntries');
+
+// --- Before/after actions ---
+
+if (Meteor.isServer) {
+  StatementEntries.before.insert(function (userId, doc) {
+    const tdoc = this.transform();
+    tdoc.reconciled = tdoc.calculateReconciled();
+    _.extend(doc, tdoc);
+  });
+
+  StatementEntries.before.update(function (userId, doc, fieldNames, modifier, options) {
+    const tdoc = this.transform();
+    autoValueUpdate(StatementEntries, doc, modifier, 'reconciled', d => d.calculateReconciled());
+  });
+}
 
 // --- Factory ---
 
