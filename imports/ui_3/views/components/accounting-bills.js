@@ -65,7 +65,7 @@ Template.Accounting_bills.viewmodel({
       if (!_.contains(this.community()?.settings.paymentsToBills, this.activePartnerRelation())) return 0;
       selector.outstanding = { $ne: 0 };
     } else if (kind === 'unposted') selector.status = 'draft';
-    else if (kind === 'unreconciled') selector.seId = { $exists: false };
+    else if (kind === 'unreconciled') selector.reconciled = false;
     const txs = Transactions.find(selector);
     return txs.count();
   },

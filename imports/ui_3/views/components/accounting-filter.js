@@ -96,9 +96,9 @@ ViewModel.share({
       if (this.txStatusSelected().length > 0) selector.status = { $in: this.txStatusSelected() };
       if (this.unreconciledOnly()) {
         if (category === 'bill') selector.outstanding = { $ne: 0 };
-        else if (category === 'receipt') selector.seId = { $exists: false };
+        else if (category === 'receipt') selector.reconciled = false;
         else if (category === 'payment') {
-          selector.$and.push({ $or: [{ outstanding: { $ne: 0 } }, { seId: { $exists: false } }] });
+          selector.$and.push({ $or: [{ outstanding: { $ne: 0 } }, { reconciled: false }] });
         }
       }
       return Transactions.makeFilterSelector(selector);

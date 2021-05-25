@@ -754,6 +754,19 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 43,
+  name: 'Calculate tx.reconciled field',
+  up() {
+    Transactions.find({}).forEach(tx => {
+      const reconciled = tx.calculateReconciled();
+      if (reconciled !== undefined) {
+        Transactions.direct.update(Transactions._id, { $set: { reconciled } });
+      }
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

@@ -31,6 +31,7 @@ import { StatementEntries } from '/imports/api/transactions/statement-entries/st
 export const Transactions = new Mongo.Collection('transactions');
 
 Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'exchange', 'transfer', 'opening', 'freeTx'];
+Transactions.reconciledCategories = ['payment', 'receipt', 'transfer'];
 
 Transactions.statuses = {
   draft: { name: 'draft', color: 'warning' },
@@ -72,6 +73,7 @@ Transactions.coreSchema = {
   status: { type: String, defaultValue: 'draft', allowedValues: Transactions.statusValues, autoform: { omit: true } },
   postedAt: { type: Date, optional: true, autoform: { omit: true } },
   seId: { type: [String], regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
+  reconciled: { type: Boolean, optional: true, autoform: { omit: true } }, // calculated in hooks
 };
 
 Transactions.partnerSchema = new SimpleSchema({
@@ -97,6 +99,7 @@ Transactions.idSet = ['communityId', 'serialId'];
 Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, serialId: 1 });
   Transactions.ensureIndex({ communityId: 1, valueDate: -1 });
+  Transactions.ensureIndex({ communityId: 1, reconciled: 1, valueDate: -1 });
   Transactions.ensureIndex({ seId: 1 });
   if (Meteor.isClient && MinimongoIndexing) {
     Transactions._collection._ensureIndex('relation');
@@ -190,8 +193,7 @@ Transactions.helpers({
     return !!(this.postedAt);
   },
   isReconciled() {
-    if (this.category === 'transfer') return (this.seId?.length === 2);
-    else return (this.seId?.length === 1);
+    return this.reconciled;
   },
   isSolidified() {
     const now = moment(new Date());
@@ -209,6 +211,11 @@ Transactions.helpers({
     this.debit.forEach((entry) => { if (entry.account) total += entry.amount || this.amount; });
     this.credit.forEach((entry) => { if (entry.account) total -= entry.amount || this.amount; });
     return total === 0;
+  },
+  calculateReconciled() {
+    const txdef = this.txdef();
+    if (txdef.category === 'transfer') return this.seId?.length === 2;
+    else return this.seId?.length === 1;
   },
   checkAccountsExist() {
     if (this.debit) this.debit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
@@ -371,6 +378,7 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     if (tdoc.category === 'freeTx') tdoc.checkAccountsExist();
     tdoc.complete = tdoc.calculateComplete();
+    tdoc.reconciled = tdoc.calculateReconciled();
     tdoc.autoFill?.();
     if (tdoc.category === 'bill' || tdoc.category === 'payment') {
       tdoc.outstanding = tdoc.calculateOutstanding();
@@ -394,6 +402,7 @@ if (Meteor.isServer) {
   Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
     const tdoc = this.transform();
     autoValueUpdate(Transactions, doc, modifier, 'complete', d => d.calculateComplete());
+    autoValueUpdate(Transactions, doc, modifier, 'reconciled', d => d.calculateReconciled());
     if (doc.category === 'bill' || doc.category === 'receipt' || doc.category === 'payment') {
       const newDoc = Transactions._transform(_.extend({ category: doc.category }, modifier.$set));
       newDoc.autoFill?.();

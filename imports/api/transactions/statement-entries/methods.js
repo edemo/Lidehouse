@@ -89,9 +89,9 @@ export const reconcile = new ValidatedMethod({
     const reconciledTx = Transactions.findOne(txId);
     let newContractId;  // will be filled if a new contract is autocreated now
     if (Meteor.isServer) {
+      debugAssert(!reconciledTx.reconciled, 'Transaction already reconciled');
       checkReconcileMatch(entry, reconciledTx);
       if (reconciledTx.category === 'payment') {
-        debugAssert(!reconciledTx.seId, 'Transaction already reconciled');
         // Machine learning the accounting
         const entryName = entry.nameOrType();
         if (reconciledTx.partnerId && entryName && entryName !== reconciledTx.partner().idCard.name) {
@@ -118,7 +118,6 @@ export const reconcile = new ValidatedMethod({
           }
         }
       } else if (reconciledTx.category === 'transfer') {
-        debugAssert(!reconciledTx.seId || reconciledTx.seId.length < 2, 'Transaction already reconciled');
         const contraAccountField = entry.amount > 0 ? 'fromAccount' : 'toAccount';
         const contraBankAccount = Accounts.findOne({ communityId, category: 'bank', code: reconciledTx[contraAccountField] });
         if (contraBankAccount?.BAN && entry.contraBAN && contraBankAccount.BAN !== entry.contraBAN) {

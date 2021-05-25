@@ -37,11 +37,8 @@ Template.Reconciliation.onRendered(function () {
       }, 1000);
     }
     const communityId = txdef.communityId;
-    let hasChoosableTx;
-    if (txdef.category === 'transfer') {
-      hasChoosableTx = Transactions.find({ communityId, defId, status: { $ne: 'void' } }).fetch().filter(tx => !tx.seId || tx.seId.length < 2).length;
-    } else hasChoosableTx = Transactions.findOne({ communityId, defId, status: { $ne: 'void' }, seId: { $exists: false } });
-    if (!hasChoosableTx) {
+    const hasSuchUnreconciledTx = Transactions.findOne({ communityId, defId, status: { $ne: 'void' }, reconciled: false });
+    if (!hasSuchUnreconciledTx) {
       if (!instance.data.newTransactionLaunched) {
         instance.data.newTransactionLaunched = true;
         const newTx = {}; Transactions.setTxdef(newTx, txdef);

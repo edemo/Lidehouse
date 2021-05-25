@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { _ } from 'meteor/underscore';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -37,9 +38,8 @@ export const chooseTransaction = {
     if (!defId) return [];
     const txdef = Txdefs.findOne(defId);
     const selector = { communityId, defId, status: { $ne: 'void' } };
-    if (txdef.category !== 'transfer') selector.seId = { $exists: false };
-    let txs = Transactions.find(selector);
-    if (txdef.category === 'transfer') txs = txs.fetch().filter(tx => !tx.isReconciled());
+    if (_.contains(Transactions.reconciledCategories, txdef.category)) selector.reconciled = false;
+    const txs = Transactions.find(selector);
     const options = txs.map(tx => ({ label: tx.displayInSelect(), value: tx._id }));
     return options;
   },
