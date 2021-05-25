@@ -47,9 +47,9 @@ function convertPushToSet(doc, modifier) {
 
 export function autoValueUpdate(collection, doc, modifier, fieldName, autoValue) {
   let newDoc = rusdiff.clone(doc);
-  const newModifier = rusdiff.clone(modifier);
-  convertPushToSet(doc, newModifier);
-  if (modifier) rusdiff.apply(newDoc, newModifier);
+  const convertedModifier = rusdiff.clone(modifier);
+  convertPushToSet(doc, convertedModifier);   // rus-diff does not recognize $push, $pull operations: https://github.com/mirek/node-rus-diff/issues/6
+  if (modifier) rusdiff.apply(newDoc, convertedModifier);
   newDoc = collection._transform(newDoc);
   modifier.$set = modifier.$set || {};
   modifier.$set[fieldName] = autoValue(newDoc);

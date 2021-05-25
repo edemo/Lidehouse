@@ -54,17 +54,11 @@ StatementEntries.helpers({
     return this.reconciled;
   },
   calculateReconciled() {
-    console.log('calculateReconciled');
     const Transactions = Mongo.Collection.get('transactions');
     let sumTxAmount = 0;
-    console.log('txId', this.txId);
     this.txId?.forEach(_id => {
-      console.log('looking for _id', _id);
-      console.log('Transactions', Transactions.find({}).fetch());
       sumTxAmount += Transactions.findOne(_id)?.amount;
     });
-    console.log('sumTxAmount', sumTxAmount);
-    console.log('amount', this.amount);
     return Math.abs(sumTxAmount) === Math.abs(this.amount);
   },
   reconciledTransaction() {
