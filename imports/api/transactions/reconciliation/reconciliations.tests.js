@@ -647,11 +647,12 @@ if (Meteor.isServer) {
           valueDate: Clock.currentDate(),
           amount: -300,
         });
-        const entry = StatementEntries.findOne(entryId);
+        let entry = StatementEntries.findOne(entryId);
         let bankAccountDoc = Accounts.findOne({ communityId: entry.communityId, code: '`383' });
 
         chai.assert.isUndefined(bankAccountDoc.BAN);
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        entry = StatementEntries.findOne(entryId);
         chai.assert.isUndefined(entry.match);
 
         Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId });
@@ -661,6 +662,7 @@ if (Meteor.isServer) {
         bankAccountDoc = Accounts.findOne({ communityId: entry.communityId, code: '`383' });
         chai.assert.equal(bankAccountDoc.BAN, 'IBAN-1234-5678');
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        entry = StatementEntries.findOne(entryId);
         chai.assert.isUndefined(entry.match);
       });
 
@@ -677,6 +679,23 @@ if (Meteor.isServer) {
         Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId, txId: transferId });
         const entry = StatementEntries.findOne(entryId);
         chai.assert.equal(entry.isReconciled(), true);
+      });
+
+      it('[2.5] ... as the other side of the transfer as well', function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`383',
+          contraBAN: '4321-8765',
+          valueDate: Clock.currentDate(),
+          amount: 300,
+        });
+        let entry = StatementEntries.findOne(entryId);
+        const bankAccountDoc = Accounts.findOne({ communityId: entry.communityId, code: '`382' });
+        Fixture.builder.execute(Accounts.methods.update, { _id: bankAccountDoc._id, modifier: { $set: { BAN: 'IBAN-4321-8765' } } });
+        const transferId = Transactions.findOne({ category: 'transfer' })._id;
+        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId, txId: transferId });
+        entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.isReconciled(), true);
+        chai.assert.equal(Transactions.find({ category: 'transfer' }).count(), 1);
       });
 
       it('[3] Next enrty with same BAN - will be recognized', function () {
@@ -697,6 +716,218 @@ if (Meteor.isServer) {
 
         Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId });
         chai.assert.equal(Transactions.find({ category: 'transfer' }).count(), 2);
+      });
+
+      it('[3.5] ... as the other side of transfer will be recognized', function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`383',
+          contraBAN: '4321-8765',
+          valueDate: Clock.currentDate(),
+          amount: 500,
+        });
+        const transferId = Transactions.findOne({ category: 'transfer', amount: 500 })._id;
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        let entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.match.confidence, 'success');
+        chai.assert.equal(entry.match.txId, transferId);
+        Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId });
+        entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.txId, transferId);
+      });
+    });
+
+    describe('Recognition with paymentsWoStatement setting', function () {
+      let billId, billId2;
+      let bill, bill2;
+      let entryId, entryId2;
+
+      before(function () {
+        Communities.update({ _id: Fixture.demoCommunityId }, { $set: { 'settings.paymentsWoStatement': true } });
+        billId = Fixture.builder.create('bill', {
+          relation: 'supplier',
+          partnerId: Fixture.supplier,
+          relationAccount: '`454',
+          lines: [{
+            title: 'The Work',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 300,
+            account: '`861',
+            localizer: '@',
+          }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: billId });
+        bill = Transactions.findOne(billId);
+
+        billId2 = Fixture.builder.create('bill', {
+          relation: 'supplier',
+          partnerId: Fixture.supplier,
+          relationAccount: '`454',
+          lines: [{
+            title: 'The Work A',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 50,
+            account: '`861',
+            localizer: '@',
+          }, {
+            title: 'The Work B',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 150,
+            account: '`861',
+            localizer: '@',
+          }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: billId2 });
+        bill2 = Transactions.findOne(billId2);
+      });
+      after(function () {
+        Transactions.remove({ category: 'payment' });
+        Transactions.remove({ category: 'bill' });
+      });
+
+      it('Matches entry with payment by amount and valueDate', function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`381',
+          valueDate: Clock.currentDate(),
+          amount: -300,
+        });
+        const firstPaymentId = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 200,
+          valueDate: Clock.currentDate(),
+          payAccount: '`381',
+          partnerId: Fixture.supplier,
+          lines: [{ account: '`861', amount: 200 }],
+        });
+        const secondPaymentId = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 300,
+          valueDate: Clock.date(1, 'week', 'ago'),
+          payAccount: '`381',
+          partnerId: Fixture.supplier,
+          lines: [{ account: '`861', amount: 300 }],
+        });
+        const paymentId = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 300,
+          valueDate: Clock.currentDate(),
+          payAccount: '`381',
+          partnerId: Fixture.supplier,
+          lines: [{ account: '`861', amount: 300 }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: firstPaymentId });
+        Fixture.builder.execute(Transactions.methods.post, { _id: secondPaymentId });
+        Fixture.builder.execute(Transactions.methods.post, { _id: paymentId });
+        chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 3);
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        const entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.match.txId, paymentId);
+        chai.assert.equal(entry.match.confidence, 'info');
+      });
+
+      it("Matches entry with payment by bill's serialId", function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`381',
+          valueDate: Clock.date(1, 'week', 'ago'),
+          amount: -300,
+          note: `Payment for ${bill.serialId} for other partner`,
+        });
+
+        const paymentId = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 300,
+          valueDate: Clock.date(1, 'week', 'ago'),
+          payAccount: '`381',
+          partnerId: Fixture.supplier,
+          bills: [{ id: billId, amount: 300 }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: paymentId });
+        chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 4);
+
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        const entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.match.txId, paymentId);
+        chai.assert.equal(entry.match.confidence, 'primary');
+        Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId });
+      });
+
+      it('Can match by recognized partner', function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`381',
+          valueDate: Clock.currentDate(),
+          amount: -500,
+          name: 'Supplier Inc',
+        });
+        const firstPaymentId = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 500,
+          valueDate: Clock.currentDate(),
+          payAccount: '`381',
+          partnerId: Fixture.customer,
+          lines: [{ account: '`861', amount: 500 }],
+        });
+        const secondPaymentId = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 500,
+          valueDate: Clock.currentDate(),
+          payAccount: '`381',
+          partnerId: Fixture.supplier,
+          lines: [{ account: '`861', amount: 500 }],
+        });
+        const thirdPaymentId = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 500,
+          valueDate: Clock.currentDate(),
+          payAccount: '`381',
+          partnerId: Fixture.demoUserId,
+          lines: [{ account: '`861', amount: 500 }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: firstPaymentId });
+        Fixture.builder.execute(Transactions.methods.post, { _id: secondPaymentId });
+        Fixture.builder.execute(Transactions.methods.post, { _id: thirdPaymentId });
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        const entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.match.txId, secondPaymentId);
+        chai.assert.equal(entry.match.confidence, 'info');
+      });
+
+      it('Does not match again for a reconciled payment by serialId', function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`381',
+          valueDate: Clock.date(1, 'week', 'ago'),
+          amount: -300,
+          note: `Payment for ${bill.serialId} for other partner`,
+        });
+        const payment = Transactions.findOne({ category: 'payment', 'bills.0.id': billId });
+        chai.assert.isDefined(payment);
+        chai.assert.isTrue(payment.isReconciled());
+
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        const entry = StatementEntries.findOne(entryId);
+        chai.assert.notEqual(entry.match.txId, payment._id);
+        chai.assert.equal(entry.match.confidence, 'info');
+      });
+
+      // this test depends on recognitions saved in 'Machine learning' tests above
+      it('Recognizes transfer', function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`382',
+          contraBAN: '1234-5678',
+          valueDate: Clock.currentDate(),
+          amount: -300,
+        });
+        const transferId = Fixture.builder.create('transfer', {
+          amount: 300,
+          valueDate: Clock.currentDate(),
+          toAccount: '`383',
+          fromAccount: '`382',
+        });
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        const entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.match.txId, transferId);
+        chai.assert.equal(entry.match.confidence, 'success');
       });
     });
   });
