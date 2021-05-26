@@ -761,7 +761,20 @@ Migrations.add({
     Transactions.find({}).forEach(tx => {
       const reconciled = tx.calculateReconciled();
       if (reconciled !== undefined) {
-        Transactions.direct.update(Transactions._id, { $set: { reconciled } });
+        Transactions.direct.update(tx._id, { $set: { reconciled } });
+      }
+    });
+  },
+});
+
+Migrations.add({
+  version: 44,
+  name: 'Calculate se.reconciled field',
+  up() {
+    StatementEntries.find({}).forEach(se => {
+      const reconciled = se.calculateReconciled();
+      if (reconciled !== undefined) {
+        StatementEntries.direct.update(se._id, { $set: { reconciled } });
       }
     });
   },

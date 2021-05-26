@@ -59,7 +59,8 @@ StatementEntries.helpers({
     this.txId?.forEach(_id => {
       sumTxAmount += Transactions.findOne(_id)?.amount;
     });
-    return Math.abs(sumTxAmount) === Math.abs(this.amount);
+    const reconciled = Math.abs(sumTxAmount) === Math.abs(this.amount);
+    return reconciled;
   },
   reconciledTransaction() {
     const Transactions = Mongo.Collection.get('transactions');
