@@ -787,6 +787,20 @@ if (Meteor.isServer) {
         Transactions.remove({ category: 'bill' });
       });
 
+      it('Gives tx suggestion if no matching payment exists', function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`381',
+          valueDate: Clock.currentDate(),
+          amount: -200,
+          note: bill2.serialId,
+        });
+        chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 0);
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        const entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.match.confidence, 'primary');
+        chai.assert.deepEqual(entry.match.tx.bills[0], { id: billId2, amount: 200 });
+      });
+
       it('Matches entry with payment by amount and valueDate', function () {
         entryId = Fixture.builder.create('statementEntry', {
           account: '`381',

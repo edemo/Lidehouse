@@ -219,17 +219,19 @@ export const recognize = new ValidatedMethod({
     // 0th grade - 'direct' match: We find an existing payment tx, which can be mathched to this entry
     // ---------------------------
     if (community.settings.paymentsWoStatement && !contraBankAccount) {
-      const matchingTxs = Transactions.find({ communityId, category: 'payment', valueDate: entry.valueDate, amount: Math.abs(entry.amount) })
+      let matchingTxs = Transactions.find({ communityId, category: 'payment', valueDate: entry.valueDate, amount: Math.abs(entry.amount) })
         .fetch().filter(t => !t.isReconciled());
-      if (matchingTxs) {
+      if (matchingTxs?.length) {
         let matchingTx;
         let confidence;
         if (matchingBill) matchingTx = matchingTxs.find(tx => tx.bills?.[0]?.id === matchingBill._id);
         if (matchingTx) confidence = 'primary';
         else {
-          if (partner) matchingTx = matchingTxs.find(tx => tx.partnerId === partner._id);
-          else matchingTx = matchingTxs[0];
-          confidence = 'info';
+          if (partner) {
+            matchingTxs = matchingTxs.filter(tx => tx.partnerId === partner._id);
+          }
+          matchingTx = matchingTxs[0];
+          matchingTxs.length > 1 ? confidence = 'warning' : confidence = 'info';
         }
         if (matchingTx) {
           Log.info('Direct match with payment', matchingTx._id);
