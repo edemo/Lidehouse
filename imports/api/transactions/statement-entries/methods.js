@@ -201,19 +201,37 @@ export const recognize = new ValidatedMethod({
         Log.debug('Matching bill:', matchingBill);
       }
     }
+    let partner;
+    const entryName = entry.nameOrType();
+    if (entryName) {
+      Log.debug('Looking for partner', entryName, 'in', entry.communityId);
+      const recognizedName = Recognitions.get('name', entryName, { communityId }) || entryName;
+      partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': recognizedName });
+    } else {
+      Log.debug('No partner on statement');
+    }
+    let contraBankAccount;
+    if (!partner) {
+      const recognizedContraBAN = (entry.contraBAN && Recognitions.get('BAN', entry.contraBAN, { communityId })) || entry.contraBAN;
+      contraBankAccount = recognizedContraBAN && Accounts.findOne({ communityId, category: 'bank', BAN: recognizedContraBAN });
+    }
     // ---------------------------
     // 0th grade - 'direct' match: We find an existing payment tx, which can be mathched to this entry
     // ---------------------------
-    if (community.settings.paymentsWoStatement) {
-      const matchingTxs = Transactions.find({ communityId, category: 'payment', valueDate: entry.valueDate, amount: Math.abs(entry.amount) }).fetch();
-      if (matchingTxs) {
+    if (community.settings.paymentsWoStatement && !contraBankAccount) {
+      let matchingTxs = Transactions.find({ communityId, category: 'payment', valueDate: entry.valueDate, amount: Math.abs(entry.amount) })
+        .fetch().filter(t => !t.isReconciled());
+      if (matchingTxs?.length) {
         let matchingTx;
         let confidence;
         if (matchingBill) matchingTx = matchingTxs.find(tx => tx.bills?.[0]?.id === matchingBill._id);
         if (matchingTx) confidence = 'primary';
         else {
+          if (partner) {
+            matchingTxs = matchingTxs.filter(tx => tx.partnerId === partner._id);
+          }
           matchingTx = matchingTxs[0];
-          confidence = 'info';
+          matchingTxs.length > 1 ? confidence = 'warning' : confidence = 'info';
         }
         if (matchingTx) {
           Log.info('Direct match with payment', matchingTx._id);
@@ -249,16 +267,7 @@ export const recognize = new ValidatedMethod({
         }
       }
     }
-    let partner;
     let relation;
-    const entryName = entry.nameOrType();
-    if (entryName) {
-      Log.debug('Looking for partner', entryName, 'in', entry.communityId);
-      const recognizedName = Recognitions.get('name', entryName, { communityId }) || entryName;
-      partner = Partners.findOne({ communityId: entry.communityId, 'idCard.name': recognizedName });
-    } else {
-      Log.debug('No partner on statement');
-    }
     if (partner) {
       if (partner.relation.length === 1) relation = partner.relation[0];
       else {
@@ -273,8 +282,6 @@ export const recognize = new ValidatedMethod({
       Log.debug('No appropriate partner found');
     }
     if (!partner || !relation) {
-      const recognizedContraBAN = (entry.contraBAN && Recognitions.get('BAN', entry.contraBAN, { communityId })) || entry.contraBAN;
-      const contraBankAccount = recognizedContraBAN && Accounts.findOne({ communityId, category: 'bank', BAN: recognizedContraBAN });
       if (contraBankAccount) {
         const tx = {
           communityId,
