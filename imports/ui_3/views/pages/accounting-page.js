@@ -53,7 +53,7 @@ Template.Accounting_page.viewmodel({
   },
   countUnreconciledTxs() {
     const communityId = this.communityId();
-    const txs = Transactions.find({ communityId, category: { $in: Transactions.reconciledCategories }, reconciled: false });
+    const txs = Transactions.find({ communityId, category: { $in: ['payment', 'receipt'] }, reconciled: false });
     return txs.count();
   },
   countOutstandingBills() {
