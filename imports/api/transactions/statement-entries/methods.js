@@ -412,3 +412,4 @@ _.extend(StatementEntries.methods, { insert, update, recognize, reconcile, unRec
 _.extend(StatementEntries.methods, crudBatchOps(StatementEntries));
 StatementEntries.methods.batch.recognize = new BatchMethod(StatementEntries.methods.recognize);
 StatementEntries.methods.batch.reconcile = new BatchMethod(StatementEntries.methods.reconcile);
+StatementEntries.methods.batch.autoReconcile = new BatchMethod(StatementEntries.methods.autoReconcile);
