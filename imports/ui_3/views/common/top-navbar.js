@@ -6,6 +6,7 @@ import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { Settings } from '/imports/api/settings/settings';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/actions.js';
@@ -129,6 +130,9 @@ Template.Top_navbar.events({
     const newCommunity = Communities.findOne(newCommunityId);
     ModalStack.setVar('communityId', newCommunityId, true);
     displayMessage('success', `${newCommunity.name} ${__('selected')}`);
+    const user = Meteor.user();
+    const communities = user.communities();
+    if (communities.count() > 1) Settings.set('activeCommunityId', newCommunityId);
   },
   'click .js-create.community'() {
     Communities.actions.create().run();
