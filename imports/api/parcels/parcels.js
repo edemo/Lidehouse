@@ -19,7 +19,7 @@ import { FreeFields } from '/imports/api/behaviours/free-fields.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
-import { ParcelRefFormat } from '/imports/comtypes/house/parcelref-format.js';
+import { ParcelRefFormat } from '/imports/comtypes/condominium/parcelref-format.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { ActiveTimeMachine } from '../behaviours/active-time-machine';
 

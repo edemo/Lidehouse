@@ -1,9 +1,17 @@
 /* eslint-disable dot-notation */
-import { noType } from './notype/no-type.js';
-import { houseType } from './house/house-type.js';
-import { companyType } from './company/company-type.js';
+import { Meteor } from 'meteor/meteor';
 
-// --- Choose one community type ---
-// export const comtype = noType;
-export const comtype = houseType;
-// export const comtype = companyType;
+import { noType } from './notype/no-type.js';
+import { condominiumType } from './condominium/condominium-type.js';
+import { companyType } from './company/company-type.js';
+//import { clubType } from './club/club-type.js';
+
+export function comtype() {
+  const type = Meteor.settings.communityType;
+  switch (type) {
+//    case 'club': return clubType;
+    case 'company': return companyType;
+    case 'condominium': return condominiumType;
+    default: return condominiumType;
+  }
+}

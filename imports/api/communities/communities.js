@@ -37,7 +37,7 @@ Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
   description: { type: String, max: 1200, optional: true },
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
-}, comtype.profileSchema, {
+}, comtype().profileSchema, {
   management: { type: String, optional: true, autoform: { type: 'textarea' } },
   taxNo: { type: String, max: 50, optional: true },
   totalunits: { type: Number },
@@ -52,7 +52,7 @@ Communities.listingsFields = {
   name: 1,
   parcels: 1,
 };
-comtype.profileSchema._schemaKeys.forEach((key) => {
+comtype().profileSchema._schemaKeys.forEach((key) => {
   _.extend(Communities.listingsFields, { [key]: 1 });
 });
 
