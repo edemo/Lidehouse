@@ -231,7 +231,7 @@ export const recognize = new ValidatedMethod({
             matchingTxs = matchingTxs.filter(tx => tx.partnerId === partner._id);
           }
           matchingTx = matchingTxs[0];
-          matchingTxs.length > 1 ? confidence = 'warning' : confidence = 'info';
+          confidence = matchingTxs.length > 1 ? 'warning' : 'info';
         }
         if (matchingTx) {
           Log.info('Direct match with payment', matchingTx._id);
