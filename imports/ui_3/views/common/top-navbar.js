@@ -127,7 +127,7 @@ Template.Top_navbar.events({
   },
   'click .js-switch-community'() {
     const newCommunityId = this._id;
-    const newCommunity = Communities.findOne(newCommunityId);
+    const newCommunity = this;
     ModalStack.setVar('communityId', newCommunityId, true);
     displayMessage('success', `${newCommunity.name} ${__('selected')}`);
     const user = Meteor.user();

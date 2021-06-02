@@ -11,8 +11,8 @@ export function autosetActiveCommunity() {
   if (user && (!activeCommunityId || !user.isInCommunity(activeCommunityId))) {
     const communities = user.communities();
     if (communities.count() > 0) {
-      const activeCommunity = communities.fetch()[0];
-      ModalStack.setVar('communityId', activeCommunity._id, true);
+      const communityId = Settings.get('activeCommunityId') || communities.fetch()[0]._id;
+      ModalStack.setVar('communityId', communityId, true);
     }
   }
 }
