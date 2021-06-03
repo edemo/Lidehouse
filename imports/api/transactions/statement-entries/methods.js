@@ -231,7 +231,7 @@ export const recognize = new ValidatedMethod({
             matchingTxs = matchingTxs.filter(tx => tx.partnerId === partner._id);
           }
           matchingTx = matchingTxs[0];
-          matchingTxs.length > 1 ? confidence = 'warning' : confidence = 'info';
+          confidence = matchingTxs.length > 1 ? 'warning' : 'info';
         }
         if (matchingTx) {
           Log.info('Direct match with payment', matchingTx._id);
@@ -412,3 +412,4 @@ _.extend(StatementEntries.methods, { insert, update, recognize, reconcile, unRec
 _.extend(StatementEntries.methods, crudBatchOps(StatementEntries));
 StatementEntries.methods.batch.recognize = new BatchMethod(StatementEntries.methods.recognize);
 StatementEntries.methods.batch.reconcile = new BatchMethod(StatementEntries.methods.reconcile);
+StatementEntries.methods.batch.autoReconcile = new BatchMethod(StatementEntries.methods.autoReconcile);

@@ -841,6 +841,28 @@ if (Meteor.isServer) {
         chai.assert.equal(entry.match.confidence, 'info');
       });
 
+      it("With more possible matches confidence is 'warning'", function () {
+        entryId = Fixture.builder.create('statementEntry', {
+          account: '`381',
+          valueDate: Clock.currentDate(),
+          amount: -200,
+        });
+        const paymentId = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 200,
+          valueDate: Clock.currentDate(),
+          payAccount: '`381',
+          partnerId: Fixture.supplier,
+          lines: [{ account: '`861', amount: 200 }],
+        });
+        const matchingPayments = Transactions.find({ category: 'payment', amount: 200, valueDate: Clock.currentDate() }).fetch();
+        chai.assert.equal(matchingPayments.length, 2);
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
+        const entry = StatementEntries.findOne(entryId);
+        chai.assert.equal(entry.match.confidence, 'warning');
+        chai.assert.include([matchingPayments[0]._id, matchingPayments[1]._id], entry.match.txId);
+      });
+
       it("Matches entry with payment by bill's serialId", function () {
         entryId = Fixture.builder.create('statementEntry', {
           account: '`381',
@@ -858,7 +880,7 @@ if (Meteor.isServer) {
           bills: [{ id: billId, amount: 300 }],
         });
         Fixture.builder.execute(Transactions.methods.post, { _id: paymentId });
-        chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 4);
+        chai.assert.equal(Transactions.find({ category: 'payment', amount: 300, valueDate: Clock.date(1, 'week', 'ago') }).count(), 2);
 
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
         const entry = StatementEntries.findOne(entryId);
