@@ -10,7 +10,7 @@ Template.Shareddoc_inline.helpers({
     return Math.round(this.progress * 100);
   },
   isNew() {
-    return this.uploadedAt.getDay() === (new Date()).getDay();
+    return this.uploadedAt?.getDay() === (new Date()).getDay();
   },
   userHasPermissionToRemoveUploaded() {
     return Shareddocs.hasPermissionToRemoveUploaded(Meteor.userId(), this);
