@@ -97,7 +97,7 @@ Votings.extensionSchema = new SimpleSchema({
 
 Topics.categoryHelpers('vote', {
   attachments() {
-    return this.getShareddocs()?.map(doc => doc.path);
+    return this.getShareddocs()?.map(doc => doc.path).filter(path => !!path); // during upload doc is inserted but path is not yet set
   },
   displayChoice(index, language = getCurrentUserLang()) {
     let choice = this.vote.choices[index];

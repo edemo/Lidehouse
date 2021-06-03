@@ -1,13 +1,14 @@
 import { Template } from 'meteor/templating';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { isImage } from 'meteor/droka:autoform-ufs/lib/client/af-file-upload.js';
+import { callOrRead } from '/imports/api/utils.js';
 import '/imports/ui_3/views/blocks/image.js';
 import './attachments.html';
 
 Template.Attachments.helpers({
   byType() {
     const attachments = { images: [], files: [] };
-    const docAttachments = this.doc.category === 'vote' ? this.doc.attachments() : this.doc.attachments;
+    const docAttachments = callOrRead.call(this.doc, this.doc.attachments);
     docAttachments?.forEach((path) => {
       if (isImage(path)) attachments.images.push(path);
       else attachments.files.push(path);

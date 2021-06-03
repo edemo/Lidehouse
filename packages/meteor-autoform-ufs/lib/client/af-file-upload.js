@@ -15,7 +15,6 @@ import Compress from 'compress.js';
 const compress = new Compress();
 
 export function isImage(file) {
-  if (!file) return false;
   const parts = file.split('.');
   const extension = parts.length > 1 ? parts.pop().toLowerCase() : '';
   const fileType = UploadFS.getMimeType(extension);
