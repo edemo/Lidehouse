@@ -7,14 +7,15 @@ import './attachments.html';
 Template.Attachments.helpers({
   byType() {
     const attachments = { images: [], files: [] };
-    this.doc.attachments?.forEach((path) => {
+    const docAttachments = this.doc.category === 'vote' ? this.doc.attachments() : this.doc.attachments;
+    docAttachments?.forEach((path) => {
       if (isImage(path)) attachments.images.push(path);
       else attachments.files.push(path);
     });
     return attachments;
   },
   fileName(path) {
-    const name = path.split('/').pop();
+    const name = path?.split('/').pop();
     return decodeURI(name);
   },
 });

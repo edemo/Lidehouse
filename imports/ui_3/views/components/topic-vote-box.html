@@ -56,7 +56,8 @@
         <div class="col-xs-12">
           <!-- voting text -->
           <div class="text-dark">{{>Chopped text=text chars=600 markdown=true}}</div>
-          {{>Attached_shareddocs shareddocs=this.getShareddocs}}
+          {{>Attachments doc=this}}
+          <!-- {{>Attached_shareddocs shareddocs=this.getShareddocs}} -->
         </div>
         <div class="col-xs-12 m-b-sm">
           {{#unless votingClosed}}   
