@@ -57,10 +57,13 @@
                     <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
-                    {{#if community.settings.subjectToVat}}
-                      <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                    {{#if rDoc.disco}}
+                        <th>{{_ 'schemaBills.lines.$.discoPct.label'}}</th>
                     {{/if}}
-                    <!--th>{{_ 'schemaBills.lines.$.tax.label'}}</th-->
+                    {{#if community.settings.subjectToVat}}
+                        <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                        {{/if}}
+                        <!--th>{{_ 'schemaBills.lines.$.tax.label'}}</th-->
                     <th>{{_ 'schemaBills.lines.$.amount.label'}}</th>
                 </tr>
             </thead>
@@ -87,8 +90,11 @@
                     <td>{{_ line.uom}}</td>
                     <td>{{line.unitPrice}}</td>
                     <td>{{line.quantity}}</td>
+                    {{#if rDoc.disco}}
+                        <td>{{line.discoPct}}</td>
+                    {{/if}}
                     {{#if community.settings.subjectToVat}}
-                      <td>{{line.taxPct}}</td>
+                        <td>{{line.taxPct}}</td>
                     {{/if}}
                     <td class="nowrap">{{displayMoney line.amount}}</td>
                 </tr>
@@ -108,6 +114,12 @@
         <tr>
             <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
             <td class="nowrap">{{displayMoney rDoc.tax}}</td>
+        </tr>
+        {{/if}}
+        {{#if rDoc.disco}}
+        <tr>
+            <td><strong>{{_ 'schemaBills.disco.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney rDoc.disco}} </td>
         </tr>
         {{/if}}
         {{#if rDoc.rounding}}

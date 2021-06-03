@@ -1094,6 +1094,9 @@
       "label": "Fizetési határidő",
       "placeholder": "(pl. 2017-05-06)"
     },
+    "disco": {
+      "label": "Kedvezmény"
+    },
     "paymentMethod": {
       "label": "Fizetés módja",
       "options": {
@@ -1146,6 +1149,14 @@
         "unitPrice": {
           "label": "Egységár",
           "placeholder": "(pl. 15400)"
+        },
+        "discoPct": {
+          "label": "Kedvezmény%",
+          "placeholder": "(pl. 20)",
+          "help": "Van lehetőség egy százalékos kedvezményt adni a számlából."
+        },
+        "disco": {
+          "label": "Kedvezmény"
         },
         "taxPct": {
           "label": "ÁFA%",

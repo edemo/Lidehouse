@@ -85,6 +85,7 @@
                     <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.discoPct.label'}}</th>
                     {{#if afDoc.community.settings.subjectToVat}}
                       <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
                     {{/if}}
@@ -104,11 +105,16 @@
                     <td>{{> afFormGroup name=this.current.quantity}}</td>
                     <td>{{> afFormGroup name=this.current.uom}}</td>
                     <td>{{> afFormGroup name=this.current.unitPrice}} </td>
+                    <td>{{> afFormGroup name=this.current.discoPct}}</td>
                     {{#if afDoc.community.settings.subjectToVat}}
                       <td>{{> afFormGroup name=this.current.taxPct}}</td>
                     {{/if}}
                     <td>{{> afFormGroup name=this.current.amount}} </td>
                     <!--td class="text-center">{{lineTotal this}}</td-->
+                    <!-- hidden, needed for autoform doc data -->
+                    <td>{{> afFormGroup name=this.current.billing}} </td>
+                    <td>{{> afFormGroup name=this.current.metering}} </td>
+                    <!-- hidden, needed for autoform doc data -->
                 </tr>
                 {{#if currentUserHasPermission 'transactions.post'}}
                 <tr>
@@ -135,6 +141,12 @@
         <tr>
             <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
             <td>{{afDoc.tax}}</td>
+        </tr>
+        {{/if}}
+        {{#if afDoc.disco}}
+        <tr>
+            <td><strong>{{_ 'schemaBills.disco.label'}} :</strong></td>
+            <td>{{afDoc.disco}}</td>
         </tr>
         {{/if}}
         {{#if cashPayAccount}}

@@ -57,14 +57,16 @@ const lineSchema = {
   uom: { type: String, optional: true },  // unit of measurment
   quantity: { type: Number, decimal: true, autoform: { defaultValue: 1 } },
   unitPrice: { type: Number, decimal: true },
+  discoPct: { type: Number, decimal: true, optional: true },
+  disco: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   taxPct: { type: Number, decimal: true, optional: true, defaultValue: 0 },
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   // autoValue() {
   //  return this.siblingField('quantity').value * this.siblingField('unitPrice').value;
   //} },
-  billing: { type: billingSchema, optional: true, autoform: { omit: true } },
-  metering: { type: meteringSchema, optional: true, autoform: { omit: true } },
+  billing: { type: billingSchema, optional: true, autoform: { type: 'hidden' } },
+  metering: { type: meteringSchema, optional: true, autoform: { type: 'hidden' } },
   account: { type: String, optional: true, autoform: chooseConteerAccount() },
   localizer: { type: String, optional: true, autoform: chooseParcel() },
 };
@@ -84,6 +86,7 @@ Bills.receiptSchema = new SimpleSchema({
   // amount overrides non-optional value of transactions, with optional & calculated value
   amount: { type: Number, decimal: true, optional: true },
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+  disco: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
 //  simple: { type: simpleLineSchema, optional: true }, // used if there is only one simplified line
   lines: { type: Array, optional: true },             // used if there multiple complex line
   'lines.$': { type: Bills.lineSchema },
@@ -167,11 +170,17 @@ export const BillAndReceiptHelpers = {
     if (!this.lines) return;  // when the modifier doesn't touch the lines, should not autoFill
     let totalAmount = 0;
     let totalTax = 0;
+    let totalDisco = 0;
     this.getLines().forEach(line => {
       line.amount = Math.round(line.unitPrice * line.quantity);
+      if (line.discoPct) {
+        line.disco = Math.round((line.amount * line.discoPct) / 100);
+        line.amount -= line.disco;
+        totalDisco += line.disco;
+      }
       if (line.taxPct) {
         line.tax = Math.round((line.amount * line.taxPct) / 100);
-        line.amount += line.tax; // =
+        line.amount += line.tax;
         totalTax += line.tax;
       }
       totalAmount += line.amount;
@@ -179,6 +188,7 @@ export const BillAndReceiptHelpers = {
     if (this.rounding) totalAmount += this.rounding;
     this.amount = totalAmount;
     this.tax = totalTax;
+    this.disco = totalDisco;
   },
 };
 
