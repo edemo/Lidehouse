@@ -12,7 +12,7 @@ export function voteColumns() {
     { data: 'createdAt', title: __('createdAt'), render: Render.formatTime },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'topics', actions: 'view,edit,delete', size: 'sm' }, cell),
+        { doc: cellData, collection: 'topics', actions: 'view,edit,statusChange,delete', size: 'sm' }, cell),
     },
   ];
 }
