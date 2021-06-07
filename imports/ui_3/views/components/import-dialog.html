@@ -81,8 +81,8 @@
   {{#unless isValidColumn}} <br>
   <select>
       <option value="">{{_ '(Select one)'}}</option>
-      {{#each column in availableColumns}}
-      <option value="{{column}}">{{column}}</option>
+      {{#each name in availableColumnsNames}}
+      <option value="{{name}}">{{name}}</option>
       {{/each}}
   </select>
   {{/unless}}

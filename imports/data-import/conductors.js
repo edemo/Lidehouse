@@ -87,7 +87,8 @@ export class ImportConductor {
     return phase;
   }
   currentPhase() {
-    const phase = this.phases[this.phaseIndex];
+    const index = this.phaseIndex >= 0 ? this.phaseIndex : 0; // downloading template does not launch nextPhase
+    const phase = this.phases[index];
     return phase;
   }
   morePhasesToCome() {
