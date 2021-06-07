@@ -29,7 +29,7 @@ export function ticketColumns() {
     { data: 'ticket.type', title: __('schemaTickets.ticket.type.label'), render: displayTicketType },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'topics', actions: '', size: 'sm' }, cell),
+        { doc: cellData, collection: 'topics', actions: 'view,edit,statusUpdate,statusChange,delete', size: 'sm' }, cell),
     },
   ];
 }
