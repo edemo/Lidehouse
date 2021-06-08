@@ -88,7 +88,7 @@ ViewModel.share({
     sheetName: '',
     columnMapping: {},
     savingEnabled: false,
-    usedColumns: [],
+    usedColumnsNames: [],
     conductor: null,
 //    headerRow: 0,
 //    headerRowOptions() {
@@ -99,10 +99,14 @@ ViewModel.share({
 //      ];
 //    },
     possibleColumns() {
-      return _.without(_.pluck(this.conductor().currentPhase().possibleColumns(), 'name'), undefined);
+      const conductor = this.conductor() || this.potentialConductor();
+      return conductor.currentPhase().possibleColumns();
     },
-    availableColumns() {
-      return _.without(this.possibleColumns(), ...this.usedColumns());
+    possibleColumnsNames() {
+      return _.without(_.pluck(this.possibleColumns(), 'name'), undefined);
+    },
+    availableColumnsNames() {
+      return _.without(this.possibleColumnsNames(), ...this.usedColumnsNames());
     },
     table() {
       const html = XLSX.utils.sheet_to_html(this.worksheet(), { editable: true, blankrows: false });
@@ -193,7 +197,7 @@ Template.Import_upload.events({
         const workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' /*, cellDates: true*/ });
         instance.viewmodel.workbook(workbook);
         instance.viewmodel.conductor(instance.viewmodel.potentialConductor());
-        instance.viewmodel.usedColumns([]);
+        instance.viewmodel.usedColumnsNames([]);
         Modal.hide();
         launchNextPhase(instance.viewmodel);
       };
@@ -270,15 +274,15 @@ Template.Import_header_cell.viewmodel({
     instance.find('span').addEventListener('input', function() { viewmodel.textChanged(); }, false);
   },
   changeColumnName(newName) {
-    this.usedColumns(_.without(this.usedColumns(), this.columnName()));
+    this.usedColumnsNames(_.without(this.usedColumnsNames(), this.columnName()));
     this.columnName(newName);
-    this.usedColumns().push(this.columnName());
+    this.usedColumnsNames().push(this.columnName());
   },
   textChanged(e) {
     this.changeColumnName(this.templateInstance.$('span')[0].innerText);
   },
   isValidColumn() {
-    return _.contains(this.possibleColumns(), this.columnName());
+    return _.contains(this.possibleColumnsNames(), this.columnName());
   },
 });
 
