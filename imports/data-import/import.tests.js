@@ -22,9 +22,10 @@ if (Meteor.isServer) {
     this.timeout(150000);
     before(function () {
       Fixture = freshFixture();
-      ModalStack.getVar = (name) => ({
+      const mockModalStack = {
         communityId: Fixture.demoCommunityId,
-      }).name;
+      };
+      ModalStack.getVar = (name) => mockModalStack[name];
     });
 
     describe('parcel import', function () {

@@ -173,47 +173,65 @@ if (Meteor.isServer) {
       });
 
       it('Emails about new statusChange event', function () {
-        const dataUpdate = { expectedFinish: moment().add(1, 'weeks').toDate() };
-        Topics.methods.statusChange._execute({ userId: demoManager._id },
-          { topicId: ticketId, status: 'confirmed', dataUpdate });
+        const dataUpdate = {
+          // no localizer, so everyone gets notified
+          expectedFinish: moment().add(1, 'weeks').toDate(),
+        };
+        Topics.methods.statusChange._execute({ userId: demoManager._id }, { topicId: ticketId, status: 'confirmed', dataUpdate });
         processNotifications('daily');
         sinon.assert.calledTwice(EmailSender.send);
       });
 
-      describe('Moving comment/topic', function () {
-        let otherTopicId;
-        it('Doesnt send email when seen comments are moved to other topic', function () {
-          processNotifications('frequent');
-          sinon.resetHistory();
-          otherTopicId = Fixture.builder.create('forum', { creatorId: ownerWithNotiFrequent._id });
-          const commentId = Fixture.builder.create('comment', { topicId: otherTopicId, creatorId: ownerWithNotiNever._id, text: 'New hello' });
-          processNotifications('frequent');
-          sinon.assert.calledOnce(EmailSender.send);
-          const emailData = EmailSender.send.getCall(0).args[0];
-          chai.assert.equal(emailData.data.user._id, ownerWithNotiFrequent._id);
-          chai.assert.equal(emailData.data.topicsToDisplay.length, 1);
-          chai.assert.equal(emailData.data.topicsToDisplay[0].topic._id, otherTopicId);
-          chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments.length, 1);
-          chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments[0].text, 'New hello');
-          Comments.methods.move._execute({ userId: Fixture.demoAdminId }, { _id: commentId, destinationId: topicId });
-          processNotifications('frequent');
-          sinon.assert.calledOnce(EmailSender.send);
-        });
-        it('Sends email when there is unseen comment on destination topic', function () {
-          const commentId = Fixture.builder.create('comment', { topicId, creatorId: ownerWithNotiNever._id, text: 'Next comment' });
-          const movingCommentId = Fixture.builder.create('comment', { topicId: otherTopicId, creatorId: ownerWithNotiNever._id, text: 'Moving comment' });
-          updateMyLastSeen._execute({ userId: ownerWithNotiFrequent._id }, { topicId: otherTopicId, lastSeenInfo: { timestamp: new Date() } });
-          Comments.methods.move._execute({ userId: Fixture.demoAdminId }, { _id: movingCommentId, destinationId: topicId });
-          processNotifications('frequent');
-          sinon.assert.calledOnce(EmailSender.send);
-          const emailData = EmailSender.send.getCall(0).args[0];
-          chai.assert.equal(emailData.data.user._id, ownerWithNotiFrequent._id);
-          chai.assert.equal(emailData.data.topicsToDisplay.length, 1);
-          chai.assert.equal(emailData.data.topicsToDisplay[0].topic._id, topicId);
-          chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments.length, 2);
-          chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments[0].text, 'Next comment');
-          chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments[1].text, 'Moving comment');
-        });
+      it('Emails only users at the ticket location', function () {
+        const localizer = '@A103';  // So this will be relevant to dummyUser3 but not to dummyUser4
+        Topics.methods.statusUpdate._execute({ userId: demoManager._id }, { _id: ticketId, modifier: { $set: { 'ticket.localizer': localizer } } });
+        Fixture.builder.create('comment', { topicId: ticketId, creatorId: ownerWithNotiNever._id, text: 'Update' });
+        processNotifications('daily');
+        sinon.assert.calledOnce(EmailSender.send);
+      });
+
+      it('Emails only users within the ticket location', function () {
+        const localizer = '@A1';  // So this will be relevant to the whole first floor
+        Topics.methods.statusUpdate._execute({ userId: demoManager._id }, { _id: ticketId, modifier: { $set: { 'ticket.localizer': localizer } } });
+        Fixture.builder.create('comment', { topicId: ticketId, creatorId: ownerWithNotiNever._id, text: 'Update' });
+        processNotifications('daily');
+        sinon.assert.calledTwice(EmailSender.send);
+      });
+    });
+
+    describe('Moving comment/topic', function () {
+      let otherTopicId;
+      it('Doesnt send email when seen comments are moved to other topic', function () {
+        processNotifications('frequent');
+        sinon.resetHistory();
+        otherTopicId = Fixture.builder.create('forum', { creatorId: ownerWithNotiFrequent._id });
+        const commentId = Fixture.builder.create('comment', { topicId: otherTopicId, creatorId: ownerWithNotiNever._id, text: 'New hello' });
+        processNotifications('frequent');
+        sinon.assert.calledOnce(EmailSender.send);
+        const emailData = EmailSender.send.getCall(0).args[0];
+        chai.assert.equal(emailData.data.user._id, ownerWithNotiFrequent._id);
+        chai.assert.equal(emailData.data.topicsToDisplay.length, 1);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].topic._id, otherTopicId);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments.length, 1);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments[0].text, 'New hello');
+        Comments.methods.move._execute({ userId: Fixture.demoAdminId }, { _id: commentId, destinationId: topicId });
+        processNotifications('frequent');
+        sinon.assert.calledOnce(EmailSender.send);
+      });
+      it('Sends email when there is unseen comment on destination topic', function () {
+        const commentId = Fixture.builder.create('comment', { topicId, creatorId: ownerWithNotiNever._id, text: 'Next comment' });
+        const movingCommentId = Fixture.builder.create('comment', { topicId: otherTopicId, creatorId: ownerWithNotiNever._id, text: 'Moving comment' });
+        updateMyLastSeen._execute({ userId: ownerWithNotiFrequent._id }, { topicId: otherTopicId, lastSeenInfo: { timestamp: new Date() } });
+        Comments.methods.move._execute({ userId: Fixture.demoAdminId }, { _id: movingCommentId, destinationId: topicId });
+        processNotifications('frequent');
+        sinon.assert.calledOnce(EmailSender.send);
+        const emailData = EmailSender.send.getCall(0).args[0];
+        chai.assert.equal(emailData.data.user._id, ownerWithNotiFrequent._id);
+        chai.assert.equal(emailData.data.topicsToDisplay.length, 1);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].topic._id, topicId);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments.length, 2);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments[0].text, 'Next comment');
+        chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments[1].text, 'Moving comment');
       });
     });
 
