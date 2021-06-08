@@ -37,6 +37,9 @@ export const nullUser = {
     if (!permission) return false;
     return _.contains(permission.roles, 'null');
   },
+  memberships(communityId) {
+    return [];
+  },
   ownerships(communityId) {
     return [];
   },

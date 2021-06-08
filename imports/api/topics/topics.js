@@ -173,6 +173,18 @@ Topics.helpers({
       },
     };
   },
+  isRelevantTo(userId) {
+    if (this.category === 'ticket') { // tickets are only relevant to members with parcels located within the ticket localizer
+      const localizer = this.ticket?.localizer;
+      if (!localizer) return true;
+      else {
+        const user = Meteor.users.findOne(userId);
+        const parcelCodes = user.memberships(this.communityId).map(m => m.parcel()?.code);
+        const isRelevant = _.any(parcelCodes, code => code.startsWith(localizer));
+        return isRelevant;
+      }
+    } else return true;
+  },
   // This number goes into the red badge to show you how many work to do
   needsAttention(userId, seenType = Meteor.users.SEEN_BY.EYES) {
     if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
@@ -224,10 +236,11 @@ Topics.topicsWithUnseenEvents = function topicsWithUnseenEvents(userId, communit
       { participantIds: { $exists: false } },
       { participantIds: userId },
     ],
-  })
-  .map(topic => topic.unseenEventsBy(userId, seenType))
-  .filter(t => t.hasUnseenThings())
-  .sort((t1, t2) => Topics.categoryValues.indexOf(t2.topic.category) - Topics.categoryValues.indexOf(t1.topic.category));
+  }).fetch()
+    .filter(t => t.isRelevantTo(userId))
+    .map(topic => topic.unseenEventsBy(userId, seenType))
+    .filter(t => t.hasUnseenThings())
+    .sort((t1, t2) => Topics.categoryValues.indexOf(t2.topic.category) - Topics.categoryValues.indexOf(t1.topic.category));
 };
 
 Topics.attachBaseSchema(Topics.baseSchema);
