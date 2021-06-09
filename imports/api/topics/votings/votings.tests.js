@@ -380,7 +380,7 @@ if (Meteor.isServer) {
         });
         otherVoting.voteEvaluate();
         otherVoting = Topics.findOne(otherVotingId);
-        chai.assert.deepEqual(otherVoting.voteParticipation, { count: 4, units: 110 });
+        chai.assert.deepEqual(otherVoting.voteParticipation, { count: 3, units: 110 });
         chai.assert.deepEqual(otherVoting.voteCasts[Fixture.partnerId(Fixture.dummyUsers[1])], [1]);
 
         Contracts.remove({});

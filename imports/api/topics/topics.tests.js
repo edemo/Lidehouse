@@ -13,6 +13,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { closeInactiveTopics } from '/imports/api/topics/methods.js';
 import { Clock } from '/imports/utils/clock';
@@ -42,6 +43,7 @@ if (Meteor.isServer) {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
+      Contracts.remove({});
     });
 
     describe('publications', function () {
