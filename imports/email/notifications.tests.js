@@ -43,7 +43,7 @@ if (Meteor.isServer) {
     before(function () {
       // Fixture
       Fixture = freshFixture();
-      Contracts.remove({});
+      Contracts.remove({ parcelId: Fixture.dummyParcels[1] }); // No need for leadParcel for dummyUsers[1] as he needs own votership
       demoCommunity = Communities.findOne(Fixture.demoCommunityId);
       demoManager = Meteor.users.findOne(Fixture.demoManagerId);
       Meteor.users.update(Fixture.demoUserId, { $set: { 'settings.notiFrequency': 'frequent' } });

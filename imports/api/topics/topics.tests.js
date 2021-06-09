@@ -43,7 +43,6 @@ if (Meteor.isServer) {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
-      Contracts.remove({});
     });
 
     describe('publications', function () {
@@ -63,8 +62,8 @@ if (Meteor.isServer) {
 
       before(function () {
         maintainerId = Fixture.dummyUsers[0];
-        ownerId = Fixture.dummyUsers[1];
-        ownerPartnerId = Fixture.partnerId(Fixture.dummyUsers[1]);
+        ownerId = Fixture.dummyUsers[3];
+        ownerPartnerId = Fixture.partnerId(Fixture.dummyUsers[3]);
         benefactorId = Fixture.dummyUsers[2];
         benefactorPartnerId = Fixture.partnerId(Fixture.dummyUsers[2]);
         adminId = Fixture.demoAdminId;
