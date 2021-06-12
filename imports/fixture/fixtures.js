@@ -189,12 +189,12 @@ export function insertUnittestFixture(lang) {
   // Contracts
   dummyParcels.forEach((parcelId, i) => {
     const parcel = Parcels.findOne(parcelId);
-    if (i === 1 || i === 2) {
+    if (i === 1) {
       demoBuilder.create('memberContract', {
         parcelId,
         leadParcelId: dummyParcels[3],
       });
-    } else { // i = 0, 3, 4
+    } else { // i = 0, 2, 3, 4
       demoBuilder.create('memberContract', {
         parcelId,
         partnerId: parcel._payerMembership().partnerId,

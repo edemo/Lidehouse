@@ -12,6 +12,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import '/i18n/en.i18n.json';
 import '/i18n/email.en.i18n.json';
@@ -42,6 +43,7 @@ if (Meteor.isServer) {
     before(function () {
       // Fixture
       Fixture = freshFixture();
+      Contracts.remove({ parcelId: Fixture.dummyParcels[1] }); // No need for leadParcel for dummyUsers[1] as he needs own votership
       demoCommunity = Communities.findOne(Fixture.demoCommunityId);
       demoManager = Meteor.users.findOne(Fixture.demoManagerId);
       Meteor.users.update(Fixture.demoUserId, { $set: { 'settings.notiFrequency': 'frequent' } });

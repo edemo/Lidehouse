@@ -146,7 +146,12 @@ Parcels.helpers({
     return active ? Memberships.findActive(selector) : Memberships.find(selector);
   },
   representor() {
-    return this.representors().fetch()[0];
+    let representor = this.representors().fetch()[0];
+    if (!representor) {
+      const owners = this.owners().fetch();
+      if (owners.length === 1) representor = owners[0];
+    }
+    return representor;
   },
   representorOrFirstOwner() {
     return this.representor() || this.owners().fetch()[0];
