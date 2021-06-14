@@ -11,14 +11,14 @@ export function autosetActiveCommunity() {
   if (user && (!activeCommunityId || !user.isInCommunity(activeCommunityId))) {
     const communities = user.communities();
     if (communities.count() > 0) {
-      const activeCommunity = communities.fetch()[0];
-      ModalStack.setVar('communityId', activeCommunity._id, true);
+      const communityId = Settings.get('activeCommunityId') || communities.fetch()[0]._id;
+      ModalStack.setVar('communityId', communityId, true);
     }
   }
 }
 
 export function getActiveCommunityId() {
-  return ModalStack.getVar('communityId');
+  return ModalStack.getVar('communityId') || Settings.get('activeCommunityId');
 }
 
 export function getActiveCommunity() {
@@ -30,7 +30,7 @@ export function defaultNewDoc() {
   return { communityId: FlowRouter.getParam('_cid') || getActiveCommunityId() };
 }
 
-// This cannot be in settings.js becuase then circular dependency: settings > activeCommunity > modalstack > settings
+// This cannot be in settings.js becuase then circular dependency: settings > getActiveCommunity > settings
 Settings.getForCommunity = function getForCommunity(name) {
   const selector = { userId: Meteor.userId(), communityId: getActiveCommunityId() };
   return Settings.get(name, selector);

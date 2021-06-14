@@ -34,3 +34,7 @@ export function replaceDotsInString(dottedString, newChar = '\\u002e') {
   const withoutDots = dottedString.replace(/\./g, newChar);
   return withoutDots;
 }
+
+export function callOrRead(variable) {
+  return (typeof variable === 'function') ? variable.call(this) : variable;
+}

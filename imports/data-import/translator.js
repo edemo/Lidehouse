@@ -3,6 +3,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
+import { callOrRead } from '/imports/api/utils.js';
 
 // It is only available in undescore 1.8.1, and we are forced use 1.0.10
 _.findKey = function findKey(obj, predicate) {
@@ -47,7 +48,7 @@ export class Translator {
 
   example(key, schema) {
     if (schema.autoform && schema.autoform.placeholder) return schema.autoform.placeholder();
-    const allowedValues = (typeof schema.allowedValues === 'function') ? schema.allowedValues() : schema.allowedValues;
+    const allowedValues = callOrRead.call(schema, schema.allowedValues);
     if (allowedValues) {
       let result = '(';
       allowedValues.forEach((val, i) => {

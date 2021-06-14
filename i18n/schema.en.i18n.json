@@ -1090,6 +1090,9 @@
       "label": "Due date",
       "placeholder": "(eg. 2017-05-06)"
     },
+    "disco": {
+      "label": "Discount"
+    },
     "paymentMethod": {
       "label": "Payment method",
       "options": {
@@ -1142,6 +1145,14 @@
         "unitPrice": {
           "label": "Unit price",
           "placeholder": "(eg. 15420)"
+        },
+        "discoPct": {
+          "label": "Discount%",
+          "placeholder": "(eg. 20)",
+          "help": "You may apply a percentage discount to the bill."
+        },
+        "disco": {
+          "label": "Discount"
         },
         "taxPct": {
           "label": "Tax%",

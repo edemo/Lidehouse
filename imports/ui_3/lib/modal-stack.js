@@ -6,7 +6,6 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
-import { Settings } from '/imports/api/settings/settings';
 
 // This is how we did it, before multi modals
 export function runInNewModal(toRun) {
@@ -87,9 +86,6 @@ if (Meteor.isClient) {
     setVar(key, value, keep = false) { // Should not call this within an autorun - would cause infinite loop
       if (key === 'communityId') {
         Session.set('communityId', value);   // temporary solution, for efficiency (communityId is used in subscription parameters)
-        const user = Meteor.user();
-        const communities = user.communities();
-        if (communities.count() > 1) Settings.set('activeCommunityId', value);
         return;
       }
       const modalStack = ModalStack.get();
@@ -105,8 +101,7 @@ if (Meteor.isClient) {
     },
     getVar(key) {
       if (key === 'communityId') {
-        return Session.get('communityId') || Settings.get('activeCommunityId');
-          // temporary solution, for efficiency (communityId is used in subscription parameters)
+        return Session.get('communityId'); // temporary solution, for efficiency (communityId is used in subscription parameters)
       }
       const modalStack = ModalStack.get();
       // Log.debug('before get', modalStack);

@@ -167,6 +167,9 @@ Template.Parcels_box.viewmodel({
 });
 
 Template.Community_page.viewmodel({
+  onCreated() {
+    ModalStack.setVar('relation', undefined, true); // if coming from other page where relation was set
+  },
   onRendered() {
     // Add slimscroll to element
     $('.full-height-scroll').slimscroll({

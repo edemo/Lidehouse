@@ -118,7 +118,7 @@ Transactions.actions = {
     name: 'edit',
     icon: 'fa fa-pencil',
     visible: doc && !doc.isPosted()
-      && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
+//      && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
       && user.hasPermission('transactions.update', doc),
     run() {
       const entity = Transactions.entities[doc.entityName()];

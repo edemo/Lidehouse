@@ -15,10 +15,15 @@ import '../components/topic-ticket-box.js';
 import '../components/topic-vote-box.js';
 import '../components/revision-history.js';
 import './topic-show.html';
+import { ModalStack } from '../../lib/modal-stack.js';
 
 Template.Topic_show.onCreated(function topicShowOnCreated() {
-  const topicId = FlowRouter.getParam('_tid');
-  this.subscribe('topics.byId', { _id: topicId });  // brings all comments with it
+  this.autorun(() => {
+    const topicId = FlowRouter.getParam('_tid');
+    const topic = topicId && Topics.findOne(topicId);
+    this.subscribe('topics.byId', { _id: topicId });  // brings all comments with it
+    if (topic) ModalStack.setVar('communityId', topic.communityId);
+  });
 });
 
 Template.Topic_show.helpers({

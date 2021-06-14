@@ -159,7 +159,7 @@ Tickets.workflows = {
     progressing: { obj: progressing, next: [finished, suspended] },
     suspended: { obj: suspended, next: [progressing, closed] },
     finished: { obj: finished, next: [closed, progressing] },
-    closed: { obj: closed, next: [] },
+    closed: { obj: closed, next: [reported, confirmed, progressing, suspended, finished, deleted] },
     deleted: { obj: deleted, next: [reported] },
   },
   upgrade: {
@@ -171,7 +171,7 @@ Tickets.workflows = {
     progressing: { obj: progressing, next: [finished, suspended] },
     suspended: { obj: suspended, next: [progressing, closed] },
     finished: { obj: finished, next: [closed, progressing] },
-    closed: { obj: closed, next: [] },
+    closed: { obj: closed, next: [reported, confirmed, toApprove, toVote, progressing, suspended, finished, deleted] },
     deleted: { obj: deleted, next: [reported] },
   },
   maintenance: {
@@ -179,7 +179,7 @@ Tickets.workflows = {
     scheduled: { obj: scheduled, next: [progressing] },
     progressing: { obj: progressing, next: [finished] },
     finished: { obj: finished, next: [closed, progressing] },
-    closed: { obj: closed, next: [] },
+    closed: { obj: closed, next: [scheduled, progressing, finished, deleted] },
     deleted: { obj: deleted, next: [scheduled] },
   },
 };

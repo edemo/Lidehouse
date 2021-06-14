@@ -65,9 +65,9 @@ Meteor.startup(function setupLanguage() {
     moment.locale(TAPi18n.getLanguage());
   });
   Tracker.autorun(() => {
-//    const community = getActiveCommunity();
-//    const language = community ? community.settings.language : TAPi18n.getLanguage();
-    numeral.language(TAPi18n.getLanguage());
+    const community = getActiveCommunity();
+    const language = community ? community.settings.language : TAPi18n.getLanguage();
+    numeral.language(language);
   });
 });
 

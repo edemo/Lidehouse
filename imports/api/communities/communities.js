@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
+import { TAPi18n } from 'meteor/tap:i18n';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
@@ -64,6 +65,9 @@ Meteor.startup(function indexCommunities() {
 });
 
 Communities.helpers({
+  officialName() {
+    return this.name + ' ' + TAPi18n.__('community', {}, this.settings.language);
+  },
   parcelTypeValues() {
     return Object.keys(this.parcels);
   },
@@ -85,6 +89,7 @@ Communities.helpers({
   asPartner() {
     const partner = _.clone(this);
     const bankAccount = this.primaryBankAccount();
+    partner.name = this.officialName();
     partner.contact = { address: this.displayAddress() };
     partner.BAN = bankAccount && bankAccount.BAN;
     return { partner /* no contract */ };

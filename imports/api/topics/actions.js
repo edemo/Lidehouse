@@ -14,6 +14,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { handleError } from '/imports/ui_3/lib/errors.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
+import { callOrRead } from '/imports/api/utils.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -221,7 +222,7 @@ _.each(Topics.entities, (entity, entityName) => {
   AutoForm.addHooks(`af.${entityName}.create`, {
     formToDoc(doc) {
       _.each(entity.implicitFields, (value, key) => {
-        Object.setByString(doc, key, (typeof value === 'function') ? value() : value);
+        Object.setByString(doc, key, callOrRead.call(this, value));
       });
       doc.status = Topics._transform(doc).startStatus().name;
       if (!doc.title && doc.text) {

@@ -13,6 +13,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { closeInactiveTopics } from '/imports/api/topics/methods.js';
 import { Clock } from '/imports/utils/clock';
@@ -61,8 +62,8 @@ if (Meteor.isServer) {
 
       before(function () {
         maintainerId = Fixture.dummyUsers[0];
-        ownerId = Fixture.dummyUsers[1];
-        ownerPartnerId = Fixture.partnerId(Fixture.dummyUsers[1]);
+        ownerId = Fixture.dummyUsers[3];
+        ownerPartnerId = Fixture.partnerId(Fixture.dummyUsers[3]);
         benefactorId = Fixture.dummyUsers[2];
         benefactorPartnerId = Fixture.partnerId(Fixture.dummyUsers[2]);
         adminId = Fixture.demoAdminId;
