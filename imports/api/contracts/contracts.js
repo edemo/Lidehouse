@@ -95,7 +95,7 @@ Contracts.helpers({
   },
   worksheets() {
     const Topics = Mongo.Collection.get('topics');
-    return Topics.find({ communityId: this.communityId, 'ticket.contractId': this._id });
+    return Topics.find({ communityId: this.communityId, categeory: 'ticket', 'ticket.contractId': this._id });
   },
 //  membership() {
 //    const Memberships = Mongo.Collection.get('memberships');

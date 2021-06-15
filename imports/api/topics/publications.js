@@ -52,7 +52,7 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
     }, {
       // Publish all Comments of the Topic
       find(topic) {
-        return Comments.find({ topicId: topic._id }, { fields: Comments.publicFields });
+        return Comments.find({ communityId: topic.communityId, topicId: topic._id }, { fields: Comments.publicFields });
       },
       children: [{
         find(comment) {
