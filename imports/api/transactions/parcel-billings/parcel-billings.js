@@ -163,13 +163,16 @@ ParcelBillings.helpers({
     }
   },
   projectionQuantityOf(parcel) {
+    let result;
     switch (this.projection.base) {
-      case 'absolute': return 1;
-      case 'area': return (parcel.area || 0);
-      case 'volume': return (parcel.volume || 0);
-      case 'habitants': return (parcel.contract()?.habitants || 0);
-      default: debugAssert(false, 'No such projection base'); return undefined;
+      case 'absolute': result = 1; break;
+      case 'area': result = parcel.area; break;
+      case 'volume': result = parcel.volume; break;
+      case 'habitants': result = parcel.contract()?.habitants; break;
+      default: debugAssert(false, 'No such projection base'); break;
     }
+    if (_.isUndefined(result)) throw new Meteor.Error('err_invalidData', 'Parcel is missing data for billing calculation', { parcelId: parcel._id, fieldName: this.projection.base });
+    return result;
   },
   applyCount() {
 //  return Transactions.find({ ref: this._id }).count();

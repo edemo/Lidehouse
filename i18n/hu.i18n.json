@@ -698,6 +698,7 @@
   "Cannot find breakdown node by code": "A könyvelési bontásban nincs ennek megfelelő kód",
   "Cannot find breakdown node by name": "A könyvelési bontásban nincs ennek megfelelő név",
   "errorInFormFieldValidation": "Az adatok megadása hiányos vagy nem megfelelő. A pirossal jelölt mezők kitöltése kötelező ezen az adatlapon",
+  "Parcel is missing data for billing calculation": "Az albetéten nincs megadva az adat, ami a számlázáshoz szükséges",
   "err_constraint": "Az engedélyezetteken kívüli érték",
   "err_notAvailable": "Nem elérhető", 
   "Server is busy, please try again in a few seconds": "A szerver foglalt, kérjük próbálja újra néhány másodperc múlva",

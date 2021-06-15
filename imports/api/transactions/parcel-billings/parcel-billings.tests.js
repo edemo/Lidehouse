@@ -252,6 +252,7 @@ if (Meteor.isServer) {
             unitPrice: 5000,
           },
           digit: '3',
+          type: ['flat'],
           localizer: '@',
         });
         Contracts.update({ parcelId: Fixture.dummyParcels[2] }, { $unset: { habitants: '' } }, { selector: { relation: 'member' } });
@@ -420,6 +421,7 @@ if (Meteor.isServer) {
             unitPrice: 5000,
           },
           digit: '3',
+          type: ['flat'],
           localizer: '@',
         });
         meteredParcelId = Fixture.dummyParcels[3];
