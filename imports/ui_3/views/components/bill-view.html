@@ -89,9 +89,9 @@
                     </td>
                     <td>{{_ line.uom}}</td>
                     <td>{{line.unitPrice}}</td>
-                    <td>{{line.quantity}}</td>
+                    <td>{{displayNumber line.quantity 3 false}}</td>
                     {{#if rDoc.disco}}
-                        <td>{{line.discoPct}}</td>
+                        <td>{{displayNumber line.discoPct 3 false}}</td>
                     {{/if}}
                     {{#if community.settings.subjectToVat}}
                         <td>{{line.taxPct}}</td>

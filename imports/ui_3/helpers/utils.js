@@ -15,8 +15,10 @@ export function displayMoney(number) {
   return numeral(number).format('0,0$');
 }
 
-export function displayNumber(number, decimals = 0) {
-  return numeral(number).format('0,0.' + '0'.repeat(decimals));
+export function displayNumber(number, decimals = 0, showZeros = true) {
+  const decis = '0'.repeat(decimals);
+  const formatString = showZeros ? `0,0.${decis}` : `0,0.[${decis}]`;
+  return numeral(number).format(formatString);
 }
 
 export function displayDate(time) {
