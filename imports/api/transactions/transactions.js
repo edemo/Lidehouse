@@ -288,7 +288,7 @@ Transactions.helpers({
         const localizer = entry.localizer;
         const changeAmount = entry.amount * directionSign;
         Balances.increase({ communityId, account, tag }, entry.side, changeAmount);
-        if (localizer) {
+        if (localizer && account.startsWith('`33')) {
           Balances.increase({ communityId, account, localizer, tag }, entry.side, changeAmount);
         }
       });

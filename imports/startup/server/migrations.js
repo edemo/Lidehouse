@@ -738,6 +738,16 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 42,
+  name: 'Localized account balances only needed for `33',
+  up() {
+    Balances.find({ localizer: { $exists: true } }).forEach(b => {
+      if (!b.account?.startsWith('`33')) Balances.direct.remove(b._id);
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {
