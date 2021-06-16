@@ -289,6 +289,27 @@ if (Meteor.isServer) {
         chai.assert.equal(meteredParcel.outstanding(), billMetered.amount);
       });
 
+      it('throws error if no data on parcel', function () {
+        Fixture.builder.create('parcelBilling', {
+          title: 'Test consumption',
+          consumption: {
+            service: 'coldWater',
+            charges: [{
+              uom: 'm3',
+              unitPrice: 600,
+            }],
+          },
+          projection: {
+            base: 'habitants',
+            unitPrice: 5000,
+          },
+          digit: '3',
+          localizer: '@AP01',
+        });
+
+        chai.assert.throws(() => applyParcelBillings('2018-01-15'), 'err_invalidData');
+      });
+
       it('bills follower parcel\'s parcel-billing to lead parcel\'s payer', function () {
         Fixture.builder.create('parcelBilling', {
           title: 'One follower parcel',
