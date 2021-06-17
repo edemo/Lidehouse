@@ -19,6 +19,7 @@ Accounts.mainCategoryValues = ['asset', 'liability', 'equity', 'income', 'expens
 Accounts.simpleCategoryValues = Accounts.mainCategoryValues.concat(['payable', 'receivable']);
 Accounts.categoryValues = Accounts.mainCategoryValues.concat(['payable', 'receivable', 'cash', 'bank']);
 Accounts.syncValues = ['none', 'manual', 'auto'];
+Accounts.toLocalize = '`33';  // This account's balances will be stored for each localizer
 
 Accounts.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
