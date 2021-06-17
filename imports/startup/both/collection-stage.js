@@ -54,7 +54,7 @@ CollectionStage.prototype.findOne = function findOne(selector, options) {
 };
 
 CollectionStage.prototype.insert = function insert(doc) {
-  this._collection.simpleSchema(doc)?.validate(doc);  // needed to check doc validity, before sanity
+  this._collection.simpleSchema(doc)?.validator({ clean: true })(doc);  // needed to check doc validity, before sanity
   const _id = this._fresh.insert(doc);
   this._operations.push({ operation: this._collection.insert, params: [_.extend(doc, { _id })] });
 //    Log.debug('insert', this._toString());

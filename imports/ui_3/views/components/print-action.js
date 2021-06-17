@@ -20,7 +20,9 @@ Template.registerHelper('print', function print() {
       Meteor.defer(() => {                                                // And we would like to turn off the accounting tags on the bill view.
         if (ModalStack.active()) {
           $('#wrapper').addClass('no-height');
+          $('.modal:not(:last)').hide();
           window.print();
+          $('.modal:not(:last)').show();
           $('#wrapper').removeClass('no-height');
         } else window.print();
       });

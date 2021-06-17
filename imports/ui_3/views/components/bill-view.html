@@ -60,7 +60,7 @@
                     {{#if rDoc.disco}}
                         <th>{{_ 'schemaBills.lines.$.discoPct.label'}}</th>
                     {{/if}}
-                    {{#if community.settings.subjectToVat}}
+                    {{#if rDoc.community.settings.subjectToVat}}
                         <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
                         {{/if}}
                         <!--th>{{_ 'schemaBills.lines.$.tax.label'}}</th-->
@@ -89,11 +89,11 @@
                     </td>
                     <td>{{_ line.uom}}</td>
                     <td>{{line.unitPrice}}</td>
-                    <td>{{line.quantity}}</td>
+                    <td>{{displayNumber line.quantity 3 false}}</td>
                     {{#if rDoc.disco}}
-                        <td>{{line.discoPct}}</td>
+                        <td>{{displayNumber line.discoPct 3 false}}</td>
                     {{/if}}
-                    {{#if community.settings.subjectToVat}}
+                    {{#if rDoc.community.settings.subjectToVat}}
                         <td>{{line.taxPct}}</td>
                     {{/if}}
                     <td class="nowrap">{{displayMoney line.amount}}</td>
@@ -106,7 +106,7 @@
 
     <table class="table invoice-total">
         <tbody>
-        {{#if community.settings.subjectToVat}}
+        {{#if rDoc.community.settings.subjectToVat}}
         <tr>
             <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
             <td class="nowrap">{{displayMoney rDoc.amount}}</td>
