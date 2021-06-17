@@ -255,7 +255,6 @@ if (Meteor.isServer) {
           type: ['flat'],
           localizer: '@',
         });
-        Contracts.update({ parcelId: Fixture.dummyParcels[2] }, { $unset: { habitants: '' } }, { selector: { relation: 'member' } });
 
         applyParcelBillings('2018-01-12');
         const parcel4 = Parcels.findOne(Fixture.dummyParcels[4]);
@@ -337,6 +336,92 @@ if (Meteor.isServer) {
         // parcel.payerPartner() can only identify leadParcel's partner, as follower parcel's contract does not have partnerId, only leadParcelId
         chai.assert.equal(leadParcel.outstanding(), 0);
         chai.assert.equal(followerParcel.outstanding(), bills[0].lines[0].amount);
+      });
+
+      it("bills follower parcel's consumption based parcel-billing to lead parcel's payer", function () {
+        Fixture.builder.create('parcelBilling', {
+          title: 'Follower consumption',
+          consumption: {
+            service: 'coldWater',
+            charges: [{
+              uom: 'm3',
+              unitPrice: 500,
+            }],
+          },
+          digit: '3',
+          localizer: '@AP01',
+        });
+        const meteredParcelId = Fixture.dummyParcels[1];
+        const meterId = Fixture.builder.create('meter', {
+          parcelId: meteredParcelId,
+          identifier: 'CW-01012',
+          service: 'coldWater',
+          uom: 'm3',
+          activeTime: { begin: new Date('2018-01-01') },
+        });
+        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-02-01'), value: 11 } });
+        chai.assert.isDefined(Memberships.findOne({ parcelId: Fixture.dummyParcels[1], ownership: { $exists: true } }));
+
+        applyParcelBillings('2018-02-01');
+        const followerParcel = Parcels.findOne(Fixture.dummyParcels[1]);
+        const leadParcel = Parcels.findOne(Fixture.dummyParcels[3]);
+        let bills = Transactions.find({ communityId, category: 'bill' }).fetch();
+        chai.assert.equal(bills.length, 1);
+        assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Follower consumption', linePeriod: '2018-02' });
+        assertLineDetails(bills[0].lines[0], { uom: 'm3', unitPrice: 500, quantity: 11, localizer: '@AP01' });
+        chai.assert.equal(bills[0].amount, 5500);
+        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), 0);
+
+        postParcelBillings('2018-02-01');
+        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), bills[0].lines[0].amount);
+        chai.assert.equal(leadParcel.outstanding(), 0);
+        chai.assert.equal(followerParcel.outstanding(), bills[0].lines[0].amount);
+        const dummyPartner = Partners.findOne({ userId: Fixture.dummyUsers[1] });
+        chai.assert.equal(dummyPartner.outstanding('member'), 0);
+
+        Memberships.remove({ parcelId: Fixture.dummyParcels[1], ownership: { $exists: true } });
+        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-03-01'), value: 21 } });
+        applyParcelBillings('2018-03-01');
+        bills = Transactions.find({ communityId, category: 'bill' }, { sort: { createdAt: 1 } }).fetch();
+        chai.assert.equal(bills.length, 2);
+        assertBillDetails(bills[1], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Follower consumption', linePeriod: '2018-03' });
+        assertLineDetails(bills[1].lines[0], { uom: 'm3', unitPrice: 500, quantity: 10, localizer: '@AP01' });
+        chai.assert.equal(bills[1].amount, 5000);
+        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), 5500);
+        postParcelBillings('2018-03-01');
+        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), 10500);
+        chai.assert.equal(leadParcel.outstanding(), 0);
+        chai.assert.equal(followerParcel.outstanding(), 10500);
+        chai.assert.equal(dummyPartner.outstanding('member'), 0);
+      });
+
+      it('bills to follower parcel with lead parcel if withFollowers is checked', function () {
+        Fixture.builder.create('parcelBilling', {
+          title: 'One for all',
+          projection: {
+            base: 'area',
+            unitPrice: 10,
+          },
+          digit: '3',
+          localizer: '@',
+        });
+        Fixture.builder.execute(ParcelBillings.methods.apply,
+          { communityId, date: new Date('2018-01-10'), localizer: '@A103', withFollowers: true },
+          Fixture.builder.getUserWithRole('accountant'));
+
+        const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
+        chai.assert.equal(bills.length, 1);
+        assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 2, lineTitle: 'One for all', linePeriod: '2018-01' });
+        assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 10, quantity: 30, localizer: '@A103' });
+        assertLineDetails(bills[0].lines[1], { uom: 'm2', unitPrice: 10, quantity: 10, localizer: '@AP01' });
+        chai.assert.equal(bills[0].amount, 400);
+
+        postParcelBillings('2018-01-10');
+        const followerParcel = Parcels.findOne(Fixture.dummyParcels[1]);
+        const leadParcel = Parcels.findOne(Fixture.dummyParcels[3]);
+        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), 400);
+        chai.assert.equal(leadParcel.outstanding(), 300);
+        chai.assert.equal(followerParcel.outstanding(), 100);
       });
 
       it('bills the then owner for given apply date', function () {
