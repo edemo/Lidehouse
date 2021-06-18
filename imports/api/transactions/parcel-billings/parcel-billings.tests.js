@@ -429,8 +429,8 @@ if (Meteor.isServer) {
         Memberships.methods.update._execute({ userId: Fixture.demoAdminId },
           { _id: formerMembershipId,
             modifier: { $set: {
-              'activeTime.begin': moment('2017-12-01').toDate(),
-              'activeTime.end': moment('2018-01-31').toDate() },
+              'activeTime.begin': new Date('2017-12-01'),
+              'activeTime.end': new Date('2018-02-01') },
             },
           });
         const laterMembershipId = Fixture.builder.createMembership(Fixture.dummyUsers[2], 'owner', {
@@ -439,7 +439,7 @@ if (Meteor.isServer) {
         });
         Memberships.methods.update._execute({ userId: Fixture.demoAdminId }, {
           _id: laterMembershipId, modifier: { $set: {
-            'activeTime.begin': moment('2018-02-01').toDate(),
+            'activeTime.begin': new Date('2018-02-01'),
           } },
         });
 
@@ -479,6 +479,32 @@ if (Meteor.isServer) {
         postParcelBillings('2018-03-12');
         chai.assert.equal(laterPayer.outstanding('member'), bills2[0].amount);
         chai.assert.equal(parcel.outstanding(), bills2[0].amount);
+        chai.assert.equal(formerPayer.outstanding('member'), 0);
+      });
+
+      it('bills the new owner on the day of change', function () {
+        Fixture.builder.create('parcelBilling', {
+          title: 'Test absolute',
+          projection: {
+            base: 'absolute',
+            unitPrice: 500,
+          },
+          digit: '4',
+          localizer: '@A103',
+        });
+
+        applyParcelBillings('2018-02-01');
+        const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
+        const parcel = Parcels.findOne(Fixture.dummyParcels[3]);
+        const laterpayerPartnerId = Meteor.users.findOne(Fixture.dummyUsers[2]).partnerId(Fixture.demoCommunityId);
+        const formerPayer = Partners.findOne(payerPartner3Id);
+        const laterPayer = Partners.findOne(laterpayerPartnerId);
+        chai.assert.equal(bills.length, 1);
+        assertBillDetails(bills[0], { payerPartnerId: laterpayerPartnerId, linesLength: 1, lineTitle: 'Test absolute', linePeriod: '2018-02' });
+        assertLineDetails(bills[0].lines[0], { uom: 'piece', unitPrice: 500, quantity: 1, localizer: '@A103' });
+        postParcelBillings('2018-02-01');
+        chai.assert.equal(laterPayer.outstanding('member'), bills[0].amount);
+        chai.assert.equal(parcel.outstanding(), bills[0].amount);
         chai.assert.equal(formerPayer.outstanding('member'), 0);
       });
 

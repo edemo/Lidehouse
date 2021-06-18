@@ -180,6 +180,7 @@ Parcels.helpers({
         const payerMembership = this._payerMembership();
         productionAssert(payerMembership, 'Unable to pay for parcel - no owner found', { parcel: this.ref });
         contractSelector.partnerId = payerMembership.partnerId;
+        contractSelector.activeTime = payerMembership.activeTime;
         const contractId = Contracts.insert(contractSelector);
         payerContract = Contracts.findOne(contractId);
         Log.debug('So inserted', payerContract);
