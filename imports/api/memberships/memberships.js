@@ -155,12 +155,13 @@ Memberships.helpers({
   isRepresentor() {
     return (this.ownership && this.ownership.representor);
   },
-  isRepresentedBySomeoneElse() {
+  isVoting() {
     if (!this.ownership) return false;
     debugAssert(this.parcelId);
     const parcel = Parcels.findOne(this.parcelId);
+    if (parcel.isLed()) return false;
     const representor = parcel.representor();
-    if (!representor || representor._id === this._id) return false;
+    if (representor && representor._id !== this._id) return false;
     return true;
   },
   votingUnits() {

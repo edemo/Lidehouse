@@ -5,6 +5,6 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Topics } from '../topics.js';
 
-Meteor.publish('feedbacks.listing', function feedbacksListing() {
-  return Topics.find({ category: 'feedback' });
-});
+// Meteor.publish('feedbacks.listing', function feedbacksListing() {
+//   return Topics.find({ category: 'feedback' });
+// });

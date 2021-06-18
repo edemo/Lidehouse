@@ -18,7 +18,7 @@ export const ActiveTimeMachine = {
         }, {
           $or: [
             { 'activeTime.end': { $exists: false } },
-            { 'activeTime.end': { $gte: time } },
+            { 'activeTime.end': { $gt: time } },
           ],
         }],
       };

@@ -81,15 +81,14 @@ Topics.publicFields = {
 Topics.idSet = ['communityId', 'category', 'serial'];
 
 Meteor.startup(function indexTopics() {
-  Topics.ensureIndex({ agendaId: 1 }, { sparse: true });
+  Topics.ensureIndex({ communityId: 1, agendaId: 1 }, { sparse: true });
+  Topics.ensureIndex({ communityId: 1, category: 1, closed: 1, serial: 1 });
   if (Meteor.isClient && MinimongoIndexing) {
-    Topics._collection._ensureIndex('category');
-    Topics._collection._ensureIndex('closed');
+    Topics._collection._ensureIndex(['category', 'closed']);
     Topics._collection._ensureIndex(['title', 'participantIds']);
   } else if (Meteor.isServer) {
-    Topics._ensureIndex({ communityId: 1, category: 1, serial: 1 });
-    Topics._ensureIndex({ communityId: 1, category: 1, createdAt: -1 });
-    Topics._ensureIndex({ communityId: 1, participantIds: 1 });
+    Topics._ensureIndex({ communityId: 1, category: 1, closed: 1, createdAt: -1 });
+    Topics._ensureIndex({ communityId: 1, participantIds: 1, closed: 1 });
   }
 });
 

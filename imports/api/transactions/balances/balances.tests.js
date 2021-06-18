@@ -14,12 +14,16 @@ if (Meteor.isServer) {
 
   describe('balances', function () {
     this.timeout(15000);
+    let originalAccountToLocalize;
     before(function () {
       Fixture = freshFixture();
+      originalAccountToLocalize = Accounts.toLocalize;
+      Accounts.toLocalize = '`1';
       Templates.remove({});
       Accounts.remove({});
     });
     after(function () {
+      Accounts.toLocalize = originalAccountToLocalize;
     });
 
     describe('api', function () {

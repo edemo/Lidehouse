@@ -111,7 +111,7 @@ Delegations.helpers({
   },
   getAffectedVotings() {
     if (this.scope === 'community') return Topics.find({ communityId: this.scopeObjectId, category: 'vote', closed: false });
-    if (this.scope === 'agenda') return Topics.find({ agendaId: this.scopeObjectId, category: 'vote', closed: false });
+    if (this.scope === 'agenda') return Topics.find({ communityId: this.communityId, agendaId: this.scopeObjectId, category: 'vote', closed: false });
     if (this.scope === 'topic') return Topics.find({ _id: this.scopeObjectId, category: 'vote', closed: false });
     return undefined;
   },

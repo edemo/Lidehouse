@@ -740,6 +740,16 @@ Migrations.add({
 
 Migrations.add({
   version: 42,
+  name: 'Localized account balances only needed for `33',
+  up() {
+    Balances.find({ localizer: { $exists: true } }).forEach(b => {
+      if (!b.account?.startsWith('`33')) Balances.direct.remove(b._id);
+    });
+  },
+});
+
+Migrations.add({
+  version: 43,
   name: 'txId becomes an Array',
   up() {
     StatementEntries.find({ txId: { $exists: true } }).forEach(se => {
@@ -755,7 +765,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 43,
+  version: 44,
   name: 'Calculate tx.reconciled field',
   up() {
     Transactions.find({}).forEach(tx => {
@@ -768,7 +778,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 44,
+  version: 45,
   name: 'Calculate se.reconciled field',
   up() {
     StatementEntries.find({}).forEach(se => {

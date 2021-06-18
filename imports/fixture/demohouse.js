@@ -174,6 +174,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     door: '11',
     type: __('schemaParcels.type.flat'),
     area: 112,
+    volume: 365,
   });
   demoParcels[11] = builder.createProperty({
     units: 444,
@@ -957,6 +958,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       unitPrice: 2500,
     },
     digit: Accounts.findPayinDigitByName('Hidegvíz előírás'),
+    type: ['flat'],
     localizer: '@',
   }));
 
@@ -974,6 +976,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       unitPrice: 75,
     },
     digit: Accounts.findPayinDigitByName('Fűtési díj előírás'),
+    type: ['flat'],
     localizer: '@',
   }));
 
@@ -985,6 +988,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       unitPrice: 75000,
     },
     digit: Accounts.findPayinDigitByName('Rendkivüli befizetés előírás'),
+    type: ['flat', 'shop'],
     localizer: '@',
     notes: __('demo.transactions.notes.0'),
     activeTime: {
