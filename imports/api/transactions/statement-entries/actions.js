@@ -170,11 +170,7 @@ StatementEntries.actions = {
     icon: 'fa fa-times',
     visible: doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
     run() {
-      if (doc.community().settings.paymentsWoStatement) {
-        StatementEntries.methods.unReconcile.call({ _id: doc._id });
-      } else {
-        Transactions.actions.delete({}, doc.transaction()).run();
-      }
+      StatementEntries.methods.unReconcile.call({ _id: doc._id });
     },
   }),
   autoReconcile: (options, doc, user = Meteor.userOrNull()) => ({
@@ -194,7 +190,7 @@ StatementEntries.actions = {
       StatementEntries.methods.recognize.call({ _id: doc._id });
     },
   }),
-  transaction: (options, doc, user = Meteor.userOrNull()) => ({
+/*  transaction: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'transaction',
     label: 'view transaction',
     icon: 'fa fa-eye',
@@ -202,14 +198,27 @@ StatementEntries.actions = {
     run() {
       Transactions.actions.view(options, doc.transaction()).run();
     },
-  }),
+  }),*/
   post: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'post',
     icon: 'fa fa-check-square-o',
     color: 'warning',
-    visible: doc.isReconciled() && !doc.transaction().isPosted() && user.hasPermission('transactions.post', doc),
+    visible: doc.isReconciled() && _.any(doc.reconciledTransactions(), tx => !tx.isPosted()) && user.hasPermission('transactions.post', doc),
     run() {
-      Transactions.actions.post(options, doc.transaction()).run();
+      doc.reconciledTransactions()?.forEach(tx => {
+        if (!tx.isPosted()) Transactions.actions.post(options, tx).run();
+      });
+    },
+  }),
+  deleteTransactions: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'deleteTransactions',
+    label: 'delete',
+    icon: 'fa fa-trash',
+    visible: doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
+    run() {
+      doc.reconciledTransactions()?.forEach(tx => {
+        Transactions.actions.delete({}, tx).run();
+      });
     },
   }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
@@ -228,7 +237,7 @@ StatementEntries.actions = {
 StatementEntries.dummyDoc = {
   communityId: getActiveCommunityId,
   isReconciled() { return false; },
-  transaction() { return { isPosted() { return false; } }; },
+  reconciledTransactions() { return [{ isPosted() { return false; } }]; },
 };
 
 StatementEntries.batchActions = {

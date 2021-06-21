@@ -23,6 +23,21 @@ export function statementEntriesColumns() {
   return columns;
 }
 
+function renderLinkedTransactions(linkedTransactions, renderType, currentRow) {
+  const classes = ['text-capitalize'];
+  if (!linkedTransactions.isReconciledToThisSe) classes.push('text-muted');
+  if (!linkedTransactions.isLive) classes.push('text-italic');
+  const txs = linkedTransactions.txs;
+  let text = '';
+  txs?.forEach(tx => {
+    text += tx.displayInStatement();
+    // Maybe we could put individial buttons to each tx
+    // const buttons = Blaze.renderWithData(Template.Action_buttons_group,
+    //   { doc: tx, collection: 'transactions', actions: 'view,post', size: 'sm' }, cell);
+  });
+  return `<span class="${classes.join(' ')}">${text}</span>`;
+}
+
 export function statementEntriesWithJournalEntriesColumns() {
   const columns = [
     { data: 'valueDate', title: __('schemaStatementEntries.valueDate.label'), render: Render.formatDate },
@@ -36,12 +51,12 @@ export function statementEntriesWithJournalEntriesColumns() {
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'statementEntries', actions: 'reconcile,matchedReconcile,unReconcile', size: 'sm' }, cell),
     },
-//    { data: 'isReconciled()', /* title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
-    { data: '_id', render: Render.actionButtons,
+//    { data: 'isReconciled()', title: __('schemaTransactions.reconciled.label'), render: Render.checkmarkBoolean },
+    { data: 'linkedTransactions()', title: __('schemaTransactions._.label'), render: renderLinkedTransactions },
+    { data: '_id', /*title: `${__('transaction')} ${__('operations')}`,*/ render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'statementEntries', actions: 'transaction,autoReconcile,post', size: 'sm' }, cell),
+        { doc: cellData, collection: 'statementEntries', actions: 'autoReconcile,post,deleteTransactions', size: 'sm' }, cell),
     },
-    { data: 'displayMatch()', title: __('schemaTransactions._.label') },
   ];
 
   return columns;

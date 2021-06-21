@@ -62,34 +62,36 @@ StatementEntries.helpers({
     const reconciled = Math.abs(sumTxAmount) === Math.abs(this.amount);
     return reconciled;
   },
-  reconciledTransaction() {
+  reconciledTransactions() {
     const Transactions = Mongo.Collection.get('transactions');
-    return this.txId?.length && Transactions.findOne(this.txId[0]);
+    if (this.txId?.length) return this.txId.map(id => Transactions.findOne(id));
+    return undefined;
   },
-  transaction() {
-    let tx;
+  linkedTransactions() {
+    const result = {};
     const Transactions = Mongo.Collection.get('transactions');
-    if (this.txId?.length) tx = Transactions.findOne(this.txId[0]);  // first reconciled tx
-    else if (this.match?.txId) tx = Transactions.findOne(this.match.txId);
-    else if (this.match?.tx) {
-      tx = Transactions._transform(this.match.tx);
+    if (this.txId?.length) {
+      result.txs = this.txId.map(id => Transactions.findOne(id));
+      result.isReconciledToThisSe = true;
+      result.isLive = true;
+    } else if (this.match?.txId) {
+      const tx = Transactions.findOne(this.match.txId);
+      result.txs = [tx];
+      result.isReconciledToThisSe = false;
+      result.isLive = true;
+    } else if (this.match?.tx) {
+      const tx = Transactions._transform(this.match.tx);
+      result.txs = [tx];
+      result.isReconciledToThisSe = false;
+      result.isLive = false;
     }
-    return tx;
+    return result;
   },
   impliedRelation() {
     return (this.amount > 0) ? 'customer' : 'supplier';
   },
   display() {
     return `${this.refType || '---'}<br>${this.name}<br>${this.note || ''}`;
-  },
-  displayMatch() {
-    const classes = ['text-capitalize'];
-    if (!this.isReconciled()) classes.push('text-muted');
-    const tx = this.transaction();
-    if (!tx) return '';
-    const text = tx.displayInStatement();
-    if (!tx._id) classes.push('text-italic');
-    return text && `<span class="${classes.join(' ')}">${text}</span>`;
   },
 });
 
