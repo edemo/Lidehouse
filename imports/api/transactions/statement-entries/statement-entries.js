@@ -104,12 +104,10 @@ StatementEntries.simpleSchema().i18n('schemaStatementEntries');
 if (Meteor.isServer) {
   StatementEntries.before.insert(function (userId, doc) {
     const tdoc = this.transform();
-    tdoc.reconciled = tdoc.calculateReconciled();
-    _.extend(doc, tdoc);
+    doc.reconciled = tdoc.calculateReconciled();
   });
 
   StatementEntries.before.update(function (userId, doc, fieldNames, modifier, options) {
-    const tdoc = this.transform();
     autoValueUpdate(StatementEntries, doc, modifier, 'reconciled', d => d.calculateReconciled());
   });
 }

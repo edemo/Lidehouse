@@ -408,7 +408,7 @@ if (Meteor.isServer) {
       newDoc.autoFill?.();
       _.extend(modifier, { $set: newDoc });
       if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
-        || (doc.category === 'payment' && newDoc.bills)) {
+        || (doc.category === 'payment' && (newDoc.bills || newDoc.amount))) {
         autoValueUpdate(Transactions, doc, modifier, 'outstanding', d => d.calculateOutstanding());
       }
     }
@@ -422,6 +422,13 @@ if (Meteor.isServer) {
     if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
       Array.difference(oldDoc.getBills(), newDoc.getBills()).forEach(bp => oldDoc.registerOnBill(bp, -1));
       Array.difference(newDoc.getBills(), oldDoc.getBills()).forEach(bp => newDoc.registerOnBill(bp, +1));
+    }
+    if (modifierChangesField(modifier, ['amount'])) {
+      newDoc.seId?.forEach((id) => {
+        const sE = StatementEntries.findOne(id);
+        const reconciled = sE.calculateReconciled();
+        if (reconciled !== sE.reconciled) StatementEntries.direct.update(id, { $set: { reconciled } });
+      });
     }
     if (modifierChangesField(modifier, ['debit', 'credit', 'postedAt'])) {
       if (oldDoc.postedAt) oldDoc.updateBalances(-1);
