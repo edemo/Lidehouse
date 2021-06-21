@@ -358,9 +358,6 @@
         "label": "Name of the community",
         "placeholder": "(eg. Main street 5)"
       }
-    },
-    "parcelCount" : {
-      "label": "How many flats are in your house? "
     }
   }
 }

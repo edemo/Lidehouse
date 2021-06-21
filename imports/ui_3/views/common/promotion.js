@@ -56,7 +56,6 @@ const schemaQuickCommunityLaunch = new SimpleSchema({
   'admin.email': SimpleSchema.Types.Email(),
   community: { type: Object },
   'community.name': { type: String, max: 100 },
-  parcelCount: { type: Number, max: 1000, optional: true, defaultValue: 100 },
   promoCode: { type: String, autoform: { type: 'hidden' } },
 });
 
@@ -75,9 +74,7 @@ Template.Promotion.events({
         id: 'af.community.launch',
         title: __('promo.OneClickToLaunch'),
         schema: schemaQuickCommunityLaunch,
-        doc: {
-          parcelCount: 100,
-        },
+        doc: {},
         type: 'normal',
         size: 'md',
         btnOK: 'Ház elkészítése',
@@ -89,7 +86,6 @@ Template.Promotion.events({
     }
   },
 });
-
 
 AutoForm.addHooks('af.community.launch', {
   formToDoc(doc) {

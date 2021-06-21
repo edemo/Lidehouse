@@ -360,9 +360,6 @@
         "label": "A társasház neve",
         "placeholder": "(pl. Kankalin utca 4)"
       }
-    },
-    "parcelCount" : {
-      "label": "Hány lakás van ebben a házban? (ennyien csatlakozhatnak majd meghívóval)"
     }
   }
 }
