@@ -150,12 +150,6 @@ export class CommunityBuilder {
       building: 'A',
       volume: 3 * (data.area || 0),
     });
-    const registeredUnits = this.community().registeredUnits();
-    const newUnits = data.units;
-    const totalunits = this.community().totalunits;
-    if (registeredUnits + newUnits > totalunits) {
-      Communities.update({ _id: this.communityId }, { $set: { totalunits: (totalunits + newUnits) } });
-    }
 
     this.nextSerial += 1;
     return this.create('@property', data);

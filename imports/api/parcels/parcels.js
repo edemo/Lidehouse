@@ -214,10 +214,6 @@ Parcels.helpers({
   toString() {
     return this.ref || this.location();
   },
-  totalunits() {
-    const community = this.community();
-    return community && community.totalunits;
-  },
   // Voting
   ledUnits() {
     let cumulatedUnits = 0;
@@ -225,10 +221,10 @@ Parcels.helpers({
     return cumulatedUnits;
   },
   share() {
-    return new Fraction(this.units, this.totalunits());
+    return new Fraction(this.units, this.community().totalUnits());
   },
   ledShare() {
-    return new Fraction(this.ledUnits(), this.totalunits());
+    return new Fraction(this.ledUnits(), this.community().totalUnits());
   },
   ownedShare() {
     let total = new Fraction(0);
@@ -322,8 +318,12 @@ function updateCommunity(parcel, revertSign = 1) {
     modifier.$unset = {};
     modifier.$unset[`parcels.${parcel.type}`] = '';
   } else {
-    modifier.$inc = {};
+    modifier.$inc = modifier.$inc || {};
     modifier.$inc[`parcels.${parcel.type}`] = revertSign;
+  }
+  if (parcel.units) {
+    modifier.$inc = modifier.$inc || {};
+    modifier.$inc.registeredUnits = revertSign * parcel.units;
   }
   Communities.update(parcel.communityId, modifier);
 }

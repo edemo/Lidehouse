@@ -13,17 +13,6 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from './parcels.js';
 
-function checkCommunityParcelsSanity(communityId, parcels) {
-  if (Meteor.isClient) return;
-  const community = Communities.findOne(communityId);
-  let registeredUnits = 0;
-  parcels.find({ communityId }).forEach(p => registeredUnits += p.units);
-  if (registeredUnits > community.totalunits) {
-    throw new Meteor.Error('err_sanityCheckFailed', 'Registered units cannot exceed totalunits of community',
-    `Registered units: ${registeredUnits}, Total units: ${community.totalunits}`);
-  }
-}
-
 export const insert = new ValidatedMethod({
   name: 'parcels.insert',
   validate: doc => Parcels.simpleSchema(doc).validator({ clean: true })(doc),
@@ -44,12 +33,7 @@ export const insert = new ValidatedMethod({
       checkPermissions(this.userId, 'parcels.insert', doc);
     }
 
-    const ParcelsStage = Parcels.Stage();
-    const _id = ParcelsStage.insert(doc);
-    checkCommunityParcelsSanity(doc.communityId, ParcelsStage);
-    ParcelsStage.commit();
-
-    return _id;
+    return Parcels.insert(doc);
   },
 });
 
@@ -69,7 +53,6 @@ export const update = new ValidatedMethod({
     const result = ParcelsStage.update({ _id }, modifier, { selector: doc });
     const newDoc = ParcelsStage.findOne(_id);
     checkUnique(ParcelsStage, newDoc);
-    checkCommunityParcelsSanity(newDoc.communityId, ParcelsStage);
     ParcelsStage.commit();
 
     return result;

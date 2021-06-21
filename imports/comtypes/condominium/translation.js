@@ -67,6 +67,11 @@ export const CondominiumTranslation = {
       },
       "totalunits": {
         "label": "Total shares outstanding",
+        "placeholder": "(eg. 10000)",
+        "help": "If the value is fixed, provide it here. If you don't provide one, the system will calculate it by summing the parcels' units"
+      },
+      "registeredUnits": {
+        "label": "Registered shares",
         "placeholder": "(eg. 10000)"
       },
       "settings": {
@@ -283,7 +288,12 @@ export const CondominiumTranslation = {
       },
       "totalunits": {
         "label": "Összes tulajdoni hányad",
-        "placeholder": "(pl. 1000 vagy 9999)"
+        "placeholder": "(pl. 1000 vagy 9999)",
+        "help": "Ha ez egy fix érték, itt megadhatja. Ha nem ad meg értéket, akkor automatikusan számolja a rendszer az albtetétek hányadainak összegzésével."
+      },
+      "registeredUnits": {
+        "label": "Regisztrált albetétek hányada",
+        "placeholder": "(eg. 10000)"
       },
       "management": {
         "label": "Közös képviselet elérhetősége",

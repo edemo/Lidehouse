@@ -281,6 +281,12 @@
                                 <p> {{community.description}}</p>
                             </div>
                             {{/if}}
+                            <div class="m-t-md">
+                                <p>{{_ 'schemaCommunities.totalunits.label'}}: {{community.totalUnits}}</p>
+                                {{#if (not (equals community.totalUnits community.registeredUnits)) }}
+                                <span class="label label-warning">{{_ 'schemaCommunities.registeredUnits.label'}}: {{community.registeredUnits}}</span>
+                                {{/if}}
+                            </div>
                             <table class="m-t-md" width="100%">
                             <tr>
                                 {{#each parcelTypesWithCount}}

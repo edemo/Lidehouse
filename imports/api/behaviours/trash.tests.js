@@ -26,7 +26,7 @@ if (Meteor.isServer) {
     let supplierId;
     let topicId;
 
-    before(function () {        
+    before(function () {
       Fixture = freshFixture();
       communityId = Fixture.demoCommunityId;
       membershipId = Memberships.findOne()._id;
@@ -36,7 +36,7 @@ if (Meteor.isServer) {
       topicId = Topics.findOne({ communityId, category: 'forum' })._id;
     });
 
-    it('moves deleted document from timestamped collection to trash', function(done){
+    it('moves deleted document from timestamped collection to trash', function (done) {
       const membership = Memberships.findOne(membershipId);
       chai.assert.isDefined(membership);
       Memberships.remove(membershipId);
@@ -44,7 +44,7 @@ if (Meteor.isServer) {
       const removedMembership = Trash.findOne({ id: membership._id });
       chai.assert.isDefined(removedMembership);
       chai.assert.equal(removedMembership.role, membership.role);
-      
+
       const parcel = Parcels.findOne(parcelId);
       chai.assert.isDefined(parcel);
       Parcels.remove(parcelId);
@@ -69,7 +69,7 @@ if (Meteor.isServer) {
       done();
     });
 
-    it('moves deleted topic with its comments to trash', function(done){
+    it('moves deleted topic with its comments to trash', function (done) {
       const topic = Topics.findOne(topicId);
       const comment = Comments.findOne({ topicId });
       chai.assert.isDefined(topic);
@@ -88,7 +88,7 @@ if (Meteor.isServer) {
       done();
     });
 
-    it('can restore parcel from trash', function(done){
+    it('can restore parcel from trash', function (done) {
       const dumpedParcel = Trash.findOne({ collection: 'parcels' });
       const ref = dumpedParcel.ref;
       chai.assert.isUndefined(Parcels.findOne({ communityId, ref }));
@@ -100,7 +100,7 @@ if (Meteor.isServer) {
       done();
     });
 
-    it('removes old document from trash after keep-days and keeps others', function(done){
+    it('removes old document from trash after keep-days and keeps others', function (done) {
       const trashCount = Trash.find().fetch().length;
       Clock.setSimulatedTime(moment().subtract(TRASH_KEEP_DAYS + 1, 'days').toDate());
       const oldTicketId = Fixture.builder.create('issue', { creatorId: userId });

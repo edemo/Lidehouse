@@ -65,7 +65,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     lot: '4532/8',
     avatar: '/images/demohouse.jpg',
     taxNo: '128686-1-41',
-    totalunits: 10000,
     settings: {
       language: lang,
       parcelRefFormat: 'bfdd',
@@ -1339,10 +1338,6 @@ function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   // Purge parcel/membership/partner
   Memberships.remove({ parcelId }); // removing added benefactors as well
   Parcels.remove({ _id: parcelId });
-  const currentTotalunits = Communities.findOne({ _id: communityId }).totalunits;
-  if (currentTotalunits > 10000) {
-    Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
-  }
   Partners.remove({ userId });
   Meteor.users.remove(userId);
 }

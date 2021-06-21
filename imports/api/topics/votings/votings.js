@@ -106,8 +106,8 @@ Topics.categoryHelpers('vote', {
   },
   unitsToShare(units) {
     const community = this.community();
-    const totalunits = community && community.totalunits;
-    const votingShare = new Fraction(units, totalunits);
+    const totalUnits = community && community.totalUnits();
+    const votingShare = new Fraction(units, totalUnits);
     return votingShare;
   },
   voteSuccessLimit() {
@@ -131,7 +131,7 @@ Topics.categoryHelpers('vote', {
     return this.votedPercent() >= this.voteSuccessLimit();
   },
   notVotedUnits() {
-    return this.community().totalunits - this.voteParticipation.units;
+    return this.community().totalUnits() - this.voteParticipation.units;
   },
   notVotedPercent() {
     const nonParticipationShare = this.unitsToShare(this.notVotedUnits());

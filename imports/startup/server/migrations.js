@@ -790,6 +790,18 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 46,
+  name: 'Calculate community.registeredUnits field',
+  up() {
+    Parcels.find({ units: { $exists: true } }).forEach(parcel => {
+      communityId = parcel.communityId;
+      const modifier = { $inc: { registeredUnits: parcel.units } } 
+      Communities.direct.update(communityId, modifier);
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

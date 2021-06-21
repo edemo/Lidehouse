@@ -147,11 +147,6 @@ Memberships.helpers({
     // parcelId is not changeable on the membership, so no need to be reactive here
     return Tracker.nonreactive(() => Parcels.findOne(this.parcelId));
   },
-  totalunits() {
-    const community = this.community();
-    if (!community) return undefined;
-    return community.totalunits;
-  },
   isRepresentor() {
     return (this.ownership && this.ownership.representor);
   },

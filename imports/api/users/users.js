@@ -362,7 +362,7 @@ Meteor.users.helpers({
     const community = Communities.findOne(communityId);
     if (!community) return new Fraction(0);
     const totalVotingUnits = this.totalOwnedUnits(communityId) + this.totalDelegatedToMeUnits(communityId);
-    return new Fraction(totalVotingUnits, community.totalunits);
+    return new Fraction(totalVotingUnits, community.totalUnits());
   },
   hasBlocked(userId) {
     const user = Meteor.users.findOne(userId);

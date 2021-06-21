@@ -87,7 +87,7 @@ Template.Delegations.helpers({
     if (!user || !community) return { labels: [], datasets: [] };
     const unitsOwned = user.totalOwnedUnits(communityId);
     const unitsDelegatedToMe = user.totalDelegatedToMeUnits(communityId);
-    const unitsOthers = community.totalunits - unitsOwned - unitsDelegatedToMe;
+    const unitsOthers = community.totalUnits() - unitsOwned - unitsDelegatedToMe;
     return {
       labels: [__('From ownership'), __('From delegations'), __('Others')],
       datasets: [{

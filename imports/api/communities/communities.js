@@ -41,11 +41,12 @@ Communities.schema = new SimpleSchema([{
 }, comtype().profileSchema, {
   management: { type: String, optional: true, autoform: { type: 'textarea' } },
   taxNo: { type: String, max: 50, optional: true },
-  totalunits: { type: Number },
+  totalunits: { type: Number, optional: true }, // If it is a fixed value, it is provided here
   status: { type: String, allowedValues: Communities.statusValues, defaultValue: 'live', autoform: { type: 'hidden' } },
   settings: { type: Communities.settingsSchema },
   // cached fields:
   parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
+  registeredUnits: { type: Number, defaultValue: 0, autoform: { omit: true } },
   billsUsed: { type: [String], defaultValue: [], allowedValues: Relations.values, autoform: { omit: true } },
 }]);
 
@@ -77,11 +78,8 @@ Communities.helpers({
     const maxSerial = serials.length ? Math.max(...serials) : 0;
     return maxSerial + 1;
   },
-  registeredUnits() {
-    let total = 0;
-    const Parcels = Mongo.Collection.get('parcels');
-    Parcels.find({ communityId: this._id, category: '@property' }).forEach(p => total += p.units);
-    return total;
+  totalUnits() {
+    return this.totalunits || this.registeredUnits;
   },
   displayAddress() {
     return displayAddress(this);
@@ -175,7 +173,6 @@ Factory.define('community', Communities, {
   lot: () => faker.finance.account(6) + '/' + faker.finance.account(4),
   avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
   taxNo: () => faker.finance.account(6) + '-2-42',
-  totalunits: 1000,
   settings: {
     joinable: true,
     language: 'en',

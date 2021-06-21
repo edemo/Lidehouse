@@ -665,7 +665,6 @@
   "Ownership share cannot exceed 1": "Tulajdonrészek összesen nem haladhatják meg az 1-et",
   "Parcel can have only one representor": "Egy albetétnek csak egyetlen képviselője lehet",
   "Parcel cannot have lead and owners at the same time": "Ha az albetétnek vezető albetétje van, akkor nem lehet tulajdonosa megadva",
-  "Registered units cannot exceed totalunits of community": "A ház albetétjeinek tulajdonrésze nem haladja meg a megadott össz tulajdont",
   "No contact email set for this partner": "Ehhez a partnerhez nincs megadva kapcsolati email cím",
   "There is already an other partner connected with a user with this e-mail address in the community": "Ezzel az e-mail címmel már egy van egy felhasználóhoz kapcsolt másik partner a közösségben.", 
   "All paid bills need to have same field": "Minden kifizetett számlának azonos kell legyen a megfelelő mezője",
