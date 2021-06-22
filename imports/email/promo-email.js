@@ -15,7 +15,7 @@ export const Promo_Launch_Link = {
 
   helpers: {
     launchLink() {
-      const link = `https://honline.hu/launch?lang=${this.community.settings.language}&promo=${this.promoCode}&email=${this.admin.email}&name=${this.community.name}`;
+      const link = `https://honline.hu/launch?lang=${this.community.settings.language}&promo=${this.promoCode}&email=${this.admin.email}&name=${this.community.name}&count=${this.parcelCount}`;
       return link;
     },
   },
@@ -26,6 +26,7 @@ export const Promo_Launch_Link = {
       return {
         admin: { email: 'belaba@demo.com' },
         community: { name: 'Kankalin u 8', settings: { language: 'hu' } },
+        parcelCount: 100,
         promoCode: 'covid',
         ...Promo_Launch_Link.layoutData,
       };
