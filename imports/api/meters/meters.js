@@ -135,7 +135,7 @@ Meters.helpers({
       debugAssert(usageDays > 0, 'Reading dates have to monotonically increase');
       const usage = lastReading.value - previousReading.value;
       const elapsedDays = moment(date).diff(moment(lastReading.date), 'days');
-      if (elapsedDays <= 5) estimatedConsumption = 0;
+      if (elapsedDays <= 5 || usage < 0) estimatedConsumption = 0;
       else estimatedConsumption = (usage / usageDays) * elapsedDays;
     }
     return lastReading.value + estimatedConsumption;

@@ -112,6 +112,15 @@ if (Meteor.isServer) {
         chai.assert.equal(meter.getEstimatedValue(new Date('2018-05-21')), 12.5);
       });
 
+      it("Won't estimate negative reading", function () {
+        let meter = Meters.findOne(meterId);
+        chai.assert.deepEqual(meter.lastReading(), { date: new Date('2018-06-06'), value: 15, approved: false });
+        Meters.update({ _id: meterId }, { $push: { readings: { date: new Date('2018-07-05'), value: 12, approved: false }  } });
+        meter = Meters.findOne(meterId);
+        chai.assert.deepEqual(meter.lastReading(), { date: new Date('2018-07-05'), value: 12, approved: false });
+        chai.assert.equal(meter.getEstimatedValue(new Date('2018-07-30')), 12);
+      });
+
       it('Can create new meter /without activeTime - and it starts with 0 at currentDate', function () {
         Clock.setSimulatedTime(new Date());
         const newMeterId = Fixture.builder.create('meter', {
