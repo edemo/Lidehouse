@@ -15,7 +15,7 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
 import { reconciliationSchema } from '/imports/api/transactions/reconciliation/reconciliation.js';
-import '/imports/ui_3/views/components/reconciliation.js';
+import { reconcileSeHandlingErr } from '/imports/ui_3/views/components/reconciliation.js';
 import '/imports/ui_3/views/components/doc-view.js';
 import './methods.js';
 import { Transactions } from '../transactions.js';
@@ -150,14 +150,7 @@ StatementEntries.actions = {
           if (result) {
             Meteor.defer(() => {
               computation.stop();
-              StatementEntries.methods.reconcile.call({ _id: doc._id, txId: result },
-                (err) => {
-                  if (err && result) {
-                    Transactions.methods.remove.call({ _id: result });
-                    displayError(err);
-                    displayMessage('success', __(txdef.category) + ' ' + __('actionDone_remove'));
-                  }
-                });
+              reconcileSeHandlingErr(doc._id, result, txdef.category);
             });
           }
         });
@@ -168,7 +161,7 @@ StatementEntries.actions = {
     name: 'unReconcile',
     label: 'unReconcile',
     icon: 'fa fa-times',
-    visible: doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
+    visible: doc.hasReconciledTx() && user.hasPermission('statements.reconcile', doc),
     run() {
       StatementEntries.methods.unReconcile.call({ _id: doc._id });
     },
@@ -177,7 +170,7 @@ StatementEntries.actions = {
     name: 'autoReconcile',
     icon: 'fa fa-link',
     color: doc.match?.confidence,
-    visible: !doc.isReconciled() && _.contains(['primary', 'success', 'info'], doc.match?.confidence) && user.hasPermission('statements.reconcile', doc),
+    visible: !doc.hasReconciledTx() && _.contains(['primary', 'success', 'info'], doc.match?.confidence) && user.hasPermission('statements.reconcile', doc),
     run() {
       StatementEntries.methods.autoReconcile.call({ _id: doc._id });
     },
@@ -214,7 +207,7 @@ StatementEntries.actions = {
     name: 'deleteTransactions',
     label: 'delete',
     icon: 'fa fa-trash',
-    visible: doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
+    visible: doc.hasReconciledTx() && user.hasPermission('statements.reconcile', doc),
     run() {
       doc.reconciledTransactions()?.forEach(tx => {
         Transactions.actions.delete({}, tx).run();
@@ -237,6 +230,7 @@ StatementEntries.actions = {
 StatementEntries.dummyDoc = {
   communityId: getActiveCommunityId,
   isReconciled() { return false; },
+  hasReconciledTx() { return false; },
   reconciledTransactions() { return [{ isPosted() { return false; } }]; },
 };
 

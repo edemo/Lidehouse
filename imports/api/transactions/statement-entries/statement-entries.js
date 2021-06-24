@@ -53,6 +53,9 @@ StatementEntries.helpers({
   isReconciled() {
     return this.reconciled;
   },
+  hasReconciledTx() {
+    return !!this.txId?.length;
+  },
   calculateReconciled() {
     const Transactions = Mongo.Collection.get('transactions');
     let sumTxAmount = 0;

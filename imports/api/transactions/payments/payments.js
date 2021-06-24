@@ -90,7 +90,6 @@ Payments.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);
 
 const extensionSchema = {
   valueDate: { type: Date }, // same as Tx, but we need the readonly added
-  amount: { type: Number, decimal: true }, // same as Tx, but we need the readonly added
   payAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
   remission: { type: Boolean, optional: true },
 };

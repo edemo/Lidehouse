@@ -8,9 +8,22 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { __ } from '/imports/localization/i18n.js';
 import '/imports/api/transactions/actions.js';
 import '/imports/ui_3/views/components/doc-view.js';
 import './reconciliation.html';
+
+export function reconcileSeHandlingErr(seId, txId, entity) {
+  StatementEntries.methods.reconcile.call({ _id: seId, txId },
+    (err) => {
+      if (err && txId) {
+        Transactions.methods.remove.call({ _id: txId });
+        displayError(err);
+        displayMessage('success', __(entity) + ' ' + __('actions.delete.done'));
+      }
+    });
+}
 
 Template.Reconciliation.viewmodel({
   originalStatementEntry() {
@@ -32,7 +45,7 @@ Template.Reconciliation.onRendered(function () {
     if (result) {
       Meteor.setTimeout(() => {
         computation.stop();
-        StatementEntries.methods.reconcile.call({ _id: se._id, txId: result });
+        reconcileSeHandlingErr(se._id, result, txdef.category);
         Modal.hide(instance.parent(3));
       }, 1000);
     }
