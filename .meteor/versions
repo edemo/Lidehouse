@@ -104,6 +104,8 @@ mdg:validated-method@1.2.0
 mdg:validation-error@0.5.1
 meteor@1.9.3
 meteor-base@1.4.0
+meteorhacks:kadira@2.30.4
+meteorhacks:meteorx@1.4.1
 meteorhacks:picker@1.0.3
 meteorhacks:ssr@2.2.0
 meteorspark:util@0.2.0
@@ -124,6 +126,7 @@ mongo@1.9.0
 mongo-decimal@0.1.1
 mongo-dev-server@1.1.0
 mongo-id@1.0.7
+mongo-livedata@1.0.12
 mrt:jquery-ui@1.9.2
 mrt:jquery-ui-sortable@1.10.3
 mrt:later@1.6.1
