@@ -13,6 +13,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@antoineschaller/kadira": "^1.0.1",
     "@babel/runtime": "^7.9.6",
     "autoprefixer": "^6.4.1",
     "bcrypt": "^4.0.1",
