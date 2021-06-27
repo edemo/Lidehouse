@@ -45,7 +45,9 @@ Template.Reconciliation.onRendered(function () {
     if (result) {
       Meteor.setTimeout(() => {
         computation.stop();
-        reconcileSeHandlingErr(se._id, result, txdef.category);
+        if (!Transactions.findOne(result).reconciled) {  // runs again because of ModalStack pop, second reconcile would throw error
+          reconcileSeHandlingErr(se._id, result, txdef.category);
+        }
         Modal.hide(instance.parent(3));
       }, 1000);
     }

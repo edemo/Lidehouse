@@ -136,7 +136,7 @@ export const reconcile = new ValidatedMethod({
       }
     }
     Transactions.update(txId, { $push: { seId: _id }, $set: { contractId: newContractId } });
-    StatementEntries.update(_id, { $push: { txId } }); //, $unset: { match: '' }
+    StatementEntries.update(_id, { $push: { txId }, $unset: { match: '' } });
   },
 });
 
@@ -168,6 +168,12 @@ export const autoReconcile = new ValidatedMethod({
     checkPermissions(this.userId, 'statements.reconcile', entry);
     if (entry.match?.confidence === 'primary' || entry.match?.confidence === 'success' || entry.match?.confidence === 'info') {
       let txId = entry.match.txId;
+      if (Meteor.isServer) {
+        if (txId && !Transactions.findOne(txId)) {
+          StatementEntries.methods.recognize._execute({ userId: this.userId }, { _id });
+          throw new Meteor.Error('err_notExists', 'Transaction was removed');
+        }
+      }
       if (!txId && entry.match.tx) {
         txId = Transactions.methods.insert._execute({ userId: this.userId }, entry.match.tx);
       }

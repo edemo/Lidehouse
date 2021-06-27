@@ -79,6 +79,10 @@ StatementEntries.helpers({
       result.isLive = true;
     } else if (this.match?.txId) {
       const tx = Transactions.findOne(this.match.txId);
+      if (!tx) {
+        StatementEntries.methods.recognize.call({ _id: this._id });
+        return result;
+      }
       result.txs = [tx];
       result.isReconciledToThisSe = false;
       result.isLive = true;
