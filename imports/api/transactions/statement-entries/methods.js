@@ -170,6 +170,7 @@ export const autoReconcile = new ValidatedMethod({
       let txId = entry.match.txId;
       if (Meteor.isServer) {
         if (txId && !Transactions.findOne(txId)) {
+          StatementEntries.update(_id, { $unset: { match: '' } });
           StatementEntries.methods.recognize._execute({ userId: this.userId }, { _id });
           throw new Meteor.Error('err_notExists', 'Transaction was removed');
         }
