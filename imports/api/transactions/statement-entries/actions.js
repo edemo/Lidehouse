@@ -274,7 +274,16 @@ AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.create', 'af.sta
 
 AutoForm.addHooks('af.statementEntry.reconcile', {
   formToDoc(doc) {
-    doc._id = ModalStack.getVar('statementEntry')._id;
+    const entry = ModalStack.getVar('statementEntry');
+    doc._id = entry._id;
+    if ((!entry.txId || entry.txId.length === 0) && Transactions.findOne(doc.txId).amount < entry.amount) {
+      Modal.confirmAndCall(StatementEntries.methods.reconcile, doc, {
+        action: 'reconcile',
+        entity: 'statementEntry',
+        message: 'The entry amount will not be fully reconciled',
+      }, (res) => { if (res) Modal.hide(this.template.parent()); });
+      return false;
+    }
     return doc;
   },
 });
