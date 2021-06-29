@@ -172,7 +172,10 @@ StatementEntries.actions = {
     color: doc.match?.confidence,
     visible: !doc.hasReconciledTx() && _.contains(['primary', 'success', 'info'], doc.match?.confidence) && user.hasPermission('statements.reconcile', doc),
     run() {
-      StatementEntries.methods.autoReconcile.call({ _id: doc._id });
+      StatementEntries.methods.autoReconcile.call({ _id: doc._id },
+        (err) => {
+          if (err) displayError(err);
+        });
     },
   }),
   recognize: (options, doc, user = Meteor.userOrNull()) => ({
