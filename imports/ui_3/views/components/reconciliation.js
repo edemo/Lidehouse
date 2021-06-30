@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
+import { Session } from 'meteor/session';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -53,7 +54,12 @@ Template.Reconciliation.onRendered(function () {
     }
     const communityId = txdef.communityId;
     const hasSuchUnreconciledTx = Transactions.findOne({ communityId, defId, status: { $ne: 'void' }, reconciled: false });
-    if (!hasSuchUnreconciledTx) {
+    const reconciledFromList = Session.get('reconciledFromList');
+    if (reconciledFromList) { // in case there was only one tx in the list which has been reconciled now
+      computation.stop();
+      Meteor.setTimeout(() => { Session.set('reconciledFromList'); }, 1000);
+    }
+    if (!hasSuchUnreconciledTx && !reconciledFromList) {
       if (!instance.data.newTransactionLaunched) {
         instance.data.newTransactionLaunched = true;
         const newTx = {}; Transactions.setTxdef(newTx, txdef);

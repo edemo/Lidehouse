@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { Session } from 'meteor/session';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -279,14 +280,27 @@ AutoForm.addHooks('af.statementEntry.reconcile', {
   formToDoc(doc) {
     const entry = ModalStack.getVar('statementEntry');
     doc._id = entry._id;
-    if ((!entry.txId || entry.txId.length === 0) && Transactions.findOne(doc.txId).amount < entry.amount) {
-      Modal.confirmAndCall(StatementEntries.methods.reconcile, doc, {
-        action: 'reconcile',
-        entity: 'statementEntry',
-        message: 'The entry amount will not be fully reconciled',
-      }, (res) => { if (res) Modal.hide(this.template.parent()); });
-      return false;
-    }
     return doc;
+  },
+  before: {
+    'method'(doc) {
+      const entry = ModalStack.getVar('statementEntry');
+      if ((!entry.txId || entry.txId.length === 0) && doc.txId && Transactions.findOne(doc.txId).amount < entry.amount) {
+        Modal.confirmAndCall(StatementEntries.methods.reconcile, doc, {
+          action: 'reconcile',
+          entity: 'statementEntry',
+          message: 'The entry amount will not be fully reconciled',
+        }, (res) => { if (res) {
+          Session.set('reconciledFromList', true);
+          Modal.hide(this.template.parent());
+        }
+        });
+        return false;
+      }
+      return doc;
+    },
+  },
+  onSuccess(formType, result) {
+    Session.set('reconciledFromList', true);
   },
 });
