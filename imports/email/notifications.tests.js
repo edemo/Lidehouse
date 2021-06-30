@@ -347,9 +347,10 @@ if (Meteor.isServer) {
           },
         };
         admin = { email: 'promoAdmin@promoemail.hu', language: 'hu' };
+        const parcelCount = 100;
         promoCode = 'covid';
 
-        Meteor.call('communities.launchMail', { community, admin, promoCode });
+        Meteor.call('communities.launchMail', { community, admin, parcelCount, promoCode });
         sinon.assert.calledOnce(EmailSender.send);
         sinon.assert.calledWithMatch(EmailSender.send, { to: admin.email });
         sinon.assert.calledWithMatch(EmailSender.send, { template: 'Promo_Launch_Link' });
@@ -359,6 +360,7 @@ if (Meteor.isServer) {
       it('Sends promo invitation link in email when launching community from promo', function () {
         _.extend(community, {
           status: 'sandbox',
+          totalunits: 10000,
           city: '?-város',
           street: '?-utca',
           number: '?-szám',

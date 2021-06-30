@@ -175,9 +175,9 @@ Topics.helpers({
   isRelevantTo(userId) {
     if (this.category === 'ticket') { // tickets are only relevant to members with parcels located within the ticket localizer
       const user = Meteor.users.findOne(userId);
-      if (user.hasPermission('ticket.statusChange', this)) return true;
+      if (userId === this.creatorId || user.hasPermission('ticket.statusChange', this)) return true;
       const localizer = this.ticket?.localizer;
-      if (!localizer) return true;
+      if (!localizer) return false;
       else {
         const parcelCodes = user.memberships(this.communityId).map(m => m.parcel()?.code);
         return _.any(parcelCodes, code => code.startsWith(localizer));

@@ -60,6 +60,7 @@ const launchMail = new ValidatedMethod({
     'community.settings.language': { type: String },
     admin: { type: Object },
     'admin.email': { type: String },
+    parcelCount: { type: Number },
     promoCode: { type: String },
   }).validator({ clean: true }),
 
