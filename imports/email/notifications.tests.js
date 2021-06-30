@@ -68,7 +68,7 @@ if (Meteor.isServer) {
       before(function () {
         Topics.remove({});
         topicId = Fixture.builder.create('forum', { creatorId: ownerWithNotiFrequent._id });
-        ticketId = Fixture.builder.create('issue', { creatorId: demoManager._id });
+        ticketId = Fixture.builder.create('issue', { creatorId: demoManager._id, 'ticket.localizer': '@' });
       });
 
       it('New users get all the past events in one bunch', function () {
