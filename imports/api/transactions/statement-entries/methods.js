@@ -361,17 +361,20 @@ export const recognize = new ValidatedMethod({
         amountToFill -= amount;
       });
       if (amountToFill > 0) { */
+      const localizer = contract?.accounting?.localizer;
+      let confidence = 'info';
+      if (relation === 'member' && !localizer) confidence = 'warning';
       tx.lines = [
         Object.cleanUndefined({
           amount: amountToFill,
           account: contract?.accounting?.account || paymentDef.conteerCodes()[0],
-          localizer: contract?.accounting?.localizer,
+          localizer,
         }),
       ];
       // }
       Log.info('Info match with bills', matchingBills.length);
       Log.debug(tx);
-      StatementEntries.update(_id, { $set: { match: { confidence: 'info', tx } } });
+      StatementEntries.update(_id, { $set: { match: { confidence, tx } } });
     }
   },
 });
