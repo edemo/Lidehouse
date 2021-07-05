@@ -70,6 +70,18 @@ StatementEntries.helpers({
     if (this.txId?.length) return this.txId.map(id => Transactions.findOne(id));
     return undefined;
   },
+  reconciledAmount() {
+    let reconciledAmount = 0;
+    const Transactions = Mongo.Collection.get('transactions');
+    this.txId?.forEach(_id => {
+      const tx = Transactions.findOne(_id);
+      if (tx) reconciledAmount += tx.amount * tx.relationSign();
+    });
+    return reconciledAmount;
+  },
+  unreconciledAmount() {
+    return this.amount - this.reconciledAmount();
+  },
   linkedTransactions() {
     const result = {};
     const Transactions = Mongo.Collection.get('transactions');

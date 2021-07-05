@@ -14,6 +14,8 @@ import { importCollectionFromFile } from '/imports/ui_3/views/components/import-
 import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+
 import '/imports/ui_3/views/components/transaction-view.js';
 import '/imports/ui_3/views/components/bill-view.js';
 import '/imports/ui_3/views/components/bill-edit.js';
@@ -59,10 +61,11 @@ Transactions.actions = {
       const entity = figureOutEntity(options, doc);
       doc = Transactions._transform(doc);
       const fillFromStatementEntry = function fillFromStatementEntry(instance) {
-        const statementEntry = ModalStack.getVar('statementEntry');
+        let statementEntry = ModalStack.getVar('statementEntry');
         if (statementEntry) {
           const formId = instance.data.id;
           const doc = Transactions._transform(AutoForm.getDoc(formId));
+          statementEntry = StatementEntries._transform(statementEntry);
           doc.fillFromStatementEntry(statementEntry);
           AutoForm.setDoc(doc, formId);
         }

@@ -42,12 +42,12 @@ Template.Reconciliation.onRendered(function () {
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return;
     const txdef = Txdefs.findOne(defId);
-    const result = ModalStack.readResult('af.statementEntry.reconcile', `af.${txdef.category}.create`);
-    if (result) {
+    const newCreatedTxId = ModalStack.readResult('af.statementEntry.reconcile', `af.${txdef.category}.create`);
+    if (newCreatedTxId) {
       Meteor.setTimeout(() => {
         computation.stop();
-        if (!Transactions.findOne(result).reconciled) {  // runs again because of ModalStack pop, second reconcile would throw error
-          reconcileSeHandlingErr(se._id, result, txdef.category);
+        if (!Transactions.findOne(newCreatedTxId).reconciled) {  // runs again because of ModalStack pop, second reconcile would throw error
+          reconcileSeHandlingErr(se._id, newCreatedTxId, txdef.category);
         }
         Modal.hide(instance.parent(3));
       }, 1000);

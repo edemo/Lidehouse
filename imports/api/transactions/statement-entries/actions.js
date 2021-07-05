@@ -7,7 +7,7 @@ import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { displayError, handleError } from '/imports/ui_3/lib/errors.js';
 import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
@@ -173,10 +173,7 @@ StatementEntries.actions = {
     color: doc.match?.confidence,
     visible: !doc.hasReconciledTx() && _.contains(['primary', 'success', 'info'], doc.match?.confidence) && user.hasPermission('statements.reconcile', doc),
     run() {
-      StatementEntries.methods.autoReconcile.call({ _id: doc._id },
-        (err) => {
-          if (err) displayError(err);
-        });
+      StatementEntries.methods.autoReconcile.call({ _id: doc._id }, handleError);
     },
   }),
   recognize: (options, doc, user = Meteor.userOrNull()) => ({
@@ -285,11 +282,11 @@ AutoForm.addHooks('af.statementEntry.reconcile', {
   before: {
     'method'(doc) {
       const entry = ModalStack.getVar('statementEntry');
-      if ((!entry.txId || entry.txId.length === 0) && doc.txId && Transactions.findOne(doc.txId).amount < entry.amount) {
+      if (!entry.txId?.length && doc.txId && Transactions.findOne(doc.txId).amount !== entry.amount) {
         Modal.confirmAndCall(StatementEntries.methods.reconcile, doc, {
           action: 'reconcile',
           entity: 'statementEntry',
-          message: 'The entry amount will not be fully reconciled',
+          message: 'The transaction amount does not match the entry amount',
         }, (res) => { if (res) {
           Session.set('reconciledFromList', true);
           Modal.hide(this.template.parent());

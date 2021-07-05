@@ -709,7 +709,7 @@
   "Opening tx has cannot have multiple choices for the opposite account": "A nyitó tranzakció ellenoldali számláján nem lehet egynél több tétel",
   "Could not find parcel - Please check if parcel ref matches the building+floor+door exactly": "Nem található az albetét - Kérjük ellenőrizze, hogy az azonosító egyezezik-e az épület+emelet+ajtó számmal",
   "A billing needs at least one of consumption or projection": "Az előírásnak legalább egy fogyasztási vagy vetítési előírást tartalmaznia kell",
-  "The entry amount will not be fully reconciled": "Nem a teljes kivonat tétel összeg kerül egyeztetésre",
+  "The transaction amount does not match the entry amount": "Nem egyezik a tranzakció összege a kivonat tétel összegével",
   "Unknown parcel ref format": "Ismeretlen albetét azonosító formátum",
   "Invalid parcel ref": "Érvénytelen albetét azonosító",
   "Invalid date in import": "Érvénytelen dátum az importálásban",

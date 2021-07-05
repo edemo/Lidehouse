@@ -60,19 +60,15 @@ function checkReconcileMatch(entry, transaction) {
     throw new Meteor.Error('err_notAllowed', 'Cannot reconcile entry with transaction - values not match', { mismatch, txVal, entryVal });
   }
   if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate', entry.valueDate, transaction.valueDate);
-  let sumTxAmount = 0;
-  let totalTxAmount;
+  let resultAmount;
   switch (transaction.category) {
     case 'payment':
     case 'receipt':
-      entry.txId?.forEach(_id => {
-        sumTxAmount += Transactions.findOne(_id)?.amount;
-      });
-      totalTxAmount = transaction.amount + sumTxAmount;
-      if ((totalTxAmount >= 0 && totalTxAmount > (transaction.relationSign() * entry.amount))
-       || (totalTxAmount < 0 && totalTxAmount < (transaction.relationSign() * entry.amount))) {
-        throwMatchError('amount', entry.amount, totalTxAmount);
-      }
+/*       resultAmount = transaction.amount + entry.reconciledAmount();
+      if ((resultAmount >= 0 && resultAmount > (transaction.relationSign() * entry.amount))
+       || (resultAmount < 0 && resultAmount < (transaction.relationSign() * entry.amount))) {
+        throwMatchError('amount', entry.amount, resultAmount);
+      } */
     //  if (!equalWithinRounding(transaction.amount, transaction.relationSign() * entry.amount)) throwMatchError('amount', entry.amount, transaction.amount);
       if (transaction.payAccount !== entry.account) throwMatchError('account', entry.account, transaction.payAccount);
   //  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
