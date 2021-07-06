@@ -53,6 +53,9 @@ StatementEntries.helpers({
   isReconciled() {
     return this.reconciled;
   },
+  hasReconciledTx() {
+    return !!this.txId?.length;
+  },
   calculateReconciled() {
     const Transactions = Mongo.Collection.get('transactions');
     let sumTxAmount = 0;
@@ -67,6 +70,18 @@ StatementEntries.helpers({
     if (this.txId?.length) return this.txId.map(id => Transactions.findOne(id));
     return undefined;
   },
+  reconciledAmount() {
+    let reconciledAmount = 0;
+    const Transactions = Mongo.Collection.get('transactions');
+    this.txId?.forEach(_id => {
+      const tx = Transactions.findOne(_id);
+      if (tx) reconciledAmount += tx.amount * tx.relationSign();
+    });
+    return reconciledAmount;
+  },
+  unreconciledAmount() {
+    return this.amount - this.reconciledAmount();
+  },
   linkedTransactions() {
     const result = {};
     const Transactions = Mongo.Collection.get('transactions');
@@ -76,6 +91,10 @@ StatementEntries.helpers({
       result.isLive = true;
     } else if (this.match?.txId) {
       const tx = Transactions.findOne(this.match.txId);
+      if (!tx) {
+        StatementEntries.methods.recognize.call({ _id: this._id });
+        return result;
+      }
       result.txs = [tx];
       result.isReconciledToThisSe = false;
       result.isLive = true;

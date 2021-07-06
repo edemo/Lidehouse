@@ -54,16 +54,22 @@ export const update = new ValidatedMethod({
 
 function checkReconcileMatch(entry, transaction) {
   function throwMatchError(mismatch, entryVal, txVal) {
-    Log.info('Reconcliatin mismatch', JSON.stringify(mismatch));
+    Log.info('Reconciliaton mismatch', JSON.stringify(mismatch));
     Log.info('entry', JSON.stringify(entry));
     Log.info('transaction', JSON.stringify(transaction));
     throw new Meteor.Error('err_notAllowed', 'Cannot reconcile entry with transaction - values not match', { mismatch, txVal, entryVal });
   }
   if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate', entry.valueDate, transaction.valueDate);
+  let resultAmount;
   switch (transaction.category) {
     case 'payment':
     case 'receipt':
-      if (!equalWithinRounding(transaction.amount, transaction.relationSign() * entry.amount)) throwMatchError('amount', entry.amount, transaction.amount);
+/*       resultAmount = transaction.amount + entry.reconciledAmount();
+      if ((resultAmount >= 0 && resultAmount > (transaction.relationSign() * entry.amount))
+       || (resultAmount < 0 && resultAmount < (transaction.relationSign() * entry.amount))) {
+        throwMatchError('amount', entry.amount, resultAmount);
+      } */
+    //  if (!equalWithinRounding(transaction.amount, transaction.relationSign() * entry.amount)) throwMatchError('amount', entry.amount, transaction.amount);
       if (transaction.payAccount !== entry.account) throwMatchError('account', entry.account, transaction.payAccount);
   //  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
       break;
@@ -126,7 +132,7 @@ export const reconcile = new ValidatedMethod({
       }
     }
     Transactions.update(txId, { $push: { seId: _id }, $set: { contractId: newContractId } });
-    StatementEntries.update(_id, { $push: { txId } }); //, $unset: { match: '' }
+    StatementEntries.update(_id, { $push: { txId }, $unset: { match: '' } });
   },
 });
 
@@ -158,6 +164,13 @@ export const autoReconcile = new ValidatedMethod({
     checkPermissions(this.userId, 'statements.reconcile', entry);
     if (entry.match?.confidence === 'primary' || entry.match?.confidence === 'success' || entry.match?.confidence === 'info') {
       let txId = entry.match.txId;
+      if (Meteor.isServer) {
+        if (txId && !Transactions.findOne(txId)) {
+          StatementEntries.update(_id, { $unset: { match: '' } });
+          StatementEntries.methods.recognize._execute({ userId: this.userId }, { _id });
+          throw new Meteor.Error('err_notExists', 'Transaction was removed');
+        }
+      }
       if (!txId && entry.match.tx) {
         txId = Transactions.methods.insert._execute({ userId: this.userId }, entry.match.tx);
       }
@@ -344,17 +357,20 @@ export const recognize = new ValidatedMethod({
         amountToFill -= amount;
       });
       if (amountToFill > 0) { */
+      const localizer = contract?.accounting?.localizer;
+      let confidence = 'info';
+      if (relation === 'member' && !localizer) confidence = 'warning';
       tx.lines = [
         Object.cleanUndefined({
           amount: amountToFill,
           account: contract?.accounting?.account || paymentDef.conteerCodes()[0],
-          localizer: contract?.accounting?.localizer,
+          localizer,
         }),
       ];
       // }
       Log.info('Info match with bills', matchingBills.length);
       Log.debug(tx);
-      StatementEntries.update(_id, { $set: { match: { confidence: 'info', tx } } });
+      StatementEntries.update(_id, { $set: { match: { confidence, tx } } });
     }
   },
 });

@@ -133,11 +133,11 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.partner().outstanding('supplier'), 200 + 0);
       });
 
-      it('Can NOT reconcile statementEntry with different relation, amount or date', function () {
+      it('Can NOT reconcile statementEntry with different account, date or smaller amount', function () {
         Fixture.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: '`381' });
         bill = Transactions.findOne(billId);
         const txId = bill.getPayments()[0].id;
-/*        
+/*
         const entryIdWrongRelation = Fixture.builder.create('statementEntry', {
           account: '`381',
           valueDate: Clock.currentDate(),
@@ -158,14 +158,14 @@ if (Meteor.isServer) {
           Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAccount, txId });
         }, 'err_notAllowed');
 
-        const entryIdWrongAmount = Fixture.builder.create('statementEntry', {
+        const entryIdSmallerAmount = Fixture.builder.create('statementEntry', {
           account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
-          amount: -110,
+          amount: -80,
         });
         chai.assert.throws(() => {
-          Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAmount, txId });
+          Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdSmallerAmount, txId });
         }, 'err_notAllowed');
 
         const entryIdWrongSign = Fixture.builder.create('statementEntry', {
@@ -201,9 +201,6 @@ if (Meteor.isServer) {
         let entry = StatementEntries.findOne(entryId);
         chai.assert.equal(entry.isReconciled(), false);
 
-//        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId2 });
-//        entry2 = StatementEntries.findOne(entryId2);
-//        chai.assert.equal(entry2.match.billId, billId);
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
         entry = StatementEntries.findOne(entryId);
         chai.assert.equal(entry.isReconciled(), false);
@@ -332,6 +329,31 @@ if (Meteor.isServer) {
         chai.assert.equal(bill2.outstanding, 0);
         Fixture.builder.execute(Transactions.methods.post, { _id: bill2.getPayments()[0].id });
         chai.assert.equal(bill2.partner().outstanding('supplier'), 0);
+      });
+
+      it('Can reconcile two payments to one statementEntry', function () {
+        const paymentId1 = Fixture.builder.create('payment', { bills: [{ id: billId, amount: 300 }], amount: 300, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: '`381' });
+        const paymentId2 = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 200,
+          valueDate: Clock.currentDate(),
+          payAccount: '`381',
+          partnerId: Fixture.customer,
+          lines: [{ account: '`861', amount: 200 }],
+        });
+        const entryId = Fixture.builder.create('statementEntry', {
+          account: '`381',
+          valueDate: Clock.currentDate(),
+          amount: -500,
+        });
+        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId, txId: paymentId1 });
+        let entry = StatementEntries.findOne(entryId);
+        chai.assert.isFalse(entry.isReconciled());
+        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId, txId: paymentId2 });
+        entry = StatementEntries.findOne(entryId);
+        chai.assert.isTrue(entry.isReconciled());
+        chai.assert.isTrue(Transactions.findOne(paymentId1).isReconciled());
+        chai.assert.isTrue(Transactions.findOne(paymentId2).isReconciled());
       });
     });
 

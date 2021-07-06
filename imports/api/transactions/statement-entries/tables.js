@@ -29,8 +29,9 @@ function renderLinkedTransactions(linkedTransactions, renderType, currentRow) {
   if (!linkedTransactions.isLive) classes.push('text-italic');
   const txs = linkedTransactions.txs;
   let text = '';
-  txs?.forEach(tx => {
+  txs?.forEach((tx, i, array) => {
     text += tx.displayInStatement();
+    if (i < array.length - 1) text += ', ';
     // Maybe we could put individial buttons to each tx
     // const buttons = Blaze.renderWithData(Template.Action_buttons_group,
     //   { doc: tx, collection: 'transactions', actions: 'view,post', size: 'sm' }, cell);

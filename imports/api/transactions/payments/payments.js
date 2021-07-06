@@ -90,7 +90,6 @@ Payments.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);
 
 const extensionSchema = {
   valueDate: { type: Date }, // same as Tx, but we need the readonly added
-  amount: { type: Number, decimal: true }, // same as Tx, but we need the readonly added
   payAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
   remission: { type: Boolean, optional: true },
 };
@@ -232,7 +231,7 @@ Transactions.categoryHelpers('payment', {
     }
   },
   fillFromStatementEntry(entry) {
-    this.amount = entry.amount * Relations.sign(this.relation);
+    this.amount = entry.unreconciledAmount() * this.relationSign();
     this.payAccount = entry.account;
     if (!this.bills && !this.lines) this.lines = [{ amount: this.amount }];
   },
