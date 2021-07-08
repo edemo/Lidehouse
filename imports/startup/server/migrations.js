@@ -30,6 +30,7 @@ import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
+import { updateMyLastSeen } from '/imports/api/users/methods.js';
 
 import '/imports/api/transactions/accounts/template.js';
 
@@ -798,6 +799,30 @@ Migrations.add({
       communityId = parcel.communityId;
       const modifier = { $inc: { registeredUnits: parcel.units } } 
       Communities.direct.update(communityId, modifier);
+    });
+  },
+});
+
+Migrations.add({
+  version: 47,
+  name: 'Merge double room topics',
+  up() {
+    const possibleDoubles = Topics.find({ category: 'room', updatedAt: { $gte: new Date('2021-06-15') }, commentCounter: { $gte: 1 } });
+    possibleDoubles.forEach((room) => {
+      const participant1 = room.participantIds[0];
+      const participant2 = room.participantIds[1];
+      const original = Topics.find({ participantIds: { $all: [participant1, participant2] }, title: room.title }, { sort: { createdAt: 1 } }).fetch()[0];
+      const originalId = original._id;
+      if (room._id === originalId) return;
+      room.comments().forEach((comment) => {
+        Comments.update(comment._id, { $set: { topicId: originalId } });
+      });
+      const timestamp = Comments.find({ topicId: originalId }, { sort: { createdAt: -1 } }).fetch()[0]?.createdAt || original.createdAt;
+      [participant1, participant2].forEach((userId) => {
+        updateMyLastSeen._execute({ userId },
+          { topicId: originalId, lastSeenInfo: { timestamp } });
+      });
+      Topics.direct.remove(room._id);
     });
   },
 });
