@@ -28,6 +28,10 @@ Template.Bill_edit.viewmodel({
   isBill() {
     return this.templateInstance.data.doc.category === 'bill';
   },
+  lineHasField(index, field) {
+    const doc = this.afDoc();
+    return !!doc.lines[index]?.[field];
+  },
 /*  showContractField() {
     const doc = this.afDoc();
     const partnerId = AutoForm.getFieldValue('partnerId');
