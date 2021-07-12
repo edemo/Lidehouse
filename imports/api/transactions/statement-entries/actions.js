@@ -204,6 +204,17 @@ StatementEntries.actions = {
       });
     },
   }),
+  viewTransactions: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'viewTransactions',
+    label: 'view',
+    icon: 'fa fa-eye',
+    visible: doc.hasReconciledTx() && user.hasPermission('statements.reconcile', doc),
+    run() {
+      doc.reconciledTransactions()?.forEach(tx => {
+        Transactions.actions.view({}, tx).run();
+      });
+    },
+  }),
   deleteTransactions: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'deleteTransactions',
     label: 'delete',

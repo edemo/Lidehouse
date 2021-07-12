@@ -31,7 +31,7 @@ function renderLinkedTransactions(linkedTransactions, renderType, currentRow) {
   let text = '';
   txs?.forEach((tx, i, array) => {
     text += tx.displayInStatement();
-    if (i < array.length - 1) text += ', ';
+    if (i < array.length - 1) text += ',<br>';
     // Maybe we could put individial buttons to each tx
     // const buttons = Blaze.renderWithData(Template.Action_buttons_group,
     //   { doc: tx, collection: 'transactions', actions: 'view,post', size: 'sm' }, cell);
@@ -56,7 +56,7 @@ export function statementEntriesWithJournalEntriesColumns() {
     { data: 'linkedTransactions()', title: __('schemaTransactions._.label'), render: renderLinkedTransactions },
     { data: '_id', /*title: `${__('transaction')} ${__('operations')}`,*/ render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'statementEntries', actions: 'autoReconcile,post,deleteTransactions', size: 'sm' }, cell),
+        { doc: cellData, collection: 'statementEntries', actions: 'viewTransactions,autoReconcile,post,deleteTransactions', size: 'sm' }, cell),
     },
   ];
 
