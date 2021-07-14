@@ -44,11 +44,9 @@ Template.Reconciliation.onRendered(function () {
     const txdef = Txdefs.findOne(defId);
     const newCreatedTxId = ModalStack.readResult('af.statementEntry.reconcile', `af.${txdef.category}.create`);
     if (newCreatedTxId) {
+      computation.stop();
       Meteor.setTimeout(() => {
-        computation.stop();
-        if (!Transactions.findOne(newCreatedTxId).reconciled) {  // runs again because of ModalStack pop, second reconcile would throw error
-          reconcileSeHandlingErr(se._id, newCreatedTxId, txdef.category);
-        }
+        reconcileSeHandlingErr(se._id, newCreatedTxId, txdef.category);
         Modal.hide(instance.parent(3));
       }, 1000);
     }
