@@ -31,7 +31,7 @@ export class BatchMethod extends ValidatedMethod {
 //        checkPermissions(userId, method.name, { communityId });  // Whoever has perm for the method, can do it in batch as well
         const results = [];
         const errors = [];
-        args.forEach((arg) => {
+        args.forEach((arg, index) => {
           try {
             const res = method._execute({ userId }, arg);
 //            Log.info("successful batch call", arg);
@@ -39,7 +39,7 @@ export class BatchMethod extends ValidatedMethod {
           } catch (err) {
             if (err.error === 'err_permissionDenied') throw err; // The batch method continues exectuing even after an error. Just collects all errors on the way
             Log.error(err);
-            errors.push(err);
+            errors[index] = err;
           }
         });
 //        PerformanceLogger.stopAggregation();

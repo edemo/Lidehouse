@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 
 function bundle(array, fieldName) {
   let result = '';
-  array.forEach((elem, index) => { result += `[${index}] ${elem[fieldName]} `; });
+  array.forEach((elem, index) => { result += `[${index}] ${JSON.stringify(elem[fieldName])} `; });
   return result;
 }
 
