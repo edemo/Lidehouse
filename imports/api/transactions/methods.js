@@ -3,6 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import rusdiff from 'rus-diff';
+import { moment } from 'meteor/momentjs:moment';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
@@ -131,7 +132,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Transactions, _id);
     checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'transactions.update', doc);
-    if (doc.isPosted()) {
+    if (doc.isPosted() && doc.isPetrified()) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
     }
     let newDoc = rusdiff.clone(doc);
@@ -145,7 +146,12 @@ export const update = new ValidatedMethod({
       }
     });
 
-    return Transactions.update({ _id }, modifier, { selector: doc });
+    const result = Transactions.update({ _id }, modifier, { selector: doc });
+    if (doc.isPosted()) { // If doc was posted already, resposting is needed, because the accounting might have changed
+      post._execute({ userId: this.userId }, { _id });
+    }
+
+    return result;
   },
 });
 

@@ -691,6 +691,7 @@
   "Partners are connected to different users" : "A partnerek különböző felhasználókhoz kapcsolódnak!",
   "Supplier bill is not from a supplier": "A bejövő számla nem szállítótól származik",
   "Customer bill is not from a customer/owner": "A kimenő számla nem vevőhöz/tulajdonoshoz tartozik",
+  "You are now editing a transaction that is already posted": "Egy olyan tranzakciót szerkeszt most, ami már könyvelésbe van küldve",
   "err_invalidData": "Nem megfelelő adat",
   "The meter has to match the same uom, that the billing applies to": "A mérőórának ugyanaz kell legyen a fogyasztási egysége, mint amire az előírás vonatkozik",
   "The meter was already billed at a later date": "Egy későbbi időponttal már került számla kiállításra ehhez a mérőórához",

@@ -120,7 +120,7 @@ Transactions.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: doc && !doc.isPosted()
+    visible: doc && !(doc.isPosted() && doc.isPetrified())
 //      && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
       && user.hasPermission('transactions.update', doc),
     run() {
@@ -128,6 +128,7 @@ Transactions.actions = {
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
+        description: doc.isPosted() && 'You are now editing a transaction that is already posted',
         // --- --- --- ---
         id: `af.${entity.name}.edit`,
         schema: Transactions.simpleSchema({ category: entity.name }),

@@ -201,6 +201,11 @@ Transactions.helpers({
     const elapsedHours = now.diff(creationTime, 'hours');
     return (elapsedHours > 24);
   },
+  isPetrified() {
+    const now = moment(new Date());
+    const creationTime = moment(this.createdAt);
+    return now.year() - creationTime.year() > 1;
+  },
   isAutoPosting() {
     return this.status === 'void' || this.txdef().isAutoPosting();
   },
