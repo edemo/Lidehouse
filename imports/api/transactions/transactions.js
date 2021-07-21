@@ -554,7 +554,8 @@ JournalEntries.makeFilterSelector = function makeFilterSelector(params) {
   const selector = _.clone(params);
   selector.valueDate = dateFilter(params.begin, params.end);
   delete selector.begin; delete selector.end;
+  delete selector.localizer;
   if (params.account) selector.account = withSubs(params.account);
   if (params.localizer) selector.localizer = withSubs(params.localizer);
-  return selector;
+  return Object.cleanUndefined(selector);
 };
