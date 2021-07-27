@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
 
@@ -112,6 +113,9 @@ export class Translator {
         const joinedPath = path.join('.');
         if (Object.getByString(doc, joinedPath)) return;
         if (dic.formula) {
+          dic.depends?.forEach(name => {
+            if (_.isUndefined(doc[name])) throw new Meteor.Error('err_invalidData', 'Depended field is missing', doc);
+          });
           const calculatedValue = eval(dic.formula);
           Object.setByString(doc, joinedPath, calculatedValue);
         }
