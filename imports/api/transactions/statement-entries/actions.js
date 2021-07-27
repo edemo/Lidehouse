@@ -293,7 +293,8 @@ AutoForm.addHooks('af.statementEntry.reconcile', {
   before: {
     'method'(doc) {
       const entry = ModalStack.getVar('statementEntry');
-      if (!entry.txId?.length && doc.txId && Transactions.findOne(doc.txId).amount !== entry.amount) {
+      const tx = doc.txId && Transactions.findOne(doc.txId);
+      if (!entry.txId?.length && tx && _.contains(['payment', 'receipt'], tx.category) && entry.amount !== tx.amount * tx.relationSign()) {
         Modal.confirmAndCall(StatementEntries.methods.reconcile, doc, {
           action: 'reconcile',
           entity: 'statementEntry',
