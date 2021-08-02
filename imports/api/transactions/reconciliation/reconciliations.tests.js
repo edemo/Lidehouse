@@ -133,7 +133,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.partner().outstanding('supplier'), 200 + 0);
       });
 
-      it('Can NOT reconcile statementEntry with different account, date or smaller amount', function () {
+      it('Can NOT reconcile statementEntry with different account or date', function () {
         Fixture.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, relation: bill.relation, partnerId: bill.partnerId, valueDate: Clock.currentDate(), payAccount: '`381' });
         bill = Transactions.findOne(billId);
         const txId = bill.getPayments()[0].id;
@@ -158,7 +158,7 @@ if (Meteor.isServer) {
           Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAccount, txId });
         }, 'err_notAllowed');
 
-        const entryIdSmallerAmount = Fixture.builder.create('statementEntry', {
+/*         const entryIdSmallerAmount = Fixture.builder.create('statementEntry', {
           account: '`381',
           valueDate: Clock.currentDate(),
           name: 'Supplier Inc',
@@ -177,6 +177,7 @@ if (Meteor.isServer) {
         chai.assert.throws(() => {
           Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongSign, txId });
         }, 'err_notAllowed');
+*/
 
         const entryIdWrongDate = Fixture.builder.create('statementEntry', {
           account: '`381',
