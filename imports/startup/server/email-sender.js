@@ -53,6 +53,11 @@ export const EmailSender = {
       bcc: this.config.bcc,
       subject: options.subject,
     };
+    if (options.cc) {
+      _.extend(sendOptions, {
+        cc: options.cc,
+      });
+    }
     if (options.template) {
       _.extend(sendOptions, {
         template: options.template,
