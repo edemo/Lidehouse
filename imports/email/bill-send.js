@@ -12,11 +12,7 @@ export function sendBillEmail(bill) {
   const community = bill.community();
   const partner = bill.partner();
   let emailAddress = partner.primaryEmail();
-  let ccAddress;
-  if (bill.contract()?.delegateId) {
-    const delegate = Partners.findOne(bill.contract().delegateId);
-    ccAddress = delegate.primaryEmail();
-  }
+  let ccAddress = bill.contract()?.delegate()?.primaryEmail();
   if (!emailAddress) {
     if (ccAddress) {
       emailAddress = ccAddress;

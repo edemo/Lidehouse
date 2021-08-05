@@ -90,6 +90,10 @@ Contracts.helpers({
   partnerName() {
     return this.partner()?.displayName();
   },
+  delegate() {
+    if (this.delegateId) return Partners.findOne(this.delegateId);
+    return undefined;
+  },
   code() {
     return Partners.code(this.partnerId, this._id);
   },
