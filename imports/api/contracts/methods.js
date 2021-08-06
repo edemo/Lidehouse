@@ -17,7 +17,7 @@ export const insert = new ValidatedMethod({
 
     const ContractsStage = Contracts.Stage();
     const _id = ContractsStage.insert(doc);
-    if (doc.relation === 'member') {
+    if (doc.relation === 'member' && doc.parcelId) {
       sanityCheckOnlyOneActiveAtAllTimes(ContractsStage, { parcelId: doc.parcelId });
     }
     ContractsStage.commit();
@@ -41,7 +41,7 @@ export const update = new ValidatedMethod({
     const ContractsStage = Contracts.Stage();
     const result = ContractsStage.update(_id, modifier, { selector: doc });
     const newDoc = ContractsStage.findOne(_id);
-    if (doc.relation === 'member') {
+    if (doc.relation === 'member' && newDoc.parcelId) {
       sanityCheckOnlyOneActiveAtAllTimes(ContractsStage, { parcelId: newDoc.parcelId });
     }
     ContractsStage.commit();
