@@ -203,8 +203,8 @@ Transactions.helpers({
   },
   isPetrified() {
     const now = moment(new Date());
-    const creationTime = moment(this.createdAt);
-    return now.year() - creationTime.year() > 1;
+    const valueDate = moment(this.valueDate);
+    return now.year() - valueDate.year() > 1;
   },
   isAutoPosting() {
     return this.status === 'void' || this.txdef().isAutoPosting();

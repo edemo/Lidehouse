@@ -154,7 +154,7 @@ if (Meteor.isServer) {
 
         chai.assert.throws(() => {
           const ret = Topics.methods.batch.upsert._execute({ userId }, params);
-        }, '[0] INVALID is not an allowed value  [[0] validation-error ]');
+        }, '[1] "INVALID is not an allowed value"  [[1] "validation-error" ]');
 //        chai.assert.equal(ret.errors.length, 1);
 //        chai.assert.equal(ret.results.length, 2);
         doc1 = Topics.findOne({ title: 'FIRST' });
