@@ -23,7 +23,7 @@ Template.Partner_history.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       if (this.partnerSelected()) {
-        instance.subscribe('transactions.byPartner', this.subscribeParams());
+        instance.subscribe('transactions.byContract', this.subscribeParams());
         instance.subscribe('txdefs.inCommunity', { communityId: this.communityId() });
       }
     });
@@ -86,7 +86,7 @@ Template.Partner_history.viewmodel({
       return _.extend(tx, { contractAmount, total });
     });
     result.transactions = txsWithRunningTotal.reverse();
-    result.predecessor = contract.predecessor();
+    result.predecessor = contract?.predecessor();
     return result;
   },
 });

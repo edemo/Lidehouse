@@ -4,7 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
 import { __ } from '/imports/localization/i18n.js';
-import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/methods.js';
@@ -21,26 +21,26 @@ import './board.html';
 
 Template.Board.onCreated(function boardOnCreated() {
   this.autorun(() => {
-    const communityId = ModalStack.getVar('communityId');
+    const communityId = getActiveCommunityId();
     this.subscribe('topics.active', { communityId });
   });
 });
 
 Template.Board.helpers({
   activeVotingsTitle() {
-    const communityId = ModalStack.getVar('communityId');
+    const communityId = getActiveCommunityId();
     const topicsCount = Topics.find({ communityId, category: 'vote', closed: false }).count();
     return `${__('Active votings')} (${topicsCount})`;
   },
   topics(category) {
-    const communityId = ModalStack.getVar('communityId');
+    const communityId = getActiveCommunityId();
     return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
   },
 });
 
 Template.News.helpers({
   topics(category, stickyVal) {
-    const communityId = ModalStack.getVar('communityId');
+    const communityId = getActiveCommunityId();
     return Topics.find({ communityId, category, closed: false, sticky: stickyVal }, { sort: { createdAt: -1 } });
   },
 });

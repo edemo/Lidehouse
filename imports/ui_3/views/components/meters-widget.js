@@ -3,20 +3,15 @@ import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
-import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
-import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunity, getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 import './meters-widget.html';
 
 Template.Meters_widget.viewmodel({
-  autorun() {
-    const communityId = ModalStack.getVar('communityId');
-    this.templateInstance.subscribe('parcels.ofSelf', { communityId });
-  },
   ownedParcels() {
     const user = Meteor.user();
-    const communityId = ModalStack.getVar('communityId');
+    const communityId = getActiveCommunityId();
     if (!user || !communityId) return [];
     return user.ownedParcels(communityId);
   },

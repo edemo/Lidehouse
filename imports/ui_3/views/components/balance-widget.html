@@ -1,5 +1,5 @@
 <template name="Balance_widget">
-    {{#if Template.subscriptionsReady}}
+    {{#if activePartner.hasActiveContract}}
     {{#if (currentUser.hasRole 'owner' activeCommunityId) }}
     {{#let bal=balance}}
     <a href="{{pathFor 'Parcels finances'}}">
