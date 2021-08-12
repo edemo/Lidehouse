@@ -23,7 +23,7 @@ Template.Partner_history.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       if (this.partnerSelected()) {
-        instance.subscribe('transactions.byContract', this.subscribeParams());
+        instance.subscribe('transactions.byPartnerContract', this.subscribeParams());
         instance.subscribe('txdefs.inCommunity', { communityId: this.communityId() });
       }
     });
