@@ -205,8 +205,8 @@ export const remove = new ValidatedMethod({
       result = null;
     } else if (doc.status === 'posted') {
       // This block should happen all or none
-      result = Transactions.insert(_.extend(doc.negator(), { issueDate: Clock.currentDate(), status: 'void' }));
-      Transactions.update(doc._id, { $set: { status: 'void' } });
+      result = Transactions.insert(_.extend(doc.negator(), { issueDate: Clock.currentDate(), status: 'void', seId: [] }));
+      Transactions.update(doc._id, { $set: { status: 'void', seId: [] } });
       const resultTx = Transactions.findOne(result);
       if (resultTx.isAutoPosting()) post._execute({ userId: this.userId }, { _id: result });
       //
