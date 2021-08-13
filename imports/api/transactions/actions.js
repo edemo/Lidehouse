@@ -14,6 +14,7 @@ import { importCollectionFromFile } from '/imports/ui_3/views/components/import-
 import { BatchAction } from '/imports/api/batch-action.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 
 import '/imports/ui_3/views/components/transaction-view.js';
@@ -99,7 +100,8 @@ Transactions.actions = {
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: doc && (user.hasPermission('transactions.inCommunity', doc) || getActivePartnerId() === doc.partnerId),
+    visible: doc && (user.hasPermission('transactions.inCommunity', doc) || getActivePartnerId() === doc.partnerId
+      || (doc.contractId && _.contains(Contracts.findOneActive(doc.contractId)?.entitledToView(), getActivePartnerId()))),
     run() {
       const entity = Transactions.entities[doc.entityName()];
       Modal.show('Autoform_modal', {

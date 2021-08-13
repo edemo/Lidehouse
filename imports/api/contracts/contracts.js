@@ -94,6 +94,16 @@ Contracts.helpers({
     if (this.delegateId) return Partners.findOne(this.delegateId);
     return undefined;
   },
+  entitledToView() {
+    if (!this.partnerId) return undefined;
+    let partnerIds = [this.partnerId];
+    if (this.relation === 'member' && this.parcelId) {
+      const Memberships = Mongo.Collection.get('memberships');
+      const owners = Memberships.findActive({ role: 'owner', parcelId: this.parcelId }).map(m => m.partnerId);
+      partnerIds = _.union(partnerIds, owners);
+    }
+    return partnerIds;
+  },
   code() {
     return Partners.code(this.partnerId, this._id);
   },

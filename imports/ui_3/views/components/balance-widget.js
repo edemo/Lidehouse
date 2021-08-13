@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
@@ -15,10 +14,8 @@ import './balance-widget.html';
 Template.Balance_widget.viewmodel({
   autorun() {
     const user = Meteor.user();
-    this.templateInstance.subscribe('memberships.ofUser', { userId: Meteor.userId() });
     const communityId = getActiveCommunityId();
     const partnerId = user && user.partnerId(communityId);
-    this.templateInstance.subscribe('transactions.byPartner', { communityId, partnerId });
   },
   partnerId() {
     const user = Meteor.user();
