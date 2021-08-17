@@ -827,6 +827,32 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 48,
+  name: 'Reposting bills with negative item',
+  up() {
+    Communities.find().forEach(community => {
+      const accountingMethod = community.settings.accountingMethod;
+      const bills = Transactions.find({ communityId: community._id, category: 'bill', postedAt: { $exists: true }, 'lines.amount': { $lt: 0 } });
+      function repost(tx) {
+        const updateData = tx.makeJournalEntries(accountingMethod);
+        Transactions.direct.update(tx._id, { $set: updateData }, { selector: tx, validate: false });
+        tx.updateBalances(-1);
+        Transactions.findOne(tx._id).updateBalances(+1);
+      }
+      bills.forEach(bill => {
+        if (bill.status === 'void' && !bill.serialId.includes('STORNO')) {
+          const serialId = bill.serialId + '/STORNO';
+          const amount = bill.amount * -1;
+          const stornoBill = Transactions.findOne({ communityId: community._id, serialId, amount });
+          if (stornoBill) repost(stornoBill);
+        }
+        repost(bill);
+      });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

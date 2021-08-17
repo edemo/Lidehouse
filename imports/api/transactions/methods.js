@@ -56,6 +56,7 @@ export const post = new ValidatedMethod({
     doc.validateForPost?.();
 
     const modifier = { $set: { postedAt: new Date() } };
+    if (doc.postedAt) modifier.$set.postedAt = doc.postedAt;
     if (doc.status !== 'void') { // voided already has the accounting data on it
       const community = Communities.findOne(doc.communityId);
       const accountingMethod = community.settings.accountingMethod;

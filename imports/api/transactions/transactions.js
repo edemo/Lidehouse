@@ -230,7 +230,7 @@ Transactions.helpers({
     let writeSide = side;
     if (entry.amount < 0) {
       // if we swap sides for negative entries
-      if (this.status !== 'void') {
+      if (this.status !== 'void' && this.category !== 'bill') {
         writeSide = Transactions.oppositeSide(writeSide);
         entry.amount *= -1;
       }
