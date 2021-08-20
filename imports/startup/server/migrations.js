@@ -833,7 +833,8 @@ Migrations.add({
   up() {
     Communities.find().forEach(community => {
       const accountingMethod = community.settings.accountingMethod;
-      const bills = Transactions.find({ communityId: community._id, category: 'bill', postedAt: { $exists: true }, 'lines.amount': { $lt: 0 } });
+      const bills = Transactions.find({ communityId: community._id, category: 'bill', postedAt: { $exists: true },
+        'lines.amount': { $lt: 0 }, serialId: { $not: /STORNO$/ } });
       function repost(tx) {
         const updateData = tx.makeJournalEntries(accountingMethod);
         Transactions.direct.update(tx._id, { $set: updateData }, { selector: tx, validate: false });
@@ -841,7 +842,7 @@ Migrations.add({
         Transactions.findOne(tx._id).updateBalances(+1);
       }
       bills.forEach(bill => {
-        if (bill.status === 'void' && !bill.serialId.includes('STORNO')) {
+        if (bill.status === 'void') {
           const serialId = bill.serialId + '/STORNO';
           const amount = bill.amount * -1;
           const stornoBill = Transactions.findOne({ communityId: community._id, serialId, amount });
