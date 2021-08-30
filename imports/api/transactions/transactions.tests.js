@@ -996,11 +996,11 @@ if (Meteor.isServer) {
           chai.assert.deepEqual(bill1.debit, [
             { amount: 300, account: '`331', localizer, parcelId },
             { amount: 250, account: '`3324', localizer, parcelId },
-            { amount: 100, account: '`9524', localizer, parcelId }]);
+            { amount: -100, account: '`3324', localizer, parcelId }]);
           chai.assert.deepEqual(bill1.credit, [
             { amount: 300, account: '`951', localizer, parcelId },
             { amount: 250, account: '`9524', localizer, parcelId },
-            { amount: 100, account: '`3324', localizer, parcelId }]);
+            { amount: -100, account: '`9524', localizer, parcelId }]);
 
           const paymentId1 = FixtureA.builder.create('payment', {
             relation: 'member',
@@ -1245,12 +1245,12 @@ if (Meteor.isServer) {
             chai.assert.deepEqual(bill.debit, [
               { amount: 300, account: '`331', localizer, parcelId },
               { amount: 250, account: '`3324', localizer, parcelId },
-              { amount: 100, account: '`09524', localizer, parcelId },
+              { amount: -100, account: '`3324', localizer, parcelId },
             ]);
             chai.assert.deepEqual(bill.credit, [
               { amount: 300, account: '`0951', localizer, parcelId },
               { amount: 250, account: '`09524', localizer, parcelId },
-              { amount: 100, account: '`3324', localizer, parcelId },
+              { amount: -100, account: '`09524', localizer, parcelId },
             ]);
             const paymentId1 = FixtureA.builder.create('payment', {
               relation: 'member',
