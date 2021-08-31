@@ -48,9 +48,9 @@ if (Meteor.isServer) {
           partnerId,
           contractId: Contracts.findOne({ partnerId })._id,
           relationAccount: '`33',
-          issueDate: new Date('2018-01-05'),
-          deliveryDate: new Date('2018-01-02'),
-          dueDate: new Date('2018-01-30'),
+          issueDate: new Date(),
+          deliveryDate: moment().subtract(1, 'weeks').toDate(),
+          dueDate: moment().add(1, 'weeks').toDate(),
           lines: [{
             title: 'Work 1',
             uom: 'piece',
@@ -238,12 +238,45 @@ if (Meteor.isServer) {
         chai.assert.equal(parcel2.outstanding(), 1000);
       });
 
-      it('Cannot modify a posted bill', function () {
+      it('Cannot modify a petrified bill', function () {
+        const oldDate = moment().subtract(2, 'years').toDate();
+        const oldBillId = FixtureA.builder.create('bill', {
+          issueDate: oldDate,
+          deliveryDate: oldDate,
+          dueDate: oldDate,
+          relationAccount: '`454' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: oldBillId });
+        chai.assert.equal(moment(Transactions.findOne(oldBillId).valueDate).year(), moment(oldDate).year());
         chai.assert.throws(() => {
-          FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+          FixtureA.builder.execute(Transactions.methods.update, { _id: oldBillId, modifier: {
             $set: { contractId: null },
           } });
         }, 'err_permissionDenied');
+        FixtureA.builder.execute(Transactions.methods.remove, { _id: oldBillId });
+      });
+
+      it('Modifying posted bill updates partner balances correctly', function () {
+        chai.assert.equal(bill.partner().balance(), -1300);
+        chai.assert.equal(bill.partner().outstanding('customer'), 1300);
+        chai.assert.equal(bill.contract().outstanding(), 1300);
+        chai.assert.equal(parcel1.balance(), -300);
+        chai.assert.equal(parcel2.balance(), -1000);
+        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+          $set: { 'lines.0.unitPrice': 500, 'lines.0.amount': 500, amount: 1500 },
+        } });
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.partner().balance(), -1500);
+        chai.assert.equal(bill.contract().balance(), -1500);
+        chai.assert.equal(bill.partner().outstanding('customer'), 1500);
+        chai.assert.equal(bill.partner().outstanding('supplier'), -1500);
+        chai.assert.equal(bill.contract().outstanding(), 1500);
+        chai.assert.equal(parcel1.balance(), -500);
+        chai.assert.equal(parcel2.balance(), -1000);
+        chai.assert.equal(parcel1.outstanding(), 500);
+        chai.assert.equal(parcel2.outstanding(), 1000);
+        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+          $set: { 'lines.0.unitPrice': 300, 'lines.0.amount': 300, amount: 1300 },
+        } });
       });
 
       it('Payment updates partner balances correctly', function () {
@@ -260,12 +293,50 @@ if (Meteor.isServer) {
         chai.assert.equal(parcel2.outstanding(), 0);
       });
 
-      it('Cannot modify a posted payment', function () {
+      it('Modifying posted payment updates balances correctly', function () {
+        FixtureA.builder.execute(Transactions.methods.update, { _id: paymentId, modifier: {
+          $set: { lines: [{ account: '`951', amount: payment.amount - 2 }], bills: [] },
+        } });
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.partner().balance(), 0);
+        chai.assert.equal(bill.contract().balance(), 0);
+        chai.assert.equal(bill.outstanding, 1300);
+        chai.assert.equal(parcel1.balance(), -300);
+        chai.assert.equal(parcel2.balance(), -1000);
+        chai.assert.equal(parcel1.outstanding(), 300);
+        chai.assert.equal(parcel2.outstanding(), 1000);
+
+        FixtureA.builder.execute(Transactions.methods.update, { _id: paymentId, modifier: {
+          $set: { lines: [], bills: [{ id: billId, amount: bill.amount }] },
+        } });
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.partner().balance(), 0);
+        chai.assert.equal(bill.contract().balance(), 0);
+        chai.assert.equal(bill.contract().outstanding(), 0);
+        chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(parcel1.balance(), 0);
+        chai.assert.equal(parcel2.balance(), 0);
+        chai.assert.equal(parcel1.outstanding(), 0);
+        chai.assert.equal(parcel2.outstanding(), 0);
+      });
+
+      it('Cannot modify a petrified payment', function () {
+        const oldDate = moment().subtract(2, 'years').toDate();
+        const oldPaymentId = FixtureA.builder.create('payment', {
+          valueDate: oldDate,
+          partnerId: FixtureA.supplier,
+          contractId: FixtureA.supplierContract,
+          lines: [{ account: '`861', amount: 500 }],
+          amount: 500,
+          payAccount: '`381' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: oldPaymentId });
+        chai.assert.isDefined(Transactions.findOne(oldPaymentId));
         chai.assert.throws(() => {
-          FixtureA.builder.execute(Transactions.methods.update, { _id: paymentId, modifier: {
-            $set: { conrtractId: null },
+          FixtureA.builder.execute(Transactions.methods.update, { _id: oldPaymentId, modifier: {
+            $set: { contractId: null },
           } });
         }, 'err_permissionDenied');
+        FixtureA.builder.execute(Transactions.methods.remove, { _id: oldPaymentId });
       });
 
       it('Cannot storno a posted bill, while it links to a LIVE payment', function () {
@@ -925,11 +996,11 @@ if (Meteor.isServer) {
           chai.assert.deepEqual(bill1.debit, [
             { amount: 300, account: '`331', localizer, parcelId },
             { amount: 250, account: '`3324', localizer, parcelId },
-            { amount: 100, account: '`9524', localizer, parcelId }]);
+            { amount: -100, account: '`3324', localizer, parcelId }]);
           chai.assert.deepEqual(bill1.credit, [
             { amount: 300, account: '`951', localizer, parcelId },
             { amount: 250, account: '`9524', localizer, parcelId },
-            { amount: 100, account: '`3324', localizer, parcelId }]);
+            { amount: -100, account: '`9524', localizer, parcelId }]);
 
           const paymentId1 = FixtureA.builder.create('payment', {
             relation: 'member',
@@ -1174,12 +1245,12 @@ if (Meteor.isServer) {
             chai.assert.deepEqual(bill.debit, [
               { amount: 300, account: '`331', localizer, parcelId },
               { amount: 250, account: '`3324', localizer, parcelId },
-              { amount: 100, account: '`09524', localizer, parcelId },
+              { amount: -100, account: '`3324', localizer, parcelId },
             ]);
             chai.assert.deepEqual(bill.credit, [
               { amount: 300, account: '`0951', localizer, parcelId },
               { amount: 250, account: '`09524', localizer, parcelId },
-              { amount: 100, account: '`3324', localizer, parcelId },
+              { amount: -100, account: '`09524', localizer, parcelId },
             ]);
             const paymentId1 = FixtureA.builder.create('payment', {
               relation: 'member',

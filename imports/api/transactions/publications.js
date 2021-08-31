@@ -3,10 +3,10 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { moment } from 'meteor/momentjs:moment';
+import { debugAssert } from '/imports/utils/assert.js';
 
 import { Partners } from '/imports/api/partners/partners.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Transactions } from './transactions.js';
 
 Meteor.publish('transactions.inCommunity', function transactionsInCommunity(params) {
@@ -25,7 +25,7 @@ Meteor.publish('transactions.inCommunity', function transactionsInCommunity(para
   return Transactions.find(selector);
 });
 
-Meteor.publish('transactions.byPartner', function transactionsInCommunity(params) {
+Meteor.publish('transactions.byPartnerContract', function transactionsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
     partnerId: { type: String, optional: true },
@@ -34,12 +34,18 @@ Meteor.publish('transactions.byPartner', function transactionsInCommunity(params
     end: { type: Date, optional: true },
   }).validate(params);
   const { communityId, partnerId, contractId, begin, end } = params;
+  if (!contractId && !partnerId) return this.ready();
+  let contract;
+  if (contractId) {
+    contract = Contracts.findOne(contractId);
+    if (partnerId) debugAssert(partnerId === contract.partnerId, 'partnerId param does not match contract');
+  }
 
-  const user = Meteor.users.findOneOrNull(this.userId);
+  const user = Meteor.users.findOne(this.userId);
+  if (!user) return this.ready();
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
-    // Normal user can only see his own parcels' transactions
-    if (!partnerId) return this.ready();
-    if (partnerId && Partners.findOne(partnerId).userId !== this.userId) return this.ready();
+    if (contractId && !_.contains(contract.entitledToView(), user.partnerId(communityId))) return this.ready();
+    if (!contractId && partnerId && Partners.findOne(partnerId).userId !== this.userId) return this.ready();
   }
   const selector = Transactions.makeFilterSelector(params);
   return Transactions.find(selector);

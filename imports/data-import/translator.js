@@ -114,7 +114,7 @@ export class Translator {
         if (Object.getByString(doc, joinedPath)) return;
         if (dic.formula) {
           dic.depends?.forEach(name => {
-            if (_.isUndefined(doc[name])) throw new Meteor.Error('err_invalidData', 'Depended field is missing', doc);
+            if (_.isUndefined(doc[name])) throw new Meteor.Error('err_invalidData', 'Depended field is missing', name);
           });
           const calculatedValue = eval(dic.formula);
           Object.setByString(doc, joinedPath, calculatedValue);

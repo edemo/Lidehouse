@@ -3,10 +3,10 @@ import { _ } from 'meteor/underscore';
 import { Mailer } from 'meteor/lookback:emails';
 import { Email } from 'meteor/email';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Log } from '/imports/utils/log.js';
 import { EmailTemplates, SampleEmailTemplates } from '/imports/email/email-templates.js';
 import { EmailTemplateHelpers, SampleEmailTemplateHelpers } from '/imports/email/email-template-helpers.js';
 import { Generic_Layout } from '/imports/email/generic-layout.js';
-import { defaultRoles } from '/imports/api/permissions/roles.js';
 
 /* SSR EmailSender
 import fs from 'fs';
@@ -53,6 +53,11 @@ export const EmailSender = {
       bcc: this.config.bcc,
       subject: options.subject,
     };
+    if (options.cc) {
+      _.extend(sendOptions, {
+        cc: options.cc,
+      });
+    }
     if (options.template) {
       _.extend(sendOptions, {
         template: options.template,
@@ -63,7 +68,11 @@ export const EmailSender = {
       _.extend(sendOptions, {
         text: options.text,
       });
-      Email.send(sendOptions);
+      try {
+        Email.send(sendOptions);
+      } catch (ex) {
+        Log.error(`Could not send email to: ${options.to} - ${ex.message}`);
+      }
     } else debugAssert(false, 'Email has to be html or plain text');
   },
 };

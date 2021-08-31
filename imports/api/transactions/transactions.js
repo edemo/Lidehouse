@@ -203,8 +203,8 @@ Transactions.helpers({
   },
   isPetrified() {
     const now = moment(new Date());
-    const creationTime = moment(this.createdAt);
-    return now.year() - creationTime.year() > 1;
+    const valueDate = moment(this.valueDate);
+    return now.year() - valueDate.year() > 1;
   },
   isAutoPosting() {
     return this.status === 'void' || this.txdef().isAutoPosting();
@@ -230,7 +230,7 @@ Transactions.helpers({
     let writeSide = side;
     if (entry.amount < 0) {
       // if we swap sides for negative entries
-      if (this.status !== 'void') {
+      if (this.status !== 'void' && this.category !== 'bill') {
         writeSide = Transactions.oppositeSide(writeSide);
         entry.amount *= -1;
       }

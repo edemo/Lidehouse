@@ -134,6 +134,9 @@ Partners.helpers({
     const selector = { communityId: this.communityId, relation, partnerId: this._id };
     return Contracts.findActive(Object.cleanUndefined(selector));
   },
+  hasActiveContract() {
+    return !!this.contracts().count();
+  },
   ensureContract(relation) { // Creates one if doesn't exist
     const contracts = this.contracts(relation).fetch();
     if (contracts.length) return contracts[0];
