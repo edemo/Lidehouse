@@ -423,7 +423,8 @@
     "yesno": "Kérjük jelölje meg szavazatát, majd küldje el a zöld gombbal.",
     "choose": "Kérjük jelölje meg szavazatát, majd küldje el a zöld gombbal.",
     "preferential": "Kérjük rendezze sorrendbe, hogy legfelül az Ön számárá leginkább kívánatos, legalul pedig a legkevésbé szimpatikus opció legyen, majd küldje el szavazatát a zöld gombbal.",
-    "petition": "Ha támogatja a kezdeményezést, kattintson a Támogatom gombra, majd küldje el szavazatát a zöld gombbal. Ha nem támogatja, akkor nincsen semmi teendője."
+    "petition": "Ha támogatja a kezdeményezést, kattintson a Támogatom gombra, majd küldje el szavazatát a zöld gombbal. Ha nem támogatja, akkor nincsen semmi teendője.",
+    "multiChoose": "Kérjük válasszon egy vagy több lehetőséget, majd küldje el szavazatát a zöld gombbal."
   },
   "No amendments were made to this document": "A dokumentumon nem történt módosítás",
   "Vote results become available once voting is closed": "A szavazatok azonnal láthatóvá válnak, amint a szavazás lezárul",
