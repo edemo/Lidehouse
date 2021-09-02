@@ -854,6 +854,14 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 49,
+  name: 'Ensure balances are all correct',
+  up() {
+    Balances.ensureAllCorrect();
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {
