@@ -28,6 +28,10 @@ Template.app_rootRedirector.onCreated(() => {
         Meteor.setTimeout(() => {
           FlowRouter.go('Communities list');
         });
+      } else if (Meteor.settings.public.homepage === 'login') {
+        Meteor.setTimeout(() => {
+          FlowRouter.go('signin');
+        });
       } else {
         Meteor.setTimeout(() => {
           FlowRouter.go('Community show', { _cid: Meteor.settings.public.homepage });
