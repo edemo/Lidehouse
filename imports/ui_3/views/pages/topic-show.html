@@ -1,5 +1,4 @@
 <template name="Topic_show">
-    {{#if Template.subscriptionsReady}}
         {{#if topic}}
             {{#if (equals topic.category 'news')}}
                 {{> app_rootRedirector}}
@@ -59,10 +58,12 @@
             </div>
             {{/with}}
             {{/if}}
-        {{else}}
-            {{>Error code='404' type='Page not found' message='pageNotFoundMessage' item='topic'}}
         {{/if}}
-    {{/if}}
+        {{#if Template.subscriptionsReady}}
+            {{#unless topic}}
+            {{>Error code='404' type='Page not found' message='pageNotFoundMessage' item='topic'}}
+            {{/unless}}
+        {{/if}}
 </template>
 
 <template name="Data_field">
