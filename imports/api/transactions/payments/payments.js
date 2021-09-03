@@ -119,6 +119,7 @@ Transactions.categoryHelpers('payment', {
     return this.getBills().length;
   },
   calculateOutstanding() {
+    if (this.status === 'void') return 0;
     return this.amountWoRounding() - this.allocatedToBills();
   },
   allocatedToBills() {

@@ -266,6 +266,7 @@ Transactions.categoryHelpers('bill', {
     return result;
   },
   calculateOutstanding() {
+    if (this.status === 'void') return 0;
     let paid = 0;
     this.getPayments().forEach(p => paid += p.amount);
     return this.amount - paid;

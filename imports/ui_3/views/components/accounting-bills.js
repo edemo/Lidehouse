@@ -60,7 +60,7 @@ Template.Accounting_bills.viewmodel({
     return txdefs || {};
   },
   count(category, kind) {
-    const selector = { communityId: this.communityId(), category, relation: this.activePartnerRelation(), status: { $ne: 'void' } };
+    const selector = { communityId: this.communityId(), category, relation: this.activePartnerRelation() };
     if (kind === 'outstanding') {
       if (!_.contains(this.community()?.settings.paymentsToBills, this.activePartnerRelation())) return 0;
       selector.outstanding = { $ne: 0 };
