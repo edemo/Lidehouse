@@ -27,6 +27,7 @@ export function checkBoolean(bool) {
 }
 
 export function checkmarkBoolean(bool) {
+  if (_.isUndefined(bool)) return '';
   const icon = bool ? 'fa-check' : 'fa-times';
   const color = bool ? 'navy' : 'danger';
   const title = bool ? 'Reconciled' : 'Unreconciled';
