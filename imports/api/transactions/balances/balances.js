@@ -189,7 +189,8 @@ Balances.checkAllCorrect = function checkAllCorrect() {
 Balances.ensureAllCorrect = function ensureAllCorrect() {
   if (Meteor.isClient) return;
   Balances.remove({});
-  Transactions.find({}).forEach((tx) => {
+  Transactions.find({}).forEach((tx, index) => {
+    if (index % 100 === 0) Log.info('Rebalanced txs', index);
     tx.updateBalances(+1);
     tx.updatePartnerBalances(+1);
   });
