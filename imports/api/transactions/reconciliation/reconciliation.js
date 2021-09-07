@@ -8,12 +8,15 @@ import { __ } from '/imports/localization/i18n.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import { Communities } from '/imports/api/communities/communities.js';
 
 export const chooseTxdef = {
   options() {
     const communityId = ModalStack.getVar('communityId');
-    const txdefs = Txdefs.find({ communityId }).fetch().filter(td => td.isReconciledTx());
-    const options = txdefs.map(txdef => ({ label: __(txdef.name), value: txdef._id }));
+    const txdefs = Txdefs.find({ communityId }).fetch();
+    const txdefsToReconcile = Communities.findOne(communityId).settings.paymentsWoStatement
+      ? txdefs.filter(td => td.isReconciledTx()) : txdefs.filter(td => td.category === 'transfer');
+    const options = txdefsToReconcile.map(txdef => ({ label: __(txdef.name), value: txdef._id }));
     return options;
   },
   firstOption: () => __('(Select one)'),
