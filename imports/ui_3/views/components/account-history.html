@@ -76,7 +76,7 @@
                   <td><strong>{{displayMoney entry.debitTotal}}</strong></td>
                   <td><strong>{{displayMoney entry.creditTotal}}</strong></td>
                   <td>{{>Action_buttons_group collection='transactions' actions='view' doc=entry.txId size='sm'}}</td>
-                  <td>{{{checkmarkBoolean entry.transaction.isReconciled}}}</td>
+                  <td>{{{checkmarkBoolean entry.transaction.reconciled}}}</td>
               </tr>
               {{/each}}
             </tbody>

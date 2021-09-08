@@ -299,7 +299,6 @@ Transactions.actions = {
 Transactions.dummyDoc = {
   communityId: getActiveCommunityId,
   isPosted() { return false; },
-  isReconciled() { return false; },
 };
 
 Transactions.batchActions = {

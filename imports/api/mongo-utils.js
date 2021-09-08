@@ -51,6 +51,12 @@ export function autoValueUpdate(collection, doc, modifier, fieldName, autoValue)
   convertPushToSet(doc, convertedModifier);   // rus-diff does not recognize $push, $pull operations: https://github.com/mirek/node-rus-diff/issues/6
   if (modifier) rusdiff.apply(newDoc, convertedModifier);
   newDoc = collection._transform(newDoc);
-  modifier.$set = modifier.$set || {};
-  modifier.$set[fieldName] = autoValue(newDoc);
+  const calculatedValue = autoValue(newDoc);
+  if (calculatedValue === undefined || calculatedValue === '') {
+    modifier.$unset = modifier.$sunset || {};
+    modifier.$unset[fieldName] = '';
+  } else {
+    modifier.$set = modifier.$set || {};
+    modifier.$set[fieldName] = calculatedValue;
+  }
 }

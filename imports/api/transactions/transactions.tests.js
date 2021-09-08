@@ -378,8 +378,9 @@ if (Meteor.isServer) {
         chai.assert.isDefined(storno);
         chai.assert.equal(storno.status, 'void');
         chai.assert.equal(storno.amount, -1300);
+        chai.assert.equal(storno.outstanding, 0);
 
-        chai.assert.equal(bill.outstanding, 1300);
+        chai.assert.equal(bill.outstanding, 0);
         chai.assert.equal(bill.partner().balance(), 0);
         chai.assert.equal(bill.contract().balance(), 0);
 

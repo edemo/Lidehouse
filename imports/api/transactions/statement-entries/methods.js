@@ -184,7 +184,7 @@ function matchWithExistingOrCreateTx(se, tx, confidence) {
   const selector = tx; // _.omit(tx, 'contract', 'lines');
   const community = se.community();
   const existingTx = (community.settings.paymentsWoStatement || tx.category === 'transfer')
-    && Transactions.find(selector).fetch().filter(t => !t.isReconciled())[0];
+    && Transactions.find(selector).fetch().filter(t => t.needsReconcile())[0];
   const $set = { match: { confidence } };
   if (existingTx) $set.match.txId = existingTx._id;
   else $set.match.tx = tx;
@@ -233,7 +233,7 @@ export const recognize = new ValidatedMethod({
     // ---------------------------
     if (community.settings.paymentsWoStatement && !contraBankAccount) {
       let matchingTxs = Transactions.find({ communityId, category: 'payment', valueDate: entry.valueDate, amount: Math.abs(entry.amount) })
-        .fetch().filter(t => !t.isReconciled());
+        .fetch().filter(t => t.needsReconcile());
       if (matchingTxs?.length) {
         let matchingTx;
         let confidence;
