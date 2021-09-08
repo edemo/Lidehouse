@@ -31,6 +31,7 @@ import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
+import { autoValueUpdate } from '/imports/api/mongo-utils.js';
 
 import '/imports/api/transactions/accounts/template.js';
 
@@ -859,6 +860,21 @@ Migrations.add({
   name: 'Ensure balances are all correct',
   up() {
     Balances.ensureAllCorrect();
+  },
+});
+
+Migrations.add({
+  version: 50,
+  name: 'Recalculate reconciled and outstanding fields on transactions',
+  up() {
+    Transactions.find().forEach(tx => {
+      const modifier = {};
+      autoValueUpdate(Transactions, tx, modifier, 'reconciled', d => d.calculateReconciled());
+      if (tx.calculateOutstanding) {
+        autoValueUpdate(Transactions, tx, modifier, 'outstanding', d => d.calculateOutstanding());
+      }
+      Transactions.direct.update(tx._id, modifier, { selector: tx });
+    });
   },
 });
 

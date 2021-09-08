@@ -192,8 +192,9 @@ Transactions.helpers({
 //    return !!(this.debit && this.credit && this.complete); // calculateComplete()
     return !!(this.postedAt);
   },
-  isReconciled() {
-    return this.reconciled;
+  needsReconcile() {
+    if (this.reconciled === false) return true;
+    else return false;
   },
   isSolidified() {
     const now = moment(new Date());
@@ -426,8 +427,8 @@ if (Meteor.isServer) {
       const newDoc = Transactions._transform(_.extend({ category: doc.category }, modifier.$set));
       newDoc.autoFill?.();
       _.extend(modifier, { $set: newDoc });
-      if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments))
-        || (doc.category === 'payment' && (newDoc.bills || newDoc.amount))) {
+      if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments || newDoc.status === 'void'))
+        || (doc.category === 'payment' && (newDoc.bills || newDoc.amount || newDoc.status === 'void'))) {
         autoValueUpdate(Transactions, doc, modifier, 'outstanding', d => d.calculateOutstanding());
       }
     }

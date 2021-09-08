@@ -54,7 +54,7 @@
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
                   <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
                   <td class="{{negativeClass tx.total}}"><strong>{{displayMoney tx.total}}</strong></td>
-                  <!--td>{{{checkmarkBoolean entry.transaction.isReconciled}}}</td-->
+                  <!--td>{{{checkmarkBoolean entry.transaction.reconciled}}}</td-->
               </tr>
               {{/each}}
             </tbody>

@@ -130,7 +130,7 @@ StatementEntries.actions = {
       }
       ModalStack.setVar('newDoc', newTx);
 
-      if (doc.community().settings.paymentsWoStatement) {
+      if (doc.community().settings.paymentsWoStatement || txdef.category === 'transfer') {
         const reconciliationDoc = { _id: doc._id, defId: newTx.defId, txId: doc.match?.txId };
         Modal.show('Autoform_modal', {
           body: 'Reconciliation',
