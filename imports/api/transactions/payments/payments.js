@@ -321,6 +321,7 @@ Transactions.categoryHelpers('payment', {
   },
   registerOnBill(billPaid, direction = +1) {
     const bill = Transactions.findOne(billPaid.id);
+    if (!bill) return;
     const paymentOnBill = _.extend({}, billPaid);
     paymentOnBill.id = this._id; // replacing the bill._id with the payment._id
 

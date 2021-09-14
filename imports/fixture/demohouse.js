@@ -46,7 +46,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   if (demoHouse) {
     if (Meteor.settings.resetDemo) {
-      Communities.remove(demoHouse._id);
+      Memberships.remove({ communityId: demoHouse._id, role: { $ne: 'admin' } });
+      Communities.methods.remove._execute({ userId: demoHouse.admin() }, { _id: demoHouse._id });
     } else {
 //      Balances.checkAllCorrect();
       return demoHouse._id;
@@ -74,6 +75,12 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   const builder = new CommunityBuilder(communityId, demoOrTest, lang);
+
+  if (Meteor.settings.resetDemo) {
+    const email = `@${demoOrTest}.${builder.com}`;
+    Log.info('Purging all demo users...');
+    Meteor.users.remove({ 'emails.0.address': { $regex: email } });
+  }
 
   const demoAdminId = builder.createLoginableUser('admin', {
     avatar: '/images/avatars/avatar21.jpg',
