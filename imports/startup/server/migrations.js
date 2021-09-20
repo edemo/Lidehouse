@@ -878,6 +878,19 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 51,
+  name: 'Reposting member bills and payments',
+  up() {
+    Communities.find().forEach(community => {
+      const adminId = community.admin()._id;
+      Transactions.find({ communityId: community._id, relation: 'member', status: 'posted' }).forEach(tx => {
+        Transactions.methods.post._execute({ userId: adminId }, { _id: tx._id });
+      });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

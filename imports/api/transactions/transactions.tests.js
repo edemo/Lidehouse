@@ -487,6 +487,42 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.partner().outstanding('supplier'), 300);
       });
 
+      it('Member bill relation side is posted to relevant subaccount', function () {
+        const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP01' });
+        const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[3]);
+        const localizer = parcel1.code;
+        const parcelId = FixtureA.dummyParcels[1];
+        const memberBillId = FixtureA.builder.create('bill', {
+          relation: 'member',
+          partnerId,
+          contractId: Contracts.findOne({ partnerId })._id,
+          relationAccount: '`33',
+          issueDate: new Date(),
+          deliveryDate: moment().subtract(1, 'weeks').toDate(),
+          dueDate: moment().add(1, 'weeks').toDate(),
+          lines: [{
+            title: 'Work 1',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 300,
+            account: '`951',
+            localizer,
+            parcelId,
+          }],
+        });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: memberBillId });
+        let tx = Transactions.findOne(memberBillId);
+        chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '`951', localizer, parcelId }]);
+        chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '`331', localizer, parcelId }]);
+        FixtureA.builder.execute(Transactions.methods.update, { _id: memberBillId, modifier: {
+          $set: { 'lines.0.account': '`9522' },
+        } });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: memberBillId });
+        tx = Transactions.findOne(memberBillId);
+        chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '`9522', localizer, parcelId }]);
+        chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '`3322', localizer, parcelId }]);
+      });
+
       it('Can register Payments', function () {
         const bankAccount = '`381';
         const paymentId1 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, partnerId: FixtureA.supplier, valueDate: Clock.currentTime(), payAccount: bankAccount });

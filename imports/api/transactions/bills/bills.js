@@ -218,8 +218,18 @@ Transactions.categoryHelpers('bill', {
     return this.amount - this.tax;
   },
   lineRelationAccount(line) {
-    let account = line.relationAccount || this.relationAccount;
-    if (!line.relationAccount && line.billing) account += ParcelBillings.findOne(line.billing.id).digit;
+    if (line.relationAccount) return line.relationAccount;
+    let account = this.relationAccount;
+    if (line.billing) account += ParcelBillings.findOne(line.billing.id).digit;
+    else if (this.relation === 'member' && line.account && this.defId) {
+      let digit;
+      this.txdef()[this.conteerSide()].forEach(code => {
+        if (line.account.startsWith(code)) {
+          digit = line.account.replace(code, '');
+        }
+      });
+      account += digit;
+    }
     return account;
   },
   fillFromStatementEntry(entry) {
