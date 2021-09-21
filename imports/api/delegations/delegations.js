@@ -110,11 +110,14 @@ Delegations.helpers({
     return Partners.findOne(this.targetId).userId;
   },
   getAffectedVotings() {
-    const selector = { category: 'vote', status: { $in: ['announced', 'opened'] } };
+    const selector = { category: 'vote', closed: false };
     if (this.scope === 'community') return Topics.find(_.extend({ communityId: this.scopeObjectId }, selector));
     if (this.scope === 'agenda') return Topics.find(_.extend({ communityId: this.communityId, agendaId: this.scopeObjectId }, selector));
     if (this.scope === 'topic') return Topics.find(_.extend({ _id: this.scopeObjectId }, selector));
     return undefined;
+  },
+  getAffectedOpenVotings() {
+    return this.getAffectedVotings()?.fetch().filter(v => v.status === 'opened');
   },
 });
 
