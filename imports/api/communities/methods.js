@@ -160,6 +160,8 @@ export const remove = new ValidatedMethod({
     }
     // Once there are no active officers, the community can be purged
     Meters.remove({ communityId });
+    Attachments.remove({ communityId });
+    Shareddocs.remove({ communityId });  // permission check in package before hook - needs membership
     Memberships.remove({ communityId });
     Comments.remove({ communityId });
     Topics.remove({ communityId });
@@ -176,8 +178,6 @@ export const remove = new ValidatedMethod({
     Contracts.remove({ communityId });
     Accounts.remove({ communityId });
     Breakdowns.remove({ communityId });
-    Attachments.remove({ communityId });
-    Shareddocs.remove({ communityId });
     Sharedfolders.remove({ communityId });
     Communities.remove(communityId);
   },

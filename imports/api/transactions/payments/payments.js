@@ -321,6 +321,7 @@ Transactions.categoryHelpers('payment', {
   },
   registerOnBill(billPaid, direction = +1) {
     const bill = Transactions.findOne(billPaid.id);
+    if (!bill) return; // When removing multiple transactions and bills are removed first, don't get stuck in after hook
     const paymentOnBill = _.extend({}, billPaid);
     paymentOnBill.id = this._id; // replacing the bill._id with the payment._id
 

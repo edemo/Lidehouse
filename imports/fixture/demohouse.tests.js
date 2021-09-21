@@ -4,10 +4,16 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
-import { TAPi18n } from 'meteor/tap:i18n';
+import { Accounts } from 'meteor/accounts-base';
 import '/i18n/demo.en.i18n.json';
-import { Clock } from '/imports/utils/clock.js';
+
+import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Meters } from '/imports/api/meters/meters.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { insertDemoHouse, schedulePurgeExpiringDemoUsers } from '/imports/fixture/demohouse.js';
 import { emptyFixture } from '../api/test-utils';
 
@@ -53,6 +59,42 @@ if (Meteor.isServer) {
           });
           done();
         }, 5000);
+      });
+
+      describe('demohouse reset', function () {
+        it('removes demohouse with its belongings and demousers (and builds new)', function (done) {
+          Meteor.settings.resetDemo = true;
+          const nonDemoUserId = Accounts.createUser({ email: 'newuser@notademoemailaddress.com', password: 'password' });
+          let demoAdmin = Memberships.findOne({ communityId: demoHouseId, role: 'admin' });
+          const demoAdminUser = Meteor.users.findOne({ 'emails.0.address': 'admin@demo.com' });
+          chai.assert.isDefined(demoAdmin);
+          chai.assert.isDefined(demoAdminUser);
+          chai.assert.isAbove(Parcels.find({ communityId: demoHouseId }).count(), 10);
+          chai.assert.isAbove(Topics.find({ communityId: demoHouseId }).count(), 10);
+          chai.assert.isAbove(Transactions.find({ communityId: demoHouseId }).count(), 100);
+          chai.assert.isAbove(Meters.find({ communityId: demoHouseId }).count(), 10);
+          chai.assert.isAbove(Partners.find({ communityId: demoHouseId }).count(), 10);
+
+          const newDemoHouseId = insertDemoHouse('en', 'demo');
+          chai.assert.notEqual(demoHouseId, newDemoHouseId);
+          demoAdmin = Memberships.findOne({ communityId: demoHouseId, role: 'admin' });
+          const newDemoAdmin = Memberships.findOne({ communityId: newDemoHouseId, role: 'admin' });
+          const newDemoAdminUser = Meteor.users.findOne({ 'emails.0.address': 'admin@demo.com' });
+          const nonDemoUser = Meteor.users.findOne(nonDemoUserId);
+          chai.assert.isUndefined(Communities.findOne(demoHouseId));
+          chai.assert.isUndefined(demoAdmin);
+          chai.assert.isDefined(nonDemoUser);
+          chai.assert.isDefined(newDemoAdminUser);
+          chai.assert.notEqual(demoAdminUser._id, newDemoAdminUser._id);
+          chai.assert.isDefined(newDemoAdmin);
+          chai.assert.equal(Transactions.find({ communityId: demoHouseId }).count(), 0);
+          Mongo.Collection.getAll().forEach((collection) => {
+            if (collection.name === 'trash') return;
+            chai.assert.equal(collection.instance.find({ communityId: demoHouseId }).count(), 0);
+          });
+          delete Meteor.settings.resetDemo;
+          done();
+        });
       });
     });
   });
