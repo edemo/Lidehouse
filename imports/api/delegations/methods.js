@@ -40,7 +40,7 @@ export const insert = new ValidatedMethod({
     const delegation = Delegations.findOne(delegationId); // Refetch needed for timestamps and helper methods
 
     if (Meteor.isServer) {
-      delegation.getAffectedVotings().forEach(voting => voting.voteEvaluate());
+      delegation.getAffectedOpenVotings().forEach(voting => voting.voteEvaluate());
       delegationConfirmationEmail(delegation, 'insert');
     }
 
@@ -68,11 +68,11 @@ export const update = new ValidatedMethod({
     Delegations.update({ _id }, modifier);
 
     if (Meteor.isServer) {
-      const oldDelegationAffects = doc.getAffectedVotings();
+      const oldDelegationAffects = doc.getAffectedOpenVotings();
       const newDoc = Delegations.findOne(_id);
-      const newDelegationAffects = newDoc.getAffectedVotings();
-      const affectedVotings = _.uniq(_.union(oldDelegationAffects.fetch(), newDelegationAffects.fetch()), v => v._id);
-      affectedVotings.forEach(voting => voting.voteEvaluate());
+      const newDelegationAffects = newDoc.getAffectedOpenVotings();
+      const affectedOpenVotings = _.uniq(_.union(oldDelegationAffects, newDelegationAffects), v => v._id);
+      affectedOpenVotings.forEach(voting => voting.voteEvaluate());
 
       delegationConfirmationEmail(newDoc, 'update', doc);
     }
@@ -95,7 +95,7 @@ export const remove = new ValidatedMethod({
     Delegations.remove(_id);
 
     if (Meteor.isServer) {
-      doc.getAffectedVotings().forEach(voting => voting.voteEvaluate());
+      doc.getAffectedOpenVotings().forEach(voting => voting.voteEvaluate());
       delegationConfirmationEmail(doc, 'remove');
     }
   },
@@ -113,7 +113,7 @@ export const allow = new ValidatedMethod({
     if (value === false) {
       let affectedVotings = [];
       const affectedDelegations = Delegations.find({ targetId: { $in: user.partnerIds() } }).fetch();
-      affectedDelegations.forEach(delegation => affectedVotings = _.uniq(_.union(affectedVotings, delegation.getAffectedVotings().fetch()), v => v._id));
+      affectedDelegations.forEach(delegation => affectedVotings = _.uniq(_.union(affectedVotings, delegation.getAffectedOpenVotings()), v => v._id));
       Delegations.remove({ targetId: { $in: user.partnerIds() } });
       if (Meteor.isServer) {
         affectedVotings.forEach(voting => voting.voteEvaluate());

@@ -32,7 +32,7 @@ const chooseScopeObject = {
     else {
       const communityId = ModalStack.getVar('communityId');
       if (scope === 'agenda') scopeSet = Agendas.find({ communityId });
-      if (scope === 'topic') scopeSet = Topics.find({ communityId, category: 'vote', closed: false });
+      if (scope === 'topic') scopeSet = Topics.find({ communityId, category: 'vote', closed: false, status: { $in: ['announced', 'opened'] } });
     }
     return scopeSet.map(function (o) { return { label: o.name || o.title, value: o._id }; });
   },
@@ -110,10 +110,14 @@ Delegations.helpers({
     return Partners.findOne(this.targetId).userId;
   },
   getAffectedVotings() {
-    if (this.scope === 'community') return Topics.find({ communityId: this.scopeObjectId, category: 'vote', closed: false });
-    if (this.scope === 'agenda') return Topics.find({ communityId: this.communityId, agendaId: this.scopeObjectId, category: 'vote', closed: false });
-    if (this.scope === 'topic') return Topics.find({ _id: this.scopeObjectId, category: 'vote', closed: false });
+    const selector = { category: 'vote', closed: false };
+    if (this.scope === 'community') return Topics.find(_.extend({ communityId: this.scopeObjectId }, selector));
+    if (this.scope === 'agenda') return Topics.find(_.extend({ communityId: this.communityId, agendaId: this.scopeObjectId }, selector));
+    if (this.scope === 'topic') return Topics.find(_.extend({ _id: this.scopeObjectId }, selector));
     return undefined;
+  },
+  getAffectedOpenVotings() {
+    return this.getAffectedVotings()?.fetch().filter(v => v.status === 'opened');
   },
 });
 

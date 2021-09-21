@@ -202,7 +202,7 @@ Topics.helpers({
       case 'vote':
         const user = Meteor.users.findOne(userId);
         const partnerId = user.partnerId(this.communityId);
-        if (!this.closed && !this.hasVoted(partnerId)) return 1;
+        if (!this.votingClosed() && !this.hasVoted(partnerId)) return 1;
         break;
       case 'ticket':
         if (!this.closed && Meteor.user().hasPermission(`ticket.statusChange.${this.status}.leave`, this)) return 1;
