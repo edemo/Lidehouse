@@ -130,21 +130,21 @@ StatementEntries.actions = {
       }
       ModalStack.setVar('newDoc', newTx);
 
-      if (doc.community().settings.paymentsWoStatement || txdef.category === 'transfer') {
-        const reconciliationDoc = { _id: doc._id, defId: newTx.defId, txId: doc.match?.txId };
-        Modal.show('Autoform_modal', {
-          body: 'Reconciliation',
-          bodyContext: { doc: reconciliationDoc },
-          // --- --- --- ---
-          id: 'af.statementEntry.reconcile',
-          schema: reconciliationSchema,
-          doc: reconciliationDoc,
-          type: 'method',
-          meteormethod: 'statementEntries.reconcile',
-          // --- --- --- ---
-          size: 'lg',
-        });
-      } else {
+      // if (doc.community().settings.paymentsWoStatement || txdef.category === 'transfer') {
+      const reconciliationDoc = { _id: doc._id, defId: newTx.defId, txId: doc.match?.txId };
+      Modal.show('Autoform_modal', {
+        body: 'Reconciliation',
+        bodyContext: { doc: reconciliationDoc },
+        // --- --- --- ---
+        id: 'af.statementEntry.reconcile',
+        schema: reconciliationSchema,
+        doc: reconciliationDoc,
+        type: 'method',
+        meteormethod: 'statementEntries.reconcile',
+        // --- --- --- ---
+        size: 'lg',
+      });
+/*       } else {
         Transactions.actions.create({ txdef }, newTx).run();
         ModalStack.autorun((computation) => {
           const result = ModalStack.readResult('root', `af.${txdef.category}.create`, true);
@@ -155,7 +155,7 @@ StatementEntries.actions = {
             });
           }
         });
-      }
+      } */
     },
   }),
   unReconcile: (options, doc, user = Meteor.userOrNull()) => ({

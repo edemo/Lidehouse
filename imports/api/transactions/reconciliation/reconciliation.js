@@ -13,10 +13,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 export const chooseTxdef = {
   options() {
     const communityId = ModalStack.getVar('communityId');
-    const txdefs = Txdefs.find({ communityId }).fetch();
-    const txdefsToReconcile = Communities.findOne(communityId).settings.paymentsWoStatement
-      ? txdefs.filter(td => td.isReconciledTx()) : txdefs.filter(td => td.category === 'transfer');
-    const options = txdefsToReconcile.map(txdef => ({ label: __(txdef.name), value: txdef._id }));
+    const txdefs = Txdefs.find({ communityId }).fetch().filter(td => td.isReconciledTx());
+    const options = txdefs.map(txdef => ({ label: __(txdef.name), value: txdef._id }));
     return options;
   },
   firstOption: () => __('(Select one)'),
@@ -33,6 +31,9 @@ export const chooseTransaction = {
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return undefined;
     const txdef = Txdefs.findOne(defId);
+    const newDoc = ModalStack.getVar('newDoc');
+    Transactions.setTxdef(newDoc, txdef);
+    ModalStack.setVar('newDoc', newDoc, true);
     return ModalStack.readResult(selfId, `af.${txdef.category}.create`);
   },
   options() {
