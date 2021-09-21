@@ -220,20 +220,20 @@ Transactions.helpers({
   },
   calculateReconciled() {
     // If reconciled value is undefined, it means, no need to reconcile
-    // Only payments and transfers need to be reconciled, and only if they relate to bank accounts
+    // Only reconciledCategories need to be reconciled, and only if they relate to bank accounts
     if (this.status === 'void') return undefined;
     const txdef = this.txdef();
-    if (txdef.category === 'payment') {
-      const payAccount = Accounts.getByCode(this.payAccount, this.communityId);
-      if (payAccount.category === 'bank') return this.seId?.length === 1;
-      else return undefined;
-    } else if (txdef.category === 'transfer') {
+    if (txdef.category === 'transfer') {
       const toAccount = Accounts.getByCode(this.toAccount, this.communityId);
       const fromAccount = Accounts.getByCode(this.fromAccount, this.communityId);
       let expectedSeIdLength = 0;
       if (toAccount.category === 'bank') expectedSeIdLength += 1;
       if (fromAccount.category === 'bank') expectedSeIdLength += 1;
       if (expectedSeIdLength) return this.seId?.length === expectedSeIdLength;
+      else return undefined;
+    } else if (Transactions.reconciledCategories.includes(txdef.category)) {
+      const payAccount = Accounts.getByCode(this.payAccount, this.communityId);
+      if (payAccount.category === 'bank') return this.seId?.length === 1;
       else return undefined;
     } else return undefined;
   },

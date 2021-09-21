@@ -415,6 +415,52 @@ if (Meteor.isServer) {
       });
     });
 
+    describe('Receipt reconciliation', function () {
+      let receiptId, seId;
+      let tx, se;
+      after(function () {
+        Transactions.remove({ category: 'receipt' });
+      });
+
+      it('Can reconcile a receipt to bank statement', function () {
+        seId = Fixture.builder.create('statementEntry', {
+          account: '`382', amount: -4560,
+        });
+        receiptId = Fixture.builder.create('expense', {
+          payAccount: '`382',
+          amount: 4560,
+          lines: [{
+            title: 'The Work',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 4560,
+            account: '`5207',
+            localizer: '@',
+          }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: receiptId });
+
+        tx = Transactions.findOne(receiptId);
+        se = StatementEntries.findOne(seId);
+        chai.assert.isFalse(tx.reconciled);
+        chai.assert.isFalse(se.isReconciled());
+
+        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: seId, txId: receiptId });
+        tx = Transactions.findOne(receiptId);
+        se = StatementEntries.findOne(seId);
+        chai.assert.isTrue(tx.reconciled);
+        chai.assert.isTrue(se.isReconciled());
+      });
+
+      it('Can remove receipt and keeps statement in sync', function () {
+        Fixture.builder.execute(Transactions.methods.remove, { _id: receiptId });
+        tx = Transactions.findOne(receiptId);
+        se = StatementEntries.findOne(seId);
+        chai.assert.equal(tx.status, 'void');
+        chai.assert.isFalse(se.isReconciled());
+      });
+    });
+
     describe('Recognition', function () {
       let billId, billId2;
       let bill, bill2;
