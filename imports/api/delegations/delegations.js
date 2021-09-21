@@ -32,7 +32,7 @@ const chooseScopeObject = {
     else {
       const communityId = ModalStack.getVar('communityId');
       if (scope === 'agenda') scopeSet = Agendas.find({ communityId });
-      if (scope === 'topic') scopeSet = Topics.find({ communityId, category: 'vote', status: { $in: ['announced', 'opened'] } });
+      if (scope === 'topic') scopeSet = Topics.find({ communityId, category: 'vote', closed: false, status: { $in: ['announced', 'opened'] } });
     }
     return scopeSet.map(function (o) { return { label: o.name || o.title, value: o._id }; });
   },
