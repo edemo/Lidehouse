@@ -882,9 +882,10 @@ Migrations.add({
   version: 51,
   name: 'Reposting member bills and payments',
   up() {
+    const start = new Date("2020-09-01");
     Communities.find().forEach(community => {
       const adminId = community.admin()._id;
-      Transactions.find({ communityId: community._id, relation: 'member', status: 'posted' }).forEach(tx => {
+      Transactions.find({ communityId: community._id, relation: 'member', status: 'posted', createdAt: { $gte: start } }).forEach(tx => {
         Transactions.methods.post._execute({ userId: adminId }, { _id: tx._id });
       });
     });
