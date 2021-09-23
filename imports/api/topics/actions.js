@@ -193,6 +193,18 @@ Topics.actions = {
       Meteor.users.methods.flag.call({ id: doc.creatorId }, handleError);
     },
   }),
+  archive: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'archive',
+    icon: 'fa fa-archive',
+    visible: doc?.entityName && user.hasPermission(`${doc.entityName()}.remove`, doc),
+    run() {
+      Modal.confirmAndCall(Topics.methods.archive, { _id: doc._id }, {
+        action: 'archive',
+        entity: doc.entityName(),
+        message: 'It will be taken off the page',
+      });
+    },
+  }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',

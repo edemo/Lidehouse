@@ -84,6 +84,18 @@ export const move = new ValidatedMethod({
   },
 });
 
+export const archive = new ValidatedMethod({
+  name: 'topics.archive',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id }) {
+    const topic = checkExists(Topics, _id);
+    checkTopicPermissions(this.userId, 'remove', topic);
+    Topics.update(_id, { $set: { closed: true } }, { selector: { category: topic.category } });
+  },
+});
+
 export const remove = new ValidatedMethod({
   name: 'topics.remove',
   validate: new SimpleSchema({
@@ -112,7 +124,7 @@ export function closeInactiveTopics() {
 }
 
 Topics.methods = Topics.methods || {};
-_.extend(Topics.methods, { insert, update, move, remove });
+_.extend(Topics.methods, { insert, update, move, archive, remove });
 _.extend(Topics.methods, crudBatchOps(Topics));
 Meteor.startup(() => { // statusUpdate is a behaviour method -- not ready yet
   Topics.methods.batch.statusUpdate = new BatchMethod(Topics.methods.statusUpdate);

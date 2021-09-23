@@ -23,6 +23,12 @@
       "doing": "delete",
       "done": "deleted"
     }, 
+    "archive": {
+      "label": "archive",
+      "do": "archive",
+      "doing": "archive",
+      "done": "archived"
+    },
     "import": {
       "label": "import",
       "do": "import",
