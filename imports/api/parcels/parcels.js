@@ -71,6 +71,9 @@ Parcels.propertySchema = new SimpleSchema({
   group: { type: String, max: 25, optional: true },
   // cost calculation purposes
   area: { type: Number, decimal: true, optional: true },
+  area1: { type: Number, decimal: true, optional: true },
+  area2: { type: Number, decimal: true, optional: true },
+  area3: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
 });
 

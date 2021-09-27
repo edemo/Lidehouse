@@ -201,8 +201,23 @@ export const CondominiumTranslation = {
         "label": "Location"
       },
       "area": {
-        "label": "Area (m2)",
+        "label": "Area total(m2)",
         "placeholder": "(eg. 45)"
+      },
+      "area1": {
+        "label": "Area 1/1 weighted(m2)",
+        "help": "Base or net area",
+        "placeholder": "(eg. 35)"
+      },
+      "area2": {
+        "label": "Area 1/2 weighted(m2)",
+        "help": "1/2 weighted area, eg. terrace or loggia",
+        "placeholder": "(eg. 5)"
+      },
+      "area3": {
+        "label": "Area 1/3 weighted(m2)",
+        "help": "1/3 weighted area, eg. garden",
+        "placeholder": "(eg. 12)"
       },
       "volume": {
         "label": "Volume (m3)",
@@ -432,8 +447,23 @@ export const CondominiumTranslation = {
         "label": "Elhelyezkedés"
       },
       "area": {
-        "label": "Alapterület (m2)",
+        "label": "Alapterület össz(m2)",
         "placeholder": "(pl. 45)"
+      },
+      "area1": {
+        "label": "Alapterület 1/1 súlyú(m2)",
+        "help": "Nettó vagy belső alapterület",
+        "placeholder": "(pl. 35)"
+      },
+      "area2": {
+        "label": "Alapterület 1/2 súlyú(m2)",
+        "help": "1/2 súlyozott terület, pl. erkély vagy terasz",
+        "placeholder": "(pl. 5)"
+      },
+      "area3": {
+        "label": "Alapterület 1/3 súlyú(m2)",
+        "help": "1/3 súlyozott terület, pl. kert",
+        "placeholder": "(pl. 12)"
       },
       "volume": {
         "label": "Légköbméter (m3)",

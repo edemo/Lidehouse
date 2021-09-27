@@ -24,7 +24,7 @@ import { displayMoney } from '/imports/ui_3/helpers/utils.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
-ParcelBillings.projectionBaseValues = ['absolute', 'area', 'volume', 'habitants'];
+ParcelBillings.projectionBaseValues = ['absolute', 'area', 'area1', 'area2', 'area3', 'volume', 'habitants'];
 //ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
 const chooseFromExistingParcelTypes = {
@@ -156,7 +156,10 @@ ParcelBillings.helpers({
   projectionUom() {
     switch (this.projection.base) {
       case 'absolute': return 'piece';
-      case 'area': return 'm2';
+      case 'area':
+      case 'area1':
+      case 'area2':
+      case 'area3': return 'm2';
       case 'volume': return 'm3';
       case 'habitants': return 'person';
       default: debugAssert(false, 'No such projection base'); return undefined;
@@ -167,6 +170,9 @@ ParcelBillings.helpers({
     switch (this.projection.base) {
       case 'absolute': result = 1; break;
       case 'area': result = parcel.area; break;
+      case 'area1': result = parcel.area1; break;
+      case 'area2': result = parcel.area2; break;
+      case 'area3': result = parcel.area3; break;
       case 'volume': result = parcel.volume; break;
       case 'habitants': result = parcel.contract()?.habitants; break;
       default: debugAssert(false, 'No such projection base'); break;

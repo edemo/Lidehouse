@@ -1278,7 +1278,10 @@
         "label": "Projection base",
         "options": {
           "absolute": "absolute ($)",
-          "area": "area (/m2)",
+          "area": "area total(/m2)",
+          "area1": "area 1/1 weighted(/m2)",
+          "area2": "area 1/2 weighted(/m2)",
+          "area3": "area 1/3 weighted(/m2)",
           "volume": "volume (/m3)",
           "habitants": "habitants (/person)"
         }
