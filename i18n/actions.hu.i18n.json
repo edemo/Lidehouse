@@ -23,6 +23,12 @@
       "doing": "törlése",
       "done": "törölve"
     },
+    "archive": {
+      "label": "archiválás",
+      "do": "archiválja",
+      "doing": "archiválása",
+      "done": "archiválva"
+    },
     "import": {
       "label": "import",
       "do": "importálja",

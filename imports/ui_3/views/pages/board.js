@@ -43,4 +43,15 @@ Template.News.helpers({
     const communityId = getActiveCommunityId();
     return Topics.find({ communityId, category, closed: false, sticky: stickyVal }, { sort: { createdAt: -1 } });
   },
+  archivedNews() {
+    const communityId = getActiveCommunityId();
+    return Topics.find({ communityId, category: 'news', closed: true }, { sort: { createdAt: -1 } });
+  },
+});
+
+Template.News.events({
+  'click .js-show-archive'(event, instance) {
+    const communityId = getActiveCommunityId();
+    instance.subscribe('topics.list', { communityId, category: 'news', closed: true });
+  },
 });
