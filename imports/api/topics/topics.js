@@ -261,8 +261,7 @@ Topics.categoryValues.forEach(category =>
 );
 //  Topics.schema.i18n('schemaTopics');
 
-Topics.modifiableFields = ['title', 'text', 'attachments', 'sticky', 'agendaId'];
-Topics.modifiableFields.push('closed'); // comes from Workflow behaviour
+Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId'];
 
 Topics.categoryValues.forEach((category) => {
   Factory.define(category, Topics, {

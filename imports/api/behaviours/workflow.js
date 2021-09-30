@@ -43,6 +43,8 @@ const schema = new SimpleSchema({
   },
 });
 
+const modifiableFields = ['closed'];
+
 const helpers = {
   statusObject(statusName) {
     return this.workflow()[statusName || this.status].obj;
@@ -171,6 +173,6 @@ export function Workflow(workflow = defaultWorkflow) {
   });
 
   return { name: 'Workflow',
-    schema, helpers, methods: { statusChange, statusUpdate }, hooks,
+    schema, modifiableFields, helpers, methods: { statusChange, statusUpdate }, hooks,
   };
 }
