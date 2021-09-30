@@ -16,6 +16,7 @@ import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 
 export const Tickets = {};
 
+Tickets.modifiableFields = ['title', 'text', 'attachments'];
 Tickets.typeValues = ['issue', 'upgrade', 'maintenance'];
 Tickets.urgencyValues = ['high', 'normal', 'low'];
 Tickets.urgencyColors = { high: 'danger', normal: 'warning', low: 'primary' };
@@ -197,14 +198,18 @@ Topics.categoryHelpers('ticket', {
   statusFields(statusObject = this.statusObject()) {
     return (statusObject.data || []).map(d => 'ticket.' + d);
   },
-  startFields() {
-    return this.statusFields(this.startStatus());
-  },
   modifiableFields() {
-    return ['title', 'text', 'attachments'].concat(this.startFields());
+    let pastStatuses = [this.startStatus()];
+    const statusChanges = Comments.find({ category: 'statusChange', topicId: this._id }).fetch();
+    pastStatuses = pastStatuses.concat(_.pluck(statusChanges, 'status').map(s => this.statusObject(s)));
+    let fields = Tickets.modifiableFields;
+    pastStatuses.forEach(status => {
+      fields = fields.concat(this.statusFields(status));
+    });
+    return fields;
   },
   inputFields() {
-    return this.modifiableFields().concat(this.startFields());
+    return Tickets.modifiableFields.concat(this.statusFields(this.startStatus()));
   },
   displayStart() {
     return (this.ticket.actualStart || this.ticket.expectedStart);
