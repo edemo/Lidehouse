@@ -8,6 +8,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { _ } from 'meteor/underscore';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
@@ -29,22 +30,6 @@ import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { toggle } from '/imports/api/utils';
 import './worksheets.html';
 
-Template.Worksheets.onCreated(function onCreated() {
-  ModalStack.setVar('relation', 'supplier', true);
-  this.getCommunityId = () => FlowRouter.getParam('_cid') || ModalStack.getVar('communityId');
-  this.autorun(() => {
-    const communityId = this.getCommunityId();
-    this.subscribe('communities.byId', { _id: communityId });
-    this.subscribe('topics.list', { communityId, category: 'ticket' });
-    this.subscribe('contracts.inCommunity', { communityId });
-    this.subscribe('partners.inCommunity', { communityId });
-  });
-});
-
-Template.Worksheets.onDestroyed(function onDestroyed() {
-  ModalStack.setVar('expectedStart', undefined);
-});
-
 Template.Worksheets.viewmodel({
   eventsToUpdate: {},
   calendarView: false,
@@ -57,11 +42,25 @@ Template.Worksheets.viewmodel({
   endDate: '',
   byStartDate: false,
   reportedByCurrentUser: false,
-  communityId: null,
-  onCreated() {
-    this.communityId(this.templateInstance.getCommunityId());
+  communityId() {
+    return getActiveCommunityId();
+  },
+  onCreated(instance) {
     this.setDefaultFilter();
     ContextMenu.initialize('Worksheets', Topics, this);
+    ModalStack.setVar('relation', 'supplier', true);
+    instance.autorun(() => {
+      const communityId = this.communityId();
+      instance.subscribe('communities.byId', { _id: communityId });
+      const ticketListParams = { communityId, category: 'ticket' };
+      if (!_.intersection(['closed', 'deleted'], this.ticketStatusSelected()).length) ticketListParams.closed = false;
+      instance.subscribe('topics.list', ticketListParams);
+      instance.subscribe('contracts.inCommunity', { communityId });
+      instance.subscribe('partners.inCommunity', { communityId });
+    });
+  },
+  onDestroyed() {
+    ModalStack.setVar('expectedStart', undefined);
   },
   setDefaultFilter() {
     this.searchText('');
@@ -183,19 +182,8 @@ Template.Worksheets.viewmodel({
     const selected = this[`${field}Selected`]();
     return selected.includes(value) && 'active';
   },
-  recentTickets() {
-    const communityId = ModalStack.getVar('communityId');
-    const recentTickets = [];
-    const allTickets = Topics.find({ communityId, category: 'ticket',
-      $or: [{ status: { $ne: 'closed' } }, { createdAt: { $gt: moment().subtract(1, 'week').toDate() } }],
-    }, { sort: { createdAt: -1 } }).fetch();
-    for (let i = 0; i <= 1; i += 1) {
-      recentTickets.push(allTickets[i]);
-    }
-    return recentTickets;
-  },
   filterSelector() {
-    const communityId = ModalStack.getVar('communityId');
+    const communityId = this.communityId();
     const ticketStatusSelected = this.ticketStatusSelected();
     const ticketTypeSelected = this.ticketTypeSelected();
     const ticketUrgencySelected = this.ticketUrgencySelected();
