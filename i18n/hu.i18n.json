@@ -395,7 +395,7 @@
   "Participation necessary": "Eredményesség feltétele",  
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
-  "Actives only": "Aktívak mutatása",
+  "Actives only": "Csak az Aktívak",
   "Opened only": "Nyitottak mutatása",
   "Show results": "Eredmények megtekintése",
   "Show attachment": "Előterjesztés megtekintése",
@@ -489,7 +489,7 @@
   "Reported at": "Bejelentve",
   "Type": "Típus",
   "No tickets yet": "Még nincs bejelentése",
-  "My own only": "Csak a sajátjaim mutatása",
+  "My own only": "Csak a sajátjaim",
   "By start date": "Kezdés dátuma szerint",
   "Start date": "Kezdés dátuma",
 
