@@ -44,7 +44,7 @@ export function statementEntriesWithJournalEntriesColumns() {
     { data: 'valueDate', title: __('schemaStatementEntries.valueDate.label'), render: Render.formatDate },
     { data: '_id', render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'statementEntries', actions: 'view', size: 'sm' }, cell),
+        { doc: cellData, collection: 'statementEntries', actions: 'view,edit,delete', size: 'sm' }, cell),
     },
     { data: 'display()', title: __('schemaStatementEntries._.label') },
     { data: 'amount', title: __('schemaStatementEntries.amount.label'), render: Render.formatNumber(0) },
