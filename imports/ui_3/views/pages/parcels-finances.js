@@ -73,6 +73,9 @@ Template.Parcels_finances.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
     });
   },
+  beginDate() {
+    return moment().startOf('year').format('YYYY-MM-DD');
+  },
 /*  parcelsTableDataFn() {
     const self = this;
     return () => {

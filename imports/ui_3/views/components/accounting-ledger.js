@@ -1,16 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { $ } from 'meteor/jquery';
 
 import '/imports/ui_3/views/modals/modal.js';
 import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period';
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Accounts } from '/imports/api/transactions/accounts/accounts';
+import { Balances } from '/imports/api/transactions/balances/balances';
 import '/imports/ui_3/views/components/ledger-report.js';
 import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/journals-table.js';
@@ -19,6 +18,7 @@ import './accounting-ledger.html';
 
 Template.Accounting_ledger.viewmodel({
   periodSelected: PeriodBreakdown.currentYearTag(),
+  periodOrCumulation: 'period',
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('balances.ofAccounts', { communityId: this.communityId() });
@@ -47,11 +47,26 @@ Template.Accounting_ledger.viewmodel({
     return PeriodBreakdown.nodesOf(this.periodSelected()).map(l => l.code);
   },
   periodOptions() {
-    return PeriodBreakdown.nodeOptions(false);
+    const periodOptions = [];
+    const currentYear = new Date().getFullYear();
+    const oldestBalance = Balances.find({ communityId: this.communityId(), localizer: { $exists: false }, partner: { $exists: false },
+      tag: new RegExp('^T-') }, { sort: { tag: 1 } }).fetch()[0];
+    const oldestBalanceYear = oldestBalance ? Period.fromTag(oldestBalance.tag).year : currentYear;
+    PeriodBreakdown.nodes(false).forEach((tag) => {
+      const year = tag.path[1];
+      if (year < oldestBalanceYear || year > currentYear) return;
+      const yearLabel = tag.path.length === 3 ? year + ' ' : '';
+      periodOptions.push({ label: yearLabel + __(tag.label || tag.name), value: tag.code });
+    });
+    return periodOptions;
   },
 });
 
 Template.Accounting_ledger.events({
+  'change .periodRadio'(event, instance) {
+    const selected = event.target.value;
+    instance.viewmodel.periodOrCumulation(selected);
+  },
   'click .cell,.row-header'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     if (!Meteor.user().hasPermission('transactions.inCommunity', { communityId })) return;

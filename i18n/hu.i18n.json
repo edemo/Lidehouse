@@ -594,6 +594,11 @@
   "Remainder": "Maradék",
   "unreconciledOnlyHelp": "Számlák közül csak azok, amik pénzügyileg rendezetlenek. Fizetések közül csak azok, amik nincsenek számlákhoz egyeztetve vagy nincsenek bankkivonathoz egyeztetve. Partnerek közül csak azok, akiknek kinnlevősége van. Egyszóval csak azok a tételek, amikkel még teendő van.",
   "Some accounting transactions might be connected to it": "Egyes tranzakciók kapcsolódhatnak hozzá.",
+  "Select a period for general ledger data": "Válasszon időszakot, amire a naplófőkönyvet megtekinti.",
+  "Clicking on a cell, you can view the relating bill history": "Az egyes cellákra kattintva, az ahhoz az értékhez tartozó számlatörténetet tekintheti meg.",
+  "Given month/year": "Az adott hónap/év",
+  "Cumulated till end of period": "Összesítés az időszak végéig",
+
 
   // docstore
   "Show": "Listázva",

@@ -76,7 +76,7 @@ Template.Partner_history.viewmodel({
     if (!this.contractToView()) return {};
     const result = {};
     const contract = Contracts.findOne(this.contractToView());
-    result.beginBalance = Balances.getCumulatedValue(this.beginBalanceDef(), this.beginDate());
+    result.beginBalance = Balances.getCumulatedValue(this.beginBalanceDef(), moment(this.beginDate()).subtract(1, 'day')).total();
     const selector = Transactions.makeFilterSelector(this.subscribeParams());
     const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
     let total = result.beginBalance;

@@ -1,10 +1,9 @@
 import { Template } from 'meteor/templating';
-import { numeral } from 'meteor/numeral:numeral';
+import { moment } from 'meteor/momentjs:moment';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
+import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import './ledger-report.html';
 
 Template.Ledger_report.onCreated(function onCreated() {
@@ -15,12 +14,23 @@ Template.Ledger_report.onCreated(function onCreated() {
 });
 
 Template.Ledger_report.helpers({
-  balance(account, tag, sideFunc) {
-    const balance = Balances.get({
-      communityId: ModalStack.getVar('communityId'),
-      account: account.code,
-      tag,
-    });
+  balance(account, tag, sideFunc, tagtype) {
+    const period = Period.fromTag(tag);
+    let balance;
+    if (tagtype === 'period' || period.type() === 'total') {
+      balance = Balances.get({
+        communityId: ModalStack.getVar('communityId'),
+        account: account.code,
+        tag,
+      });
+    } else if (tagtype === 'cumulation') {
+      let date;
+      if (period.type() === 'year') date = period.year + '-12-31';
+      else if (period.type() === 'month') date = period.label + '-' + moment(period.label).daysInMonth();
+      balance = Balances.getCumulatedValue({
+        communityId: ModalStack.getVar('communityId'),
+        account: account.code }, date);
+    }
     return balance[sideFunc]();
   },
   hasActivity(account) {
