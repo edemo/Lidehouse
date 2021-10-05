@@ -49,7 +49,7 @@ Transactions.categoryHelpers('receipt', {
     this.debit = [];
     this.credit = [];
     copyLinesInto(this.conteerSide());
-    this.makeEntry(this.relationSide(), { account: this.payAccount });
+    this.makeEntry(this.relationSide(), { account: this.payAccount, amount: this.amount });
     if (this.rounding) this.makeEntry(this.conteerSide(), { amount: this.rounding, account: '`99' });
     return { debit: this.debit, credit: this.credit };
   },
