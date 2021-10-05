@@ -13,6 +13,7 @@ import '/imports/api/users/users.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from './topics.js';
+import { Attachments } from '/imports/api/attachments/attachments.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
 import './tickets/tickets.js';
@@ -76,6 +77,10 @@ export const move = new ValidatedMethod({
     });
     Comments.direct.insert(movedDoc); // timestamped hooks should not run
     // Comments._hookAspects.insert.after[0].aspect(this.userId, movedDoc);
+    doc.attachments.forEach(path => {
+      Attachments.direct.update({ communityId: doc.communityId, path },
+        { $set: { parentId: destinationId, parentCollection: 'Comments' } });
+    });
     Topics.update(destinationId, { $inc: { commentCounter: 1 } });
     doc.comments().forEach((comment) => {
       Comments.update(comment._id, { $set: { topicId: destinationId } });

@@ -892,6 +892,17 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 52,
+  name: 'Comments get attachments field instead of photo',
+  up() {
+    Comments.find({ photo: { $exists: true } }).forEach(comment => {
+      const photos = comment.photo;
+      Comments.update(comment._id, { $set: { attachments: photos }, $unset: { photo: '' } }, { selector: comment, validate: false });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

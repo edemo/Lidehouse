@@ -53,11 +53,13 @@ Meteor.startup(function indexComments() {
   }
 });
 
+Comments.modifiableFields = ['text'];
+
 Comments.attachBaseSchema(Comments.schema);
 Comments.attachBehaviour(Timestamped);
 Comments.attachBehaviour(Likeable);
 Comments.attachBehaviour(Flagable);
-Comments.attachBehaviour(AttachmentField(true));
+Comments.attachBehaviour(AttachmentField());
 
 Comments.attachVariantSchema(undefined, { selector: { category: 'comment' } });
 Comments.attachVariantSchema(StatusChanges.extensionSchema, { selector: { category: 'statusChange' } });
