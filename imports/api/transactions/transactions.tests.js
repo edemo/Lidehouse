@@ -1373,7 +1373,7 @@ if (Meteor.isServer) {
       });
     });
 
-    describe.only('Performance measurement', function() {
+    xdescribe('Performance measurement', function () {
       const billIds1 = [];
       const billIds10 = [];
       it('Creating a something', function () {
