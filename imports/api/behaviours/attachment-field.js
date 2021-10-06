@@ -41,7 +41,7 @@ export const AttachmentField = function (photoOnly) {
         after: {
           insert(userId, doc) {
             const uploadIds = [];
-            doc.fieldName?.forEach((path) => {
+            doc[fieldName]?.forEach((path) => {
               const uploaded = Attachments.findOne({ communityId: doc.communityId, path });
               if (uploaded) uploadIds.push(uploaded._id);
             });

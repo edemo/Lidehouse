@@ -17,22 +17,22 @@
                 <td class="row-header nowrap" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{account.displayAccount}}
                 </td>
-                {{#let cellValue=(balance account tag 'debitSum')}}
+                {{#let cellValue=(balance account tag 'debitSum' tagtype)}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayNumber cellValue}}
                 </td>
                 {{/let}}
-                {{#let cellValue=(balance account tag 'creditSum')}}
+                {{#let cellValue=(balance account tag 'creditSum' tagtype)}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayNumber cellValue}}
                 </td>
                 {{/let}}
-                {{#let cellValue=(balance account tag 'debitTotal')}}
+                {{#let cellValue=(balance account tag 'debitTotal' tagtype)}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayNumber cellValue}}
                 </td>
                 {{/let}}
-                {{#let cellValue=(balance account tag 'creditTotal')}}
+                {{#let cellValue=(balance account tag 'creditTotal' tagtype)}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayNumber cellValue}}
                 </td>

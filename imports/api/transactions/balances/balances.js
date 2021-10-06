@@ -84,6 +84,15 @@ Meteor.startup(function indexBalances() {
 Balances.attachSchema(Balances.schema);
 Balances.attachBehaviour(Timestamped);
 
+// Aggregating sub-accounts balances with regexp
+function subdefSelector(def) {
+  const subdef = _.clone(def);
+  if (def.account !== undefined) subdef.account = new RegExp('^' + def.account);
+  subdef.localizer = def.localizer ? new RegExp('^' + def.localizer) : { $exists: false };
+  subdef.partner = def.partner ? new RegExp('^' + def.partner) : { $exists: false };
+  return subdef;
+}
+
 Balances.get = function get(def) {
   Balances.defSchema.validate(def);
   let result = _.extend({ debit: 0, credit: 0 }, def);
@@ -105,12 +114,7 @@ Balances.get = function get(def) {
     result += balance ? balance[side]() : 0;
   });*/
 
-  // Aggregating sub-accounts balances with regexp
-  const subdef = _.clone(def);
-  if (def.account !== undefined) subdef.account = new RegExp('^' + def.account);
-  subdef.localizer = def.localizer ? new RegExp('^' + def.localizer) : { $exists: false };
-  subdef.partner = def.partner ? new RegExp('^' + def.partner) : { $exists: false };
-  Balances.find(subdef).forEach((balance) => {
+  Balances.find(subdefSelector(def)).forEach((balance) => {
     result.debit += balance.debit;
     result.credit += balance.credit;
   });
@@ -129,17 +133,30 @@ Balances.increase = function increase(selector, side, amount) {
 Balances.getCumulatedValue = function getCumulatedValue(def, d) {
   // Given a date in def, returns the cumulated total balance at that date
   const date = moment(d);
-  const lastClosingDate = date.startOf('year').subtract(1, 'day');
-  const cBal = Balances.findOne(_.extend(def, { tag: `C-${lastClosingDate.year()}` }));
-  if (cBal) return cBal.total();
+  debugAssert(date.date() === date.daysInMonth(), 'balance cumulated value works only for last day of month');
+  let result = _.extend({ debit: 0, credit: 0 }, def);
+  const requestedMonth = date.format('MM');
+  const tag = requestedMonth === '12' ? `C-${date.year()}` : `C-${date.year()}-${requestedMonth}`;
+  const cBal = Balances.findOne(_.extend({}, def, { tag }));
+  if (cBal) {
+    result.credit = cBal.credit;
+    result.debit = cBal.debit;
   // If no C balance available, we have to calculate it by adding up the T balances
-  let result = 0;
-  const tBals = Balances.find(_.extend(def, { tag: new RegExp('^T-') })).fetch();
-  const prevBals = tBals.filter(b => {
-    const period = b.period();
-    return period.year < date.year() && !period.month;
-  });
-  prevBals.map(b => { result += b.total(); });
+  } else {
+    const selector = _.extend(subdefSelector(def), { tag: new RegExp('^T-') });
+    const tBals = Balances.find(selector).fetch();
+    const prevBals = tBals.filter(b => {
+      const period = b.period();
+      return (period.year < date.year() && !period.month)
+        || (period.year == date.year() && period.month && period.month <= requestedMonth);
+    });
+    prevBals.forEach(b => {
+      result.credit += b.credit;
+      result.debit += b.debit;
+    });
+  }
+  result.tag = `C-${date.year()}-${date.format('MM')}`;
+  result = Balances._transform(result);
   return result;
 };
 
