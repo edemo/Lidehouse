@@ -23,7 +23,9 @@ const helpers = {
     return this.getFlags().length;
   },
   flaggedBy(userId, communityId) {
-    if (this.flagsCount() >= 3
+    const Communities = Mongo.Collection.get('communities');
+    const community = Communities.findOne(communityId);
+    if (community.settings.communalModeration > 0 && this.flagsCount() >= community.settings.communalModeration
       /* && this.flagsCount() >= this.likesCount() */) {
       return 'community';
     }

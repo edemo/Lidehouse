@@ -30,6 +30,7 @@ export class Translator {
       schemaTranslation = [
         TAPi18n.__(`schema${this.collection._name.capitalize()}`, { returnObjectTrees: true }, 'hu'),
         TAPi18n.__(`schema${this.options.entity.capitalize()}s`, { returnObjectTrees: true }, 'hu'),
+        TAPi18n.__('schemaNoted', { returnObjectTrees: true }, 'hu'),
       ];
     } else {
       schemaTranslation = [TAPi18n.__(`schema${this.collection._name.capitalize()}`, { returnObjectTrees: true }, 'hu')];
