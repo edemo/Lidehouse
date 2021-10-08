@@ -596,8 +596,8 @@
   "Some accounting transactions might be connected to it": "Egyes tranzakciók kapcsolódhatnak hozzá.",
   "Select a period for general ledger data": "Válasszon időszakot, amire a naplófőkönyvet megtekinti.",
   "Clicking on a cell, you can view the relating bill history": "Az egyes cellákra kattintva, az ahhoz az értékhez tartozó számlatörténetet tekintheti meg.",
-  "Given month/year": "Az adott hónap/év",
-  "Cumulated till end of period": "Összesítés az időszak végéig",
+  "Change during period": "Időszak forgalma",
+  "Balance at the end of period": "Egyenleg az időszak végén",
 
 
   // docstore
