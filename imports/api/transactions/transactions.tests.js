@@ -1,5 +1,6 @@
 /* eslint-env mocha */
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
@@ -7,6 +8,7 @@ import { _ } from 'meteor/underscore';
 import { freshFixture } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -20,7 +22,7 @@ if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
 
   describe('transactions', function () {
-    this.timeout(35000);
+    this.timeout(350000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
       FixtureA = freshFixture();
@@ -1367,6 +1369,93 @@ if (Meteor.isServer) {
               { amount: 450, account: '`952', localizer, parcelId },
             ]);
           });
+        });
+      });
+    });
+
+    xdescribe('Performance measurement', function () {
+      const billIds1 = [];
+      const billIds10 = [];
+      it('Creating a something', function () {
+        const Somethings = new Mongo.Collection('Somethings');
+        for (let i = 0; i < 100; i++) {
+          Somethings.insert({ value: i });
+        }
+      });
+
+      it('Creating a balance', function () {
+        for (let i = 0; i < 100; i++) {
+          Balances.insert({ communityId: FixtureA.demoCommunityId, account: `\`${i}`, tag: 'C', debit: 0 });
+        }
+      });
+
+      it('Updating a balance', function () {
+        for (let i = 0; i < 100; i++) {
+          Balances.update({ communityId: FixtureA.demoCommunityId, account: `\`${i}`, tag: 'C' }, { $set: { debit: 100 } });
+        }
+      });
+
+      it('Creating a 1 line bill', function () {
+        const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[3]);
+        for (let i = 0; i < 100; i++) {
+          billIds1.push(FixtureA.builder.create('bill', {
+            relation: 'member',
+            partnerId,
+            contractId: Contracts.findOne({ partnerId })._id,
+            relationAccount: '`33',
+            issueDate: new Date(),
+            deliveryDate: moment().subtract(1, 'weeks').toDate(),
+            dueDate: moment().add(1, 'weeks').toDate(),
+            lines: [{
+              title: 'Work 1',
+              uom: 'piece',
+              quantity: 1,
+              unitPrice: 300,
+              account: '`951',
+              localizer: '@',
+              parcelId: FixtureA.dummyParcels[1],
+            }],
+          }));
+        }
+      });
+
+      it('Posting a 1 line bill', function () {
+        billIds1.forEach(billId => {
+          FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
+        });
+      });
+
+      it('Creating a 10 line bill', function () {
+        const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[3]);
+        for (let i = 0; i < 100; i++) {
+          const bill = {
+            relation: 'member',
+            partnerId,
+            contractId: Contracts.findOne({ partnerId })._id,
+            relationAccount: '`33',
+            issueDate: new Date(),
+            deliveryDate: moment().subtract(1, 'weeks').toDate(),
+            dueDate: moment().add(1, 'weeks').toDate(),
+            lines: [],
+          };
+          for (let l = 0; l < 10; l++) {
+            bill.lines.push({
+              title: `Work ${i}`,
+              uom: 'piece',
+              quantity: 1,
+              unitPrice: 300,
+              account: '`951',
+              localizer: '@',
+              parcelId: FixtureA.dummyParcels[1],
+            });
+          }
+          billIds10.push(FixtureA.builder.create('bill', bill));
+        }
+      });
+
+      it('Posting a 10 line bill', function () {
+        billIds10.forEach(billId => {
+          FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
         });
       });
     });

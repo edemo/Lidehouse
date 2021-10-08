@@ -9,6 +9,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { defaultBeginDate, defaultEndDate } from '/imports/ui_3/helpers/utils.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { _ } from 'meteor/underscore';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
@@ -67,7 +68,7 @@ Template.Worksheets.viewmodel({
     this.ticketStatusSelected([]);
     this.ticketTypeSelected([]);
     this.ticketUrgencySelected([]);
-    this.startDate(moment().subtract(90, 'days').format('YYYY-MM-DD'));
+    this.startDate(defaultBeginDate());
     this.endDate('');
     this.byStartDate(false);
     this.reportedByCurrentUser(false);
