@@ -26,7 +26,8 @@ Communities.settingsSchema = new SimpleSchema({
   joinable: { type: Boolean, defaultValue: true },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   parcelRefFormat: { type: String, optional: true },
-  topicAgeDays: { type: Number, decimal: true, defaultValue: 90 },
+  topicAgeDays: { type: Number, defaultValue: 90 },
+  communalModeration: { type: Number, defaultValue: 0 },
   // accounting
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions() },
   subjectToVat: { type: Boolean, optional: true },

@@ -103,6 +103,10 @@ export const CondominiumTranslation = {
           "label": "Topic ageing days",
           "help": "Topics get automatically closed after this many days of inactivity."
         },
+        "communalModeration": {
+          "label": "Communal moderation",
+          "help": "Given contents get hide for everyone if this many members block them."
+        },
         "accountingMethod": {
           "label": "Accounting method",
           "help": "Depending on this, the accounting transactions are generated differently from bills and payments. Never change this setting during the fiscal year.",
@@ -348,6 +352,10 @@ export const CondominiumTranslation = {
         "topicAgeDays": {
           "label": "Témák elöregedése napokban",
           "help": "A témák automatikusan lezárulnak ennyi nap inaktivitás után."
+        },
+        "communalModeration": {
+          "label": "Közösségi némítás",
+          "help": "Egy adott tartalom mindenki számára elrejtésre kerül, ha ennyien halkítják."
         },
         "accountingMethod": {
           "label": "Könyvelési mód",
