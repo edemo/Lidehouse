@@ -35,6 +35,7 @@ Transactions.categoryHelpers('barter', {
     const supplierBill = Transactions.findOne(this.supplierBillId);
     const customerBill = Transactions.findOne(this.customerBillId);
     function copyLinesInto(txSide, bill) {
+      // deprecated, bill lines are not accounted by ratio
       const ratio = bill.amount / this.amount;
       bill.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
@@ -43,8 +44,8 @@ Transactions.categoryHelpers('barter', {
     }
     // TODO: this does not work for parcel bills, needs payin digit
     if (accountingMethod === 'accrual') {
-      this.debit = [{ account: supplierBill.relationAccount }];
-      this.credit = [{ account: customerBill.relationAccount }];
+      this.debit = [{ account: supplierBill.relationAccount, amount: this.amount }];
+      this.credit = [{ account: customerBill.relationAccount, amount: this.amount }];
     } else if (accountingMethod === 'cash') {
       copyLinesInto(this.debit, supplierBill);
       copyLinesInto(this.credit, customerBill);

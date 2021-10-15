@@ -23,8 +23,8 @@ Transactions.categoryHelpers('opening', {
     const otherSide = Transactions.oppositeSide(side);
     productionAssert(txdef[otherSide].length === 1, 'Opening tx has cannot have multiple choices for the opposite account');
     const otherAccount = txdef[otherSide][0];
-    this[side] = [{ account: this.account }];
-    this[otherSide] = [{ account: otherAccount }];
+    this[side] = [{ account: this.account, amount: this.amount }];
+    this[otherSide] = [{ account: otherAccount, amount: this.amount }];
     return { debit: this.debit, credit: this.credit };
   },
 });
