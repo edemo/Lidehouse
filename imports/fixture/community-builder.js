@@ -274,12 +274,13 @@ export class CommunityBuilder {
   }
   insertLoadsOfFakeMembers(parcelCount, insertDemoPayments) {
     if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;
-
     for (let i = 0; i <= parcelCount; i++) {
+      Clock.starts(1, 'year', 'ago');
       const parcelId = this.createProperty({
         floor: '9',
         door: i.toString(),
         area: faker.random.number({ min: 30, max: 200 }),
+        type: this.__('schemaParcels.type.flat'),
       });
       const membershipId = this.createMembership(this.createFakePerson(i), 'owner', {
         parcelId,
@@ -287,8 +288,19 @@ export class CommunityBuilder {
         accepted: !!(i + 1),
         ownership: { share: new Fraction(1, 1) },
       });
+      const meterId1 = this.create('meter', {
+        parcelId,
+        service: this.__('schemaMeters.service.coldWater'),
+        uom: 'm3',
+      });
+      const meterId2 = this.create('meter', {
+        parcelId,
+        service: this.__('schemaMeters.service.heating'),
+        uom: 'kJ',
+      });
 
       if (insertDemoPayments) {
+        Clock.clear();
         const parcel = Parcels.findOne(parcelId);
         const membership = Memberships.findOne(membershipId);
         this.generateDemoPayments(parcel, membership);

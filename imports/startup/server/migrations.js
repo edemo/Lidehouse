@@ -903,6 +903,19 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 53,
+  name: 'Save amount in journal entries',
+  up() {
+    Communities.find().forEach(community => {
+      const adminId = community.admin()._id;
+      Transactions.find({ communityId: community._id, status: 'posted', category: { $in: ['receipt', 'barter', 'opening', 'transfer'] } }).forEach(tx => {
+        Transactions.methods.post._execute({ userId: adminId }, { _id: tx._id });
+      });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

@@ -27,8 +27,8 @@ Transactions.categoryHelpers('transfer', {
     }
   },
   makeJournalEntries() {
-    this.debit = [{ account: this.toAccount }];
-    this.credit = [{ account: this.fromAccount }];
+    this.debit = [{ account: this.toAccount, amount: this.amount }];
+    this.credit = [{ account: this.fromAccount, amount: this.amount }];
     return { debit: this.debit, credit: this.credit };
   },
 });

@@ -964,7 +964,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       unitPrice: 2500,
     },
     digit: Accounts.findPayinDigitByName('Hidegvíz előírás'),
-    type: ['flat'],
+    type: [__('schemaParcels.type.flat')],
     localizer: '@',
   }));
 
@@ -982,7 +982,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       unitPrice: 75,
     },
     digit: Accounts.findPayinDigitByName('Fűtési díj előírás'),
-    type: ['flat'],
+    type: [__('schemaParcels.type.flat')],
     localizer: '@',
   }));
 
@@ -1311,7 +1311,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.clear();
 
   if (Meteor.settings.public.fakeMembersNr && demoOrTest === 'test' && lang === 'en') {
-    builder.insertLoadsOfFakeMembers(Meteor.settings.public.fakeMembersNr);
+    builder.insertLoadsOfFakeMembers(Meteor.settings.public.fakeMembersNr, true);
     builder.postAllTransactions();
   }
 
