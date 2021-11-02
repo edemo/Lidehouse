@@ -35,5 +35,5 @@ Meteor.startup(() => {
 
   later.setInterval(job(processNotifications, 'frequent'), later.parse.recur().on(8, 12, 16, 20).hour());
   later.setInterval(job(processNotifications, 'daily'), later.parse.recur().on(18).hour());
-  later.setInterval(job(processNotifications, 'weekly'), later.parse.recur().on(4).dayOfWeek().on(7).hour());
+  later.setInterval(job(processNotifications, 'weekly'), later.parse.recur().on(6).dayOfWeek().on(14).hour());
 });
