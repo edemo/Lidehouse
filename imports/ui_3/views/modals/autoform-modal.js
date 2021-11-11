@@ -77,6 +77,7 @@ AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {
       // const errorMessage = __('errorInFormFieldValidation');
       // error.message = errorMessage + '\n' + error.message;
       displayError(error);
+      if (error.error === 'invocation-failed') Modal.hide(this.template.parent());
     },
     onSuccess(formType, result) {
       ModalStack.recordResult(afId, result);

@@ -358,6 +358,38 @@ if (Meteor.isServer) {
         chai.assert.isTrue(Transactions.findOne(paymentId1).reconciled);
         chai.assert.isTrue(Transactions.findOne(paymentId2).reconciled);
       });
+
+      it('Can reconcile payments with different signs to one statementEntry', function () {
+        const paymentId1 = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: 1000,
+          valueDate: Clock.currentDate(),
+          payAccount: bankAccount.code,
+          partnerId: Fixture.supplier,
+          lines: [{ account: '`861', amount: 1000 }],
+        });
+        const paymentId2 = Fixture.builder.create('payment', {
+          relation: 'supplier',
+          amount: -100,
+          valueDate: Clock.currentDate(),
+          payAccount: bankAccount.code,
+          partnerId: Fixture.customer,
+          lines: [{ account: '`861', amount: -100 }],
+        });
+        const entryId = Fixture.builder.create('statementEntry', {
+          account: bankAccount.code,
+          valueDate: Clock.currentDate(),
+          amount: 900,
+        });
+        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId, txId: paymentId1 });
+        let entry = StatementEntries.findOne(entryId);
+        chai.assert.isFalse(entry.isReconciled());
+        Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId, txId: paymentId2 });
+        entry = StatementEntries.findOne(entryId);
+        chai.assert.isTrue(entry.isReconciled());
+        chai.assert.isTrue(Transactions.findOne(paymentId1).reconciled);
+        chai.assert.isTrue(Transactions.findOne(paymentId2).reconciled);
+      });
     });
 
     describe('Transfer reconciliation', function () {

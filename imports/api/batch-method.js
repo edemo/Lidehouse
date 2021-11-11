@@ -27,13 +27,13 @@ export class BatchMethod extends ValidatedMethod {
         if (Meteor.isClient) return {}; // Batch methods are not simulated on the client, just executed on the server
 //        Log.info("running batch with", args.length, ":", args[0]);
 //        PerformanceLogger.startAggregation();
-        const userId = this.userId;
 //        checkPermissions(userId, method.name, { communityId });  // Whoever has perm for the method, can do it in batch as well
         const results = [];
         const errors = [];
+        const methodInvocation = this;
         args.forEach((arg, index) => {
           try {
-            const res = method._execute({ userId }, arg);
+            const res = method._execute(methodInvocation, arg);
 //            Log.info("successful batch call", arg);
             results.push(res);
           } catch (err) {
@@ -111,6 +111,7 @@ export class UpsertMethod extends ValidatedMethod {
 //        Log.info('Upserting:', doc);
         const communityId = doc.communityId;
         const userId = this.userId;
+        const methodInvocation = this;
         checkPermissions(userId, upsertName, { communityId });
         if (Meteor.isClient) return null; // Upsert methods are not simulated on the client, just executed on the server
 
@@ -124,11 +125,11 @@ export class UpsertMethod extends ValidatedMethod {
         const existingDoc = collection.findOne(selector);
         if (!existingDoc) {
 //          Log.info('No existing doc, so inserting', doc);
-          return collection.methods.insert._execute({ userId }, doc);
+          return collection.methods.insert._execute(methodInvocation, doc);
         } else {
           const modifier = difference(existingDoc, doc);
           if (!_.isEmpty(modifier)) {
-            return collection.methods.update._execute({ userId }, { _id: existingDoc._id, modifier });
+            return collection.methods.update._execute(methodInvocation, { _id: existingDoc._id, modifier });
           }
           return null;
         }
