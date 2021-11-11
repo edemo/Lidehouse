@@ -730,7 +730,8 @@
   "No partner with this ref": "Nincs ilyen azonosítójú partner",
   "Dont know how to parse": "Az elemző nem ismeri fel ezt a típust",
   "Not a valid json": "Nem beolvasható JSON",
-
+  "invocation-failed": "Előfordulhat, hogy a metódus hívás sikertelen volt, a szerverrel való kapcsolat megszakadása miatt.",
+  
   "logout": "kilépés",
   "login": "belépés",
   "register": "új fiók",
