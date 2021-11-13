@@ -225,7 +225,7 @@
           "placeholder": "éééé-hh-nn"
         },
         "value": {
-          "label": "Óraállás",
+          "label": "Leolvasott óraállás",
           "help": "Kérjük figyeljen a tizedesvessző megfelelő helyére, hogy a helyes állást rögzítsük",
           "placeholder": "(pl. 1234,205)"
         },
@@ -246,7 +246,7 @@
           "label": "Számlázás típusa"
         },
         "value": {
-          "label": "Óraállás",
+          "label": "Kiszámlázott óraállás",
           "placeholder": "(mérőn olvasható érték)"
         },
         "readingId": {
