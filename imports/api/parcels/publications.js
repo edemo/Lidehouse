@@ -148,7 +148,7 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
       }],
     }, {
       find(membership) {
-        return Balances.find({ communityId, partner: new RegExp('^' + membership.partnerId), tag: 'T' });
+        return Balances.find({ communityId, partner: new RegExp('^' + membership.partnerId), tag: new RegExp('^T') });
       },
     }],
   };
