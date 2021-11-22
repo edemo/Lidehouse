@@ -34,6 +34,7 @@ Meteor.publish('balances.inCommunity', function balancesInCommunity(params) {
   }
   const selector = user.hasPermission('balances.ofLocalizers', { communityId })
     ? { communityId } : { communityId, localizer: { $exists: false }, partner: { $exists: false } };
+  if (!params.localizer) selector.localizer = { $exists: false };
   return Balances.find(selector);
 });
 
