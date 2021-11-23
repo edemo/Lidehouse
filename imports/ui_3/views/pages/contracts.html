@@ -3,16 +3,29 @@
   {{> Page_heading title=(_ 'Contracts') }}
 
     <div class="wrapper wrapper-content animated fadeInUp">
-
-        {{#if currentUserHasPermission 'contracts.insert'}}
-          <button class="btn btn-primary btn-sm pull-right m-md js-create contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
-        {{/if}}
-        <div class="btn-group m-b-md">
-          {{#each relation in relationValues}}
-          <button type="button" class="btn {{activeClass relation}} js-relation-filter" data-value="{{relation}}">{{_ (concat 'schemaPartners.relation.options.' relation)}}{{_ 's'}}</button>
-          {{/each}}
-        </div>
-
+        <div class="ibox">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="btn-group">
+                    {{#each relation in relationValues}}
+                    <button type="button" class="btn {{activeClass relation}} js-relation-filter" data-value="{{relation}}">{{_ (concat 'schemaPartners.relation.options.' relation)}}{{_ 's'}}</button>
+                    {{/each}}
+                </div>   
+            </div>
+            <div class="col-sm-4">
+                <div class="btn-group">
+                    {{#each status in statuses}}
+                    <button type="button" class="btn {{activeClassStatus status}} text-capitalize js-status-filter" data-value="{{status}}">{{_ status}}</button>
+                    {{/each}}
+                </div>
+            </div>
+            <div class="col-sm-4 text-right">
+                {{#if currentUserHasPermission 'contracts.insert'}}
+                <button class="btn btn-primary btn-sm pull-right js-create contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
+                {{/if}}
+            </div>
+        </div> 
+        </div> 
         {{#each contracts}}
         <div class="ibox collapsed">
             <div class="ibox-title">
