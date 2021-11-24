@@ -260,7 +260,8 @@ if (Meteor.isServer) {
 
       it('calculates cumulated values right for partners', function () {
         function insertPartnerBill(params) {
-          return Fixture.builder.create('bill', {
+          const billId = Fixture.builder.create('bill', {
+            relation: 'customer',
             communityId: Fixture.demoCommunityId,
             partnerId: params.partnerId,
             contractId: params.contractId,
@@ -268,7 +269,6 @@ if (Meteor.isServer) {
             issueDate: new Date(params.date),
             deliveryDate: new Date(params.date),
             dueDate: new Date(params.date),
-            postedAt: new Date(params.date),
             lines: [{
               title: 'Work 1',
               uom: 'piece',
@@ -276,14 +276,8 @@ if (Meteor.isServer) {
               unitPrice: params.amount,
               account: '`19',
             }],
-            pEntries: [{
-              partner: Partners.code(params.partnerId, params.contractId),
-              side: 'credit',
-              amount: params.amount,
-            }],
-            credit: [{ account: '`19' }],
-            debit: [{ account: '`12' }],
           });
+          Transactions.methods.post._execute({ userId: Fixture.demoAccountantId }, { _id: billId });
         }
         function assertPartnerBalance(partner, tag, expectedBalance) {
           const balance = Balances.get({
