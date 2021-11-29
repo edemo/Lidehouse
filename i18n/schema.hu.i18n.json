@@ -1254,7 +1254,7 @@
     "consumption": {
       "label": "Fogyasztási előírás (ha van mérőóra)",
       "service": {
-        "help": "Csak akkor töltse ki, ha az előírást mért fogyasztáshoz szeretné kötni azoknál az albetéteknél, ahol van felszerelve mérőóra.",
+        "help": "Csak akkor töltse ki, ha az előírást mért fogyasztáshoz szeretné kötni azoknál az albetéteknél, ahol van felszerelve mérőóra. (A már rögzített mérőórák szolgáltatásai közül választhat.)",
         "label": "Mért szolgáltatatás"
       },
       "charges": {
@@ -1313,7 +1313,7 @@
     },
     "group": {
       "label": "Csoport, amire előrunk",
-      "help": "Válasszon csoportot, ha csak egy adott csoportra kell előírni a költséget, a többire nem."
+      "help": "Válasszon csoportot, ha csak egy adott csoportra kell előírni a költséget, a többire nem. (Csoportot az albetét adatlapján adhat meg.)"
     },
     "rank": {
       "label": "Rangsorszám",

@@ -21,7 +21,7 @@
   },
   "schemaNoted": {
     "notes": {
-      "label": "Megjegyzések"
+      "label": "Notes"
     }
   },
   "schemaAttachmentField": {
@@ -1249,7 +1249,7 @@
     "consumption": {
       "label": "Consumption basis (where a meter is installed)",
       "service": {
-        "help": "Fill this if you would like to bill according to measured consumption in places where a meter is available.",
+        "help": "Fill this if you would like to bill according to measured consumption in places where a meter is available. (You can choose from the existing meters' services.)",
         "label": "Measured service"
       },
       "charges": {
@@ -1308,7 +1308,7 @@
     },
     "group": {
       "label": "Group, the billing applies to",
-      "help": "Choose a group if you'd like to apply to that group, but not the others."
+      "help": "Choose a group if you'd like to apply to that group, but not the others. (You can define a group on the parcel's datasheet.)"
     },
     "rank": {
       "label": "Rank",

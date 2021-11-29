@@ -7,6 +7,7 @@ import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Partners } from '/imports/api/partners/partners';
 import { Balances } from './balances';
 
 if (Meteor.isServer) {
@@ -254,6 +255,94 @@ if (Meteor.isServer) {
         chai.assert.equal(Balances.getCumulatedValue({ communityId: Fixture.demoCommunityId, account: '`12A' }, '2019-03-31').total(), 300);
         chai.assert.throws(() => {
           Balances.getCumulatedValue({ communityId: Fixture.demoCommunityId, account: '`12A' }, '2019-03-30');
+        }, 'Debug assertion failed');
+      });
+
+      it('calculates cumulated values right for partners', function () {
+        function insertPartnerBill(params) {
+          const billId = Fixture.builder.create('bill', {
+            relation: 'customer',
+            communityId: Fixture.demoCommunityId,
+            partnerId: params.partnerId,
+            contractId: params.contractId,
+            relationAccount: '`12',
+            issueDate: new Date(params.date),
+            deliveryDate: new Date(params.date),
+            dueDate: new Date(params.date),
+            lines: [{
+              title: 'Work 1',
+              uom: 'piece',
+              quantity: 1,
+              unitPrice: params.amount,
+              account: '`19',
+            }],
+          });
+          Transactions.methods.post._execute({ userId: Fixture.demoAccountantId }, { _id: billId });
+        }
+        function assertPartnerBalance(partner, tag, expectedBalance) {
+          const balance = Balances.get({
+            communityId: Fixture.demoCommunityId,
+            partner,
+            tag,
+          }).total();
+          chai.assert.equal(balance, expectedBalance);
+        }
+        const partnerId = 'WfS8p9zKdSHFJcewK';
+        const contractId = 'ksR6hAc8C9Bc2F8qr';
+        const secondContractId = 'k9a9RPCnrZaWjWF2L';
+        const otherPartnerId = 'sTrbEGKKBMeaWaysZ';
+        const otherContractId = 'vZ3vfc86Edg83SYvf';
+        const partnercontract1 = Partners.code(partnerId, contractId);
+        const partnercontract2 = Partners.code(partnerId, secondContractId);
+        const otherPartnercontract = Partners.code(otherPartnerId, otherContractId);
+
+        insertPartnerBill({ partnerId, contractId, date: '2018-07-05', amount: 100 });
+        insertPartnerBill({ partnerId, contractId, date: '2018-09-05', amount: 200 });
+        insertPartnerBill({ partnerId, contractId, date: '2019-01-05', amount: 400 });
+        insertPartnerBill({ partnerId, contractId, date: '2019-03-05', amount: 600 });
+        insertPartnerBill({ partnerId, contractId, date: '2019-07-05', amount: -500 });
+        insertPartnerBill({ partnerId, contractId, date: '2019-12-31', amount: -250 });
+        insertPartnerBill({ partnerId, contractId, date: '2020-04-05', amount: 900 });
+        insertPartnerBill({ partnerId, contractId, date: '2020-09-05', amount: -50 });
+        insertPartnerBill({ partnerId, contractId: secondContractId, date: '2019-07-05', amount: 1000 });
+        insertPartnerBill({ partnerId, contractId: secondContractId, date: '2019-09-05', amount: 2000 });
+        insertPartnerBill({ partnerId, contractId: secondContractId, date: '2020-09-05', amount: 4000 });
+        insertPartnerBill({ partnerId: otherPartnerId, contractId: otherContractId, date: '2020-04-05', amount: 750 });
+        insertPartnerBill({ partnerId: otherPartnerId, contractId: otherContractId, date: '2020-09-05', amount: -40 });
+
+        assertPartnerBalance(partnercontract1, 'T-2018', -300);
+        assertPartnerBalance(partnercontract1, 'T-2019', -250);
+        assertPartnerBalance(partnercontract1, 'T-2020', -850);
+        assertPartnerBalance(partnercontract2, 'T-2020', -4000);
+        assertPartnerBalance(otherPartnercontract, 'T-2020', -710);
+        assertPartnerBalance(partnerId, 'T', -8400);
+
+        const cumulated = function (partner, date) {
+          return Balances.getCumulatedValue({ communityId: Fixture.demoCommunityId, partner }, date).total();
+        };
+        chai.assert.equal(cumulated(partnercontract1, '2018-12-31'), -300);
+        chai.assert.equal(cumulated(partnercontract1, '2019-12-31'), -550);
+        chai.assert.equal(cumulated(partnercontract1, '2020-12-31'), -1400);
+        chai.assert.equal(cumulated(partnercontract1, '2021-12-31'), -1400);
+        chai.assert.equal(cumulated(partnercontract2, '2018-12-31'), 0);
+        chai.assert.equal(cumulated(partnercontract2, '2019-12-31'), -3000);
+        chai.assert.equal(cumulated(partnercontract2, '2020-12-31'), -7000);
+        chai.assert.equal(cumulated(otherPartnercontract, '2018-12-31'), 0);
+        chai.assert.equal(cumulated(otherPartnercontract, '2019-12-31'), 0);
+        chai.assert.equal(cumulated(otherPartnercontract, '2020-12-31'), -710);
+        chai.assert.equal(cumulated(partnerId, '2020-12-31'), -8400);
+      });
+
+      it('throws if partner balance date is not the end of year', function () {
+        chai.assert.equal(Balances.getCumulatedValue({
+          communityId: Fixture.demoCommunityId,
+          partner: 'WfS8p9zKdSHFJcewK',
+        }, '2018-12-31').total(), -300);
+        chai.assert.throws(() => {
+          Balances.getCumulatedValue({
+            communityId: Fixture.demoCommunityId,
+            partner: 'WfS8p9zKdSHFJcewK',
+          }, '2019-08-31');
         }, 'Debug assertion failed');
       });
     });

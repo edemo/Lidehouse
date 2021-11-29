@@ -136,6 +136,7 @@ Balances.getCumulatedValue = function getCumulatedValue(def, d) {
   debugAssert(date.date() === date.daysInMonth(), 'balance cumulated value works only for last day of month');
   let result = _.extend({ debit: 0, credit: 0 }, def);
   const requestedMonth = date.format('MM');
+  if (def.partner) debugAssert(requestedMonth === '12', 'cumulated partner balance works only for last month of year');
   const tag = requestedMonth === '12' ? `C-${date.year()}` : `C-${date.year()}-${requestedMonth}`;
   const cBal = Balances.findOne(_.extend({}, def, { tag }));
   if (cBal) {
@@ -147,8 +148,11 @@ Balances.getCumulatedValue = function getCumulatedValue(def, d) {
     const tBals = Balances.find(selector).fetch();
     const prevBals = tBals.filter(b => {
       const period = b.period();
-      return (period.year < date.year() && !period.month)
-        || (period.year == date.year() && period.month && period.month <= requestedMonth);
+      if (requestedMonth === '12') return (period.year <= date.year() && !period.month);
+      else {
+        return (period.year < date.year() && !period.month)
+        || (period.year == date.year() && (period.month && period.month <= requestedMonth));
+      }
     });
     prevBals.forEach(b => {
       result.credit += b.credit;
