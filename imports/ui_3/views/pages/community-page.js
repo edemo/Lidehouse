@@ -89,8 +89,10 @@ Template.Meters_box.viewmodel({
   metersContent() {
     const community = this.templateInstance.data.community;
     const parcel = this.templateInstance.data.parcel;
+    const parcelIds = this.templateInstance.data.parcelIds;
     const selector = { communityId: community._id };
     if (parcel) selector.parcelId = parcel._id;
+    else if (parcelIds) selector.parcelId = { $in: parcelIds };
     return { collection: 'meters', selector };
   },
 });
