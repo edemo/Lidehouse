@@ -271,9 +271,11 @@ Meteor.users.helpers({
     return partnerIds;
   },
   memberships(communityId) {
+    if (!communityId) return [];
     return Memberships.findActive({ communityId, approved: true, userId: this._id });
   },
   ownerships(communityId) {
+    if (!communityId) return [];
     return Memberships.findActive({ communityId, approved: true, role: 'owner', userId: this._id });
   },
   ownedParcels(communityId) {
@@ -285,17 +287,8 @@ Meteor.users.helpers({
   ownedLeadParcels(communityId) {
     return this.ownedParcels(communityId).filter(p => !p.isLed());
   },
-  activeRoles(communityId, parcelId) {
-    if (!communityId) return [];
-    let roles;
-    if (parcelId) {
-      const communityScopedRoles = Memberships.findActive({ communityId, parcelId: { $exists: false }, approved: true, userId: this._id }).map(m => m.role);
-      const parcelScopedRoles = Memberships.findActive({ communityId, parcelId, approved: true, userId: this._id }).map(m => m.role);
-      roles = communityScopedRoles.concat(parcelScopedRoles);
-    } else { // parcelId may be undefined, when permission is not parcelScoped
-      roles = Memberships.findActive({ communityId, approved: true, userId: this._id }).map(m => m.role);
-    }
-    return _.uniq(roles);
+  activeRoles(communityId) {
+    return _.uniq(this.memberships(communityId).fetch().map(m => m.role));
   },
   communities() {
     const memberships = Memberships.findActive({ approved: true, userId: this._id }).fetch();
@@ -326,18 +319,25 @@ Meteor.users.helpers({
   hasPermission(permissionName, doc = { communityId: getActiveCommunityId() }) {
     const permission = Permissions.find(p => p.name === permissionName);
     debugAssert(permission, `No such permission "${permissionName}"`);
-    const rolesWithThePermission = permission.roles;
-    if (_.contains(rolesWithThePermission, 'null')) return true;
     const creatorId = doc?.creatorId || doc.userId; // uploads use userId
     if (permission.allowAuthor && creatorId && (creatorId === this._id)) return true;
     const entityName = permissionName.split('.')[0];
     const communityId = (entityName === 'communities') ? doc._id : doc.communityId;
-    let parcelId;
-    if (permission.parcelScoped) {
-      parcelId = (entityName === 'parcels') ? doc._id : doc.parcelId;
-    }
-    const userHasTheseRoles = this.activeRoles(communityId, parcelId);
-    const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
+    const parcelId = (entityName === 'parcels') ? doc._id : doc.parcelId;
+    const rolesWithThePermission = permission.roles;
+    const activeMemberships = this.memberships(communityId).fetch();
+    let result = false;
+    rolesWithThePermission.forEach(role => {
+      if (role === 'null') return true;
+      const split = role.split('@');
+      const roleName = split[0];
+      const parcelScoped = split[1] === 'parcel';
+      activeMemberships.forEach(membership => {
+        if (membership.role === roleName && (!parcelScoped || membership.parcelId === parcelId)) {
+          result = true;
+        }
+      });
+    });
 //    Log.debug(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, parcelId, ' is ', result);
 //  if (!result) Log.debug(this.safeUsername(), 'current permissions:', this.activeRoles(communityId));
     return result;
