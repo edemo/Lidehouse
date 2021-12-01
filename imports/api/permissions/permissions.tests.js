@@ -25,7 +25,7 @@ if (Meteor.isServer) {
   let manager;
   let owner;
 
-  describe.only('permissions', function () {
+  describe('permissions', function () {
     this.timeout(150000);
     before(function () {
       Fixture = freshFixture();
