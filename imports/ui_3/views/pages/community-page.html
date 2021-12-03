@@ -137,7 +137,7 @@
     <div class="meters">
         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
         <h2>{{_ 'meters'}}</h2>
-        {{#if or (currentUserHasPermission 'meters.insert' communityIdObject) (currentUserHasPermission 'parcels.details' communityIdObject)}}
+        {{#if (currentUserHasPermission 'meters.insert' communityIdObject)}}
         <div class="btn-group pull-right">
             {{>Action_buttons_group collection='meters' actions='create,import' size='md'}}
         </div>
@@ -188,7 +188,7 @@
     <div>
         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
         <h2>{{_ 'memberContract'}}</h2>
-        {{#if or (currentUserHasPermission 'contracts.insert' communityIdObject) (currentUserHasPermission 'parcels.details' communityIdObject)}}
+        {{#if (currentUserHasPermission 'contracts.insert' communityIdObject)}}
         <div class="btn-group pull-right">
             {{>Action_buttons_group collection='contracts' actions='create,import' size='md'}}
         </div>

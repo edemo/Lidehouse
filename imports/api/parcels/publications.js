@@ -114,7 +114,8 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
   }).validate(params);
   if (!this.userId) return this.ready();
   const { communityId } = params;
-  const permissionRoles = Permissions.find(p => p.name === 'parcels.details').roles;
+  const roles = Permissions.find(p => p.name === 'parcels.details').roles;
+  const permissionRoles = roles.map(role => role.split('@')[0]);
   return {
     find() {
       return Memberships.findActive({ communityId, approved: true,
