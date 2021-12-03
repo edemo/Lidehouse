@@ -134,11 +134,10 @@ Template.Parcels_box.viewmodel({
   autorun() {
     const communityId = this.templateInstance.data.communityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
+    this.templateInstance.subscribe('parcels.ofSelf', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
       this.templateInstance.subscribe('contracts.inCommunity', { communityId });
-    } else {
-      this.templateInstance.subscribe('parcels.ofSelf', { communityId });
     }
   },
   parcels() {
