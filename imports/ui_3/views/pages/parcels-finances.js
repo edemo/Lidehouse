@@ -31,14 +31,13 @@ Template.Parcels_finances.viewmodel({
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       instance.subscribe('accounts.inCommunity', { communityId });
+      instance.subscribe('parcels.ofSelf', { communityId });
       if (Meteor.userOrNull().hasPermission('transactions.inCommunity', { communityId })) {
         if (self.showAllParcels()) {
           instance.subscribe('parcels.outstanding', { communityId, selector: 'partner' });
         } else {
           instance.subscribe('parcels.outstanding', { communityId, selector: 'partner', debtorsOnly: true });
         }
-      } else {
-        instance.subscribe('parcels.ofSelf', { communityId });
       }
     });
   },
