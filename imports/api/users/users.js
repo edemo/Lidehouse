@@ -329,11 +329,8 @@ Meteor.users.helpers({
     let result = false;
     rolesWithThePermission.forEach(role => {
       if (role === 'null') return true;
-      const split = role.split('@');
-      const roleName = split[0];
-      const parcelScoped = split[1] === 'parcel';
       activeMemberships.forEach(membership => {
-        if (membership.role === roleName && (!parcelScoped || membership.parcelId === parcelId)) {
+        if (membership.role === role || (membership.role + '@parcel' === role && membership.parcelId === parcelId)) {
           result = true;
         }
       });

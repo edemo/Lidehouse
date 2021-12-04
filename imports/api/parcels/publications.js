@@ -10,19 +10,6 @@ import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Parcels } from './parcels.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 
-Parcels.findWithRelatedDocs = function (...args) {
-  return {
-    find() {
-      return Parcels.find(...args);
-    },
-    children: [{
-      // Publish the Meters of the Parcel
-      find(parcel) {
-        return Meters.find({ parcelId: parcel._id });
-      },
-    }],
-  };
-};
 
 Meteor.publish('parcels.codes', function parcelsCodes(params) {
   new SimpleSchema({
@@ -49,7 +36,20 @@ Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(param
     return this.ready();
   }
 
-  return Parcels.findWithRelatedDocs({ communityId }, { fields: Parcels.publicFields });
+  return {
+    find() {
+      return Parcels.find({ communityId }, { fields: Parcels.publicFields });
+    },
+    children: [{
+      // Publish the Meters of the Parcel
+      find(parcel) {
+        if (!user.hasPermission('meters.insert', { communityId })) {
+          return this.ready();
+        }
+        return Meters.find({ parcelId: parcel._id });
+      },
+    }],
+  };
 });
 
 Meteor.publishComposite('parcels.outstanding', function parcelsOutstanding(params) {
@@ -114,7 +114,8 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
   }).validate(params);
   if (!this.userId) return this.ready();
   const { communityId } = params;
-  const permissionRoles = Permissions.find(p => p.name === 'parcels.details').roles;
+  const roles = Permissions.find(p => p.name === 'parcels.details').roles;
+  const permissionRoles = roles.map(role => role.split('@')[0]);
   return {
     find() {
       return Memberships.findActive({ communityId, approved: true,

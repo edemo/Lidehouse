@@ -89,8 +89,10 @@ Template.Meters_box.viewmodel({
   metersContent() {
     const community = this.templateInstance.data.community;
     const parcel = this.templateInstance.data.parcel;
+    const parcelIds = this.templateInstance.data.parcelIds;
     const selector = { communityId: community._id };
     if (parcel) selector.parcelId = parcel._id;
+    else if (parcelIds) selector.parcelId = { $in: parcelIds };
     return { collection: 'meters', selector };
   },
 });
@@ -132,11 +134,10 @@ Template.Parcels_box.viewmodel({
   autorun() {
     const communityId = this.templateInstance.data.communityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
+    this.templateInstance.subscribe('parcels.ofSelf', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
       this.templateInstance.subscribe('contracts.inCommunity', { communityId });
-    } else {
-      this.templateInstance.subscribe('parcels.ofSelf', { communityId });
     }
   },
   parcels() {
