@@ -41,13 +41,13 @@ Template.Meters_widget.events({
     const community = getActiveCommunity();
     const communityId = community._id;
     const user = Meteor.user();
-    const parcelIds = user.ownedParcels(communityId).map(p => p._id);
+    const parcels = user.ownedParcels(communityId);
     Modal.show('Modal', {
       title: __('meters'),
       body: 'Meters_box',
       bodyContext: {
         community,
-        parcelIds,
+        parcels,
       },
       size: user.hasPermission('meters.update', { communityId }) ? 'lg' : 'md',
     });
