@@ -137,6 +137,9 @@ Partners.helpers({
   hasActiveContract() {
     return !!this.contracts().count();
   },
+  hasActiveMemberContract() {
+    return !!this.contracts('member').count();
+  },
   ensureContract(relation) { // Creates one if doesn't exist
     const contracts = this.contracts(relation).fetch();
     if (contracts.length) return contracts[0];
