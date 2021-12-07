@@ -42,12 +42,11 @@ if (Meteor.isServer) {
         );
       });
 
-      it('sends all memberships.ofUser', function (done) {
+      it('sends all memberships.ofSelf', function (done) {
         const userWithMultipleParcels = Fixture.dummyUsers[3];
         const collector = new PublicationCollector({ userId: userWithMultipleParcels });
         collector.collect(
-          'memberships.ofUser',
-          { userId: userWithMultipleParcels },
+          'memberships.ofSelf',
           (collections) => {
             chai.assert.equal(collections.memberships.length, 3);
             chai.assert.equal(collections.communities.length, 2);

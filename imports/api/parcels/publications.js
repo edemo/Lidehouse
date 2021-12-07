@@ -43,7 +43,7 @@ Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(param
     children: [{
       // Publish the Meters of the Parcel
       find(parcel) {
-        if (!user.hasPermission('meters.insert', { communityId })) {
+        if (!user.hasPermission('meters.inCommunity', { communityId })) {
           return this.ready();
         }
         return Meters.find({ parcelId: parcel._id });
@@ -147,10 +147,6 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
           return Meters.find({ parcelId: parcel._id });
         },
       }],
-    }, {
-      find(membership) {
-        return Balances.find({ communityId, partner: new RegExp('^' + membership.partnerId), tag: new RegExp('^T') });
-      },
     }],
   };
 });

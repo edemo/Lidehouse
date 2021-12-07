@@ -11,38 +11,14 @@ import { Memberships } from './memberships.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 
-Meteor.publishComposite('memberships.ofUser', function membershipsOfUser(params) {
-  new SimpleSchema({
-    userId: { type: String },
-  }).validate(params);
-  const { userId } = params;
-
-  if (userId !== this.userId) return this.ready();
-
+Meteor.publishComposite('memberships.ofSelf', function membershipsOfSelf() {
   return {
     find() {
-      return Memberships.find({ userId });
+      return Memberships.find({ userId: this.userId });
     },
     children: [{
       find(membership) {
         return Communities.find({ _id: membership.communityId });
-      },
-    }, {
-      find(membership) {
-        return Partners.find({ _id: membership.partnerId });
-      },
-      children: [{
-        find(partner) {
-          return Balances.find({ communityId: partner.communityId, partner: new RegExp('^' + partner._id) });
-        },
-      }, {
-        find(partner) {
-          return Contracts.find({ partnerId: partner._id });
-        },
-      }],
-    }, {
-      find(membership) {
-        return Parcels.find({ _id: membership.parcelId });
       },
     }],
   };
