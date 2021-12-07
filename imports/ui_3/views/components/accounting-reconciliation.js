@@ -8,6 +8,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { dateSelector } from '/imports/api/utils.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Statements } from '/imports/api/transactions/statements/statements.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
@@ -69,10 +70,9 @@ Template.Accounting_reconciliation.viewmodel({
     const selector = {
       communityId: getActiveCommunityId(),
       account: this.accountSelected(),
-      valueDate: {},
     };
-    if (this.beginDate()) selector.valueDate.$gte = new Date(this.beginDate());
-    if (this.endDate()) selector.valueDate.$lte = new Date(this.endDate());
+    const valueDate = dateSelector(this.beginDate(), this.endDate());
+    if (valueDate) selector.valueDate = valueDate;
     if (this.unreconciledOnly()) selector.reconciled = false;
     return selector;
   },

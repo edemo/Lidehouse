@@ -5,6 +5,7 @@ import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { validDateOrUndefined } from '/imports/api/utils';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
@@ -60,8 +61,8 @@ Template.Partner_history.viewmodel({
       communityId: this.communityId(),
       partnerId: contract?.partnerId || null,
       contractId: contract?._id || null,
-      begin: new Date(this.beginDate()),
-      end: new Date(this.endDate()),
+      begin: validDateOrUndefined(this.beginDate()),
+      end: validDateOrUndefined(this.endDate()),
     };
   },
   beginBalanceDef() {

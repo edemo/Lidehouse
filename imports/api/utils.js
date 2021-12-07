@@ -1,4 +1,5 @@
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 import { checkExists } from '/imports/api/method-checks.js';
 
 export function toggleElementInArray(collection, id, arrayName, element) {
@@ -22,6 +23,19 @@ export function momentWithoutTZ(time) {
   dateObj.setHours(hours);
   dateObj.setMinutes(mins);
   return dateObj;
+}
+
+export function validDateOrUndefined(val) {
+  if (!val) return undefined;
+  else return new Date(val);
+}
+
+export function dateSelector(begin, end) {
+  if (!begin && !end) return undefined;
+  const valueDate = {};
+  if (begin) valueDate.$gte = moment(begin).toDate();
+  if (end) valueDate.$lt = moment(end).add(1, 'day').toDate();
+  return valueDate;
 }
 
 const smallestCurrencyUnit = 5;
