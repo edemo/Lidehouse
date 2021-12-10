@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { validDateOrUndefined } from '/imports/api/utils';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import './account-history.html';
 
@@ -37,8 +38,8 @@ Template.Account_history.viewmodel({
     const communityId = ModalStack.getVar('communityId');
     const selector = {
       communityId,
-      begin: new Date(this.beginDate()),
-      end: new Date(this.endDate()),
+      begin: validDateOrUndefined(this.beginDate()),
+      end: validDateOrUndefined(this.endDate()),
       account: this.accountSelected(),
       localizer: this.localizerSelected(),
     };

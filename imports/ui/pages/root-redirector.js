@@ -9,7 +9,7 @@ import './root-redirector.html';
 
 Template.app_rootRedirector.onCreated(() => {
   if (Meteor.userId()) {
-    Template.instance().subscribe('memberships.ofUser', { userId: Meteor.userId() });
+    Template.instance().subscribe('memberships.ofSelf');
     Template.instance().autorun(() => {
       autosetActiveCommunity();
     });

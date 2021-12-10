@@ -10,6 +10,7 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { dateSelector } from '/imports/api/utils';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Clock } from '/imports/utils/clock.js';
 import { modifierChangesField, autoValueUpdate } from '/imports/api/mongo-utils.js';
@@ -509,17 +510,10 @@ function withSubs(code) {
   //code[0] === '\\' ? new RegExp(code.split('\\')[1]) : code;
 }
 
-function dateFilter(begin, end) {
-  const valueDate = {};
-  if (begin) valueDate.$gte = moment(begin).toDate();
-  valueDate.$lt = moment(end).add(1, 'day').toDate();
-  return valueDate;
-}
-
 Transactions.makeFilterSelector = function makeFilterSelector(params) {
   const selector = _.clone(params);
   selector.$and = selector.$and || [];
-  if (params.begin || params.end) selector.valueDate = dateFilter(params.begin, params.end);
+  if (params.begin || params.end) selector.valueDate = dateSelector(params.begin, params.end);
   delete selector.begin; delete selector.end;
   if (params.defId) {
     selector.defId = params.defId;
@@ -567,7 +561,7 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
 
 JournalEntries.makeFilterSelector = function makeFilterSelector(params) {
   const selector = _.clone(params);
-  selector.valueDate = dateFilter(params.begin, params.end);
+  selector.valueDate = dateSelector(params.begin, params.end);
   delete selector.begin; delete selector.end;
   delete selector.localizer;
   if (params.account) selector.account = withSubs(params.account);

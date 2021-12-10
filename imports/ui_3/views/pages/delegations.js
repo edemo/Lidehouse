@@ -29,7 +29,6 @@ Template.Delegations.onCreated(function onCreated() {
   ModalStack.setVar('relation', 'member', true);
   this.autorun(() => {
     const communityId = getActiveCommunityId();
-    this.subscribe('parcels.ofSelf', { communityId });
     this.subscribe('delegations.inCommunity', { communityId });
     this.subscribe('parcels.inCommunity', { communityId });
   });

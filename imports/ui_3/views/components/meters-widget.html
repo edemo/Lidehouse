@@ -1,5 +1,5 @@
 <template name="Meters_widget">
-    {{#if (and activePartner.hasActiveContract oldestReadMeter)}}
+    {{#if (and activePartner.hasActiveMemberContract oldestReadMeter)}}
     <a href="{{pathFor 'Parcels finances'}}" class="js-meters">
         <div id="balance-widget-top" class="widget style1 {{colorClass}}">
             <div class="row vertical-align">

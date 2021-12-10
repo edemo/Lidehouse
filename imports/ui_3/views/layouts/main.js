@@ -22,23 +22,18 @@ Template.Main_layout.onCreated(function() {
   // Subscriptions
   // We run this in autorun, so when a new User logs in, the subscription changes
   this.autorun(() => {
-    const communityId = ModalStack.getVar('communityId');
-    this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
-    this.subscribe('communities.byId', { _id: communityId });
-    this.subscribe('delegations.toUser', { communityId });
-    this.subscribe('delegations.fromUser', { communityId });
-    this.subscribe('topics.active', { communityId });
-    this.subscribe('parcels.codes', { communityId });
-  });
-  // This autorun sets the active community automatically to the first community of the user
-  // TODO: active community could be saved somewhere so he gets back where he left off last time
-  this.autorun(() => {
-    autosetActiveCommunity();
+    const userId = Meteor.userId();
+    this.subscribe('memberships.ofSelf');
+    autosetActiveCommunity(); // This autorun sets the active community automatically to the first community of the user
   });
   // We run this in autorun, so when User switches his community, the subscription changes
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
     if (communityId) {
+      this.subscribe('communities.byId', { _id: communityId });
+      this.subscribe('agendas.inCommunity', { communityId });
+      this.subscribe('topics.active', { communityId });
+      this.subscribe('parcels.codes', { communityId });
       this.subscribe('memberships.inCommunity', { communityId });
       this.subscribe('contracts.inCommunity', { communityId });
       this.subscribe('partners.inCommunity', { communityId });
@@ -46,15 +41,22 @@ Template.Main_layout.onCreated(function() {
   });
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
-    this.subscribe('agendas.inCommunity', { communityId });
-    // We need all the room topics and their comments for the counter badge
-    this.subscribe('topics.roomsOfUser', { communityId, userId: Meteor.userId() });
+    const userId = Meteor.userId();
+    if (communityId && userId) {
+      this.subscribe('contracts.ofSelf', { communityId });
+      this.subscribe('delegations.toUser', { communityId });
+      this.subscribe('delegations.fromUser', { communityId });
+      // We need all the room topics and their comments for the counter badge
+      this.subscribe('topics.roomsOfUser', { communityId, userId });
+    }
   });
   this.autorun(() => {
     const user = Meteor.userOrNull();
     const communityId = ModalStack.getVar('communityId');
-    if (user.hasPermission('delegations.inCommunity', { communityId })) {
-      this.subscribe('delegations.inCommunity', { communityId });
+    if (communityId) {
+      if (user.hasPermission('delegations.inCommunity', { communityId })) {
+        this.subscribe('delegations.inCommunity', { communityId });
+      }
     }
   });
 });

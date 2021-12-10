@@ -4,6 +4,7 @@ import { Template } from 'meteor/templating';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { validDateOrUndefined } from '/imports/api/utils';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries';
 import '/imports/ui_3/views/components/accounting-bills.js';
@@ -26,14 +27,16 @@ Template.Accounting_page.viewmodel({
       instance.subscribe('balances.inCommunity', { communityId });
       instance.subscribe('parcels.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
-      const selector = {
+      const params = {
         communityId: this.communityId(),
-        begin: new Date(this.beginDate()),
-        end: new Date(this.endDate()),
+        begin: validDateOrUndefined(this.beginDate()),
+        end: validDateOrUndefined(this.endDate()),
       };
-      instance.subscribe('transactions.inCommunity', selector);
-      instance.subscribe('statements.inCommunity', selector);
-      instance.subscribe('statementEntries.inCommunity', selector);
+      if (this.beginDate() !== 'loadingValue') {
+        instance.subscribe('transactions.inCommunity', params);
+        instance.subscribe('statements.inCommunity', params);
+        instance.subscribe('statementEntries.inCommunity', params);
+      }
     });
   },
   communityId() {

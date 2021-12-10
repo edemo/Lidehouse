@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
+import { dateSelector } from '/imports/api/utils.js';
 import { StatementEntries } from './statement-entries.js';
 
 Meteor.publish('statementEntries.byId', function statementsById(params) {
@@ -34,8 +35,8 @@ Meteor.publish('statementEntries.inCommunity', function statementsByAccount(para
 
   const selector = { communityId };
   if (account) selector.account = account;
-  if (end) selector.valueDate = { $lte: end };
-  if (begin) selector.valueDate = { $gte: begin };
+  const valueDate = dateSelector(begin, end);
+  if (valueDate) selector.valueDate = valueDate;
 
   return StatementEntries.find(selector);
 });

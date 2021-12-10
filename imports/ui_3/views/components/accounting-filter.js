@@ -11,7 +11,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { defaultBeginDate, defaultEndDate } from '/imports/ui_3/helpers/utils.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { toggle } from '/imports/api/utils';
+import { toggle, validDateOrUndefined } from '/imports/api/utils';
 import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -32,7 +32,7 @@ ViewModel.share({
     txStatusSelected: [],
     unreconciledOnly: true,
     activePartnerRelation: 'supplier',  // only on bills page
-    beginDate: '',
+    beginDate: 'loadingValue', // do not subscribe until date filter is ready
     endDate: '',
     partnerContractSelected: '',
     partnerContractOptions: [],
@@ -86,8 +86,8 @@ ViewModel.share({
       const selector = {
         communityId,
         category,
-        begin: new Date(this.beginDate()),
-        end: new Date(this.endDate()),
+        begin: validDateOrUndefined(this.beginDate()),
+        end: validDateOrUndefined(this.endDate()),
         partner: this.partnerContractSelected(),
         relation: this.activePartnerRelation(),
         localizer: this.localizerSelected(),
