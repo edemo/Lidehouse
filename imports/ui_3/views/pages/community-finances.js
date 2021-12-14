@@ -4,6 +4,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
+import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
@@ -278,6 +279,9 @@ Template.Community_finances.viewmodel({
   },
   subAccountOptionsOf(accountCode) {
     return Accounts.nodeOptionsOf(getActiveCommunityId(), accountCode, true);
+  },
+  beginDate() {
+    return moment().startOf('month').format('YYYY-MM-DD');
   },
 });
 
