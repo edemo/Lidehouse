@@ -107,7 +107,7 @@ Parcels.actions = {
         body: 'Meters_box',
         bodyContext: {
           community: doc.community(),
-          parcel: doc,
+          parcels: [doc],
         },
         size: user.hasPermission('meters.update', doc) ? 'lg' : 'md',
       });
