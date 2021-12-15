@@ -19,7 +19,9 @@ Template.Account_history.viewmodel({
   onCreated(instance) {
     const self = this;
     instance.autorun(() => {
+      const communityId = ModalStack.getVar('communityId');
       instance.subscribe('transactions.byAccount', this.subscribeParams());
+      instance.subscribe('txdefs.inCommunity', { communityId });
 //    const today = moment().format('L');
 //    this.endDate(today);
     });

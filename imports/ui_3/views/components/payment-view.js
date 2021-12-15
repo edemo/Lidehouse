@@ -10,6 +10,7 @@ import './payment-view.html';
 
 Template.Payment_view.viewmodel({
   onCreated(instance) {
+    instance.subscribe('transactions.byId', { _id: this.templateInstance.data.doc._id });
   },
   reactiveDoc() {
     return Transactions.findOne(this.templateInstance.data.doc._id);
