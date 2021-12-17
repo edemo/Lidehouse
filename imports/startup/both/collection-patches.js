@@ -21,7 +21,6 @@ Mongo.Collection.stripAdministrativeFields = function(doc) {
 // https://github.com/helfer/minimongo-index/issues/1
 // This might be a good or a not so good idea, because implementations of indexes are very different technically
 // server side indices are ordered, and client side inidices are not.
-// The options are only used on the server side, the client side discard them.
 Mongo.Collection.prototype.ensureIndex = function ensureIndex(map, options) {
   if (Meteor.isServer) {
     this._ensureIndex(map, options);
