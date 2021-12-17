@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
 import { Clock } from '/imports/utils/clock';
 // The autoform needs to see these, to handle new events on it
@@ -18,7 +19,12 @@ import './payment-edit.html';
 
 Template.Payment_edit.viewmodel({
   billsView: false,
-  onCreated() {
+  onCreated(instance) {
+    instance.autorun(() => {
+      const communityId = getActiveCommunityId();
+      const contractId = AutoForm.getFieldValue('contractId');
+      if (contractId) instance.subscribe('transactions.byPartnerContract', { communityId, contractId, outstanding: true });
+    });
     this.billsView(!!this.templateInstance.data.doc.bills?.length);
   },
   afDoc(formId) {

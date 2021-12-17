@@ -11,6 +11,7 @@ import './bill-view.html';
 Template.Bill_view.viewmodel({
   showAccounting: true,
   onCreated(instance) {
+    instance.subscribe('transactions.byId', { _id: this.templateInstance.data.doc._id });
   },
   reactiveDoc() {
     return Transactions.findOne(this.templateInstance.data.doc._id);

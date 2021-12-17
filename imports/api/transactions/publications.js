@@ -32,15 +32,15 @@ Meteor.publish('transactions.byPartnerContract', function transactionsInCommunit
     contractId: { type: String, optional: true },
     begin: { type: Date, optional: true },
     end: { type: Date, optional: true },
+    outstanding: { type: Boolean, optional: true },
   }).validate(params);
-  const { communityId, partnerId, contractId, begin, end } = params;
+  const { communityId, partnerId, contractId, begin, end, outstanding } = params;
   if (!contractId && !partnerId) return this.ready();
   let contract;
   if (contractId) {
     contract = Contracts.findOne(contractId);
     if (partnerId) debugAssert(partnerId === contract.partnerId, 'partnerId param does not match contract');
   }
-
   const user = Meteor.users.findOne(this.userId);
   if (!user) return this.ready();
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
@@ -48,6 +48,10 @@ Meteor.publish('transactions.byPartnerContract', function transactionsInCommunit
     if (!contractId && partnerId && Partners.findOne(partnerId).userId !== this.userId) return this.ready();
   }
   const selector = Transactions.makeFilterSelector(params);
+  if (outstanding) {
+    selector.outstanding = { $ne: 0 };
+    selector.category = 'bill';
+  }
   return Transactions.find(selector);
 });
 
