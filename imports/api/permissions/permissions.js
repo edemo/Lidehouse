@@ -117,7 +117,6 @@ export const Permissions = [
   { name: 'transactions.insert',    roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'transactions.update',    roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'transactions.post',      roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'transactions.resend',    roles: ['admin'] }, // if the bill email needs to be resent
   { name: 'transactions.reconcile', roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'transactions.remove',    roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'transactions.upsert',    roles: ['manager'] },
