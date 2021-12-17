@@ -228,7 +228,7 @@ Transactions.actions = {
   resend: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'resend',
     icon: 'fa fa-envelope',
-    visible: doc && doc.isPosted() && doc.outstanding && user.hasPermission('transactions.post', doc),
+    visible: doc && doc.category === 'bill' && doc.isPosted() && doc.outstanding && user.hasPermission('transactions.post', doc),
     run() {
       Modal.confirmAndCall(Transactions.methods.resend, { _id: doc._id }, {
         action: 'resend',
