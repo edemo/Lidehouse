@@ -78,8 +78,7 @@ Balances.helpers({
 });
 
 Meteor.startup(function indexBalances() {
-  Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, tag: 1 });
-  Balances.ensureIndex({ communityId: 1, partner: 1, tag: 1 });
+  Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, partner: 1, tag: 1 });
 });
 
 Balances.attachSchema(Balances.schema);
@@ -124,10 +123,8 @@ Balances.get = function get(def) {
 };
 
 Balances.increase = function increase(selector, side, amount) {
-  if (selector.account && !selector.localizer) {
-    selector.localizer = { $exists: false };
-  }
-  const bal = Balances.findOne(selector);
+  const finderSelector = _.extend({ partner: { $exists: false }, localizer: { $exists: false } }, selector);
+  const bal = Balances.findOne(finderSelector);
   const balId = bal ? bal._id : Balances.insert(selector);
   const incObj = {}; incObj[side] = amount;
   Balances.update(balId, { $inc: incObj });
