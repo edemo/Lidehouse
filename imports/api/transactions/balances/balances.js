@@ -123,7 +123,7 @@ Balances.get = function get(def) {
 };
 
 Balances.increase = function increase(selector, side, amount) {
-  const finderSelector = _.extend({ partner: { $exists: false }, localizer: { $exists: false } }, selector);
+  const finderSelector = _.extend({ account: '`', partner: { $exists: false }, localizer: { $exists: false } }, selector);
   const bal = Balances.findOne(finderSelector);
   const balId = bal ? bal._id : Balances.insert(selector);
   const incObj = {}; incObj[side] = amount;
