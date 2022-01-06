@@ -180,7 +180,11 @@ Topics.helpers({
       const localizer = this.ticket?.localizer;
       if (!localizer) return false;
       else {
-        const parcelCodes = user.memberships(this.communityId).map(m => m.parcel()?.code);
+        const parcelCodes = [];
+        user.memberships(this.communityId).forEach(m => {
+          const parcel = m.parcel();
+          if (parcel && parcel.code) parcelCodes.push(parcel.code);
+        });
         return _.any(parcelCodes, code => code.startsWith(localizer));
       }
     } else return true;
