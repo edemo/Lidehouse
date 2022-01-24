@@ -6,7 +6,7 @@ import './disclaimer.html';
 
 Template.Disclaimer.helpers({
   publishDate() {
-    const publishedBalance = Balances.findOne({ tag: 'T' }, { sort: { updatedAt: -1 } });
+    const publishedBalance = Balances.findOne({}, { sort: { updatedAt: -1 } });
     return publishedBalance?.updatedAt || new Date('2000-01-01');
   },
 });
