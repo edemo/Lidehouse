@@ -4,6 +4,7 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
@@ -177,8 +178,9 @@ function timeTagMatches(valueDate, tag) {
 }
 
 Balances.checkCorrect = function checkCorrect(def) {
+  let misCalculated = null;
   if (Meteor.isClient) return; // No complete tx data on the client to perform a check.
-  if (def.tag !== 'T' || def.localizer) return; // TODO: support other tags / localizer as well
+  if (def.tag !== 'T' || def.localizer || def.partner) return; // TODO: support other tags / localizer as well
   const txs = Transactions.find({ communityId: def.communityId, $or: [{ 'debit.account': def.account }, { 'credit.account': def.account }] });
   let entryCount = 0;
   let calculatedBalance = 0;
@@ -190,13 +192,14 @@ Balances.checkCorrect = function checkCorrect(def) {
       }
     });
   });
-  const dbBalance = Balances.get(def).total();
+  const dbBalance = Balances.findOne(def).total();
   if (dbBalance !== calculatedBalance) {
     Log.error('Balance inconsistency ERROR',
-      `Calculated balance of '${def} is ${calculatedBalance} (from ${entryCount} entries)\nDb balance of same account: ${dbBalance}`
-    );
-    Log.info(txs.fetch());
+      `Calculated balance of '${def} is ${calculatedBalance} (from ${entryCount} entries)\nDb balance of same account: ${dbBalance}`);
+  //  Log.info(txs.fetch());
+    misCalculated = `${__('Account')}: ${def.account}, ${__('calculated')}: ${calculatedBalance}, ${__('database')}: ${dbBalance}`;
   }
+  return misCalculated;
 };
 
 Balances.checkAllCorrect = function checkAllCorrect() {

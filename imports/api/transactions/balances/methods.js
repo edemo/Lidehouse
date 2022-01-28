@@ -58,6 +58,26 @@ export const remove = new ValidatedMethod({
     throw new Meteor.Error('err_notImplemented');
   },
 });
+
+export const checkAllCorrect = new ValidatedMethod({
+  name: 'balances.checkAllCorrect',
+  validate: new SimpleSchema({
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ communityId }) {
+    if (Meteor.isClient) return; // No complete tx data on the client to perform check.
+    const balanceStat = { count: 0, misCalculated: [] };
+    const tBalances = Balances.find({ communityId, tag: 'T' });
+    balanceStat.count = tBalances.count();
+    tBalances.forEach((bal) => {
+      delete bal._id;
+      const foundWrong = Balances.checkCorrect(bal);
+      if (foundWrong) balanceStat.misCalculated.push(foundWrong);
+    });
+    return balanceStat;
+  },
+});
+
 /*
 export const publish = new ValidatedMethod({
   name: 'balances.publish',
