@@ -13,6 +13,7 @@ import { Balances } from '/imports/api/transactions/balances/balances';
 import '/imports/ui_3/views/components/ledger-report.js';
 import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/journals-table.js';
+import '/imports/ui_3/views/components/journals-check.js';
 import '/imports/ui_3/views/components/income-statement.js';
 import './accounting-ledger.html';
 
@@ -93,6 +94,15 @@ Template.Accounting_ledger.events({
     Modal.show('Modal', {
       title: 'Full journal list',
       body: 'Journals_table',
+      bodyContext: { communityId },
+      size: 'lg',
+    });
+  },
+  'click .js-check-journals'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    Modal.show('Modal', {
+      title: 'Journals check',
+      body: 'Journals_check',
       bodyContext: { communityId },
       size: 'lg',
     });

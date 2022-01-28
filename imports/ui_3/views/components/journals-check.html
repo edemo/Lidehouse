@@ -1,0 +1,48 @@
+<template name="Journals_check">
+     <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>{{_ 'Number of transactions in database'}}</th>
+                    <th>{{txStat.count}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each status in txStat.statusdata}}
+                <tr>
+                    <td>{{_ (concat 'schemaTransactions.status.options.' status.name)}}</td>
+                    <td>{{status.count}}</td>
+                </tr>
+                {{/each}}
+                <tr>
+                    <td>{{_ 'Posted incorrectly'}}</td>
+                    <td>
+                    {{#each id in txStat.misPosted}}
+                        {{id}}<br>
+                    {{/each}}
+                    {{#unless txStat.misPosted.length}}-{{/unless}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>{{_ 'Number of balances in database'}}</th>
+                    <th>{{balanceStat.count}}</th>
+                </tr>  
+            </thead>         
+            <tbody>
+                <tr>
+                    <td>{{_ 'Calculated incorrectly'}}</td>
+                    <td>
+                    {{#each balance in balanceStat.misCalculated}}
+                        {{balance}}<br>
+                    {{/each}}
+                    {{#unless balanceStat.misCalculated.length}}-{{/unless}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>

@@ -235,6 +235,35 @@ export const cloneAccountingTemplates = new ValidatedMethod({
   },
 });
 
+export const statistics = new ValidatedMethod({
+  name: 'transactions.statistics',
+  validate: new SimpleSchema({
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ communityId }) {
+    if (Meteor.isClient) return null;
+    const txStat = {};
+    const transactions = Transactions.find({ communityId }).fetch();
+    txStat.count = transactions.length;
+    txStat.statusdata = [];
+    Transactions.statusValues.forEach((status) => {
+      const name = status;
+      const count = transactions.filter(tx => tx.status === status).length;
+      txStat.statusdata.push({ name, count });
+    });
+    const postedTxs = transactions.filter(tx => tx.status !== 'draft');
+    txStat.misPosted = [];
+    postedTxs.forEach((tx) => {
+      let credit = 0;
+      let debit = 0;
+      tx.credit.forEach((cr) => { credit += cr.amount; });
+      tx.debit.forEach((deb) => { debit += deb.amount; });
+      if (credit !== debit) txStat.misPosted.push(tx.serialId || tx._id);
+    });
+    return txStat;
+  },
+});
+
 Transactions.methods = Transactions.methods || {};
 _.extend(Transactions.methods, { insert, update, post, reallocate, resend, remove, cloneAccountingTemplates });
 _.extend(Transactions.methods, crudBatchOps(Transactions));
