@@ -174,13 +174,22 @@ Balances.checkNullBalance = function checkNullBalance(def) {
 };
 
 function timeTagMatches(valueDate, tag) {
-  return tag === 'T'; // TODO: support other tags as well
+  const tagPeriod = Period.fromTag(tag);
+  const type = tagPeriod.type();
+  if (type === 'total') return true;
+  const valueYear = moment(valueDate).format('YYYY');
+  const valueMonth = moment(valueDate).format('MM');
+  if (tagPeriod.year === valueYear) {
+    if (type === 'year') return true;
+    if (type === 'month' && tagPeriod.month === valueMonth) return true;
+  }
+  return false;
 }
 
-Balances.checkCorrect = function checkCorrect(def) {
+Balances.checkCorrect = function checkCorrect(def, lang = 'en') {
   let misCalculated = null;
   if (Meteor.isClient) return; // No complete tx data on the client to perform a check.
-  if (def.tag !== 'T' || def.localizer || def.partner) return; // TODO: support other tags / localizer as well
+  if (def.localizer || def.partner) return; // TODO: support localizer as well
   const txs = Transactions.find({ communityId: def.communityId, $or: [{ 'debit.account': def.account }, { 'credit.account': def.account }] });
   let entryCount = 0;
   let calculatedBalance = 0;
@@ -197,7 +206,10 @@ Balances.checkCorrect = function checkCorrect(def) {
     Log.error('Balance inconsistency ERROR',
       `Calculated balance of '${def} is ${calculatedBalance} (from ${entryCount} entries)\nDb balance of same account: ${dbBalance}`);
   //  Log.info(txs.fetch());
-    misCalculated = `${__('Account')}: ${def.account}, ${__('calculated')}: ${calculatedBalance}, ${__('database')}: ${dbBalance}`;
+    misCalculated = `${__('Account', {}, lang)}: ${def.account}, 
+      ${__('period', {}, lang)}: ${def.tag}, 
+      ${__('calculated', {}, lang)}: ${calculatedBalance}, 
+      ${__('database', {}, lang)}: ${dbBalance}`;
   }
   return misCalculated;
 };

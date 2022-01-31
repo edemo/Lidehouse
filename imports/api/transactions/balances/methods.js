@@ -67,11 +67,12 @@ export const checkAllCorrect = new ValidatedMethod({
   run({ communityId }) {
     if (Meteor.isClient) return; // No complete tx data on the client to perform check.
     const balanceStat = { count: 0, misCalculated: [] };
-    const tBalances = Balances.find({ communityId, tag: 'T' });
+    const tBalances = Balances.find({ communityId, tag: new RegExp('^T') });
     balanceStat.count = tBalances.count();
+    const lang = Meteor.users.findOne(this.userId).settings.language;
     tBalances.forEach((bal) => {
       delete bal._id;
-      const foundWrong = Balances.checkCorrect(bal);
+      const foundWrong = Balances.checkCorrect(bal, lang);
       if (foundWrong) balanceStat.misCalculated.push(foundWrong);
     });
     return balanceStat;

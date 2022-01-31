@@ -256,8 +256,8 @@ export const statistics = new ValidatedMethod({
     postedTxs.forEach((tx) => {
       let credit = 0;
       let debit = 0;
-      tx.credit.forEach((cr) => { credit += cr.amount; });
-      tx.debit.forEach((deb) => { debit += deb.amount; });
+      tx.credit?.forEach((cr) => { credit += cr.amount; });
+      tx.debit?.forEach((deb) => { debit += deb.amount; });
       if (credit !== debit) txStat.misPosted.push(tx.serialId || tx._id);
     });
     return txStat;
