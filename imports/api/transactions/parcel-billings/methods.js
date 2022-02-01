@@ -64,9 +64,9 @@ export const apply = new ValidatedMethod({
           productionAssert(parcel, 'Could not find parcel - Please check if parcel ref matches the building+floor+door exactly');
           function addLineToBill(line) {
             productionAssert(line.uom && _.isDefined(line.quantity), 'A billing needs at least one of consumption or projection');
-            if (line.quantity === 0) return; // Should not create bill for zero amount
             line.title = parcelBilling.title;
             line.amount = line.quantity * line.unitPrice;
+            if (line.amount === 0) return; // Should not create bill for zero amount
             line.account = incomeAccount + parcelBilling.digit;
             line.parcelId = parcel._id;
             line.localizer = parcel.code;
