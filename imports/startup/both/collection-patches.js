@@ -3,7 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import 'meteor/helfer:minimongo-index';
+import 'meteor/droka:minimongo-index';
 import { debugAssert } from '/imports/utils/assert.js';
 
 export const MinimongoIndexing = true;
