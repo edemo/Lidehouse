@@ -52,7 +52,7 @@ mdg:validation-error
 jalik:ufs
 jalik:ufs-gridfs
 dburles:mongo-collection-instances
-helfer:minimongo-index
+droka:minimongo-index
 percolate:migrations
 
 # routing
