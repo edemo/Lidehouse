@@ -58,9 +58,17 @@ Accounts.isPayableOrReceivable = function isPayableOrReceivable(code, communityI
   return (category === 'payable' || category === 'receivable');
 };
 
+Accounts.toTechnicalCode = function toTechnicalCode(accountCode) {
+  debugAssert(accountCode.charAt(0) === '`', 'only CoA accounts have technical accounts');
+  return '`0' + accountCode.substring(1);
+};
+
 Accounts.toTechnical = function toTechnical(account) {
-  debugAssert(account.charAt(0) === '`', 'only CoA accounts have technical accounts');
-  return '`0' + account.substring(1);
+  debugAssert(account.code.charAt(0) === '`', 'only CoA accounts have technical accounts');
+  if (account.code === '`') return Accounts.getByCode('`0', account.communityId);
+  const technicalCode = Accounts.toTechnicalCode(account.code);
+  const technicalAccount = _.extend({}, account, { _id: '0' + account._id, category: 'technical', code: technicalCode });
+  return technicalAccount;
 };
 
 Accounts.helpers({
@@ -104,6 +112,13 @@ _.extend(Accounts, {
   },
   all(communityId) {
     return Accounts.find({ communityId }, { sort: { code: 1 } });
+  },
+  allWithTechnical(communityId) {
+    const accounts = Accounts.find({ communityId }).fetch();
+    const technicalAccounts = accounts.map(a => Accounts.toTechnical(a));
+    const allAccounts = accounts.concat(technicalAccounts);
+    const sortedAccounts = _.sortBy(allAccounts, a => a.code);
+    return _.uniq(sortedAccounts, true, a => a.code);
   },
   getByCode(code, communityId = getActiveCommunityId()) {
     return Accounts.findOne({ communityId, code });

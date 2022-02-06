@@ -251,7 +251,7 @@ Transactions.categoryHelpers('payment', {
         const newEntry = { amount, localizer: line.localizer, parcelId: line.parcelId };
         this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry));
         if (accountingMethod === 'cash') {
-          const technicalAccount = Accounts.toTechnical(line.account);
+          const technicalAccount = Accounts.toTechnicalCode(line.account);
           this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, newEntry));
           this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
         }

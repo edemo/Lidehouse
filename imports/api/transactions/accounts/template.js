@@ -7,8 +7,7 @@ export function defineAccountTemplates() {
 
   Templates.define({ _id: 'Condominium_COA', accounts: [
     { code: '`', name: 'Chart of Accounts', category: 'technical', locked: true },
-//  { code: '`0', name: 'Opening' },// TECHNIKAI SZÁMLÁK
-    // 1
+    { code: '`0', name: 'Technical accounts', category: 'technical', locked: true },  // TECHNIKAI SZÁMLÁK
     { code: '`1', name: 'BEFEKTETETT ESZKÖZÖK', category: 'asset', locked: true, sign: +1 },
     { code: '`13', name: 'MŰSZAKI BERENDEZÉSEK', category: 'asset' },
     { code: '`14', name: 'EGYÉB BERENDEZÉSEK', category: 'asset' },

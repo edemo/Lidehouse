@@ -558,8 +558,13 @@
   "history": "történet",
   "Parcel history": "Albetét története",
   "Partner history": "Partner története",
-  "Total change in this period": "Egyenleg változása az adott időszak alatt",
   "Balance at the beginning of period": "Egyenleg az időszak kezdetekor",
+  "Balance at the end of period": "Egyenleg az időszak végén",
+  "Total change in this period": "Egyenleg változása az adott időszak alatt",
+  "Opening balance": "Nyitó egyenleg",
+  "Closing balance": "Záró egyenleg",
+  "Change during period": "Időszak forgalma",
+  "Show technical accounts": "Technikai számlák mutatása",
   "Balance from predecessor": "Jogelőd egyenlege",
   "predecessorBalanceHelp": "A jogelőd egyenlegét a jogutódnak kell megfizetnie, ha nem kért nullás igazolást az átvételkor",
   "Select account to view": "Válasszon megtekintendő számlát",
@@ -606,9 +611,6 @@
   "Some accounting transactions might be connected to it": "Egyes tranzakciók kapcsolódhatnak hozzá.",
   "Select a period for general ledger data": "Válasszon időszakot, amire a naplófőkönyvet megtekinti.",
   "Clicking on a cell, you can view the relating bill history": "Az egyes cellákra kattintva, az ahhoz az értékhez tartozó számlatörténetet tekintheti meg.",
-  "Change during period": "Időszak forgalma",
-  "Balance at the end of period": "Egyenleg az időszak végén",
-
 
   // docstore
   "Show": "Listázva",

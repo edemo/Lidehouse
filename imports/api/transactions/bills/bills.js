@@ -252,7 +252,7 @@ Transactions.categoryHelpers('bill', {
       if (accountingMethod === 'accrual') {
         this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
       } else if (accountingMethod === 'cash') {
-        const technicalAccount = Accounts.toTechnical(line.account);
+        const technicalAccount = Accounts.toTechnicalCode(line.account);
         this.makeEntry(this.conteerSide(), _.extend({ account: technicalAccount }, newEntry));
       }
       const relationAccount = this.lineRelationAccount(line);

@@ -20,6 +20,7 @@ import './accounting-ledger.html';
 Template.Accounting_ledger.viewmodel({
   periodSelected: PeriodBreakdown.currentYearTag(),
   periodOrCumulation: 'period',
+  showTechnicalAccounts: false,
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('balances.ofAccounts', { communityId: this.communityId() });
@@ -29,7 +30,7 @@ Template.Accounting_ledger.viewmodel({
     return getActiveCommunityId();
   },
   accounts() {
-    return Accounts.all(this.communityId());
+    return this.showTechnicalAccounts() ? Accounts.allWithTechnical(this.communityId()) : Accounts.all(this.communityId());
   },
   accountOptions() {
     return Accounts.coa(this.communityId()).nodeOptions();

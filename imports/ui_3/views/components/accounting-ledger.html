@@ -12,6 +12,7 @@
         <div class="col-sm-3 form-group">
             <div><label><input type="radio" class="periodRadio" name="periodTypeSelector" value="period" checked> {{_ 'Change during period'}}</label></div>
             <div><label><input type="radio" class="periodRadio" name="periodTypeSelector" value="cumulation"> {{_ 'Balance at the end of period'}}</label></div>
+            <div><label><input type="checkbox" id="technicalCheckbox" name="technicalCheckbox" {{b "check: showTechnicalAccounts"}}> {{_ 'Show technical accounts'}}</label></div>
         </div>
     </div>
     <!--{{> Balance_report breakdown=(breakdown 'COA') tags=yearMonthTags }}-->

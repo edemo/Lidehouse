@@ -86,7 +86,7 @@ Template.Accounting_transactions.viewmodel({
       let accountSelected = this.accountSelected(side);
       const userSelectedAnAccount = accountSelected?.length > 1;
       if (userSelectedAnAccount && txdef?.category === 'bill' && this.community().settings.accountingMethod === 'cash' && side === txdef.conteerSide()) {
-        accountSelected = Accounts.toTechnical(accountSelected);
+        accountSelected = Accounts.toTechnicalCode(accountSelected);
       }
       if (userSelectedAnAccount || !_.contains(this.txStatusSelected(), 'draft')) {
         selector[`${side}Account`] = accountSelected;
