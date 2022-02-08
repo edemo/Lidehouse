@@ -207,7 +207,7 @@ if (Meteor.isServer) {
         Transactions.remove();
       });
 
-      it('calculates cumulated values right', function () {
+      it('calculates opening/closing values right', function () {
         simpleInsertTx('2019-01-05', 100, '`12A', '`19');
         simpleInsertTx('2019-01-30', 500, '`12A', '`19');
         simpleInsertTx('2019-03-01', 900, '`19', '`12A');
@@ -222,26 +222,38 @@ if (Meteor.isServer) {
         assertBalance('`19', undefined, 'T', 2880);
         assertBalance('`19', undefined, 'T-2020', 2180);
         assertBalance('`19', undefined, 'T-2020-01', 2050);
-        const cumulated = function (account, date) {
-          return Balances.getCumulatedValue({ communityId: Fixture.demoCommunityId, account }, date).total();
+        const openingValue = function (account, tag) {
+          return Balances.get({ communityId: Fixture.demoCommunityId, account, tag }, 'opening').total();
         };
-        chai.assert.equal(cumulated('`12A', '2019-01-31'), -600);
-        chai.assert.equal(cumulated('`12A', '2019-05-31'), -700);
-        chai.assert.equal(cumulated('`12A', '2019-12-31'), -700);
-        chai.assert.equal(cumulated('`12A', '2020-01-31'), -2750);
-        chai.assert.equal(cumulated('`12A', '2020-02-29'), -2680);
-        chai.assert.equal(cumulated('`12B', '2020-01-31'), 0);
-        chai.assert.equal(cumulated('`12B', '2020-02-29'), -200);
-        chai.assert.equal(cumulated('`12', '2019-01-31'), -600);
-        chai.assert.equal(cumulated('`12', '2020-03-31'), -2880);
-        chai.assert.equal(cumulated('`1', '2019-01-31'), 0);
-        chai.assert.equal(cumulated('`19', '2019-01-31'), 600);
-        chai.assert.equal(cumulated('`19', '2019-03-31'), -300);
-        chai.assert.equal(cumulated('`19', '2019-12-31'), 700);
-        chai.assert.equal(cumulated('`19', '2020-01-31'), 2750);
-        chai.assert.equal(cumulated('`19', '2020-03-31'), 2880);
+        const closingValue = function (account, tag) {
+          return Balances.get({ communityId: Fixture.demoCommunityId, account, tag }, 'closing').total();
+        };
+        chai.assert.equal(closingValue('`12A', 'T-2018'), 0);
+        chai.assert.equal(closingValue('`12A', 'T-2019-01'), -600);
+        chai.assert.equal(closingValue('`12A', 'T-2019-05'), -700);
+        chai.assert.equal(closingValue('`12A', 'T-2019-12'), -700);
+        chai.assert.equal(closingValue('`12A', 'T-2019'), -700);
+        chai.assert.equal(closingValue('`12A', 'T-2020-01'), -2750);
+        chai.assert.equal(closingValue('`12A', 'T-2020-02'), -2680);
+        chai.assert.equal(closingValue('`12B', 'T-2020-01'), 0);
+        chai.assert.equal(closingValue('`12B', 'T-2020-02'), -200);
+        chai.assert.equal(closingValue('`12', 'T-2019-01'), -600);
+        chai.assert.equal(closingValue('`12', 'T-2020-03'), -2880);
+        chai.assert.equal(closingValue('`1', 'T-2019-01'), 0);
+        chai.assert.equal(closingValue('`19', 'T-2019-01'), 600);
+        chai.assert.equal(closingValue('`19', 'T-2019-03'), -300);
+        chai.assert.equal(closingValue('`19', 'T-2019-12'), 700);
+        chai.assert.equal(closingValue('`19', 'T-2020-01'), 2750);
+        chai.assert.equal(closingValue('`19', 'T-2020-03'), 2880);
+
+        chai.assert.equal(openingValue('`12A', 'T-2018'), 0);
+        chai.assert.equal(openingValue('`12A', 'T-2019'), 0);
+        chai.assert.equal(openingValue('`12A', 'T-2019-01'), 0);
+        chai.assert.equal(openingValue('`12A', 'T-2019-02'), -600);
+        chai.assert.equal(openingValue('`12A', 'T-2019-12'), -700);
+        chai.assert.equal(openingValue('`12A', 'T-2020'), -700);
       });
-      it('finds existing C balance for cumulation', function () {
+      it('finds existing C balance', function () {
         Balances.insert({
           communityId: Fixture.demoCommunityId,
           account: '`12C',
@@ -249,16 +261,22 @@ if (Meteor.isServer) {
           debit: 12000,
           credit: 4000,
         });
-        chai.assert.equal(Balances.getCumulatedValue({ communityId: Fixture.demoCommunityId, account: '`12C' }, '2019-03-31').total(), 8000);
+        chai.assert.equal(Balances.getClosingValue({ communityId: Fixture.demoCommunityId, account: '`12C', tag: 'T-2019-03' }).total(), 8000);
       });
-      it('throws if date is not the end of month', function () {
-        chai.assert.equal(Balances.getCumulatedValue({ communityId: Fixture.demoCommunityId, account: '`12A' }, '2019-03-31').total(), 300);
+      it('throws if closing date is not the end of month', function () {
+        chai.assert.equal(Balances.getClosingValue({ communityId: Fixture.demoCommunityId, account: '`12A', tag: 'T-2019-03-31' }).total(), 300);
         chai.assert.throws(() => {
-          Balances.getCumulatedValue({ communityId: Fixture.demoCommunityId, account: '`12A' }, '2019-03-30');
+          Balances.getClosingValue({ communityId: Fixture.demoCommunityId, account: '`12A', tag: 'T-2019-03-30' });
+        }, 'Debug assertion failed');
+      });
+      xit('throws if opening date is not the beginning of month', function () {
+        chai.assert.equal(Balances.getOpeningValue({ communityId: Fixture.demoCommunityId, account: '`12A', tag: 'T-2019-02-01' }).total(), -600);
+        chai.assert.throws(() => {
+          Balances.getOpeningValue({ communityId: Fixture.demoCommunityId, account: '`12A', tag: 'T-2019-02-03' });
         }, 'Debug assertion failed');
       });
 
-      it('calculates cumulated values right for partners', function () {
+      it('calculates closing values right for partners', function () {
         function insertPartnerBill(params) {
           const billId = Fixture.builder.create('bill', {
             relation: 'customer',
@@ -317,32 +335,57 @@ if (Meteor.isServer) {
         assertPartnerBalance(otherPartnercontract, 'T-2020', -710);
         assertPartnerBalance(partnerId, 'T', -8400);
 
-        const cumulated = function (partner, date) {
-          return Balances.getCumulatedValue({ communityId: Fixture.demoCommunityId, partner }, date).total();
+        const openingValue = function (partner, tag) {
+          return Balances.get({ communityId: Fixture.demoCommunityId, partner, tag }, 'opening').total();
         };
-        chai.assert.equal(cumulated(partnercontract1, '2018-12-31'), -300);
-        chai.assert.equal(cumulated(partnercontract1, '2019-12-31'), -550);
-        chai.assert.equal(cumulated(partnercontract1, '2020-12-31'), -1400);
-        chai.assert.equal(cumulated(partnercontract1, '2021-12-31'), -1400);
-        chai.assert.equal(cumulated(partnercontract2, '2018-12-31'), 0);
-        chai.assert.equal(cumulated(partnercontract2, '2019-12-31'), -3000);
-        chai.assert.equal(cumulated(partnercontract2, '2020-12-31'), -7000);
-        chai.assert.equal(cumulated(otherPartnercontract, '2018-12-31'), 0);
-        chai.assert.equal(cumulated(otherPartnercontract, '2019-12-31'), 0);
-        chai.assert.equal(cumulated(otherPartnercontract, '2020-12-31'), -710);
-        chai.assert.equal(cumulated(partnerId, '2020-12-31'), -8400);
+        const closingValue = function (partner, tag) {
+          return Balances.get({ communityId: Fixture.demoCommunityId, partner, tag }, 'closing').total();
+        };
+        chai.assert.equal(closingValue(partnercontract1, 'T-2018-12'), -300);
+        chai.assert.equal(closingValue(partnercontract1, 'T-2019-12'), -550);
+        chai.assert.equal(closingValue(partnercontract1, 'T-2020-12'), -1400);
+        chai.assert.equal(closingValue(partnercontract1, 'T-2021-12'), -1400);
+        chai.assert.equal(closingValue(partnercontract2, 'T-2018-12'), 0);
+        chai.assert.equal(closingValue(partnercontract2, 'T-2019-12'), -3000);
+        chai.assert.equal(closingValue(partnercontract2, 'T-2020-12'), -7000);
+        chai.assert.equal(closingValue(otherPartnercontract, 'T-2018-12'), 0);
+        chai.assert.equal(closingValue(otherPartnercontract, 'T-2019-12'), 0);
+        chai.assert.equal(closingValue(otherPartnercontract, 'T-2020-12'), -710);
+        chai.assert.equal(closingValue(partnerId, 'T-2020-12'), -8400);
+        chai.assert.equal(closingValue(partnerId, 'T-2020'), -8400);
+
+        chai.assert.equal(openingValue(partnercontract1, 'T-2018'), 0);
+        chai.assert.equal(openingValue(partnercontract1, 'T-2019'), -300);
+        chai.assert.equal(openingValue(partnercontract1, 'T-2019-01'), -300);
+        chai.assert.equal(openingValue(partnercontract1, 'T-2020'), -550);
       });
 
-      it('throws if partner balance date is not the end of year', function () {
-        chai.assert.equal(Balances.getCumulatedValue({
+      it('throws if partner closing balance date is not the end of year', function () {
+        chai.assert.equal(Balances.getClosingValue({
           communityId: Fixture.demoCommunityId,
           partner: 'WfS8p9zKdSHFJcewK',
-        }, '2018-12-31').total(), -300);
+          tag: 'T-2018-12',
+        }).total(), -300);
         chai.assert.throws(() => {
-          Balances.getCumulatedValue({
+          Balances.getClosingValue({
             communityId: Fixture.demoCommunityId,
             partner: 'WfS8p9zKdSHFJcewK',
-          }, '2019-08-31');
+            tag: 'T-2019-08',
+          });
+        }, 'Debug assertion failed');
+      });
+      it('throws if partner opening balance date is not the beginning of year', function () {
+        chai.assert.equal(Balances.getOpeningValue({
+          communityId: Fixture.demoCommunityId,
+          partner: 'WfS8p9zKdSHFJcewK',
+          tag: 'T-2019-01',
+        }).total(), -300);
+        chai.assert.throws(() => {
+          Balances.getOpeningValue({
+            communityId: Fixture.demoCommunityId,
+            partner: 'WfS8p9zKdSHFJcewK',
+            tag: 'T-2018-12',
+          });
         }, 'Debug assertion failed');
       });
     });

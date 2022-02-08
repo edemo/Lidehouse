@@ -4,34 +4,28 @@ import { moment } from 'meteor/momentjs:moment';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
-import './ledger-report.html';
+import './partner-ledger-report.html';
 
-Template.Ledger_report.onCreated(function onCreated() {
+Template.Partner_ledger_report.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
     this.subscribe('balances.ofAccounts', { communityId });
   });
 });
 
-Template.Ledger_report.helpers({
-  balance(account, tag, sideFunc, tagtype) {
+Template.Partner_ledger_report.helpers({
+  balance(contract, tag, sideFunc, tagtype) {
     const balance = Balances.get({
       communityId: ModalStack.getVar('communityId'),
-      account: account.code,
+      partner: contract.partnerContract(),
       tag,
     }, tagtype);
     return balance[sideFunc]();
   },
-  hasActivity(account) {
+  hasActivity(contract) {
     return !!Balances.findOne({
       communityId: ModalStack.getVar('communityId'),
-      account: new RegExp('^' + account.code),
+      partner: new RegExp('^' + contract.partnerContract()),
     });
-  },
-  headerLevelClass(account) {
-    return 'header-level' + (account.code.length - 1).toString();
-  },
-  displayAccount(account) {
-    return account.displayAccount();
   },
 });

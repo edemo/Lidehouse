@@ -1,0 +1,58 @@
+<template name="Partner_ledger_report">
+    <div class="table-responsive">
+    <table class="table table-bordered table-condensed ">
+        <thead>
+          <tr class="table-row">
+              <td><strong>{{_ 'partner'}}/{{_ 'contract'}}</strong></td>
+              <td><strong>{{_ 'Opening balance'}}</strong></td>
+              <td><strong>{{_ 'schemaTransactions.debit.label'}}</strong></td>
+              <td><strong>{{_ 'schemaTransactions.credit.label'}}</strong></td>
+              <td><strong>{{firstChar (_ 'schemaTransactions.debit.label')}} {{_ 'Balance'}}</strong></td>
+              <td><strong>{{firstChar (_ 'schemaTransactions.credit.label')}} {{_ 'Balance'}}</strong></td>
+              <td><strong>{{_ 'Closing balance'}}</strong></td>
+          </tr>
+        </thead>
+        <tbody>
+            {{#each contract in contracts}}
+            {{#if hasActivity contract}}
+            <tr class="table-row">
+                <td class="row-header nowrap" data-account="{{contract.partnerContract}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{contract.displayFull}}
+                </td>
+                {{#let cellValue=(balance contract tag 'total' 'opening')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{contract.partnerContract}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber cellValue}}
+                </td>
+                {{/let}}
+                {{#let cellValue=(balance contract tag 'debitSum' 'period')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{contract.partnerContract}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber cellValue}}
+                </td>
+                {{/let}}
+                {{#let cellValue=(balance contract tag 'creditSum' 'period')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{contract.partnerContract}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber cellValue}}
+                </td>
+                {{/let}}
+                {{#let cellValue=(balance contract tag 'debitTotal' 'period')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{contract.partnerContract}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber cellValue}}
+                </td>
+                {{/let}}
+                {{#let cellValue=(balance contract tag 'creditTotal' 'period')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{contract.partnerContract}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber cellValue}}
+                </td>
+                {{/let}}
+                {{#let cellValue=(balance contract tag 'total' 'closing')}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{contract.partnerContract}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber cellValue}}
+                </td>
+                {{/let}}
+            </tr>
+            {{/if}}
+            {{/each}}
+        </tbody>
+    </table>
+    </div>
+</template>

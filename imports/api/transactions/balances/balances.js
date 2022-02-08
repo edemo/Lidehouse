@@ -22,7 +22,7 @@ Balances.defSchema = new SimpleSchema([{
   account: { type: String, optional: true, defaultValue: '`' },
   localizer: { type: String, optional: true },
   partner: { type: String, optional: true },  // format: 'partnerId/contractId'
-  tag: { type: String, optional: true, defaultValue: 'T' },  // can be for a period: T, end of a period: C, or a publication: P
+  tag: { type: String, optional: true, defaultValue: 'T' },  // can be period traffic: T, closing of a period: C, opening of a period: O, or a publication: P
 }]);
 
 // Definition + values of a balance
@@ -94,7 +94,14 @@ function subdefSelector(def) {
   return subdef;
 }
 
-Balances.get = function get(def) {
+Balances.get = function get(def, balanceType) {
+  if (!balanceType || balanceType === 'period') return Balances.getPeriodTraffic(def);
+  if (balanceType === 'opening') return Balances.getOpeningValue(def);
+  if (balanceType === 'closing') return Balances.getClosingValue(def);
+  debugAssert(false, `Unknown balance type ${balanceType}`); return undefined;
+};
+
+Balances.getPeriodTraffic = function getPeriodTraffic(def) {
   Balances.defSchema.validate(def);
   let result = _.extend({ debit: 0, credit: 0 }, def);
 
@@ -131,36 +138,44 @@ Balances.increase = function increase(selector, side, amount) {
   Balances.update(balId, { $inc: incObj });
 };
 
-Balances.getCumulatedValue = function getCumulatedValue(def, d) {
-  // Given a date in def, returns the cumulated total balance at that date
-  const date = moment(d);
-  debugAssert(date.date() === date.daysInMonth(), 'balance cumulated value works only for last day of month');
+Balances.getOpeningValue = function getOpeningValue(def) {
+  const period = Period.fromTag(def.tag);
+  const prevPeriod = period.previous();
+  const prevTag = prevPeriod.toTag();
+  const prevTagDef = _.extend({}, def, { tag: prevTag });
+  return Balances.getClosingValue(prevTagDef);
+};
+
+Balances.getClosingValue = function getClosingValue(def) {
   let result = _.extend({ debit: 0, credit: 0 }, def);
-  const requestedMonth = date.format('MM');
-  if (def.partner) debugAssert(requestedMonth === '12', 'cumulated partner balance works only for last month of year');
-  const tag = requestedMonth === '12' ? `C-${date.year()}` : `C-${date.year()}-${requestedMonth}`;
-  const cBal = Balances.findOne(_.extend({}, def, { tag }));
+  const cTag = 'C' + def.tag.substr(1);
+  const defPeriod = Period.fromTag(def.tag);
+  if (def.partner) debugAssert(defPeriod.endsOnYearEnd(), 'closing partner balance works only for end of year');
+  const cBal = Balances.findOne(_.extend({}, def, { tag: cTag }));
   if (cBal) {
     result.credit = cBal.credit;
     result.debit = cBal.debit;
-  // If no C balance available, we have to calculate it by adding up the T balances
-  } else {
-    const selector = _.extend(subdefSelector(def), { tag: new RegExp('^T-') });
-    const tBals = Balances.find(selector).fetch();
-    const prevBals = tBals.filter(b => {
-      const period = b.period();
-      if (requestedMonth === '12') return (period.year <= date.year() && !period.month);
-      else {
-        return (period.year < date.year() && !period.month)
-        || (period.year == date.year() && (period.month && period.month <= requestedMonth));
-      }
-    });
-    prevBals.forEach(b => {
-      result.credit += b.credit;
-      result.debit += b.debit;
-    });
+  } else {  // If no C balance available, we have to calculate it by adding up the T balances
+    if (def.tag === 'T') {
+      result = Balances.get(def);  // Entire period closing C is the same as entire traffic T
+    } else {
+      const selector = _.extend(subdefSelector(def), { tag: new RegExp('^T-') });
+      const tBals = Balances.find(selector).fetch();
+      const prevBals = tBals.filter(b => {
+        const period = b.period();
+        if (defPeriod.endsOnYearEnd()) return (period.year <= defPeriod.year && !period.month);
+        else {
+          return (period.year < defPeriod.year && !period.month)
+          || (period.year == defPeriod.year && (period.month && period.month <= defPeriod.month));
+        }
+      });
+      prevBals.forEach(b => {
+        result.credit += b.credit;
+        result.debit += b.debit;
+      });
+    }
   }
-  result.tag = `C-${date.year()}-${date.format('MM')}`;
+  result.tag = cTag;
   result = Balances._transform(result);
   return result;
 };
@@ -176,7 +191,7 @@ Balances.checkNullBalance = function checkNullBalance(def) {
 function timeTagMatches(valueDate, tag) {
   const tagPeriod = Period.fromTag(tag);
   const type = tagPeriod.type();
-  if (type === 'total') return true;
+  if (type === 'entire') return true;
   const valueYear = moment(valueDate).format('YYYY');
   const valueMonth = moment(valueDate).format('MM');
   if (tagPeriod.year === valueYear) {

@@ -9,8 +9,10 @@ import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period';
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Accounts } from '/imports/api/transactions/accounts/accounts';
+import { Contracts } from '/imports/api/contracts/contracts';
 import { Balances } from '/imports/api/transactions/balances/balances';
 import '/imports/ui_3/views/components/ledger-report.js';
+import '/imports/ui_3/views/components/partner-ledger-report.js';
 import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/journals-table.js';
 import '/imports/ui_3/views/components/journals-check.js';
@@ -21,6 +23,7 @@ Template.Accounting_ledger.viewmodel({
   periodSelected: PeriodBreakdown.currentYearTag(),
   periodOrCumulation: 'period',
   showTechnicalAccounts: false,
+  showPartnerLedger: false,
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('balances.ofAccounts', { communityId: this.communityId() });
@@ -37,6 +40,9 @@ Template.Accounting_ledger.viewmodel({
   },
   localizerOptions() {
     return Parcels.nodeOptionsOf(this.communityId(), '');
+  },
+  contracts() {
+    return Contracts.find({ communityId: this.communityId(), relation: 'member' }).fetch();
   },
   totalTag() {
     return ['T'];
@@ -88,6 +94,10 @@ Template.Accounting_ledger.events({
       },
       size: 'lg',
     });
+  },
+  'click .js-partner-ledger'(event, instance) {
+    const val = instance.viewmodel.showPartnerLedger();
+    instance.viewmodel.showPartnerLedger(!val);
   },
   'click .js-journals'(event, instance) {
     const communityId = instance.viewmodel.communityId();

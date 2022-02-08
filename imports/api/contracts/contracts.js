@@ -90,6 +90,9 @@ Contracts.helpers({
   partnerName() {
     return this.partner()?.displayName();
   },
+  partnerContract() {
+    return this.partnerId + '/' + this._id;
+  },
   delegate() {
     if (this.delegateId) return Partners.findOne(this.delegateId);
     return undefined;
@@ -135,14 +138,28 @@ Contracts.helpers({
   },
   balance() {
     const Balances = Mongo.Collection.get('balances');
-    const partner = this.partnerId + '/' + this._id;
-    return Balances.get({ communityId: this.communityId, partner, tag: 'T' }).total();
+    return Balances.get({ communityId: this.communityId, partner: this.partnerContract(), tag: 'T' }).total();
   },
   outstanding() {
     return this.balance() * Relations.sign(this.relation) * -1;
   },
+  openingBalance(tag) {
+    const Balances = Mongo.Collection.get('balances');
+    return Balances.get({ communityId: this.communityId, partner: this.partnerContract(), tag }, 'opening').total();
+  },
+  closingBalance(tag) {
+    const Balances = Mongo.Collection.get('balances');
+    return Balances.get({ communityId: this.communityId, partner: this.partnerContract(), tag }, 'closing').total();
+  },
+  periodTraffic(tag) {
+    const Balances = Mongo.Collection.get('balances');
+    return Balances.get({ communityId: this.communityId, partner: this.partnerContract(), tag }, 'period').total();
+  },
   displayTitle() {
     return this.title || __('default');
+  },
+  displayFull() {
+    return this.partnerName() + ': ' + this.toString();
   },
   toString() {
     if (this.relation === 'member') return `${__('property')} ${this.parcel()?.ref}`;

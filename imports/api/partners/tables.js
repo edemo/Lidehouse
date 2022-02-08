@@ -14,7 +14,7 @@ export function partnersColumns() {
     { data: 'contact.email', title: __('schemaPartners.contact.email.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'partners', actions: 'view,edit,merge,delete', size: 'sm' }, cell),
+        { doc: cellData, collection: 'partners', actions: 'view,edit,merge,delete', size: 'sm' }, cell),
     },
   ];
 
@@ -27,7 +27,7 @@ export function partnersFinancesColumns() {
     { data: 'outstanding()', title: __('schemaBills.outstanding.label'), render: Render.formatNumber(0) },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'partners', actions: '', size: 'sm' }, cell),
+        { doc: cellData, collection: 'partners', actions: '', size: 'sm' }, cell),
     },
   ];
 

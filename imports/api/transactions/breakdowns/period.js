@@ -64,8 +64,19 @@ export class Period {
 //    debugAssert(split.length === 2);  // we allow traditional js date to come in, and we drop the day
     this.year = split[0];
     this.month = split[1];
+    const day = split[2];
+    if (day) {  // We allow creating a period, with its last day
+      const date = moment(label);
+      debugAssert(date.date() === date.daysInMonth(), 'period closing date has to be last day of month');
+    }
     this.label = this.year;
     if (this.month) this.label += '-' + this.month;
+  }
+
+  static fromValues(year, month) {
+    let label = '' + year;
+    if (month) label += '-' + ('' + month).padStart(2, '0');
+    return new Period(label);
   }
 
   static fromTag(tag) { // tag format: 'T-2018-09' or 'T-2019' or 'T'
@@ -80,8 +91,16 @@ export class Period {
     return new Period(moment(date).format('YYYY'));
   }
 
+  previous() {
+    let prevPeriod;
+    if (!this.year) debugAssert(false, 'entire period has no previous');
+    else if (!this.month || this.month == 1) prevPeriod = Period.fromValues(parseInt(this.year) - 1);
+    else prevPeriod = Period.fromValues(this.year, parseInt(this.month) - 1);
+    return prevPeriod;
+  }
+
   type() {
-    if (!this.year) return 'total';
+    if (!this.year) return 'entire';
     else if (!this.month) return 'year';
     else return 'month';
   }
@@ -100,6 +119,10 @@ export class Period {
     else if (!this.month) date = moment([this.year]).endOf('year');
     else date = moment([this.year, this.month - 1]).endOf('month');
     return date.format(format);
+  }
+
+  endsOnYearEnd() {
+    return (!this.month || this.month == 12);
   }
 
   toString() {
