@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { $ } from 'meteor/jquery';
 
 import '/imports/ui_3/views/modals/modal.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -44,6 +43,9 @@ Template.Accounting_ledger.viewmodel({
   contracts() {
     return Contracts.find({ communityId: this.communityId(), relation: 'member' }).fetch();
   },
+  contractOptions() {
+    return this.contracts().map(c => c.asOption());
+  },
   totalTag() {
     return ['T'];
   },
@@ -74,26 +76,6 @@ Template.Accounting_ledger.events({
   'change .periodRadio'(event, instance) {
     const selected = event.target.value;
     instance.viewmodel.periodOrCumulation(selected);
-  },
-  'click .cell,.row-header'(event, instance) {
-    const communityId = instance.viewmodel.communityId();
-    if (!Meteor.user().hasPermission('transactions.inCommunity', { communityId })) return;
-    const accountCode = $(event.target).closest('[data-account]').data('account');
-    const periodTag = $(event.target).closest('[data-tag]').data('tag');
-    const period = Period.fromTag(periodTag);
-    Modal.show('Modal', {
-      title: __('Account history'),
-      body: 'Account_history',
-      bodyContext: {
-        beginDate: period.begin(),
-        endDate: period.end(),
-        accountOptions: instance.viewmodel.accountOptions(),
-        accountSelected: '' + accountCode,
-        localizerOptions: instance.viewmodel.localizerOptions(),
-//        localizerSelected: '',
-      },
-      size: 'lg',
-    });
   },
   'click .js-partner-ledger'(event, instance) {
     const val = instance.viewmodel.showPartnerLedger();

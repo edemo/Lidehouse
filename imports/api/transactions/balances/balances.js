@@ -94,6 +94,10 @@ function subdefSelector(def) {
   return subdef;
 }
 
+Balances.nullValue = function nullValue(def) {
+  return _.extend({ debit: 0, credit: 0 }, def);
+};
+
 Balances.get = function get(def, balanceType) {
   if (!balanceType || balanceType === 'period') return Balances.getPeriodTraffic(def);
   if (balanceType === 'opening') return Balances.getOpeningValue(def);
@@ -139,11 +143,20 @@ Balances.increase = function increase(selector, side, amount) {
 };
 
 Balances.getOpeningValue = function getOpeningValue(def) {
+  let openingBalance;
   const period = Period.fromTag(def.tag);
-  const prevPeriod = period.previous();
-  const prevTag = prevPeriod.toTag();
-  const prevTagDef = _.extend({}, def, { tag: prevTag });
-  return Balances.getClosingValue(prevTagDef);
+  const oTag = 'O' + def.tag.substr(1);
+  // Should we first look for O tags in the db, if they exist? Currently only C balances can be uploaded
+  if (period.type() === 'entire') openingBalance = Balances.nullValue(def);
+  else {
+    const prevPeriod = period.previous();
+    const prevTag = prevPeriod.toTag();
+    const prevTagDef = _.extend({}, def, { tag: prevTag });
+    openingBalance = Balances.getClosingValue(prevTagDef);
+  }
+  openingBalance.tag = oTag;
+  openingBalance = Balances._transform(openingBalance);
+  return openingBalance;
 };
 
 Balances.getClosingValue = function getClosingValue(def) {

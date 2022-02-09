@@ -74,9 +74,18 @@ export class Period {
   }
 
   static fromValues(year, month) {
-    let label = '' + year;
+    let label = '';
+    if (year) label += '' + year;
     if (month) label += '-' + ('' + month).padStart(2, '0');
     return new Period(label);
+  }
+
+  static fromBeginEndDates(begin, end) {
+    // Currently we only support full year period to watch
+    const beginYear = begin?.getFullYear();
+    const endYear = end?.getFullYear();
+    const year = (beginYear === endYear) ? beginYear : undefined;
+    return Period.fromValues(year);
   }
 
   static fromTag(tag) { // tag format: 'T-2018-09' or 'T-2019' or 'T'
@@ -130,7 +139,9 @@ export class Period {
   }
 
   toTag() {
-    return 'T-' + this.label;
+    let result = 'T';
+    if (this.label?.length) result += '-' + this.label;
+    return result;
   }
 }
 

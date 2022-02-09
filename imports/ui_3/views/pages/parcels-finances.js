@@ -59,7 +59,7 @@ Template.Parcels_finances.viewmodel({
       Parcels.find({ communityId, category: '@property', approved: true }) : this.myParcels();
     let contracts = parcels.map(parcel => parcel.payerContract()).filter(c => c);
     contracts = _.uniq(contracts, false, c => c._id);
-    return contracts.map(c => ({ label: c.toString(), value: c._id }));
+    return contracts.map(c => c.asOption());
   },
   parcelFinancesTableDataFn() {
     const communityId = ModalStack.getVar('communityId');

@@ -4,6 +4,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
+import { Period } from '/imports/api/transactions/breakdowns/period.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { validDateOrUndefined } from '/imports/api/utils';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
@@ -68,9 +69,11 @@ Template.Partner_history.viewmodel({
   beginBalanceDef() {
     if (!this.contractToView()) return {};
     const contract = Contracts.findOne(this.contractToView());
+    const period = Period.fromBeginEndDates(validDateOrUndefined(this.beginDate()), validDateOrUndefined(this.endDate()));
     return {
       communityId: this.communityId(),
       partner: contract?.code() || null,
+      tag: period.toTag(),
     };
   },
   history() {

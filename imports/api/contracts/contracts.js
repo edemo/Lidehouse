@@ -90,9 +90,6 @@ Contracts.helpers({
   partnerName() {
     return this.partner()?.displayName();
   },
-  partnerContract() {
-    return this.partnerId + '/' + this._id;
-  },
   delegate() {
     if (this.delegateId) return Partners.findOne(this.delegateId);
     return undefined;
@@ -138,22 +135,22 @@ Contracts.helpers({
   },
   balance() {
     const Balances = Mongo.Collection.get('balances');
-    return Balances.get({ communityId: this.communityId, partner: this.partnerContract(), tag: 'T' }).total();
+    return Balances.get({ communityId: this.communityId, partner: this.code(), tag: 'T' }).total();
   },
   outstanding() {
     return this.balance() * Relations.sign(this.relation) * -1;
   },
   openingBalance(tag) {
     const Balances = Mongo.Collection.get('balances');
-    return Balances.get({ communityId: this.communityId, partner: this.partnerContract(), tag }, 'opening').total();
+    return Balances.get({ communityId: this.communityId, partner: this.code(), tag }, 'opening').total();
   },
   closingBalance(tag) {
     const Balances = Mongo.Collection.get('balances');
-    return Balances.get({ communityId: this.communityId, partner: this.partnerContract(), tag }, 'closing').total();
+    return Balances.get({ communityId: this.communityId, partner: this.code(), tag }, 'closing').total();
   },
   periodTraffic(tag) {
     const Balances = Mongo.Collection.get('balances');
-    return Balances.get({ communityId: this.communityId, partner: this.partnerContract(), tag }, 'period').total();
+    return Balances.get({ communityId: this.communityId, partner: this.code(), tag }, 'period').total();
   },
   displayTitle() {
     return this.title || __('default');
@@ -164,6 +161,9 @@ Contracts.helpers({
   toString() {
     if (this.relation === 'member') return `${__('property')} ${this.parcel()?.ref}`;
     else return this.displayTitle();
+  },
+  asOption() {
+    return { label: this.toString(), value: this._id };
   },
 });
 
