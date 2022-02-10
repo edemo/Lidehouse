@@ -428,6 +428,18 @@
       "label": "Habitants",
       "placeholder": "(eg. 4)",
       "help": "Needed only if there is a billing based on this."
+    },
+    "debit": {
+      "label": "Payin"
+    },
+    "credit": {
+      "label": "Charge"
+    },
+    "debitTotal": {
+      "label": "Surplus"
+    },
+    "creditTotal": {
+      "label": "Overdraft"
     }
   },
   "schemaTopics": {

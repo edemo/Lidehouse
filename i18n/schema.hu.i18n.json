@@ -428,6 +428,18 @@
       "label": "Lakók száma (fő)",
       "placeholder": "(pl. 4)",
       "help": "Csak akkor szükséges megadni, ha ez alapján szeretne előírni."
+    },
+    "debit": {
+      "label": "Jóváírás"
+    },
+    "credit": {
+      "label": "Terhelés"
+    },
+    "debitTotal": {
+      "label": "Túlfizetés"
+    },
+    "creditTotal": {
+      "label": "Hátralék"
     }
   },
   "schemaTopics": {
