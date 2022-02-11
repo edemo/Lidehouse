@@ -654,6 +654,7 @@
   "No permission to add membership": "Önnek nincs megfelelő jogosultsága a tagság hozzáadásához",
   "Only forum topic may be moved": "Csak a fórum téma mozgatható át",
   "No permission to modify transaction after posting": "A tranzakció nem módosítható könyvelésbe kerülés után",
+  "No permission to modify bill when its already paid, disconnect the payment first": "A számla nem módosítható, amikor már ki van fizetve. Először válaszza le a Fizetést a számláról, majd a változtatások után egyeztesse hozzá újra.",
   "Reallocation only available after posting": "Az átkönyvelés csak könyvelésbe küldés után lehetséges",
   "Topic cannot start in this status": "Nem indítható bejegyzés ebben a státuszban",
   "Topic cannot move from this status into that status": "A jelenlegi státuszból a kiválasztott státuszba nem lehet áthelyezni a bejegyzést",

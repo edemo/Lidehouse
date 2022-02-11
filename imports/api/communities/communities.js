@@ -30,9 +30,9 @@ Communities.settingsSchema = new SimpleSchema({
   communalModeration: { type: Number, defaultValue: 0, autoform: { defaultValue() { return 0; } } },
   // accounting
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions() },
-  subjectToVat: { type: Boolean, optional: true },
-  paymentsWoStatement: { type: Boolean, optional: true },
   paymentsToBills: { type: [String], allowedValues: Relations.values, defaultValue: Relations.mainValues, autoform: { type: 'select-checkbox-inline' } },
+  paymentsWoStatement: { type: Boolean, optional: true },
+  subjectToVat: { type: Boolean, optional: true },
 });
 
 Communities.schema = new SimpleSchema([{
