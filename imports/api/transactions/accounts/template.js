@@ -153,6 +153,7 @@ export function defineAccountTemplates() {
     { code: '`973', name: 'Hitelintézettől kapott kamatok', category: 'income' },
     { code: '`974', name: 'Egyéb pénzügyi bevételek', category: 'income' },
     { code: '`98', name: 'RENDKIVÜLI BEVÉTELEK', category: 'income' },
+    { code: '`981', name: 'Tovább hárított szolgáltatások', category: 'income' },
     { code: '`99', name: 'KEREKÍTÉSI NYERESÉG-VESZTESÉG', category: 'income' },
   ],
   });

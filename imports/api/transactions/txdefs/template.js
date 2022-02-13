@@ -150,6 +150,18 @@ export function defineTxdefTemplates() {
     data: { relation: 'supplier' },
     debit: ['`1', '`5', '`8'],
     credit: ['`38'],
+  }, {
+    name: 'Pass through income', // 'Átfolyó bevétel',
+    category: 'receipt',
+    data: { relation: 'customer' },
+    debit: ['`38'],
+    credit: ['`981'],
+  }, {
+    name: 'Pass through expense', // 'Átfolyó kiadás',
+    category: 'receipt',
+    data: { relation: 'supplier' },
+    debit: ['`981'],
+    credit: ['`38'],
   }, /* {
     name: 'Income identification', // 'Bevétel beazonosítás',
     category: 'freeTx',
@@ -160,7 +172,7 @@ export function defineTxdefTemplates() {
     category: 'freeTx',
     debit: ['`434'],
     credit: ['`1', '`5', '`8'],
-  }, */{
+  }, {
     name: 'Bank fee expense', // 'Kamat  és bank  költség elszámolás',
     category: 'receipt',
     data: { relation: 'supplier' },
@@ -169,7 +181,7 @@ export function defineTxdefTemplates() {
   }, {
     name: 'Partner exchange', // 'Partnerek közötti átvezetés',
     category: 'exchange',
-  }, /* {
+  }, {
     name: 'Barter', // 'Albetét előírás elengedés',
     category: 'barter',
 //    data: { relation: 'member' },
@@ -177,7 +189,8 @@ export function defineTxdefTemplates() {
     credit: ['`31', '`33'],
 //    debit: ['`9'],
 //    credit: ['`8', '`5'],
-  }, */ {
+  }, */ 
+  {
     name: 'Opening asset',
     category: 'opening',
     data: { side: 'debit' },
