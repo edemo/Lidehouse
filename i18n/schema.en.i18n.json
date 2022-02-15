@@ -951,6 +951,7 @@
       "options": {
         "bill": "bill",
         "payment": "payment",
+        "allocation": "allocation",
         "remission": "remission",
         "receipt": "receipt",
         "transfer": "transfer between accounts",

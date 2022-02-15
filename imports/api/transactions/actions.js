@@ -225,6 +225,31 @@ Transactions.actions = {
       });
     },
   }),
+  allocate: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'allocate',
+    label: 'allocate',
+    icon: 'fa fa-edit',
+    color: 'primary',
+    visible: doc && doc.isPosted() && (doc.category === 'payment') && (doc.outstanding !== 0)
+      && user.hasPermission('transactions.update', doc),
+    run() {
+      const allocationDoc = doc.generateAllocation();
+      const entity = Transactions.entities.allocation;
+      Modal.show('Autoform_modal', {
+        body: entity.editForm,
+        bodyContext: { doc: allocationDoc },
+        // --- --- --- ---
+        id: 'af.allocation.create',
+        schema: Transactions.simpleSchema(allocationDoc),
+        omitFields: entity.omitFields && entity.omitFields(),
+        doc: allocationDoc,
+        type: 'method',
+        meteormethod: 'transactions.allocate',
+        // --- --- --- ---
+        size: entity.size || 'md',
+      });
+    },
+  }),
   resend: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'resend',
     icon: 'fa fa-envelope',
@@ -319,7 +344,7 @@ Transactions.categoryValues.forEach(category => {
     formToDoc(doc) {
       if (category === 'bill' || category === 'receipt') {
         doc.lines = doc.lines?.filter(line => line);       // filters out undefined lines (placeholder)
-      } else if (category === 'payment') {
+      } else if (category === 'payment' || category === 'allocation') {
         doc.bills = doc.bills?.filter(bill => bill?.amount);  // filters out undefined lines (placeholder), and zero amount rows
         doc.lines = doc.lines?.filter(line => line?.amount);
       }

@@ -13,6 +13,12 @@ Transactions.entities = {
     editForm: 'Payment_edit',
     size: 'lg',
   },
+  allocation: {
+    name: 'allocation',
+    viewForm: 'Payment_view',
+    editForm: 'Payment_edit',
+    size: 'lg',
+  },
   exchange: {
     name: 'exchange',
     viewForm: 'Exchange_edit',

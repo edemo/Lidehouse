@@ -102,10 +102,11 @@ const paymentSchema = new SimpleSchema([
     bills: { type: [Payments.billPaidSchema], optional: true },
     lines: { type: [Payments.lineSchema], optional: true },
     outstanding: { type: Number, decimal: true, optional: true },
+    allocations: { type: [String], regEx: SimpleSchema.RegEx.Id, optional: true },
   },
 ]);
 
-Transactions.categoryHelpers('payment', {
+export const PaymentAndAllocationHelpers = {
   getBills() {
     return (this.bills || []).filter(b => b); // nulls can be in the array, on the UI, when lines are deleted
   },
@@ -117,10 +118,6 @@ Transactions.categoryHelpers('payment', {
   },
   billCount() {
     return this.getBills().length;
-  },
-  calculateOutstanding() {
-    if (this.status === 'void') return 0;
-    return this.amountWoRounding() - this.allocatedToBills();
   },
   allocatedToBills() {
     let allocated = 0;
@@ -140,25 +137,36 @@ Transactions.categoryHelpers('payment', {
   },
   hasConteerData() {
     let result = true;
-    if (!this.payAccount) result = false;
+    const mainAccount = this.category === 'payment' ? this.payAccount : this.sourceAccount;
+    if (!mainAccount) result = false;
     this.getLines().forEach(line => { if (line && !line.account) result = false; });
     return result;
   },
   validate() {
+    const self = this;
+    function checkFieldMatches(field, entity) {
+      if (entity[field] !== self[field]) {
+        throw new Meteor.Error('err_sanityCheckFailed', `Transaction and ${entity.category} need to have same field`,
+          `field: ${field}, ${entity[field]} !== ${self[field]}`);
+      }
+    }
+    if (this.category === 'allocation') {
+      const payment = Transactions.findOne(this.paymentId);
+      debugAssert(payment, 'Allocations original payment has to be reachable');
+      checkFieldMatches('relation', payment); checkFieldMatches('partnerId', payment); checkFieldMatches('contractId', payment);
+      const allocable = this.calculateOutstanding();
+      if ((allocable > 0 && this.amount > allocable) || (allocable < 0 && this.amount < allocable)) {
+        throw new Meteor.Error('err_sanityCheckFailed', "Allocation amount cannot exceed payment's allocable amount", `${this.amount} - ${payment.outstanding}`);
+      }
+    }
     let billSum = 0;
-    const payment = this;
     this.getBills().forEach(pb => {
       const bill = Transactions.findOne(pb.id);
-      function checkBillMatches(field) {
-        if (bill[field] !== payment[field]) {
-          throw new Meteor.Error('err_sanityCheckFailed', 'All paid bills need to have same field', `field: ${field}, ${bill[field]} !== ${payment[field]}`);
-        }
-      }
-      checkBillMatches('relation'); checkBillMatches('partnerId'); checkBillMatches('contractId');
+      checkFieldMatches('relation', bill); checkFieldMatches('partnerId', bill); checkFieldMatches('contractId', bill);
       productionAssert(pb.amount < 0 === bill.amount < 0, 'Bill amount and its payment must have the same sign');
       let amountToPay = bill.outstanding;
       const savedPayment = _.find(bill.getPayments(), p => p.id === this._id);
-      if (savedPayment) savedPayment > 0 ? amountToPay -= savedPayment.amount : amountToPay += savedPayment.amount;
+      if (savedPayment) savedPayment.amount > 0 ? amountToPay += savedPayment.amount : amountToPay -= savedPayment.amount;
       if ((amountToPay > 0 && pb.amount > amountToPay) || (amountToPay < 0 && pb.amount < amountToPay)) {
         throw new Meteor.Error('err_sanityCheckFailed', "Bill's payment amount cannot exceed bill's amount", `${pb.amount} - ${amountToPay}`);
       }
@@ -210,7 +218,7 @@ Transactions.categoryHelpers('payment', {
       amountToAllocate -= pb.amount;
       if (amountToAllocate === 0) return false;
     });
-    if (Accounts.getByCode(this.payAccount, this.communityId)?.category === 'cash'
+    if (this.category === 'payment' && Accounts.getByCode(this.payAccount, this.communityId)?.category === 'cash'
       && amountToAllocate && equalWithinRounding(0, amountToAllocate)) {
       this.rounding = amountToAllocate;
       amountToAllocate -= this.rounding;
@@ -231,16 +239,12 @@ Transactions.categoryHelpers('payment', {
       else this.lines = [{ amount: amountToAllocate }];
     }
   },
-  fillFromStatementEntry(entry) {
-    this.amount = entry.unreconciledAmount() * this.relationSign();
-    this.payAccount = entry.account;
-    if (!this.bills && !this.lines) this.lines = [{ amount: this.amount }];
-  },
   makeJournalEntries(accountingMethod) {
     this.debit = [];
     this.credit = [];
     let unallocatedAmount = this.amountWoRounding();
-    this.makeEntry(this.relationSide(), { amount: this.amount, account: this.payAccount });
+    const mainAccount = this.category === 'payment' ? this.payAccount : this.sourceAccount;
+    this.makeEntry(this.relationSide(), { amount: this.amount, account: mainAccount });
     this.getBills().forEach(billPaid => {
       if (unallocatedAmount === 0) return false;
       const bill = Transactions.findOne(billPaid.id);
@@ -267,8 +271,11 @@ Transactions.categoryHelpers('payment', {
       } else if (Math.abs(billPaid.amount) < Math.abs(bill.amount)) {
         let paidBefore = 0;
         bill.payments?.forEach(payment => {
-          if (payment.id !== this._id) paidBefore += payment.amount;
+          const currentPaymentId = this.category === 'payment' ? this._id : this.paymentId;
+          if (payment.id !== currentPaymentId) paidBefore += payment.amount;
+          if (this.category === 'allocation' && payment.id === currentPaymentId) paidBefore += payment.amount;
         });
+        if (this.category === 'allocation') paidBefore -= billPaid.amount;
         let unallocatedFromBill = billPaid.amount;
         const billLines = bill.getLines().oppositeSignsFirst(bill.amount, 'amount');
         billLines.forEach(line => {
@@ -311,22 +318,15 @@ Transactions.categoryHelpers('payment', {
     const legs = { debit: this.debit, credit: this.credit };
     return legs;
   },
-  makePartnerEntries() {
-    this.pEntries = [{
-      partner: this.partnerContractCode(),
-      side: this.relationSide(),
-      amount: this.amountWoRounding(),
-    }];
-    return { pEntries: this.pEntries };
-  },
   registerOnBill(billPaid, direction = +1) {
     const bill = Transactions.findOne(billPaid.id);
     if (!bill) return; // When removing multiple transactions and bills are removed first, don't get stuck in after hook
     const paymentOnBill = _.extend({}, billPaid);
-    paymentOnBill.id = this._id; // replacing the bill._id with the payment._id
-
+    const paymentId = this.category === 'payment' ? this._id : this.paymentId;
+    paymentOnBill.id = paymentId; // replacing the bill._id with the payment._id
     const oldPayments = bill.getPayments();
-    const found = _.find(oldPayments, p => p.id === this._id);
+    let found;
+    if (this.category === 'payment') found = _.find(oldPayments, p => p.id === paymentId);
 
     let newPayments;
     if (direction === +1) {
@@ -340,8 +340,53 @@ Transactions.categoryHelpers('payment', {
     }
     Transactions.update(bill._id,
       { $set: { payments: newPayments } },
-      { selector: { category: 'bill' } },
-    );
+      { selector: { category: 'bill' } });
+  },
+};
+
+Transactions.categoryHelpers('payment', {
+  ...PaymentAndAllocationHelpers,
+  calculateOutstanding() {
+    if (this.status === 'void') return 0;
+    return _.last(this.getLines())?.amount - this.allocatedLater() || 0;
+  },
+  generateAllocation() {
+    const Txdefs = Mongo.Collection.get('txdefs');
+    const defId = Txdefs.findOne({ communityId: this.communityId, category: 'allocation', 'data.relation': this.relation })._id;
+    const line = _.last(this.getLines());
+    const allocationDoc = {
+      category: 'allocation',
+      defId,
+      relation: this.relation,
+      partnerId: this.partnerId,
+      contractId: this.contractId,
+      paymentId: this._id,
+      amount: Math.min(this.outstanding, line.amount),
+      sourceAccount: line?.account,
+      communityId: this.communityId,
+      valueDate: new Date(),
+    };
+    return allocationDoc;
+  },
+  allocatedLater() {
+    let allocated = 0;
+    this.allocations?.forEach(id => {
+      allocated += Transactions.findOne(id)?.amount;
+    });
+    return allocated;
+  },
+  fillFromStatementEntry(entry) {
+    this.amount = entry.unreconciledAmount() * this.relationSign();
+    this.payAccount = entry.account;
+    if (!this.bills && !this.lines) this.lines = [{ amount: this.amount }];
+  },
+  makePartnerEntries() {
+    this.pEntries = [{
+      partner: this.partnerContractCode(),
+      side: this.relationSide(),
+      amount: this.amountWoRounding(),
+    }];
+    return { pEntries: this.pEntries };
   },
   displayInSelect() {
     return `${this.serialId} (${moment(this.valueDate).format('YYYY.MM.DD')} ${this.partner()} ${this.amount})`;

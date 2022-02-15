@@ -31,7 +31,7 @@ import { StatementEntries } from '/imports/api/transactions/statement-entries/st
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'exchange', 'transfer', 'opening', 'freeTx'];
+Transactions.categoryValues = ['bill', 'payment', 'receipt', 'allocation', 'barter', 'exchange', 'transfer', 'opening', 'freeTx'];
 Transactions.reconciledCategories = ['payment', 'receipt', 'transfer'];
 
 Transactions.statuses = {
@@ -413,7 +413,7 @@ if (Meteor.isServer) {
       tdoc.updateBalances(+1);
       tdoc.updatePartnerBalances(+1);
     }
-    if (tdoc.category === 'payment') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, +1));
+    if (tdoc.category === 'payment' || tdoc.category === 'allocation') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, +1));
     const community = tdoc.community();
     if (tdoc.category === 'bill' && !_.contains(community.billsUsed, tdoc.relation)) {
       Communities.update(community._id, { $push: { billsUsed: tdoc.relation } });
@@ -429,7 +429,7 @@ if (Meteor.isServer) {
       newDoc.autoFill?.();
       _.extend(modifier, { $set: newDoc });
       if ((doc.category === 'bill' && (newDoc.lines || newDoc.payments || newDoc.status === 'void'))
-        || (doc.category === 'payment' && (newDoc.bills || newDoc.amount || newDoc.status === 'void'))) {
+        || (doc.category === 'payment' && (newDoc.bills || newDoc.amount || newDoc.status === 'void' || modifier.$push || modifier.$pull))) {
         autoValueUpdate(Transactions, doc, modifier, 'outstanding', d => d.calculateOutstanding());
       }
     }
@@ -440,7 +440,7 @@ if (Meteor.isServer) {
     if (tdoc.category === 'freeTx') tdoc.checkAccountsExist();
     const oldDoc = Transactions._transform(this.previous);
     const newDoc = tdoc;
-    if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
+    if ((tdoc.category === 'payment' || tdoc.category === 'allocation') && modifierChangesField(modifier, ['bills'])) {
       Array.difference(oldDoc.getBills(), newDoc.getBills()).forEach(bp => oldDoc.registerOnBill(bp, -1));
       Array.difference(newDoc.getBills(), oldDoc.getBills()).forEach(bp => newDoc.registerOnBill(bp, +1));
     }
@@ -467,7 +467,7 @@ if (Meteor.isServer) {
       tdoc.updateBalances(-1);
       tdoc.updatePartnerBalances(-1);
     }
-    if (tdoc.category === 'payment') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, -1));
+    if (tdoc.category === 'payment' || tdoc.category === 'allocation') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, -1));
     tdoc.seId?.forEach(seId => StatementEntries.update(seId, { $pull: { txId: tdoc._id } }));
   });
 }

@@ -14,7 +14,13 @@
             </address>
             <p>
                 <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate rDoc.valueDate}}</span><br/>
+                {{#if rDoc.payAccount}}
                 <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount rDoc.payAccount}}}</span><br/>
+                {{/if}}
+                {{#if rDoc.sourceAccount}}
+                <span><strong>{{_ 'schemaTransactions.account.label'}}:</strong> {{{displayAccount rDoc.sourceAccount}}}</span><br/>
+                {{/if}}
+
             </p>
         </div>
     </div>
@@ -66,6 +72,54 @@
                 {{/each}}
             </tbody>
         </table>
+    </div>
+    {{/if}}
+
+    {{>Action_buttons_group collection='transactions' doc=rDoc actions='allocate' size='lg'}}
+
+    {{#if allocations.length}}
+    <div class="table-responsive m-t">
+        {{#each alli in allocations}}
+        <table class="table invoice-table">
+            <thead>
+                <tr>
+                    <th>később kiallokálva</th>
+                    <th></th>
+                    <th>kiallokálás dátuma</th>
+                    <th>{{_ 'schemaTransactions.amount.label'}}</th>
+                    <th>{{> Action_buttons_group collection='transactions' actions='view' doc=alli._id size='sm'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each bp in alli.getBills}}
+                {{#if bp}}
+                <tr>
+                    <td>
+                      <strong>{{displayBill bp}}</strong>
+                      {{> Action_buttons_group collection='transactions' actions='view' doc=bp.id size='sm'}}
+                    </td>
+                    <td></td>
+                    <td>{{{displayDate alli.valueDate}}}</td>
+                    <td class="nowrap">{{displayMoney bp.amount}}</td>
+                    <td></td>
+                </tr>
+                {{/if}}
+                {{/each}}
+
+                {{#each line in alli.getLines}}
+                {{#if line}}
+                <tr>
+                    <td>{{{displayAccount line.account}}}</td>
+                    <td>{{{displayLocalizer line.localizer}}}</td>
+                    <td>{{{displayDate alli.valueDate}}}</td>
+                    <td class="nowrap">{{displayMoney line.amount}}</td>
+                    <td></td>
+                </tr>
+                {{/if}}
+                {{/each}}
+            </tbody>
+        </table> 
+        {{/each}}
     </div>
     {{/if}}
 

@@ -618,6 +618,105 @@ if (Meteor.isServer) {
 
         Transactions.remove({ partnerId: FixtureA.supplier, category: 'payment' });
       });
+
+      it('Can create Allocation from a Payment without changing its journal entries', function () {
+        const paymentId3 = FixtureA.builder.create('payment', {
+          bills: [{ id: billId, amount: 250 }],
+          lines: [{ account: '`431', amount: 100 }],
+          amount: 350,
+          partnerId: FixtureA.supplier,
+          valueDate: Clock.currentTime(),
+          payAccount: '`381' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId3 });
+        let payment3 = Transactions.findOne(paymentId3);
+        chai.assert.equal(payment3.debit[1].account, '`431');
+        chai.assert.equal(payment3.debit[1].amount, 100);
+        chai.assert.equal(payment3.credit[0].account, '`381');
+        bill = Transactions.findOne(billId);
+        const defId = Txdefs.findOne({ communityId: FixtureA.communityId, category: 'allocation' })._id;
+        chai.assert.equal(bill.outstanding, 50);
+        chai.assert.equal(payment3.outstanding, 100);
+        chai.assert.equal(payment3.partner().balance(), -50);
+        const allocation = {
+          communityId: payment3.communityId,
+          bills: [{ id: billId, amount: 50 }],
+          amount: 50,
+          partnerId: payment3.partnerId,
+          contractId: payment3.contractId,
+          sourceAccount: '`431',
+          valueDate: Clock.currentTime(),
+          paymentId: paymentId3,
+          category: 'allocation',
+          defId,
+          status: 'draft',
+          relation: payment3.relation,
+        };
+        const alliId = FixtureA.builder.execute(Transactions.methods.allocate, allocation);
+        const alli = Transactions.findOne(alliId);
+        bill = Transactions.findOne(billId);
+        payment3 = Transactions.findOne(paymentId3);
+        chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(payment3.outstanding, 50);
+        chai.assert.equal(payment3.partner().balance(), -50);
+        chai.assert.equal(payment3.debit[0].account, '`454');
+        chai.assert.equal(payment3.debit[0].amount, 250);
+        chai.assert.equal(payment3.debit[1].account, '`431');
+        chai.assert.equal(payment3.debit[1].amount, 100);
+        chai.assert.equal(payment3.credit[0].account, '`381');
+        chai.assert.equal(payment3.debit.length, 2);
+        chai.assert.equal(payment3.credit.length, 1);
+        chai.assert.equal(alli.debit[0].account, '`454');
+        chai.assert.equal(alli.debit[0].amount, 50);
+        chai.assert.equal(alli.credit[0].amount, 50);
+        chai.assert.equal(alli.credit[0].account, '`431');
+      });
+
+      it('Can not allocate more than payment outstanding or with wrong partnerId', function () {
+        let payment3 = Transactions.findOne({ partnerId: FixtureA.supplier, category: 'payment' });
+        chai.assert.equal(payment3.outstanding, 50);
+        const allocationBase = payment3.generateAllocation();
+        let allocation = _.extend(allocationBase, {
+          lines: [{ amount: 70, account: '`451' }],
+          amount: 70,
+        });
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.allocate, allocation);
+        }, 'err_sanityCheckFailed');
+        allocation = _.extend(allocationBase, {
+          lines: [{ amount: 50, account: '`451' }],
+          amount: 50,
+          partnerId: FixtureA.customer,
+        });
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.allocate, allocation);
+        }, 'err_sanityCheckFailed');
+        allocation = _.extend(allocationBase, {
+          lines: [{ amount: 50, account: '`451' }],
+          amount: 50,
+          partnerId: FixtureA.supplier,
+        });
+        FixtureA.builder.execute(Transactions.methods.allocate, allocation);
+        payment3 = Transactions.findOne({ partnerId: FixtureA.supplier, category: 'payment' });
+        chai.assert.equal(payment3.outstanding, 0);
+      });
+
+      it('Removing allocation updates payment and bill', function () {
+        let payment3 = Transactions.findOne({ partnerId: FixtureA.supplier, category: 'payment' });
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(payment3.outstanding, 0);
+        chai.assert.equal(payment3.allocations.length, 2);
+        chai.assert.equal(bill.outstanding, 0);
+        const allocationId = Transactions.findOne({ category: 'allocation', bills: { $exists: true } });
+        FixtureA.builder.execute(Transactions.methods.remove, allocationId);
+        payment3 = Transactions.findOne({ partnerId: FixtureA.supplier, category: 'payment' });
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(payment3.outstanding, 50);
+        chai.assert.equal(bill.outstanding, 50);
+        chai.assert.equal(payment3.allocations.length, 3); // storno allocation is added
+
+        Transactions.remove({ partnerId: FixtureA.supplier, category: 'allocation' });
+        Transactions.remove({ partnerId: FixtureA.supplier, category: 'payment' });
+      });
     });
 
     xdescribe('Non-bill allocation', function () {

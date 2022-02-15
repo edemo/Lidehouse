@@ -3,13 +3,15 @@
     <div class="row">
         <!-- hidden, needed for autoform doc data -->
         {{> afQuickField name="communityId" type="hidden"}}
+        {{#if afDoc.paymentId}}{{> afQuickField name="paymentId" type="hidden"}}{{/if}}
         {{> afQuickField name="category" type="hidden"}}
         {{> afQuickField name="defId" type="hidden"}}
         {{> afQuickField name="relation" type="hidden"}}
         <!-- hidden, needed for autoform doc data -->
         <div class="col-sm-6 col-md-6 js-autofill">
             {{> afQuickField name="valueDate" type=hiddenWhenReconciling defaultValue=defaultDate}}
-            {{> afQuickField name="payAccount" type=hiddenWhenReconciling}}
+            {{#if afDoc.sourceAccount}}{{> afQuickField name="sourceAccount"}}{{/if}}
+            {{#if afDoc.payAccount}}{{> afQuickField name="payAccount" type=hiddenWhenReconciling}}{{/if}}
             {{#if reconciling}}
             <div class="form-group">
                 <label>{{_ 'schemaStatementEntries.original.label'}}</label><br>
