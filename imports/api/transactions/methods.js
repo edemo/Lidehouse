@@ -103,6 +103,10 @@ export const insert = new ValidatedMethod({
   run(doc) {
     doc = Transactions._transform(doc);
     const communityId = doc.communityId;
+    if (doc.category === 'allocation') {
+      const payment = checkExists(Transactions, doc.paymentId);
+      if (!payment.isPosted()) throw new Meteor.Error('err_permissionDenied', 'Allocation only available after posting');
+    }
     checkPermissions(this.userId, 'transactions.insert', doc);
     if (doc.category === 'payment') {
       if (!doc.contractId && doc.bills?.length) { // Only happens in tests, the UI enforces contractId input
@@ -189,30 +193,6 @@ export const reallocate = new ValidatedMethod({ // This methods reposts the tran
   },
 });
 
-export const allocate = new ValidatedMethod({
-  name: 'transactions.allocate',
-  validate: doc => Transactions.simpleSchema(doc).validator({ clean: true })(doc),
-  run(doc) {
-    const payment = checkExists(Transactions, doc.paymentId);
-    if (!payment.isPosted()) {
-      throw new Meteor.Error('err_permissionDenied', 'Allocation only available after posting');
-    }
-    doc = Transactions._transform(doc);
-    const communityId = doc.communityId;
-    checkPermissions(this.userId, 'transactions.update', doc);
-
-    doc.getLines?.()?.forEach((line) => {
-      const parcel = Localizer.parcelFromCode(line.localizer, communityId);
-      if (!line.parcelId && parcel) line.parcelId = parcel._id;
-    });
-    doc.validate?.();
-    const _id = Transactions.insert(doc);
-    Transactions.update(payment._id, { $push: { allocations: _id } }, { selector: { category: 'payment' } });  
-    /* if (doc.isAutoPosting()) */ post._execute({ userId: this.userId }, { _id });
-    return _id;
-  },
-});
-
 export const remove = new ValidatedMethod({
   name: 'transactions.remove',
   validate: new SimpleSchema({
@@ -240,7 +220,6 @@ export const remove = new ValidatedMethod({
       Transactions.update(doc._id, { $set: { status: 'void', seId: [] } });
       const resultTx = Transactions.findOne(result);
       if (resultTx.isAutoPosting()) post._execute({ userId: this.userId }, { _id: result });
-      if (doc.category === 'allocation') Transactions.update({ _id: doc.paymentId }, { $push: { allocations: result } }, { selector: { category: 'payment' } });
       if (doc.allocations?.length) {
         doc.allocations.forEach((allocationId) => {
           if (allocationId) Transactions.methods.remove({ _id: allocationId });
@@ -301,6 +280,6 @@ export const statistics = new ValidatedMethod({
 });
 
 Transactions.methods = Transactions.methods || {};
-_.extend(Transactions.methods, { insert, update, post, reallocate, allocate, resend, remove, cloneAccountingTemplates });
+_.extend(Transactions.methods, { insert, update, post, reallocate, resend, remove, cloneAccountingTemplates });
 _.extend(Transactions.methods, crudBatchOps(Transactions));
 Transactions.methods.batch.post = new BatchMethod(Transactions.methods.post);

@@ -233,21 +233,10 @@ Transactions.actions = {
     visible: doc && doc.isPosted() && (doc.category === 'payment') && (doc.outstanding !== 0)
       && user.hasPermission('transactions.update', doc),
     run() {
+      const allocationDef = Txdefs.findOne({ communityId: doc.communityId, category: 'allocation', 'data.relation': doc.relation });
+      const allocationOptions = _.extend({}, options, { entity: Transactions.entities.allocation, txdef: allocationDef });
       const allocationDoc = doc.generateAllocation();
-      const entity = Transactions.entities.allocation;
-      Modal.show('Autoform_modal', {
-        body: entity.editForm,
-        bodyContext: { doc: allocationDoc },
-        // --- --- --- ---
-        id: 'af.allocation.create',
-        schema: Transactions.simpleSchema(allocationDoc),
-        omitFields: entity.omitFields && entity.omitFields(),
-        doc: allocationDoc,
-        type: 'method',
-        meteormethod: 'transactions.allocate',
-        // --- --- --- ---
-        size: entity.size || 'md',
-      });
+      Transactions.actions.create(allocationOptions, allocationDoc).run();
     },
   }),
   resend: (options, doc, user = Meteor.userOrNull()) => ({

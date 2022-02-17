@@ -154,7 +154,7 @@ export const PaymentAndAllocationHelpers = {
       const payment = Transactions.findOne(this.paymentId);
       debugAssert(payment, 'Allocations original payment has to be reachable');
       checkFieldMatches('relation', payment); checkFieldMatches('partnerId', payment); checkFieldMatches('contractId', payment);
-      const allocable = this.calculateOutstanding();
+      const allocable = payment.calculateOutstanding();
       if ((allocable > 0 && this.amount > allocable) || (allocable < 0 && this.amount < allocable)) {
         throw new Meteor.Error('err_sanityCheckFailed', "Allocation amount cannot exceed payment's allocable amount", `${this.amount} - ${payment.outstanding}`);
       }

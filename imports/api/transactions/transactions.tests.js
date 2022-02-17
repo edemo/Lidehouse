@@ -651,7 +651,7 @@ if (Meteor.isServer) {
           status: 'draft',
           relation: payment3.relation,
         };
-        const alliId = FixtureA.builder.execute(Transactions.methods.allocate, allocation);
+        const alliId = FixtureA.builder.execute(Transactions.methods.insert, allocation);
         const alli = Transactions.findOne(alliId);
         bill = Transactions.findOne(billId);
         payment3 = Transactions.findOne(paymentId3);
@@ -680,7 +680,7 @@ if (Meteor.isServer) {
           amount: 70,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(Transactions.methods.allocate, allocation);
+          FixtureA.builder.execute(Transactions.methods.insert, allocation);
         }, 'err_sanityCheckFailed');
         allocation = _.extend(allocationBase, {
           lines: [{ amount: 50, account: '`451' }],
@@ -688,14 +688,14 @@ if (Meteor.isServer) {
           partnerId: FixtureA.customer,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(Transactions.methods.allocate, allocation);
+          FixtureA.builder.execute(Transactions.methods.insert, allocation);
         }, 'err_sanityCheckFailed');
         allocation = _.extend(allocationBase, {
           lines: [{ amount: 50, account: '`451' }],
           amount: 50,
           partnerId: FixtureA.supplier,
         });
-        FixtureA.builder.execute(Transactions.methods.allocate, allocation);
+        FixtureA.builder.execute(Transactions.methods.insert, allocation);
         payment3 = Transactions.findOne({ partnerId: FixtureA.supplier, category: 'payment' });
         chai.assert.equal(payment3.outstanding, 0);
       });
@@ -706,8 +706,8 @@ if (Meteor.isServer) {
         chai.assert.equal(payment3.outstanding, 0);
         chai.assert.equal(payment3.allocations.length, 2);
         chai.assert.equal(bill.outstanding, 0);
-        const allocationId = Transactions.findOne({ category: 'allocation', bills: { $exists: true } });
-        FixtureA.builder.execute(Transactions.methods.remove, allocationId);
+        const allocationId = Transactions.findOne({ category: 'allocation', bills: { $exists: true } })._id;
+        FixtureA.builder.execute(Transactions.methods.remove, { _id: allocationId });
         payment3 = Transactions.findOne({ partnerId: FixtureA.supplier, category: 'payment' });
         bill = Transactions.findOne(billId);
         chai.assert.equal(payment3.outstanding, 50);

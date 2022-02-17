@@ -34,6 +34,7 @@ Txdefs.dataSchema = new SimpleSchema({
   relation: { type: String, allowedValues: Relations.values, optional: true  },  // for bill, payment
   side: { type: String, allowedValues: ['debit', 'credit'], optional: true  },   // for opening, closing
   remission: { type: Boolean, optional: true  },                                 // for payment
+  autoPosting: { type: Boolean, optional: true  },
 });
 
 Txdefs.schema = new SimpleSchema({
@@ -67,7 +68,7 @@ Txdefs.helpers({
     return 'txdef';
   },
   isAutoPosting() {
-    return false;
+    return !!this.data?.autoPosting;
   },
   isAccountantTx() {
     return !_.contains(['bill', 'payment', 'receipt'], this.category);

@@ -414,6 +414,9 @@ if (Meteor.isServer) {
       tdoc.updatePartnerBalances(+1);
     }
     if (tdoc.category === 'payment' || tdoc.category === 'allocation') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, +1));
+    if (tdoc.category === 'allocation') {
+      Transactions.update(tdoc.paymentId, { $push: { allocations: tdoc._id } }, { selector: { category: 'payment' } });
+    }
     const community = tdoc.community();
     if (tdoc.category === 'bill' && !_.contains(community.billsUsed, tdoc.relation)) {
       Communities.update(community._id, { $push: { billsUsed: tdoc.relation } });

@@ -35,7 +35,7 @@ export function defineTxdefTemplates() {
 //    Not really needed. When paying bills we always know what bills are we intending to pay
     name: 'Supplier payment identification', // 'Bejövő számla kifizetés azonosítása',
     category: 'allocation',
-    data: { relation: 'supplier' },
+    data: { relation: 'supplier', autoPosting: true },
     debit: ['`454'],
     credit: ['`'],
   }, {
@@ -59,7 +59,7 @@ export function defineTxdefTemplates() {
   }, {
     name: 'Customer payment identification', // 'Kimenő számla befolyás azonosítása',
     category: 'allocation',
-    data: { relation: 'customer' },
+    data: { relation: 'customer', autoPosting: true },
     debit: ['`'],
     credit: ['`31'],
   }, {
@@ -83,7 +83,7 @@ export function defineTxdefTemplates() {
   }, {
     name: 'Parcel payment identification', // 'Albetét befizetés azonosítása',
     category: 'allocation',
-    data: { relation: 'member' },
+    data: { relation: 'member', autoPosting: true },
     debit: ['`'],
     credit: ['`33'],
   }, {
