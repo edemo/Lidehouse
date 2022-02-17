@@ -225,6 +225,20 @@ Transactions.actions = {
       });
     },
   }),
+  allocate: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'allocate',
+    label: 'allocate',
+    icon: 'fa fa-edit',
+    color: 'primary',
+    visible: doc && doc.isPosted() && (doc.category === 'payment') && (doc.outstanding !== 0)
+      && user.hasPermission('transactions.update', doc),
+    run() {
+      const allocationDef = Txdefs.findOne({ communityId: doc.communityId, category: 'allocation', 'data.relation': doc.relation });
+      const allocationOptions = _.extend({}, options, { entity: Transactions.entities.allocation, txdef: allocationDef });
+      const allocationDoc = doc.generateAllocation();
+      Transactions.actions.create(allocationOptions, allocationDoc).run();
+    },
+  }),
   resend: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'resend',
     icon: 'fa fa-envelope',
@@ -319,7 +333,7 @@ Transactions.categoryValues.forEach(category => {
     formToDoc(doc) {
       if (category === 'bill' || category === 'receipt') {
         doc.lines = doc.lines?.filter(line => line);       // filters out undefined lines (placeholder)
-      } else if (category === 'payment') {
+      } else if (category === 'payment' || category === 'allocation') {
         doc.bills = doc.bills?.filter(bill => bill?.amount);  // filters out undefined lines (placeholder), and zero amount rows
         doc.lines = doc.lines?.filter(line => line?.amount);
       }

@@ -25,7 +25,7 @@ Meteor.publish('transactions.inCommunity', function transactionsInCommunity(para
   return Transactions.find(selector);
 });
 
-Meteor.publish('transactions.byPartnerContract', function transactionsInCommunity(params) {
+Meteor.publish('transactions.byPartnerContract', function transactionsByPartnerContract(params) {
   new SimpleSchema({
     communityId: { type: String },
     partnerId: { type: String, optional: true },
@@ -109,6 +109,11 @@ function findTxsWithRelatedStuff(selector, options) {
       find(tx) {
         if (tx.category === 'payment') // return Bills with the Payments
           return Transactions.find({ 'payments.id': tx._id });
+      },
+    }, {
+      find(tx) {
+        if (tx.category === 'payment') // return Allocations with the Payments
+          return Transactions.find({ paymentId: tx._id });
       },
     }],
   };

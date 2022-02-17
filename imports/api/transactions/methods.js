@@ -103,6 +103,10 @@ export const insert = new ValidatedMethod({
   run(doc) {
     doc = Transactions._transform(doc);
     const communityId = doc.communityId;
+    if (doc.category === 'allocation') {
+      const payment = checkExists(Transactions, doc.paymentId);
+      if (!payment.isPosted()) throw new Meteor.Error('err_permissionDenied', 'Allocation only available after posting');
+    }
     checkPermissions(this.userId, 'transactions.insert', doc);
     if (doc.category === 'payment') {
       if (!doc.contractId && doc.bills?.length) { // Only happens in tests, the UI enforces contractId input
@@ -208,6 +212,12 @@ export const remove = new ValidatedMethod({
     }
     if (doc.status === 'draft') {
       Transactions.remove(_id);
+      if (doc.category === 'allocation') Transactions.update({ _id: doc.paymentId }, { $pull: { allocations: _id } }, { selector: { category: 'payment' } });
+      if (doc.allocations?.length) {
+        doc.allocations.forEach((allocationId) => {
+          if (allocationId) Transactions.remove({ _id: allocationId });
+        });
+      }
       result = null;
     } else if (doc.status === 'posted') {
       // This block should happen all or none
@@ -215,6 +225,11 @@ export const remove = new ValidatedMethod({
       Transactions.update(doc._id, { $set: { status: 'void', seId: [] } });
       const resultTx = Transactions.findOne(result);
       if (resultTx.isAutoPosting()) post._execute({ userId: this.userId }, { _id: result });
+      if (doc.allocations?.length) {
+        doc.allocations.forEach((allocationId) => {
+          if (allocationId) Transactions.methods.remove({ _id: allocationId });
+        });
+      }
       //
     } else if (doc.status === 'void') {
       throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');

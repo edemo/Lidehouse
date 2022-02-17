@@ -23,6 +23,13 @@ Template.Payment_view.viewmodel({
     const doc = this.reactiveDoc();
     return doc.lines?.length;
   },
+  allocations() {
+    const payment = this.reactiveDoc();
+    const allocationIds = payment.allocations;
+    const allocations = [];
+    allocationIds?.forEach(id => allocations.push(Transactions.findOne(id)));
+    return allocations;
+  },
   displayBill(bp) {
     const bill = Transactions.findOne(bp.id);
     return bill?.serialId;

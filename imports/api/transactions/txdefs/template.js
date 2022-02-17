@@ -33,12 +33,12 @@ export function defineTxdefTemplates() {
     credit: ['`38'],
   }, {
 //    Not really needed. When paying bills we always know what bills are we intending to pay
-//    name: 'Supplier payment identification', // 'Bejövő számla kifizetés azonosítása',
-//    category: 'identification',
-//    data: { relation: 'supplier' },
-//    debit: ['`454'],
-//    credit: ['`454'],
-//  }, {
+    name: 'Supplier payment identification', // 'Bejövő számla kifizetés azonosítása',
+    category: 'allocation',
+    data: { relation: 'supplier', autoPosting: true },
+    debit: ['`454'],
+    credit: ['`'],
+  }, {
     name: 'Supplier bill remission', // 'Bejövő számla elengedés',
     category: 'payment',
     data: { relation: 'supplier', remission: true },
@@ -57,12 +57,12 @@ export function defineTxdefTemplates() {
     debit: ['`38'],
     credit: ['`31', '`431'],
   }, {
-//    name: 'Customer payment identification', // 'Kimenő számla befolyás azonosítása',
-//    category: 'identification',
-//    data: { relation: 'customer' },
-//    debit: ['`31'],
-//    credit: ['`31'],
-//  }, {
+    name: 'Customer payment identification', // 'Kimenő számla befolyás azonosítása',
+    category: 'allocation',
+    data: { relation: 'customer', autoPosting: true },
+    debit: ['`'],
+    credit: ['`31'],
+  }, {
     name: 'Customer bill remission', // 'Kimenő számla elengedés',
     category: 'payment',
     data: { relation: 'customer', remission: true },
@@ -81,12 +81,12 @@ export function defineTxdefTemplates() {
     debit: ['`38', '`43'],
     credit: ['`33'],
   }, {
-//    name: 'Parcel payment identification', // 'Albetét befizetés azonosítása',
-//    category: 'identification',
-//    data: { relation: 'member' },
-//    debit: ['`33'],
-//    credit: ['`33'],
-//  }, {
+    name: 'Parcel payment identification', // 'Albetét befizetés azonosítása',
+    category: 'allocation',
+    data: { relation: 'member', autoPosting: true },
+    debit: ['`'],
+    credit: ['`33'],
+  }, {
     name: 'Parcel bill remission', // 'Albetét előírás elengedés',
     category: 'payment',
     data: { relation: 'member', remission: true },

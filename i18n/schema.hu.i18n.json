@@ -963,6 +963,7 @@
       "options": {
         "bill": "számla",
         "payment": "fizetés",
+        "allocation": "azonosítás-átvezetés",
         "remission": "elengedés",
         "receipt": "elszámolás",
         "transfer": "átvezetés számlák között",
