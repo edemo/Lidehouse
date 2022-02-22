@@ -86,8 +86,8 @@ Template.Payment_edit.events({
     }, 1000);
   },
   'click .js-create[data-entity="bill"]'(event, instance) {
-    const paymentDef = instance.data.doc.txdef();
-    const billDef = paymentDef.correspondingBillDef();
+    const payment = instance.data.doc;
+    const billDef = payment.correspondingBillTxdef();
     const doc = {
       relation: AutoForm.getFieldValue('relation'),
       partnerId: AutoForm.getFieldValue('partnerId'),

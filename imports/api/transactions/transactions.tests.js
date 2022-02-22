@@ -21,7 +21,7 @@ import { Partners } from '../partners/partners';
 if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
 
-  describe('transactions', function () {
+  describe.only('transactions', function () {
     this.timeout(350000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
@@ -92,7 +92,7 @@ if (Meteor.isServer) {
 
       it('AutoAllocates payment correctly - without rounding (Bank payAccount)', function () {
         bill = Transactions.findOne(billId);
-        const memberPaymentDef = Txdefs.findOne({ communityId: FixtureA.communityId, category: 'payment', 'data.relation': 'member' });
+        const memberPaymentDef = bill.correspondingPaymentTxdef();
         const bankAccount = Accounts.findOne({ communityId: FixtureA.communityId, category: 'bank' });
         payment = FixtureA.builder.build('payment', {
           defId: memberPaymentDef._id,
@@ -178,7 +178,7 @@ if (Meteor.isServer) {
 
       it('AutoAllocates payment correctly - with rounding (Cash payAccount)', function () {
         bill = Transactions.findOne(billId);
-        const memberPaymentDef = Txdefs.findOne({ communityId: FixtureA.communityId, category: 'payment', 'data.relation': 'member' });
+        const memberPaymentDef = bill.correspondingPaymentTxdef();
         const cashAccount = Accounts.findOne({ communityId: FixtureA.communityId, category: 'cash' });
         payment = FixtureA.builder.build('payment', {
           defId: memberPaymentDef._id,
@@ -257,7 +257,15 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Transactions.methods.remove, { _id: oldBillId });
       });
 
-      it('Modifying posted bill updates partner balances correctly', function () {
+      it('Cannot modify a bill that has payments', function () {
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+            $set: { 'lines.0.unitPrice': 500, 'lines.0.amount': 500, amount: 1500 },
+          } });
+        }, 'err_permissionDenied');
+      });
+
+      xit('Modifying posted bill updates partner balances correctly', function () {
         chai.assert.equal(bill.partner().balance(), -1300);
         chai.assert.equal(bill.partner().outstanding('customer'), 1300);
         chai.assert.equal(bill.contract().outstanding(), 1300);
@@ -617,6 +625,59 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 0);
 
         Transactions.remove({ partnerId: FixtureA.supplier, category: 'payment' });
+      });
+
+      it('Can create identication as Payment when there is overpayment from previous payments', function () {
+        const paymentId3 = FixtureA.builder.create('payment', {
+          bills: [{ id: billId, amount: 250 }],
+          lines: [{ account: '`431', amount: 100 }],
+          amount: 350,
+          partnerId: FixtureA.supplier,
+          valueDate: Clock.currentTime(),
+          payAccount: '`381' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId3 });
+        let payment3 = Transactions.findOne(paymentId3);
+        chai.assert.equal(payment3.debit[1].account, '`431');
+        chai.assert.equal(payment3.debit[1].amount, 100);
+        chai.assert.equal(payment3.credit[0].account, '`381');
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.outstanding, 50);
+        chai.assert.equal(payment3.outstanding, 100);
+        chai.assert.equal(payment3.partner().balance(), -50);
+        chai.assert.equal(payment3.contract().outstanding(), -50);
+        chai.assert.equal(bill.contractOutstandingWoThis(), -100);
+
+        const identificationDefId = bill.correspondingIdentificationTxdef();
+        const identificationId = FixtureA.builder.create('payment', {
+          defId: identificationDefId,
+          bills: [{ id: billId, amount: 50 }],
+          amount: 50,
+          partnerId: FixtureA.supplier,
+          valueDate: Clock.currentTime(),
+          payAccount: '`431' });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: identificationId });
+        const identification = Transactions.findOne(identificationId);
+        bill = Transactions.findOne(billId);
+        payment3 = Transactions.findOne(paymentId3);
+        chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(identification.debit[0].account, '`454');
+        chai.assert.equal(identification.debit[0].amount, 50);
+        chai.assert.equal(identification.credit[0].account, '`431');
+        chai.assert.equal(identification.credit[0].amount, 50);
+      });
+
+      it('Can not identify more from overpayment than the partner outstanding or the bill outstanding', function () {
+        const identificationDefId = bill.correspondingIdentificationTxdef();
+        chai.assert.throws(() => {
+          const identificationId = FixtureA.builder.create('payment', {
+            defId: identificationDefId,
+            bills: [{ id: billId, amount: 350 }],
+            amount: 350,
+            partnerId: FixtureA.supplier,
+            valueDate: Clock.currentTime(),
+            payAccount: '`431' });
+          FixtureA.builder.execute(Transactions.methods.post, { _id: identificationId });
+        });
       });
     });
 

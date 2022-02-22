@@ -15,13 +15,11 @@ import { equalWithinRounding } from '/imports/api/utils.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 
 export const Payments = {};
 
@@ -91,7 +89,6 @@ Payments.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);
 const extensionSchema = {
   valueDate: { type: Date }, // same as Tx, but we need the readonly added
   payAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
-  remission: { type: Boolean, optional: true },
 };
 _.each(extensionSchema, val => val.autoform = _.extend({}, val.autoform, { readonly() { return !!ModalStack.getVar('statementEntry'); } }));
 Payments.extensionSchema = new SimpleSchema(extensionSchema);
@@ -106,8 +103,15 @@ const paymentSchema = new SimpleSchema([
 ]);
 
 Transactions.categoryHelpers('payment', {
+  displayEntityName() {
+    const accounting = this.txdef().data.partnerAccounting;
+    return __(`schemaPayments.partnerAccounting.options.${accounting}`);
+  },
   getBills() {
     return (this.bills || []).filter(b => b); // nulls can be in the array, on the UI, when lines are deleted
+  },
+  getBillDocs() {
+    return this.getBills().map(bp => Transactions.findOne(bp.id));
   },
   getLines() {
     return (this.lines || []).filter(l => l);
@@ -143,6 +147,9 @@ Transactions.categoryHelpers('payment', {
     if (!this.payAccount) result = false;
     this.getLines().forEach(line => { if (line && !line.account) result = false; });
     return result;
+  },
+  correspondingBillTxdef() {
+    return Txdefs.findOne({ communityId: this.communityId, category: 'bill', 'data.relation': this.relation });
   },
   validate() {
     let billSum = 0;
@@ -312,11 +319,15 @@ Transactions.categoryHelpers('payment', {
     return legs;
   },
   makePartnerEntries() {
-    this.pEntries = [{
-      partner: this.partnerContractCode(),
-      side: this.relationSide(),
-      amount: this.amountWoRounding(),
-    }];
+    const partnerAccounting = this.txdef().data.partnerAccounting;
+    if (partnerAccounting === 'none') return {};
+    let side = this.relationSide();
+    let amount = this.amountWoRounding();
+    if (partnerAccounting === 'negative') {
+      side = Transactions.oppositeSide(side);
+      amount *= (-1);
+    }
+    this.pEntries = [{ partner: this.partnerContractCode(), side, amount }];
     return { pEntries: this.pEntries };
   },
   registerOnBill(billPaid, direction = +1) {

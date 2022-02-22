@@ -10,7 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
@@ -242,9 +242,16 @@ Transactions.categoryHelpers('bill', {
       this.lines = [{ title, quantity: 1, unitPrice: Math.abs(entry.amount) }];
     }
   },
+  correspondingPaymentTxdef() {
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.partnerAccounting': 'positive' });
+  },
+  correspondingIdentificationTxdef() {
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.partnerAccounting': 'none' });
+  },
+  correspondingRemissionTxdef() {
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.partnerAccounting': 'negative' });
+  },
   makeJournalEntries(accountingMethod) {
-//    const communityId = this.communityId;
-//    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });
     this.debit = [];
     this.credit = [];
     this.getLines().forEach(line => {
@@ -292,6 +299,9 @@ Transactions.categoryHelpers('bill', {
     const diff = moment().diff(this.dueDate, 'days');
     if (diff < 0) return 0;
     return diff;
+  },
+  contractOutstandingWoThis() {
+    return this.contract().outstanding() - this.outstanding;
   },
 });
 

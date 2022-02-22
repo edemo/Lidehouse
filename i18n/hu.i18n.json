@@ -238,6 +238,7 @@
   "apply": "kivetés",
   "registerPayment": "Fizetés rögzítése",
   "connectPayment": "Fizetés kapcsolása",
+  "registerIdentification": "Túlfizetésből rendezés",
   "registerRemission": "Elengedés",
   "remindOutstandings": "Hátralék emlékeztető küldés",
   "repost": "Újrakönyvelés",

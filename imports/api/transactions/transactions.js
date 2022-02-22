@@ -169,6 +169,9 @@ Transactions.helpers({
   entityName() {
     return this.category;
   },
+  displayEntityName() {
+    return this.entityName();    // Will be overridden for payment as it has different display types
+  },
   amountWoRounding() {
     return this.amount - (this.rounding || 0);
   },

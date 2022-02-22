@@ -742,7 +742,6 @@
       "options": {
         "bill": "bill",
         "payment": "payment",
-        "remission": "remission",
         "receipt": "receipt",
         "transfer": "transfer",
         "exchange": "exchange",
@@ -963,7 +962,6 @@
       "options": {
         "bill": "bill",
         "payment": "payment",
-        "remission": "remission",
         "receipt": "receipt",
         "transfer": "transfer between accounts",
         "exchange": "exchange between partners",
@@ -990,10 +988,19 @@
           "credit": "Követel"
         }
       },
-      "remission": {
-        "label": "Remission?",
-        "help": "Can be used if main category is payment."
-      }      
+      "partnerAccounting": {
+        "label": "Partner accounting",
+        "help": "Can be used if main category is payment.",
+        "options": {
+          "positive": "regular",
+          "none": "none",
+          "negative": "remission"
+        }
+      },
+      "autoPosting": {
+        "label": "Automatic posting",
+        "help": "Enable this, if you wish to automatcally post these kind of transactions when they are created."
+      }
     },
     "debit": {
       "label": "Debited",
@@ -1235,6 +1242,14 @@
     "outstanding": {
       "label": "Unreconciled amount",
       "placeholder": "(eg. 14560)"
+    },
+    "partnerAccounting": {
+      "label": "Partner accounting subtype",
+      "options": {
+        "positive": "payment",
+        "none": "identification from overpayment",
+        "negative": "remission"
+      }
     }
   },
   "schemaParcelBillings": {

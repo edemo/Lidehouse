@@ -916,6 +916,48 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 54,
+  name: 'Txdef partnerAccounting',
+  up() {
+    Txdefs.find({ category: 'payment' }).forEach(txdef => {
+      const value = txdef.data.remission ? 'negative': 'positive';
+      Txdefs.direct.update(txdef._id, { $set: { 'data.partnerAccounting': value }/*, $unset: { 'data.remission': '' } */});
+    });
+  },
+});
+/*
+Migrations.add({
+  version: 55,
+  name: 'Payments from overpayments into separate transactions',
+  up() {
+    Transactions.find({ category: 'payment' }).forEach(payment => {
+      payment.getBillDocs().forEach((bill, index) => {
+        if (bill.createdAt.getTime() > payment.createdAt.getTime()) {
+          const allBills = payment.getBills();
+          const olderBills = allBills.slice(0, index - 1);
+          const newerBills = allBills.slice(index);
+          let newerBillsAmount = 0;
+          newerBills.forEach(nB => { newerBillsAmount += nB.amount; });
+          const newLine = [{ account: '`431', amount: newerBillsAmount }];
+          Transactions.methods.reallocate(payment._id, { $set: { bills: olderBills, lines: newLine } });
+          newerBills.forEach(nB => {
+            const newBill = Transactions.findOne(nB.id);
+            Transactions.methods.insert({
+              category: payment,
+              defId: payment.correspondingIdentificationTxdef()._id,
+              valueDate: newBill.valueDate,
+              amount: nB.amount,
+              payAccount: '`431',
+              bills: [nB],
+            })
+          });
+        }
+      });
+    });
+  },
+});
+*/
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

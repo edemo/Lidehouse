@@ -742,7 +742,6 @@
       "options": {
         "bill": "számla",
         "payment": "fizetés",
-        "remission": "elengedés",
         "receipt": "elszámolás",
         "transfer": "átvezetés számlák között",
         "exchange": "átvezetés partnerek között",
@@ -963,7 +962,6 @@
       "options": {
         "bill": "számla",
         "payment": "fizetés",
-        "remission": "elengedés",
         "receipt": "elszámolás",
         "transfer": "átvezetés számlák között",
         "exchange": "átvezetés partnerek között",
@@ -992,10 +990,19 @@
           "credit": "Követel"
         }
       },
-      "remission": {
-        "label": "Elengedés?",
-        "help": "Akkor szükséges ha a főtípus fizetés."
-      }      
+      "partnerAccounting": {
+        "label": "Parter folyószámla könyvelése",
+        "help": "Akkor szükséges ha a főtípus Fizetés.",
+        "options": {
+          "positive": "hagyományos",
+          "none": "nincs (belső)",
+          "negative": "elengedés"
+        }
+      },
+      "autoPosting": {
+        "label": "Automatikus könyvelésbe küldés",
+        "help": "Kapcsolja be, ha a tranzakciókat a létrehozáskor automatikusan szeretné könyvelésbe is küldeni."
+      }
     },
     "debit": {
       "label": "Tartozik",
@@ -1240,6 +1247,14 @@
     "outstanding": {
       "label": "Egyeztetendő",
       "placeholder": "(pl. 14560)"
+    },
+    "partnerAccounting": {
+      "label": "Partner könyvelési altípus",
+      "options": {
+        "positive": "fizetés",
+        "none": "túlfizetésből beazonosítás",
+        "negative": "elengedés"
+      }
     }
   },
   "schemaParcelBillings": {

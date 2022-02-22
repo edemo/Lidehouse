@@ -30,10 +30,17 @@ Txdefs.clone = function clone(name, communityId) {
   return Txdefs.insert(doc);
 };
 
+Txdefs.accoutingValues = [
+  'positive',   // partner is credited
+  'none',  // no partner accounting needed, just internal accounting done
+  'negative', // partner is debited
+];
+
 Txdefs.dataSchema = new SimpleSchema({
   relation: { type: String, allowedValues: Relations.values, optional: true  },  // for bill, payment
   side: { type: String, allowedValues: ['debit', 'credit'], optional: true  },   // for opening, closing
-  remission: { type: Boolean, optional: true  },                                 // for payment
+  partnerAccounting: { type: String, allowedValues: Txdefs.accoutingValues, defaultValue: 'positive' }, // for payment
+  autoPosting: { type: Boolean, optional: true },
 });
 
 Txdefs.schema = new SimpleSchema({
@@ -67,16 +74,16 @@ Txdefs.helpers({
     return 'txdef';
   },
   isAutoPosting() {
-    return false;
+    return !!this.data?.autoPosting;
   },
   isAccountantTx() {
     return !_.contains(['bill', 'payment', 'receipt'], this.category);
   },
   isReconciledTx() {
-    if (this.category === 'payment') {
-      return !this.data.remission; // && _.contains(this.community().billsUsed, this.data.relation);
-    }
-    return _.contains(['receipt', 'transfer'], this.category);
+    return this.touches('`38');
+  },
+  touches(accountCode) {
+    return _.contains(this.debit, accountCode) || _.contains(this.credit, accountCode);
   },
   conteerSide() {
     if (this.data?.side) return this.data.side;  // opening, closing txs
@@ -122,7 +129,7 @@ Txdefs.helpers({
   },
   correspondingPaymentDef() {
     debugAssert(this.category === 'bill');
-    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.data.relation });
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.data.relation, 'data.partnerAccounting': 'positive' });
   },
 });
 

@@ -98,7 +98,7 @@ Template.Accounting_reconciliation.viewmodel({
 });
 
 Template.Accounting_reconciliation.events({
-  'click .js-edit'(event, instance) {
+  'click .recognition .js-edit'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     const recognition = Recognitions.findOne({ communityId });
     Recognitions.actions.edit({}, recognition).run(event, instance);
