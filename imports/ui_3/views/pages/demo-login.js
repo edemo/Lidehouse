@@ -15,9 +15,9 @@ function promoFloatIn(promo) {
 }
 
 Template.Demo_login.onRendered(function onRendered() {
-  const lang = FlowRouter.getQueryParam('lang');
+  const lang = FlowRouter.getQueryParam('lang') || 'hu';
   const promo = FlowRouter.getQueryParam('promo');
-  Meteor.call('createDemoUserWithParcel', lang, function (error, result) {
+  Meteor.apply('createDemoUserWithParcel', [lang], { noRetry: false }, function (error, result) {
     if (error) displayError(error);
     else {
       Meteor.loginWithPassword(result, 'password', function (error) {
