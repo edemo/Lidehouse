@@ -932,28 +932,31 @@ Migrations.add({
   name: 'Payments from overpayments into separate transactions',
   up() {
     Transactions.find({ category: 'payment' }).forEach(payment => {
+      const olderBills = [];
+      const newerBills = [];
       payment.getBillDocs().forEach((bill, index) => {
-        if (bill.createdAt.getTime() > payment.createdAt.getTime()) {
-          const allBills = payment.getBills();
-          const olderBills = allBills.slice(0, index - 1);
-          const newerBills = allBills.slice(index);
-          let newerBillsAmount = 0;
-          newerBills.forEach(nB => { newerBillsAmount += nB.amount; });
-          const newLine = [{ account: '`431', amount: newerBillsAmount }];
-          Transactions.methods.reallocate(payment._id, { $set: { bills: olderBills, lines: newLine } });
-          newerBills.forEach(nB => {
-            const newBill = Transactions.findOne(nB.id);
-            Transactions.methods.insert({
-              category: payment,
-              defId: payment.correspondingIdentificationTxdef()._id,
-              valueDate: newBill.valueDate,
-              amount: nB.amount,
-              payAccount: '`431',
-              bills: [nB],
-            })
-          });
-        }
+        if (bill.issueDate.getTime() > payment.valueDate.getTime()) newerBills.push(bill);
+        else olderBills.push(bill);
       });
+      const preservedLines = [];
+      payment.getLines().forEach(line => {
+        const billDef = payment.correspondingBillTxdef();
+        if (!_.contains(billDef[billDef.conteerSide()], line.account)) preservedLines.push(line);
+      });
+      if (newerBills.length) {
+        Transactions.methods.reallocate(payment._id, { $set: { bills: olderBills, lines: preservedLines } });
+        newerBills.forEach(nB => {
+          const newBill = Transactions.findOne(nB.id);
+          Transactions.methods.insert({
+            category: payment,
+            defId: payment.correspondingIdentificationTxdef()._id,
+            valueDate: newBill.valueDate,
+            amount: nB.amount,
+            payAccount: '`431',
+            bills: [nB],
+          })
+        });
+      }
     });
   },
 });
