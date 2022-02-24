@@ -113,15 +113,16 @@
         </button>
     </div>
 
-    {{#if billsView}}
     <table class="table invoice-total">
         <tbody>
+        {{#if billsView}}
         <tr>
             <td><strong>{{_ 'Allocated to bills'}} :</strong></td>
             <td class="nowrap">{{displayMoney afDoc.allocatedToBills}}</td>
         </tr>
+        {{/if}}
         <tr>
-            <td><strong>{{_ 'Allocated to no bills'}} :</strong></td>
+            <td><strong>{{_ 'schemaPayments.lines.label'}} :</strong></td>
             <td class="nowrap">{{displayMoney afDoc.allocatedToNonBills}}</td>
         </tr>
         {{#if cashPayAccount}}
@@ -130,9 +131,12 @@
             <td class="nowrap">{{displayMoney afDoc.rounding}}</td>
         </tr>
         {{/if}}
+        <tr>
+            <td><strong>{{_ 'Unidentified'}} :</strong></td>
+            <td class="nowrap">{{displayMoney afDoc.outstanding}}</td>
+        </tr>
         </tbody>
     </table>
-    {{/if}}
 
     <div class="well m-t">
         {{> afQuickField name="notes"}}

@@ -122,10 +122,6 @@ Transactions.categoryHelpers('payment', {
   billCount() {
     return this.getBills().length;
   },
-  calculateOutstanding() {
-    if (this.status === 'void') return 0;
-    return this.amountWoRounding() - this.allocatedToBills();
-  },
   allocatedToBills() {
     let allocated = 0;
     this.getBills().forEach(bill => allocated += bill.amount);
@@ -140,7 +136,11 @@ Transactions.categoryHelpers('payment', {
     return this.allocatedToBills() + this.allocatedToNonBills();
   },
   unallocated() {
-    return this.amount - this.allocatedSomewhere();
+    return this.amountWoRounding() - this.allocatedSomewhere();
+  },
+  calculateOutstanding() {
+    if (this.status === 'void') return 0;
+    return this.unallocated();
   },
   hasConteerData() {
     let result = true;
@@ -184,9 +184,9 @@ Transactions.categoryHelpers('payment', {
     if ((this.amount >= 0 && lineSum > this.amount) || (this.amount <= 0 && lineSum < this.amount)) {
       throw new Meteor.Error('err_sanityCheckFailed', "Lines amounts cannot exceed payment's amount", `${lineSum} - ${this.amount}`);
     }
-    if (this.amountWoRounding() !== lineSum + billSum) {
-      throw new Meteor.Error('err_notAllowed', 'Payment has to be fully allocated', { unallocated: this.unallocated() });
-    }
+//    if (this.amountWoRounding() < lineSum + billSum) {
+//      throw new Meteor.Error('err_notAllowed', 'Payment outstanding cannot go below zero', { unallocated: this.unallocated() });
+//    }
     const connectedBillIds = _.pluck(this.getBills(), 'id');
     if (connectedBillIds.length !== _.uniq(connectedBillIds).length) {
       throw new Meteor.Error('err_notAllowed', 'Same bill may not be selected multiple times', `connectedBillIds: ${connectedBillIds}`);
@@ -227,16 +227,13 @@ Transactions.categoryHelpers('payment', {
       if (line.amount && line.amount < amountToAllocate) {
         amountToAllocate -= line.amount;
         return true;
-      } else {
+      } else if (!_.contains(this.community().settings.paymentsToBills, this.relation)) {
         line.amount = amountToAllocate;
         amountToAllocate = 0;
         return false;
       }
     });
-    if (amountToAllocate) {
-      if (this.lines?.length) (_.last(this.lines)).amount += amountToAllocate;
-      else this.lines = [{ amount: amountToAllocate }];
-    }
+    this.outstanding = this.calculateOutstanding();
   },
   fillFromStatementEntry(entry) {
     this.amount = entry.unreconciledAmount() * this.relationSign();
@@ -307,12 +304,27 @@ Transactions.categoryHelpers('payment', {
     this.getLines().forEach(line => {
       if (unallocatedAmount === 0) return false;
       debugAssert(unallocatedAmount < 0 === line.amount < 0, 'All lines must have the same sign');
-      const amount = Math.smallerInAbs(line.amount, unallocatedAmount);
-      this.makeEntry(this.conteerSide(), { amount, account: line.account, localizer: line.localizer, parcelId: line.parcelId });
-      unallocatedAmount -= amount;
+      const newEntry = { amount: line.amount, localizer: line.localizer, parcelId: line.parcelId };
+      this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
+      if (accountingMethod === 'cash') {
+        const technicalAccount = Accounts.toTechnicalCode(line.account);
+        const billDef = this.correspondingBillTxdef();
+        let relationAccount = _.first(billDef[this.relationSide()]);
+        let digit;
+        billDef[this.conteerSide()].forEach(code => {
+          if (line.account.startsWith(code)) {
+            digit = line.account.replace(code, '');
+          }
+        });
+        relationAccount += digit;
+        this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, newEntry));
+        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry));
+      }
+      unallocatedAmount -= line.amount;
     });
-    if (unallocatedAmount) { // still has remainder
-      throw new Meteor.Error('err_notAllowed', 'Payment accounting can only be done, when all amount is allocated');
+    if (unallocatedAmount) { // still has remainder, that goes as unidentified
+      const unidentifiedAccount = this.txdef().unidentifiedAccount();
+      this.makeEntry(this.conteerSide(), { amount: unallocatedAmount, account: unidentifiedAccount });
     }
     if (this.rounding) this.makeEntry(this.conteerSide(), { amount: this.rounding, account: '`99' });
     const legs = { debit: this.debit, credit: this.credit };

@@ -1009,6 +1009,16 @@
     "credit": {
       "label": "Credited",
       "placeholder": ""
+    },
+    "debit_unidentified": {
+      "label": "Unidentified debit",
+      "help": "For payments only. Unidentified part of the debit can be accounted here.",
+      "placeholder": ""
+    },
+    "credit_unidentified": {
+      "label": "Unidentified credit",
+      "help": "For payments only. Unidentified part of the credit can be accounted here.",
+      "placeholder": ""
     }
   },
   "schemaPartners": {

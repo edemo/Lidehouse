@@ -595,6 +595,7 @@
   "Send to accouting" : "Könyvelésbe küldés",
   "Allocated to bills": "Számlákhoz egyeztetve",
   "Allocated to no bills": "Számlákhoz nem egyeztetve",
+  "Unidentified": "Beazonosítatlan",
   "Unallocated": "Könyvelésre vár",
   "Reconciled": "Egyeztetett",
   "Paid": "Rendezett",

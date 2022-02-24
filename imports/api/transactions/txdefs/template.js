@@ -28,19 +28,25 @@ export function defineTxdefTemplates() {
   }, {
     name: 'Supplier payment', // 'Szállító számla kifizetése',
     category: 'payment',
-    data: { relation: 'supplier' },
-    debit: ['`434', '`454'],
+    data: { relation: 'supplier', partnerAccounting: 'positive' },
+    debit: ['`454'], debit_unidentified: ['`434'],
     credit: ['`38'],
   }, {
     name: 'Supplier payment identification', // 'Szállító kifizetés azonosítás',
     category: 'payment',
-    data: { relation: 'supplier', accounting: 'none', autoPosting: true },
+    data: { relation: 'supplier', partnerAccounting: 'positive' },
+    debit: ['`454'],
+    credit: ['`434'],
+  }, {
+    name: 'Supplier overpayment identification', // 'Szállító túlfizetés azonosítás',
+    category: 'payment',
+    data: { relation: 'supplier', partnerAccounting: 'none', autoPosting: true  },
     debit: ['`454'],
     credit: ['`434'],
   }, {
     name: 'Supplier bill remission', // 'Szállító számla elengedés',
     category: 'payment',
-    data: { relation: 'supplier', accounting: 'negative' },
+    data: { relation: 'supplier', partnerAccounting: 'negative' },
     debit: ['`454'],
     credit: ['`1', '`5', '`8'],
   }, {
@@ -52,25 +58,25 @@ export function defineTxdefTemplates() {
   }, {
     name: 'Customer payment', // 'Vevő befizetés',
     category: 'payment',
-    data: { relation: 'customer' },
+    data: { relation: 'customer', partnerAccounting: 'positive' },
     debit: ['`38'],
-    credit: ['`431', '`31'],
+    credit: ['`31'], credit_unidentified: ['`431'],
   }, {
     name: 'Customer payment identification', // 'Vevő befizetés azonosítás',
     category: 'payment',
-    data: { relation: 'customer' },
+    data: { relation: 'customer', partnerAccounting: 'positive' },
     debit: ['`431'],
     credit: ['`31'],
   }, {
     name: 'Customer overpayment identification', // 'Vevő túlfizetés azonosítás',
     category: 'payment',
-    data: { relation: 'customer', accounting: 'none', autoPosting: true },
+    data: { relation: 'customer', partnerAccounting: 'none', autoPosting: true },
     debit: ['`431'],
     credit: ['`31'],
   }, {
     name: 'Customer bill remission', // 'Vevő számla elengedés',
     category: 'payment',
-    data: { relation: 'customer', accounting: 'negative' },
+    data: { relation: 'customer', partnerAccounting: 'negative' },
     debit: ['`9'],
     credit: ['`31'],
   }, {
@@ -82,25 +88,25 @@ export function defineTxdefTemplates() {
   }, {
     name: 'Parcel payment', // 'Albetét befizetés',
     category: 'payment',
-    data: { relation: 'member' },
+    data: { relation: 'member', partnerAccounting: 'positive' },
     debit: ['`38'],
-    credit: ['`431', '`33'],
+    credit: ['`33'], credit_unidentified: ['`431'],
   }, {
     name: 'Parcel payment identification', // 'Albetét befizetés azonosítás',
     category: 'payment',
-    data: { relation: 'member' },
+    data: { relation: 'member', partnerAccounting: 'positive' },
     debit: ['`431'],
     credit: ['`33'],
   }, {
     name: 'Parcel overpayment identification', // 'Albetét túlfizetés azonosítás',
     category: 'payment',
-    data: { relation: 'member', accounting: 'none', autoPosting: true },
+    data: { relation: 'member', partnerAccounting: 'none', autoPosting: true },
     debit: ['`431'],
     credit: ['`33'],
   }, {
     name: 'Parcel bill remission', // 'Albetét előírás elengedés',
     category: 'payment',
-    data: { relation: 'member', accounting: 'negative' },
+    data: { relation: 'member', partnerAccounting: 'negative' },
     debit: ['`95'],
     credit: ['`33'],
   }, {

@@ -39,7 +39,7 @@ Txdefs.accoutingValues = [
 Txdefs.dataSchema = new SimpleSchema({
   relation: { type: String, allowedValues: Relations.values, optional: true  },  // for bill, payment
   side: { type: String, allowedValues: ['debit', 'credit'], optional: true  },   // for opening, closing
-  partnerAccounting: { type: String, allowedValues: Txdefs.accoutingValues, defaultValue: 'positive' }, // for payment
+  partnerAccounting: { type: String, allowedValues: Txdefs.accoutingValues, optional: true }, // for payment
   autoPosting: { type: Boolean, optional: true },
 });
 
@@ -50,6 +50,8 @@ Txdefs.schema = new SimpleSchema({
   data: { type: Txdefs.dataSchema, optional: true },
   debit: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
   credit: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
+  debit_unidentified: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
+  credit_unidentified: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
 });
 
 Meteor.startup(function indexTxdefs() {
@@ -91,6 +93,12 @@ Txdefs.helpers({
     if (relation === 'supplier') return 'debit';
     if (relation === 'customer' || relation === 'member') return 'credit';
     return undefined;
+  },
+  unidentifiedAccount() {
+    debugAssert(this.category === 'payment');
+    const uniKey = `${this.conteerSide()}_unidentified`;
+    debugAssert(this[uniKey].length === 1);
+    return _.first(this[uniKey]);
   },
   conteerCodes(sideParam) {
 //    Log.debug('conteerCodes');

@@ -1011,6 +1011,16 @@
     "credit": {
       "label": "Követel",
       "placeholder": ""
+    },
+    "debit_unidentified": {
+      "label": "Beazonosítatlan Tartozik",
+      "help": "Csak Fizetés esetén szükséges. Ami nem beazonosítható összeg, az erre a T számlára kerülhet.",
+      "placeholder": ""
+    },
+    "credit_unidentified": {
+      "label": "Beazonosítatlan Követel",
+      "help": "Csak Fizetés esetén szükséges. Ami nem beazonosítható összeg, az erre a K számlára kerülhet.",
+      "placeholder": ""
     }
   },
   "schemaPartners": {

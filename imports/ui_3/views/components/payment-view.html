@@ -77,9 +77,9 @@
             <td class="nowrap">{{displayMoney rDoc.rounding}}</td>
         </tr>
         {{/if}}
-        {{#if (and showBills showLines) }}
+        {{#if rDoc.outstanding}}
         <tr>
-            <td><strong>{{_ 'Overpayment'}} :</strong></td>
+            <td><strong>{{_ 'Unidentified'}} :</strong></td>
             <td class="nowrap">{{displayMoney rDoc.outstanding}}</td>
         </tr>
         {{/if}}
