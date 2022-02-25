@@ -16,6 +16,6 @@ Meteor.call = function callWoRetry(name, ...args) {
 
 Meteor._origApply = Meteor.apply;
 Meteor.apply = function applyWoRetry(name, args, options, asyncCallback) {
-  const optionsWoRetry = _.extend(options, { noRetry: true });
+  const optionsWoRetry = _.extend({ noRetry: true }, options);
   return Meteor._origApply(name, args, optionsWoRetry, asyncCallback);
 };
