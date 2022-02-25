@@ -184,9 +184,10 @@ Transactions.categoryHelpers('payment', {
     if ((this.amount >= 0 && lineSum > this.amount) || (this.amount <= 0 && lineSum < this.amount)) {
       throw new Meteor.Error('err_sanityCheckFailed', "Lines amounts cannot exceed payment's amount", `${lineSum} - ${this.amount}`);
     }
-//    if (this.amountWoRounding() < lineSum + billSum) {
-//      throw new Meteor.Error('err_notAllowed', 'Payment outstanding cannot go below zero', { unallocated: this.unallocated() });
-//    }
+    if (this.unallocated() !== 0 && (Math.abs(this.unallocated()) > Math.abs(this.amount)
+      || Math.sign(this.amountWoRounding()) !== Math.sign(this.unallocated()))) {
+      throw new Meteor.Error('err_notAllowed', 'Remainder should not be a supplement', { unallocated: this.unallocated() });
+    }
     const connectedBillIds = _.pluck(this.getBills(), 'id');
     if (connectedBillIds.length !== _.uniq(connectedBillIds).length) {
       throw new Meteor.Error('err_notAllowed', 'Same bill may not be selected multiple times', `connectedBillIds: ${connectedBillIds}`);

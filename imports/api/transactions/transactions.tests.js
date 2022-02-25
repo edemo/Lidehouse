@@ -21,7 +21,7 @@ import { Partners } from '../partners/partners';
 if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
 
-  describe.only('transactions', function () {
+  describe('transactions', function () {
     this.timeout(350000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
@@ -113,8 +113,8 @@ if (Meteor.isServer) {
         chai.assert.equal(payment.bills.length, 1);
         chai.assert.equal(payment.bills[0].id, billId);
         chai.assert.equal(payment.bills[0].amount, bill.amount);
-        chai.assert.equal(payment.lines.length, 1);
-        chai.assert.equal(payment.lines[0].amount, 2);
+        chai.assert.equal(payment.lines, undefined);
+        chai.assert.equal(payment.outstanding, 2);
         chai.assert.isUndefined(payment.rounding);
 
         paymentId = FixtureA.builder.execute(Transactions.methods.insert, payment);
@@ -627,17 +627,17 @@ if (Meteor.isServer) {
         Transactions.remove({ partnerId: FixtureA.supplier, category: 'payment' });
       });
 
-      it('Can create identication as Payment when there is overpayment from previous payments', function () {
+      it('Can create identification as Payment when there is overpayment from previous payments', function () {
         const paymentId3 = FixtureA.builder.create('payment', {
           bills: [{ id: billId, amount: 250 }],
-          lines: [{ account: '`431', amount: 100 }],
+          // lines: [{ account: '`431', amount: 100 }], // remainder is unallocated, will be put to 431 account automatically
           amount: 350,
           partnerId: FixtureA.supplier,
           valueDate: Clock.currentTime(),
           payAccount: '`381' });
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId3 });
         let payment3 = Transactions.findOne(paymentId3);
-        chai.assert.equal(payment3.debit[1].account, '`431');
+        chai.assert.equal(payment3.debit[1].account, Txdefs.findOne(payment3.defId).unidentifiedAccount());
         chai.assert.equal(payment3.debit[1].amount, 100);
         chai.assert.equal(payment3.credit[0].account, '`381');
         bill = Transactions.findOne(billId);
@@ -647,7 +647,7 @@ if (Meteor.isServer) {
         chai.assert.equal(payment3.contract().outstanding(), -50);
         chai.assert.equal(bill.contractOutstandingWoThis(), -100);
 
-        const identificationDefId = bill.correspondingIdentificationTxdef();
+        const identificationDefId = bill.correspondingIdentificationTxdef()._id;
         const identificationId = FixtureA.builder.create('payment', {
           defId: identificationDefId,
           bills: [{ id: billId, amount: 50 }],
@@ -664,20 +664,21 @@ if (Meteor.isServer) {
         chai.assert.equal(identification.debit[0].amount, 50);
         chai.assert.equal(identification.credit[0].account, '`431');
         chai.assert.equal(identification.credit[0].amount, 50);
+
+        Transactions.remove({ partnerId: FixtureA.supplier, category: 'payment' });
       });
 
-      it('Can not identify more from overpayment than the partner outstanding or the bill outstanding', function () {
-        const identificationDefId = bill.correspondingIdentificationTxdef();
+      it('Can not identify more from overpayment than the bill outstanding', function () {
+        const identificationDefId = bill.correspondingIdentificationTxdef()._id;
         chai.assert.throws(() => {
-          const identificationId = FixtureA.builder.create('payment', {
+          FixtureA.builder.create('payment', {
             defId: identificationDefId,
             bills: [{ id: billId, amount: 350 }],
             amount: 350,
             partnerId: FixtureA.supplier,
             valueDate: Clock.currentTime(),
             payAccount: '`431' });
-          FixtureA.builder.execute(Transactions.methods.post, { _id: identificationId });
-        });
+        }, 'err_sanityCheckFailed');
       });
     });
 
@@ -1281,7 +1282,7 @@ if (Meteor.isServer) {
             { amount: 80, account: '`3324', localizer, parcelId }]);
         });
 
-        it('throws for non allocated remainder ', function () {
+        xit('throws for non allocated remainder ', function () { // now remainder goes to unidentified account as outstanding
           const billId = createBill([billLinePos1, billLinePos2]);
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
           chai.assert.throws(() => {
@@ -1421,6 +1422,7 @@ if (Meteor.isServer) {
               { amount: 1000, account: '`381' },
               { amount: 300, account: '`0951', localizer, parcelId },
               { amount: 250, account: '`09524', localizer, parcelId },
+              { amount: 450, account: '`0952', localizer, parcelId },
             ]);
             chai.assert.deepEqual(payment.credit, [
               { amount: 300, account: '`331', localizer, parcelId },
@@ -1428,6 +1430,7 @@ if (Meteor.isServer) {
               { amount: 250, account: '`3324', localizer, parcelId },
               { amount: 250, account: '`9524', localizer, parcelId },
               { amount: 450, account: '`952', localizer, parcelId },
+              { amount: 450, account: '`332', localizer, parcelId },
             ]);
           });
         });
