@@ -19,7 +19,6 @@ Accounts.mainCategoryValues = ['asset', 'liability', 'equity', 'income', 'expens
 Accounts.simpleCategoryValues = Accounts.mainCategoryValues.concat(['payable', 'receivable']);
 Accounts.categoryValues = Accounts.mainCategoryValues.concat(['payable', 'receivable', 'cash', 'bank']);
 Accounts.syncValues = ['none', 'manual', 'auto'];
-Accounts.toLocalize = '`33';  // This account's balances will be stored for each localizer
 
 Accounts.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
@@ -172,6 +171,30 @@ _.extend(Accounts, {
       return options;
     },
     firstOption: () => __('(Select one)'),
+  },
+  toLocalize(communityId) {  // These accounts' balances will be stored for each localization tag
+    const result = [];
+    const Txdefs = Mongo.Collection.get('txdefs');
+    Txdefs.find({ communityId, category: 'bill' }).forEach(billDef => {
+      const codes = billDef[billDef.relationSide()];
+      if (codes) result.push(...codes);
+    });
+    Txdefs.find({ communityId, category: 'payment' }).forEach(paymentDef => {
+      const codes = paymentDef[`${paymentDef.conteerSide()}_unidentified`];
+      if (codes) result.push(...codes);
+    });
+    return result;
+  },
+  needsLocalization(code, communityId) {
+    let result = false;
+    const accountsToLocalize = Accounts.toLocalize(communityId);
+    accountsToLocalize.forEach(c => {
+      if (code.startsWith(c)) {
+        result = true;
+        return false;
+      }
+    });
+    return result;
   },
 });
 

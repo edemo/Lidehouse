@@ -84,7 +84,7 @@ const lineSchema = {
   amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
-Payments.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);
+Payments.lineSchema = new SimpleSchema([LocationTagsSchema, lineSchema]);
 
 const extensionSchema = {
   valueDate: { type: Date }, // same as Tx, but we need the readonly added
@@ -104,8 +104,8 @@ const paymentSchema = new SimpleSchema([
 
 Transactions.categoryHelpers('payment', {
   displayEntityName() {
-    const accounting = this.txdef().data.partnerAccounting;
-    return __(`schemaPayments.partnerAccounting.options.${accounting}`);
+    const accounting = this.txdef().data.paymentSubType;
+    return __(`schemaPayments.paymentSubType.options.${accounting}`);
   },
   getBills() {
     return (this.bills || []).filter(b => b); // nulls can be in the array, on the UI, when lines are deleted
@@ -228,7 +228,7 @@ Transactions.categoryHelpers('payment', {
       if (line.amount && line.amount < amountToAllocate) {
         amountToAllocate -= line.amount;
         return true;
-      } else if (!_.contains(this.community().settings.paymentsToBills, this.relation)) {
+      } else if (line.amount > amountToAllocate || !_.contains(this.community().settings.paymentsToBills, this.relation)) {
         line.amount = amountToAllocate;
         amountToAllocate = 0;
         return false;
@@ -245,7 +245,7 @@ Transactions.categoryHelpers('payment', {
     this.debit = [];
     this.credit = [];
     let unallocatedAmount = this.amountWoRounding();
-    this.makeEntry(this.relationSide(), { amount: this.amount, account: this.payAccount });
+    this.makeEntry(this.relationSide(), { amount: this.amount, account: this.payAccount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined });
     this.getBills().forEach(billPaid => {
       if (unallocatedAmount === 0) return false;
       const bill = Transactions.findOne(billPaid.id);
@@ -253,7 +253,7 @@ Transactions.categoryHelpers('payment', {
       debugAssert(billPaid.amount < 0 === bill.amount < 0, 'Bill amount and its payment must have the same sign');
       const makeEntries = function makeEntries(line, amount) {
         const relationAccount = bill.lineRelationAccount(line);
-        const newEntry = { amount, localizer: line.localizer, parcelId: line.parcelId };
+        const newEntry = { amount, partner: this.partnerContractCode(), localizer: line.localizer, parcelId: line.parcelId };
         this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry));
         if (accountingMethod === 'cash') {
           const technicalAccount = Accounts.toTechnicalCode(line.account);
@@ -305,7 +305,7 @@ Transactions.categoryHelpers('payment', {
     this.getLines().forEach(line => {
       if (unallocatedAmount === 0) return false;
       debugAssert(unallocatedAmount < 0 === line.amount < 0, 'All lines must have the same sign');
-      const newEntry = { amount: line.amount, localizer: line.localizer, parcelId: line.parcelId };
+      const newEntry = { amount: line.amount, partner: this.partnerContractCode(), localizer: line.localizer, parcelId: line.parcelId };
       this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
       if (accountingMethod === 'cash') {
         const technicalAccount = Accounts.toTechnicalCode(line.account);
@@ -325,23 +325,12 @@ Transactions.categoryHelpers('payment', {
     });
     if (unallocatedAmount) { // still has remainder, that goes as unidentified
       const unidentifiedAccount = this.txdef().unidentifiedAccount();
-      this.makeEntry(this.conteerSide(), { amount: unallocatedAmount, account: unidentifiedAccount });
+      const newEntry = { account: unidentifiedAccount, amount: unallocatedAmount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined };
+      this.makeEntry(this.conteerSide(), newEntry);
     }
     if (this.rounding) this.makeEntry(this.conteerSide(), { amount: this.rounding, account: '`99' });
     const legs = { debit: this.debit, credit: this.credit };
     return legs;
-  },
-  makePartnerEntries() {
-    const partnerAccounting = this.txdef().data.partnerAccounting;
-    if (partnerAccounting === 'none') return {};
-    let side = this.relationSide();
-    let amount = this.amountWoRounding();
-    if (partnerAccounting === 'negative') {
-      side = Transactions.oppositeSide(side);
-      amount *= (-1);
-    }
-    this.pEntries = [{ partner: this.partnerContractCode(), side, amount }];
-    return { pEntries: this.pEntries };
   },
   registerOnBill(billPaid, direction = +1) {
     const bill = Transactions.findOne(billPaid.id);

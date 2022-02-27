@@ -242,7 +242,7 @@ Transactions.actions = {
     label: 'registerPayment',
     icon: 'fa fa-credit-card',
     color: 'info',
-    visible: doc.community().settings.paymentsWoStatement && doc?.category === 'bill' && doc.outstanding && doc.contractOutstandingWoThis() >= 0
+    visible: doc.community().settings.paymentsWoStatement && doc?.category === 'bill' && doc.outstanding && !(doc.availableAmountFromOverPayment() > 0)
       && user.hasPermission('transactions.insert', doc),
     run() {
       ModalStack.setVar('billId', doc._id);
@@ -286,10 +286,10 @@ Transactions.actions = {
     label: 'registerIdentification',
     icon: 'fa fa-arrow-circle-left',
     color: 'warning',
-    visible: doc && doc.isPosted() && doc.category === 'bill' && doc.outstanding && doc.contractOutstandingWoThis() < 0 && user.hasPermission('transactions.update', doc),
+    visible: doc && doc.isPosted() && doc.category === 'bill' && doc.outstanding && doc.availableAmountFromOverPayment() > 0 && user.hasPermission('transactions.update', doc),
     run() {
       ModalStack.setVar('billId', doc._id);
-      const overpayment = doc.contractOutstandingWoThis() * (-1);
+      const overpayment = doc.availableAmountFromOverPayment();
       debugAssert(overpayment > 0, 'Can only use this action when there is overpayment on this partner contract');
       const paymentDef = doc.correspondingIdentificationTxdef();
       const paymentOptions = _.extend({}, options, { entity: Transactions.entities.payment, txdef: paymentDef });

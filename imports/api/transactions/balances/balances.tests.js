@@ -21,7 +21,7 @@ if (Meteor.isServer) {
     before(function () {
       Fixture = freshFixture();
       originalAccountToLocalize = Accounts.toLocalize;
-      Accounts.toLocalize = '`1';
+      Accounts.toLocalize = () => ['`1'];
       Templates.remove({});
       Accounts.remove({});
       Transactions.remove({});
@@ -278,24 +278,22 @@ if (Meteor.isServer) {
 
       it('calculates closing values right for partners', function () {
         function insertPartnerBill(params) {
-          const billId = Fixture.builder.create('bill', {
-            relation: 'customer',
+          const txId = Fixture.builder.create('freeTx', {
             communityId: Fixture.demoCommunityId,
-            partnerId: params.partnerId,
-            contractId: params.contractId,
-            relationAccount: '`12',
-            issueDate: new Date(params.date),
-            deliveryDate: new Date(params.date),
-            dueDate: new Date(params.date),
-            lines: [{
-              title: 'Work 1',
-              uom: 'piece',
-              quantity: 1,
-              unitPrice: params.amount,
+            defId: Txdefs.findOne({ communityId: Fixture.demoCommunityId, category: 'freeTx' })._id,
+            valueDate: new Date(params.date),
+            amount: params.amount,
+            debit: [{
+              amount: params.amount,
+              account: '`12',
+            }],
+            credit: [{
+              amount: params.amount,
               account: '`19',
+              partner: Partners.code(params.partnerId, params.contractId),
             }],
           });
-          Transactions.methods.post._execute({ userId: Fixture.demoAccountantId }, { _id: billId });
+          Transactions.methods.post._execute({ userId: Fixture.demoAccountantId }, { _id: txId });
         }
         function assertPartnerBalance(partner, tag, expectedBalance) {
           const balance = Balances.get({

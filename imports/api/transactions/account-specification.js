@@ -5,15 +5,14 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 export const LocationTagsSchema = new SimpleSchema({
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  partner: { type: String /* partnerContract code */, optional: true, autoform: { omit: true } },
+  localizer: { type: String /* account code */, autoform: { ...Parcels.chooseNode }, optional: true },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
-export const AccountSchema = new SimpleSchema([{
+export const AccountSchema = new SimpleSchema({
   account: { type: String /* account code */, autoform: { ...Accounts.chooseNode }, optional: true },
-  localizer: { type: String /* account code */, autoform: { ...Parcels.chooseNode }, optional: true },
-}, LocationTagsSchema]);
+});
 
 export class AccountSpecification {
   constructor(communityId, accountCode, localizerCode) {

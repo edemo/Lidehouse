@@ -30,16 +30,16 @@ Txdefs.clone = function clone(name, communityId) {
   return Txdefs.insert(doc);
 };
 
-Txdefs.accoutingValues = [
-  'positive',   // partner is credited
-  'none',  // no partner accounting needed, just internal accounting done
-  'negative', // partner is debited
+Txdefs.paymentSubtypeValues = [
+  'payment',   // partner is credited
+  'identification',  // no partner accounting needed, just internal accounting done
+  'remission', // partner is debited
 ];
 
 Txdefs.dataSchema = new SimpleSchema({
   relation: { type: String, allowedValues: Relations.values, optional: true  },  // for bill, payment
   side: { type: String, allowedValues: ['debit', 'credit'], optional: true  },   // for opening, closing
-  partnerAccounting: { type: String, allowedValues: Txdefs.accoutingValues, optional: true }, // for payment
+  paymentSubType: { type: String, allowedValues: Txdefs.paymentSubtypeValues, optional: true }, // for payment
   autoPosting: { type: Boolean, optional: true },
 });
 
@@ -94,6 +94,13 @@ Txdefs.helpers({
     if (relation === 'customer' || relation === 'member') return 'credit';
     return undefined;
   },
+  relationSide() {
+    debugAssert(!this.data?.side && this.data.relation);
+    const relation = this.data.relation;        // bill, payment, receipt txs
+    if (relation === 'supplier') return 'credit';
+    if (relation === 'customer' || relation === 'member') return 'debit';
+    return undefined;
+  },
   unidentifiedAccount() {
     debugAssert(this.category === 'payment');
     const uniKey = `${this.conteerSide()}_unidentified`;
@@ -137,7 +144,7 @@ Txdefs.helpers({
   },
   correspondingPaymentDef() {
     debugAssert(this.category === 'bill');
-    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.data.relation, 'data.partnerAccounting': 'positive' });
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.data.relation, 'data.paymentSubType': 'payment' });
   },
 });
 

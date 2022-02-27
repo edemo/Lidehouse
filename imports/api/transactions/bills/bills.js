@@ -233,7 +233,7 @@ Transactions.categoryHelpers('bill', {
     return account;
   },
   fillFromStatementEntry(entry) {
-    this.amount = entry.amount * Relations.sign(this.relation);
+    this.amount = entry.amount * this.relationSign();
     this.issueDate = entry.valueDate;
     this.deliveryDate = entry.valueDate;
     this.dueDate = entry.valueDate;
@@ -243,19 +243,19 @@ Transactions.categoryHelpers('bill', {
     }
   },
   correspondingPaymentTxdef() {
-    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.partnerAccounting': 'positive' });
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'payment' });
   },
   correspondingIdentificationTxdef() {
-    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.partnerAccounting': 'none' });
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'identification' });
   },
   correspondingRemissionTxdef() {
-    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.partnerAccounting': 'negative' });
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'remission' });
   },
   makeJournalEntries(accountingMethod) {
     this.debit = [];
     this.credit = [];
     this.getLines().forEach(line => {
-      const newEntry = { amount: line.amount, localizer: line.localizer, parcelId: line.parcelId };
+      const newEntry = { amount: line.amount, partner: this.partnerContractCode(), localizer: line.localizer, parcelId: line.parcelId };
       if (accountingMethod === 'accrual') {
         this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
       } else if (accountingMethod === 'cash') {
@@ -266,14 +266,6 @@ Transactions.categoryHelpers('bill', {
       this.makeEntry(this.relationSide(), _.extend({ account: relationAccount }, newEntry));
     });
     return { debit: this.debit, credit: this.credit };
-  },
-  makePartnerEntries() {
-    this.pEntries = [{
-      partner: this.partnerContractCode(),
-      side: this.conteerSide(),
-      amount: this.amount,
-    }];
-    return { pEntries: this.pEntries };
   },
   hasConteerData() {
     let result = true;
@@ -300,8 +292,14 @@ Transactions.categoryHelpers('bill', {
     if (diff < 0) return 0;
     return diff;
   },
-  contractOutstandingWoThis() {
-    return this.contract().outstanding() - this.outstanding;
+  availableAmountFromOverPayment() {
+    let result = 0;
+    const def = this.correspondingIdentificationTxdef();
+    def[def.relationSide()].forEach(account => {
+      result += this.contract().outstanding(account);
+    });
+    result *= (-1); // Outstanding means underpayment, so Overpayment is the opposite of it
+    return result;
   },
 });
 

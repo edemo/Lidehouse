@@ -322,7 +322,7 @@ export const recognize = new ValidatedMethod({
     const contract = partner.contracts(relation)?.[0];
     const adjustedEntryAmount = entry.amount * Relations.sign(relation);
     const matchingBills = Transactions.find({ communityId, category: 'bill', relation, partnerId: partner._id, outstanding: { $ne: 0 } }, { sort: { issueDate: 1 } }).fetch();
-    const paymentDef = Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': relation, 'data.partnerAccounting': 'positive' });
+    const paymentDef = Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': relation, 'data.paymentSubType': 'payment' });
     debugAssert(paymentDef.touches('`38')); // Identification is also a payment, but that touches 431
     const tx = {
       communityId,

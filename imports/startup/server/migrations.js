@@ -918,11 +918,11 @@ Migrations.add({
 
 Migrations.add({
   version: 54,
-  name: 'Txdef partnerAccounting',
+  name: 'Txdef paymentSubType',
   up() {
     Txdefs.find({ category: 'payment' }).forEach(txdef => {
-      const value = txdef.data.remission ? 'negative': 'positive';
-      Txdefs.direct.update(txdef._id, { $set: { 'data.partnerAccounting': value }/*, $unset: { 'data.remission': '' } */});
+      const value = txdef.data.remission ? 'remission': 'payment';
+      Txdefs.direct.update(txdef._id, { $set: { 'data.paymentSubType': value }/*, $unset: { 'data.remission': '' } */});
     });
   },
 });
@@ -960,7 +960,19 @@ Migrations.add({
     });
   },
 });
+
+Migrations.add({
+  version: 56,
+  name: 'Remove partner entries',
+  up() {
+    Transactions.find({ pEntries: { $exists: true } }).forEach(tx => {
+      Transactions.methods.post._execute({ userId: tx.community().admin()._id }, { _id: tx._id });
+    });
+    Balances.ensureAllCorrect();
+  },
+});
 */
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {

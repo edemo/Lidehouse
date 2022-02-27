@@ -45,7 +45,7 @@ Balances.helpers({
     periodTag = periodTag.join('-');
     return new Period(periodTag);
   },
-  total() {
+  total() { // It returns the debit balance. Which is from the company's asset sheet's perspective
     return this.debit - this.credit;
   },
   debitSum() {
@@ -107,6 +107,7 @@ Balances.get = function get(def, balanceType) {
 
 Balances.getPeriodTraffic = function getPeriodTraffic(def) {
   Balances.defSchema.validate(def);
+//  console.log("Lookin for Balance", def);
   let result = _.extend({ debit: 0, credit: 0 }, def);
 
 //  This version is slower in gathering sub-accounts first,
@@ -127,10 +128,13 @@ Balances.getPeriodTraffic = function getPeriodTraffic(def) {
   });*/
 
   Balances.find(subdefSelector(def)).forEach((balance) => {
+//    console.log("Adding balance", balance);
     result.debit += balance.debit;
     result.credit += balance.credit;
   });
   result = Balances._transform(result);
+//  console.log("Resulting balance", result);
+
   return result;
 };
 
@@ -256,6 +260,5 @@ Balances.ensureAllCorrect = function ensureAllCorrect() {
   Transactions.find({}).forEach((tx, index) => {
     if (index % 100 === 0) Log.info('Rebalanced txs', index);
     tx.updateBalances(+1);
-    tx.updatePartnerBalances(+1);
   });
 };
