@@ -245,6 +245,11 @@ Contracts.partnerContractOptions = function partnerContractOptions(selector) {
   return options;
 };
 
+Contracts.partnerContractOptionsWithAll = function partnerContractOptionsWithAll(selector) {
+  const options = [{ label: __('All'), value: '' }].concat(Contracts.partnerContractOptions(selector));
+  return options;
+};
+
 export const choosePartnerContract = {
   options() {
     const communityId = ModalStack.getVar('communityId');

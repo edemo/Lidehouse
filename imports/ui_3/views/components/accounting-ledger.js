@@ -40,6 +40,9 @@ Template.Accounting_ledger.viewmodel({
   localizerOptions() {
     return Parcels.nodeOptionsOf(this.communityId(), '');
   },
+  partnerContractOptions() {
+    return Contracts.partnerContractOptionsWithAll({ communityId: this.communityId });
+  },
   contracts() {
     return Contracts.find({ communityId: this.communityId(), relation: 'member' }).fetch();
   },

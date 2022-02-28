@@ -2,10 +2,11 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { __ } from '/imports/localization/i18n.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { choosePartnerContract } from '/imports/api/contracts/contracts.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 export const LocationTagsSchema = new SimpleSchema({
-  partner: { type: String /* partnerContract code */, optional: true, autoform: { omit: true } },
+  partner: { type: String /* partnerContract code */, autoform: { ...choosePartnerContract }, optional: true },
   localizer: { type: String /* account code */, autoform: { ...Parcels.chooseNode }, optional: true },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
