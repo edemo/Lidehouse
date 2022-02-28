@@ -274,10 +274,9 @@ Transactions.helpers({
     return entries.map(entry => {
       const self = this;
       entry.tx = () => self;
-      if (!entry.amount) {
-        console.log("No amount on je", this);
-        entry.amount = this.amount;
-      }
+      entry.communityId = this.communityId;
+      entry.valueDate = this.valueDate;
+      if (!entry.amount) entry.amount = this.amount;
       return JournalEntries._transform(entry);
     });
   },
@@ -365,10 +364,6 @@ Transactions.attachBaseSchema(Transactions.baseSchema);
 Transactions.attachBehaviour(Noted);
 Transactions.attachBehaviour(Timestamped);
 Transactions.attachBehaviour(SerialId(['category', 'relation', 'side']));
-
-Transactions.attachVariantSchema(undefined, { selector: { category: 'freeTx' } });
-
-Transactions.simpleSchema({ category: 'freeTx' }).i18n('schemaTransactions');
 
 // --- Before/after actions ---
 
