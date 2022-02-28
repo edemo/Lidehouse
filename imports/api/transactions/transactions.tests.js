@@ -1466,5 +1466,40 @@ if (Meteor.isServer) {
         });
       });
     });
+
+    describe('Other transaction types', function () {
+
+      describe('Free tx', function () {
+        let txId;
+        before(function() {
+          txId = FixtureA.builder.create('freeTx', {
+            amount: 1000,
+            debit: [{
+              account: '`33',
+              localizer: '@',
+              partner: FixtureA.supplier,
+            }, {
+              account: '`951',
+              localizer: '@',
+              partner: FixtureA.supplier,
+            }],
+          });
+        });
+
+        after(function () {
+          Transactions.remove(txId);
+        });
+
+        it('Posting removes localization tags from journals where not needed', function () {
+          FixtureA.builder.execute(Transactions.methods.post, { _id: txId });
+          const tx = Transactions.findOne(txId);
+          console.log('tx', tx);
+          chai.assert.isDefined(tx.debit[0].localizer);
+          chai.assert.isDefined(tx.debit[0].partner);
+          chai.assert.isUndefined(tx.credit[0].localizer);
+          chai.assert.isUndefined(tx.credit[0].partner);
+        });
+      });
+    });
   });
 }

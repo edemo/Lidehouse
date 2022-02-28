@@ -476,13 +476,6 @@ Factory.define('transaction', Transactions, {
   credit: [],
 });
 
-Factory.define('freeTx', Transactions, {
-  valueDate: () => Clock.currentDate(),
-  category: 'freeTx',
-  debit: [],
-  credit: [],
-});
-
 // ------------------- Publications utility
 
 function withSubs(code) {

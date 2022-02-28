@@ -968,10 +968,23 @@ Migrations.add({
     Transactions.find({ pEntries: { $exists: true } }).forEach(tx => {
       Transactions.methods.post._execute({ userId: tx.community().admin()._id }, { _id: tx._id });
     });
-    Balances.ensureAllCorrect();
   },
 });
+
+Migrations.add({
+  version: 57,
+  name: 'Ensure freeTxs have amounts on all journal entries',
+  up() {
+    Transactions.find({ category: 'freeTx' }).forEach(tx => {
+      if (tx.isPosted()) {
+        Transactions.methods.post._execute({ userId: tx.community().admin()._id }, { _id: tx._id });
+      }
+    });
+  },
+});
+
 */
+
 
 // Use only direct db operations to avoid unnecessary hooks!
 

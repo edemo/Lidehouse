@@ -6,3 +6,4 @@ import './receipt.js';
 import './transfer.js';
 import './exchange.js';
 import './barter.js';
+import './free-tx.js';
