@@ -35,6 +35,7 @@ import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Clock } from '/imports/utils/clock';
 import { CommunityBuilder, DemoCommunityBuilder } from './community-builder.js';
+import { Txdefs } from '../api/transactions/txdefs/txdefs.js';
 
 const statusChange = Topics.methods.statusChange;
 
@@ -1060,8 +1061,9 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
     builder.create('transfer', {
+      defId: Txdefs.getByName('Money transfer', communityId)._id,
       valueDate: Date.newUTC(`${lastYear}-${mm}-01`),
-      amount: 100000,  
+      amount: 100000,
       fromAccount: '`382',
       toAccount: '`384',
     });

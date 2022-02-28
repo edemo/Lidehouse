@@ -299,7 +299,7 @@ export const recognize = new ValidatedMethod({
         const tx = {
           communityId,
           category: 'transfer',
-          defId: Txdefs.findOne({ communityId, category: 'transfer' })._id,
+          defId: Txdefs.getByName('Money transfer', communityId)._id,
           valueDate: entry.valueDate,
           amount: Math.abs(entry.amount),
         };

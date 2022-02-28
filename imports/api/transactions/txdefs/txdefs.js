@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { __ } from '/imports/localization/i18n.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -145,6 +146,15 @@ Txdefs.helpers({
   correspondingPaymentDef() {
     debugAssert(this.category === 'bill');
     return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.data.relation, 'data.paymentSubType': 'payment' });
+  },
+});
+
+_.extend(Txdefs, {
+  getByCode(code, communityId = getActiveCommunityId()) {
+    return Txdefs.find({ communityId, $or: [{ debit: code }, { credit: code }] });
+  },
+  getByName(name, communityId = getActiveCommunityId()) {
+    return Txdefs.findOne({ communityId, name });
   },
 });
 
