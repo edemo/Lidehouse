@@ -926,9 +926,18 @@ Migrations.add({
     });
   },
 });
-/*
+
 Migrations.add({
   version: 55,
+  name: 'enableMeterEstimationDays',
+  up() {
+    Communities.direct.update({}, { $set: { 'settings.enableMeterEstimationDays': 30 } }, { multi: true });
+  },
+});
+
+/*
+Migrations.add({
+  version: 56,
   name: 'Payments from overpayments into separate transactions',
   up() {
     Transactions.find({ category: 'payment' }).forEach(payment => {
@@ -962,7 +971,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 56,
+  version: 57,
   name: 'Remove partner entries',
   up() {
     Transactions.find({ pEntries: { $exists: true } }).forEach(tx => {
@@ -972,7 +981,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 57,
+  version: 58,
   name: 'Ensure freeTxs have amounts on all journal entries',
   up() {
     Transactions.find({ category: 'freeTx' }).forEach(tx => {

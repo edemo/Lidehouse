@@ -66,6 +66,9 @@ Meteor.startup(function indexParcels() {
 });
 
 Meters.helpers({
+  community() {
+    return Communities.findOne(this.communityId);
+  },
   parcel() {
     const Parcels = Mongo.Collection.get('parcels');
     return Parcels.findOne(this.parcelId);
@@ -135,7 +138,8 @@ Meters.helpers({
       debugAssert(usageDays > 0, 'Reading dates have to monotonically increase');
       const usage = lastReading.value - previousReading.value;
       const elapsedDays = moment(date).diff(moment(lastReading.date), 'days');
-      if (elapsedDays <= 5 || usage < 0) estimatedConsumption = 0;
+      const daysAfterWhichWeEstimate = this.community().settings.enableMeterEstimationDays;
+      if (elapsedDays <= daysAfterWhichWeEstimate || usage < 0) estimatedConsumption = 0;
       else estimatedConsumption = (usage / usageDays) * elapsedDays;
     }
     return lastReading.value + estimatedConsumption;
