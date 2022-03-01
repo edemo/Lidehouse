@@ -845,16 +845,16 @@
       "label": "Customer bill being bartered"
     },
     "fromAccount": {
-      "label": "Moving from (Cr)"
+      "label": "Transfering from (Cr)"
     },
     "toAccount": {
-      "label": "Moving to (Dr)"
+      "label": "Transfering to (Dr)"
     },
     "fromPartner": {
-      "label": "Moving from (Cr)"
+      "label": "Sending from partner (Cr)"
     },
     "toPartner": {
-      "label": "Moving to (Dr)"
+      "label": "Receiving partner (Dr)"
     },
     "side": {
       "label": "Side",
@@ -864,7 +864,8 @@
       }
     },
     "account": {
-      "label": "Account"
+      "label": "Account",
+      "help": "Account under which the trasaction takes place"
     },
     "relationAccount": {
       "label": "Account"

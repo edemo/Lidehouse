@@ -851,10 +851,11 @@
       "label": "Átvezetés ide (T)"
     },
     "fromPartner": {
-      "label": "Átvezetés innen (K)"
+      "label": "Küldő partner (K)",
+      "help": "Hagyja kitöltetlenül, ha azt szeretné hogy beazonosítatlan pénzt rendeljen a Fogadó partnerhez"
     },
     "toPartner": {
-      "label": "Átvezetés ide (T)"
+      "label": "Fogadó partner (T)"
     },
     "side": {
       "label": "Oldal",
@@ -864,7 +865,8 @@
       }
     },
     "account": {
-      "label": "Főkönyvi számla"
+      "label": "Főkönyvi számla",
+      "help": "Főkönyvi számla, amin a tranzakció megtörténik"
     },
     "relationAccount": {
       "label": "Könyvelési számla"
@@ -1088,9 +1090,9 @@
     "relation": {
       "label": "Oldal",
       "options": {
-        "supplier": "Bejövő számla",
-        "customer": "Kimenő számla",
-        "member": "Előírás"
+        "supplier": "Szállító számla",
+        "customer": "Vevő számla",
+        "member": "Albetét előírás"
       }
     },
     "issueDate": {

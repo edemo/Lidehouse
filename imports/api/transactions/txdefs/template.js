@@ -155,6 +155,8 @@ export function defineTxdefTemplates() {
   }, */ {
     name: 'Partner exchange', // 'Partnerek közötti átvezetés',
     category: 'exchange',
+    debit: ['`454', '`31', '`33', '`431', '`434'],
+    credit: ['`454', '`31', '`33', '`431', '`434'],
   }, {
     name: 'Barter', // 'Albetét előírás elengedés',
     category: 'barter',
@@ -188,7 +190,7 @@ export function defineTxdefTemplates() {
     debit: ['`4', '`9'],
     credit: ['`492'],
   }, {
-    name: 'Accounting operation', // 'Könyvelési művelet',
+    name: 'Accounting operation', // 'Vegyes könyvelési művelet',
     category: 'freeTx',
     debit: ['`'],
     credit: ['`'],
