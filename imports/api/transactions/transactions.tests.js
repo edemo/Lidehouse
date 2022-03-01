@@ -1477,11 +1477,11 @@ if (Meteor.isServer) {
             debit: [{
               account: '`33',
               localizer: '@',
-              partner: FixtureA.supplier,
+              partner: FixtureA.customer,
             }, {
               account: '`951',
               localizer: '@',
-              partner: FixtureA.supplier,
+              partner: FixtureA.customer,
             }],
           });
         });
@@ -1490,14 +1490,27 @@ if (Meteor.isServer) {
           Transactions.remove(txId);
         });
 
+        it('Unposted freeTx does not affect balances', function () {
+          const partner = Partners.findOne(FixtureA.customer);
+          chai.assert.equal(partner.balance(), 0);
+        });
+
         it('Posting removes localization tags from journals where not needed', function () {
           FixtureA.builder.execute(Transactions.methods.post, { _id: txId });
           const tx = Transactions.findOne(txId);
-          console.log('tx', tx);
           chai.assert.isDefined(tx.debit[0].localizer);
           chai.assert.isDefined(tx.debit[0].partner);
           chai.assert.isUndefined(tx.credit[0].localizer);
           chai.assert.isUndefined(tx.credit[0].partner);
+
+          const partner = Partners.findOne(FixtureA.customer);
+          chai.assert.equal(partner.balance(), -1000);
+        });
+
+        it('Amount is autofilled on journal entries', function () {
+          const tx = Transactions.findOne(txId);
+          chai.assert.equal(tx.debit[0].amount, 1000);
+          chai.assert.equal(tx.credit[0].amount, 1000);
         });
       });
     });
