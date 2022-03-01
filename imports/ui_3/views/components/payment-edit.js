@@ -19,6 +19,8 @@ import './payment-edit.html';
 
 Template.Payment_edit.viewmodel({
   billsView: false,
+  linesView: false,
+  payAccountNeeded: false,
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = getActiveCommunityId();
@@ -27,7 +29,10 @@ Template.Payment_edit.viewmodel({
     });
     const community = getActiveCommunity();
     const doc = this.templateInstance.data.doc;
-    this.billsView(!!doc.bills?.length || _.contains(community.settings.paymentsToBills, doc.relation));
+    const needToAllocateToBills = _.contains(community.settings.paymentsToBills, doc.relation);
+    this.billsView(!!doc.bills?.length || needToAllocateToBills);
+    this.linesView(doc.subType() !== 'remission' && !needToAllocateToBills);
+    this.payAccountNeeded(doc.subType() !== 'remission');
   },
   afDoc(formId) {
     const doc = Transactions._transform(AutoForm.getDoc(formId));
