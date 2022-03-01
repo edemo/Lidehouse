@@ -5,10 +5,10 @@
         {{> afQuickField name="communityId" type="hidden"}}
         {{> afQuickField name="category" type="hidden"}}
         {{> afQuickField name="defId" type="hidden"}}
-        {{> afQuickField name="relation" type="hidden"}}
         <!-- hidden, needed for autoform doc data -->
         <div class="col-sm-7">
             {{> afQuickField name="valueDate" defaultValue=defaultDate}}
+            {{> afQuickField name="account"}}
         </div>
         <div class="col-sm-5 pull-right">
             {{#if afDoc.serialId}}

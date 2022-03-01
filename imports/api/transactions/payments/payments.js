@@ -107,6 +107,9 @@ Transactions.categoryHelpers('payment', {
     const accounting = this.txdef().data.paymentSubType;
     return __(`schemaPayments.paymentSubType.options.${accounting}`);
   },
+  subType() {
+    return this.txdef().data.paymentSubType;
+  },
   getBills() {
     return (this.bills || []).filter(b => b); // nulls can be in the array, on the UI, when lines are deleted
   },
@@ -154,6 +157,9 @@ Transactions.categoryHelpers('payment', {
   validate() {
     let billSum = 0;
     const payment = this;
+    if (this.subType() === 'identification' && this.amount > this.contract().outstanding(this.payAccount) * -1) {
+      throw new Meteor.Error('err_notAllowed', 'Identification cannot identify larger amount than what is available on the pay account for this partner/contract', `${billSum} - ${this.amount}`);
+    }
     this.getBills().forEach(pb => {
       const bill = Transactions.findOne(pb.id);
       function checkBillMatches(field) {
@@ -174,6 +180,9 @@ Transactions.categoryHelpers('payment', {
     if ((this.amount >= 0 && billSum > this.amount) || (this.amount <= 0 && billSum < this.amount)) {
       throw new Meteor.Error('err_sanityCheckFailed', "Bills' amounts cannot exceed payment's amount", `${billSum} - ${this.amount}`);
     }
+    if (this.subType() === 'remission' && billSum !== this.amount) {
+      throw new Meteor.Error('err_sanityCheckFailed', 'Remission has to be fully allocated to bills', `${billSum} - ${this.amount}`);
+    }
     let lineSum = 0;
     const lineValues = [];
     this.getLines().forEach(line => {
@@ -184,9 +193,14 @@ Transactions.categoryHelpers('payment', {
     if ((this.amount >= 0 && lineSum > this.amount) || (this.amount <= 0 && lineSum < this.amount)) {
       throw new Meteor.Error('err_sanityCheckFailed', "Lines amounts cannot exceed payment's amount", `${lineSum} - ${this.amount}`);
     }
-    if (this.unallocated() !== 0 && (Math.abs(this.unallocated()) > Math.abs(this.amount)
-      || Math.sign(this.amountWoRounding()) !== Math.sign(this.unallocated()))) {
-      throw new Meteor.Error('err_notAllowed', 'Remainder should not be a supplement', { unallocated: this.unallocated() });
+    if (this.unallocated() !== 0) {
+      if (Math.abs(this.unallocated()) > Math.abs(this.amount)
+        || Math.sign(this.amountWoRounding()) !== Math.sign(this.unallocated())) {
+        throw new Meteor.Error('err_notAllowed', 'Remainder should not be a supplement', { unallocated: this.unallocated() });
+      }
+      if (this.subType() === 'identification') {
+        throw new Meteor.Error('err_notAllowed', 'Identification should not have an unindentified amount', { unallocated: this.unallocated() });
+      }
     }
     const connectedBillIds = _.pluck(this.getBills(), 'id');
     if (connectedBillIds.length !== _.uniq(connectedBillIds).length) {
@@ -245,7 +259,9 @@ Transactions.categoryHelpers('payment', {
     this.debit = [];
     this.credit = [];
     let unallocatedAmount = this.amountWoRounding();
-    this.makeEntry(this.relationSide(), { amount: this.amount, account: this.payAccount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined });
+    if (this.subType() !== 'remission') {
+      this.makeEntry(this.relationSide(), { amount: this.amount, account: this.payAccount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined });
+    }
     this.getBills().forEach(billPaid => {
       if (unallocatedAmount === 0) return false;
       const bill = Transactions.findOne(billPaid.id);
@@ -255,10 +271,15 @@ Transactions.categoryHelpers('payment', {
         const relationAccount = bill.lineRelationAccount(line);
         const newEntry = { amount, partner: this.partnerContractCode(), localizer: line.localizer, parcelId: line.parcelId };
         this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry));
+        if (this.subType() === 'remission') {
+          this.makeEntry(this.relationSide(), _.extend({ account: line.account }, newEntry));
+        }
         if (accountingMethod === 'cash') {
           const technicalAccount = Accounts.toTechnicalCode(line.account);
           this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, newEntry));
-          this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
+          if (this.subType() !== 'remission') {
+            this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
+          }
         }
       };
 

@@ -128,6 +128,10 @@ export const CondominiumTranslation = {
             "supplier": "Suppliers",
             "member": "Owners"
           }
+        },
+        "enableMeterEstimationDays": {
+          "label": "Enable meter estimation after (days)",
+          "help": "If there was no reading registered with meter within this many days, before a billing takes place, then the system will estimate the reading for the bill. Eg. if you put 30 here, then any meters that have not been read within a month will estimate their reading, and those that have reading will use the reading. Use 0 to always use estimation, use a very large number if you never wish to use an estimation."
         }
       }
     },
@@ -378,6 +382,10 @@ export const CondominiumTranslation = {
             "supplier": "Szállítóknál",
             "member": "Tulajdonosoknál"
           }
+        },
+        "enableMeterEstimationDays": {
+          "label": "Becsült óraállás használata ennyi nap után",
+          "help": "Ha az előírás napjához képest ennyi napon belül, nem volt előtte leolvasás, akkor a rendszer becsült értékkel fog dolgozni. Például ha itt 30 van megadva, akkor minden mérőóra ami az elmúlt 30 napban le volt olvasva, az a leolvasott állással számlázódik, amik pedig nem voltak leolvasva, azok megbecsült óraállással számlázódnak. Írjon ide 0-t ha mindig szeretne becsülni, ha pedig soha, akkor egy nagyon nagy számot"
         }
       }
     },

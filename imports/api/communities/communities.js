@@ -33,6 +33,7 @@ Communities.settingsSchema = new SimpleSchema({
   paymentsToBills: { type: [String], allowedValues: Relations.values, defaultValue: Relations.mainValues, autoform: { type: 'select-checkbox-inline' } },
   paymentsWoStatement: { type: Boolean, optional: true },
   subjectToVat: { type: Boolean, optional: true },
+  enableMeterEstimationDays: { type: Number, defaultValue: 30 },
 });
 
 Communities.schema = new SimpleSchema([{

@@ -85,9 +85,9 @@ Template.Partner_history.viewmodel({
     const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
     let total = result.beginBalance;
     const txsWithRunningTotal = txs.map(tx => {
-      const contractAmount = tx.getContractAmount(contract);
-      total += contractAmount;
-      return _.extend(tx, { contractAmount, total });
+      const effectiveAmount = tx.getContractAmount(contract) * (-1);
+      total += effectiveAmount;
+      return _.extend(tx, { effectiveAmount, total });
     });
     result.transactions = txsWithRunningTotal.reverse();
     result.predecessor = contract?.predecessor();

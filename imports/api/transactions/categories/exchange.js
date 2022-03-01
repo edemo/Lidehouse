@@ -13,19 +13,19 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 
 const exchangeSchema = new SimpleSchema({
-  account: { type: String, optional: true, autoform: chooseConteerAccount(true) },
+  account: { type: String, optional: true, autoform: chooseConteerAccount('debit') },
 //  toPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
 //  toContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  toPartner: { type: String, autoform: { ...choosePartnerContract } },
+  toPartner: { type: String, optional: true, autoform: { ...choosePartnerContract } },
 //  fromPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
 //  fromContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  fromPartner: { type: String, autoform: { ...choosePartnerContract } },
+  fromPartner: { type: String, optional: true, autoform: { ...choosePartnerContract } },
 });
 
 Transactions.categoryHelpers('exchange', {
   makeJournalEntries(accountingMethod) {
-    this.makeEntry('debit', { amount: this.amount, account: this.account, partner: this.fromPartner, side: 'credit' });
-    this.makeEntry('credit', { amount: this.amount, account: this.account, partner: this.toPartner, side: 'debit' });
+    this.debit = [{ amount: this.amount, account: this.account, partner: this.fromPartner }];
+    this.credit = [{ amount: this.amount, account: this.account, partner: this.toPartner }];
     return { debit: this.debit, credit: this.credit };
   },
 });
