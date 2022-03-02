@@ -21,7 +21,7 @@ import { Partners } from '../partners/partners';
 if (Meteor.isServer) {
   let FixtureA; // Fixture with accrual accouting
 
-  describe('transactions', function () {
+  describe.only('transactions', function () {
     this.timeout(350000);
     before(function () {
       FixtureA = freshFixture();
@@ -682,7 +682,8 @@ if (Meteor.isServer) {
         chai.assert.equal(payment3.contract().outstanding('`434'), -30);
         chai.assert.equal(bill.availableAmountFromOverPayment(), 30);
 
-        Transactions.remove({ partnerId: FixtureA.supplier, category: 'payment' });
+        // Removing only the identification, so we leave a partially paid bill for the next test
+        Transactions.remove({ partnerId: FixtureA.supplier, category: 'payment', payAccount: '`434' });
       });
 
       it('Can not identify more from overpayment than the bill outstanding', function () {
@@ -691,11 +692,55 @@ if (Meteor.isServer) {
           FixtureA.builder.create('payment', {
             defId: identificationDefId,
             bills: [{ id: billId, amount: 350 }],
-            amount: 350,
+            amount: 60,
             partnerId: FixtureA.supplier,
             valueDate: Clock.currentTime(),
             payAccount: '`431' });
         }, 'err_sanityCheckFailed');
+      });
+
+      it('Can not identify more from overpayment than whats available on the partner contract', function () {
+        const identificationDefId = bill.correspondingIdentificationTxdef()._id;
+        chai.assert.throws(() => {
+          FixtureA.builder.create('payment', {
+            defId: identificationDefId,
+            bills: [{ id: billId, amount: 350 }],
+            amount: 35,
+            partnerId: FixtureA.supplier,
+            valueDate: Clock.currentTime(),
+            payAccount: '`431' });
+        }, 'err_notAllowed');
+      });
+
+      it('Can remission a partially paid bill ', function () {
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.outstanding, 50);
+        chai.assert.equal(bill.contract().outstanding(), -30);
+        const remissionDefId = bill.correspondingRemissionTxdef()._id;
+        const remissionId = FixtureA.builder.create('payment', {
+          defId: remissionDefId,
+          bills: [{ id: billId, amount: 50 }],
+          amount: 50,
+          partnerId: FixtureA.supplier,
+          valueDate: Clock.currentTime(),
+          // no payAccount
+        });
+        FixtureA.builder.execute(Transactions.methods.post, { _id: remissionId });
+        const remission = Transactions.findOne(remissionId);
+        bill = Transactions.findOne(billId);
+        const locationTags = { localizer: '@', partner: bill.partnerContractCode() };
+        chai.assert.deepEqual(bill.debit, [
+          { amount: 300, account: '`861' }]);
+        chai.assert.deepEqual(bill.credit, [
+          { amount: 300, account: '`454', ...locationTags }]);
+        chai.assert.deepEqual(remission.debit, [
+          { amount: 50, account: '`454', ...locationTags }]);
+        chai.assert.deepEqual(remission.credit, [
+          { amount: 50, account: '`861' }]);
+        chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(bill.contract().outstanding(), -80);
+
+        Transactions.remove({ partnerId: FixtureA.supplier, category: 'payment' });
       });
     });
 
