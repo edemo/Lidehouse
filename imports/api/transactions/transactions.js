@@ -535,11 +535,12 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
 };
 
 JournalEntries.makeFilterSelector = function makeFilterSelector(params) {
-  const selector = _.clone(params);
+  let selector = _.clone(params);
   selector.valueDate = dateSelector(params.begin, params.end);
   delete selector.begin; delete selector.end;
   delete selector.localizer;
   if (params.account) selector.account = withSubs(params.account);
   if (params.localizer) selector.localizer = withSubs(params.localizer);
+  selector = Object.cleanEmptyStrings(selector);
   return Object.cleanUndefined(selector);
 };
