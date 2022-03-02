@@ -259,8 +259,10 @@ Transactions.categoryHelpers('payment', {
     this.debit = [];
     this.credit = [];
     let unallocatedAmount = this.amountWoRounding();
+    const subTxEntry = (accountingMethod === 'cash') ? { subTx: 1 } : {};
     if (this.subType() !== 'remission') {
-      this.makeEntry(this.relationSide(), { amount: this.amount, account: this.payAccount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined });
+      const payEntry = { amount: this.amount, account: this.payAccount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined };
+      this.makeEntry(this.relationSide(), payEntry);
     }
     this.getBills().forEach(billPaid => {
       if (unallocatedAmount === 0) return false;
@@ -270,13 +272,13 @@ Transactions.categoryHelpers('payment', {
       const makeEntries = function makeEntries(line, amount) {
         const relationAccount = bill.lineRelationAccount(line);
         const newEntry = { amount, partner: this.partnerContractCode(), localizer: line.localizer, parcelId: line.parcelId };
-        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry));
+        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, _.extend({}, newEntry, subTxEntry)));
         if (this.subType() === 'remission') {
           this.makeEntry(this.relationSide(), _.extend({ account: line.account }, newEntry));
         }
         if (accountingMethod === 'cash') {
           const technicalAccount = Accounts.toTechnicalCode(line.account);
-          this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, newEntry));
+          this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, _.extend({}, newEntry, subTxEntry)));
           if (this.subType() !== 'remission') {
             this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
           }
@@ -339,8 +341,8 @@ Transactions.categoryHelpers('payment', {
           }
         });
         relationAccount += digit;
-        this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, newEntry));
-        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry));
+        this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, _.extend({}, newEntry, subTxEntry)));
+        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, _.extend({}, newEntry, subTxEntry)));
       }
       unallocatedAmount -= line.amount;
     });

@@ -21,7 +21,7 @@ import { Partners } from '../partners/partners';
 if (Meteor.isServer) {
   let FixtureA; // Fixture with accrual accouting
 
-  describe.only('transactions', function () {
+  describe('transactions', function () {
     this.timeout(350000);
     before(function () {
       FixtureA = freshFixture();
@@ -1402,13 +1402,13 @@ if (Meteor.isServer) {
           const payment = Transactions.findOne(paymentId);
           chai.assert.deepEqual(payment.debit, [
             { amount: 550, account: '`381' },
-            { amount: 300, account: '`0951' },
-            { amount: 250, account: '`09524' },
+            { amount: 300, account: '`0951', subTx: 1 },
+            { amount: 250, account: '`09524', subTx: 1 },
           ]);
           chai.assert.deepEqual(payment.credit, [
-            { amount: 300, account: '`331', ...locationTags },
+            { amount: 300, account: '`331', ...locationTags, subTx: 1 },
             { amount: 300, account: '`951' },
-            { amount: 250, account: '`3324', ...locationTags },
+            { amount: 250, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 250, account: '`9524' },
           ]);
         });
@@ -1440,16 +1440,16 @@ if (Meteor.isServer) {
           const payment1 = Transactions.findOne(paymentId1);
           chai.assert.deepEqual(payment1.debit, [
             { amount: 210, account: '`381' },
-            { amount: 100, account: '`3324', ...locationTags },
+            { amount: 100, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 100, account: '`9524' },
-            { amount: 300, account: '`0951' },
-            { amount: 10, account: '`09524' },
+            { amount: 300, account: '`0951', subTx: 1 },
+            { amount: 10, account: '`09524', subTx: 1 },
           ]);
           chai.assert.deepEqual(payment1.credit, [
-            { amount: 100, account: '`09524' },
-            { amount: 300, account: '`331', ...locationTags },
+            { amount: 100, account: '`09524', subTx: 1 },
+            { amount: 300, account: '`331', ...locationTags, subTx: 1 },
             { amount: 300, account: '`951' },
-            { amount: 10, account: '`3324', ...locationTags },
+            { amount: 10, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 10, account: '`9524' },
           ]);
 
@@ -1464,19 +1464,19 @@ if (Meteor.isServer) {
           const payment2 = Transactions.findOne(paymentId2);
           chai.assert.deepEqual(payment2.debit, [
             { amount: 690, account: '`381' },
-            { amount: 240, account: '`09524' },
-            { amount: 100, account: '`3324', ...locationTags },
+            { amount: 240, account: '`09524', subTx: 1 },
+            { amount: 100, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 100, account: '`9524' },
-            { amount: 250, account: '`09524' },
-            { amount: 300, account: '`0951' },
+            { amount: 250, account: '`09524', subTx: 1 },
+            { amount: 300, account: '`0951', subTx: 1 },
           ]);
           chai.assert.deepEqual(payment2.credit, [
-            { amount: 240, account: '`3324', ...locationTags },
+            { amount: 240, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 240, account: '`9524' },
-            { amount: 100, account: '`09524' },
-            { amount: 250, account: '`3324', ...locationTags },
+            { amount: 100, account: '`09524', subTx: 1 },
+            { amount: 250, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 250, account: '`9524' },
-            { amount: 300, account: '`331', ...locationTags },
+            { amount: 300, account: '`331', ...locationTags, subTx: 1 },
             { amount: 300, account: '`951' },
           ]);
         });
@@ -1496,17 +1496,17 @@ if (Meteor.isServer) {
           const payment = Transactions.findOne(paymentId);
           chai.assert.deepEqual(payment.debit, [
             { amount: 1000, account: '`381' },
-            { amount: 300, account: '`0951' },
-            { amount: 250, account: '`09524' },
-            { amount: 450, account: '`0952' },
+            { amount: 300, account: '`0951', subTx: 1 },
+            { amount: 250, account: '`09524', subTx: 1 },
+            { amount: 450, account: '`0952', subTx: 1 },
           ]);
           chai.assert.deepEqual(payment.credit, [
-            { amount: 300, account: '`331', ...locationTags },
+            { amount: 300, account: '`331', ...locationTags, subTx: 1 },
             { amount: 300, account: '`951' },
-            { amount: 250, account: '`3324', ...locationTags },
+            { amount: 250, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 250, account: '`9524' },
             { amount: 450, account: '`952' },
-            { amount: 450, account: '`332', ...locationTags },
+            { amount: 450, account: '`332', ...locationTags, subTx: 1 },
           ]);
         });
       });
