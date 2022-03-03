@@ -935,7 +935,7 @@ Migrations.add({
   },
 });
 
-/*
+
 Migrations.add({
   version: 56,
   name: 'Payments from overpayments into separate transactions',
@@ -991,8 +991,6 @@ Migrations.add({
     });
   },
 });
-
-*/
 
 
 // Use only direct db operations to avoid unnecessary hooks!
