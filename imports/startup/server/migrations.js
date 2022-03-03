@@ -27,6 +27,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { defineTxdefTemplates } from '/imports/api/transactions/txdefs/template';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
@@ -921,7 +922,7 @@ Migrations.add({
   name: 'Txdef paymentSubType',
   up() {
     Txdefs.find({ category: 'payment' }).forEach(txdef => {
-      const value = txdef.data.remission ? 'remission': 'payment';
+      const value = txdef.data.remission ? 'remission' : 'payment';
       Txdefs.direct.update(txdef._id, { $set: { 'data.paymentSubType': value }/*, $unset: { 'data.remission': '' } */});
     });
   },
@@ -935,35 +936,40 @@ Migrations.add({
   },
 });
 
-/*
-Migrations.add({
+/* Migrations.add({
   version: 56,
-  name: 'Payments from overpayments into separate transactions',
+  name: 'Accounts of unidentified payments to TxDefs, identification txDef type',
   up() {
-    Transactions.find({ category: 'payment' }).forEach(payment => {
-      const olderBills = [];
-      const newerBills = [];
-      payment.getBillDocs().forEach((bill, index) => {
-        if (bill.issueDate.getTime() > payment.valueDate.getTime()) newerBills.push(bill);
-        else olderBills.push(bill);
+    defineTxdefTemplates();
+    Communities.find().forEach(community => {
+      const communityId = community._id;
+      const paymentTxdefs = Txdefs.find({ communityId, category: 'payment', 'data.paymentSubType': 'payment' });
+      paymentTxdefs.forEach(txdef => {
+        let unidentifiedAccount = { credit_unidentified: ['`431'] };
+        if (txdef.data.relation === 'supplier') unidentifiedAccount = { debit_unidentified: ['`434'] };
+        Txdefs.direct.update(txdef._id, { $set: unidentifiedAccount });
       });
-      const preservedLines = [];
-      payment.getLines().forEach(line => {
-        const billDef = payment.correspondingBillTxdef();
-        if (!_.contains(billDef[billDef.conteerSide()], line.account)) preservedLines.push(line);
-      });
-      if (newerBills.length) {
-        Transactions.methods.reallocate(payment._id, { $set: { bills: olderBills, lines: preservedLines } });
-        newerBills.forEach(nB => {
-          const newBill = Transactions.findOne(nB.id);
-          Transactions.methods.insert({
-            category: payment,
-            defId: payment.correspondingIdentificationTxdef()._id,
-            valueDate: newBill.valueDate,
-            amount: nB.amount,
-            payAccount: '`431',
-            bills: [nB],
-          })
+      if (paymentTxdefs.count() && !Txdefs.find({ communityId, 'data.paymentSubType': 'identification' }).count()) {
+        Txdefs.direct.insert({ communityId,
+          name: 'Supplier payment identification', // 'Szállító kifizetés azonosítás',
+          category: 'payment',
+          data: { relation: 'supplier', paymentSubType: 'identification' },
+          debit: ['`454'],
+          credit: ['`434'],
+        });
+        Txdefs.direct.insert({ communityId,
+          name: 'Customer payment identification', // 'Vevő befizetés azonosítás',
+          category: 'payment',
+          data: { relation: 'customer', paymentSubType: 'identification' },
+          debit: ['`431'],
+          credit: ['`31'],
+        });
+        Txdefs.direct.insert({ communityId,
+          name: 'Parcel payment identification', // 'Albetét befizetés azonosítás',
+          category: 'payment',
+          data: { relation: 'member', paymentSubType: 'identification' },
+          debit: ['`431'],
+          credit: ['`33'],
         });
       }
     });
@@ -972,16 +978,71 @@ Migrations.add({
 
 Migrations.add({
   version: 57,
-  name: 'Remove partner entries',
+  name: 'Payments from overpayments into separate transactions',
   up() {
-    Transactions.find({ pEntries: { $exists: true } }).forEach(tx => {
-      Transactions.methods.post._execute({ userId: tx.community().admin()._id }, { _id: tx._id });
+    Transactions.find({ category: 'payment' }).forEach(payment => {
+      const olderBills = [];
+      const newerBills = [];
+      const community = payment.community();
+      const userId = community.admin()._id;
+      payment.getBills().forEach((bill, index) => {
+        const billDoc = Transactions.findOne(bill.id);
+        if (billDoc.issueDate.getTime() > payment.valueDate.getTime()) newerBills.push(bill);
+        else olderBills.push(bill);
+      });
+      const preservedLines = [];
+      payment.getLines().forEach(line => {
+        if (!_.contains(payment.txdef().conteerCodes(), line.account)) {
+          if (community.settings.accountingMethod === 'cash') preservedLines.push(line);
+          else if (community.settings.accountingMethod === 'accrual' && payment.relation === 'member') preservedLines.push(line);
+        }
+        if (community.settings.accountingMethod === 'accrual' && payment.relation !== 'member') preservedLines.push(line);
+      });
+      if (newerBills.length) {
+        Transactions.update({ _id: payment._id }, { $set: { bills: olderBills, lines: preservedLines } }, { selector: payment });
+        if (payment.isPosted()) Transactions.methods.post._execute({ userId }, { _id: payment._id });
+        newerBills.forEach(nB => {
+          const newBill = Transactions.findOne(nB.id);
+          const newPayment = Transactions.insert({
+            communityId: newBill.communityId,
+            partnerId: newBill.partnerId,
+            contractId: newBill.contractId,
+            relation: newBill.relation,
+            category: 'payment',
+            defId: newBill.correspondingIdentificationTxdef()._id,
+            valueDate: newBill.valueDate,
+            amount: nB.amount,
+            payAccount: '`431',
+            bills: [nB],
+          });
+          if (payment.isPosted()) Transactions.methods.post._execute({ userId }, { _id: newPayment });
+        });
+      } else {
+        if (payment.lines?.length) {
+          const modifier = preservedLines.length ? { $set: { lines: preservedLines } } : { $unset: { lines: '' } };
+          autoValueUpdate(Transactions, payment, modifier, 'outstanding', d => d.calculateOutstanding());
+          Transactions.update({ _id: payment._id }, modifier, { selector: payment });
+          if (payment.isPosted()) Transactions.methods.post._execute({ userId }, { _id: payment._id });
+        }
+      }
     });
   },
 });
 
 Migrations.add({
   version: 58,
+  name: 'Remove partner entries',
+  up() {
+    Transactions.find({ pEntries: { $exists: true } }).forEach(tx => {
+      tx.updatePartnerBalances(-1);
+      Transactions.direct.update({ _id: tx._id }, { $unset: { pEntries: '' } }, { selector: tx, validate: false });
+      Transactions.methods.post._execute({ userId: tx.community().admin()._id }, { _id: tx._id });
+    });
+  },
+});
+
+Migrations.add({
+  version: 59,
   name: 'Ensure freeTxs have amounts on all journal entries',
   up() {
     Transactions.find({ category: 'freeTx' }).forEach(tx => {
@@ -990,9 +1051,7 @@ Migrations.add({
       }
     });
   },
-});
-
-*/
+}); */
 
 
 // Use only direct db operations to avoid unnecessary hooks!
