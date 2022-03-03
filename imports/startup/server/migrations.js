@@ -983,6 +983,8 @@ Migrations.add({
     Transactions.find({ category: 'payment' }).forEach(payment => {
       const olderBills = [];
       const newerBills = [];
+      const community = payment.community();
+      const userId = community.admin()._id;
       payment.getBills().forEach((bill, index) => {
         const billDoc = Transactions.findOne(bill.id);
         if (billDoc.issueDate.getTime() > payment.valueDate.getTime()) newerBills.push(bill);
@@ -990,11 +992,13 @@ Migrations.add({
       });
       const preservedLines = [];
       payment.getLines().forEach(line => {
-        const billDef = payment.correspondingBillTxdef();
-        if (!_.contains(billDef[billDef.conteerSide()], line.account)) preservedLines.push(line);
+        if (!_.contains(payment.txdef().conteerCodes(), line.account)) {
+          if (community.settings.accountingMethod === 'cash') preservedLines.push(line);
+          else if (community.settings.accountingMethod === 'accrual' && payment.relation === 'member') preservedLines.push(line);
+        }
+        if (community.settings.accountingMethod === 'accrual' && payment.relation !== 'member') preservedLines.push(line);
       });
       if (newerBills.length) {
-        const userId = payment.community().admin()._id;
         Transactions.update({ _id: payment._id }, { $set: { bills: olderBills, lines: preservedLines } }, { selector: payment });
         if (payment.isPosted()) Transactions.methods.post._execute({ userId }, { _id: payment._id });
         newerBills.forEach(nB => {
@@ -1013,6 +1017,13 @@ Migrations.add({
           });
           if (payment.isPosted()) Transactions.methods.post._execute({ userId }, { _id: newPayment });
         });
+      } else {
+        if (payment.lines?.length) {
+          const modifier = preservedLines.length ? { $set: { lines: preservedLines } } : { $unset: { lines: '' } };
+          autoValueUpdate(Transactions, payment, modifier, 'outstanding', d => d.calculateOutstanding());
+          Transactions.update({ _id: payment._id }, modifier, { selector: payment });
+          if (payment.isPosted()) Transactions.methods.post._execute({ userId }, { _id: payment._id });
+        }
       }
     });
   },
