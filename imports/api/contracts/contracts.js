@@ -135,7 +135,9 @@ Contracts.helpers({
   },
   balance(account) {
     const Balances = Mongo.Collection.get('balances');
-    return Balances.get({ communityId: this.communityId, account, partner: this.code(), tag: 'T' }).total() * (-1);
+    // if no account is given, result is the entire balance
+    const selector = Object.cleanUndefined({ communityId: this.communityId, account, partner: this.code(), tag: 'T' });
+    return Balances.get(selector).total() * (-1);
   },
   outstanding(account) {
     return this.balance(account) * Relations.sign(this.relation) * (-1);
