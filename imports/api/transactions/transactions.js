@@ -334,6 +334,21 @@ Transactions.helpers({
     });
     // checkBalances([doc]);
   },
+  // deprecated, only for migration purpose
+  updatePartnerBalances(directionSign = 1) {
+    const communityId = this.communityId;
+    const Balances =  Mongo.Collection.get('balances');
+    const leafTag = 'T-' + moment(this.valueDate).format('YYYY-MM');
+    const pEntries = this.pEntries;
+    PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+      if (Period.fromTag(tag).type() !== 'month') {
+        pEntries?.forEach((entry) => {
+          const changeAmount = entry.amount * directionSign;
+          Balances.increase({ communityId, partner: entry.partner, tag }, entry.side, changeAmount);
+        });
+      }
+    });
+  },
   makeJournalEntries() {
     // NOP -- will be overwritten in the categories
   },
