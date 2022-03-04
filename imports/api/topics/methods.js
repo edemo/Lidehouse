@@ -77,7 +77,7 @@ export const move = new ValidatedMethod({
     });
     Comments.direct.insert(movedDoc); // timestamped hooks should not run
     // Comments._hookAspects.insert.after[0].aspect(this.userId, movedDoc);
-    doc.attachments.forEach(path => {
+    doc.attachments?.forEach(path => {
       Attachments.direct.update({ communityId: doc.communityId, path },
         { $set: { parentId: destinationId, parentCollection: 'Comments' } });
     });
