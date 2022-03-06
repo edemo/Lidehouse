@@ -12,6 +12,7 @@ import { allowedOptions, imageUpload, noUpdate } from '/imports/utils/autoform.j
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
+import { Communities } from '/imports/api/communities/communities.js';
 
 export const Meters = new Mongo.Collection('meters');
 

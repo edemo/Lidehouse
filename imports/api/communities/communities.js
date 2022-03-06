@@ -180,5 +180,6 @@ Factory.define('community', Communities, {
     language: 'en',
     parcelRefFormat: 'bfdd',
     accountingMethod: 'accrual',
+    enableMeterEstimationDays: 5,
   },
 });
