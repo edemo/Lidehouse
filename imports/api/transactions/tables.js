@@ -36,6 +36,7 @@ export function transactionColumns() {
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'transactions', actions: '', size: 'sm' }, cell),
     },
+    { data: 'reconciled', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
   ];
 
   return columns;
