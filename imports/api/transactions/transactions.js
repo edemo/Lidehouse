@@ -126,11 +126,13 @@ Transactions.isValidSide = function isValidSide(side) {
 Transactions.oppositeSide = function oppositeSide(side) {
   if (side === 'debit') return 'credit';
   if (side === 'credit') return 'debit';
+  debugAssert(false, `Unrecognized side: ${side}`);
   return undefined;
 };
 Transactions.signOfPartnerSide = function signOfPartnerSide(side) {
   if (side === 'debit') return +1;
   if (side === 'credit') return -1;
+  debugAssert(false, `Unrecognized side: ${side}`);
   return undefined;
 };
 
@@ -223,21 +225,17 @@ Transactions.helpers({
   calculateReconciled() {
     // If reconciled value is undefined, it means, no need to reconcile
     // Only reconciledCategories need to be reconciled, and only if they relate to bank accounts
+    if (!Transactions.reconciledCategories.includes(this.category)) return undefined;
     if (this.status === 'void') return undefined;
-    const txdef = this.txdef();
-    if (txdef.category === 'transfer') {
-      const toAccount = Accounts.getByCode(this.toAccount, this.communityId);
-      const fromAccount = Accounts.getByCode(this.fromAccount, this.communityId);
-      let expectedSeIdLength = 0;
-      if (toAccount.category === 'bank') expectedSeIdLength += 1;
-      if (fromAccount.category === 'bank') expectedSeIdLength += 1;
-      if (expectedSeIdLength) return this.seId?.length === expectedSeIdLength;
-      else return undefined;
-    } else if (Transactions.reconciledCategories.includes(txdef.category)) {
-      const payAccount = Accounts.getByCode(this.payAccount, this.communityId);
-      if (payAccount.category === 'bank') return this.seId?.length === 1;
-      else return undefined;
-    } else return undefined;
+    let tx = this;
+    if (this.status === 'draft') { tx = _.clone(this); tx.makeJournalEntries(); }
+    let expectedSeIdLength = 0;
+    tx.journalEntries(true).forEach(je => {
+      const account = Accounts.getByCode(je.account, this.communityId);
+      if (account?.category === 'bank') expectedSeIdLength += 1;
+    });
+    if (expectedSeIdLength) return this.seId?.length === expectedSeIdLength;
+    else return undefined;
   },
   checkAccountsExist() {
     if (this.debit) this.debit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
@@ -259,9 +257,9 @@ Transactions.helpers({
     }
     this[writeSide].push(entry);
   },
-  journalEntries() {
+  journalEntries(includingUnposted = false) {
     const entries = [];
-    if (this.postedAt) {
+    if (this.postedAt || includingUnposted === true) {
       if (this.debit) {
         this.debit.forEach((entry, i) => {
           entries.push(_.extend({ side: 'debit', txId: this._id, _id: this._id + '#Dr' + i }, entry));

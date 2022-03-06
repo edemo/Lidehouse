@@ -6,6 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { freshFixture } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -379,7 +380,7 @@ if (Meteor.isServer) {
         const entryId = Fixture.builder.create('statementEntry', {
           account: bankAccount.code,
           valueDate: Clock.currentDate(),
-          amount: 900,
+          amount: -900,
         });
         Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId, txId: paymentId1 });
         let entry = StatementEntries.findOne(entryId);
@@ -1059,11 +1060,13 @@ if (Meteor.isServer) {
           amount: -300,
         });
         const transferId = Fixture.builder.create('transfer', {
+          defId: Txdefs.getByName('Money transfer', Fixture.demoCommunityId)._id,
           amount: 300,
           valueDate: Clock.currentDate(),
           toAccount: '`383',
           fromAccount: '`382',
         });
+//        Fixture.builder.execute(Transactions.methods.post, { _id: transferId });
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
         const entry = StatementEntries.findOne(entryId);
         chai.assert.equal(entry.match.txId, transferId);

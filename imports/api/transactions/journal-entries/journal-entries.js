@@ -24,10 +24,8 @@ JournalEntries.helpers({
     return (this.side === 'credit') ? this.amount : 0;
   },
   effectiveAmount(extraSign = +1) {
-    let dcSign = 0;
-    if (this.side === 'debit') dcSign = +1;
-    else if (this.side === 'credit') dcSign = -1;
-    else debugAssert(false, `Unrecognized side: ${this.side}`);
+    const Transactions = Mongo.Collection.get('transactions');
+    const dcSign = Transactions.signOfPartnerSide(this.side);
     return this.amount * dcSign * extraSign;
   },
   transaction() {
