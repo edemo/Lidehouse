@@ -78,6 +78,10 @@
       "placeholder": "(pl. 245)",
       "help": "Egyedinek kell lennie. Ha már lett tranzakció ezen a főkönyvi számon könyvelve, utána már nem módosítható."
     },
+    "allowPost": {
+      "label": "Könyvelhetünk ide",
+      "help": "Kapcsolja ki, ha nem lehet ide könyvelni"
+    },
     "bank": {
       "label": "Bank neve",
       "placeholder": "(pl. OTP)"

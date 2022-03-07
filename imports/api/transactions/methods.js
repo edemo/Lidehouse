@@ -63,6 +63,7 @@ export const post = new ValidatedMethod({
       const updateData = _.extend({}, doc.makeJournalEntries(accountingMethod));
       _.extend(modifier.$set, { status: 'posted', ...updateData });
     }
+    doc.validateJournalEntries();
     const result = Transactions.update(_id, modifier);
 
     if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {

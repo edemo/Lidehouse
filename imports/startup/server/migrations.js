@@ -1053,6 +1053,18 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 60,
+  name: 'Mark group accounts',
+  up() {
+    Accounts.find({}).forEach(doc => {
+      const code = doc.code;
+      if (Accounts.find({ communityId: doc.communityId, code: new RegExp('^' + code) }).fetch().length > 1) {
+        Accounts.direct.update(doc._id, { $set: { isGroup: true } });
+      }
+    });
+  },
+});
 
 // Use only direct db operations to avoid unnecessary hooks!
 

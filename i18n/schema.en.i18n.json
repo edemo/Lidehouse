@@ -78,6 +78,10 @@
       "placeholder": "(pl. 2)", 
       "help": "It needs to be unique. If there is already a transaction under this code, it is not modifiable."
     },
+    "allowPost": {
+      "label": "Allow posting here",
+      "help": "Turn it off, if you will never post here"
+    },
     "bank": {
       "label": "Bank name",
       "placeholder": "(pl. HSBC)"

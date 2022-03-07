@@ -119,7 +119,8 @@ export const CondominiumTranslation = {
           "label": "Under VAT"
         },
         "paymentsWoStatement": {
-          "label": "Payments can be registered without a bank statement"
+          "label": "Payments can be registered without a bank statement",
+          "help": "When it is turned on, you can register the payments before having the corresponding bank statement. When it is off, you may only create Payments from bank statements."
         },
         "paymentsToBills": {
           "label": "Payments need to be reconciled to the bills",
@@ -127,7 +128,12 @@ export const CondominiumTranslation = {
             "customer": "Customers",
             "supplier": "Suppliers",
             "member": "Owners"
-          }
+          },
+          "help": "You can set the option independently for each bill direction, if you will reconcile the payments to bills."
+        },
+        "allowPostToGroupAccounts": {
+          "label": "Allow posting to group accounts",
+          "help": "When it is turned off, you may not post to the group accounts, only to their sub accounts"
         },
         "enableMeterEstimationDays": {
           "label": "Enable meter estimation after (days)",
@@ -370,18 +376,25 @@ export const CondominiumTranslation = {
           }
         },
         "subjectToVat": {
-          "label": "ÁFA körben van"
+          "label": "ÁFA körben van",
+          "help": "Ha nincs ÁFA körben, a számla nézet egyszerűbb, nem tartalmaz adókat",
         },
         "paymentsWoStatement": {
-          "label": "Számla fizetése rögzíthető bankkivonat nélkül is"
+          "label": "Számla fizetése rögzíthető bankkivonat nélkül is",
+          "help": "Kapcsolja be, ha szertné a Fizetés tranzakciókat még az előtt létrehozni, hogy a bankkivonat fel lenne rögzítve a rendszerben. Ha ez nincs engedélyezve, akkor csak a bankkivonatból lehet a Fizetés tranzakciókat létrehozni",
         },
         "paymentsToBills": {
           "label": "Számla fizetéseket a számlákhoz kell egyeztetni",
+          "help": "Számla irányonként tudja szabályozni, hogy a Fizetéseket a Számlákhoz akarja hozzárendelni, vagy direktbe akarja könyvelni őket a főkövyvi számlákra - ha számlákhoz egyeztet, akkor a rendszer abból már be tudja könyvelni a tranzakciót a számlán megadott kontírozás alapján",
           "options": {
             "customer": "Vevőknél",
             "supplier": "Szállítóknál",
             "member": "Tulajdonosoknál"
           }
+        },
+        "allowPostToGroupAccounts": {
+          "label": "Lehessen a gyűjtőszámlákra könyvelni",
+          "help": "Ha nincs bekapcsolva, akkor a gyűjtő számlákra nem enged könyvelni a rendszer, csak azok alszámláira"
         },
         "enableMeterEstimationDays": {
           "label": "Becsült óraállás használata ennyi nap után",

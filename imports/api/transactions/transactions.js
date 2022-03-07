@@ -237,10 +237,6 @@ Transactions.helpers({
     if (expectedSeIdLength) return this.seId?.length === expectedSeIdLength;
     else return undefined;
   },
-  checkAccountsExist() {
-    if (this.debit) this.debit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
-    if (this.credit) this.credit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
-  },
   makeEntry(side, entry) {
     let writeSide = side;
     if (entry.amount < 0) {
@@ -350,6 +346,18 @@ Transactions.helpers({
       }
     });
   },
+  validateJournalEntries() {
+    if (!this.community().settings.allowPostToGroupAccounts) {
+      this.journalEntries(true).forEach(je => {
+        let accountCode;
+        if (Accounts.isTechnicalCode(je.account)) accountCode = Accounts.fromTechnicalCode(je.account);
+        else accountCode = je.account;
+        const account = Accounts.getByCode(accountCode, je.communityId);
+        if (!account) throw new Meteor.Error('err_notExists', 'No such account', { code: accountCode });
+        if (account?.isGroup) throw new Meteor.Error('err_notAllowed', 'Not allowed to post to group accounts', account.displayAccount());
+      });
+    }
+  },
   makeJournalEntries() {
     // NOP -- will be overwritten in the categories
   },
@@ -403,7 +411,6 @@ function checkBalances(docs) {
 if (Meteor.isServer) {
   Transactions.before.insert(function (userId, doc) {
     const tdoc = this.transform();
-    if (tdoc.category === 'freeTx') tdoc.checkAccountsExist();
     tdoc.complete = tdoc.calculateComplete();
     tdoc.reconciled = tdoc.calculateReconciled();
     tdoc.autoFill?.();
@@ -440,7 +447,6 @@ if (Meteor.isServer) {
 
   Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {
     const tdoc = this.transform();
-    if (tdoc.category === 'freeTx') tdoc.checkAccountsExist();
     const oldDoc = Transactions._transform(this.previous);
     const newDoc = tdoc;
     if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
