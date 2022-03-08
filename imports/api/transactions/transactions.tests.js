@@ -304,7 +304,7 @@ if (Meteor.isServer) {
 
       it('Disconnecting posted payment from bill updates balances correctly', function () {
         FixtureA.builder.execute(Transactions.methods.update, { _id: paymentId, modifier: {
-          $set: { lines: [{ account: '`3351', amount: payment.amount - 2 }], bills: [] },
+          $set: { lines: [{ account: '`3321', amount: payment.amount - 2 }], bills: [] },
         } });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.partner().balance(), 0);
@@ -691,11 +691,11 @@ if (Meteor.isServer) {
         chai.assert.throws(() => {
           FixtureA.builder.create('payment', {
             defId: identificationDefId,
-            bills: [{ id: billId, amount: 350 }],
+            bills: [{ id: billId, amount: 60 }],
             amount: 60,
             partnerId: FixtureA.supplier,
             valueDate: Clock.currentTime(),
-            payAccount: '`431' });
+            payAccount: '`434' });
         }, 'err_sanityCheckFailed');
       });
 

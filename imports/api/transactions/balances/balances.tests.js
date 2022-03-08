@@ -394,32 +394,32 @@ if (Meteor.isServer) {
         chai.assert.isTrue(Accounts.getByCode('`', Fixture.demoCommunityId).isGroup);
         chai.assert.isTrue(Accounts.getByCode('`1', Fixture.demoCommunityId).isGroup);
         chai.assert.isTrue(Accounts.getByCode('`12', Fixture.demoCommunityId).isGroup);
-        chai.assert.isTrue(!Accounts.getByCode('`12A', Fixture.demoCommunityId).isGroup);
-        chai.assert.isTrue(!Accounts.getByCode('`12B', Fixture.demoCommunityId).isGroup);
-        chai.assert.isTrue(!Accounts.getByCode('`12C', Fixture.demoCommunityId).isGroup);
-        chai.assert.isTrue(!Accounts.getByCode('`19', Fixture.demoCommunityId).isGroup);
+        chai.assert.isUndefined(Accounts.getByCode('`12A', Fixture.demoCommunityId).isGroup);
+        chai.assert.isUndefined(Accounts.getByCode('`12B', Fixture.demoCommunityId).isGroup);
+        chai.assert.isUndefined(Accounts.getByCode('`12C', Fixture.demoCommunityId).isGroup);
+        chai.assert.isUndefined(Accounts.getByCode('`19', Fixture.demoCommunityId).isGroup);
 
         Accounts.update({ communityId: Fixture.demoCommunityId, code: '`12A' }, { $set: { code: '`20' } });
         chai.assert.isTrue(Accounts.getByCode('`12', Fixture.demoCommunityId).isGroup);
-        chai.assert.isTrue(!Accounts.getByCode('`20', Fixture.demoCommunityId).isGroup);
+        chai.assert.isUndefined(Accounts.getByCode('`20', Fixture.demoCommunityId).isGroup);
 
         Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`12B' });
         chai.assert.isTrue(Accounts.getByCode('`12', Fixture.demoCommunityId).isGroup);
         Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`12C' });
-        chai.assert.isTrue(!Accounts.getByCode('`12', Fixture.demoCommunityId).isGroup);
+        chai.assert.isFalse(Accounts.getByCode('`12', Fixture.demoCommunityId).isGroup);
         chai.assert.isTrue(Accounts.getByCode('`1', Fixture.demoCommunityId).isGroup);
 
         Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`12' });
         chai.assert.isTrue(Accounts.getByCode('`1', Fixture.demoCommunityId).isGroup);
 
         Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`19' });
-        chai.assert.isTrue(!Accounts.getByCode('`1', Fixture.demoCommunityId).isGroup);
+        chai.assert.isFalse(Accounts.getByCode('`1', Fixture.demoCommunityId).isGroup);
 
         Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`1' });
         chai.assert.isTrue(Accounts.getByCode('`', Fixture.demoCommunityId).isGroup);
 
         Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`20' });
-        chai.assert.isTrue(!Accounts.getByCode('`', Fixture.demoCommunityId).isGroup);
+        chai.assert.isFalse(Accounts.getByCode('`', Fixture.demoCommunityId).isGroup);
       });
     });
   });

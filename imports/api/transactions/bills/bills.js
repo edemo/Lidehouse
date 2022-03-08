@@ -222,7 +222,7 @@ Transactions.categoryHelpers('bill', {
     let account = this.relationAccount;
     if (line.billing) account += ParcelBillings.findOne(line.billing.id).digit;
     else if (this.relation === 'member' && line.account && this.defId) {
-      let digit;
+      let digit = '';
       this.txdef()[this.conteerSide()].forEach(code => {
         if (line.account.startsWith(code)) {
           digit = line.account.replace(code, '');
