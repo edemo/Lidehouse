@@ -347,16 +347,16 @@ Transactions.helpers({
     });
   },
   validateJournalEntries() {
-    if (!this.community().settings.allowPostToGroupAccounts) {
-      this.journalEntries(true).forEach(je => {
-        let accountCode;
-        if (Accounts.isTechnicalCode(je.account)) accountCode = Accounts.fromTechnicalCode(je.account);
-        else accountCode = je.account;
-        const account = Accounts.getByCode(accountCode, je.communityId);
-        if (!account) throw new Meteor.Error('err_notExists', 'No such account', { code: accountCode });
-        if (account?.isGroup) throw new Meteor.Error('err_notAllowed', 'Not allowed to post to group accounts', account.displayAccount());
-      });
-    }
+    this.journalEntries(true).forEach(je => {
+      let accountCode;
+      if (Accounts.isTechnicalCode(je.account)) accountCode = Accounts.fromTechnicalCode(je.account);
+      else accountCode = je.account;
+      const account = Accounts.getByCode(accountCode, je.communityId);
+      if (!account) throw new Meteor.Error('err_notExists', 'No such account', { code: accountCode });
+      if (!this.community().settings.allowPostToGroupAccounts && account?.isGroup) {
+        throw new Meteor.Error('err_notAllowed', 'Not allowed to post to group accounts', account.displayAccount());
+      }
+    });
   },
   makeJournalEntries() {
     // NOP -- will be overwritten in the categories
