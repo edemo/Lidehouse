@@ -69,7 +69,8 @@ Template.Partner_history.viewmodel({
   beginBalanceDef() {
     if (!this.contractToView()) return {};
     const contract = Contracts.findOne(this.contractToView());
-    const period = Period.fromBeginEndDates(validDateOrUndefined(this.beginDate()), validDateOrUndefined(this.endDate()));
+    const year = validDateOrUndefined(this.beginDate())?.getFullYear();
+    const period = Period.fromValues(year);
     return {
       communityId: this.communityId(),
       partner: contract?.code() || null,
@@ -80,14 +81,14 @@ Template.Partner_history.viewmodel({
     if (!this.contractToView()) return {};
     const result = {};
     const contract = Contracts.findOne(this.contractToView());
-    result.beginBalance = Balances.getOpeningValue(this.beginBalanceDef()).total();
+    result.beginBalance = Balances.getOpeningValue(this.beginBalanceDef()).total() * (-1);
     const selector = Transactions.makeFilterSelector(this.subscribeParams());
     const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
     let total = result.beginBalance;
     const txsWithRunningTotal = txs.map(tx => {
-      const contractAmount = tx.getContractAmount(contract);
-      total += contractAmount;
-      return _.extend(tx, { contractAmount, total });
+      const effectiveAmount = tx.getContractAmount(contract) * (-1);
+      total += effectiveAmount;
+      return _.extend(tx, { effectiveAmount, total });
     });
     result.transactions = txsWithRunningTotal.reverse();
     result.predecessor = contract?.predecessor();

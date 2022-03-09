@@ -10,31 +10,23 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Contracts, choosePartnerContract } from '/imports/api/contracts/contracts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 
 const exchangeSchema = new SimpleSchema({
+  account: { type: String, optional: true, autoform: chooseConteerAccount('debit') },
 //  toPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
 //  toContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  toPartner: { type: String, autoform: { ...choosePartnerContract } },
+  toPartner: { type: String, optional: true, autoform: { ...choosePartnerContract } },
 //  fromPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
 //  fromContractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  fromPartner: { type: String, autoform: { ...choosePartnerContract } },
+  fromPartner: { type: String, optional: true, autoform: { ...choosePartnerContract } },
 });
 
 Transactions.categoryHelpers('exchange', {
   makeJournalEntries(accountingMethod) {
-    // Exchange only effects partner accounts, does not touch the chart of accounts
-  },
-  makePartnerEntries() {
-    this.pEntries = [{
-      partner: this.toPartner, // Partners.code(this.targetPartnerId, this.targetContractId),
-      side: 'debit',
-      amount: this.amount,
-    }, {
-      partner: this.fromPartner, // Partners.code(this.sourcePartnerId, this.sourceContractId),
-      side: 'credit',
-      amount: this.amount,
-    }];
-    return { pEntries: this.pEntries };
+    this.debit = [{ amount: this.amount, account: this.account, partner: this.fromPartner }];
+    this.credit = [{ amount: this.amount, account: this.account, partner: this.toPartner }];
+    return { debit: this.debit, credit: this.credit };
   },
 });
 
@@ -46,6 +38,7 @@ Transactions.simpleSchema({ category: 'exchange' }).i18n('schemaTransactions');
 
 Factory.define('exchange', Transactions, {
   category: 'exchange',
+  account: () => '`431',
   fromPartner: () => Factory.get('member'),
   toPartner: () => Factory.get('member'),
   valueDate: Clock.currentDate(),

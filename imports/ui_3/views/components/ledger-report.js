@@ -57,7 +57,7 @@ Template.Ledger_report.events({
         accountOptions: pageInstance.viewmodel.accountOptions(),
         accountSelected: '' + accountCode,
         localizerOptions: pageInstance.viewmodel.localizerOptions(),
-  //        localizerSelected: '',
+        partnerContractOptions: pageInstance.viewmodel.partnerContractOptions(),
       },
       size: 'lg',
     });

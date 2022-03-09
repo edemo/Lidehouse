@@ -369,7 +369,7 @@ export const Conductors = {
             category: { default: 'payment' },
             relation: { default: ModalStack.getVar('relation') },
             serialId: { depends: ['Azonosító'], formula: "'FIZ/SZALL/' + doc['Azonosító']" },
-            defId: { default: Txdefs.findOne({ communityId: getActiveCommunityId(), category: 'payment', 'data.relation': ModalStack.getVar('relation') })._id },
+            defId: { default: Txdefs.findOne({ communityId: getActiveCommunityId(), category: 'payment', 'data.relation': ModalStack.getVar('relation'), 'data.paymentSubType': 'payment' })._id },
   //          partnerId: { formula: 'conductor.phases[0].docs[index].idCard.name' },
   //          valueDate: { label: 'A számla kiegyenlítésének időpontja' },
   //          valueDate: { formula: 'doc.paymentDate' },

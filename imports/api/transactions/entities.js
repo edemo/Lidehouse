@@ -17,7 +17,7 @@ Transactions.entities = {
     name: 'exchange',
     viewForm: 'Exchange_edit',
     editForm: 'Exchange_edit',
-    omitFields: () => ['debit', 'credit', 'pEntries'],
+    omitFields: () => ['debit', 'credit'],
     size: 'lg',
   },
   receipt: {
@@ -30,15 +30,15 @@ Transactions.entities = {
     name: 'transfer',
     viewForm: 'Transfer_edit',
     editForm: 'Transfer_edit',
-    omitFields: () => ['debit', 'credit', 'pEntries'],
+    omitFields: () => ['debit', 'credit'],
     size: 'lg',
   },
   opening: {
     name: 'opening',
-    omitFields: () => ['debit', 'credit', 'pEntries'],
+    omitFields: () => ['debit', 'credit'],
   },
   freeTx: {
     name: 'freeTx',
-    omitFields: () => ['pEntries'],
+    omitFields: () => [],
   },
 };

@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { __ } from '/imports/localization/i18n.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -30,10 +31,17 @@ Txdefs.clone = function clone(name, communityId) {
   return Txdefs.insert(doc);
 };
 
+Txdefs.paymentSubtypeValues = [
+  'payment',   // partner is credited
+  'identification',  // no partner accounting needed, just internal accounting done
+  'remission', // partner is debited
+];
+
 Txdefs.dataSchema = new SimpleSchema({
   relation: { type: String, allowedValues: Relations.values, optional: true  },  // for bill, payment
   side: { type: String, allowedValues: ['debit', 'credit'], optional: true  },   // for opening, closing
-  remission: { type: Boolean, optional: true  },                                 // for payment
+  paymentSubType: { type: String, allowedValues: Txdefs.paymentSubtypeValues, optional: true }, // for payment
+  autoPosting: { type: Boolean, optional: true },
 });
 
 Txdefs.schema = new SimpleSchema({
@@ -43,6 +51,8 @@ Txdefs.schema = new SimpleSchema({
   data: { type: Txdefs.dataSchema, optional: true },
   debit: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
   credit: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
+  debit_unidentified: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
+  credit_unidentified: { type: [String], max: 6, autoform: { ...Accounts.chooseNode }, optional: true },
 });
 
 Meteor.startup(function indexTxdefs() {
@@ -67,16 +77,16 @@ Txdefs.helpers({
     return 'txdef';
   },
   isAutoPosting() {
-    return false;
+    return !!this.data?.autoPosting;
   },
   isAccountantTx() {
     return !_.contains(['bill', 'payment', 'receipt'], this.category);
   },
   isReconciledTx() {
-    if (this.category === 'payment') {
-      return !this.data.remission; // && _.contains(this.community().billsUsed, this.data.relation);
-    }
-    return _.contains(['receipt', 'transfer'], this.category);
+    return this.touches('`38');
+  },
+  touches(accountCode) {
+    return _.contains(this.debit, accountCode) || _.contains(this.credit, accountCode);
   },
   conteerSide() {
     if (this.data?.side) return this.data.side;  // opening, closing txs
@@ -84,6 +94,19 @@ Txdefs.helpers({
     if (relation === 'supplier') return 'debit';
     if (relation === 'customer' || relation === 'member') return 'credit';
     return undefined;
+  },
+  relationSide() {
+    debugAssert(!this.data?.side && this.data.relation);
+    const relation = this.data.relation;        // bill, payment, receipt txs
+    if (relation === 'supplier') return 'credit';
+    if (relation === 'customer' || relation === 'member') return 'debit';
+    return undefined;
+  },
+  unidentifiedAccount() {
+    debugAssert(this.category === 'payment');
+    const uniKey = `${this.conteerSide()}_unidentified`;
+    debugAssert(this[uniKey].length === 1);
+    return _.first(this[uniKey]);
   },
   conteerCodes(sideParam) {
 //    Log.debug('conteerCodes');
@@ -122,7 +145,16 @@ Txdefs.helpers({
   },
   correspondingPaymentDef() {
     debugAssert(this.category === 'bill');
-    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.data.relation });
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.data.relation, 'data.paymentSubType': 'payment' });
+  },
+});
+
+_.extend(Txdefs, {
+  getByCode(code, communityId = getActiveCommunityId()) {
+    return Txdefs.find({ communityId, $or: [{ debit: code }, { credit: code }] });
+  },
+  getByName(name, communityId = getActiveCommunityId()) {
+    return Txdefs.findOne({ communityId, name });
   },
 });
 

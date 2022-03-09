@@ -6,6 +6,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { Clock } from '/imports/utils/clock.js';
 import { autoValueUpdate } from '/imports/api/mongo-utils.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -29,6 +30,7 @@ StatementEntries.schema = new SimpleSchema({
   original: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
   match: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
   txId: { type: [String], regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  // We should refer to a journal entry here, so we could in addition to txId, provide the index of the journal entry on that tx
   reconciled: { type: Boolean, optional: true, autoform: { omit: true } }, // calculated in hooks
 });
 
@@ -57,13 +59,7 @@ StatementEntries.helpers({
     return !!this.txId?.length;
   },
   calculateReconciled() {
-    const Transactions = Mongo.Collection.get('transactions');
-    let sumTxAmount = 0;
-    this.txId?.forEach(_id => {
-      sumTxAmount += Transactions.findOne(_id)?.amount;
-    });
-    const reconciled = Math.abs(sumTxAmount) === Math.abs(this.amount);
-    return reconciled;
+    return this.reconciledAmount() === this.amount;
   },
   reconciledTransactions() {
     const Transactions = Mongo.Collection.get('transactions');
@@ -73,9 +69,13 @@ StatementEntries.helpers({
   reconciledAmount() {
     let reconciledAmount = 0;
     const Transactions = Mongo.Collection.get('transactions');
-    this.txId?.forEach(_id => {
-      const tx = Transactions.findOne(_id);
-      if (tx) reconciledAmount += tx.amount * tx.relationSign();
+    this.reconciledTransactions()?.forEach(tx => {
+      if (tx) {
+        if (tx.status === 'draft') tx.makeJournalEntries();
+        const correspondingJe = tx.journalEntries(true).find(j => j.account === this.account);
+        debugAssert(correspondingJe, `No corresponding je found in tx. \n se: ${JSON.stringify(this)}, tx: ${JSON.stringify(tx)}, tx.journalEntries: ${JSON.stringify(tx.journalEntries())} `);
+        reconciledAmount += correspondingJe.amount * Transactions.signOfPartnerSide(correspondingJe.side);
+      } else Log.warning(`The statement entry is reconciled to a transaction that no longer exists. se: ${JSON.stringify(this)}`);
     });
     return reconciledAmount;
   },

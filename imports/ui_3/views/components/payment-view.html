@@ -77,9 +77,9 @@
             <td class="nowrap">{{displayMoney rDoc.rounding}}</td>
         </tr>
         {{/if}}
-        {{#if (and showBills showLines) }}
+        {{#if rDoc.outstanding}}
         <tr>
-            <td><strong>{{_ 'Overpayment'}} :</strong></td>
+            <td><strong>{{_ 'Unidentified'}} :</strong></td>
             <td class="nowrap">{{displayMoney rDoc.outstanding}}</td>
         </tr>
         {{/if}}
@@ -90,14 +90,14 @@
         </tbody>
     </table>
 
-    <div class="text-right" data-id="{{rDoc._id}}">
-      {{>Action_buttons_group collection='transactions' doc=rDoc actions='edit,delete,post' size='xl'}}
-    </div>
-
     {{#if rDoc.notes}}
     <div class="well m-t"><strong>{{_ 'schemaNoted.notes.label'}}:</strong><br>
         {{rDoc.notes}}
     </div>
     {{/if}}
+
+    <div class="text-right" data-id="{{rDoc._id}}">
+      {{>Action_buttons_group collection='transactions' doc=rDoc actions='post,edit,reallocate,delete' size='xl'}}
+    </div>
   {{/let}}
 </template>

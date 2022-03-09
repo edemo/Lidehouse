@@ -14,8 +14,26 @@
 
     <div class="row">
         <div class="col-sm-6">
+            <div class="table-responsive m-t">
+                <strong>{{_ 'schemaTransactions.debit.label'}}</strong>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="table-responsive m-t">
+                <strong>{{_ 'schemaTransactions.credit.label'}}</strong>
+            </div>
+        </div>
+    </div>
+
+    {{#each subTx in subTxs}}
+        {{>SubTx_view doc=subTx}}
+    {{/each}}
+</template>
+
+<template name="SubTx_view">
+    <div class="row">
+        <div class="col-sm-6">
         <div class="table-responsive m-t">
-            <strong>{{_ 'schemaTransactions.debit.label'}}</strong>
             <table class="table invoice-table">
                 <thead>
                     <tr>
@@ -40,7 +58,6 @@
         </div><!-- /table-responsive -->
         <div class="col-sm-6">
         <div class="table-responsive m-t">
-            <strong>{{_ 'schemaTransactions.credit.label'}}</strong>
             <table class="table invoice-table">
                 <thead>
                     <tr>
@@ -64,5 +81,4 @@
         </div><!-- /table-responsive -->
         </div>
     </div>
-
 </template>

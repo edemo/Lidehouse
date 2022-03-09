@@ -32,7 +32,9 @@ Communities.settingsSchema = new SimpleSchema({
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions() },
   paymentsToBills: { type: [String], allowedValues: Relations.values, defaultValue: Relations.mainValues, autoform: { type: 'select-checkbox-inline' } },
   paymentsWoStatement: { type: Boolean, optional: true },
+  allowPostToGroupAccounts: { type: Boolean, optional: true },
   subjectToVat: { type: Boolean, optional: true },
+  enableMeterEstimationDays: { type: Number, defaultValue: 30 },
 });
 
 Communities.schema = new SimpleSchema([{
@@ -179,5 +181,7 @@ Factory.define('community', Communities, {
     language: 'en',
     parcelRefFormat: 'bfdd',
     accountingMethod: 'accrual',
+    allowPostToGroupAccounts: true,
+    enableMeterEstimationDays: 5,
   },
 });

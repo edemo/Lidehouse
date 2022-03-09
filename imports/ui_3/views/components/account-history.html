@@ -9,6 +9,14 @@
             </div>
         </div>
         {{/if}}
+        {{#if (or partnerContractOptions partnerContractSelected)}}
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label class="control-label text-capitalize" for="partner">{{_ 'partner'}}/{{_ 'contract'}}</label>
+                <select id="partner" name="partner" {{b 'options: partnerContractOptions, value: partnerContractSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+            </div>
+        </div>
+        {{/if}}
         <div class="col-sm-2 pull-right">
             <div class="form-group">
                 <label class="control-label" for="status">{{_ 'Status'}}</label>

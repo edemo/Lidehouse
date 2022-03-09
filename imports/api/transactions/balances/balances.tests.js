@@ -4,6 +4,7 @@ import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -21,7 +22,7 @@ if (Meteor.isServer) {
     before(function () {
       Fixture = freshFixture();
       originalAccountToLocalize = Accounts.toLocalize;
-      Accounts.toLocalize = '`1';
+      Accounts.toLocalize = () => ['`1'];
       Templates.remove({});
       Accounts.remove({});
       Transactions.remove({});
@@ -278,24 +279,22 @@ if (Meteor.isServer) {
 
       it('calculates closing values right for partners', function () {
         function insertPartnerBill(params) {
-          const billId = Fixture.builder.create('bill', {
-            relation: 'customer',
+          const txId = Fixture.builder.create('freeTx', {
             communityId: Fixture.demoCommunityId,
-            partnerId: params.partnerId,
-            contractId: params.contractId,
-            relationAccount: '`12',
-            issueDate: new Date(params.date),
-            deliveryDate: new Date(params.date),
-            dueDate: new Date(params.date),
-            lines: [{
-              title: 'Work 1',
-              uom: 'piece',
-              quantity: 1,
-              unitPrice: params.amount,
+            defId: Txdefs.findOne({ communityId: Fixture.demoCommunityId, category: 'freeTx' })._id,
+            valueDate: new Date(params.date),
+            amount: params.amount,
+            debit: [{
+              amount: params.amount,
+              account: '`12',
+            }],
+            credit: [{
+              amount: params.amount,
               account: '`19',
+              partner: Partners.code(params.partnerId, params.contractId),
             }],
           });
-          Transactions.methods.post._execute({ userId: Fixture.demoAccountantId }, { _id: billId });
+          Transactions.methods.post._execute({ userId: Fixture.demoAccountantId }, { _id: txId });
         }
         function assertPartnerBalance(partner, tag, expectedBalance) {
           const balance = Balances.get({
@@ -387,6 +386,40 @@ if (Meteor.isServer) {
             tag: 'T-2018-12',
           });
         }, 'Debug assertion failed');
+      });
+    });
+
+    describe('accounts api', function () {
+      it('updates isGroup property automatically', function () {
+        chai.assert.isTrue(Accounts.getByCode('`', Fixture.demoCommunityId).isGroup);
+        chai.assert.isTrue(Accounts.getByCode('`1', Fixture.demoCommunityId).isGroup);
+        chai.assert.isTrue(Accounts.getByCode('`12', Fixture.demoCommunityId).isGroup);
+        chai.assert.isUndefined(Accounts.getByCode('`12A', Fixture.demoCommunityId).isGroup);
+        chai.assert.isUndefined(Accounts.getByCode('`12B', Fixture.demoCommunityId).isGroup);
+        chai.assert.isUndefined(Accounts.getByCode('`12C', Fixture.demoCommunityId).isGroup);
+        chai.assert.isUndefined(Accounts.getByCode('`19', Fixture.demoCommunityId).isGroup);
+
+        Accounts.update({ communityId: Fixture.demoCommunityId, code: '`12A' }, { $set: { code: '`20' } });
+        chai.assert.isTrue(Accounts.getByCode('`12', Fixture.demoCommunityId).isGroup);
+        chai.assert.isUndefined(Accounts.getByCode('`20', Fixture.demoCommunityId).isGroup);
+
+        Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`12B' });
+        chai.assert.isTrue(Accounts.getByCode('`12', Fixture.demoCommunityId).isGroup);
+        Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`12C' });
+        chai.assert.isFalse(Accounts.getByCode('`12', Fixture.demoCommunityId).isGroup);
+        chai.assert.isTrue(Accounts.getByCode('`1', Fixture.demoCommunityId).isGroup);
+
+        Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`12' });
+        chai.assert.isTrue(Accounts.getByCode('`1', Fixture.demoCommunityId).isGroup);
+
+        Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`19' });
+        chai.assert.isFalse(Accounts.getByCode('`1', Fixture.demoCommunityId).isGroup);
+
+        Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`1' });
+        chai.assert.isTrue(Accounts.getByCode('`', Fixture.demoCommunityId).isGroup);
+
+        Accounts.remove({ communityId: Fixture.demoCommunityId, code: '`20' });
+        chai.assert.isFalse(Accounts.getByCode('`', Fixture.demoCommunityId).isGroup);
       });
     });
   });

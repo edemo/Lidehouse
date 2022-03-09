@@ -78,6 +78,10 @@
       "placeholder": "(pl. 2)", 
       "help": "It needs to be unique. If there is already a transaction under this code, it is not modifiable."
     },
+    "allowPost": {
+      "label": "Allow posting here",
+      "help": "Turn it off, if you will never post here"
+    },
     "bank": {
       "label": "Bank name",
       "placeholder": "(pl. HSBC)"
@@ -742,7 +746,6 @@
       "options": {
         "bill": "bill",
         "payment": "payment",
-        "remission": "remission",
         "receipt": "receipt",
         "transfer": "transfer",
         "exchange": "exchange",
@@ -838,24 +841,6 @@
         }
       }
     },
-    "pEntries": {
-      "label": "Partner entries",
-      "$": {
-        "amount": {
-          "label": "Amount"
-        },
-        "side": {
-          "label": "Side",
-          "options": {
-            "debit": "Debit",
-            "credit": "Credit"
-          }
-        },
-        "partner": {
-          "label": "Partner/Contract"
-        }         
-      }
-    },
     // Following lines are for the different txdefs
     "supplierBillId": {
       "label": "Supplier bill being bartered"
@@ -864,16 +849,16 @@
       "label": "Customer bill being bartered"
     },
     "fromAccount": {
-      "label": "Moving from (Cr)"
+      "label": "Transfering from (Cr)"
     },
     "toAccount": {
-      "label": "Moving to (Dr)"
+      "label": "Transfering to (Dr)"
     },
     "fromPartner": {
-      "label": "Moving from (Cr)"
+      "label": "Sending from partner (Cr)"
     },
     "toPartner": {
-      "label": "Moving to (Dr)"
+      "label": "Receiving partner (Dr)"
     },
     "side": {
       "label": "Side",
@@ -883,7 +868,8 @@
       }
     },
     "account": {
-      "label": "Account"
+      "label": "Account",
+      "help": "Account under which the trasaction takes place"
     },
     "relationAccount": {
       "label": "Account"
@@ -963,7 +949,6 @@
       "options": {
         "bill": "bill",
         "payment": "payment",
-        "remission": "remission",
         "receipt": "receipt",
         "transfer": "transfer between accounts",
         "exchange": "exchange between partners",
@@ -990,10 +975,19 @@
           "credit": "Követel"
         }
       },
-      "remission": {
-        "label": "Remission?",
-        "help": "Can be used if main category is payment."
-      }      
+      "paymentSubType": {
+        "label": "Payment subtype",
+        "help": "Can be used if main category is payment.",
+        "options": {
+          "payment": "payment",
+          "identification": "identification",
+          "remission": "remission"
+        }
+      },
+      "autoPosting": {
+        "label": "Automatic posting",
+        "help": "Enable this, if you wish to automatcally post these kind of transactions when they are created."
+      }
     },
     "debit": {
       "label": "Debited",
@@ -1001,6 +995,16 @@
     },
     "credit": {
       "label": "Credited",
+      "placeholder": ""
+    },
+    "debit_unidentified": {
+      "label": "Unidentified debit",
+      "help": "For payments only. Unidentified part of the debit can be accounted here.",
+      "placeholder": ""
+    },
+    "credit_unidentified": {
+      "label": "Unidentified credit",
+      "help": "For payments only. Unidentified part of the credit can be accounted here.",
       "placeholder": ""
     }
   },
@@ -1235,6 +1239,14 @@
     "outstanding": {
       "label": "Unreconciled amount",
       "placeholder": "(eg. 14560)"
+    },
+    "paymentSubType": {
+      "label": "Payment subtype",
+      "options": {
+        "payment": "payment",
+        "identification": "identification from overpayment",
+        "remission": "remission"
+      }
     }
   },
   "schemaParcelBillings": {

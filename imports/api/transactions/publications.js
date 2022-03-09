@@ -25,7 +25,7 @@ Meteor.publish('transactions.inCommunity', function transactionsInCommunity(para
   return Transactions.find(selector);
 });
 
-Meteor.publish('transactions.byPartnerContract', function transactionsInCommunity(params) {
+Meteor.publish('transactions.byPartnerContract', function transactionsByPartnerContract(params) {
   new SimpleSchema({
     communityId: { type: String },
     partnerId: { type: String, optional: true },

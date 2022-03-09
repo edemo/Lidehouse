@@ -10,7 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
@@ -222,7 +222,7 @@ Transactions.categoryHelpers('bill', {
     let account = this.relationAccount;
     if (line.billing) account += ParcelBillings.findOne(line.billing.id).digit;
     else if (this.relation === 'member' && line.account && this.defId) {
-      let digit;
+      let digit = '';
       this.txdef()[this.conteerSide()].forEach(code => {
         if (line.account.startsWith(code)) {
           digit = line.account.replace(code, '');
@@ -233,7 +233,7 @@ Transactions.categoryHelpers('bill', {
     return account;
   },
   fillFromStatementEntry(entry) {
-    this.amount = entry.amount * Relations.sign(this.relation);
+    this.amount = entry.amount * this.relationSign();
     this.issueDate = entry.valueDate;
     this.deliveryDate = entry.valueDate;
     this.dueDate = entry.valueDate;
@@ -242,13 +242,20 @@ Transactions.categoryHelpers('bill', {
       this.lines = [{ title, quantity: 1, unitPrice: Math.abs(entry.amount) }];
     }
   },
+  correspondingPaymentTxdef() {
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'payment' });
+  },
+  correspondingIdentificationTxdef() {
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'identification' });
+  },
+  correspondingRemissionTxdef() {
+    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'remission' });
+  },
   makeJournalEntries(accountingMethod) {
-//    const communityId = this.communityId;
-//    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });
     this.debit = [];
     this.credit = [];
     this.getLines().forEach(line => {
-      const newEntry = { amount: line.amount, localizer: line.localizer, parcelId: line.parcelId };
+      const newEntry = { amount: line.amount, partner: this.partnerContractCode(), localizer: line.localizer, parcelId: line.parcelId };
       if (accountingMethod === 'accrual') {
         this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
       } else if (accountingMethod === 'cash') {
@@ -259,14 +266,6 @@ Transactions.categoryHelpers('bill', {
       this.makeEntry(this.relationSide(), _.extend({ account: relationAccount }, newEntry));
     });
     return { debit: this.debit, credit: this.credit };
-  },
-  makePartnerEntries() {
-    this.pEntries = [{
-      partner: this.partnerContractCode(),
-      side: this.conteerSide(),
-      amount: this.amount,
-    }];
-    return { pEntries: this.pEntries };
   },
   hasConteerData() {
     let result = true;
@@ -292,6 +291,15 @@ Transactions.categoryHelpers('bill', {
     const diff = moment().diff(this.dueDate, 'days');
     if (diff < 0) return 0;
     return diff;
+  },
+  availableAmountFromOverPayment() {
+    let result = 0;
+    const def = this.correspondingIdentificationTxdef();
+    def[def.relationSide()].forEach(account => {
+      result += this.contract().outstanding(account);
+    });
+    result *= (-1); // Outstanding means underpayment, so Overpayment is the opposite of it
+    return result;
   },
 });
 

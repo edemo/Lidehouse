@@ -77,6 +77,15 @@ Object.cleanUndefined = function cleanUndefined(obj) {
   return obj;
 };
 
+Object.cleanEmptyStrings = function cleanEmptyStrings(obj) {
+  Object.keys(obj).forEach(key => {
+    if (obj[key] === '') {
+      delete obj[key];
+    }
+  });
+  return obj;
+};
+
 String.prototype.forEachChar = function forEachChar(func) {
   for (let i = 0; i < this.length; i++) {
     func(this.charAt(i));

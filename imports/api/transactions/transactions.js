@@ -43,18 +43,14 @@ Transactions.statusValues = Object.keys(Transactions.statuses);
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
-  LocationTagsSchema,
-  { amount: { type: Number, optional: true } },
+  LocationTagsSchema, {
+    amount: { type: Number, optional: true },
+    subTx: { type: Number, optional: true },  // used in case there are more than one subTx within the tx
+  },
   // A tx leg can be directly associated with a bill, for its full amount (if a tx is associated to multiple bills, use legs for each association, one leg can belong to one bill)
   // { billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true } },
   // { paymentId: { type: Number, decimal: true, optional: true } }, // index in the bill payments array
 ]);
-
-Transactions.partnerEntrySchema = new SimpleSchema({
-  partner: { type: String },
-  side: { type: String, allowedValues: ['debit', 'credit'] },
-  amount: { type: Number, optional: true },
-});
 
 Transactions.coreSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
@@ -86,7 +82,6 @@ Transactions.partnerSchema = new SimpleSchema({
 Transactions.legsSchema = {
   debit: { type: [Transactions.entrySchema], optional: true },
   credit: { type: [Transactions.entrySchema], optional: true },
-  pEntries: { type: [Transactions.partnerEntrySchema], optional: true },
   complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
 };
 
@@ -110,7 +105,10 @@ Meteor.startup(function indexTransactions() {
     Transactions._ensureIndex({ 'payments.id': 1 }, { sparse: true });
     Transactions._ensureIndex({ communityId: 1, 'debit.account': 1, valueDate: -1 }, { sparse: true });
     Transactions._ensureIndex({ communityId: 1, 'credit.account': 1, valueDate: -1 }, { sparse: true });
-    Transactions._ensureIndex({ communityId: 1, 'pEntries.partner': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ communityId: 1, 'debit.partner': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ communityId: 1, 'credit.partner': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ communityId: 1, 'debit.localizer': 1, valueDate: -1 }, { sparse: true });
+    Transactions._ensureIndex({ communityId: 1, 'credit.localizer': 1, valueDate: -1 }, { sparse: true });
   }
 });
 
@@ -128,11 +126,13 @@ Transactions.isValidSide = function isValidSide(side) {
 Transactions.oppositeSide = function oppositeSide(side) {
   if (side === 'debit') return 'credit';
   if (side === 'credit') return 'debit';
+  debugAssert(false, `Unrecognized side: ${side}`);
   return undefined;
 };
 Transactions.signOfPartnerSide = function signOfPartnerSide(side) {
   if (side === 'debit') return +1;
   if (side === 'credit') return -1;
+  debugAssert(false, `Unrecognized side: ${side}`);
   return undefined;
 };
 
@@ -168,6 +168,9 @@ Transactions.helpers({
   },
   entityName() {
     return this.category;
+  },
+  displayEntityName() {
+    return this.entityName();    // Will be overridden for payment as it has different display types
   },
   amountWoRounding() {
     return this.amount - (this.rounding || 0);
@@ -222,25 +225,17 @@ Transactions.helpers({
   calculateReconciled() {
     // If reconciled value is undefined, it means, no need to reconcile
     // Only reconciledCategories need to be reconciled, and only if they relate to bank accounts
+    if (!Transactions.reconciledCategories.includes(this.category)) return undefined;
     if (this.status === 'void') return undefined;
-    const txdef = this.txdef();
-    if (txdef.category === 'transfer') {
-      const toAccount = Accounts.getByCode(this.toAccount, this.communityId);
-      const fromAccount = Accounts.getByCode(this.fromAccount, this.communityId);
-      let expectedSeIdLength = 0;
-      if (toAccount.category === 'bank') expectedSeIdLength += 1;
-      if (fromAccount.category === 'bank') expectedSeIdLength += 1;
-      if (expectedSeIdLength) return this.seId?.length === expectedSeIdLength;
-      else return undefined;
-    } else if (Transactions.reconciledCategories.includes(txdef.category)) {
-      const payAccount = Accounts.getByCode(this.payAccount, this.communityId);
-      if (payAccount.category === 'bank') return this.seId?.length === 1;
-      else return undefined;
-    } else return undefined;
-  },
-  checkAccountsExist() {
-    if (this.debit) this.debit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
-    if (this.credit) this.credit.forEach(entry => Accounts.checkExists(this.communityId, entry.account));
+    let tx = this;
+    if (this.status === 'draft') { tx = _.clone(this); tx.makeJournalEntries(); }
+    let expectedSeIdLength = 0;
+    tx.journalEntries(true).forEach(je => {
+      const account = Accounts.getByCode(je.account, this.communityId);
+      if (account?.category === 'bank') expectedSeIdLength += 1;
+    });
+    if (expectedSeIdLength) return this.seId?.length === expectedSeIdLength;
+    else return undefined;
   },
   makeEntry(side, entry) {
     let writeSide = side;
@@ -251,11 +246,16 @@ Transactions.helpers({
         entry.amount *= -1;
       }
     }
+    if (!Accounts.needsLocalization(entry.account, this.communityId)) {
+      delete entry.partner;
+      delete entry.localizer;
+      delete entry.parcelId;
+    }
     this[writeSide].push(entry);
   },
-  journalEntries() {
+  journalEntries(includingUnposted = false) {
     const entries = [];
-    if (this.postedAt) {
+    if (this.postedAt || includingUnposted === true) {
       if (this.debit) {
         this.debit.forEach((entry, i) => {
           entries.push(_.extend({ side: 'debit', txId: this._id, _id: this._id + '#Dr' + i }, entry));
@@ -268,16 +268,21 @@ Transactions.helpers({
       }
     }
     return entries.map(entry => {
-      Object.setPrototypeOf(entry, this);
+      const self = this;
+      entry.tx = () => self;
+      entry.communityId = this.communityId;
+      entry.valueDate = this.valueDate;
+      if (!entry.amount) entry.amount = this.amount;
+      if (!entry.subTx) entry.subTx = 0;
       return JournalEntries._transform(entry);
     });
   },
   getContractAmount(contract) {
     let amount = 0;
-    this.pEntries?.forEach(pe => {
-      if (pe.partner === contract?.code()) {
-        const sign = Transactions.signOfPartnerSide(pe.side);
-        amount += sign * pe.amount;
+    this.journalEntries().forEach(je => {
+      if (je.partner === contract?.code()) {
+        const sign = Transactions.signOfPartnerSide(je.side);
+        amount += sign * je.amount;
       }
     });
     return amount;
@@ -300,7 +305,6 @@ Transactions.helpers({
     if (tx.bills) tx.bills.forEach(l => l.amount *= -1);  // 'payment' have bills
     tx.debit?.forEach(l => { if (l.amount) l.amount *= -1; });
     tx.credit?.forEach(l => { if (l.amount) l.amount *= -1; });
-    tx.pEntries?.forEach(l => { if (l.amount) l.amount *= -1; });
 //    const temp = tx.credit; tx.credit = tx.debit; tx.debit = temp;
     return tx;
   },
@@ -313,16 +317,21 @@ Transactions.helpers({
     PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
       journalEntries?.forEach((entry) => {
         const account = entry.account;
+        const partner = entry.partner;
         const localizer = entry.localizer;
         const changeAmount = entry.amount * directionSign;
         Balances.increase({ communityId, account, tag }, entry.side, changeAmount);
-        if (localizer && account.startsWith(Accounts.toLocalize)) {
+        if (partner) {
+          Balances.increase({ communityId, account, partner, tag }, entry.side, changeAmount);
+        }
+        if (localizer) {
           Balances.increase({ communityId, account, localizer, tag }, entry.side, changeAmount);
         }
       });
     });
     // checkBalances([doc]);
   },
+  // deprecated, only for migration purpose
   updatePartnerBalances(directionSign = 1) {
     const communityId = this.communityId;
     const Balances =  Mongo.Collection.get('balances');
@@ -337,10 +346,19 @@ Transactions.helpers({
       }
     });
   },
-  makeJournalEntries() {
-    // NOP -- will be overwritten in the categories
+  validateJournalEntries() {
+    this.journalEntries(true).forEach(je => {
+      let accountCode;
+      if (Accounts.isTechnicalCode(je.account)) accountCode = Accounts.fromTechnicalCode(je.account);
+      else accountCode = je.account;
+      const account = Accounts.getByCode(accountCode, je.communityId);
+      if (!account) throw new Meteor.Error('err_notExists', 'No such account', { code: accountCode });
+      if (!this.community().settings.allowPostToGroupAccounts && account?.isGroup) {
+        throw new Meteor.Error('err_notAllowed', 'Not allowed to post to group accounts', account.displayAccount());
+      }
+    });
   },
-  makePartnerEntries() {
+  makeJournalEntries() {
     // NOP -- will be overwritten in the categories
   },
   fillFromStatementEntry() {
@@ -371,10 +389,6 @@ Transactions.attachBehaviour(Noted);
 Transactions.attachBehaviour(Timestamped);
 Transactions.attachBehaviour(SerialId(['category', 'relation', 'side']));
 
-Transactions.attachVariantSchema(undefined, { selector: { category: 'freeTx' } });
-
-Transactions.simpleSchema({ category: 'freeTx' }).i18n('schemaTransactions');
-
 // --- Before/after actions ---
 
 function checkBalances(docs) {
@@ -397,7 +411,6 @@ function checkBalances(docs) {
 if (Meteor.isServer) {
   Transactions.before.insert(function (userId, doc) {
     const tdoc = this.transform();
-    if (tdoc.category === 'freeTx') tdoc.checkAccountsExist();
     tdoc.complete = tdoc.calculateComplete();
     tdoc.reconciled = tdoc.calculateReconciled();
     tdoc.autoFill?.();
@@ -409,10 +422,7 @@ if (Meteor.isServer) {
 
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
-    if (tdoc.postedAt) {
-      tdoc.updateBalances(+1);
-      tdoc.updatePartnerBalances(+1);
-    }
+    if (tdoc.postedAt) tdoc.updateBalances(+1);
     if (tdoc.category === 'payment') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, +1));
     const community = tdoc.community();
     if (tdoc.category === 'bill' && !_.contains(community.billsUsed, tdoc.relation)) {
@@ -437,7 +447,6 @@ if (Meteor.isServer) {
 
   Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {
     const tdoc = this.transform();
-    if (tdoc.category === 'freeTx') tdoc.checkAccountsExist();
     const oldDoc = Transactions._transform(this.previous);
     const newDoc = tdoc;
     if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
@@ -455,18 +464,11 @@ if (Meteor.isServer) {
       if (oldDoc.postedAt) oldDoc.updateBalances(-1);
       if (newDoc.postedAt) newDoc.updateBalances(+1);
     }
-    if (modifierChangesField(modifier, ['pEntries', 'postedAt'])) {
-      if (oldDoc.postedAt) oldDoc.updatePartnerBalances(-1);
-      if (newDoc.postedAt) newDoc.updatePartnerBalances(+1);
-    }
   });
 
   Transactions.after.remove(function (userId, doc) {
     const tdoc = this.transform();
-    if (tdoc.postedAt) {
-      tdoc.updateBalances(-1);
-      tdoc.updatePartnerBalances(-1);
-    }
+    if (tdoc.postedAt) tdoc.updateBalances(-1);
     if (tdoc.category === 'payment') tdoc.getBills().forEach(bp => tdoc.registerOnBill(bp, -1));
     tdoc.seId?.forEach(seId => StatementEntries.update(seId, { $pull: { txId: tdoc._id } }));
   });
@@ -492,13 +494,6 @@ if (Meteor.isServer) {
 
 Factory.define('transaction', Transactions, {
   valueDate: () => Clock.currentDate(),
-  debit: [],
-  credit: [],
-});
-
-Factory.define('freeTx', Transactions, {
-  valueDate: () => Clock.currentDate(),
-  category: 'freeTx',
   debit: [],
   credit: [],
 });
@@ -542,12 +537,14 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
   } else delete selector.creditAccount;
   if (params.partner) {
     const partner = withSubs(params.partner);
-    selector['pEntries.partner'] = partner;
+    const $or = [{ 'credit.partner': partner }, { 'debit.partner': partner }];
+    selector.$and.push({ $or });
     delete selector.partner;
   } else delete selector.partner;
   if (params.partnerId) {
-    const partner = Partners.code(params.partnerId, params.contractId);
-    selector['pEntries.partner'] = withSubs(partner);
+    const partner = withSubs(Partners.code(params.partnerId, params.contractId));
+    const $or = [{ 'credit.partner': partner }, { 'debit.partner': partner }];
+    selector.$and.push({ $or });
     delete selector.partnerId;
     delete selector.contractId;
   } else {
@@ -560,11 +557,12 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
 };
 
 JournalEntries.makeFilterSelector = function makeFilterSelector(params) {
-  const selector = _.clone(params);
+  let selector = _.clone(params);
   selector.valueDate = dateSelector(params.begin, params.end);
   delete selector.begin; delete selector.end;
   delete selector.localizer;
   if (params.account) selector.account = withSubs(params.account);
   if (params.localizer) selector.localizer = withSubs(params.localizer);
+  selector = Object.cleanEmptyStrings(selector);
   return Object.cleanUndefined(selector);
 };

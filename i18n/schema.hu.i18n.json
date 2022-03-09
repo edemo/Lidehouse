@@ -78,6 +78,10 @@
       "placeholder": "(pl. 245)",
       "help": "Egyedinek kell lennie. Ha már lett tranzakció ezen a főkönyvi számon könyvelve, utána már nem módosítható."
     },
+    "allowPost": {
+      "label": "Könyvelhetünk ide",
+      "help": "Kapcsolja ki, ha nem lehet ide könyvelni"
+    },
     "bank": {
       "label": "Bank neve",
       "placeholder": "(pl. OTP)"
@@ -742,7 +746,6 @@
       "options": {
         "bill": "számla",
         "payment": "fizetés",
-        "remission": "elengedés",
         "receipt": "elszámolás",
         "transfer": "átvezetés számlák között",
         "exchange": "átvezetés partnerek között",
@@ -838,24 +841,6 @@
         }
       }
     },
-    "pEntries": {
-      "label": "Partner tételek",
-      "$": {
-        "amount": {
-          "label": "Összeg"
-        },
-        "side": {
-          "label": "Oldal",
-          "options": {
-            "debit": "Tartozik",
-            "credit": "Követel"
-          }
-        },
-        "partner": {
-          "label": "Partner/Szerződés"
-        }         
-      }
-    },
     // Following lines are for the different txdefs
     "supplierBillId": {
       "label": "Bejövő számla, amit beszámítunk"
@@ -870,10 +855,11 @@
       "label": "Átvezetés ide (T)"
     },
     "fromPartner": {
-      "label": "Átvezetés innen (K)"
+      "label": "Küldő partner (K)",
+      "help": "Hagyja kitöltetlenül, ha azt szeretné hogy beazonosítatlan pénzt rendeljen a Fogadó partnerhez"
     },
     "toPartner": {
-      "label": "Átvezetés ide (T)"
+      "label": "Fogadó partner (T)"
     },
     "side": {
       "label": "Oldal",
@@ -883,7 +869,8 @@
       }
     },
     "account": {
-      "label": "Főkönyvi számla"
+      "label": "Főkönyvi számla",
+      "help": "Főkönyvi számla, amin a tranzakció megtörténik"
     },
     "relationAccount": {
       "label": "Könyvelési számla"
@@ -963,7 +950,6 @@
       "options": {
         "bill": "számla",
         "payment": "fizetés",
-        "remission": "elengedés",
         "receipt": "elszámolás",
         "transfer": "átvezetés számlák között",
         "exchange": "átvezetés partnerek között",
@@ -992,10 +978,19 @@
           "credit": "Követel"
         }
       },
-      "remission": {
-        "label": "Elengedés?",
-        "help": "Akkor szükséges ha a főtípus fizetés."
-      }      
+      "paymentSubType": {
+        "label": "Fizetés altípus",
+        "help": "Akkor szükséges ha a főtípus Fizetés.",
+        "options": {
+          "payment": "fizetés",
+          "identification": "beazonosítás",
+          "remission": "elengedés"
+        }
+      },
+      "autoPosting": {
+        "label": "Automatikus könyvelésbe küldés",
+        "help": "Kapcsolja be, ha a tranzakciókat a létrehozáskor automatikusan szeretné könyvelésbe is küldeni."
+      }
     },
     "debit": {
       "label": "Tartozik",
@@ -1003,6 +998,16 @@
     },
     "credit": {
       "label": "Követel",
+      "placeholder": ""
+    },
+    "debit_unidentified": {
+      "label": "Beazonosítatlan Tartozik",
+      "help": "Csak Fizetés esetén szükséges. Ami nem beazonosítható összeg, az erre a T számlára kerülhet.",
+      "placeholder": ""
+    },
+    "credit_unidentified": {
+      "label": "Beazonosítatlan Követel",
+      "help": "Csak Fizetés esetén szükséges. Ami nem beazonosítható összeg, az erre a K számlára kerülhet.",
       "placeholder": ""
     }
   },
@@ -1089,9 +1094,9 @@
     "relation": {
       "label": "Oldal",
       "options": {
-        "supplier": "Bejövő számla",
-        "customer": "Kimenő számla",
-        "member": "Előírás"
+        "supplier": "Szállító számla",
+        "customer": "Vevő számla",
+        "member": "Albetét előírás"
       }
     },
     "issueDate": {
@@ -1240,6 +1245,14 @@
     "outstanding": {
       "label": "Egyeztetendő",
       "placeholder": "(pl. 14560)"
+    },
+    "paymentSubType": {
+      "label": "Fizetés altípus",
+      "options": {
+        "payment": "fizetés",
+        "identification": "beazonosítás",
+        "remission": "elengedés"
+      }
     }
   },
   "schemaParcelBillings": {

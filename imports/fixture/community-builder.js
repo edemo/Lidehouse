@@ -128,7 +128,7 @@ export class CommunityBuilder {
   create(name, data) {
     const doc = this.build(name, data);
     const collection = Factory.get(name).collection;
-    if (collection._name === 'transactions') {
+    if (collection._name === 'transactions' && !doc.defId) {
       doc.defId = Txdefs.findOne({ communityId: this.communityId, category: doc.category, 'data.relation': doc.relation, 'data.side': doc.side })._id;
     }
     return this.execute(collection.methods.insert, doc);

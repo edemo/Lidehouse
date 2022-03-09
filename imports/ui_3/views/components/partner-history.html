@@ -50,7 +50,7 @@
                   <td class="text-capitalize"><!--a href="{{pathFor 'Transaction show' _txid=tx._id}}"-->{{tx.displayInHistory}}<!--/a--></td>
                   <td>{{>Action_buttons_group collection='transactions' actions='view' doc=tx size='sm'}}</td>
                   <td><span class="text-navy">{{tx.serialId}}</span></td>
-                  <td class="{{negativeClass tx.contractAmount}}">{{displayMoney tx.contractAmount}}</td>
+                  <td class="{{negativeClass tx.effectiveAmount}}">{{displayMoney tx.effectiveAmount}}</td>
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
                   <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
                   <td class="{{negativeClass tx.total}}"><strong>{{displayMoney tx.total}}</strong></td>

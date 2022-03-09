@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
 import { Clock } from '/imports/utils/clock';
 // The autoform needs to see these, to handle new events on it
@@ -19,13 +19,20 @@ import './payment-edit.html';
 
 Template.Payment_edit.viewmodel({
   billsView: false,
+  linesView: false,
+  payAccountNeeded: false,
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = getActiveCommunityId();
       const contractId = AutoForm.getFieldValue('contractId');
       if (contractId) instance.subscribe('transactions.byPartnerContract', { communityId, contractId, outstanding: true });
     });
-    this.billsView(!!this.templateInstance.data.doc.bills?.length);
+    const community = getActiveCommunity();
+    const doc = this.templateInstance.data.doc;
+    const needToAllocateToBills = _.contains(community.settings.paymentsToBills, doc.relation);
+    this.billsView(!!doc.bills?.length || needToAllocateToBills);
+    this.linesView(doc.subType() !== 'remission' && !needToAllocateToBills);
+    this.payAccountNeeded(doc.subType() !== 'remission');
   },
   afDoc(formId) {
     const doc = Transactions._transform(AutoForm.getDoc(formId));
@@ -86,8 +93,8 @@ Template.Payment_edit.events({
     }, 1000);
   },
   'click .js-create[data-entity="bill"]'(event, instance) {
-    const paymentDef = instance.data.doc.txdef();
-    const billDef = paymentDef.correspondingBillDef();
+    const payment = instance.data.doc;
+    const billDef = payment.correspondingBillTxdef();
     const doc = {
       relation: AutoForm.getFieldValue('relation'),
       partnerId: AutoForm.getFieldValue('partnerId'),

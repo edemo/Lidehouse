@@ -60,12 +60,10 @@ export const post = new ValidatedMethod({
     if (doc.status !== 'void') { // voided already has the accounting data on it
       const community = Communities.findOne(doc.communityId);
       const accountingMethod = community.settings.accountingMethod;
-      const updateData = _.extend({},
-        doc.makeJournalEntries(accountingMethod),
-        doc.makePartnerEntries(),
-      );
+      const updateData = _.extend({}, doc.makeJournalEntries(accountingMethod));
       _.extend(modifier.$set, { status: 'posted', ...updateData });
     }
+    doc.validateJournalEntries();
     const result = Transactions.update(_id, modifier);
 
     if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {
@@ -261,8 +259,8 @@ export const statistics = new ValidatedMethod({
     postedTxs.forEach((tx) => {
       let credit = 0;
       let debit = 0;
-      tx.credit?.forEach((cr) => { credit += cr.amount; });
-      tx.debit?.forEach((deb) => { debit += deb.amount; });
+      tx.credit?.forEach((cr) => { credit += cr.amount || tx.amount; });
+      tx.debit?.forEach((deb) => { debit += deb.amount || tx.amount; });
       if (credit !== debit) txStat.misPosted.push(tx.serialId || tx._id);
     });
     return txStat;
