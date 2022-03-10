@@ -184,17 +184,10 @@ _.extend(Accounts, {
     firstOption: () => __('(Select one)'),
   },
   toLocalize(communityId) {  // These accounts' balances will be stored for each localization tag
-    const result = [];
     const Txdefs = Mongo.Collection.get('txdefs');
-    Txdefs.find({ communityId, category: 'bill' }).forEach(billDef => {
-      const codes = billDef[billDef.relationSide()];
-      if (codes) result.push(...codes);
-    });
-    Txdefs.find({ communityId, category: 'payment' }).forEach(paymentDef => {
-      const codes = paymentDef[`${paymentDef.conteerSide()}_unidentified`];
-      if (codes) result.push(...codes);
-    });
-    return result;
+    const def = Txdefs.getByName('Partner exchange', communityId);
+    productionAssert(def.debit.toString() === def.credit.toString(), "Don't mess with Partner exchange definition");
+    return def.debit;
   },
   needsLocalization(code, communityId) {
     let result = false;

@@ -5,6 +5,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -154,7 +155,9 @@ _.extend(Txdefs, {
     return Txdefs.find({ communityId, $or: [{ debit: code }, { credit: code }] });
   },
   getByName(name, communityId = getActiveCommunityId()) {
-    return Txdefs.findOne({ communityId, name });
+    const txdef = Txdefs.findOne({ communityId, name });
+    productionAssert(txdef, "You've removed an essential txdef", { txdef });
+    return txdef;
   },
 });
 
