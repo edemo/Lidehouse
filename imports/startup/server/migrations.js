@@ -923,7 +923,7 @@ Migrations.add({
   up() {
     Txdefs.find({ category: 'payment' }).forEach(txdef => {
       const value = txdef.data.remission ? 'remission' : 'payment';
-      Txdefs.direct.update(txdef._id, { $set: { 'data.paymentSubType': value }/*, $unset: { 'data.remission': '' } */});
+      Txdefs.direct.update(txdef._id, { $set: { 'data.paymentSubType': value } });
     });
   },
 });
