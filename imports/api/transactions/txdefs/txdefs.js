@@ -96,7 +96,7 @@ Txdefs.helpers({
     return undefined;
   },
   relationSide() {
-    debugAssert(!this.data?.side && this.data.relation);
+    debugAssert(!this.data?.side && this.data.relation, JSON.stringify(this));
     const relation = this.data.relation;        // bill, payment, receipt txs
     if (relation === 'supplier') return 'credit';
     if (relation === 'customer' || relation === 'member') return 'debit';
