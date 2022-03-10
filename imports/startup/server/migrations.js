@@ -1066,6 +1066,21 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 61,
+  name: 'Repost older transactions',
+  up() {
+    const end = new Date('2020-09-01');
+    Communities.find().forEach(community => {
+      const adminId = community.admin()?._id;
+      if (!adminId) return;
+      Transactions.find({ communityId: community._id, postedAt: { $exists: true }, createdAt: { $lte: end } }).forEach(tx => {
+        Transactions.methods.post._execute({ userId: adminId }, { _id: tx._id });
+      });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 Meteor.startup(() => {
