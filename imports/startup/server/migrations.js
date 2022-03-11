@@ -919,32 +919,13 @@ Migrations.add({
 
 Migrations.add({
   version: 54,
-  name: 'Txdef paymentSubType and fix db inconsistency',
+  name: 'Txdef paymentSubType',
   up() {
     Txdefs.find({ category: 'payment' }).forEach(txdef => {
       const value = txdef.data.remission ? 'remission' : 'payment';
       if (!txdef.data.paymentSubType) {
         Txdefs.direct.update(txdef._id, { $set: { 'data.paymentSubType': value } });
       }
-    });
-    Transactions.find({ relation: 'member', category: 'bill', relationAccount: { $ne: '`33' } }).forEach(tx => {
-      Transactions.direct.update(tx._id, { $set: { relationAccount: '`33' } }, { selector: tx, validate: false });
-      if (tx.isPosted()) {
-        const userId = tx.community().admin()._id;
-        Transactions.methods.post._execute({ userId }, { _id: tx._id });
-      }
-    });
-    Transactions.find({ lines: { $exists: true }, 'lines.account': new RegExp('^[^`]') }).forEach(tx => {
-      const newLines = [];
-      tx.lines.forEach((line, index) => {
-        let account = line.account;
-        if (!line.account.startsWith('`')) {
-          account = '`' + line.account;
-        }
-        line.account = account;
-        newLines.push(line);
-      });
-      Transactions.direct.update(tx._id, { $set: { lines: newLines } }, { selector: tx, validate: false });
     });
   },
 });
@@ -1019,17 +1000,13 @@ Migrations.add({
         $set: { credit: ['`9'] } });
       Txdefs.direct.update({ communityId, name: 'Customer bill remission' }, {
         $set: { debit: ['`9'] } });
+      Txdefs.direct.update({ communityId, name: 'Supplier payment' }, {
+        $set: { debit: ['`454'], debit_unidentified: ['`434'] } });
+      Txdefs.direct.update({ communityId, name: 'Customer payment' }, {
+        $set: { credit: ['`31'], credit_unidentified: ['`431'] } });
+      Txdefs.direct.update({ communityId, name: 'Parcel payment' }, {
+        $set: { credit: ['`33'], credit_unidentified: ['`431'] } });
 
-      const paymentTxdefs = Txdefs.find({ communityId, category: 'payment', 'data.paymentSubType': 'payment' });
-      let unidentifiedAccount = { credit_unidentified: ['`431'] };
-      let side = { credit: '`431' };
-      paymentTxdefs.forEach(txdef => {
-        if (txdef.data.relation === 'supplier') {
-          unidentifiedAccount = { debit_unidentified: ['`434'] };
-          side = { debit: '`434' };
-        }
-        Txdefs.direct.update(txdef._id, { $set: unidentifiedAccount, $pull: side });
-      });
       if (!Txdefs.find({ communityId, 'data.paymentSubType': 'identification' }).count()) {
         Txdefs.direct.insert({ communityId,
           name: 'Supplier payment identification',
@@ -1059,8 +1036,28 @@ Migrations.add({
 
 Migrations.add({
   version: 57,
-  name: 'Payments from overpayments into separate transactions',
+  name: 'Payments from overpayments into separate transactions and fix db inconsistency',
   up() {
+    Transactions.find({ relation: 'member', category: 'bill', relationAccount: { $ne: '`33' } }).forEach(tx => {
+      Transactions.direct.update(tx._id, { $set: { relationAccount: '`33' } }, { selector: tx, validate: false });
+      if (tx.isPosted()) {
+        const userId = tx.community().admin()._id;
+        Transactions.methods.post._execute({ userId }, { _id: tx._id });
+      }
+    });
+    Transactions.find({ lines: { $exists: true }, 'lines.account': new RegExp('^[^`]') }).forEach(tx => {
+      const newLines = [];
+      tx.lines.forEach((line, index) => {
+        let account = line.account;
+        if (!line.account.startsWith('`')) {
+          account = '`' + line.account;
+        }
+        line.account = account;
+        newLines.push(line);
+      });
+      Transactions.direct.update(tx._id, { $set: { lines: newLines } }, { selector: tx, validate: false });
+    });
+
     Transactions.find({ category: 'payment' }).forEach(payment => {
       const olderBills = [];
       const newerBills = [];
