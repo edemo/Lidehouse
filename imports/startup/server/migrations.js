@@ -919,11 +919,32 @@ Migrations.add({
 
 Migrations.add({
   version: 54,
-  name: 'Txdef paymentSubType',
+  name: 'Txdef paymentSubType and fix db inconsistency',
   up() {
     Txdefs.find({ category: 'payment' }).forEach(txdef => {
       const value = txdef.data.remission ? 'remission' : 'payment';
-      Txdefs.direct.update(txdef._id, { $set: { 'data.paymentSubType': value } });
+      if (!txdef.data.paymentSubType) {
+        Txdefs.direct.update(txdef._id, { $set: { 'data.paymentSubType': value } });
+      }
+    });
+    Transactions.find({ relation: 'member', category: 'bill', relationAccount: { $ne: '`33' } }).forEach(tx => {
+      Transactions.direct.update(tx._id, { $set: { relationAccount: '`33' } }, { selector: tx, validate: false });
+      if (tx.isPosted()) {
+        const userId = tx.community().admin()._id;
+        Transactions.methods.post._execute({ userId }, { _id: tx._id });
+      }
+    });
+    Transactions.find({ lines: { $exists: true }, 'lines.account': new RegExp('^[^`]') }).forEach(tx => {
+      const newLines = [];
+      tx.lines.forEach((line, index) => {
+        let account = line.account;
+        if (!line.account.startsWith('`')) {
+          account = '`' + line.account;
+        }
+        line.account = account;
+        newLines.push(line);
+      });
+      Transactions.direct.update(tx._id, { $set: { lines: newLines } }, { selector: tx, validate: false });
     });
   },
 });
@@ -938,34 +959,94 @@ Migrations.add({
 
 Migrations.add({
   version: 56,
-  name: 'Accounts of unidentified payments to TxDefs, identification txDef type',
+  name: 'Txdef updates',
   up() {
     defineTxdefTemplates();
     Communities.find().forEach(community => {
       const communityId = community._id;
-      const paymentTxdefs = Txdefs.find({ communityId, category: 'payment', 'data.paymentSubType': 'payment' });
-      paymentTxdefs.forEach(txdef => {
-        let unidentifiedAccount = { credit_unidentified: ['`431'] };
-        if (txdef.data.relation === 'supplier') unidentifiedAccount = { debit_unidentified: ['`434'] };
-        Txdefs.direct.update(txdef._id, { $set: unidentifiedAccount });
-      });
-      if (paymentTxdefs.count() && !Txdefs.find({ communityId, 'data.paymentSubType': 'identification' }).count()) {
+      Txdefs.direct.update({ communityId, name: 'Partner exchange' }, {
+        $set: {
+          debit: ['`454', '`31', '`33', '`431', '`434'],
+          credit: ['`454', '`31', '`33', '`431', '`434'],
+        } });
+      if (!Txdefs.find({ communityId, name: 'Non idendified income' })) {
         Txdefs.direct.insert({ communityId,
-          name: 'Supplier payment identification', // 'Szállító kifizetés azonosítás',
+          name: 'Non identified income',
+          category: 'transfer',
+          debit: ['`38'],
+          credit: ['`431'],
+        });
+      } 
+      if (!Txdefs.find({ communityId, name: 'Non idendified expense' })) {
+        Txdefs.direct.insert({ communityId,
+          name: 'Non identified expense',
+          category: 'transfer',
+          debit: ['`434'],
+          credit: ['`38'],
+        });
+      }
+      if (!Txdefs.find({ communityId, name: 'Barter' })) {
+        Txdefs.direct.insert({ communityId,
+          name: 'Barter',
+          category: 'barter',
+          debit: ['`454'],
+          credit: ['`31', '`33'],
+        });
+      }
+      if (!Txdefs.find({ communityId, name: 'Pass through income' })) {
+        Txdefs.direct.insert({ communityId,
+          name: 'Pass through income',
+          category: 'receipt',
+          data: { relation: 'customer' },
+          debit: ['`38'],
+          credit: ['`981'],
+        });
+      }
+      if (!Txdefs.find({ communityId, name: 'Pass through expense' })) {
+        Txdefs.direct.insert({ communityId,
+          name: 'Pass through expense',
+          category: 'receipt',
+          data: { relation: 'supplier' },
+          debit: ['`981'],
+          credit: ['`38'],
+        });
+      }
+      Txdefs.direct.update({ communityId, name: 'Supplier bill' }, {
+        $set: { debit: ['`1', '`5', '`8'] } });
+      Txdefs.direct.update({ communityId, name: 'Supplier bill remission' }, {
+        $set: { credit: ['`1', '`5', '`8'] } });
+      Txdefs.direct.update({ communityId, name: 'Customer bill' }, {
+        $set: { credit: ['`9'] } });
+      Txdefs.direct.update({ communityId, name: 'Customer bill remission' }, {
+        $set: { debit: ['`9'] } });
+
+      const paymentTxdefs = Txdefs.find({ communityId, category: 'payment', 'data.paymentSubType': 'payment' });
+      let unidentifiedAccount = { credit_unidentified: ['`431'] };
+      let side = { credit: '`431' };
+      paymentTxdefs.forEach(txdef => {
+        if (txdef.data.relation === 'supplier') {
+          unidentifiedAccount = { debit_unidentified: ['`434'] };
+          side = { debit: '`434' };
+        }
+        Txdefs.direct.update(txdef._id, { $set: unidentifiedAccount, $pull: side });
+      });
+      if (!Txdefs.find({ communityId, 'data.paymentSubType': 'identification' }).count()) {
+        Txdefs.direct.insert({ communityId,
+          name: 'Supplier payment identification',
           category: 'payment',
           data: { relation: 'supplier', paymentSubType: 'identification' },
           debit: ['`454'],
           credit: ['`434'],
         });
         Txdefs.direct.insert({ communityId,
-          name: 'Customer payment identification', // 'Vevő befizetés azonosítás',
+          name: 'Customer payment identification',
           category: 'payment',
           data: { relation: 'customer', paymentSubType: 'identification' },
           debit: ['`431'],
           credit: ['`31'],
         });
         Txdefs.direct.insert({ communityId,
-          name: 'Parcel payment identification', // 'Albetét befizetés azonosítás',
+          name: 'Parcel payment identification',
           category: 'payment',
           data: { relation: 'member', paymentSubType: 'identification' },
           debit: ['`431'],
@@ -1010,7 +1091,7 @@ Migrations.add({
             relation: newBill.relation,
             category: 'payment',
             defId: newBill.correspondingIdentificationTxdef()._id,
-            valueDate: newBill.valueDate,
+            valueDate: newBill.issueDate,
             amount: nB.amount,
             payAccount: '`431',
             bills: [nB],
