@@ -14,7 +14,6 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
