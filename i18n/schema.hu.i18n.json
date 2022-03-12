@@ -873,7 +873,8 @@
       "help": "Főkönyvi számla, amin a tranzakció megtörténik"
     },
     "relationAccount": {
-      "label": "Könyvelési számla"
+      "label": "Követeléskezelési számla",
+      "help": "Az alszámlát ne válassza ki, csak a gyűjtőszámlát adja meg itt! Az alszámlákat a számlasorok könyveléséből automatikusan határozza meg a rendszer."
     },
     "payAccount": {
       "label": "Pénz számla"

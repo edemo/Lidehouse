@@ -872,7 +872,8 @@
       "help": "Account under which the trasaction takes place"
     },
     "relationAccount": {
-      "label": "Account"
+      "label": "Debt tracking account",
+      "help": "No need to select the subaccount, it will be auto determined from the lines' sub accounts"
     },
     "payAccount": {
       "label": "Money account"
