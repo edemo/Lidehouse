@@ -943,93 +943,12 @@ Migrations.add({
   name: 'Txdef updates',
   up() {
     defineTxdefTemplates();
+    const template = Templates.findOne('Condominium_Txdefs');
     Communities.find().forEach(community => {
       const communityId = community._id;
-      Txdefs.direct.update({ communityId, name: 'Partner exchange' }, {
-        $set: {
-          debit: ['`454', '`31', '`33', '`431', '`434'],
-          credit: ['`454', '`31', '`33', '`431', '`434'],
-        } });
-      if (!Txdefs.find({ communityId, name: 'Non idendified income' })) {
-        Txdefs.direct.insert({ communityId,
-          name: 'Non identified income',
-          category: 'transfer',
-          debit: ['`38'],
-          credit: ['`431'],
-        });
-      } 
-      if (!Txdefs.find({ communityId, name: 'Non idendified expense' })) {
-        Txdefs.direct.insert({ communityId,
-          name: 'Non identified expense',
-          category: 'transfer',
-          debit: ['`434'],
-          credit: ['`38'],
-        });
-      }
-      if (!Txdefs.find({ communityId, name: 'Barter' })) {
-        Txdefs.direct.insert({ communityId,
-          name: 'Barter',
-          category: 'barter',
-          debit: ['`454'],
-          credit: ['`31', '`33'],
-        });
-      }
-      if (!Txdefs.find({ communityId, name: 'Pass through income' })) {
-        Txdefs.direct.insert({ communityId,
-          name: 'Pass through income',
-          category: 'receipt',
-          data: { relation: 'customer' },
-          debit: ['`38'],
-          credit: ['`981'],
-        });
-      }
-      if (!Txdefs.find({ communityId, name: 'Pass through expense' })) {
-        Txdefs.direct.insert({ communityId,
-          name: 'Pass through expense',
-          category: 'receipt',
-          data: { relation: 'supplier' },
-          debit: ['`981'],
-          credit: ['`38'],
-        });
-      }
-      Txdefs.direct.update({ communityId, name: 'Supplier bill' }, {
-        $set: { debit: ['`1', '`5', '`8'] } });
-      Txdefs.direct.update({ communityId, name: 'Supplier bill remission' }, {
-        $set: { credit: ['`1', '`5', '`8'] } });
-      Txdefs.direct.update({ communityId, name: 'Customer bill' }, {
-        $set: { credit: ['`9'] } });
-      Txdefs.direct.update({ communityId, name: 'Customer bill remission' }, {
-        $set: { debit: ['`9'] } });
-      Txdefs.direct.update({ communityId, name: 'Supplier payment' }, {
-        $set: { debit: ['`454'], debit_unidentified: ['`434'] } });
-      Txdefs.direct.update({ communityId, name: 'Customer payment' }, {
-        $set: { credit: ['`31'], credit_unidentified: ['`431'] } });
-      Txdefs.direct.update({ communityId, name: 'Parcel payment' }, {
-        $set: { credit: ['`33'], credit_unidentified: ['`431'] } });
-
-      if (!Txdefs.find({ communityId, 'data.paymentSubType': 'identification' }).count()) {
-        Txdefs.direct.insert({ communityId,
-          name: 'Supplier payment identification',
-          category: 'payment',
-          data: { relation: 'supplier', paymentSubType: 'identification' },
-          debit: ['`454'],
-          credit: ['`434'],
-        });
-        Txdefs.direct.insert({ communityId,
-          name: 'Customer payment identification',
-          category: 'payment',
-          data: { relation: 'customer', paymentSubType: 'identification' },
-          debit: ['`431'],
-          credit: ['`31'],
-        });
-        Txdefs.direct.insert({ communityId,
-          name: 'Parcel payment identification',
-          category: 'payment',
-          data: { relation: 'member', paymentSubType: 'identification' },
-          debit: ['`431'],
-          credit: ['`33'],
-        });
-      }
+      template.txdefs.forEach(txdef => {
+        Txdefs.define(_.extend({}, txdef, { communityId }));
+      });
     });
   },
 });
