@@ -155,7 +155,7 @@ _.extend(Txdefs, {
   },
   getByName(name, communityId = getActiveCommunityId()) {
     const txdef = Txdefs.findOne({ communityId, name });
-    productionAssert(txdef, "You've removed an essential txdef", { txdef });
+    productionAssert(txdef, "You've removed an essential txdef", { name });
     return txdef;
   },
 });
