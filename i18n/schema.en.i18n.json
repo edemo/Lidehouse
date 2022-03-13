@@ -838,7 +838,11 @@
         },
         "localizer": {
           "label": "Accounting location"
-        }
+        },
+        "subTx": {
+          "label": "Accounting operation",
+          "help": "If trasaction consists of multiple accounting operations, provide here the index of which this belongs to"
+        }         
       }
     },
     // Following lines are for the different txdefs

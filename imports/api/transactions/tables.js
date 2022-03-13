@@ -24,13 +24,12 @@ Render.txdefName = function (cellData, renderType, currentRow) {
 
 export function transactionColumns() {
   const columns = [
+    { data: 'serialId', title: __('schemaSerialId.serialId.label') },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber(0) },
     { data: 'defId', title: __('schemaTransactions.defId.label'), render: Render.txdefName },
     { data: 'debit', title: __('schemaTransactions.debit.label'), render: Render.journalEntries },
     { data: 'credit', title: __('schemaTransactions.credit.label'), render: Render.journalEntries },
-    { data: 'partner()', title: __('Partner') },
-//    { data: 'ref', title: __('schemaTransactions.ref.label') },
     { data: 'choppedNotes()', title: __('schemaNoted.notes.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,

@@ -823,6 +823,10 @@
         },
         "localizer": {
           "label": "Könyvelési hely"
+        },
+        "subTx": {
+          "label": "Könyvelési részművelet",
+          "help": "Ha a tranzakció több könyvelési részműveletből áll, akkor adja meg itt a sorszámát"
         }         
       }
     },
