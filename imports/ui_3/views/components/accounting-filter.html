@@ -10,7 +10,7 @@
             {{#if (equals page 'bills')}}
             <div class="col-sm-4">
               <div class="input-group">
-                <label class="control-label text-capitalize">{{_ 'bill'}} {{_'schemaBills.relation.label'}}</label><br>
+                <label class="control-label text-capitalize">{{_ 'partner'}} {{_'schemaBills.relation.label'}}</label><br>
                 {{#each relation in relationValues}}
                 <button type="button" class="btn btn-xs btn-outline btn-default js-relation-filter {{activeClass relation}}" data-value="{{relation}}">{{_ (concat 'schemaBills.relation.options.' relation)}}</button>
                 {{/each}}

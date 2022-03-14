@@ -1097,7 +1097,7 @@
   },
   "schemaBills": {
     "relation": {
-      "label": "Oldal",
+      "label": "Viszony",
       "options": {
         "supplier": "Szállító számla",
         "customer": "Vevő számla",
