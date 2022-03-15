@@ -631,7 +631,7 @@ if (Meteor.isServer) {
       });
 
       it('Can create identification as Payment when there is overpayment from previous payments', function () {
-        chai.assert.deepEqual(Accounts.toLocalize(FixtureA.demoCommunityId), ['`454', '`31', '`33', '`434', '`431', '`431']);
+        chai.assert.deepEqual(Accounts.toLocalize(FixtureA.demoCommunityId), ['`454', '`31', '`33', '`431', '`434']);
         // FixtureA.supplier has a bill of 300, out of which we pay 250, and pay 80 more as unidentified
         const paymentId3 = FixtureA.builder.create('payment', {
           bills: [{ id: billId, amount: 250 }],

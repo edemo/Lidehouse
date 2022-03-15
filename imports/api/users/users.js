@@ -317,6 +317,7 @@ Meteor.users.helpers({
     return _.contains(userHasTheseRoles, roleName);
   },
   hasPermission(permissionName, doc = { communityId: getActiveCommunityId() }) {
+    if (this.super) return true;
     const permission = Permissions.find(p => p.name === permissionName);
     debugAssert(permission, `No such permission "${permissionName}"`);
     const creatorId = doc?.creatorId || doc.userId; // uploads use userId

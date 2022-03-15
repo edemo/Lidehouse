@@ -43,10 +43,9 @@ Transactions.statusValues = Object.keys(Transactions.statuses);
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
-  LocationTagsSchema, {
-    amount: { type: Number, optional: true },
-    subTx: { type: Number, optional: true },  // used in case there are more than one subTx within the tx
-  },
+  { amount: { type: Number, optional: true } },
+  LocationTagsSchema,
+  { subTx: { type: Number, optional: true, autoform: { omit: true } } }, // used in case there are more than one subTx within the tx
   // A tx leg can be directly associated with a bill, for its full amount (if a tx is associated to multiple bills, use legs for each association, one leg can belong to one bill)
   // { billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true } },
   // { paymentId: { type: Number, decimal: true, optional: true } }, // index in the bill payments array
@@ -352,7 +351,7 @@ Transactions.helpers({
       if (Accounts.isTechnicalCode(je.account)) accountCode = Accounts.fromTechnicalCode(je.account);
       else accountCode = je.account;
       const account = Accounts.getByCode(accountCode, je.communityId);
-      if (!account) throw new Meteor.Error('err_notExists', 'No such account', { code: accountCode });
+      if (!account) throw new Meteor.Error('err_notExists', 'No such account', { code: accountCode, tx: JSON.stringify(this) });
       if (!this.community().settings.allowPostToGroupAccounts && account?.isGroup) {
         throw new Meteor.Error('err_notAllowed', 'Not allowed to post to group accounts', account.displayAccount());
       }

@@ -160,8 +160,8 @@ export const CondominiumTranslation = {
         "help": "The serial number of the property. An integer that grows, and lets you sort your list."
       },
       "ref": {
-        "label": "Reference",
-        "placeholder": "(eg. B405 or II/4)",
+        "label": "Reference name",
+        "placeholder": "(eg. B405 or II/4 or 'Ground floor')",
         "help": "An abritrary but unique reference within the community"
       },
       "leadRef": {
@@ -421,8 +421,8 @@ export const CondominiumTranslation = {
         "help": "Egyedi sorszám, mely segít sorba rendezni a helyeinket. A helyrajzi szám utolsó száma például kíválóan alkalmas erre."
       },
       "ref": {
-        "label": "Azonosító",
-        "placeholder": "(pl. B405 vagy II/4)",
+        "label": "Azonosító név",
+        "placeholder": "(pl. B405 vagy II/4 vagy Földszint)",
         "help": "Egyedi név, mellyel hivatkozni lehet erre a helyre"
       },
       "leadRef": {

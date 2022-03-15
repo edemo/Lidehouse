@@ -5,6 +5,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -13,7 +14,6 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
@@ -96,7 +96,7 @@ Txdefs.helpers({
     return undefined;
   },
   relationSide() {
-    debugAssert(!this.data?.side && this.data.relation);
+    debugAssert(this.data.relation, JSON.stringify(this));
     const relation = this.data.relation;        // bill, payment, receipt txs
     if (relation === 'supplier') return 'credit';
     if (relation === 'customer' || relation === 'member') return 'debit';
@@ -154,7 +154,9 @@ _.extend(Txdefs, {
     return Txdefs.find({ communityId, $or: [{ debit: code }, { credit: code }] });
   },
   getByName(name, communityId = getActiveCommunityId()) {
-    return Txdefs.findOne({ communityId, name });
+    const txdef = Txdefs.findOne({ communityId, name });
+    productionAssert(txdef, "You've removed an essential txdef", { name });
+    return txdef;
   },
 });
 

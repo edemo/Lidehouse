@@ -923,7 +923,9 @@ Migrations.add({
   up() {
     Txdefs.find({ category: 'payment' }).forEach(txdef => {
       const value = txdef.data.remission ? 'remission' : 'payment';
-      Txdefs.direct.update(txdef._id, { $set: { 'data.paymentSubType': value }/*, $unset: { 'data.remission': '' } */});
+      if (!txdef.data.paymentSubType) {
+        Txdefs.direct.update(txdef._id, { $set: { 'data.paymentSubType': value } });
+      }
     });
   },
 });
@@ -938,48 +940,43 @@ Migrations.add({
 
 Migrations.add({
   version: 56,
-  name: 'Accounts of unidentified payments to TxDefs, identification txDef type',
+  name: 'Txdef updates',
   up() {
     defineTxdefTemplates();
+    const template = Templates.findOne('Condominium_Txdefs');
     Communities.find().forEach(community => {
       const communityId = community._id;
-      const paymentTxdefs = Txdefs.find({ communityId, category: 'payment', 'data.paymentSubType': 'payment' });
-      paymentTxdefs.forEach(txdef => {
-        let unidentifiedAccount = { credit_unidentified: ['`431'] };
-        if (txdef.data.relation === 'supplier') unidentifiedAccount = { debit_unidentified: ['`434'] };
-        Txdefs.direct.update(txdef._id, { $set: unidentifiedAccount });
+      template.txdefs.forEach(txdef => {
+        Txdefs.define(_.extend({}, txdef, { communityId }));
       });
-      if (paymentTxdefs.count() && !Txdefs.find({ communityId, 'data.paymentSubType': 'identification' }).count()) {
-        Txdefs.direct.insert({ communityId,
-          name: 'Supplier payment identification', // 'Szállító kifizetés azonosítás',
-          category: 'payment',
-          data: { relation: 'supplier', paymentSubType: 'identification' },
-          debit: ['`454'],
-          credit: ['`434'],
-        });
-        Txdefs.direct.insert({ communityId,
-          name: 'Customer payment identification', // 'Vevő befizetés azonosítás',
-          category: 'payment',
-          data: { relation: 'customer', paymentSubType: 'identification' },
-          debit: ['`431'],
-          credit: ['`31'],
-        });
-        Txdefs.direct.insert({ communityId,
-          name: 'Parcel payment identification', // 'Albetét befizetés azonosítás',
-          category: 'payment',
-          data: { relation: 'member', paymentSubType: 'identification' },
-          debit: ['`431'],
-          credit: ['`33'],
-        });
-      }
     });
   },
 });
 
 Migrations.add({
   version: 57,
-  name: 'Payments from overpayments into separate transactions',
+  name: 'Payments from overpayments into separate transactions and fix db inconsistency',
   up() {
+    Transactions.find({ relation: 'member', category: 'bill', relationAccount: { $ne: '`33' } }).forEach(tx => {
+      Transactions.direct.update(tx._id, { $set: { relationAccount: '`33' } }, { selector: tx, validate: false });
+      if (tx.isPosted()) {
+        const userId = tx.community().admin()._id;
+        Transactions.methods.post._execute({ userId }, { _id: tx._id });
+      }
+    });
+    Transactions.find({ lines: { $exists: true }, 'lines.account': new RegExp('^[^`]') }).forEach(tx => {
+      const newLines = [];
+      tx.lines.forEach((line, index) => {
+        let account = line.account;
+        if (!line.account.startsWith('`')) {
+          account = '`' + line.account;
+        }
+        line.account = account;
+        newLines.push(line);
+      });
+      Transactions.direct.update(tx._id, { $set: { lines: newLines } }, { selector: tx, validate: false });
+    });
+
     Transactions.find({ category: 'payment' }).forEach(payment => {
       const olderBills = [];
       const newerBills = [];
@@ -1010,7 +1007,7 @@ Migrations.add({
             relation: newBill.relation,
             category: 'payment',
             defId: newBill.correspondingIdentificationTxdef()._id,
-            valueDate: newBill.valueDate,
+            valueDate: newBill.issueDate,
             amount: nB.amount,
             payAccount: '`431',
             bills: [nB],
@@ -1033,11 +1030,15 @@ Migrations.add({
   version: 58,
   name: 'Remove partner entries',
   up() {
-    Transactions.find({ pEntries: { $exists: true } }).forEach(tx => {
-      tx.updatePartnerBalances(-1);
-      Transactions.direct.update({ _id: tx._id }, { $unset: { pEntries: '' } }, { selector: tx, validate: false });
-      Transactions.methods.post._execute({ userId: tx.community().admin()._id }, { _id: tx._id });
+    Communities.find().forEach(community => {
+      const userId = community.userWithRole('admin')?._id;
+      if (!userId) return;
+      Transactions.find({ communityId: community._id, pEntries: { $exists: true } }).forEach(tx => {
+        Transactions.direct.update({ _id: tx._id }, { $unset: { pEntries: '' } }, { selector: tx, validate: false });
+        Transactions.methods.post._execute({ userId }, { _id: tx._id });
+      });
     });
+    Balances.direct.remove({ partner: { $exists: true }, account: '`' });
   },
 });
 
@@ -1045,6 +1046,7 @@ Migrations.add({
   version: 59,
   name: 'Ensure freeTxs have amounts on all journal entries',
   up() {
+    Communities.direct.update({}, { $set: { 'settings.allowPostToGroupAccounts': true } }, { multi: true });
     Transactions.find({ category: 'freeTx' }).forEach(tx => {
       if (tx.isPosted()) {
         Transactions.methods.post._execute({ userId: tx.community().admin()._id }, { _id: tx._id });
@@ -1062,6 +1064,21 @@ Migrations.add({
       if (Accounts.find({ communityId: doc.communityId, code: new RegExp('^' + code) }).fetch().length > 1) {
         Accounts.direct.update(doc._id, { $set: { isGroup: true } });
       }
+    });
+  },
+});
+
+Migrations.add({
+  version: 61,
+  name: 'Repost older transactions',
+  up() {
+    const end = new Date('2020-09-01');
+    Communities.find().forEach(community => {
+      const userId = community.userWithRole('admin')?._id;
+      if (!userId) return;
+      Transactions.find({ communityId: community._id, postedAt: { $exists: true }, createdAt: { $lte: end } }).forEach(tx => {
+        Transactions.methods.post._execute({ userId }, { _id: tx._id });
+      });
     });
   },
 });

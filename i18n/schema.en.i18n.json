@@ -838,7 +838,11 @@
         },
         "localizer": {
           "label": "Accounting location"
-        }
+        },
+        "subTx": {
+          "label": "Accounting operation",
+          "help": "If trasaction consists of multiple accounting operations, provide here the index of which this belongs to"
+        }         
       }
     },
     // Following lines are for the different txdefs
@@ -872,7 +876,8 @@
       "help": "Account under which the trasaction takes place"
     },
     "relationAccount": {
-      "label": "Account"
+      "label": "Debt tracking account",
+      "help": "No need to select the subaccount, it will be auto determined from the lines' sub accounts"
     },
     "payAccount": {
       "label": "Money account"

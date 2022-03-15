@@ -13,7 +13,6 @@ import { Clock } from '/imports/utils/clock.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { equalWithinRounding } from '/imports/api/utils.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -79,12 +78,13 @@ _.each(billPaidSchema, val => val.autoform = _.extend({}, val.autoform, { afForm
 Payments.billPaidSchema = new SimpleSchema(billPaidSchema);
 
 const lineSchema = {
+  amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
   account: { type: String /* account code */, autoform: chooseConteerAccount(), optional: true },
   localizer: { type: String /* account code */, autoform: { ...chooseLocalizerOfPartner }, optional: true },
-  amount: { type: Number, decimal: true, autoform: { defaultValue: 0 } },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
-Payments.lineSchema = new SimpleSchema([LocationTagsSchema, lineSchema]);
+Payments.lineSchema = new SimpleSchema(lineSchema);
 
 const extensionSchema = {
   valueDate: { type: Date }, // same as Tx, but we need the readonly added

@@ -13,7 +13,6 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels, chooseParcel } from '/imports/api/parcels/parcels.js';
@@ -69,9 +68,10 @@ const lineSchema = {
   metering: { type: meteringSchema, optional: true, autoform: { type: 'hidden' } },
   account: { type: String, optional: true, autoform: chooseConteerAccount() },
   localizer: { type: String, optional: true, autoform: chooseParcel() },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
-Bills.lineSchema = new SimpleSchema([lineSchema, LocationTagsSchema]);
+Bills.lineSchema = new SimpleSchema(lineSchema);
 
 /*
 const simpleLineSchema = {
@@ -105,7 +105,7 @@ Bills.extensionSchema = new SimpleSchema([
     deliveryDate: { type: Date },
     dueDate: { type: Date },
     paymentMethod: { type: String, optional: true, allowedValues: ['cash', 'bank'] },
-    relationAccount: { type: String, optional: true, autoform: chooseConteerAccount(true) },
+    relationAccount: { type: String, optional: true, autoform: _.extend(chooseConteerAccount(true), { readonly: true }) },
     payments: { type: [Bills.paymentSchema], defaultValue: [] },
     outstanding: { type: Number, decimal: true, optional: true },
   //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now

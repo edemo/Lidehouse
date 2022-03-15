@@ -2,9 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
-import { Topics } from '/imports/api/topics/topics.js';
 import { $ } from 'meteor/jquery';
+
+import { debugAssert } from '/imports/utils/assert.js';
 import { checkmarkBoolean } from '/imports/ui_3/helpers/api-display.js';
+import { Topics } from '/imports/api/topics/topics.js';
 
 export const Render = Meteor.isServer ? {} : {
   translate(cellData, renderType, currentRow) {
@@ -31,7 +33,13 @@ export const Render = Meteor.isServer ? {} : {
     return moment(cellData).format('YYYY.MM.DD HH:mm');
   },
   checkmarkBoolean(cellData, renderType, currentRow) {
-    return checkmarkBoolean(cellData);
+    if (renderType === 'display') return checkmarkBoolean(cellData);
+    switch (cellData) {
+      case false: return 0;
+      case true: return 1;
+      case undefined: return 2;
+      default: debugAssert(false); return undefined;
+    }
   },
   displayTitle(topicId) {
     const title = Topics.findOne(topicId).title;

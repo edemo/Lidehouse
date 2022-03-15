@@ -58,6 +58,10 @@ Template.Top_navbar.helpers({
     if (!Meteor.user()) { return []; }
     return Meteor.user().communities();
   },
+  superCommunities() {
+    if (!Meteor.user()?.super) { return undefined; }
+    return Communities.find({}).fetch();
+  },
   unseenEventsCount(roomTitle) {
     const communityId = ModalStack.getVar('communityId');
     const userId = Meteor.userId();

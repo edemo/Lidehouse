@@ -823,6 +823,10 @@
         },
         "localizer": {
           "label": "Könyvelési hely"
+        },
+        "subTx": {
+          "label": "Könyvelési részművelet",
+          "help": "Ha a tranzakció több könyvelési részműveletből áll, akkor adja meg itt a sorszámát"
         }         
       }
     },
@@ -873,7 +877,8 @@
       "help": "Főkönyvi számla, amin a tranzakció megtörténik"
     },
     "relationAccount": {
-      "label": "Könyvelési számla"
+      "label": "Követeléskezelési számla",
+      "help": "Az alszámlát ne válassza ki, csak a gyűjtőszámlát adja meg itt! Az alszámlákat a számlasorok könyveléséből automatikusan határozza meg a rendszer."
     },
     "payAccount": {
       "label": "Pénz számla"
@@ -1092,7 +1097,7 @@
   },
   "schemaBills": {
     "relation": {
-      "label": "Oldal",
+      "label": "Viszony",
       "options": {
         "supplier": "Szállító számla",
         "customer": "Vevő számla",
