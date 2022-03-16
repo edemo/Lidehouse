@@ -217,8 +217,8 @@ if (Meteor.isServer) {
         // Before posting, the balances are not yet effected
         chai.assert.equal(bill.partner().balance(), 0);
         chai.assert.equal(bill.contract().balance(), 0);
-        chai.assert.equal(bill.partner().outstanding('customer'), 0);
-        chai.assert.equal(bill.partner().outstanding('supplier'), 0);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'customer'), 0);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'supplier'), 0);
         chai.assert.equal(bill.contract().outstanding(), 0);
         chai.assert.equal(parcel1.balance(), 0);
         chai.assert.equal(parcel2.balance(), 0);
@@ -230,8 +230,8 @@ if (Meteor.isServer) {
 
         chai.assert.equal(bill.partner().balance(), -1300);
         chai.assert.equal(bill.contract().balance(), -1300);
-        chai.assert.equal(bill.partner().outstanding('customer'), 1300);
-        chai.assert.equal(bill.partner().outstanding('supplier'), -1300);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'customer'), 1300);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'supplier'), -1300);
         chai.assert.equal(bill.contract().outstanding(), 1300);
         chai.assert.equal(parcel1.balance(), -300);
         chai.assert.equal(parcel2.balance(), -1000);
@@ -266,7 +266,7 @@ if (Meteor.isServer) {
 
       xit('Modifying posted bill updates partner balances correctly', function () {
         chai.assert.equal(bill.partner().balance(), -1300);
-        chai.assert.equal(bill.partner().outstanding('customer'), 1300);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'customer'), 1300);
         chai.assert.equal(bill.contract().outstanding(), 1300);
         chai.assert.equal(parcel1.balance(), -300);
         chai.assert.equal(parcel2.balance(), -1000);
@@ -276,8 +276,8 @@ if (Meteor.isServer) {
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.partner().balance(), -1500);
         chai.assert.equal(bill.contract().balance(), -1500);
-        chai.assert.equal(bill.partner().outstanding('customer'), 1500);
-        chai.assert.equal(bill.partner().outstanding('supplier'), -1500);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'customer'), 1500);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'supplier'), -1500);
         chai.assert.equal(bill.contract().outstanding(), 1500);
         chai.assert.equal(parcel1.balance(), -500);
         chai.assert.equal(parcel2.balance(), -1000);
@@ -293,8 +293,8 @@ if (Meteor.isServer) {
 
         chai.assert.equal(bill.partner().balance(), 0);
         chai.assert.equal(bill.contract().balance(), 0);
-        chai.assert.equal(bill.partner().outstanding('customer'), 0);
-        chai.assert.equal(bill.partner().outstanding('supplier'), 0);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'customer'), 0);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'supplier'), 0);
         chai.assert.equal(bill.contract().outstanding(), 0);
         chai.assert.equal(parcel1.balance(), 0);
         chai.assert.equal(parcel2.balance(), 0);
@@ -410,7 +410,7 @@ if (Meteor.isServer) {
         }, 'err_permissionDenied');
       });
 
-      it('Can exchange balance between partners', function () {
+      xit('Can exchange balance between partners', function () { // moved exchange tests to separate describe
         const otherPartnerId = FixtureA.partnerId(FixtureA.dummyUsers[4]);
         const otherPartner = Partners.findOne(otherPartnerId);
         chai.assert.equal(bill.partner().balance(), -1300);
@@ -494,7 +494,7 @@ if (Meteor.isServer) {
         chai.assert.equal(tx.amount, 300);
         chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '`861' }]);
         chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '`454', localizer: '@', partner: bill.partnerContractCode() }]);
-        chai.assert.equal(bill.partner().outstanding('supplier'), 300);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'supplier'), 300);
       });
 
       it('Member bill relation side is posted to relevant subaccount', function () {
@@ -568,14 +568,14 @@ if (Meteor.isServer) {
         chai.assert.isTrue(tx1.isPosted());
         chai.assert.deepEqual(tx1.debit, [{ amount: 100, account: '`454', localizer: '@', partner: bill.partnerContractCode() }]);
         chai.assert.deepEqual(tx1.credit, [{ amount: 100, account: bankAccount }]);
-        chai.assert.equal(bill.partner().outstanding('supplier'), 200);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'supplier'), 200);
 
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
         tx2 = Transactions.findOne(paymentId2);
         chai.assert.isTrue(tx2.isPosted());
         chai.assert.deepEqual(tx2.debit, [{ amount: 200, account: '`454', localizer: '@', partner: bill.partnerContractCode() }]);
         chai.assert.deepEqual(tx2.credit, [{ amount: 200, account: bankAccount }]);
-        chai.assert.equal(bill.partner().outstanding('supplier'), 0);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'supplier'), 0);
       });
 
       it('Can storno a Payment', function () {
@@ -767,10 +767,10 @@ if (Meteor.isServer) {
           { amount: 20, account: '`33', localizer: '@A103', parcelId: parcel1._id },
           { amount: 80, account: '`31', localizer: '@A104', parcelId: parcel2._id },
         ]);
-        chai.assert.equal(parcel1.outstanding('supplier'), 20);
-        chai.assert.equal(parcel2.outstanding('supplier'), 80);
-        chai.assert.equal(contract1.outstanding('supplier'), 20);
-        chai.assert.equal(contract2.outstanding('supplier'), 80);  // contract2 belongs to other partner, partnerId is required on line and journalEntry
+        chai.assert.equal(parcel1.outstanding(), 20);
+        chai.assert.equal(parcel2.outstanding(), 80);
+        chai.assert.equal(contract1.outstanding(), 20);
+        chai.assert.equal(contract2.outstanding(), 80);  // contract2 belongs to other partner, partnerId is required on line and journalEntry
       });
     });
 
@@ -857,7 +857,7 @@ if (Meteor.isServer) {
           chai.assert.equal(bill.amount, -200);
           chai.assert.equal(bill.outstanding, -200);
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
-          chai.assert.equal(partner.outstanding('member'), -200);
+          chai.assert.equal(partner.outstanding(undefined, 'member'), -200);
 
           const paymentId = FixtureA.builder.create('payment', {
             relation: 'member',
@@ -871,7 +871,7 @@ if (Meteor.isServer) {
           chai.assert.equal(payment.amount, -200);
           chai.assert.equal(bill.outstanding, 0);
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
-          chai.assert.equal(partner.outstanding('member'), 0);
+          chai.assert.equal(partner.outstanding(undefined, 'member'), 0);
         });
 
         it('Can create negative payment for bills of mixed sign', function () {
@@ -888,7 +888,7 @@ if (Meteor.isServer) {
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId1 });
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId2 });
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId3 });
-          chai.assert.equal(partner.outstanding('member'), -50);
+          chai.assert.equal(partner.outstanding(undefined, 'member'), -50);
 
           const paymentId = FixtureA.builder.create('payment', {
             relation: 'member',
@@ -905,7 +905,7 @@ if (Meteor.isServer) {
           chai.assert.equal(bill2.outstanding, 0);
           chai.assert.equal(bill3.outstanding, 0);
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
-          chai.assert.equal(partner.outstanding('member'), 0);
+          chai.assert.equal(partner.outstanding(undefined, 'member'), 0);
         });
 
         it('Can create partial payment for bills of mixed sign', function () {
@@ -922,7 +922,7 @@ if (Meteor.isServer) {
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId1 });
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId2 });
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId3 });
-          chai.assert.equal(partner.outstanding('member'), 400);
+          chai.assert.equal(partner.outstanding(undefined, 'member'), 400);
 
           const paymentId = FixtureA.builder.create('payment', {
             relation: 'member',
@@ -941,7 +941,7 @@ if (Meteor.isServer) {
           chai.assert.equal(bill2.outstanding, 0);
           chai.assert.equal(bill3.outstanding, 300);
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
-          chai.assert.equal(partner.outstanding('member'), 300);
+          chai.assert.equal(partner.outstanding(undefined, 'member'), 300);
 
           FixtureA.builder.execute(Transactions.methods.remove, { _id: paymentId });
 
@@ -962,7 +962,7 @@ if (Meteor.isServer) {
           chai.assert.equal(bill2.outstanding, 100);
           chai.assert.equal(bill3.outstanding, 400);
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
-          chai.assert.equal(partner.outstanding('member'), 500);
+          chai.assert.equal(partner.outstanding(undefined, 'member'), 500);
         });
 
         it('Does NOT create negative payment for positive bill sum', function () {
@@ -1010,7 +1010,7 @@ if (Meteor.isServer) {
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
           bill = Transactions.findOne(bill._id);
           chai.assert.equal(bill.outstanding, 0);
-          chai.assert.equal(partner.outstanding('member'), 0);
+          chai.assert.equal(partner.outstanding(undefined, 'member'), 0);
         });
 
         it('Does NOT create positive payment for negative bill sum', function () {
@@ -1019,7 +1019,7 @@ if (Meteor.isServer) {
           const billId2 = createBill([billLinePos2], 'customer'); // +250
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId2 });
           const partner = Partners.findOne(FixtureA.customer);
-          chai.assert.equal(partner.outstanding('customer'), -50);
+          chai.assert.equal(partner.outstanding(undefined, 'customer'), -50);
 
           chai.assert.throws(() => {
             FixtureA.builder.create('payment', {
@@ -1058,7 +1058,7 @@ if (Meteor.isServer) {
             valueDate: Clock.currentTime(),
             payAccount: '`381' });
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId1 });
-          chai.assert.equal(partner.outstanding('customer'), -100);
+          chai.assert.equal(partner.outstanding(undefined, 'customer'), -100);
           const paymentId2 = FixtureA.builder.create('payment', {
             relation: 'customer',
             bills: [{ id: billId1, amount: -100 }],
@@ -1067,7 +1067,7 @@ if (Meteor.isServer) {
             valueDate: Clock.currentTime(),
             payAccount: '`381' });
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
-          chai.assert.equal(partner.outstanding('customer'), 0);
+          chai.assert.equal(partner.outstanding(undefined, 'customer'), 0);
         });
 
         it('Can create negative payment for supplier', function () {
@@ -1080,7 +1080,7 @@ if (Meteor.isServer) {
           chai.assert.equal(bill2.outstanding, 300);
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId1 });
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId2 });
-          chai.assert.equal(partner.outstanding('supplier'), -100);
+          chai.assert.equal(partner.outstanding(undefined, 'supplier'), -100);
 
           const entryId = FixtureA.builder.create('statementEntry', {
             communityId: FixtureA.demoCommunityId,
@@ -1111,7 +1111,7 @@ if (Meteor.isServer) {
           chai.assert.equal(bill1.outstanding, 0);
           chai.assert.equal(bill2.outstanding, 0);
           FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId });
-          chai.assert.equal(partner.outstanding('supplier'), 0);
+          chai.assert.equal(partner.outstanding(undefined, 'supplier'), 0);
         });
       });
 
@@ -1513,6 +1513,134 @@ if (Meteor.isServer) {
     });
 
     describe('Other transaction types', function () {
+
+      describe('Exchange', function () {
+        let partnerId;
+        let partner;
+        let otherPartnerId;
+        let otherPartner;
+        let parcelId;
+        let localizer;
+        let exchange;
+        before(function() {
+          partnerId = FixtureA.partnerId(FixtureA.dummyUsers[1]);
+          partner = Partners.findOne(partnerId);
+          otherPartnerId = FixtureA.partnerId(FixtureA.dummyUsers[4]);
+          otherPartner = Partners.findOne(otherPartnerId);
+          parcelId = FixtureA.dummyParcels[1];
+          localizer = '@AP01';
+          exchange = function exchange(fromPartner, toPartner, amount, account = '`431', withPosting = false) {
+            const _id = FixtureA.builder.create('exchange', Object.cleanUndefined({
+              amount,
+              account,
+              fromPartner,
+              toPartner,
+            }));
+            if (withPosting) FixtureA.builder.execute(Transactions.methods.post, { _id });
+            return _id;
+          };
+        });
+
+        after(function () {
+//          Transactions.remove(txId);
+        });
+
+        it('Not allowed to give from nothing', function () {
+          chai.assert.equal(partner.balance(), 0);
+          chai.assert.equal(otherPartner.balance(), 0);
+
+          chai.assert.throws(() => {
+            exchange(partnerId, otherPartnerId, 100);
+          }, 'err_notAllowed');
+        });
+
+        it('Only allowed to identify to a partner, whats there without any partner', function () {
+          const _id = FixtureA.builder.create('transfer', {
+            defId: Txdefs.getByName('Non identified income', FixtureA.demoCommunityId)._id,
+            amount: 500,
+            fromAccount: '`431',
+            toAccount: '`382',
+          });
+          FixtureA.builder.execute(Transactions.methods.post, { _id });
+
+          chai.assert.equal(partner.balance(), 0);
+          chai.assert.equal(otherPartner.balance(), 0);
+          const communityId = FixtureA.demoCommunityId;
+          const account = '`431';
+          chai.assert.equal(Balances.get({ communityId, account, tag: 'T' }).total(), -500);
+          chai.assert.equal(Balances.get({ communityId, account, tag: 'T', partner: 'All' }).total(), 0);
+
+          chai.assert.throws(() => {
+            exchange(undefined, otherPartnerId, 600);
+          }, 'err_notAllowed');
+
+          exchange(undefined, partnerId, 300, '`431', true);
+          exchange(undefined, otherPartnerId, 200, '`431', true);
+
+          chai.assert.equal(partner.balance(), 300);
+          chai.assert.equal(otherPartner.balance(), 200);
+
+          chai.assert.throws(() => {
+            exchange(undefined, otherPartnerId, 10);
+          }, 'err_notAllowed');
+        });
+
+        it('Only allowed to exchange, what that partner has', function () {
+          chai.assert.throws(() => {
+            exchange(partnerId, otherPartnerId, 350);
+          }, 'err_notAllowed');
+
+          exchange(partnerId, otherPartnerId, 250, '`431', true);
+
+          chai.assert.equal(partner.balance(), 50);
+          chai.assert.equal(otherPartner.balance(), 450);
+
+          chai.assert.throws(() => {
+            exchange(partnerId, otherPartnerId, 60);
+          }, 'err_notAllowed');
+        });
+
+        it('Can create a payment, only from the amount that a partner has', function () {
+          chai.assert.equal(partner.balance(), 50);
+          chai.assert.equal(otherPartner.balance(), 450);
+          chai.assert.equal(otherPartner.balance('`431'), 450);
+          chai.assert.equal(otherPartner.balance('`33'), 0);
+
+          chai.assert.throws(() => {
+            FixtureA.builder.create('payment', {
+              defId: Txdefs.getByName('Parcel payment identification', FixtureA.demoCommunityId)._id,
+              relation: 'member',
+              partnerId: otherPartnerId,
+              amount: 500,
+              payAccount: '`431',
+              lines: [{
+                amount: 500,
+                account: '`33',
+                localizer,
+              }],
+            });
+          }, 'err_notAllowed');
+
+          const _id = FixtureA.builder.create('payment', {
+            defId: Txdefs.getByName('Parcel payment identification', FixtureA.demoCommunityId)._id,
+            relation: 'member',
+            partnerId: otherPartnerId,
+            amount: 450,
+            payAccount: '`431',
+            lines: [{
+              amount: 450,
+              account: '`951',
+              localizer,
+            }],
+          });
+          FixtureA.builder.execute(Transactions.methods.post, { _id });
+
+          chai.assert.equal(partner.balance(), 50);
+          chai.assert.equal(otherPartner.balance(), 450);
+          chai.assert.equal(otherPartner.balance('`431'), 0);
+          chai.assert.equal(otherPartner.balance('`33'), 450);
+        });
+      });
 
       describe('Free tx', function () {
         let txId;

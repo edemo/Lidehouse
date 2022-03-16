@@ -696,7 +696,7 @@
   "Bills' amounts cannot exceed payment's amount": "A számlák összege nem lehet nagyobb a kifizetés összegénél",
   "Remission has to be fully allocated to bills": "A számla elengedést teljesen számlákhoz kell kapcsolni, nem lehet rajta beazonosítatlan rész",
   "Identification should not have an unindentified amount": "Fizetés beazonosításon nem maradhat beazonosítatlan összeg",
-  "Identification cannot identify larger amount than what is available on the pay account for this partner/contract": "Fizetés beazonosításnt nem lehet nagyobb összegre végezni, mint ami az adott partner/szerződés aktuális túlfizetése a megadott fizetési főkönyvi számlán",
+  "Amount is larger than what is available on the given account for this partner/contract": "Ez az összeg több, mint ami az adott partner/szerződés aktuális túlfizetése a megadott főkönyvi számlán",
   "Lines amounts cannot exceed payment's amount": "A sorok összege nem lehet nagyobb, mint a kifizetés összege",
   "Not allowed to post to group accounts": "A jelenlegi könyvelési beállítások szerint nem szabad a gyűjtő számlákra könyvelni",
   "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közös képviselő segítségét.",

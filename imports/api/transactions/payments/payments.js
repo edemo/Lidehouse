@@ -157,8 +157,10 @@ Transactions.categoryHelpers('payment', {
   validate() {
     let billSum = 0;
     const payment = this;
-    if (this.subType() === 'identification' && this.amount > this.contract().outstanding(this.payAccount) * -1) {
-      throw new Meteor.Error('err_notAllowed', 'Identification cannot identify larger amount than what is available on the pay account for this partner/contract', `${this.contract().outstanding(this.payAccount) * -1} - ${this.amount}`);
+    const partnerOrContract = this.contractId ? this.contract() : this.partner();
+    const availableAmount = partnerOrContract.outstanding(this.payAccount, this.relation) * -1;
+    if (this.subType() === 'identification' && this.amount > availableAmount) {
+      throw new Meteor.Error('err_notAllowed', 'Amount is larger than what is available on the given account for this partner/contract', `${availableAmount} - ${this.amount}`);
     }
     this.getBills().forEach(pb => {
       const bill = Transactions.findOne(pb.id);

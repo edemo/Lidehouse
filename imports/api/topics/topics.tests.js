@@ -354,9 +354,9 @@ if (Meteor.isServer) {
 
         it('doesn\'t let you change the status outside the workflow', function (done) {
           chai.assert.throws(() => {
-            const dataUpdate = { expectedFinish: moment().add(1, 'weeks').toDate() };
+            const dataUpdate = { expectedContinue: moment().add(1, 'weeks').toDate() };
             Fixture.builder.execute(Topics.methods.statusChange, {
-              topicId, status: 'finished', dataUpdate });
+              topicId, status: 'suspended', dataUpdate });
           }, 'err_permissionDenied');
           done();
         });

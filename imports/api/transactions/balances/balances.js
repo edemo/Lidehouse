@@ -90,7 +90,10 @@ function subdefSelector(def) {
   const subdef = _.clone(def);
   if (def.account !== undefined) subdef.account = new RegExp('^' + def.account);
   subdef.localizer = def.localizer ? new RegExp('^' + def.localizer) : { $exists: false };
-  subdef.partner = def.partner ? new RegExp('^' + def.partner) : { $exists: false };
+  if (subdef.partner) {
+    if (subdef.partner === 'All') subdef.partner = { $exists: true };
+    else subdef.partner = new RegExp('^' + subdef.partner);
+  } else subdef.partner = { $exists: false };
   return subdef;
 }
 

@@ -155,10 +155,10 @@ if (Meteor.isServer) {
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 25, quantity: 30, localizer: '@A103' });
         assertBillDetails(bills[1], { payerPartnerId: payerPartner4Id, linesLength: 1, lineTitle: 'Test floor', linePeriod: '2018-01' });
         assertLineDetails(bills[1].lines[0], { uom: 'm2', unitPrice: 25, quantity: 40, localizer: '@A104' });
-        chai.assert.equal(payer3.outstanding('member'), 0);
+        chai.assert.equal(payer3.outstanding(undefined, 'member'), 0);
 
         postParcelBillings('2018-01-12');
-        chai.assert.equal(payer3.outstanding('member'), bills[0].amount);
+        chai.assert.equal(payer3.outstanding(undefined, 'member'), bills[0].amount);
       });
 
       it('can apply billing to a certain parcel type', function() {
@@ -179,10 +179,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner2Id, linesLength: 1, lineTitle: 'Test type', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 100, quantity: 20, localizer: '@AP02' });
-        chai.assert.equal(payer2.outstanding('member'), 0);
+        chai.assert.equal(payer2.outstanding(undefined, 'member'), 0);
 
         postParcelBillings('2018-01-12');
-        chai.assert.equal(payer2.outstanding('member'), bills[0].amount);
+        chai.assert.equal(payer2.outstanding(undefined, 'member'), bills[0].amount);
       });
 
       it('can apply billing to a certain parcel group', function() {
@@ -203,10 +203,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner2Id, linesLength: 1, lineTitle: 'Test group', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 100, quantity: 20, localizer: '@AP02' });
-        chai.assert.equal(payer2.outstanding('member'), 0);
+        chai.assert.equal(payer2.outstanding(undefined, 'member'), 0);
 
         postParcelBillings('2018-01-12');
-        chai.assert.equal(payer2.outstanding('member'), bills[0].amount);
+        chai.assert.equal(payer2.outstanding(undefined, 'member'), bills[0].amount);
       });
 
       it('can apply multiple projections', function () {
@@ -262,10 +262,10 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, 1);
         assertBillDetails(bills[0], { payerPartnerId: payerPartner4Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'person', unitPrice: 5000, quantity: 4, localizer: '@A104' });
-        chai.assert.equal(parcel4.payerPartner().outstanding('member'), 0);
+        chai.assert.equal(parcel4.payerPartner().outstanding(undefined, 'member'), 0);
 
         postParcelBillings('2018-01-12');
-        chai.assert.equal(parcel4.payerPartner().outstanding('member'), 5000 * 4);
+        chai.assert.equal(parcel4.payerPartner().outstanding(undefined, 'member'), 5000 * 4);
         chai.assert.equal(parcel4.payerContract().outstanding(), 5000 * 4);
         chai.assert.equal(parcel4.outstanding(), 5000 * 4);
 
@@ -280,11 +280,11 @@ if (Meteor.isServer) {
         const billMetered = Transactions.findOne({ category: 'bill', partnerId: meteredParcel.payerPartner()._id });
         assertBillDetails(billMetered, { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test consumption', linePeriod: '2018-02' });
         assertLineDetails(billMetered.lines[0], { uom: 'm3', unitPrice: 600, quantity: 14.903, localizer: '@A103' });
-        chai.assert.equal(meteredParcel.payerPartner().outstanding('member'), 0);
+        chai.assert.equal(meteredParcel.payerPartner().outstanding(undefined, 'member'), 0);
         chai.assert.equal(meteredParcel.outstanding(), 0);
 
         postParcelBillings('2018-02-12');
-        chai.assert.equal(meteredParcel.payerPartner().outstanding('member'), billMetered.amount);
+        chai.assert.equal(meteredParcel.payerPartner().outstanding(undefined, 'member'), billMetered.amount);
         chai.assert.equal(meteredParcel.outstanding(), billMetered.amount);
       });
 
@@ -328,10 +328,10 @@ if (Meteor.isServer) {
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'One follower parcel', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'm2', unitPrice: 15, quantity: 10, localizer: '@AP01' });
         chai.assert.equal(bills[0].amount, 150);
-        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), 0);
+        chai.assert.equal(leadParcel.payerPartner().outstanding(undefined, 'member'), 0);
 
         postParcelBillings('2018-01-12');
-        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), bills[0].lines[0].amount);
+        chai.assert.equal(leadParcel.payerPartner().outstanding(undefined, 'member'), bills[0].lines[0].amount);
         // chai.assert.equal(Balances.get({ communityId, partner: followerParcel.payerPartner()._id, tag: 'T' }).total(), bills[0].lines[0].amount);
         // parcel.payerPartner() can only identify leadParcel's partner, as follower parcel's contract does not have partnerId, only leadParcelId
         chai.assert.equal(leadParcel.outstanding(), 0);
@@ -370,14 +370,14 @@ if (Meteor.isServer) {
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Follower consumption', linePeriod: '2018-02' });
         assertLineDetails(bills[0].lines[0], { uom: 'm3', unitPrice: 500, quantity: 11, localizer: '@AP01' });
         chai.assert.equal(bills[0].amount, 5500);
-        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), 0);
+        chai.assert.equal(leadParcel.payerPartner().outstanding(undefined, 'member'), 0);
 
         postParcelBillings('2018-02-01');
-        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), bills[0].lines[0].amount);
+        chai.assert.equal(leadParcel.payerPartner().outstanding(undefined, 'member'), bills[0].lines[0].amount);
         chai.assert.equal(leadParcel.outstanding(), 0);
         chai.assert.equal(followerParcel.outstanding(), bills[0].lines[0].amount);
         const dummyPartner = Partners.findOne({ userId: Fixture.dummyUsers[1] });
-        chai.assert.equal(dummyPartner.outstanding('member'), 0);
+        chai.assert.equal(dummyPartner.outstanding(undefined, 'member'), 0);
 
         Memberships.remove({ parcelId: Fixture.dummyParcels[1], ownership: { $exists: true } });
         Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-03-01'), value: 21 } });
@@ -387,12 +387,12 @@ if (Meteor.isServer) {
         assertBillDetails(bills[1], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Follower consumption', linePeriod: '2018-03' });
         assertLineDetails(bills[1].lines[0], { uom: 'm3', unitPrice: 500, quantity: 10, localizer: '@AP01' });
         chai.assert.equal(bills[1].amount, 5000);
-        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), 5500);
+        chai.assert.equal(leadParcel.payerPartner().outstanding(undefined, 'member'), 5500);
         postParcelBillings('2018-03-01');
-        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), 10500);
+        chai.assert.equal(leadParcel.payerPartner().outstanding(undefined, 'member'), 10500);
         chai.assert.equal(leadParcel.outstanding(), 0);
         chai.assert.equal(followerParcel.outstanding(), 10500);
-        chai.assert.equal(dummyPartner.outstanding('member'), 0);
+        chai.assert.equal(dummyPartner.outstanding(undefined, 'member'), 0);
       });
 
       it('bills to follower parcel with lead parcel if withFollowers is checked', function () {
@@ -419,7 +419,7 @@ if (Meteor.isServer) {
         postParcelBillings('2018-01-10');
         const followerParcel = Parcels.findOne(Fixture.dummyParcels[1]);
         const leadParcel = Parcels.findOne(Fixture.dummyParcels[3]);
-        chai.assert.equal(leadParcel.payerPartner().outstanding('member'), 400);
+        chai.assert.equal(leadParcel.payerPartner().outstanding(undefined, 'member'), 400);
         chai.assert.equal(leadParcel.outstanding(), 300);
         chai.assert.equal(followerParcel.outstanding(), 100);
       });
@@ -463,9 +463,9 @@ if (Meteor.isServer) {
         assertBillDetails(bills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test absolute', linePeriod: '2018-01' });
         assertLineDetails(bills[0].lines[0], { uom: 'piece', unitPrice: 500, quantity: 1, localizer: '@A103' });
         postParcelBillings('2018-01-12');
-        chai.assert.equal(formerPayer.outstanding('member'), bills[0].amount);
+        chai.assert.equal(formerPayer.outstanding(undefined, 'member'), bills[0].amount);
         chai.assert.equal(parcel.outstanding(), bills[0].amount);
-        chai.assert.equal(laterPayer.outstanding('member'), 0);
+        chai.assert.equal(laterPayer.outstanding(undefined, 'member'), 0);
 
         Transactions.remove({});
         applyParcelBillings('2018-03-12');
@@ -477,9 +477,9 @@ if (Meteor.isServer) {
         assertBillDetails(bills2[0], { payerPartnerId: laterpayerPartnerId, linesLength: 1, lineTitle: 'Test absolute', linePeriod: '2018-03' });
         assertLineDetails(bills2[0].lines[0], { uom: 'piece', unitPrice: 500, quantity: 1, localizer: '@A103' });
         postParcelBillings('2018-03-12');
-        chai.assert.equal(laterPayer.outstanding('member'), bills2[0].amount);
+        chai.assert.equal(laterPayer.outstanding(undefined, 'member'), bills2[0].amount);
         chai.assert.equal(parcel.outstanding(), bills2[0].amount);
-        chai.assert.equal(formerPayer.outstanding('member'), 0);
+        chai.assert.equal(formerPayer.outstanding(undefined, 'member'), 0);
       });
 
       it('bills the new owner on the day of change', function () {
@@ -503,9 +503,9 @@ if (Meteor.isServer) {
         assertBillDetails(bills[0], { payerPartnerId: laterpayerPartnerId, linesLength: 1, lineTitle: 'Test absolute', linePeriod: '2018-02' });
         assertLineDetails(bills[0].lines[0], { uom: 'piece', unitPrice: 500, quantity: 1, localizer: '@A103' });
         postParcelBillings('2018-02-01');
-        chai.assert.equal(laterPayer.outstanding('member'), bills[0].amount);
+        chai.assert.equal(laterPayer.outstanding(undefined, 'member'), bills[0].amount);
         chai.assert.equal(parcel.outstanding(), bills[0].amount);
-        chai.assert.equal(formerPayer.outstanding('member'), 0);
+        chai.assert.equal(formerPayer.outstanding(undefined, 'member'), 0);
       });
 
       xit('will not apply for same period twice', function () {

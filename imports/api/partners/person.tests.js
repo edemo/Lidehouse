@@ -598,8 +598,8 @@ if (Meteor.isServer) {
         });
         Fixture.builder.execute(Transactions.methods.post, { _id: bill1Id });
         Fixture.builder.execute(Transactions.methods.post, { _id: bill2Id });
-        chai.assert.equal(Partners.findOne(partnerId).outstanding('member'), 100);
-        chai.assert.equal(Partners.findOne(partnerId2).outstanding('customer'), 200);
+        chai.assert.equal(Partners.findOne(partnerId).outstanding(undefined, 'member'), 100);
+        chai.assert.equal(Partners.findOne(partnerId2).outstanding(undefined, 'customer'), 200);
 
         Partners.methods.merge._execute({ userId: Fixture.demoManagerId }, { _id: partnerId, destinationId: partnerId2 });
 
@@ -607,7 +607,7 @@ if (Meteor.isServer) {
         const partner = Partners.findOne(partnerId2);
         chai.assert.equal(partner.idCard.name, 'Jim John James');
         chai.assert.deepEqual(partner.contact, { email: 'partner@demotest.hu', address: 'Buffalo, Bull street' });
-        chai.assert.equal(partner.outstanding('customer'), 300);
+        chai.assert.equal(partner.outstanding(undefined, 'customer'), 300);
         chai.assert.deepEqual(partner.relation, ['member', 'customer']);
         const ownership = Memberships.findOne(ownershipId);
         chai.assert.equal(ownership.partnerId, partnerId2);
