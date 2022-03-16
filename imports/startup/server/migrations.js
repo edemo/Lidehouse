@@ -996,23 +996,50 @@ Migrations.add({
         if (community.settings.accountingMethod === 'accrual' && payment.relation !== 'member') preservedLines.push(line);
       });
       if (newerBills.length) {
-        Transactions.update({ _id: payment._id }, { $set: { bills: olderBills, lines: preservedLines } }, { selector: payment });
-        if (payment.isPosted()) Transactions.methods.post._execute({ userId }, { _id: payment._id });
+        try {
+          Transactions.update({ _id: payment._id }, { $set: { bills: olderBills, lines: preservedLines } }, { selector: payment });
+        } catch (err) {
+          console.log(err);
+          console.log('Payment: ', JSON.stringify(payment));
+        }
+        if (payment.isPosted()) {
+          try {
+            Transactions.methods.post._execute({ userId }, { _id: payment._id });
+          } catch (err) {
+            console.log(err);
+            console.log('Payment at post: ', JSON.stringify(payment));
+          }
+        }
         newerBills.forEach(nB => {
           const newBill = Transactions.findOne(nB.id);
-          const newPayment = Transactions.insert({
-            communityId: newBill.communityId,
-            partnerId: newBill.partnerId,
-            contractId: newBill.contractId,
-            relation: newBill.relation,
-            category: 'payment',
-            defId: newBill.correspondingIdentificationTxdef()._id,
-            valueDate: newBill.issueDate,
-            amount: nB.amount,
-            payAccount: '`431',
-            bills: [nB],
-          });
-          if (payment.isPosted()) Transactions.methods.post._execute({ userId }, { _id: newPayment });
+          let newPayment;
+          try {
+            newPayment = Transactions.insert({
+              communityId: newBill.communityId,
+              partnerId: newBill.partnerId,
+              contractId: newBill.contractId,
+              relation: newBill.relation,
+              category: 'payment',
+              defId: newBill.correspondingIdentificationTxdef()._id,
+              valueDate: newBill.issueDate,
+              amount: nB.amount,
+              payAccount: '`431',
+              bills: [nB],
+            });
+          } catch (err) {
+            console.log(err);
+            console.log('newPayment - bill on payment, bill in db: ', nB.id, nB.amount, JSON.stringify(newBill));
+            console.log('original tx: ', JSON.stringify(payment));
+          }
+          if (payment.isPosted() && newPayment) {
+            try {
+              Transactions.methods.post._execute({ userId }, { _id: newPayment });
+            } catch (err) {
+              console.log(err);
+              console.log('newPayment at post: ', JSON.stringify(Transactions.findOne(newPayment)));
+              console.log('original tx: ', JSON.stringify(payment));
+            }
+          }
         });
       } else {
         if (payment.lines?.length) {
