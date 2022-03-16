@@ -977,7 +977,7 @@ Migrations.add({
       Transactions.direct.update(tx._id, { $set: { lines: newLines } }, { selector: tx, validate: false });
     });
 
-    Transactions.find({ category: 'payment' }).forEach(payment => {
+    Transactions.find({ communityId: 'y38GnfKaWTgsmxrfB', category: 'payment', status: 'posted' }).forEach(payment => {
       const olderBills = [];
       const newerBills = [];
       const community = payment.community();
@@ -1061,8 +1061,8 @@ Migrations.add({
       const userId = community.userWithRole('admin')?._id;
       if (!userId) return;
       Transactions.find({ communityId: community._id, pEntries: { $exists: true } }).forEach(tx => {
-        Transactions.direct.update({ _id: tx._id }, { $unset: { pEntries: '' } }, { selector: tx, validate: false });
         Transactions.methods.post._execute({ userId }, { _id: tx._id });
+        Transactions.direct.update({ _id: tx._id }, { $unset: { pEntries: '' } }, { selector: tx, validate: false });
       });
     });
     Balances.direct.remove({ partner: { $exists: true }, account: '`' });
