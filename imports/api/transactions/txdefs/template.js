@@ -35,7 +35,7 @@ export function defineTxdefTemplates() {
     name: 'Supplier payment identification', // 'Szállító kifizetés azonosítás',
     category: 'payment',
     data: { relation: 'supplier', paymentSubType: 'identification' },
-    debit: ['`454'],
+    debit: ['`454'], debit_unidentified: ['`434'],
     credit: ['`434'],
   }, {
     name: 'Supplier bill remission', // 'Szállító számla elengedés',
@@ -60,7 +60,7 @@ export function defineTxdefTemplates() {
     category: 'payment',
     data: { relation: 'customer', paymentSubType: 'identification' },
     debit: ['`431'],
-    credit: ['`31'],
+    credit: ['`31'], credit_unidentified: ['`431'],
   }, {
     name: 'Customer bill remission', // 'Vevő számla elengedés',
     category: 'payment',
@@ -84,7 +84,7 @@ export function defineTxdefTemplates() {
     category: 'payment',
     data: { relation: 'member', paymentSubType: 'identification' },
     debit: ['`431'],
-    credit: ['`33'],
+    credit: ['`33'], credit_unidentified: ['`431'],
   }, {
     name: 'Parcel bill remission', // 'Albetét előírás elengedés',
     category: 'payment',
