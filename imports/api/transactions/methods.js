@@ -11,6 +11,7 @@ import { checkExists, checkModifier, checkPermissions } from '/imports/api/metho
 import { Clock } from '/imports/utils/clock.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
@@ -65,6 +66,9 @@ export const post = new ValidatedMethod({
     }
     doc.validateJournalEntries();
     const result = Transactions.update(_id, modifier);
+
+    // REMOVE!!! Just for strong checking
+    Balances.checkTxCorrect(Transactions.findOne(_id));
 
     if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {
       doc.getLines().forEach((line) => {

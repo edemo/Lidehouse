@@ -224,13 +224,13 @@ function timeTagMatches(valueDate, tag) {
 Balances.checkCorrect = function checkCorrect(def, lang = 'en') {
   let misCalculated = null;
   if (Meteor.isClient) return; // No complete tx data on the client to perform a check.
-  if (def.localizer || def.partner) return; // TODO: support localizer as well
+  if (def.localizer) return; // TODO: support localizer as well
   const txs = Transactions.find({ communityId: def.communityId, $or: [{ 'debit.account': def.account }, { 'credit.account': def.account }] });
   let entryCount = 0;
   let calculatedBalance = 0;
   txs.forEach((tx) => {
     tx.journalEntries().forEach((entry) => {
-      if (entry.account === def.account && timeTagMatches(entry.valueDate, def.tag)) {
+      if (entry.account === def.account && entry.partner === def.partner && def.timeTagMatches(entry.valueDate, def.tag)) {
         entryCount += 1;
         calculatedBalance += entry.effectiveAmount();
       }
@@ -247,6 +247,21 @@ Balances.checkCorrect = function checkCorrect(def, lang = 'en') {
       ${__('database', {}, lang)}: ${dbBalance}`;
   }
   return misCalculated;
+};
+
+Balances.checkTxCorrect = function checkTxCorrect(tx) {
+  const defsToCheck = [];
+  if (!tx.postedAt) return;
+  tx.journalEntries().forEach(je => {
+    defsToCheck.push({ communityId: tx.communityId, account: je.account, tag: 'T' });
+    if (je.partner) {
+      defsToCheck.push({ communityId: tx.communityId, account: je.account, tag: 'T', partner: je.partner });
+    }
+  });
+  defsToCheck.forEach(def => {
+    const err = Balances.checkCorrect(def);
+    if (err) Log.error('Checking balances failed for tx:', tx);
+  });
 };
 
 Balances.checkAllCorrect = function checkAllCorrect() {
