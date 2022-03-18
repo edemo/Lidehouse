@@ -271,7 +271,7 @@ Transactions.helpers({
       entry.tx = () => self;
       entry.communityId = this.communityId;
       entry.valueDate = this.valueDate;
-      if (!entry.amount) entry.amount = this.amount;
+      if (entry.amount === undefined) entry.amount = this.amount;
       if (!entry.subTx) entry.subTx = 0;
       return JournalEntries._transform(entry);
     });
