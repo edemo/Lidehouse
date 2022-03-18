@@ -230,7 +230,7 @@ Balances.checkCorrect = function checkCorrect(def, lang = 'en') {
   let calculatedBalance = 0;
   txs.forEach((tx) => {
     tx.journalEntries().forEach((entry) => {
-      if (entry.account === def.account && entry.partner === def.partner && def.timeTagMatches(entry.valueDate, def.tag)) {
+      if (entry.account === def.account && entry.partner === def.partner && timeTagMatches(entry.valueDate, def.tag)) {
         entryCount += 1;
         calculatedBalance += entry.effectiveAmount();
       }
@@ -239,7 +239,7 @@ Balances.checkCorrect = function checkCorrect(def, lang = 'en') {
   const dbBalance = Balances.findOne(def).total();
   if (dbBalance !== calculatedBalance) {
     Log.error('Balance inconsistency ERROR',
-      `Calculated balance of '${def} is ${calculatedBalance} (from ${entryCount} entries)\nDb balance of same account: ${dbBalance}`);
+      `Calculated balance of '${JSON.stringify(def)} is ${calculatedBalance} (from ${entryCount} entries)\nDb balance of same account: ${dbBalance}`);
   //  Log.info(txs.fetch());
     misCalculated = `${__('Account', {}, lang)}: ${def.account}, 
       ${__('period', {}, lang)}: ${def.tag}, 
