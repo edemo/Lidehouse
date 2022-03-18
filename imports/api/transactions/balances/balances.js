@@ -230,7 +230,7 @@ Balances.checkCorrect = function checkCorrect(def, lang = 'en') {
   let calculatedBalance = 0;
   txs.forEach((tx) => {
     tx.journalEntries().forEach((entry) => {
-      if (entry.account === def.account && entry.partner === def.partner && timeTagMatches(entry.valueDate, def.tag)) {
+      if (entry.account === def.account && (!def.partner || entry.partner === def.partner) && timeTagMatches(entry.valueDate, def.tag)) {
         entryCount += 1;
         calculatedBalance += entry.effectiveAmount();
       }
