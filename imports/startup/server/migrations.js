@@ -957,14 +957,14 @@ Migrations.add({
   version: 57,
   name: 'Payments from overpayments into separate transactions and fix db inconsistency',
   up() {
-    Transactions.find({ relation: 'member', category: 'bill', relationAccount: { $ne: '`33' } }).forEach(tx => {
+    Transactions.find({ relation: 'member', category: 'bill', relationAccount: { $ne: '`33' } }).fetch().forEach(tx => {
       Transactions.direct.update(tx._id, { $set: { relationAccount: '`33' } }, { selector: tx, validate: false });
       if (tx.isPosted()) {
         const userId = tx.community().admin()._id;
         Transactions.methods.post._execute({ userId }, { _id: tx._id });
       }
     });
-    Transactions.find({ lines: { $exists: true }, 'lines.account': new RegExp('^[^`]') }).forEach(tx => {
+    Transactions.find({ lines: { $exists: true }, 'lines.account': new RegExp('^[^`]') }).fetch().forEach(tx => {
       const newLines = [];
       tx.lines.forEach((line, index) => {
         let account = line.account;
@@ -977,7 +977,7 @@ Migrations.add({
       Transactions.direct.update(tx._id, { $set: { lines: newLines } }, { selector: tx, validate: false });
     });
 
-    Transactions.find({ communityId: 'y38GnfKaWTgsmxrfB', category: 'payment', status: 'posted' }).forEach(payment => {
+    Transactions.find({ communityId: 'y38GnfKaWTgsmxrfB', category: 'payment', status: 'posted' }).fetch().forEach(payment => {
       const olderBills = [];
       const newerBills = [];
       const community = payment.community();
@@ -1060,7 +1060,7 @@ Migrations.add({
     Communities.find().forEach(community => {
       const userId = community.userWithRole('admin')?._id;
       if (!userId) return;
-      Transactions.find({ communityId: community._id, pEntries: { $exists: true } }).forEach(tx => {
+      Transactions.find({ communityId: community._id, pEntries: { $exists: true } }).fetch().forEach(tx => {
         Transactions.methods.post._execute({ userId }, { _id: tx._id });
         Transactions.direct.update({ _id: tx._id }, { $unset: { pEntries: '' } }, { selector: tx, validate: false });
       });
@@ -1074,7 +1074,7 @@ Migrations.add({
   name: 'Ensure freeTxs have amounts on all journal entries',
   up() {
     Communities.direct.update({}, { $set: { 'settings.allowPostToGroupAccounts': true } }, { multi: true });
-    Transactions.find({ category: 'freeTx' }).forEach(tx => {
+    Transactions.find({ category: 'freeTx' }).fetch().forEach(tx => {
       if (tx.isPosted()) {
         Transactions.methods.post._execute({ userId: tx.community().admin()._id }, { _id: tx._id });
       }
@@ -1111,6 +1111,7 @@ Migrations.add({
 });
 
 // Use only direct db operations to avoid unnecessary hooks!
+// Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes
 
 Meteor.startup(() => {
   Migrations.unlock();
