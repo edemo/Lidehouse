@@ -67,9 +67,6 @@ export const post = new ValidatedMethod({
     doc.validateJournalEntries();
     const result = Transactions.update(_id, modifier);
 
-    // REMOVE!!! Just for strong checking
-    Balances.checkTxCorrect(Transactions.findOne(_id));
-
     if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {
       doc.getLines().forEach((line) => {
         if (line.metering) {
