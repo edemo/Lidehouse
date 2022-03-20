@@ -977,7 +977,7 @@ Migrations.add({
       Transactions.direct.update(tx._id, { $set: { lines: newLines } }, { selector: tx, validate: false });
     });
 
-    Transactions.find({ communityId: 'y38GnfKaWTgsmxrfB', category: 'payment', status: 'posted' }).fetch().forEach(payment => {
+    Transactions.find({ communityId: 'y38GnfKaWTgsmxrfB', category: 'payment', relation: 'member', status: 'posted' }).fetch().forEach(payment => {
       const olderBills = [];
       const newerBills = [];
       const community = payment.community();
