@@ -158,6 +158,10 @@ _.extend(Txdefs, {
     productionAssert(txdef, "You've removed an essential txdef", { name });
     return txdef;
   },
+  findByName(name, communityId = getActiveCommunityId()) {
+    const txdef = Txdefs.findOne({ communityId, name });
+    return txdef;
+  },
 });
 
 Txdefs.attachSchema(Txdefs.schema);

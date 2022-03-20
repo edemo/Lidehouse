@@ -1110,7 +1110,22 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 62,
+  name: 'No more bank expense',
+  up() {
+    Communities.find().forEach(community => {
+      const oldTxdef = Txdefs.findByName('Bank fee expense', community._id);
+      if (!oldTxdef) return;
+      const newTxdef = Txdefs.getByName('Expense receipt', community._id);
+      Transactions.direct.update({ communityId: community._id, defId: oldTxdef._id }, 
+        { $set: { defId: newTxdef._id } }, { multi: true });
+      Txdefs.direct.remove(oldTxdef._id);
+    });
+  },
+});
 // Use only direct db operations to avoid unnecessary hooks!
+
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes
 
 Meteor.startup(() => {
