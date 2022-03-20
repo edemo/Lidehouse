@@ -97,9 +97,7 @@ ViewModel.share({
       if (this.unreconciledOnly()) {
         if (category === 'bill') selector.outstanding = { $ne: 0 };
         else if (category === 'receipt') selector.reconciled = false;
-        else if (category === 'payment') {
-          selector.$and.push({ $or: [{ outstanding: { $ne: 0 } }, { reconciled: false }] });
-        }
+        else if (category === 'payment') selector.reconciled = false;
       }
       return Transactions.makeFilterSelector(selector);
     },

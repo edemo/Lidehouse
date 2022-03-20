@@ -1248,7 +1248,7 @@
       }
     },
     "outstanding": {
-      "label": "Egyeztetendő",
+      "label": "Beazonosítatlan",
       "placeholder": "(pl. 14560)"
     },
     "paymentSubType": {

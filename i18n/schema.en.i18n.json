@@ -1242,7 +1242,7 @@
       }
     },
     "outstanding": {
-      "label": "Unreconciled amount",
+      "label": "Unidentified",
       "placeholder": "(eg. 14560)"
     },
     "paymentSubType": {
