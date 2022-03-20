@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
@@ -83,13 +84,16 @@ Template.Partner_history.viewmodel({
     const contract = Contracts.findOne(this.contractToView());
     result.beginBalance = Balances.getOpeningValue(this.beginBalanceDef()).total() * (-1);
     const selector = Transactions.makeFilterSelector(this.subscribeParams());
-    const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
+    const txs = Transactions.find(selector, { sort: [['valueDate', 'asc'], ['createdAt', 'asc']] });
     let total = result.beginBalance;
-    const txsWithRunningTotal = txs.map(tx => {
+    let txsWithRunningTotal = txs.map(tx => {
       const effectiveAmount = tx.getContractAmount(contract) * (-1);
       total += effectiveAmount;
       return _.extend(tx, { effectiveAmount, total });
     });
+    if (!Meteor.user().hasPermission('transactions.inCommunity')) {
+      txsWithRunningTotal = txsWithRunningTotal.filter(tx => tx.effectiveAmount);
+    }
     result.transactions = txsWithRunningTotal.reverse();
     result.predecessor = contract?.predecessor();
     return result;

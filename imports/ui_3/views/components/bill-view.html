@@ -139,6 +139,7 @@
     <table class="table invoice-total"> 
       <tbody>
       {{#each billPayment in rDoc.getPayments}}
+      {{#if billPayment.amount}}      
       {{#let paymentTx=(findTx billPayment.id)}}
       <tr>
           <td class="text-capitalize">
@@ -149,6 +150,7 @@
           <td class="nowrap">{{displayMoney billPayment.amount}}</td>
       </tr>
       {{/let}}
+      {{/if}}      
       {{/each}}
       <tr>
           <td><strong>{{_ 'schemaBills.outstanding.label'}} :</strong></td>

@@ -1255,7 +1255,7 @@
       "label": "Fizetés altípus",
       "options": {
         "payment": "fizetés",
-        "identification": "beazonosítás",
+        "identification": "korábbi befizetés beazonosítás",
         "remission": "elengedés"
       }
     }

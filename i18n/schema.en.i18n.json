@@ -1249,7 +1249,7 @@
       "label": "Payment subtype",
       "options": {
         "payment": "payment",
-        "identification": "identification from overpayment",
+        "identification": "identification of previous payment",
         "remission": "remission"
       }
     }

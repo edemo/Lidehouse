@@ -104,8 +104,7 @@ const paymentSchema = new SimpleSchema([
 
 Transactions.categoryHelpers('payment', {
   displayEntityName() {
-    const accounting = this.txdef().data.paymentSubType;
-    return __(`schemaPayments.paymentSubType.options.${accounting}`);
+    return __(`schemaPayments.paymentSubType.options.${this.subType()}`);
   },
   subType() {
     return this.txdef().data.paymentSubType;
