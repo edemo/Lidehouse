@@ -346,6 +346,8 @@ Transactions.helpers({
     });
   },
   validateJournalEntries() {
+    const creditAmount = [];
+    const debitAmount = [];
     this.journalEntries(true).forEach(je => {
       let accountCode;
       if (Accounts.isTechnicalCode(je.account)) accountCode = Accounts.fromTechnicalCode(je.account);
@@ -357,7 +359,14 @@ Transactions.helpers({
       if (!this.community().settings.allowPostToGroupAccounts && account?.isGroup) {
         throw new Meteor.Error('err_notAllowed', 'Not allowed to post to group accounts', account.displayAccount());
       }
+      if (je.side === 'credit') creditAmount[je.subTx] = creditAmount[je.subTx] ? (creditAmount[je.subTx] + je.amount) : je.amount;
+      if (je.side === 'debit') debitAmount[je.subTx] = debitAmount[je.subTx] ? (debitAmount[je.subTx] + je.amount) : je.amount;
     });
+    for (let i = 0; i < creditAmount.length; i++) {
+      if (creditAmount[i] !== this.amount || debitAmount[i] !== this.amount) {
+        throw new Meteor.Error('err_notAllowed', 'Transaction sides have to have same amount', this);
+      }
+    }
   },
   makeJournalEntries() {
     // NOP -- will be overwritten in the categories

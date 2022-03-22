@@ -45,4 +45,11 @@
             </tbody>
         </table>
     </div>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            {{#if currentUser.super}}
+            <button class="btn btn-default js-fix-balances"><i class="fa fa-wrench"></i> {{_ 'Fix balances'}}</button>
+            {{/if}}
+        </div>
+    </div>
 </template>

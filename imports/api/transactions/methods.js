@@ -258,11 +258,9 @@ export const statistics = new ValidatedMethod({
     const postedTxs = transactions.filter(tx => tx.status !== 'draft');
     txStat.misPosted = [];
     postedTxs.forEach((tx) => {
-      let credit = 0;
-      let debit = 0;
-      tx.credit?.forEach((cr) => { credit += cr.amount; });
-      tx.debit?.forEach((deb) => { debit += deb.amount; });
-      if (credit !== debit) txStat.misPosted.push(tx.serialId || tx._id);
+      try {
+        tx.validateJournalEntries();
+      } catch (err) { txStat.misPosted.push(tx.serialId || tx._id); }
     });
     return txStat;
   },

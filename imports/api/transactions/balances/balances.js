@@ -273,10 +273,11 @@ Balances.checkAllCorrect = function checkAllCorrect() {
   });
 };
 
-Balances.ensureAllCorrect = function ensureAllCorrect() {
+Balances.ensureAllCorrect = function ensureAllCorrect(communityId) {
   if (Meteor.isClient) return;
-  Balances.remove({});
-  Transactions.find({}).forEach((tx, index) => {
+  const selector = communityId ? { communityId } : {};
+  Balances.remove(selector);
+  Transactions.find(selector).forEach((tx, index) => {
     if (index % 100 === 0) Log.info('Rebalanced txs', index);
     tx.updateBalances(+1);
   });
