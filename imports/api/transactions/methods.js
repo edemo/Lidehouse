@@ -132,14 +132,10 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Transactions, _id);
     checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'transactions.update', doc);
-    if (doc.isPosted()) {
-      if (doc.isPetrified()) {
-        throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
-      }
-      if (doc.category === 'bill' && doc.hasPayments()) {
-        throw new Meteor.Error('err_permissionDenied', 'No permission to modify bill when its already paid, disconnect the payment first', { _id, modifier });
-      }
+    if (doc.isPetrified()) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after posting', { _id, modifier });
     }
+
     let newDoc = rusdiff.clone(doc);
     rusdiff.apply(newDoc, modifier);
     newDoc = Transactions._transform(newDoc);
@@ -154,8 +150,12 @@ export const update = new ValidatedMethod({
     const result = Transactions.update({ _id }, modifier, { selector: doc });
     if (doc.isPosted()) { // If doc was posted already, resposting is needed, because the accounting might have changed
       post._execute({ userId: this.userId }, { _id });
+      if (doc.category === 'bill' && doc.hasPayments()) {
+        doc.getPaymentTransactions().forEach(payment => {
+          if (payment.isPosted()) Transactions.methods.post._execute({ userId: this.userId }, { _id: payment._id });
+        });
+      }
     }
-
     return result;
   },
 });
