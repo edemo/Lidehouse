@@ -20,7 +20,7 @@ export function parcelColumns() {
   return [
     { data: 'serial', title: __('schemaParcels.serial.label') },
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    getActiveCommunity().hasLeadParcels() &&
+    getActiveCommunity()?.hasLeadParcels() &&
       { data: 'leadParcelRef()', title: __('schemaParcels.leadRef.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label') },
