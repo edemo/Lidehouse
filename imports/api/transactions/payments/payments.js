@@ -243,7 +243,7 @@ Transactions.categoryHelpers('payment', {
       if (line.amount && line.amount < amountToAllocate) {
         amountToAllocate -= line.amount;
         return true;
-      } else if (line.amount > amountToAllocate || !_.contains(this.community().settings.paymentsToBills, this.relation)) {
+      } else if (line.amount > amountToAllocate) {
         line.amount = amountToAllocate;
         amountToAllocate = 0;
         return false;
@@ -254,7 +254,7 @@ Transactions.categoryHelpers('payment', {
   fillFromStatementEntry(entry) {
     this.amount = entry.unreconciledAmount() * this.relationSign();
     this.payAccount = entry.account;
-    if (!this.bills && !this.lines) this.lines = [{ amount: this.amount }];
+    if (!this.bills && !this.lines && !_.contains(this.community().settings.paymentsToBills, this.relation)) this.lines = [{ amount: this.amount }];
   },
   makeJournalEntries(accountingMethod) {
     this.debit = [];
