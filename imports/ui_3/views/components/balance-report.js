@@ -10,7 +10,7 @@ import './balance-report.html';
 Template.Balance_report.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
-    this.subscribe('balances.ofAccounts', { communityId });
+    this.subscribe('balances.inCommunity', { communityId });
   });
 });
 

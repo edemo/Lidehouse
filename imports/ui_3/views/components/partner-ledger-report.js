@@ -13,7 +13,7 @@ import './partner-ledger-report.html';
 Template.Partner_ledger_report.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
-//    this.subscribe('balances.ofAccounts', { communityId });
+    this.subscribe('balances.inCommunity', { communityId, partners: [], tags: [Template.currentData().tag] });
   });
 });
 

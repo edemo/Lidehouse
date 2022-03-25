@@ -24,7 +24,6 @@ Template.Accounting_page.viewmodel({
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
       instance.subscribe('accounts.inCommunity', { communityId });
-      instance.subscribe('balances.inCommunity', { communityId });
       instance.subscribe('parcels.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
       const params = {
