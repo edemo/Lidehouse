@@ -103,8 +103,17 @@ Meteor.publishComposite('topics.active', function topicsBoard(params) {
     },
     children: [{
       find(topic) {
+        return Meteor.users.find({ _id: topic.creatorId }, { fields: Meteor.users.publicFields });
+      },
+    }, {
+      find(topic) {
         return Comments.find({ topicId: topic._id }, { limit: 5, sort: { createdAt: -1 } });
       },
+      children: [{
+        find(comment) {
+          return Meteor.users.find({ _id: comment.creatorId }, { fields: Meteor.users.publicFields });
+        },
+      }],
     }, {
       find(topic) {
         if (topic.category === 'vote' && topic.status === 'votingFinished') {
