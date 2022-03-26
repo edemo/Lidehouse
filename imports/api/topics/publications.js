@@ -103,8 +103,17 @@ Meteor.publishComposite('topics.active', function topicsBoard(params) {
     },
     children: [{
       find(topic) {
+        return Meteor.users.find({ _id: topic.creatorId }, { fields: Meteor.users.publicFields });
+      },
+    }, {
+      find(topic) {
         return Comments.find({ topicId: topic._id }, { limit: 5, sort: { createdAt: -1 } });
       },
+      children: [{
+        find(comment) {
+          return Meteor.users.find({ _id: comment.creatorId }, { fields: Meteor.users.publicFields });
+        },
+      }],
     }, {
       find(topic) {
         if (topic.category === 'vote' && topic.status === 'votingFinished') {
@@ -115,7 +124,7 @@ Meteor.publishComposite('topics.active', function topicsBoard(params) {
   };
 });
 
-Meteor.publish('topics.list', function topicsList(params) {
+Meteor.publishComposite('topics.list', function topicsList(params) {
   new SimpleSchema({
     communityId: { type: String },
     category: { type: String, optional: true },
@@ -131,7 +140,17 @@ Meteor.publish('topics.list', function topicsList(params) {
 
   const selector = _.extend({}, params, { $or: [{ participantIds: { $exists: false } }, { participantIds: this.userId }] });
 
-  return Topics.find(selector, { fields: Topics.publicFields });
+  return {
+    find() {
+      return Topics.find(selector, { fields: Topics.publicFields });
+    },
+    children: [{
+      // Publish the author of the Topic (for users with deleted membership)
+      find(topic) {
+        return Meteor.users.find({ _id: topic.creatorId }, { fields: Meteor.users.publicFields });
+      },
+    }],
+  };
 });
 
 Meteor.publishComposite('topics.roomsOfUser', function roomsOfUser(params) {
