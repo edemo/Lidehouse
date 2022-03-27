@@ -10,7 +10,6 @@ import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Parcels } from './parcels.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 
-
 Meteor.publish('parcels.codes', function parcelsCodes(params) {
   new SimpleSchema({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -22,7 +21,7 @@ Meteor.publish('parcels.codes', function parcelsCodes(params) {
     return this.ready();
   }
 
-  return Parcels.find({ communityId }, { fields: { communityId: 1, ref: 1, code: 1, name: 1 } });
+  return Parcels.find({ communityId }, { fields: { communityId: 1, category: 1, ref: 1, code: 1, name: 1 } });
 });
 
 Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(params) {

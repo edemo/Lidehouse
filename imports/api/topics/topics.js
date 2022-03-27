@@ -15,12 +15,11 @@ import { Likeable } from '/imports/api/behaviours/likeable.js';
 import { Flagable } from '/imports/api/behaviours/flagable.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { AttachmentField } from '/imports/api/behaviours/attachment-field.js';
-import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
-import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Attachments } from '/imports/api/attachments/attachments.js';
+import { chooseLocalizer } from '/imports/api/parcels/parcels.js';
 
 import './category-helpers.js';
 
@@ -41,6 +40,7 @@ Topics.baseSchema = new SimpleSchema({
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { type: 'markdown' } },
+  notiLocalizer: { type: [String], optional: true, autoform: chooseLocalizer },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
   movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 });
@@ -59,6 +59,7 @@ Topics.publicFields = {
   category: 1,
   title: 1,
   text: 1,
+  notiLocalizer: 1,
   agendaId: 1,
   createdAt: 1,
   updatedAt: 1,
@@ -101,9 +102,11 @@ Topics.helpers({
     return Communities.findOne(this.communityId);
   },
   agenda() {
+    const Agendas = Mongo.Collection.get('agendas');
     return Agendas.findOne(this.agendaId);
   },
   comments() {
+    const Comments = Mongo.Collection.get('comments');
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
   getShareddocs() {
@@ -123,6 +126,7 @@ Topics.helpers({
     return lastSeenInfo ? false : true;
   },
   commentsSince(timestamp) {
+    const Comments = Mongo.Collection.get('comments');
     const sortByDate = { sort: { createdAt: 1 } };
     const messages = timestamp ?
       Comments.find({ topicId: this._id, createdAt: { $gt: timestamp } }, sortByDate) :
@@ -174,20 +178,22 @@ Topics.helpers({
     };
   },
   isRelevantTo(userId) {
-    if (this.category === 'ticket') { // tickets are only relevant to members with parcels located within the ticket localizer
-      const user = Meteor.users.findOne(userId);
+    const localizers = this.notiLocalizer || [];
+    const user = Meteor.users.findOne(userId);
+    // For tickets the default noti localization is 'none', for all other categories it is 'everywhere'
+    if (this.category === 'ticket') {
       if (userId === this.creatorId || user.hasPermission('ticket.statusChange', this)) return true;
-      const localizer = this.ticket?.localizer;
-      if (!localizer) return false;
-      else {
-        const parcelCodes = [];
-        user.memberships(this.communityId).forEach(m => {
-          const parcel = m.parcel();
-          if (parcel && parcel.code) parcelCodes.push(parcel.code);
-        });
-        return _.any(parcelCodes, code => code.startsWith(localizer));
-      }
-    } else return true;
+      if (this.ticket?.localizer) localizers.push(this.ticket.localizer);
+      if (!localizers.length) return false;
+    } else {
+      if (!localizers.length) return true; /* notiLocalizers.push('@'); */
+    }
+    const parcelCodes = [];
+    user.memberships(this.communityId).forEach(m => {
+      const parcel = m.parcel();
+      if (parcel && parcel.code) parcelCodes.push(parcel.code);
+    });
+    return _.any(parcelCodes, code => _.any(localizers, loc => code.startsWith(loc)));
   },
   // This number goes into the red badge to show you how many work to do
   needsAttention(userId, seenType = Meteor.users.SEEN_BY.EYES) {
@@ -226,6 +232,7 @@ Topics.helpers({
     return Topics.categories[this.category].statuses[this.status].data;
   },
   remove() {
+    const Comments = Mongo.Collection.get('comments');
     Comments.remove({ topicId: this._id });
     Topics.remove({ _id: this._id });
   },
@@ -260,12 +267,12 @@ Topics.attachVariantSchema(undefined, { selector: { category: 'room' } });
 Topics.attachVariantSchema(Topics.extensionSchemas.forum, { selector: { category: 'forum' } });
 Topics.attachVariantSchema(Topics.extensionSchemas.news, { selector: { category: 'news' } });
 
-Topics.categoryValues.forEach(category =>
-  Topics.simpleSchema({ category }).i18n('schemaTopics')
-);
+Topics.categoryValues.forEach(category => {
+  Topics.simpleSchema({ category }).i18n('schemaTopics');
+});
 //  Topics.schema.i18n('schemaTopics');
 
-Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId'];
+Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'notiLocalizer'];
 
 Topics.categoryValues.forEach((category) => {
   Factory.define(category, Topics, {

@@ -461,12 +461,17 @@
     },
     "title": {
       "label": "Title",
-      "placeholder": "Short summary"
+      "placeholder": "Short summary",
+      "help": "If no title is provided, the first line of the description will be used as title"
     },
     "text": {
-      "label": "Details",
+      "label": "Description",
       "placeholder": "Longer description (if needed)..."
     },
+    "notiLocalizer": {
+      "label": "Notification place",
+      "help": "You may specify one or more places (building, floors, units) where the notifications should go to. Leave it blank if you do not wish to localize the notifications"
+    },    
     "shareddocs": {
       "label": "Documents (if applicable)",
       "$": {
@@ -507,7 +512,7 @@
       "placeholder": "(eg. Should we paint the house blue?)"
     },
     "text": {
-      "label": "Details",
+      "label": "Description",
       "placeholder": "Longer description (if needed)..."
     },
     "agendaId": {

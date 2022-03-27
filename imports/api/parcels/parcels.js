@@ -415,3 +415,19 @@ export const chooseProperty = {
   },
   firstOption: () => __('(Select one)'),
 };
+
+export const chooseLocalizer = Parcels.choosePhysical;
+/*
+export const chooseLocalizer = {
+  options() {
+    const communityId = ModalStack.getVar('communityId');
+    const physicalPlaces = new RegExp('^@');
+    const parcels = Parcels.find({ communityId, category: physicalPlaces }, { sort: { ref: 1 } });
+    const options = parcels.map(function option(p) {
+      return { label: p.displayAccount(), value: p._id };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};
+*/
