@@ -13,7 +13,8 @@ import './ledger-report.html';
 Template.Ledger_report.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
-    this.subscribe('balances.ofAccounts', { communityId });
+    const tags =  Template.currentData().tagtype === 'period' ? [Template.currentData().tag] : undefined;
+    this.subscribe('balances.inCommunity', { communityId, tags });
   });
 });
 

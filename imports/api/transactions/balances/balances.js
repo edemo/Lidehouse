@@ -79,7 +79,13 @@ Balances.helpers({
 });
 
 Meteor.startup(function indexBalances() {
-  Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, partner: 1, tag: 1 });
+  if (Meteor.isClient) {
+    Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, partner: 1, tag: 1 });
+  } else {
+    Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, partner: 1, tag: 1 });
+    Balances.ensureIndex({ communityId: 1, partner: 1, localizer: 1, account: 1, tag: 1 });
+    Balances.ensureIndex({ communityId: 1, tag: 1, account: 1, partner: 1, localizer: 1 });
+  }
 });
 
 Balances.attachSchema(Balances.schema);

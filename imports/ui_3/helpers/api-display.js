@@ -122,6 +122,7 @@ export function displayChargeType(name) {
 
 const Renderers = {
   'Topics.status': displayStatus,
+  'Topics.notiLocalizer': displayLocalizer,
   'Tickets.ticket.type': displayTicketType,
   'Tickets.ticket.urgency': displayUrgency,
   'Tickets.ticket.localizer': displayLocalizer,
@@ -137,6 +138,7 @@ export function displayKey(key) {
 }
 // This aims to be a generic display -- works for Tickets only for now
 export function displayValue(key, value) {
+  if (_.isArray(value)) return value.map(elem => displayValue(key, elem)).join(' ');
   if (key.includes('Cost')) return numeral(value).format('0,0$');
   if (Renderers[key]) return Renderers[key](value);
   if (_.isDate(value)) return moment(value).format('L');

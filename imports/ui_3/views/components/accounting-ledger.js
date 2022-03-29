@@ -25,7 +25,9 @@ Template.Accounting_ledger.viewmodel({
   showPartnerLedger: false,
   onCreated(instance) {
     instance.autorun(() => {
-      instance.subscribe('balances.ofAccounts', { communityId: this.communityId() });
+      const communityId = this.communityId();
+      instance.subscribe('balances.inCommunity', { communityId });
+      // Needed for the periodOptions. TODO: Ask the server what periods are available, so this sub is not needed
     });
   },
   communityId() {
@@ -51,13 +53,6 @@ Template.Accounting_ledger.viewmodel({
   },
   totalTag() {
     return ['T'];
-  },
-  yearMonthTag() {
-    return this.periodSelected();
-  },
-  yearMonthTags() {
-//    return PeriodBreakdown.currentYearMonths().concat('T');
-    return PeriodBreakdown.nodesOf(this.periodSelected()).map(l => l.code);
   },
   periodOptions() {
     const periodOptions = [];

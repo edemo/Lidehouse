@@ -52,6 +52,7 @@
                 <div class="col-md-3">
                     <div class="wrapper wrapper-content project-manager"> 
                         {{> Template.dynamic template=(concat 'Topic_' this.category '_data')}}
+                        {{> Template.dynamic template=(concat 'Topic_' 'generic' '_data')}}
                     </div>
                 </div>
                 </div>
@@ -83,9 +84,6 @@
 
 <template name="Topic_vote_data">
     <dl class="">
-        {{>Data_field key='Topics.status' value=this.status}}
-    </dl>
-    <dl class="">
         {{>Data_field key='Votings.agendaId' value=this.agendaId}}
     </dl>
     <dl class="">
@@ -98,7 +96,6 @@
 <template name="Topic_ticket_data">    
     <dl class="">
         {{>Data_field key='Tickets.ticket.type' value=this.ticket.type}}
-        {{>Data_field key='Topics.status' value=this.status}}
         {{>Data_field key='Tickets.ticket.urgency' value=this.ticket.urgency}}
         {{>Data_field key='Tickets.ticket.localizer' value=this.ticket.localizer}}
         {{>Data_field key='Tickets.ticket.chargeType' value=this.ticket.chargeType}}
@@ -120,5 +117,12 @@
         {{>Data_field key='Timestamped.creatorId' value=this.creator.displayOfficialName}}
         {{>Data_field key='Timestamped.createdAt' value=this.createdAt}}
         {{>Data_field key='Timestamped.updatedAt' value=this.updatedAt}}
+    </dl>
+</template>
+
+<template name="Topic_generic_data">
+    <dl class="">
+        {{>Data_field key='Topics.status' value=this.status}}
+        {{>Data_field key='Topics.notiLocalizer' value=this.notiLocalizer}}
     </dl>
 </template>

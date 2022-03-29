@@ -461,12 +461,17 @@
     },
     "title": {
       "label": "Cím",
-      "placeholder": "Rövid összefoglalás"
+      "placeholder": "Rövid összefoglalás",
+      "help": "Ha nem ad meg címet, a kifejtés első sora lesz a cím"
     },
     "text": {
-      "label": "Részletek",
+      "label": "Kifejtés",
       "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
     },
+    "notiLocalizer": {
+      "label": "Értesítési hely",
+      "help": "Megjelölhet egy vagy több helyet (épület, emeletek, albetétek) amiket érint ez a téma, hogy kapjanak róla értesítőt. Hagyja üresen, ha nem kívánja helyileg korlátozni az értesítéseket."
+    },    
     "shareddocs": {
       "label": "Dokumentumok (ha csatolni szeretne)",
       "$": {
@@ -507,7 +512,7 @@
       "placeholder": "(pl. Fessük-e a falat kékre?)"
     },
     "text": {
-      "label": "Részletek",
+      "label": "Kifejtés",
       "placeholder": "A szavazás kérdésének bővebb kifejtése ..."
     },
     "agendaId": {

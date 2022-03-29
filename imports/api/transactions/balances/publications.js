@@ -6,38 +6,35 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Balances } from './balances.js';
 
-Meteor.publish('balances.ofAccounts', function balancesOfAccounts(params) {
-  // Publishing the balances of the Chart of Account -- Current + last 12 months
-  new SimpleSchema({
-    communityId: { type: String },
-  }).validate(params);
-  const { communityId } = params;
-
-  const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('balances.ofAccounts', { communityId })) {
-    return this.ready();
-  }
-
-  const periodCodes = PeriodBreakdown.nodeCodes(true); // TODO filter for last year
-  return Balances.find({ communityId, localizer: { $exists: false }, partner: { $exists: false } });
-});
-
 Meteor.publish('balances.inCommunity', function balancesInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
+    accounts: { type: [String], optional: true },
+    partners: { type: [String], optional: true }, // [] means get all, missing means don't need partner balances
+    localizers: { type: [String], optional: true }, // [] means get all, missing means don't need localized balances
+    tags: { type: [String], optional: true },
   }).validate(params);
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('balances.ofAccounts', { communityId })) {
+  if (!user.hasPermission('balances.inCommunity', { communityId })) {
     return this.ready();
   }
-  const selector = user.hasPermission('balances.ofLocalizers', { communityId })
-    ? { communityId } : { communityId, localizer: { $exists: false }, partner: { $exists: false } };
-  if (!params.localizer) selector.localizer = { $exists: false };
+  const selector = { communityId };
+  if (params.accounts) selector.account = { $in: params.accounts };
+  if (params.tags) selector.tag = { $in: params.tags };
+  if (params.localizers) {
+    if (params.localizers.length) selector.localizer = { $in: params.localizers };
+    else selector.localizer = { $exists: true };
+  } else selector.localizer = { $exists: false };
+  if (params.partners) {
+    if (params.partners.length) selector.partner = { $in: params.partners };
+    else selector.partner = { $exists: true };
+  } else selector.partner = { $exists: false };
   return Balances.find(selector);
 });
 
+/*
 // Publishing the balances of all individual Parcels
 Meteor.publishComposite('balances.ofLocalizers', function balancesOfLocalizers(params) {
   new SimpleSchema({
@@ -47,7 +44,7 @@ Meteor.publishComposite('balances.ofLocalizers', function balancesOfLocalizers(p
   const { communityId, tag } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('balances.ofLocalizers', { communityId })) {
+  if (!user.hasPermission('balances.inCommunity', { communityId })) {
     return this.ready();
   }
 
@@ -62,7 +59,7 @@ Meteor.publishComposite('balances.ofLocalizers', function balancesOfLocalizers(p
     }],
   };
 });
-/*
+
 // Everyone has access to all of his own parcels' balances
 Meteor.publishComposite('balances.ofSelf', function balancesOfSelf(params) {
   new SimpleSchema({

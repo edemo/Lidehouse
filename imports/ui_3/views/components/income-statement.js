@@ -10,7 +10,7 @@ import './income-statement.html';
 Template.Income_statement.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
-    this.subscribe('balances.ofAccounts', { communityId });
+    this.subscribe('balances.inCommunity', { communityId });
   });
 });
 

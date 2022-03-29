@@ -108,13 +108,12 @@ Template.Community_finances.viewmodel({
   endIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.endTag()); },
   periods() { return PeriodBreakdown.leafs().slice(this.startIndex(), this.endIndex()); },
   prePeriods() { return PeriodBreakdown.leafs().slice(0, this.startIndex()); },
-  demoLabels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"],
-  marinaLabels() { return this.periods().map(l => `${l.label === 'JAN' ? __(l.parent.name) : __(l.label)}`); },
+  periodLabels() { return this.periods().map(l => `${l.label === 'JAN' ? __(l.parent.name) : __(l.label)}`); },
 
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('accounts.inCommunity', { communityId: this.communityId() });
-      instance.subscribe('balances.ofAccounts', { communityId: this.communityId() });
+      instance.subscribe('balances.inCommunity', { communityId: this.communityId(), tags: ['T'].concat(_.pluck(this.periods(), 'code')) });
     });
   },
   onRendered(instance) {
@@ -142,7 +141,7 @@ Template.Community_finances.viewmodel({
   },
   statusData() {
     const data = {
-      labels: this.marinaLabels(),
+      labels: this.periodLabels(),
       datasets: [
         _.extend({
           label: __("Money accounts"),
@@ -166,12 +165,12 @@ Template.Community_finances.viewmodel({
         fill: true,
       }, plusColors[index + 1]));
     });
-    const moneyData = { labels: this.marinaLabels(), datasets };
+    const moneyData = { labels: this.periodLabels(), datasets };
     return moneyData;
   },
   commitmentData() {
     const data = {
-      labels: this.marinaLabels(),
+      labels: this.periodLabels(),
       datasets: [
         _.extend({
           label: __("HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK"),

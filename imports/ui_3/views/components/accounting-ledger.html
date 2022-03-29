@@ -1,5 +1,5 @@
 <template name="Accounting_ledger">
-    {{#if currentUserHasPermission 'balances.ofAccounts'}}
+    {{#if currentUserHasPermission 'balances.inCommunity'}}
      <div class="row">
         <p class="col-sm-6">
             {{_ 'Select a period for general ledger data'}}<br>
@@ -15,10 +15,9 @@
             <div><label><input type="checkbox" id="technicalCheckbox" name="technicalCheckbox" {{b "check: showTechnicalAccounts"}}> {{_ 'Show technical accounts'}}</label></div>
         </div>
     </div>
-    <!--{{> Balance_report breakdown=(breakdown 'COA') tags=yearMonthTags }}-->
-        {{> Ledger_report accounts=accounts tag=yearMonthTag tagtype=periodOrCumulation }}
+        {{> Ledger_report accounts=accounts tag=periodSelected tagtype=periodOrCumulation }}
         {{#if showPartnerLedger}}
-        {{> Partner_ledger_report contracts=contracts tag=yearMonthTag tagtype=periodOrCumulation }}
+        {{> Partner_ledger_report contracts=contracts tag=periodSelected tagtype=periodOrCumulation }}
         {{else}}
         <div class="row">
             <div class="col-xs-12 text-center">

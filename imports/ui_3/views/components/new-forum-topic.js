@@ -18,7 +18,7 @@ Template.New_forum_topic.viewmodel({
 });
 
 Template.New_forum_topic.events({
-  'click .js-attach'(event, instance) {
+  'click .js-details'(event, instance) {
     const vm = instance.viewmodel;
     const doc = {
       communityId: ModalStack.getVar('communityId'),

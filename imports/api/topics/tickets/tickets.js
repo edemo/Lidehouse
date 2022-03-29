@@ -7,7 +7,7 @@ import faker from 'faker';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Clock } from '/imports/utils/clock.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
-import { chooseParcel } from '/imports/api/parcels/parcels.js';
+import { chooseLocalizer } from '/imports/api/parcels/parcels.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { choosePartner } from '/imports/api/partners/partners.js';
@@ -24,7 +24,7 @@ Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
 Tickets.extensionRawSchema = {
   type: { type: String, allowedValues: Tickets.typeValues, autoform: { type: 'hidden' } },
   urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: allowedOptions(), defaultValue: 'normal' },
-  localizer: { type: String, optional: true, autoform: chooseParcel() },
+  localizer: { type: String, optional: true, autoform: chooseLocalizer },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseContract }, optional: true },
   chargeType: { type: String, allowedValues: Tickets.chargeTypeValues, autoform: allowedOptions(), optional: true },
