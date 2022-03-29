@@ -58,12 +58,14 @@ export const post = new ValidatedMethod({
 
     const modifier = { $set: { postedAt: new Date() } };
     if (doc.postedAt) modifier.$set.postedAt = doc.postedAt;
+    let journalEntries;
     if (doc.status !== 'void') { // voided already has the accounting data on it
       const community = Communities.findOne(doc.communityId);
       const accountingMethod = community.settings.accountingMethod;
-      const updateData = _.extend({}, doc.makeJournalEntries(accountingMethod));
-      _.extend(modifier.$set, { status: 'posted', ...updateData });
+      journalEntries = doc.makeJournalEntries(accountingMethod);
+      _.extend(modifier.$set, { status: 'posted', ...journalEntries });
     }
+    _.extend(doc, journalEntries);
     doc.validateJournalEntries();
     const result = Transactions.update(_id, modifier);
 

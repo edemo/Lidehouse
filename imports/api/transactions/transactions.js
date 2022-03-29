@@ -206,7 +206,7 @@ Transactions.helpers({
     return (elapsedHours > 24);
   },
   isPetrified() {
-    const now = moment(new Date());
+    const now = moment(Clock.currentTime());
     const valueDate = moment(this.valueDate);
     return now.year() - valueDate.year() > 1;
   },
@@ -363,7 +363,7 @@ Transactions.helpers({
       if (je.side === 'debit') debitAmount[je.subTx] = debitAmount[je.subTx] ? (debitAmount[je.subTx] + je.amount) : je.amount;
     });
     for (let i = 0; i < creditAmount.length; i++) {
-      if (creditAmount[i] !== this.amount || debitAmount[i] !== this.amount) {
+      if (creditAmount[i] !== debitAmount[i]) {
         throw new Meteor.Error('err_notAllowed', 'Transaction sides have to have same amount', this);
       }
     }

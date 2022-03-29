@@ -198,7 +198,7 @@ Transactions.categoryHelpers('bill', {
     return (this.payments || []);
   },
   getPaymentTransactions() {
-    return this.getPayments().map(payment => Transactions.findOne(payment.id));
+    return this.getPayments().map(payment => Transactions.findOne(payment.id)).filter(p => p);
   },
   paymentCount() {
     return this.getPayments().length;

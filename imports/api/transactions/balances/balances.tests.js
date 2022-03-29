@@ -2,6 +2,7 @@
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
+import { Clock } from '/imports/utils/clock';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -82,6 +83,7 @@ if (Meteor.isServer) {
 
       // Testing only freeTx category, post method with other categories are tested elsewhere e.g. parcel-billings.tests
       it('updates balances with tx operations', function (done) {
+        Clock.setSimulatedTime(new Date('2017-02-02'));
         insertTx({
           valueDate: new Date('2017-01-01'),
           amount: 1000,
@@ -137,6 +139,7 @@ if (Meteor.isServer) {
         assertBalance('`1', undefined, 'T-2017-01', 0);
         assertBalance('`19', undefined, 'T', 1000);
 
+        Clock.clear();
         done();
       });
 
