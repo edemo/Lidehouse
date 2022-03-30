@@ -47,7 +47,7 @@ Template.Ledger_report.events({
     const communityId = pageInstance.viewmodel.communityId();
     if (!Meteor.user().hasPermission('transactions.inCommunity', { communityId })) return;
     const accountCode = $(event.target).closest('[data-account]').data('account');
-    const periodTag = $(event.target).closest('[data-tag]').data('tag');
+    const periodTag = $(event.target).closest('[data-tag]').attr('data-tag');
     const period = Period.fromTag(periodTag);
     Modal.show('Modal', {
       title: __('Account history'),
