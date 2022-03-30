@@ -14,6 +14,7 @@ import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
 import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { billColumns, receiptColumns } from '/imports/api/transactions/bills/tables.js';
@@ -33,11 +34,15 @@ import './accounting-bills.html';
 
 Template.Accounting_bills.viewmodel({
   share: 'accountingFilter',
+  subscribeToPartners: false,
   onCreated(instance) {
     ModalStack.setVar('relation', this.activePartnerRelation(), true);
     instance.autorun(() => {
       //initializeDatatablesSelectButtons('Bills');
       instance.subscribe('parcelBillings.inCommunity', { communityId: this.communityId() });
+      if (this.subscribeToPartners()) {
+        instance.subscribe('balances.inCommunity', { communityId: this.communityId(), partners: [], tags: ['T'] });
+      }
     });
   },
   parcelBillings() {
@@ -127,6 +132,7 @@ Template.Accounting_bills.viewmodel({
   },
   partnersTableDataFn() {
     const self = this;
+    this.subscribeToPartners(true);
     return () => {
       let partners = Partners.find(self.partnersFilterSelector()).fetch();
       if (self.unreconciledOnly()) partners = partners.filter(p => p.balance());
