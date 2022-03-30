@@ -256,7 +256,7 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Transactions.methods.remove, { _id: oldBillId });
       });
 
-      it('Cannot modify a bill that has payments', function () {
+      xit('Cannot modify a bill that has payments', function () {
         chai.assert.throws(() => {
           FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
             $set: { 'lines.0.unitPrice': 500, 'lines.0.amount': 500, amount: 1500 },
@@ -264,7 +264,7 @@ if (Meteor.isServer) {
         }, 'err_permissionDenied');
       });
 
-      xit('Modifying posted bill updates partner balances correctly', function () {
+      it('Modifying posted bill updates partner balances correctly', function () {
         chai.assert.equal(bill.partner().balance(), -1300);
         chai.assert.equal(bill.partner().outstanding(undefined, 'customer'), 1300);
         chai.assert.equal(bill.contract().outstanding(), 1300);
@@ -300,6 +300,45 @@ if (Meteor.isServer) {
         chai.assert.equal(parcel2.balance(), 0);
         chai.assert.equal(parcel1.outstanding(), 0);
         chai.assert.equal(parcel2.outstanding(), 0);
+      });
+
+      it("Modifying a posted bill with payments modifies payment's journal entries as well", function () {
+        bill = Transactions.findOne(billId);
+        const lines = bill.getLines();
+        lines[0].unitPrice = 500;
+        lines[0].account = '`9521';
+        lines[0].amount = 500;
+        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+          $set: { lines, amount: 1500 } } });
+        bill = Transactions.findOne(billId);
+        payment = Transactions.findOne(paymentId);
+
+        chai.assert.equal(bill.amount, 1500);
+        chai.assert.deepEqual(bill.payments[1], { id: paymentId, amount: 1300 });
+        chai.assert.equal(bill.outstanding, 200);
+        chai.assert.equal(payment.amount, 1302);
+        chai.assert.equal(payment.outstanding, 0);
+        const credit = [{ account: '`3321', amount: 500, partner: bill.partnerContractCode(), localizer: parcel1.code, parcelId: FixtureA.dummyParcels[1] },
+          { account: '`331', amount: 800, partner: bill.partnerContractCode(), localizer: parcel2.code, parcelId: FixtureA.dummyParcels[2] },
+          { amount: 2, account: '`99' }];
+        chai.assert.deepEqual(payment.credit, credit);
+        chai.assert.deepEqual(payment.debit, [{ amount: 1302, account: '`381' }]);
+
+        lines[0].unitPrice = 100;
+        lines[0].account = '`951';
+        lines[0].amount = 100;
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+            $set: { lines, amount: 1100 },
+          } });
+        }, "payed amount for a bill can not be more than bill's amount");
+
+        lines[0].unitPrice = 300;
+        lines[0].account = '`951';
+        lines[0].amount = 300;
+        FixtureA.builder.execute(Transactions.methods.update, { _id: billId, modifier: {
+          $set: { lines, amount: 1300 },
+        } });
       });
 
       it('Disconnecting posted payment from bill updates balances correctly', function () {
@@ -1651,7 +1690,8 @@ if (Meteor.isServer) {
               account: '`33',
               localizer: '@',
               partner: FixtureA.customer,
-            }, {
+            }],
+            credit: [{
               account: '`951',
               localizer: '@',
               partner: FixtureA.customer,

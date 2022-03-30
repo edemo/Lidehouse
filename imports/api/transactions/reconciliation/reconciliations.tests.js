@@ -1022,7 +1022,7 @@ if (Meteor.isServer) {
           amount: 500,
           valueDate: Clock.currentDate(),
           payAccount: bankAccount.code,
-          partnerId: Fixture.demoUserId,
+          partnerId: Fixture.partnerId(Fixture.demoUserId),
           lines: [{ account: '`861', amount: 500 }],
         });
         Fixture.builder.execute(Transactions.methods.post, { _id: firstPaymentId });
