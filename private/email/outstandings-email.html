@@ -6,7 +6,7 @@
                     <p><strong>{{_ 'email.Dear'}} {{partner.displayName}}{{_ 'email.glyphAfterDear'}}</strong></p>
                     <br>
                     <p>{{_ 'email.OutstandingsPretext'}}</p>
-                    <p><strong>{{_ 'email.OutstandingsTotal'}}: {{displayMoney (partner.outstanding 'member')}}</strong>,
+                    <p><strong>{{_ 'email.OutstandingsTotal'}}: {{displayMoney (partner.outstanding undefined 'member')}}</strong>,
                         {{_ 'email.OutstandingsDetails' quantity=partner.outstandingBills.count}}</p>
                     <div class='content-block aligncenter'>
                         <a href="{{urlFor 'Parcels finances'}}" class="btn btn-primary btn-sm">{{_ 'View my bills'}}</a>
