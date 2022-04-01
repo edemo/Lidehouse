@@ -24,7 +24,9 @@ Template.Partner_ledger_report.helpers({
       partner: contract.code(),
       tag,
     }, tagtype);
-    return balance[sideFunc]();
+    let result = balance[sideFunc]();
+    if (sideFunc === 'total') result *= -1;
+    return result;
   },
   hasActivity(contract, tag) {
     return !!Balances.findOne({

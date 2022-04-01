@@ -434,16 +434,16 @@
       "help": "Csak akkor szükséges megadni, ha ez alapján szeretne előírni."
     },
     "debit": {
-      "label": "Jóváírás"
-    },
-    "credit": {
       "label": "Terhelés"
     },
+    "credit": {
+      "label": "Jóváírás"
+    },
     "debitTotal": {
-      "label": "Túlfizetés"
+      "label": "Hátralék"
     },
     "creditTotal": {
-      "label": "Hátralék"
+      "label": "Túlfizetés"
     }
   },
   "schemaTopics": {

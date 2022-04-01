@@ -434,16 +434,16 @@
       "help": "Needed only if there is a billing based on this."
     },
     "debit": {
-      "label": "Payin"
-    },
-    "credit": {
       "label": "Charge"
     },
+    "credit": {
+      "label": "Payin"
+    },
     "debitTotal": {
-      "label": "Surplus"
+      "label": "Overdraft"
     },
     "creditTotal": {
-      "label": "Overdraft"
+      "label": "Surplus"
     }
   },
   "schemaTopics": {
