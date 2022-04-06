@@ -19,6 +19,7 @@ import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { sendBillEmail } from '/imports/email/bill-send.js';
 import '/imports/api/transactions/txdefs/methods.js';
 import { StatementEntries } from './statement-entries/statement-entries';
+import { Periods } from './periods/periods.js';
 
 /*
 function runPositingRules(context, doc) {
@@ -44,6 +45,17 @@ function runPositingRules(context, doc) {
 }
 */
 
+function ensurePeriod(userId, doc) {
+  const periodsDoc = Periods.get(doc.communityId);
+  if (periodsDoc.closedAt && periodsDoc.closedAt.getTime() < doc.valueDate.getTime()) {
+    throw new Meteor.Error('err_notAllowed', 'Period is already closed', { valueDate: doc.valueDate, closedAt: periodsDoc.closedAt });
+  }
+  if (!_.contains(periodsDoc.years, doc.valueDate.getFullYear())) {
+    Periods.methods.open._execute({ userId },
+      { communityId: doc.communityId, tag: 'T-' + doc.valueDate.getFullYear() });
+  }
+}
+
 export const post = new ValidatedMethod({
   name: 'transactions.post',
   validate: new SimpleSchema({
@@ -65,6 +77,7 @@ export const post = new ValidatedMethod({
       _.extend(modifier.$set, { status: 'posted', ...journalEntries });
     }
     doc.validateJournalEntries();
+    ensurePeriod(this.userId, doc);
     const result = Transactions.update(_id, modifier);
 
     if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {
@@ -115,6 +128,7 @@ export const insert = new ValidatedMethod({
     });
     doc.validate?.();
 
+    ensurePeriod(this.userId, doc);
     const _id = Transactions.insert(doc);
     if (doc.isAutoPosting()) post._execute({ userId: this.userId }, { _id });
 //    runPositingRules(this, doc);
@@ -147,6 +161,7 @@ export const update = new ValidatedMethod({
       }
     });
 
+    ensurePeriod(this.userId, newDoc);
     const result = Transactions.update({ _id }, modifier, { selector: doc });
     if (doc.isPosted()) { // If doc was posted already, resposting is needed, because the accounting might have changed
       post._execute({ userId: this.userId }, { _id });
@@ -205,6 +220,7 @@ export const remove = new ValidatedMethod({
     if (doc.category === 'bill' && doc.hasPayments()) {
       throw new Meteor.Error('err_unableToRemove', 'Not possible to remove bill, while it has payments, remove the payments first');
     }
+    ensurePeriod(this.userId, doc);
     if (doc.status === 'draft') {
       Transactions.remove(_id);
       result = null;
@@ -232,7 +248,7 @@ export const cloneAccountingTemplates = new ValidatedMethod({
   }).validator(),
   run({ communityId /*, name*/ }) {
     checkPermissions(this.userId, 'accounts.insert', { communityId });
-    if (Meteor.isClient) return // account templates are not available on client side
+    if (Meteor.isClient) return; // account templates are not available on client side
     Templates.clone('Condominium_COA', communityId);
     Templates.clone('Condominium_Localizer', communityId);
     Templates.clone('Condominium_Txdefs', communityId);

@@ -15,7 +15,7 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Bills } from '/imports/api/transactions/bills/bills';
-import { Period } from '/imports/api/transactions/breakdowns/period.js';
+import { Period } from '/imports/api/transactions/periods/period.js';
 import { ActiveTimeMachine } from '/imports/api/behaviours/active-time-machine';
 import { displayDate } from '/imports/ui_3/helpers/utils.js';
 

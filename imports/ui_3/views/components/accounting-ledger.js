@@ -5,11 +5,14 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
 import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period';
-import { Parcels } from '/imports/api/parcels/parcels';
-import { Accounts } from '/imports/api/transactions/accounts/accounts';
-import { Contracts } from '/imports/api/contracts/contracts';
-import { Balances } from '/imports/api/transactions/balances/balances';
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Period } from '/imports/api/transactions/periods/period.js';
+import { Periods } from '/imports/api/transactions/periods/periods.js';
+import '/imports/api/transactions/periods/methods.js';
+import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/components/ledger-report.js';
 import '/imports/ui_3/views/components/partner-ledger-report.js';
 import '/imports/ui_3/views/components/account-history.js';
@@ -19,15 +22,15 @@ import '/imports/ui_3/views/components/income-statement.js';
 import './accounting-ledger.html';
 
 Template.Accounting_ledger.viewmodel({
-  periodSelected: PeriodBreakdown.currentYearTag(),
+  periodBreakdown: undefined,
+  periodSelected: Period.currentYearTag(),
   periodOrCumulation: 'period',
   showTechnicalAccounts: false,
   showPartnerLedger: false,
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
-      instance.subscribe('balances.inCommunity', { communityId });
-      // Needed for the periodOptions. TODO: Ask the server what periods are available, so this sub is not needed
+      this.periodBreakdown(Periods.findOne({ communityId })?.breakdown());
     });
   },
   communityId() {
@@ -56,17 +59,19 @@ Template.Accounting_ledger.viewmodel({
   },
   periodOptions() {
     const periodOptions = [];
-    const currentYear = new Date().getFullYear();
-    const oldestBalance = Balances.find({ communityId: this.communityId(), localizer: { $exists: false }, partner: { $exists: false },
-      tag: new RegExp('^T-') }, { sort: { tag: 1 } }).fetch()[0];
-    const oldestBalanceYear = oldestBalance ? Period.fromTag(oldestBalance.tag).year : currentYear;
-    PeriodBreakdown.nodes(false).forEach((tag) => {
+    this.periodBreakdown()?.nodes(false).forEach((tag) => {
       const year = tag.path[1];
-      if (year < oldestBalanceYear || year > currentYear) return;
       const yearLabel = tag.path.length === 3 ? year + ' ' : '';
       periodOptions.push({ label: yearLabel + __(tag.label || tag.name), value: tag.code });
     });
     return periodOptions;
+  },
+  closedAt() {
+    return Periods.findOne({ communityId: this.communityId() })?.closedAt;
+  },
+  selectedPeriodIsOpen() {
+    const period = Period.fromTag(this.periodSelected());
+    return this.closedAt().getTime() < period.endDate().getTime();
   },
 });
 
@@ -107,5 +112,11 @@ Template.Accounting_ledger.events({
       bodyContext: { communityId },
       size: 'lg',
     });
+  },
+  'click .js-close'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    const tag = instance.viewmodel.periodSelected();
+    Modal.confirmAndCall(Periods.methods.close, { communityId, tag },
+      { entity: 'period', action: 'close', message: 'Close period warning' });
   },
 });

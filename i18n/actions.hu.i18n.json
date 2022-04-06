@@ -59,6 +59,12 @@
       "doing": "könyvelésbe küldése",
       "done": "könyvelésbe küldve"
     },
+    "close": {
+      "label": "lezárás",
+      "do": "lezárja",
+      "doing": "lezárása",
+      "done": "lezárva"
+    },
     "reconcile": {
       "label": "egyeztetés",
       "do": "egyezteti",
@@ -299,6 +305,10 @@
     "txdef": {
       "label": "gazdasági esemény",
       "it": "a gazdasági eseményt"
+    },
+    "period": {
+      "label": "időszak",
+      "it": "az időszakot"
     },
     "simpleAccount": {
       "label": "főkönyvi számla",

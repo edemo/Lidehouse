@@ -29,6 +29,7 @@ import '/imports/api/transactions/parcel-billings/methods.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import '/imports/api/transactions/statement-entries/methods.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Periods } from '/imports/api/transactions/periods/periods.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -368,6 +369,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Breakdowns =====
   // Create breakdowns (incl Localizer)
   builder.execute(Transactions.methods.cloneAccountingTemplates, { communityId }, demoAccountantId);
+
 /*
   builder.create('cashAccount', {
     digit: '1',

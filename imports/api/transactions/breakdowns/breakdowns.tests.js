@@ -5,7 +5,6 @@ import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Breakdowns } from './breakdowns.js';
 import { Localizer } from './localizer.js';
-import { PeriodBreakdown } from './period.js';
 import { SideBreakdown } from './tx-side.js';
 import './methods.js';
 
@@ -245,59 +244,6 @@ if (Meteor.isServer) {
         const cloneNew = Breakdowns.findOne(cloneId);
         chai.assert.equal(rootNew.name, 'Root');
         chai.assert.equal(cloneNew.name, 'MyRoot');
-      });
-
-      xit('assembles included parts', function () {
-        chai.assert.deepEqual(PeriodBreakdown.nodeOptions(true), [
-          { label: 'T-2017-1: JAN', value: 'T-2017-1' },
-          { label: 'T-2017-2: FEB', value: 'T-2017-2' },
-          { label: 'T-2017-3: MAR', value: 'T-2017-3' },
-          { label: 'T-2017-4: APR', value: 'T-2017-4' },
-          { label: 'T-2017-5: MAY', value: 'T-2017-5' },
-          { label: 'T-2017-6: JUN', value: 'T-2017-6' },
-          { label: 'T-2017-7: JUL', value: 'T-2017-7' },
-          { label: 'T-2017-8: AUG', value: 'T-2017-8' },
-          { label: 'T-2017-9: SEP', value: 'T-2017-9' },
-          { label: 'T-2017-10: OCT', value: 'T-2017-10' },
-          { label: 'T-2017-11: NOV', value: 'T-2017-11' },
-          { label: 'T-2017-12: DEC', value: 'T-2017-12' },
-          { label: 'T-2018-1: JAN', value: 'T-2018-1' },
-          { label: 'T-2018-2: FEB', value: 'T-2018-2' },
-          { label: 'T-2018-3: MAR', value: 'T-2018-3' },
-          { label: 'T-2018-4: APR', value: 'T-2018-4' },
-          { label: 'T-2018-5: MAY', value: 'T-2018-5' },
-          { label: 'T-2018-6: JUN', value: 'T-2018-6' },
-          { label: 'T-2018-7: JUL', value: 'T-2018-7' },
-          { label: 'T-2018-8: AUG', value: 'T-2018-8' },
-          { label: 'T-2018-9: SEP', value: 'T-2018-9' },
-          { label: 'T-2018-10: OCT', value: 'T-2018-10' },
-          { label: 'T-2018-11: NOV', value: 'T-2018-11' },
-          { label: 'T-2018-12: DEC', value: 'T-2018-12' },
-          { label: 'T-2019-1: JAN', value: 'T-2019-1' },
-          { label: 'T-2019-2: FEB', value: 'T-2019-2' },
-          { label: 'T-2019-3: MAR', value: 'T-2019-3' },
-          { label: 'T-2019-4: APR', value: 'T-2019-4' },
-          { label: 'T-2019-5: MAY', value: 'T-2019-5' },
-          { label: 'T-2019-6: JUN', value: 'T-2019-6' },
-          { label: 'T-2019-7: JUL', value: 'T-2019-7' },
-          { label: 'T-2019-8: AUG', value: 'T-2019-8' },
-          { label: 'T-2019-9: SEP', value: 'T-2019-9' },
-          { label: 'T-2019-10: OCT', value: 'T-2019-10' },
-          { label: 'T-2019-11: NOV', value: 'T-2019-11' },
-          { label: 'T-2019-12: DEC', value: 'T-2019-12' },
-          { label: 'T-2020-1: JAN', value: 'T-2020-1' },
-          { label: 'T-2020-2: FEB', value: 'T-2020-2' },
-          { label: 'T-2020-3: MAR', value: 'T-2020-3' },
-          { label: 'T-2020-4: APR', value: 'T-2020-4' },
-          { label: 'T-2020-5: MAY', value: 'T-2020-5' },
-          { label: 'T-2020-6: JUN', value: 'T-2020-6' },
-          { label: 'T-2020-7: JUL', value: 'T-2020-7' },
-          { label: 'T-2020-8: AUG', value: 'T-2020-8' },
-          { label: 'T-2020-9: SEP', value: 'T-2020-9' },
-          { label: 'T-2020-10: OCT', value: 'T-2020-10' },
-          { label: 'T-2020-11: NOV', value: 'T-2020-11' },
-          { label: 'T-2020-12: DEC', value: 'T-2020-12' },
-        ]);
       });
 
       it('assembles imported parts', function () {

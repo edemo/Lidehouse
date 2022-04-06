@@ -59,6 +59,12 @@
       "doing": "post",
       "done": "posted"
     },
+    "close": {
+      "label": "close",
+      "do": "close",
+      "doing": "close",
+      "done": "closed"
+    },
     "reconcile": {
       "label": "reconcile",
       "do": "reconcile",
@@ -299,6 +305,10 @@
     "txdef": {
       "label": "transaction type",
       "it": "the transaction type"
+    },
+    "period": {
+      "label": "period",
+      "it": "the period"
     },
     "simpleAccount": {
       "label": "account",

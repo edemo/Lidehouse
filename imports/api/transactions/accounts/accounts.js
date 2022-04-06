@@ -111,6 +111,13 @@ Accounts.helpers({
   },
 });
 
+Accounts.toLocalize = function toLocalize(communityId) {  // These accounts' balances will be stored for each localization tag
+  const Txdefs = Mongo.Collection.get('txdefs');
+  const def = Txdefs.getByName('Partner exchange', communityId);
+  productionAssert(def.debit.toString() === def.credit.toString(), "Don't mess with Partner exchange definition");
+  return def.debit;
+};
+
 _.extend(Accounts, {
   checkExists(communityId, code) {
     if (!code || !Accounts.findOne({ communityId, code })) {
@@ -182,12 +189,6 @@ _.extend(Accounts, {
       return options;
     },
     firstOption: () => __('(Select one)'),
-  },
-  toLocalize(communityId) {  // These accounts' balances will be stored for each localization tag
-    const Txdefs = Mongo.Collection.get('txdefs');
-    const def = Txdefs.getByName('Partner exchange', communityId);
-    productionAssert(def.debit.toString() === def.credit.toString(), "Don't mess with Partner exchange definition");
-    return def.debit;
   },
   needsLocalization(code, communityId) {
     let result = false;

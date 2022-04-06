@@ -21,7 +21,7 @@ import { allowedOptions } from '/imports/utils/autoform.js';
 import { AccountSchema, LocationTagsSchema } from '/imports/api/transactions/account-specification.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { PeriodBreakdown, Period } from '/imports/api/transactions/breakdowns/period.js';
+import { Periods } from '/imports/api/transactions/periods/periods.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -206,9 +206,8 @@ Transactions.helpers({
     return (elapsedHours > 24);
   },
   isPetrified() {
-    const now = moment(Clock.currentTime());
-    const valueDate = moment(this.valueDate);
-    return now.year() - valueDate.year() > 1;
+    const periodsDoc = Periods.get(this.communityId);
+    return periodsDoc.closedAt && this.valueDate.getTime() <= periodsDoc.closedAt.getTime();
   },
   isAutoPosting() {
     return this.status === 'void' || this.txdef().isAutoPosting();
@@ -313,7 +312,9 @@ Transactions.helpers({
     const Balances =  Mongo.Collection.get('balances');
     const leafTag = 'T-' + moment(this.valueDate).format('YYYY-MM');
     const journalEntries = this.journalEntries();
-    PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+    const periodBreakdown = Periods.get(communityId).breakdown();
+//    console.log('periodBreakdown', periodBreakdown.root());
+    periodBreakdown.parentsOf(leafTag).forEach((tag) => {
       journalEntries?.forEach((entry) => {
         const account = entry.account;
         const partner = entry.partner;
@@ -329,21 +330,6 @@ Transactions.helpers({
       });
     });
     // checkBalances([doc]);
-  },
-  // deprecated, only for migration purpose
-  updatePartnerBalances(directionSign = 1) {
-    const communityId = this.communityId;
-    const Balances =  Mongo.Collection.get('balances');
-    const leafTag = 'T-' + moment(this.valueDate).format('YYYY-MM');
-    const pEntries = this.pEntries;
-    PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
-      if (Period.fromTag(tag).type() !== 'month') {
-        pEntries?.forEach((entry) => {
-          const changeAmount = entry.amount * directionSign;
-          Balances.increase({ communityId, partner: entry.partner, tag }, entry.side, changeAmount);
-        });
-      }
-    });
   },
   validateJournalEntries() {
     const creditAmount = [];

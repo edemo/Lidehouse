@@ -30,6 +30,8 @@ import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { defineTxdefTemplates } from '/imports/api/transactions/txdefs/template';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Period } from '/imports/api/transactions/periods/period.js';
+import { Periods } from '/imports/api/transactions/periods/periods.js';
 import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { autoValueUpdate } from '/imports/api/mongo-utils.js';
@@ -1124,6 +1126,21 @@ Migrations.add({
     });
   },
 });
+
+Migrations.add({
+  version: 63,
+  name: 'Create periods',
+  up() {
+    Communities.find().forEach(community => {
+      const communityId = community._id;
+      const balances = Balances.find({ communityId });
+      let years = _.filter(balances.map(b => Period.fromTag(b.tag).year), y => y);
+      years = _.uniq(_.sortBy(years, y => y), true);
+      Periods.upsert({ communityId }, { $set: { communityId, years } });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes

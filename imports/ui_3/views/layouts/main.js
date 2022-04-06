@@ -37,6 +37,7 @@ Template.Main_layout.onCreated(function() {
       this.subscribe('memberships.inCommunity', { communityId });
       this.subscribe('contracts.inCommunity', { communityId });
       this.subscribe('partners.inCommunity', { communityId });
+      this.subscribe('periods.inCommunity', { communityId });
     }
   });
   this.autorun(() => {
