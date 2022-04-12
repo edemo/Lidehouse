@@ -470,7 +470,7 @@ if (Meteor.isServer) {
         if (reconciled !== sE.reconciled) StatementEntries.direct.update(id, { $set: { reconciled } });
       });
     }
-    if (modifierChangesField(modifier, ['debit', 'credit', 'postedAt'])) {
+    if (modifierChangesField(modifier, ['valueDate', 'debit', 'credit', 'postedAt'])) {
       if (oldDoc.postedAt) oldDoc.updateBalances(-1);
       if (newDoc.postedAt) newDoc.updateBalances(+1);
     }
