@@ -9,21 +9,21 @@ import { replaceDotsInString } from '/imports/api/utils';
 import { Breakdowns, BreakdownsHelpers } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Period } from './period.js';
 
-export const Periods = new Mongo.Collection('periods');
+export const AccountingPeriods = new Mongo.Collection('accountingPeriods');
 
-Periods.schema = new SimpleSchema({
+AccountingPeriods.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   years: { type: [String], defaultValue: [] },
-  closedAt: { type: Date, optional: true },
+  accountingClosedAt: { type: Date, optional: true },
 });
 
-Periods.attachSchema(Periods.schema);
+AccountingPeriods.attachSchema(AccountingPeriods.schema);
 
-// Periods.simpleSchema().i18n('schemaPeriods');
+// AccountingPeriods.simpleSchema().i18n('schemaPeriods');
 
 Meteor.startup(function indexPeriods() {
   if (Meteor.isServer) {
-    Periods._ensureIndex({ communityId: 1 });
+    AccountingPeriods._ensureIndex({ communityId: 1 });
   }
 });
 
@@ -61,7 +61,7 @@ const periodTags = function periodTags(years) {
 
 // -------------------------------------
 
-Periods.helpers({
+AccountingPeriods.helpers({
   breakdown() {
     const tags = periodTags(this.years);
     return Breakdowns._transform(tags);
@@ -75,21 +75,21 @@ Periods.helpers({
   },
 });
 
-Periods.get = function get(communityId) {
-  const doc = Periods.findOne({ communityId });
+AccountingPeriods.get = function get(communityId) {
+  const doc = AccountingPeriods.findOne({ communityId });
   if (!doc) {
-    const _id = Periods.insert({ communityId });
-    return Periods.findOne(_id);
+    const _id = AccountingPeriods.insert({ communityId });
+    return AccountingPeriods.findOne(_id);
   }
   return doc;
 };
-Periods.getTags = function getTags(communityId) {
-  const doc = Periods.get(communityId);
+AccountingPeriods.getTags = function getTags(communityId) {
+  const doc = AccountingPeriods.get(communityId);
   return Breakdowns._transform(doc);
 };
 
 /*
-Periods.allow({
+AccountingPeriods.allow({
   insert() { return false; },
   update() { return false; },
   remove() { return false; },

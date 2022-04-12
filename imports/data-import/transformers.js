@@ -7,7 +7,7 @@ import { Log } from '/imports/utils/log.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Period } from '/imports/api/transactions/periods/periods.js';
+import { Period } from '/imports/api/transactions/periods/period.js';
 import { Parser } from './parser.js';
 
 function singlify(jsons) {

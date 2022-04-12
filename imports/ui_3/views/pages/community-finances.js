@@ -11,7 +11,7 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
-import { monthTags, Periods } from '/imports/api/transactions/periods/periods.js';
+import { monthTags, AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
@@ -115,13 +115,14 @@ Template.Community_finances.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
-      const periodsDoc = Periods.findOne({ communityId });
+      const periodsDoc = AccountingPeriods.findOne({ communityId });
       if (periodsDoc) this.periodBreakdown(periodsDoc.breakdown());
-      instance.subscribe('accounts.inCommunity', { communityId: this.communityId() });
-      instance.subscribe('balances.inCommunity', { communityId: this.communityId(), tags: ['T'].concat(_.pluck(this.periods(), 'code')) });
+      instance.subscribe('accounts.inCommunity', { communityId });
+      instance.subscribe('accountingPeriods.inCommunity', { communityId });
+      instance.subscribe('balances.inCommunity', { communityId, tags: ['T'].concat(_.pluck(this.periods(), 'code')) });
     });
 //    instance.autorun(() => {
-//      const periods = Periods.findOne({ communityId: this.communityId() });
+//      const periods = AccountingPeriods.findOne({ communityId: this.communityId() });
 //      if (periods) this.periodBreakdown(periods.breakdown());
 //    });
   },
