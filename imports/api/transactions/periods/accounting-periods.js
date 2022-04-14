@@ -77,15 +77,8 @@ AccountingPeriods.helpers({
 
 AccountingPeriods.get = function get(communityId) {
   const doc = AccountingPeriods.findOne({ communityId });
-  if (!doc) {
-    const _id = AccountingPeriods.insert({ communityId });
-    return AccountingPeriods.findOne(_id);
-  }
+  if (Meteor.isServer) debugAssert(doc, 'AccountingPeriods have to exist for all community, that is doing accounting');
   return doc;
-};
-AccountingPeriods.getTags = function getTags(communityId) {
-  const doc = AccountingPeriods.get(communityId);
-  return Breakdowns._transform(doc);
 };
 
 /*
