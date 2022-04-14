@@ -101,7 +101,7 @@ Template.Payment_edit.events({
       partnerId: AutoForm.getFieldValue('partnerId'),
       contractId: AutoForm.getFieldValue('contractId'),
     };
-    ModalStack.setVar('newDoc', null);  // This is to shadow the previous payment newDoc
+    ModalStack.setVar('newDoc', null, true);  // This is to shadow the previous payment newDoc
     Transactions.actions.create({ entity: 'bill', txdef: billDef }, doc).run(event, instance);
   },
   'click .js-view-mode'(event, instance) {

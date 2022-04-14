@@ -103,11 +103,12 @@ if (Meteor.isClient) {
       if (key === 'communityId') {
         return Session.get('communityId'); // temporary solution, for efficiency (communityId is used in subscription parameters)
       }
-      const modalStack = ModalStack.get();
+      let modalStack;
+      Tracker.nonreactive(() => { modalStack = ModalStack.get(); });
       // Log.debug('before get', modalStack);
       for (let i = modalStack.length - 1; i >= 0; i--) {
         const value = modalStack[i].context[key];
-        if (value) return value;
+        if (value !== undefined) return value;
       }
       return undefined;
     },

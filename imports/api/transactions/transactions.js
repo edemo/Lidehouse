@@ -136,6 +136,7 @@ Transactions.signOfPartnerSide = function signOfPartnerSide(side) {
 };
 
 Transactions.setTxdef = function setTxdef(doc, txdef) {
+  if (!doc) return;
   doc.defId = txdef._id;
   doc.category = txdef.category;
   _.each(txdef.data, (value, key) => doc[key] = value); // set doc.relation, etc
