@@ -4,7 +4,7 @@ import { numeral } from 'meteor/numeral:numeral';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Periods } from '/imports/api/transactions/periods/periods.js';
+import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
 import './balance-report.html';
 
 Template.Balance_report.onCreated(function onCreated() {
@@ -36,7 +36,7 @@ Template.Balance_report.helpers({
   },
   displayPeriod(tag) {
     return tag;
-//    const node = Periods.nodeByCode(tag);
+//    const node = AccountingPeriods.nodeByCode(tag);
 //    return node.label || node.name;
   },
 });

@@ -32,6 +32,7 @@ Template.Contracts.viewmodel({
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
       instance.subscribe('accounts.inCommunity', { communityId });
+      instance.subscribe('accountingPeriods.inCommunity', { communityId });
     });
   },
   relationValues() {

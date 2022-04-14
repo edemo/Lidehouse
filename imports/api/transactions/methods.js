@@ -19,7 +19,7 @@ import { Templates } from '/imports/api/transactions/templates/templates.js';
 import { sendBillEmail } from '/imports/email/bill-send.js';
 import '/imports/api/transactions/txdefs/methods.js';
 import { StatementEntries } from './statement-entries/statement-entries';
-import { Periods } from './periods/periods.js';
+import { AccountingPeriods } from './periods/accounting-periods.js';
 
 /*
 function runPositingRules(context, doc) {
@@ -46,12 +46,12 @@ function runPositingRules(context, doc) {
 */
 
 function ensurePeriod(userId, doc) {
-  const periodsDoc = Periods.get(doc.communityId);
-  if (periodsDoc.closedAt && periodsDoc.closedAt.getTime() < doc.valueDate.getTime()) {
-    throw new Meteor.Error('err_notAllowed', 'Period is already closed', { valueDate: doc.valueDate, closedAt: periodsDoc.closedAt });
+  const periodsDoc = AccountingPeriods.get(doc.communityId);
+  if (periodsDoc.accountingClosedAt && periodsDoc.accountingClosedAt.getTime() < doc.valueDate.getTime()) {
+    throw new Meteor.Error('err_notAllowed', 'Period is already closed', { valueDate: doc.valueDate, accountingClosedAt: periodsDoc.accountingClosedAt });
   }
   if (!_.contains(periodsDoc.years, doc.valueDate.getFullYear())) {
-    Periods.methods.open._execute({ userId },
+    AccountingPeriods.methods.open._execute({ userId },
       { communityId: doc.communityId, tag: 'T-' + doc.valueDate.getFullYear() });
   }
 }

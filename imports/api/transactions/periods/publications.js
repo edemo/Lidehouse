@@ -5,9 +5,9 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 
-import { Periods } from './periods.js';
+import { AccountingPeriods } from './accounting-periods.js';
 
-Meteor.publish('periods.inCommunity', function periodsInCommunity(params) {
+Meteor.publish('accountingPeriods.inCommunity', function accountingPeriodsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
@@ -18,5 +18,5 @@ Meteor.publish('periods.inCommunity', function periodsInCommunity(params) {
     return this.ready();
   }
 
-  return Periods.find({ communityId });
+  return AccountingPeriods.find({ communityId });
 });

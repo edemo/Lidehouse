@@ -33,7 +33,7 @@
             <button class="btn btn-default js-journals"><i class="fa fa-list"></i> {{_ 'Full journal list'}}</button>
             <!--button class="btn btn-default js-income-statement"><i class="fa fa-list"></i> {{_ 'Income statement'}}</button-->
             {{#if selectedPeriodIsOpen}}
-            <button class="btn btn-default js-close" title="{{_ 'Closed at'}}: {{closedAt}}"><i class="fa fa-lock"></i> {{_ 'Close period'}}</button>
+            <button class="btn btn-default js-close" title="{{_ 'Closed at'}}: {{accountingClosedAt}}"><i class="fa fa-lock"></i> {{_ 'Close period'}}</button>
             {{/if}}
             {{#if currentUser.super}}
             <button class="btn btn-default js-check-journals"><i class="fa fa-list"></i> {{_ 'Check journals'}}</button>

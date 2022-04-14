@@ -9,6 +9,7 @@ import { freshFixture } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -248,11 +249,13 @@ if (Meteor.isServer) {
           relationAccount: '`454' });
         FixtureA.builder.execute(Transactions.methods.post, { _id: oldBillId });
         chai.assert.equal(moment(Transactions.findOne(oldBillId).valueDate).year(), moment(oldDate).year());
+        FixtureA.builder.execute(AccountingPeriods.methods.close, { communityId: FixtureA.demoCommunityId, tag: 'T-' + oldDate.getFullYear() });
         chai.assert.throws(() => {
           FixtureA.builder.execute(Transactions.methods.update, { _id: oldBillId, modifier: {
             $set: { contractId: null },
           } });
         }, 'err_permissionDenied');
+        AccountingPeriods.update({ communityId: FixtureA.demoCommunityId }, { $unset: { accountingClosedAt: '' } });
         FixtureA.builder.execute(Transactions.methods.remove, { _id: oldBillId });
       });
 
@@ -379,12 +382,14 @@ if (Meteor.isServer) {
           payAccount: '`381' });
         FixtureA.builder.execute(Transactions.methods.post, { _id: oldPaymentId });
         chai.assert.isDefined(Transactions.findOne(oldPaymentId));
+        FixtureA.builder.execute(AccountingPeriods.methods.close, { communityId: FixtureA.demoCommunityId, tag: 'T-' + oldDate.getFullYear() });
         chai.assert.throws(() => {
           FixtureA.builder.execute(Transactions.methods.update, { _id: oldPaymentId, modifier: {
             $set: { contractId: null },
           } });
         }, 'err_permissionDenied');
         FixtureA.builder.execute(Transactions.methods.remove, { _id: oldPaymentId });
+        AccountingPeriods.update({ communityId: FixtureA.demoCommunityId }, { $unset: { accountingClosedAt: '' } });
       });
 
       it('Cannot storno a posted bill, while it links to a LIVE payment', function () {

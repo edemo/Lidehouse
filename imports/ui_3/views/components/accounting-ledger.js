@@ -10,7 +10,7 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
-import { Periods } from '/imports/api/transactions/periods/periods.js';
+import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
 import '/imports/api/transactions/periods/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/components/ledger-report.js';
@@ -30,7 +30,7 @@ Template.Accounting_ledger.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
-      this.periodBreakdown(Periods.findOne({ communityId })?.breakdown());
+      this.periodBreakdown(AccountingPeriods.findOne({ communityId })?.breakdown());
     });
   },
   communityId() {
@@ -66,12 +66,12 @@ Template.Accounting_ledger.viewmodel({
     });
     return periodOptions;
   },
-  closedAt() {
-    return Periods.findOne({ communityId: this.communityId() })?.closedAt;
+  accountingClosedAt() {
+    return AccountingPeriods.findOne({ communityId: this.communityId() })?.accountingClosedAt;
   },
   selectedPeriodIsOpen() {
     const period = Period.fromTag(this.periodSelected());
-    return this.closedAt().getTime() < period.endDate().getTime();
+    return this.accountingClosedAt().getTime() < period.endDate().getTime();
   },
 });
 
@@ -116,7 +116,7 @@ Template.Accounting_ledger.events({
   'click .js-close'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     const tag = instance.viewmodel.periodSelected();
-    Modal.confirmAndCall(Periods.methods.close, { communityId, tag },
+    Modal.confirmAndCall(AccountingPeriods.methods.close, { communityId, tag },
       { entity: 'period', action: 'close', message: 'Close period warning' });
   },
 });
