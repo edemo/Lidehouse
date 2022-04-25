@@ -29,30 +29,35 @@ if (Meteor.isClient) {
     get() {
       let modalStack = Session.get('modalStack');
       if (!modalStack) {
-        modalStack = [{ id: 'root', result: {}, context: {} }];
+        modalStack = [{ id: 'root', context: {} }];
         Session.set('modalStack', modalStack);
+        Session.set('modalStackResults_root', {});
       }
       return modalStack;
     },
     push(dataId) { // called upon Modal.show();
       const modalStack = ModalStack.get();
       // Log.debug('before push:', modalStack);
-      modalStack.push({ id: dataId, result: {}, context: ModalStack.contextForTheNext });
+      modalStack.push({ id: dataId, context: ModalStack.contextForTheNext });
+      const resultsKey = 'modalStackResults_' + dataId;
       // Log.debug('after push:', modalStack);
       Session.set('modalStack', modalStack);
+      Session.set(resultsKey, {});
       ModalStack.contextForTheNext = {};
     },
     pop(dataId) { // called upon Modal.hide();
       const modalStack = ModalStack.get();
       // Log.debug('before pop:', modalStack);
       const topModal = modalStack.pop();
-      debugAssert((!topModal.id && !dataId) || topModal.id === dataId);
+      debugAssert((!topModal.id && !dataId) || topModal.id === dataId, 'No modal to pop on ModalStack');
+      const resultsKey = 'modalStackResults_' + topModal.id;
       if (ModalStack.computation && modalStack.length <= 1) {
         ModalStack.computation.stop();
         delete ModalStack.computation;
       }
       // Log.debug('after pop:', modalStack);
       Session.set('modalStack', modalStack);
+      Session.set(resultsKey, undefined);
       if (modalStack.length > 1) $('body').addClass('modal-open');
     },
     active() {
@@ -64,23 +69,21 @@ if (Meteor.isClient) {
       return modalStack.length - 1;
     },
     recordResult(afId, result) {
-      const modalStack = ModalStack.get();
+      let modalStack;
+      Tracker.nonreactive(() => { modalStack = ModalStack.get(); });
       if (modalStack.length <= 1) return; // If there is no modal, no need to pass on the result
-      modalStack[modalStack.length - 2].result[afId] = result;
-      Session.set('modalStack', modalStack);
+      const currentLevel = modalStack.length - 1;
+      const lowerModalId = modalStack[currentLevel - 1].id;
+      const resultsKey = 'modalStackResults_' + [lowerModalId];
+      let results;
+      Tracker.nonreactive(() => { results = Session.get(resultsKey); });
+      results[afId] = result;
+      Session.set(resultsKey, results);
     },
-    readResult(ownId, afId, destroy = false) {
-      const modalStack = ModalStack.get();
-      // Log.debug('before read', modalStack);
-      let ownModal = {};
-      ownModal = _.find(modalStack, modal => (modal.id === ownId));
-      // Log.debug('ownModal:', ownModal);
-      // Log.debug('returns:', ownModal?.result[afId]);
-      const result = ownModal?.result[afId];
-      if (destroy && result !== undefined) {
-        delete ownModal.result[afId];
-        Session.set('modalStack', modalStack);
-      }
+    readResult(ownId, afId) {
+      const resultsKey = 'modalStackResults_' + ownId;
+      const results = Session.get(resultsKey);
+      const result = results?.[afId];
       return result;
     },
     setVar(key, value, keep = false) { // Should not call this within an autorun - would cause infinite loop
@@ -106,7 +109,8 @@ if (Meteor.isClient) {
       let modalStack;
       Tracker.nonreactive(() => { modalStack = ModalStack.get(); });
       // Log.debug('before get', modalStack);
-      for (let i = modalStack.length - 1; i >= 0; i--) {
+      const currentLevel = modalStack.length - 1;
+      for (let i = currentLevel; i >= 0; i--) {
         const value = modalStack[i].context[key];
         if (value !== undefined) return value;
       }
