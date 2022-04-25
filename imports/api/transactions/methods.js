@@ -51,7 +51,7 @@ function ensurePeriod(userId, doc) {
   if (periodsDoc.accountingClosedAt && periodsDoc.accountingClosedAt.getTime() < doc.valueDate.getTime()) {
     throw new Meteor.Error('err_notAllowed', 'Period is already closed', { valueDate: doc.valueDate, accountingClosedAt: periodsDoc.accountingClosedAt });
   }
-  if (!_.contains(periodsDoc.years, doc.valueDate.getFullYear())) {
+  if (!_.contains(periodsDoc.years, doc.valueDate.getFullYear().toString())) {
     if (Meteor.isServer) {
       AccountingPeriods.methods.open._execute({ userId },
         { communityId: doc.communityId, tag: 'T-' + doc.valueDate.getFullYear() });
