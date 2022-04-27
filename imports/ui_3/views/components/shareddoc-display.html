@@ -1,8 +1,13 @@
 <template name="Shareddoc_boxy">
     <div class="file-box">
         <div class="file">
+            {{#if userHasPermissionToRemoveUploaded}}
+                <span class="js-delete nav-item trash">
+                <i class="fa fa-trash" title={{_ 'delete'}}></i>
+                </span>
+            {{/if}}
             {{#if uploading}}
-            <a href="">
+            <a href="" data-id={{_id}}>
                 <span class="corner"></span>
                 <div class="icon">
                     <img src="/images/spinner.gif" style="{ width: 6em; height: 6em; }">
@@ -14,11 +19,6 @@
                 </div>
             </a>
             {{else}}
-                {{#if userHasPermissionToRemoveUploaded}}
-                    <span class="js-delete nav-item trash">
-                    <i class="fa fa-trash" title={{_ 'delete'}}></i>
-                    </span>
-                {{/if}}
             <a target="_blank" data-id={{_id}} href="{{url}}">
                 <span class="corner"></span>
                 <div class="icon">
@@ -38,7 +38,8 @@
 <template name="Shareddoc_inline">
     <div class="row file-item">
       {{#if uploading}}
-      <div class="col-xs-10">
+      <div class="col-xs-10">       
+        <a data-id={{_id}} href=""></a>
         <span>{{completed}}%</span>
         <img src="/images/spinner.gif" style="{ width: 1em; height: 1em; }">
         <span>{{name}}</span>
@@ -54,13 +55,13 @@
           {{/unless}}
         </a>
       </div>
+      {{/if}}
       {{#if userHasPermissionToRemoveUploaded}}
       <div class="col-xs-2 text-right">
         <a class="js-delete nav-item">
           <i class="fa fa-trash" title={{_ 'delete'}}></i>
         </a>
       </div>
-      {{/if}}
       {{/if}}
     </div>    
 </template>
