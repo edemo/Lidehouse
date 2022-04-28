@@ -104,12 +104,18 @@ Template.Community_finances.viewmodel({
   periodBreakdown: undefined,
   communityId() { return ModalStack.getVar('communityId'); },
   community() { return Communities.findOne(this.communityId()); },
-  startTag: 'T-2021-01',
-  endTag: Period.currentMonthTag(),
-  startIndex() { return this.periodBreakdown()?.leafs().findIndex(l => l.code === this.startTag()); },
-  endIndex() { return this.periodBreakdown()?.leafs().findIndex(l => l.code === this.endTag()); },
-  periods() { return this.periodBreakdown()?.leafs().slice(this.startIndex(), this.endIndex()); },
-  prePeriods() { return this.periodBreakdown()?.leafs().slice(0, this.startIndex()); },
+  startIndex() {
+    let result = 0;
+    this.periodBreakdown()?.leafs().some((leaf, index) => {
+      if (Balances.findOne({ tag: leaf.code })) {
+        result = index;
+        return true;
+      }
+    });
+    return result;
+  },
+  endIndex() { return this.periodBreakdown()?.leafs().findIndex(l => l.code === Period.currentMonthTag()); },
+  periods() { return this.periodBreakdown()?.leafs().slice(this.startIndex(), this.endIndex() + 1); },
   periodLabels() { return this.periods()?.map(l => `${l.label === 'JAN' ? __(l.parent.name) : __(l.label)}`); },
 
   onCreated(instance) {
@@ -128,26 +134,12 @@ Template.Community_finances.viewmodel({
   },
   onRendered(instance) {
   },
-  tagLetter(account) {
-    if (account.startsWith('`38')) {
-      return getActiveCommunity()?.settings.bankBalancesUploaded ? 'C' : 'T';
-    }
-    return 'T';
-  },
   aggregate(array, startValue) {
     let sum = startValue || 0;
     return array.map((elem) => { sum += elem; return sum; });
   },
   monthlyData(account) {
-    const tagLetter = this.tagLetter(account);
-    if (tagLetter === 'T') {
-      return this.aggregate(
-        this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: l.code }).displayTotal()),
-        this.aggregate(this.prePeriods().map(l => Balances.get({ communityId: this.communityId(), account, tag: l.code }).displayTotal())).pop()
-      );
-    } else if (tagLetter === 'C') {
-      return this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: 'C' + l.code.substring(1) }).displayTotal());
-    } else { debugAssert(false); return undefined; }
+    return this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: 'T' + l.code.substring(1) }, 'closing').displayTotal());
   },
   statusData() {
     const data = {
@@ -168,7 +160,7 @@ Template.Community_finances.viewmodel({
   moneyData() {
     const datasets = [];
     const moneyAccount = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
-    moneyAccount.leafs().fetch().reverse().forEach((account, index) => {
+    moneyAccount?.leafs().fetch().reverse().forEach((account, index) => {
       datasets.push(_.extend({
         label: __(account.name),
         data: this.monthlyData(account.code),
@@ -252,9 +244,7 @@ Template.Community_finances.viewmodel({
       }
       account = a.code;
     }
-    const tagLetter = this.tagLetter(account);
-    const tag = (tagLetter === 'C') ? Period.endOfLastMonthTag() : tagLetter;
-    return Balances.get({ communityId, account, tag }).displayTotal();
+    return Balances.get({ communityId, account, tag: 'T' }, 'closing').displayTotal();
   },
   getStatusBalance() {
     return this.getBalance('Money accounts') - this.getBalance('RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK');

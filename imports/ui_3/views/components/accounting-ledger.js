@@ -71,7 +71,7 @@ Template.Accounting_ledger.viewmodel({
   },
   selectedPeriodIsOpen() {
     const period = Period.fromTag(this.periodSelected());
-    return this.accountingClosedAt().getTime() < period.endDate().getTime();
+    return this.accountingClosedAt()?.getTime() < period.endDate().getTime();
   },
 });
 
