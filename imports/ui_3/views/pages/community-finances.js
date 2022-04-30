@@ -125,7 +125,7 @@ Template.Community_finances.viewmodel({
       if (periodsDoc) this.periodBreakdown(periodsDoc.breakdown());
       instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('accountingPeriods.inCommunity', { communityId });
-      instance.subscribe('balances.inCommunity', { communityId, tags: ['T'].concat(_.pluck(this.periods(), 'code')) });
+      instance.subscribe('balances.inCommunity', { communityId /*, tags: ['T'].concat(_.pluck(this.periods(), 'code'))*/ });
     });
 //    instance.autorun(() => {
 //      const periods = AccountingPeriods.findOne({ communityId: this.communityId() });

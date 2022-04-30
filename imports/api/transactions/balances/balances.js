@@ -227,7 +227,6 @@ function timeTagMatches(valueDate, tag) {
   return false;
 }
 
-
 Balances.checkCorrect = function checkCorrect(def, lang = 'en') {
   let misCalculated = null;
   if (Meteor.isClient) return; // No complete tx data on the client to perform a check.
