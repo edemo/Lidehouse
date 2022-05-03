@@ -25,7 +25,7 @@ Recognitions.attachSchema(Recognitions.schema);
 Recognitions.simpleSchema().i18n('schemaRecognitions');
 
 
-Meteor.startup(function indexSettings() {
+Meteor.startup(function indexRecognitions() {
   if (Meteor.isServer) {
     Recognitions._ensureIndex({ communityId: 1 });
   }

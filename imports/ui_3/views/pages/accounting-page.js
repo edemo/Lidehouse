@@ -24,14 +24,11 @@ Template.Accounting_page.viewmodel({
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
       instance.subscribe('accounts.inCommunity', { communityId });
+      instance.subscribe('accountingPeriods.inCommunity', { communityId });
       instance.subscribe('parcels.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
-      const params = {
-        communityId: this.communityId(),
-        begin: validDateOrUndefined(this.beginDate()),
-        end: validDateOrUndefined(this.endDate()),
-      };
-      if (this.beginDate() !== 'loadingValue') {
+      const params = this.transactionsSubscriptionParams();
+      if (params) {
         instance.subscribe('transactions.inCommunity', params);
         instance.subscribe('statements.inCommunity', params);
         instance.subscribe('statementEntries.inCommunity', params);

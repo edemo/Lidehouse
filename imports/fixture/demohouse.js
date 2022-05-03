@@ -29,6 +29,7 @@ import '/imports/api/transactions/parcel-billings/methods.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import '/imports/api/transactions/statement-entries/methods.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -368,6 +369,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Breakdowns =====
   // Create breakdowns (incl Localizer)
   builder.execute(Transactions.methods.cloneAccountingTemplates, { communityId }, demoAccountantId);
+
 /*
   builder.create('cashAccount', {
     digit: '1',
@@ -945,7 +947,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: 'Közös költség előírás',
     projection: {
       base: 'area',
-      unitPrice: 275,
+      unitPrice: 300,
     },
     digit: Accounts.findPayinDigitByName('Közös költség előírás'),
     localizer: '@',
@@ -1198,7 +1200,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       title: 'Állami támogatás tetőfelújításra',
       uom: 'db',
       quantity: 1,
-      unitPrice: 500000,
+      unitPrice: 600000,
       account: Accounts.findOne({ communityId, category: 'income', name: 'Támogatások' }).code,
 //      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
     }],
@@ -1213,7 +1215,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       title: 'Antenna hely bérleti díj',
       uom: 'év',
       quantity: 1,
-      unitPrice: 55000,
+      unitPrice: 155000,
       account: Accounts.findOne({ communityId, category: 'income', name: 'Bérleti díj bevételek' }).code,
 //      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
     }],
@@ -1243,7 +1245,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       title: 'Banki hitel',
       uom: 'db',
       quantity: 1,
-      unitPrice: 2300000,
+      unitPrice: 3500000,
       account: Accounts.findOne({ communityId, category: 'liability', name: 'Hosszú lejáratú bank hitel' }).code,
     }],
     payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Savings account' }).code,

@@ -174,8 +174,14 @@ export const autoReconcile = new ValidatedMethod({
       if (!txId && entry.match.tx) {
         txId = Transactions.methods.insert._execute({ userId: this.userId }, entry.match.tx);
       }
-      reconcile._execute({ userId: this.userId }, { _id, txId });
+      if (txId) {
+        return reconcile._execute({ userId: this.userId }, { _id, txId });
+      } else {  // Transactions.methods.insert can return with false, on the client, if there is no period open
+        debugAssert(Meteor.isClient);
+        return false;
+      }
     }
+    return null;
   },
 });
 

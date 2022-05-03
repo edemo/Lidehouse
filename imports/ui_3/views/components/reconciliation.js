@@ -42,6 +42,9 @@ Template.Reconciliation.onRendered(function () {
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return;
     const txdef = Txdefs.findOne(defId);
+    const newDoc = ModalStack.getVar('newDoc');
+    Transactions.setTxdef(newDoc, txdef);
+    ModalStack.setVar('newDoc', newDoc, true);
     const newCreatedTxId = ModalStack.readResult('af.statementEntry.reconcile', `af.${txdef.category}.create`);
     if (newCreatedTxId) {
       computation.stop();

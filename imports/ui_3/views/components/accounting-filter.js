@@ -44,6 +44,13 @@ ViewModel.share({
       const partnerContractSelector = { communityId, relation: ModalStack.getVar('relation') };
       this.partnerContractOptions(Contracts.partnerContractOptionsWithAll(partnerContractSelector));
     },
+    transactionsSubscriptionParams() {
+      return (this.beginDate() !== 'loadingValue') && {
+        communityId: this.communityId(),
+        begin: validDateOrUndefined(this.beginDate()),
+        end: validDateOrUndefined(this.endDate()),
+      };
+    },
     communityId() {
       return ModalStack.getVar('communityId');
     },

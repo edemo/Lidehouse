@@ -5,7 +5,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Period } from '/imports/api/transactions/breakdowns/period.js';
+import { Period } from '/imports/api/transactions/periods/period.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { validDateOrUndefined } from '/imports/api/utils';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';

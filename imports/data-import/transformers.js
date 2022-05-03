@@ -7,7 +7,7 @@ import { Log } from '/imports/utils/log.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
+import { Period } from '/imports/api/transactions/periods/period.js';
 import { Parser } from './parser.js';
 
 function singlify(jsons) {
@@ -103,7 +103,7 @@ export const Transformers = {
       const tdocs = [];
       docs.forEach((doc) => {
         const date = Parser.parseValue(doc["Dátum"], doc, 'Date');
-        const tag = PeriodBreakdown.date2tag(date, 'C');
+        const tag = Period.date2tag(date, 'C');
         const number = key => (Parser.parseValue(doc[key], doc, 'Number', { decimal: false }));
     //  '`381' name: 'Pénztár' },
     //  '`382', name: 'Folyószámla' },

@@ -31,6 +31,7 @@ Template.Parcels_finances.viewmodel({
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       instance.subscribe('accounts.inCommunity', { communityId });
+      instance.subscribe('accountingPeriods.inCommunity', { communityId });
       instance.subscribe('parcels.ofSelf', { communityId });
       if (Meteor.userOrNull().hasPermission('transactions.inCommunity', { communityId })) {
         if (self.showAllParcels()) {

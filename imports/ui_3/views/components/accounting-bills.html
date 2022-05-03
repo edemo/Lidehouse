@@ -38,58 +38,58 @@
             <br>
             {{> Accounting_filter page='bills'}}
             <div>
-            {{#if Template.subscriptionsReady}}
-            <ul class="nav nav-tabs m-b-md">
-                <li class="active"><a data-toggle="tab" href="#tab-bill"><h3>{{_ 'bills'}}&nbsp;
-                {{> Badge value=(count 'bill' 'unposted') color='warning' title=(_ 'Unposted') align='right'}}
-                {{> Badge value=(count 'bill' 'outstanding') color='info' title=(_ 'Unpaid') align='right'}}
-                </h3></a></li>
-                <li class=""><a data-toggle="tab" href="#tab-payment"><h3>{{_ 'payments'}}&nbsp;
-                {{> Badge value=(count 'payment' 'unreconciled') color='danger' title=(_ 'Unreconciled') align='right'}}
-                {{> Badge value=(count 'payment' 'unposted') color='warning' title=(_ 'Unposted') align='right'}}
-                </h3></a></li>
-                <li class=""><a data-toggle="tab" href="#tab-receipt"><h3>{{_ 'receipts'}}&nbsp;
-                {{> Badge value=(count 'receipt' 'unreconciled') color='danger' title=(_ 'Unreconciled') align='right'}}
-                {{> Badge value=(count 'receipt' 'unposted') color='warning' title=(_ 'Unposted') align='right'}}
-                </h3></a></li>
-                <li class=""><a data-toggle="tab" href="#tab-partner"><h3>{{_ 'partners'}}&nbsp;
-                {{> Badge value=(countOverduePartners 'warning') color='warning' title=(_ 'Overdue') align='right'}}
-                {{> Badge value=(countOverduePartners 'info') color='info' title=(_ 'Overdue') align='right'}}
-                </h3></a></li>
-            </ul>
-            <div class="tab-content">
-                <div id="tab-bill" class="tab-pane active">
-                  {{#LazyTab}}
-                    <div class="table-responsive transactions" data-entity='bill'>
-                        {{> ReactiveDatatable tableData=billsTableDataFn options=billsOptionsFn }}
+                {{#if Template.subscriptionsReady}}
+                <ul class="nav nav-tabs m-b-md">
+                    <li class="active"><a data-toggle="tab" href="#tab-bill"><h3>{{_ 'bills'}}&nbsp;
+                    {{> Badge value=(count 'bill' 'unposted') color='warning' title=(_ 'Unposted') align='right'}}
+                    {{> Badge value=(count 'bill' 'outstanding') color='info' title=(_ 'Unpaid') align='right'}}
+                    </h3></a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-payment"><h3>{{_ 'payments'}}&nbsp;
+                    {{> Badge value=(count 'payment' 'unreconciled') color='danger' title=(_ 'Unreconciled') align='right'}}
+                    {{> Badge value=(count 'payment' 'unposted') color='warning' title=(_ 'Unposted') align='right'}}
+                    </h3></a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-receipt"><h3>{{_ 'receipts'}}&nbsp;
+                    {{> Badge value=(count 'receipt' 'unreconciled') color='danger' title=(_ 'Unreconciled') align='right'}}
+                    {{> Badge value=(count 'receipt' 'unposted') color='warning' title=(_ 'Unposted') align='right'}}
+                    </h3></a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-partner"><h3>{{_ 'partners'}}&nbsp;
+                    {{> Badge value=(countOverduePartners 'warning') color='warning' title=(_ 'Overdue') align='right'}}
+                    {{> Badge value=(countOverduePartners 'info') color='info' title=(_ 'Overdue') align='right'}}
+                    </h3></a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-bill" class="tab-pane active">
+                      {{#LazyTab}}
+                        <div class="table-responsive transactions" data-entity='bill'>
+                            {{> ReactiveDatatable tableData=billsTableDataFn options=billsOptionsFn }}
+                        </div>
+                      {{/LazyTab}}
                     </div>
-                  {{/LazyTab}}
-                </div>
-                <div id="tab-payment" class="tab-pane">
-                  {{#LazyTab}}
-                    <div class="table-responsive transactions" data-entity='payment'>
-                        {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+                    <div id="tab-payment" class="tab-pane">
+                      {{#LazyTab}}
+                        <div class="table-responsive transactions" data-entity='payment'>
+                            {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+                        </div>
+                      {{/LazyTab}}
                     </div>
-                  {{/LazyTab}}
-                </div>
-                <div id="tab-receipt" class="tab-pane">
-                  {{#LazyTab}}
-                    <div class="table-responsive transactions">
-                        {{> ReactiveDatatable tableData=receiptsTableDataFn options=receiptsOptionsFn }}
+                    <div id="tab-receipt" class="tab-pane">
+                      {{#LazyTab}}
+                        <div class="table-responsive transactions">
+                            {{> ReactiveDatatable tableData=receiptsTableDataFn options=receiptsOptionsFn }}
+                        </div>
+                      {{/LazyTab}}
                     </div>
-                  {{/LazyTab}}
-                </div>
-                <div id="tab-partner" class="tab-pane">
-                  {{#LazyTab}}
-                    <div class="table-responsive partners">
-                        {{> ReactiveDatatable tableData=partnersTableDataFn options=partnersOptionsFn }}
+                    <div id="tab-partner" class="tab-pane">
+                      {{#LazyTab}}
+                        <div class="table-responsive partners">
+                            {{> ReactiveDatatable tableData=partnersTableDataFn options=partnersOptionsFn subscription=partnersSubscriptionFn }}
+                        </div>
+                      {{/LazyTab}}
                     </div>
-                  {{/LazyTab}}
                 </div>
-            </div>
-            {{else}}
-                {{_ 'Loading'}}...
-            {{/if}}
+                {{else}}
+                    {{_ 'Loading'}}...
+                {{/if}}
             </div>
         </div>
     {{/if}}

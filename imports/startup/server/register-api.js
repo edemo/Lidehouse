@@ -40,6 +40,8 @@ import '/imports/api/transactions/balances/methods.js';
 import '/imports/api/transactions/balances/publications.js';
 import '/imports/api/transactions/parcel-billings/methods.js';
 import '/imports/api/transactions/parcel-billings/publications.js';
+import '/imports/api/transactions/periods/methods.js';
+import '/imports/api/transactions/periods/publications.js';
 import '/imports/api/transactions/statements/methods.js';
 import '/imports/api/transactions/statements/publications.js';
 import '/imports/api/transactions/statement-entries/methods.js';

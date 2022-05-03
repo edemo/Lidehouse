@@ -1,4 +1,12 @@
 
+
+Template.ReactiveDatatable.created = function() {
+  var data = this.data;
+  if (data.subscription) {
+    this.autorun(() => data.subscription(this));
+  }
+};
+
 Template.ReactiveDatatable.rendered = function() {
   var data = this.data;
   var options = data.options();
@@ -13,7 +21,8 @@ Template.ReactiveDatatable.rendered = function() {
 // probably does some optimization, and thinks its the same, so doesnt replace.
 // Until this is solved, the translation change of the title, only gets updated after a refresh of the page.
 
-//  this.autorun(function() {
+  this.autorun(function() {
+    if (!instance.subscriptionsReady()) return;
 
     var reactiveDataTable = new ReactiveDatatable(options);
 
@@ -48,11 +57,12 @@ Template.ReactiveDatatable.rendered = function() {
       if ($(originalEvent.target).closest('.btn').length) e.preventDefault();
     });
 
-  this.reactiveDataTable = reactiveDataTable;
+    instance.reactiveDataTable = reactiveDataTable;
 
-  this.autorun(function() {
-    reactiveDataTable.cleanup();
-    reactiveDataTable.update(data.tableData());
+    instance.autorun(function() {
+      instance.reactiveDataTable.cleanup();
+      instance.reactiveDataTable.update(data.tableData());
+    });
   });
 };
 

@@ -1,5 +1,9 @@
 <template name="ReactiveDatatable">
-	<div class="table-responsive">
-		<div class="datatable_wrapper"></div>
-	</div>
+	
+		<div class="table-responsive">
+			<div class="datatable_wrapper"><span>{{#unless Template.subscriptionsReady}}{{_ 'Loading'}}...{{/unless}}</span></div>
+		</div>
+
+		
+	
 </template>

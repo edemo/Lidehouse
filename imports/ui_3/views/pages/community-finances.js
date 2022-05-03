@@ -11,10 +11,11 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
-import { monthTags, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
+import { monthTags, AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
+import { Period } from '/imports/api/transactions/periods/period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Balances } from '/imports/api/transactions/balances/balances';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/ui_3/views/blocks/chart.js';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -98,46 +99,49 @@ const minusColors = [
   },
 ];
 
+const chartLookbackMonths = 24;
+
 Template.Community_finances.viewmodel({
   accountToView: '`382',
+  periodBreakdown: undefined,
   communityId() { return ModalStack.getVar('communityId'); },
   community() { return Communities.findOne(this.communityId()); },
-  startTag: 'T-2020-01',
-  endTag: PeriodBreakdown.currentMonthTag(),
-  startIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.startTag()); },
-  endIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.endTag()); },
-  periods() { return PeriodBreakdown.leafs().slice(this.startIndex(), this.endIndex()); },
-  prePeriods() { return PeriodBreakdown.leafs().slice(0, this.startIndex()); },
-  periodLabels() { return this.periods().map(l => `${l.label === 'JAN' ? __(l.parent.name) : __(l.label)}`); },
+  startIndex() {
+    let firstBalanceIndex = 0;
+    this.periodBreakdown()?.leafs().some((leaf, index) => {
+      if (Balances.findOne({ tag: leaf.code })) {
+        firstBalanceIndex = index;
+        return true;
+      }
+    });
+    return Math.max(firstBalanceIndex, this.endIndex() - chartLookbackMonths);
+  },
+  endIndex() { return this.periodBreakdown()?.leafs().findIndex(l => l.code === Period.currentMonthTag()); },
+  periods() { return this.periodBreakdown()?.leafs().slice(this.startIndex(), this.endIndex() + 1); },
+  periodLabels() { return this.periods()?.map(l => `${l.label === 'JAN' ? __(l.parent.name) : __(l.label)}`); },
 
   onCreated(instance) {
     instance.autorun(() => {
-      instance.subscribe('accounts.inCommunity', { communityId: this.communityId() });
-      instance.subscribe('balances.inCommunity', { communityId: this.communityId(), tags: ['T'].concat(_.pluck(this.periods(), 'code')) });
+      const communityId = this.communityId();
+      const periodsDoc = AccountingPeriods.findOne({ communityId });
+      if (periodsDoc) this.periodBreakdown(periodsDoc.breakdown());
+      instance.subscribe('accounts.inCommunity', { communityId });
+      instance.subscribe('accountingPeriods.inCommunity', { communityId });
+      instance.subscribe('balances.inCommunity', { communityId /*, tags: ['T'].concat(_.pluck(this.periods(), 'code'))*/ });
     });
+//    instance.autorun(() => {
+//      const periods = AccountingPeriods.findOne({ communityId: this.communityId() });
+//      if (periods) this.periodBreakdown(periods.breakdown());
+//    });
   },
   onRendered(instance) {
-  },
-  tagLetter(account) {
-    if (account.startsWith('`38')) {
-      return getActiveCommunity()?.settings.bankBalancesUploaded ? 'C' : 'T';
-    }
-    return 'T';
   },
   aggregate(array, startValue) {
     let sum = startValue || 0;
     return array.map((elem) => { sum += elem; return sum; });
   },
   monthlyData(account) {
-    const tagLetter = this.tagLetter(account);
-    if (tagLetter === 'T') {
-      return this.aggregate(
-        this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: l.code }).displayTotal()),
-        this.aggregate(this.prePeriods().map(l => Balances.get({ communityId: this.communityId(), account, tag: l.code }).displayTotal())).pop()
-      );
-    } else if (tagLetter === 'C') {
-      return this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: 'C' + l.code.substring(1) }).displayTotal());
-    } else { debugAssert(false); return undefined; }
+    return this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: 'T' + l.code.substring(1) }, 'closing').displayTotal());
   },
   statusData() {
     const data = {
@@ -158,7 +162,7 @@ Template.Community_finances.viewmodel({
   moneyData() {
     const datasets = [];
     const moneyAccount = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
-    moneyAccount.leafs().fetch().reverse().forEach((account, index) => {
+    moneyAccount?.leafs().fetch().reverse().forEach((account, index) => {
       datasets.push(_.extend({
         label: __(account.name),
         data: this.monthlyData(account.code),
@@ -242,9 +246,7 @@ Template.Community_finances.viewmodel({
       }
       account = a.code;
     }
-    const tagLetter = this.tagLetter(account);
-    const tag = (tagLetter === 'C') ? PeriodBreakdown.endOfLastMonthTag() : tagLetter;
-    return Balances.get({ communityId, account, tag }).displayTotal();
+    return Balances.get({ communityId, account, tag: 'T' }, 'closing').displayTotal();
   },
   getStatusBalance() {
     return this.getBalance('Money accounts') - this.getBalance('RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK');

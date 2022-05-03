@@ -31,9 +31,7 @@ export const chooseTransaction = {
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return undefined;
     const txdef = Txdefs.findOne(defId);
-    const newDoc = ModalStack.getVar('newDoc');
-    Transactions.setTxdef(newDoc, txdef);
-    ModalStack.setVar('newDoc', newDoc, true);
+
     return ModalStack.readResult(selfId, `af.${txdef.category}.create`);
   },
   options() {

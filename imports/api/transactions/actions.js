@@ -58,6 +58,7 @@ Transactions.actions = {
     visible: user.hasPermission('transactions.insert', doc),
     run() {
       const modalStackNewDoc = ModalStack.getVar('newDoc');
+//      debugAssert(!modalStackNewDoc || !doc, 'Pass in a doc either way, but not through both');
       doc = _.extend(defaultNewDoc(), modalStackNewDoc, doc);
       const entity = figureOutEntity(options, doc);
       doc = Transactions._transform(doc);
