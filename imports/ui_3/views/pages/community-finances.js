@@ -99,20 +99,22 @@ const minusColors = [
   },
 ];
 
+const chartLookbackMonths = 24;
+
 Template.Community_finances.viewmodel({
   accountToView: '`382',
   periodBreakdown: undefined,
   communityId() { return ModalStack.getVar('communityId'); },
   community() { return Communities.findOne(this.communityId()); },
   startIndex() {
-    let result = 0;
+    let firstBalanceIndex = 0;
     this.periodBreakdown()?.leafs().some((leaf, index) => {
       if (Balances.findOne({ tag: leaf.code })) {
-        result = index;
+        firstBalanceIndex = index;
         return true;
       }
     });
-    return result;
+    return Math.max(firstBalanceIndex, this.endIndex() - chartLookbackMonths);
   },
   endIndex() { return this.periodBreakdown()?.leafs().findIndex(l => l.code === Period.currentMonthTag()); },
   periods() { return this.periodBreakdown()?.leafs().slice(this.startIndex(), this.endIndex() + 1); },
