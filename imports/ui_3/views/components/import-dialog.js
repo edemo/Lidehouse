@@ -34,7 +34,7 @@ const launchNextPhase = function launchNextPhase(vm) {
   if (!phase) return; // Import cycle ended
   const collection = phase.collection();
   Modal.show('Modal', {
-    id: 'import.preview',
+//    id: 'import.preview',
     title: __('importing data', __(collection._name)),
     body: 'Import_preview',
     bodyContext: {},
@@ -74,7 +74,7 @@ const launchNextPhase = function launchNextPhase(vm) {
 
 export function importCollectionFromFile(mainCollection, options = {}) {
   Modal.show('Modal', {
-    id: 'import.upload',
+//    id: 'import.upload',
     title: __('importing data', __(mainCollection._name)),
     body: 'Import_upload',
     bodyContext: { collection: mainCollection, options },
