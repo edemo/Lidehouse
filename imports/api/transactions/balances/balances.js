@@ -177,10 +177,12 @@ Balances.getClosingValue = function getClosingValue(def) {
   const cTag = 'C' + def.tag.substr(1);
   const defPeriod = Period.fromTag(def.tag);
   if (def.partner) debugAssert(defPeriod.endsOnYearEnd(), 'closing partner balance works only for end of year');
-  const cBal = Balances.findOne(_.extend({}, def, { tag: cTag }));
-  if (cBal) {
-    result.credit = cBal.credit;
-    result.debit = cBal.debit;
+  const cBals = Balances.find(_.extend(subdefSelector(def), { tag: cTag })).fetch();
+  if (cBals.length > 0) {
+    cBals.forEach(cBal => {
+      result.credit += cBal.credit;
+      result.debit += cBal.debit;
+    });
   } else {  // If no C balance available, we have to calculate it by adding up the T balances
     if (def.tag === 'T') {
       result = Balances.get(def);  // Entire period closing C is the same as entire traffic T

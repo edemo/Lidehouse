@@ -116,7 +116,11 @@ Template.Community_finances.viewmodel({
     });
     return Math.max(firstBalanceIndex, this.endIndex() - chartLookbackMonths);
   },
-  endIndex() { return this.periodBreakdown()?.leafs().findIndex(l => l.code === Period.currentMonthTag()); },
+  endIndex() {
+    const currentMonthIndex = this.periodBreakdown()?.leafs().findIndex(l => l.code === Period.currentMonthTag());
+    if (this.community().settings.balancesUploaded && currentMonthIndex > 0) return currentMonthIndex - 1;
+    else return currentMonthIndex;
+  },
   periods() { return this.periodBreakdown()?.leafs().slice(this.startIndex(), this.endIndex() + 1); },
   periodLabels() { return this.periods()?.map(l => `${l.label === 'JAN' ? __(l.parent.name) : __(l.label)}`); },
 
