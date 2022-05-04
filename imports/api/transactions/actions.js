@@ -130,6 +130,7 @@ Transactions.actions = {
     run() {
       if (doc.isPosted()) {
         Modal.show('Modal', {
+          id: 'accounting.view',
           title: 'Accounting view',
           body: 'Transaction_view',
           bodyContext: { doc },

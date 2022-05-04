@@ -50,6 +50,7 @@ Template.Ledger_report.events({
     const periodTag = $(event.target).closest('[data-tag]').attr('data-tag');
     const period = Period.fromTag(periodTag);
     Modal.show('Modal', {
+      id: 'accounthistory.view',
       title: __('Account history'),
       body: 'Account_history',
       bodyContext: {

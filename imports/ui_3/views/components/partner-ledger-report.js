@@ -46,6 +46,7 @@ Template.Partner_ledger_report.events({
     const periodTag = $(event.target).closest('[data-tag]').data('tag');
     const period = Period.fromTag(periodTag);
     Modal.show('Modal', {
+      id: 'partnerhistory.view',
       title: __('Partner history'),
       body: 'Partner_history',
       bodyContext: {

@@ -25,6 +25,7 @@ Template.Attachments.events({
   'click .js-show-image'(event, instance) {
     const url = event.target.getAttribute('src');
     Modal.show('Modal', {
+      id: 'image.view',
       title: (decodeURI(url.split('/').pop())),
       body: 'Image',
       bodyContext: { url },

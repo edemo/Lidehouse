@@ -75,6 +75,7 @@ StatementEntries.actions = {
         });
       } else {
         Modal.show('Modal', {
+          id: 'statementEntry.view',
           title: __('schemaStatementEntries.original.label'),
           body: 'Doc_view',
           bodyContext: { doc: doc.original },

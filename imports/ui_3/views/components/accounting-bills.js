@@ -170,6 +170,7 @@ Template.Accounting_bills.events({
   },
   'click .js-edit-defs'(event, instance) {
     const modalContext = {
+      id: 'parcelbillings.view',
       title: 'Parcel billings',
       body: 'Parcel_billings',
       size: 'lg',

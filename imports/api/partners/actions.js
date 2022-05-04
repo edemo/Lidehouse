@@ -65,6 +65,7 @@ Partners.actions = {
     run(event, instance) {
       const contracts = doc.contracts();
       Modal.show('Modal', {
+        id: 'partnerhistory.view',
         title: 'Partner history',
         body: 'Partner_history',
         bodyContext: {

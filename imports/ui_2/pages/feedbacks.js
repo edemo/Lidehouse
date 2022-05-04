@@ -40,6 +40,7 @@ Template.Feedbacks.events({
     const topicId = $(event.target).data('id');
     const topic = Topics.findOne(topicId);
     const modalContext = {
+      id: 'feedback.view',
       title: 'Feedback',
       body: 'Chatbox',
       bodyContext: topic,

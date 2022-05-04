@@ -74,7 +74,7 @@ if (Meteor.isClient) {
       if (modalStack.length <= 1) return; // If there is no modal, no need to pass on the result
       const currentLevel = modalStack.length - 1;
       const lowerModalId = modalStack[currentLevel - 1].id;
-      const resultsKey = 'modalStackResults_' + [lowerModalId];
+      const resultsKey = 'modalStackResults_' + lowerModalId;
       let results;
       Tracker.nonreactive(() => { results = Session.get(resultsKey); });
       results[afId] = result;

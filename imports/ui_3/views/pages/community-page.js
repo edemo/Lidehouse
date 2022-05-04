@@ -271,6 +271,7 @@ Template.Community_page.events({
   'click .js-partners-list'(event, instance) {
     const communityId = ModalStack.getVar('communityId');
     Modal.show('Modal', {
+      id: 'partners.list',
       title: 'partners',
       body: 'Partners_datatable',
       bodyContext: { communityId },
@@ -280,6 +281,7 @@ Template.Community_page.events({
   'click .js-meters-list'(event, instance) {
     const communityId = ModalStack.getVar('communityId');
     Modal.show('Modal', {
+      id: 'meters.list',
       title: 'meters',
       body: 'Meters_datatable',
       bodyContext: { communityId },
@@ -289,6 +291,7 @@ Template.Community_page.events({
   'click .js-contracts-list'(event, instance) {
     const communityId = ModalStack.getVar('communityId');
     Modal.show('Modal', {
+      id: 'contracts.list',
       title: 'contracts',
       body: 'Contracts_datatable',
       bodyContext: { communityId, relations: ['member'] },
