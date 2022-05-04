@@ -27,6 +27,7 @@ function castVoteBasedOnPermission(topicId, castedVote, callback) {
   const communityId = community._id;
   if (Meteor.user().hasPermission('vote.castForOthers', { communityId }) && community.hasLiveAssembly()) {
     const modalContext = {
+      id: 'voters.select',
       title: 'Proxy voting',
       body: 'Select_voters',
       bodyContext: { topicId, castedVote },

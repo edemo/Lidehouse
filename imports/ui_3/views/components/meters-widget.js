@@ -43,6 +43,7 @@ Template.Meters_widget.events({
     const user = Meteor.user();
     const parcels = user.ownedParcels(communityId);
     Modal.show('Modal', {
+      id: 'meters.view',
       title: __('meters'),
       body: 'Meters_box',
       bodyContext: {

@@ -88,6 +88,7 @@ Template.Accounting_ledger.events({
     const communityId = instance.viewmodel.communityId();
     // ModalStack.setVar('parcelId', doc._id);
     Modal.show('Modal', {
+      id: 'journals.view',
       title: 'Full journal list',
       body: 'Journals_table',
       bodyContext: { communityId },
@@ -97,6 +98,7 @@ Template.Accounting_ledger.events({
   'click .js-check-journals'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     Modal.show('Modal', {
+      id: 'journals.check',
       title: 'Journals check',
       body: 'Journals_check',
       bodyContext: { communityId },
@@ -107,6 +109,7 @@ Template.Accounting_ledger.events({
     const communityId = instance.viewmodel.communityId();
     // ModalStack.setVar('parcelId', doc._id);
     Modal.show('Modal', {
+      id: 'incomestatement.view',
       title: 'Income statement',
       body: 'Income_statement',
       bodyContext: { communityId },

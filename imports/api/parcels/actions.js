@@ -84,6 +84,7 @@ Parcels.actions = {
     run() {
       ModalStack.setVar('parcelId', doc._id);
       Modal.show('Modal', {
+        id: 'occupants.view',
         title: `${doc ? doc.display() : __('unknown')} - ${__('occupants')}`,
         body: 'Occupants_box',
         bodyContext: {
@@ -103,6 +104,7 @@ Parcels.actions = {
     run(event, instance) {
       ModalStack.setVar('parcelId', doc._id);
       Modal.show('Modal', {
+        id: 'meters.view',
         title: `${doc ? doc.display() : __('unknown')} - ${__('meters')}`,
         body: 'Meters_box',
         bodyContext: {
@@ -129,6 +131,7 @@ Parcels.actions = {
     run(event, instance) {
       ModalStack.setVar('parcelId', doc._id);
       Modal.show('Modal', {
+        id: 'contracts.view',
         title: `${doc ? doc.display() : __('unknown')} - ${__('contracts')}`,
         body: 'Contracts_box',
         bodyContext: {

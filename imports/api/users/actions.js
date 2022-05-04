@@ -18,6 +18,7 @@ Meteor.users.actions = {
     visible: true,
     run() {
       Modal.show('Modal', {
+        id: 'User.view',
         title: 'User data page',
         body: 'Contact_long',
         bodyContext: doc,

@@ -100,6 +100,7 @@ Template.Contracts.events({
   'click .js-contracts-list'(event, instance) {
     const communityId = ModalStack.getVar('communityId');
     Modal.show('Modal', {
+      id: 'contracts.list',
       title: 'contracts',
       body: 'Contracts_datatable',
       bodyContext: { communityId, relations: ['customer', 'supplier'] },
