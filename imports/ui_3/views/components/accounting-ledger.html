@@ -22,6 +22,10 @@
         <div class="row">
             <div class="col-xs-12 text-center">
                 <button class="btn btn-default js-partner-ledger"><i class="fa fa-list"></i> {{_ 'Partner ledger'}}</button>
+                {{#if currentUserHasPermission 'transactions.inCommunity'}}
+                <button class="btn btn-default js-journals"><i class="fa fa-list"></i> {{_ 'Full journal list'}}</button>
+                <!--button class="btn btn-default js-income-statement"><i class="fa fa-list"></i> {{_ 'Income statement'}}</button-->
+                {{/if}}
             </div>
         </div>    
         {{/if}}
@@ -30,13 +34,14 @@
     {{#if currentUserHasPermission 'transactions.inCommunity'}}
     <div class="row">
         <div class="col-xs-12 text-center">
-            <button class="btn btn-default js-journals"><i class="fa fa-list"></i> {{_ 'Full journal list'}}</button>
-            <!--button class="btn btn-default js-income-statement"><i class="fa fa-list"></i> {{_ 'Income statement'}}</button-->
             {{#if selectedPeriodIsOpen}}
             <button class="btn btn-default js-close" title="{{_ 'Closed at'}}: {{accountingClosedAt}}"><i class="fa fa-lock"></i> {{_ 'Close period'}}</button>
             {{/if}}
             {{#if currentUser.super}}
             <button class="btn btn-default js-check-journals"><i class="fa fa-list"></i> {{_ 'Check journals'}}</button>
+            {{/if}}
+            {{#if community.settings.balancesUploaded}}
+            <button class="btn btn-default js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i> {{_ 'Upload balances'}}</button>
             {{/if}}
         </div>
     </div>

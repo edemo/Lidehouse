@@ -5,12 +5,15 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
 import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
 import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
+import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import '/imports/api/transactions/periods/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/components/ledger-report.js';
@@ -35,6 +38,9 @@ Template.Accounting_ledger.viewmodel({
   },
   communityId() {
     return getActiveCommunityId();
+  },
+  community() {
+    return Communities.findOne(this.communityId());
   },
   accounts() {
     return this.showTechnicalAccounts() ? Accounts.allWithTechnical(this.communityId()) : Accounts.all(this.communityId());
@@ -121,5 +127,8 @@ Template.Accounting_ledger.events({
     const tag = instance.viewmodel.periodSelected();
     Modal.confirmAndCall(AccountingPeriods.methods.close, { communityId, tag },
       { entity: 'period', action: 'close', message: 'Close period warning' });
+  },
+  'click .js-import'(event, instance) {
+    importCollectionFromFile(Balances);
   },
 });
