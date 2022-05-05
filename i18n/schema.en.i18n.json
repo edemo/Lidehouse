@@ -53,6 +53,9 @@
       }
     }
   },
+  "schemaAccountingPeriods": {
+    "accountingClosedAt": "Accounting closed at"
+  },
   "schemaAccounts": {
     "category": {
       "label": "Account category",

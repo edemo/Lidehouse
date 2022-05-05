@@ -4,6 +4,9 @@
         <p class="col-sm-6">
             {{_ 'Select a period for general ledger data'}}<br>
             {{_ 'Clicking on a cell, you can view the relating bill history'}}<br>
+            {{#if accountingClosedAt}}
+            [{{_ 'schemaAccountingPeriods.accountingClosedAt'}}: {{displayDate accountingClosedAt}}]<br>
+            {{/if}}
         </p>
         <div class="col-sm-3 form-group">
             <label class="control-label" for="period">{{_ 'period'}}</label>

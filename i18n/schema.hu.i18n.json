@@ -53,6 +53,9 @@
       }
     }
   },
+  "schemaAccountingPeriods": {
+    "accountingClosedAt": "Könyvelés lezárva"
+  },
   "schemaAccounts": {
     "category": {
       "label": "Számla típus",

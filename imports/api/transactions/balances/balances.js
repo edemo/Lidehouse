@@ -178,7 +178,7 @@ Balances.getClosingValue = function getClosingValue(def) {
   const defPeriod = Period.fromTag(def.tag);
   if (def.partner) debugAssert(defPeriod.endsOnYearEnd(), 'closing partner balance works only for end of year');
   const cBals = Balances.find(_.extend(subdefSelector(def), { tag: cTag })).fetch();
-  if (cBals.length > 0) {
+  if (cBals.length > 0) { // If there is any C balance for the given period, we assume that all C balances are uploaded for the period
     cBals.forEach(cBal => {
       result.credit += cBal.credit;
       result.debit += cBal.debit;
