@@ -48,8 +48,14 @@ if (Meteor.isClient) {
     pop(dataId) { // called upon Modal.hide();
       const modalStack = ModalStack.get();
       // Log.debug('before pop:', modalStack);
-      const topModal = modalStack.pop();
-      debugAssert((!topModal.id && !dataId) || topModal.id === dataId, 'No modal to pop on ModalStack');
+      let topModal = modalStack.pop();
+      // at changing modals eg. in import, push may happen before pop
+      if (topModal.id !== dataId) {
+        const nextModal = modalStack.pop();
+        debugAssert((!nextModal.id && !dataId) || nextModal.id === dataId, 'No modal to pop on ModalStack');
+        modalStack.push(topModal);
+        topModal = nextModal;
+      }
       const resultsKey = 'modalStackResults_' + topModal.id;
       if (ModalStack.computation && modalStack.length <= 1) {
         ModalStack.computation.stop();
