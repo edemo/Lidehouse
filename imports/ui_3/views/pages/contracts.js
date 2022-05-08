@@ -47,18 +47,18 @@ Template.Contracts.viewmodel({
   contracts() {
     const communityId = getActiveCommunityId();
     const community = getActiveCommunity();
-    const relation = ModalStack.getVar('relation');
+    const relation = this.activePartnerRelation();
     const selector = { communityId, relation, title: { $exists: true }, active: true };
     const show = this.show();
     if (show.archived) {
       if (show.active) delete selector.active;
-      else selector.active = false
+      else selector.active = false;
     } else {
       if (show.active) selector.active = true;
       else selector.active = { $exists: false };
     }
     const contracts = Contracts.find(selector, { sort: { active: -1, 'activeTime.begin': -1 } }).fetch();
-    contracts.sort((a, b) => a.title.localeCompare(b.title, community.settings.language, { sensitivity: 'accent' }));   
+    contracts.sort((a, b) => a.title.localeCompare(b.title, community.settings.language, { sensitivity: 'accent' }));
     return contracts;
   },
   statuses() {
