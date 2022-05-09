@@ -208,7 +208,7 @@ Transactions.helpers({
   },
   isPetrified() {
     const periodsDoc = AccountingPeriods.get(this.communityId);
-    return periodsDoc.accountingClosedAt && this.valueDate.getTime() <= periodsDoc.accountingClosedAt.getTime();
+    return periodsDoc.accountingClosedAt && (this.valueDate.getTime() <= periodsDoc.accountingClosedAt.getTime());
   },
   isAutoPosting() {
     return this.status === 'void' || this.txdef().isAutoPosting();

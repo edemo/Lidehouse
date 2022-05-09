@@ -48,7 +48,7 @@ function runPositingRules(context, doc) {
 function ensurePeriod(userId, doc) {
   const periodsDoc = AccountingPeriods.get(doc.communityId);
   if (!periodsDoc) return false;  // Can only happen on the client
-  if (periodsDoc.accountingClosedAt && periodsDoc.accountingClosedAt.getTime() < doc.valueDate.getTime()) {
+  if (periodsDoc.accountingClosedAt && (doc.valueDate.getTime() <= periodsDoc.accountingClosedAt.getTime())) {
     throw new Meteor.Error('err_notAllowed', 'Period is already closed', { valueDate: doc.valueDate, accountingClosedAt: periodsDoc.accountingClosedAt });
   }
   if (!_.contains(periodsDoc.years, doc.valueDate.getFullYear().toString())) {
