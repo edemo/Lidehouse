@@ -14,7 +14,7 @@ Meteor.publish('accountingPeriods.inCommunity', function accountingPeriodsInComm
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
+  if (!user.hasPermission('accounts.inCommunity', { communityId })) {
     return this.ready();
   }
 

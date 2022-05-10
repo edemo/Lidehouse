@@ -64,7 +64,11 @@ Template.Parcels_finances.viewmodel({
   },
   parcelFinancesTableDataFn() {
     const communityId = ModalStack.getVar('communityId');
-    return () => Parcels.find({ communityId, category: '@property' }).fetch().filter(p => !p.isLed() && p.payerContract());
+    let parcels;
+    if (Meteor.userOrNull().hasPermission('transactions.inCommunity', { communityId })) {
+      parcels = Parcels.find({ communityId, category: '@property' }).fetch().filter(p => !p.isLed() && p.payerContract());
+    } else parcels = this.myParcels();
+    return () => parcels;
   },
   parcelFinancesOptionsFn() {
     return () => ({
