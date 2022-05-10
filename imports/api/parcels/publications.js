@@ -127,6 +127,10 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
       },
       children: [{
         find(parcel) {
+          return Contracts.find({ parcelId: parcel._id });
+        },
+      }, {
+        find(parcel) {
           return Contracts.find({ leadParcelId: parcel._id });
         },
         children: [{

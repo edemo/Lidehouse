@@ -42,7 +42,7 @@
         <div class="ibox-content parcels">
             <span class="text-muted small pull-right">{{_ "Owner can see their own parcel's data - Manager can see everyone's"}}</span>
             <h2 class="text-capitalize">{{_ 'Parcel balances'}}</h2>
-            {{#if currentUserHasPermission 'balances.inCommunity'}}
+            {{#if currentUserHasPermission 'transactions.inCommunity'}}
             <div class="btn-group pull-right">
                 {{#unless showAllParcels}}
                 <button class="btn btn-primary btn-sm js-show-all"><strong> {{_ 'Show all parcels'}}</strong></button>
