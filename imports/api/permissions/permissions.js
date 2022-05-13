@@ -66,6 +66,7 @@ export const Permissions = [
   { name: 'vote.insert',            roles: ['manager'] },
   { name: 'vote.update',            roles: nobody, allowAuthor: true },
   { name: 'vote.remove',            roles: nobody, allowAuthor: true },
+  { name: 'vote.addChoice',         roles: exceptGuest }, // ['owner', 'delegate', 'manager'] },
   { name: 'vote.cast',              roles: exceptGuest }, // ['owner', 'delegate', 'manager'] },
   { name: 'vote.castForOthers',     roles: ['admin'] },
   //{ name: 'vote.close',             roles: ['manager'] },

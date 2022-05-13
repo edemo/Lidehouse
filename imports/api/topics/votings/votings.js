@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
@@ -54,6 +55,12 @@ Votings.voteSchema = new SimpleSchema({
   procedure: { type: String, allowedValues: Votings.voteProcedureValues, autoform: { ...allowedOptions(), ...noUpdate } },
   effect: { type: String, allowedValues: Votings.voteEffectValues, autoform: { ...autoformOptions(possibleEffectValues, 'schemaVotings.vote.effect.options.'), ...noUpdate } },
   type: { type: String, allowedValues: Votings.voteTypeValues, autoform: { ...allowedOptions(), ...noUpdate } },
+  allowAddChoices: { type: Boolean, optional: true, autoform: {
+    disabled: () => {
+      const type = AutoForm.getFieldValue('vote.type');
+      return !type || !!Votings.voteTypes[type].fixedChoices;
+    },
+  } },
   choices: {
     type: Array,
     autoValue() {
@@ -61,7 +68,9 @@ Votings.voteSchema = new SimpleSchema({
       return undefined;
     },
   },
-  'choices.$': { type: String },
+  'choices.$': { type: String, autoform: { disabled: true } },
+  choicesAddedBy: { type: Array, optional: true, autoform: { omit: true, disabled: true } },
+  'choicesAddedBy.$': { type: String, regEx: SimpleSchema.RegEx.Id /* userId */ },
 });
 
 Votings.voteParticipationSchema = new SimpleSchema({
@@ -103,6 +112,11 @@ Topics.categoryHelpers('vote', {
     let choice = this.vote.choices[index];
     if (Votings.voteTypes[this.vote.type].fixedChoices) choice = TAPi18n.__(choice, {}, language);
     return choice;
+  },
+  modifiableFields() {
+    return Topics.modifiableFields.concat([
+      'vote.allowAddChoices',
+    ]);
   },
   unitsToShare(units) {
     const community = this.community();

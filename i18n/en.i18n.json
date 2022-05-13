@@ -36,6 +36,7 @@
     "petition": "If you agree with the proposal, please press the Support button, and then send your vore with the green button. If you don't agree, you don't need to do anything.",
     "multiChoose": "Please mark one or more choices, and then send your vote with the green button."
   },
+  "addNewChoiceWarning": "You are about to add a new choice to the voting, once it is added, it cannot be removed.",
 
   // finances
   "Breakdowns": "Accounting breakdowns",

@@ -16,8 +16,9 @@
                   <ul class="sortable droptrue">
                     {{#each p in preference}}
                     <!-- would be nicer: https://stackoverflow.com/questions/20782368/use-font-awesome-icon-as-css-content -->
-                    <li class="btn btn-vote-choice ui-state-default js-btn-vote-choice" data-value="{{p.value}}">
+                    <li class="btn btn-vote-preferential ui-state-default" data-value="{{p.value}}">
                       <i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{p.text}}
+                      {{#if adderId p.value}} <i class="fa fa-lg fa-user-plus" title="{{adderName p.value}}"></i>{{/if}}
                     </li>
                     {{/each}}
                   </ul>
@@ -25,8 +26,14 @@
                   {{#each choice in topic.vote.choices}}
                   <button class="btn btn-vote {{pressedClassForVoteBtn @index}} {{#unless (equals topic.status 'opened')}}disabled{{/unless}}" data-value="{{@index}}">
                     <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{topic.displayChoice @index}}
+                    {{#if adderId @index}} <i class="fa fa-user-plus" title="{{adderName @index}}"></i>{{/if}}
                   </button>
                   {{/each}}
+                {{/if}}
+                {{#if topic.vote.allowAddChoices}}
+                  <button class="btn btn-vote-add js-btn-vote-add">
+                    <i class="fa fa-lg fa-plus"></i> {{_ "Add new choice"}}
+                  </button>
                 {{/if}}
 
                 {{#if envelopeIsClosed}}

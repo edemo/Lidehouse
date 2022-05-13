@@ -104,9 +104,9 @@ export function checkPermissionsToRemoveUploaded(userId, collection, doc) {
   }
 }
 
-export function checkNeededStatus(status, doc) {
-  if (status !== doc.status) {
+export function checkNeededStatus(doc, ...statuses) {
+  if (!_.contains(statuses, doc.status)) {
     throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity in this status',
-      `Status: ${doc.status}, needed status: ${status}`);
+      `Status: ${doc.status}, needed status: ${statuses}`);
   }
 }

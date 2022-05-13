@@ -8,7 +8,7 @@
 @btn-vote-border: black;
 @btn-vote-shadow: darkgrey;
 
-.btn-vote, .btn-vote-choice {
+.btn-vote, .btn-vote-preferential {
     color: @btn-vote-text;
     background-color: @btn-vote-bg;
     border: 1px solid @btn-vote-border;
@@ -43,6 +43,10 @@
         top: 7px;
         left: 9.5px;
       }
+      &.fa-user-plus {
+        right: 9px;
+        cursor: text;
+      }
     }
     img {
       position: absolute;
@@ -54,11 +58,11 @@
 }
 
 .btn-vote:hover,
-.btn-vote-choice:hover {
+.btn-vote-preferential:hover {
   color: @btn-vote-text-hover;
 }
 
-.btn-vote-choice{
+.btn-vote-preferential{
     font-weight: normal;
     width: 100%;
     margin: 5px auto;
@@ -66,6 +70,30 @@
       box-shadow: 3px 4px 7px 2px rgba(35, 35, 35, 0.18);
     }
     transition: box-shadow 0.30s ease;    
+}
+
+.btn-vote-add {
+  border: 1px solid @btn-vote-border;
+  padding-left: 25px;
+  position: relative;
+  text-align: left;
+  line-height: 1.2em;
+  height: 1.5em;
+  margin: 0 5px 5px 5px;
+  padding: 5px 30px;
+  font-size: 1em;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 2px 2px 2px @btn-vote-shadow;
+
+  i {
+    position: absolute;
+    &.fa-plus {
+      color: @btn-vote-mark;
+      top: 6.5px;
+      left: 9px;
+    }
+  }
 }
 
 .btn.btn-pressed > img {
@@ -181,14 +209,14 @@
 
 /* START Touch Punch Desktop Cursor */
 
-ul.sortable li.btn-vote-choice {
+ul.sortable li.btn-vote-preferential {
   cursor: move;
   cursor: grab;
   cursor: -moz-grab;
   cursor: -webkit-grab;
 }
 
-ul.sortable li.btn-vote-choice:active {
+ul.sortable li.btn-vote-preferential:active {
   cursor: grabbing;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;

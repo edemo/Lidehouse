@@ -2,12 +2,35 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { checkExists, checkNeededStatus, checkPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkNeededStatus, checkPermissions, checkConstraint } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import './votings.js';
 import { voteCastConfirmationEmail } from '/imports/email/voting-confirmation.js';
+
+export const addChoice = new ValidatedMethod({
+  name: 'vote.addChoice',
+  validate: new SimpleSchema({
+    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    text: { type: String, max: 50 },
+  }).validator(),
+
+  run({ topicId, text }) {
+    const topic = checkExists(Topics, topicId);
+    checkPermissions(this.userId, 'vote.addChoice', topic);
+    checkConstraint(topic.vote.allowAddChoices, 'Voting does not allow adding choices');
+    checkNeededStatus(topic, 'announced', 'opened');
+
+    const choices = topic.vote.choices;
+    const choicesAddedBy = topic.vote.choicesAddedBy || [];
+    choices.push(text);
+    choicesAddedBy[choices.length - 1] = this.userId;
+    const topicModifier = { $set: { 'vote.coices': choices, 'vote.choicesAddedBy': choicesAddedBy } };
+
+    return Topics.update(topicId, topicModifier, { selector: { category: 'vote' } });
+  },
+});
 
 export const castVote = new ValidatedMethod({
   name: 'vote.cast',
@@ -22,7 +45,7 @@ export const castVote = new ValidatedMethod({
   run({ topicId, castedVote, voters }) {
     const topic = checkExists(Topics, topicId);
     const user = Meteor.users.findOne(this.userId);
-    checkNeededStatus('opened', topic);
+    checkNeededStatus(topic, 'opened');
     let _voters = voters;
     if (_voters) {
       checkPermissions(this.userId, 'vote.castForOthers', topic);

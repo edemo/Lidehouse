@@ -528,6 +528,10 @@
       "label": "Szavazás lezárulása"
     },
     "vote": {
+      "allowAddChoices": {
+        "label": "Mások is hozzáadhatnak lehetőségeket",
+        "help": "Ha ezt engedélyezi, akkor a többi felhasználó is tud menet közben még további választási lehetőségeket hozzáadni. Mindegyik mellé ki lesz írva, hogy ki ajánlotta."
+      },
       "choices": {
         "label": "Választási lehetőségek",
         "help": "A szavazás típusa meghatározhatja a választási lehetőségeket (például igen-nem szavazás esetén). Amikor nem, akkor ön adhatja meg a lehetséges válaszokat. Előszőr tehát mindenképpen válassza meg a típust."

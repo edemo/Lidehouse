@@ -528,6 +528,10 @@
       "label": "Voting closes at"
     },
     "vote": {
+      "allowAddChoices": {
+        "label": "Allow others to add vote choices",
+        "help": "If you enable this, other users can also add more vote choices to the voting on the fly. Each new choice will display which user suggested it."
+      },
       "choices": {
         "label": "Vote choices",
         "help": "The voting type may already define the choices (like in the yes/no case). When it does not, you can define the choices yourself. So always choose the voting type first."

@@ -10,16 +10,32 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { castVote } from '/imports/api/topics/votings/methods.js';
+import { addChoice, castVote } from '/imports/api/topics/votings/methods.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { getActivePartnerId } from '/imports/ui_3/lib/active-partner.js';
 import { toggle } from '/imports/api/utils.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '../components/select-voters.js';
+import './text-input.js';
+import './select-voters.js';
 import './vote-cast-panel.html';
 import { createEnvelope } from './envelope.js';
 
+function addVoteChoice(topicId) {
+  const modalContext = {
+    id: 'vote.addChoice',
+    title: 'Add new choice',
+    description: 'addNewChoiceWarning',
+    body: 'Text_input',
+    bodyContext: { topicId },
+    btnClose: 'cancel',
+    btnOK: 'save',
+    onOK() {
+      addChoice.call({ topicId, text: AutoForm.getFieldValue('text', 'vote.addChoice') });
+    },
+  };
+  Modal.show('Modal', modalContext);
+}
 
 function castVoteBasedOnPermission(topicId, castedVote, callback) {
   ModalStack.setVar('relation', 'member', true);
@@ -36,7 +52,7 @@ function castVoteBasedOnPermission(topicId, castedVote, callback) {
       onOK() {
         castVote.call(
           { topicId, castedVote, voters: AutoForm.getFieldValue('voters', 'af.select.voters') },
-          callback
+          callback,
         );
       },
     };
@@ -133,6 +149,15 @@ Template.Vote_cast_panel.viewmodel({
     // no vote yet, preference is then the original vote choices in that order
     return choices.map(function obj(text, index) { return { text, value: index }; });
   },
+  adderId(index) {
+    return this.topic().vote.choicesAddedBy[index];
+  },
+  adderName(index) {
+    const userId = this.adderId(index);
+    if (!userId) return undefined;
+    const user = Meteor.users.findOne(userId);
+    return user.displayOfficialName();
+  },
   events: {
     'click .btn-vote'(event, instance) {  // event handler for the single and multiChoose vote types
       if (this.registeredVote() && !this.temporaryVote()) return;
@@ -140,13 +165,17 @@ Template.Vote_cast_panel.viewmodel({
       if (instance.data.vote.type === 'multiChoose') this.temporaryVote(toggle(selectedChoice, this.temporaryVote()));
       else this.temporaryVote([selectedChoice]);
     },
+    'click .js-btn-vote-add'(event, instance) {
+      const topicId = this.topic()._id;
+      addVoteChoice(topicId);
+    },
     'click .js-send'(event, instance) {
       const topicId = this.topic()._id;
       debugAssert(this.temporaryVote());
       castVoteBasedOnPermission(topicId, this.temporaryVote(),
         onSuccess((res) => {
           displayMessage('success', 'Vote casted');
-        })
+        }),
       );
       this.temporaryVote(undefined);
     },
