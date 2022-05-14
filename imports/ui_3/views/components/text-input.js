@@ -12,7 +12,11 @@ import '/imports/ui_3/views/modals/modal.js';
 import './text-input.html';
 
 Template.Text_input.viewmodel({
-  schema: new SimpleSchema({
-    text: { type: String, max: 50 },
-  }),
+  schema() {
+    const schema = new SimpleSchema({
+      text: { type: String, max: 50 },
+    });
+    schema.i18n('schemaText');
+    return schema;
+  },
 });

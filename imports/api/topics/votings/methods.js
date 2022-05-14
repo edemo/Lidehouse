@@ -26,7 +26,7 @@ export const addChoice = new ValidatedMethod({
     const choicesAddedBy = topic.vote.choicesAddedBy || [];
     choices.push(text);
     choicesAddedBy[choices.length - 1] = this.userId;
-    const topicModifier = { $set: { 'vote.coices': choices, 'vote.choicesAddedBy': choicesAddedBy } };
+    const topicModifier = { $set: { 'vote.choices': choices, 'vote.choicesAddedBy': choicesAddedBy } };
 
     return Topics.update(topicId, topicModifier, { selector: { category: 'vote' } });
   },
