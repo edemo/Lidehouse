@@ -24,6 +24,11 @@
       "label": "Megjegyzések"
     }
   },
+  "schemaText": {
+    "text": {
+      "label": "Szöveg"
+    }
+  },
   "schemaAttachmentField": {
     "attachments": {
       "label": "Fénykép vagy fájl (ha csatolni szeretne)",

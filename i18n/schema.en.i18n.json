@@ -24,6 +24,11 @@
       "label": "Notes"
     }
   },
+  "schemaText": {
+    "text": {
+      "label": "Text"
+    }
+  },
   "schemaAttachmentField": {
     "attachments": {
       "label": "Photo or file (if applicable)",
@@ -398,7 +403,7 @@
       "placeholder": "(eg. Elevator regular maintenance)"
     },
     "text": {
-      "label": "Decription",
+      "label": "Description",
       "placeholder": "(eg. 2012 CXXL. regulation makes it mandatory)"
     },
     "partnerId": {
