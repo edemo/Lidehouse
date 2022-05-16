@@ -161,8 +161,18 @@ Topics.categoryHelpers('vote', {
   hasVoted(partnerId) {
     return this.hasVotedDirect(partnerId) || this.hasVotedIndirect(partnerId);
   },
+  extendVote(registeredVote) {
+    // During voting, new choices could have been added. The casted vote should take these into consideration as well.
+    if (this.vote.type === 'preferential' && this.vote.choices.length > registeredVote.length) {
+      for (let i = registeredVote.length; i < this.vote.choices.length; ++i) {
+        registeredVote[i] = i;
+      }
+    }
+  },
   voteOf(partnerId) {
-    return (this.voteCasts && this.voteCasts[partnerId]) || (this.voteCastsIndirect && this.voteCastsIndirect[partnerId]);
+    const registeredVote = (this.voteCasts && this.voteCasts[partnerId]) || (this.voteCastsIndirect && this.voteCastsIndirect[partnerId]);
+    if (registeredVote?.length) this.extendVote(registeredVote);
+    return registeredVote;
   },
   votingClosed() {
     return this.status === 'votingFinished' || this.status === 'closed';
@@ -194,6 +204,7 @@ Topics.categoryHelpers('vote', {
           voteResults[votership._id] = result;
           voteCastsIndirect[partnerId] = castedVote;
           votePaths[partnerId] = votePath;
+          self.extendVote(castedVote);
           castedVote.forEach((choice, i) => {
             voteSummary[choice] = voteSummary[choice] || 0;
             const choiceWeight = (voteType === 'preferential') ? (1 - (i / castedVote.length)) : 1;

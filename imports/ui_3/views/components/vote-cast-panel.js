@@ -150,7 +150,7 @@ Template.Vote_cast_panel.viewmodel({
     return choices.map(function obj(text, index) { return { text, value: index }; });
   },
   adderId(index) {
-    return this.topic().vote.choicesAddedBy[index];
+    return this.topic().vote.choicesAddedBy?.[index];
   },
   adderName(index) {
     const userId = this.adderId(index);
