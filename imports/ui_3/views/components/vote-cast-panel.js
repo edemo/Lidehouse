@@ -142,7 +142,9 @@ Template.Vote_cast_panel.viewmodel({
   preference() {
     const choices = this.topic().vote.choices;
     if (this.temporaryVote()) {
-      return this.temporaryVote().map(function obj(value) { return { text: choices[value], value }; });
+      const extendedTemporaryVote = this.temporaryVote();
+      this.topic().extendVote(extendedTemporaryVote);
+      return extendedTemporaryVote.map(function obj(value) { return { text: choices[value], value }; });
     } else if (this.registeredVote()) {
       return this.registeredVote().map(function obj(value) { return { text: choices[value], value }; });
     }
