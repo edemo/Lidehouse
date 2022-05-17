@@ -388,8 +388,8 @@ if (Meteor.isServer) {
             $set: { contractId: null },
           } });
         }, 'err_permissionDenied');
-        FixtureA.builder.execute(Transactions.methods.remove, { _id: oldPaymentId });
         AccountingPeriods.update({ communityId: FixtureA.demoCommunityId }, { $unset: { accountingClosedAt: '' } });
+        FixtureA.builder.execute(Transactions.methods.remove, { _id: oldPaymentId });
       });
 
       it('Cannot storno a posted bill, while it links to a LIVE payment', function () {

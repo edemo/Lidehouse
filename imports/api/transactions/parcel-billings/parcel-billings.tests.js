@@ -480,6 +480,55 @@ if (Meteor.isServer) {
         chai.assert.equal(laterPayer.outstanding(undefined, 'member'), bills2[0].amount);
         chai.assert.equal(parcel.outstanding(), bills2[0].amount);
         chai.assert.equal(formerPayer.outstanding(undefined, 'member'), 0);
+
+        ParcelBillings.remove({});
+        Fixture.builder.create('parcelBilling', {
+          title: 'Test area',
+          projection: {
+            base: 'area',
+            unitPrice: 50,
+          },
+          digit: '3',
+          localizer: '@AP01',
+        });
+
+        const leadContract = Contracts.findOne({ parcelId: Fixture.dummyParcels[1] });
+        Contracts.methods.update._execute({ userId: Fixture.demoAdminId }, {
+          _id: leadContract._id, modifier: { $set: {
+            'activeTime.begin': new Date('2017-02-01'),
+            'activeTime.end': new Date('2019-12-10'),
+          } },
+        });
+        chai.assert.equal(leadContract.leadParcelId, Fixture.dummyParcels[3]);
+        chai.assert.isUndefined(Contracts.findOneActive({ parcelId: Fixture.dummyParcels[1] }));
+
+        Transactions.remove({});
+        applyParcelBillings('2018-01-12');
+        const followerBills = Transactions.find({ communityId, category: 'bill' }).fetch();
+        let followerParcel = Parcels.findOne(Fixture.dummyParcels[1]);
+        formerPayer = Partners.findOne(payerPartner3Id);
+        laterPayer = Partners.findOne(laterpayerPartnerId);
+        chai.assert.equal(followerBills.length, 1);
+        assertBillDetails(followerBills[0], { payerPartnerId: payerPartner3Id, linesLength: 1, lineTitle: 'Test area', linePeriod: '2018-01' });
+        assertLineDetails(followerBills[0].lines[0], { uom: 'm2', unitPrice: 50, quantity: 10, localizer: '@AP01' });
+        postParcelBillings('2018-01-12');
+        chai.assert.equal(formerPayer.outstanding(undefined, 'member'), followerBills[0].amount);
+        chai.assert.equal(followerParcel.outstanding(), followerBills[0].amount);
+        chai.assert.equal(laterPayer.outstanding(undefined, 'member'), 0);
+
+        Transactions.remove({});
+        applyParcelBillings('2018-03-12');
+        const followerBills2 = Transactions.find({ communityId, category: 'bill' }).fetch();
+        followerParcel = Parcels.findOne(Fixture.dummyParcels[1]);
+        formerPayer = Partners.findOne(payerPartner3Id);
+        laterPayer = Partners.findOne(laterpayerPartnerId);
+        chai.assert.equal(followerBills2.length, 1);
+        assertBillDetails(followerBills2[0], { payerPartnerId: laterpayerPartnerId, linesLength: 1, lineTitle: 'Test area', linePeriod: '2018-03' });
+        assertLineDetails(followerBills2[0].lines[0], { uom: 'm2', unitPrice: 50, quantity: 10, localizer: '@AP01' });
+        postParcelBillings('2018-03-12');
+        chai.assert.equal(laterPayer.outstanding(undefined, 'member'), followerBills2[0].amount);
+        chai.assert.equal(followerParcel.outstanding(), followerBills2[0].amount);
+        chai.assert.equal(formerPayer.outstanding(undefined, 'member'), 0);
       });
 
       it('bills the new owner on the day of change', function () {

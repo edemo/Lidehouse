@@ -9,6 +9,25 @@ import { sanityCheckOnlyOneActiveAtAllTimes } from '/imports/api/behaviours/acti
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 
+function leadParcelCheck(collection, doc) {
+  if (doc.leadParcelId) {
+    if (doc.leadParcelId === doc.parcelId) throw new Meteor.Error('err_sanityCheckFailed', 'Lead parcel cannot be led');
+    const ledContracts = collection.find(
+      { $or: [
+        { parcelId: doc.leadParcelId, leadParcelId: { $exists: true } },
+        { leadParcelId: doc.parcelId },
+        { _id: doc._id },
+      ] }, { sort: { 'activeTime.end': 1 } },
+    );
+    ledContracts.forEach((contract, i) => {
+      if (!ledContracts[i + 1]) return;
+      if (contract.getActiveTime().end > ledContracts[i + 1].getActiveTime().begin) {
+        throw new Meteor.Error('err_sanityCheckFailed', 'Lead parcel cannot be led');
+      }
+    });
+  }
+}
+
 export const insert = new ValidatedMethod({
   name: 'contracts.insert',
   validate: doc => Contracts.simpleSchema(doc).validator({ clean: true })(doc),
@@ -19,6 +38,7 @@ export const insert = new ValidatedMethod({
     const _id = ContractsStage.insert(doc);
     if (doc.relation === 'member' && doc.parcelId) {
       sanityCheckOnlyOneActiveAtAllTimes(ContractsStage, { parcelId: doc.parcelId });
+      leadParcelCheck(ContractsStage, ContractsStage.findOne(_id));
     }
     ContractsStage.commit();
 
@@ -43,6 +63,7 @@ export const update = new ValidatedMethod({
     const newDoc = ContractsStage.findOne(_id);
     if (doc.relation === 'member' && newDoc.parcelId) {
       sanityCheckOnlyOneActiveAtAllTimes(ContractsStage, { parcelId: newDoc.parcelId });
+      leadParcelCheck(ContractsStage, newDoc);
     }
     ContractsStage.commit();
 

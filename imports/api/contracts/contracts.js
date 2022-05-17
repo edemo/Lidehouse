@@ -41,7 +41,7 @@ Contracts.memberSchema = new SimpleSchema({
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
     autoform: { ...noUpdate, ...choosePartnerOfParcel, value: () => {
       const leadParcelId = AutoForm.getFieldValue('leadParcelId');
-      return leadParcelId && Contracts.findOne({ parcelId: leadParcelId })?.partnerId;
+      return leadParcelId && Contracts.findOneActive({ parcelId: leadParcelId })?.partnerId;
     } },
   },
   delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
@@ -85,6 +85,10 @@ Contracts.helpers({
   },
   partner() {
     if (this.partnerId) return Partners.findOne(this.partnerId);
+    if (this.leadParcelId) {
+      const leadPartnerId = Contracts.findOneActive({ parcelId: this.leadParcelId })?.partnerId;
+      return leadPartnerId && Partners.findOne(leadPartnerId);
+    }
     return undefined;
   },
   partnerName() {
@@ -130,7 +134,7 @@ Contracts.helpers({
   },
   billingContract() {
     debugAssert(this.parcelId);
-    if (this.leadParcelId) return Contracts.findOne({ parcelId: this.leadParcelId });
+    if (this.leadParcelId) return Contracts.findOneActive({ parcelId: this.leadParcelId });
     else return this;
   },
   balance(account) {
