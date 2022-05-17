@@ -139,6 +139,35 @@ if (Meteor.isServer) {
         }, 'err_sanityCheckFailed');
         done();
       });
+
+      it('LeadParcel cannot be led', function (done) {
+        const otherParcelId = Fixture.dummyParcels[3];
+        const otherLead = Fixture.dummyParcels[4];
+        // led parcel cannot lead
+        chai.assert.throws(() => {
+          Fixture.builder.create('memberContract', { parcelId: otherParcelId, leadParcelId: parcelId, activeTime: { begin: now } });
+        }, 'Lead parcel cannot be led');
+        chai.assert.throws(() => {
+          Fixture.builder.create('memberContract', { parcelId: otherParcelId, leadParcelId: parcelId, activeTime: { begin: past4, end: past2 } });
+        }, 'Lead parcel cannot be led');
+        // in no active led period, parcel can be leader
+        const newContractId = Fixture.builder.create('memberContract', { parcelId: otherParcelId, leadParcelId: parcelId, activeTime: { begin: past2, end: past } });
+        Fixture.builder.execute(Contracts.methods.update, { _id: newContractId, modifier: { $set: { 'activeTime.begin': past8, 'activeTime.end': past7 } } });
+        chai.assert.throws(() => {
+          Fixture.builder.execute(Contracts.methods.update, { _id: newContractId, modifier: { $set: { 'activeTime.begin': past4, 'activeTime.end': past2 } } });
+        }, 'Lead parcel cannot be led');
+        // leadParcel can lead more parcels
+        Fixture.builder.create('memberContract', { parcelId: otherParcelId, leadParcelId, activeTime: { begin: now } });
+        // cannot lead yourself
+        chai.assert.throws(() => {
+          Fixture.builder.create('memberContract', { parcelId: otherLead, leadParcelId: otherLead, activeTime: { begin: now } });
+        }, 'Lead parcel cannot be led');
+        // leadParcel cannot be led
+        chai.assert.throws(() => {
+          Fixture.builder.create('memberContract', { parcelId: leadParcelId, leadParcelId: otherLead, activeTime: { begin: now } });
+        }, 'Lead parcel cannot be led');
+        done();
+      });
     });
   });
 }
