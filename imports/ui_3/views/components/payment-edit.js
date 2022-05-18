@@ -87,9 +87,11 @@ Template.Payment_edit.events({
   'click .js-autofill button'(event, instance) {
     // The click happens beore the line is removed/added, so here we do not yet see the changed doc
     const formId = AutoForm.getFormId();  // The delayed call will need to be told, what formId is
+    const community = getActiveCommunity();
     Meteor.setTimeout(() => {
       autoFill(formId);
-      instance.viewmodel.billsView(instance.viewmodel.afDoc(formId).bills?.length);
+      instance.viewmodel.billsView(instance.viewmodel.afDoc(formId).bills?.length
+        || _.contains(community.settings.paymentsToBills, instance.viewmodel.afDoc(formId).relation));
     }, 1000);
   },
   'click .js-create[data-entity="bill"]'(event, instance) {

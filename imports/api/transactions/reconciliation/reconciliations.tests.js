@@ -726,6 +726,7 @@ if (Meteor.isServer) {
           amount: -100,
         });
 
+        Communities.update({ _id: Fixture.demoCommunityId }, { $set: { 'settings.paymentsToBills': [] } });
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId4 });
         const entry4 = StatementEntries.findOne(entryId4);
         chai.assert.equal(entry4.match.confidence, 'info');
@@ -743,6 +744,7 @@ if (Meteor.isServer) {
         const payment4 = Transactions.findOne({ category: 'payment', 'lines.0': { $exists: true } });
         Fixture.builder.execute(Transactions.methods.post, { _id: payment4._id });
         chai.assert.equal(bill3.partner().outstanding(undefined, 'supplier'), 300);
+        Communities.update({ _id: Fixture.demoCommunityId }, { $set: { 'settings.paymentsToBills': ['supplier', 'customer'] } });
       });
 
       it('[1] Entry has unknown bank account number - will not be auto reconciled', function () {
