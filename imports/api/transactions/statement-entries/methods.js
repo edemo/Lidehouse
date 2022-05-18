@@ -367,13 +367,15 @@ export const recognize = new ValidatedMethod({
       const localizer = contract?.accounting?.localizer;
       let confidence = 'info';
       if (relation === 'member' && !localizer) confidence = 'warning';
-      tx.lines = [
-        Object.cleanUndefined({
-          amount: amountToFill,
-          account: contract?.accounting?.account || paymentDef.conteerCodes()[0],
-          localizer,
-        }),
-      ];
+      if (!_.contains(community.settings.paymentsToBills, relation)) {
+        tx.lines = [
+          Object.cleanUndefined({
+            amount: amountToFill,
+            account: contract?.accounting?.account || paymentDef.conteerCodes()[0],
+            localizer,
+          }),
+        ];
+      }
       // }
       Log.info('Info match with bills', matchingBills.length);
       Log.debug(tx);
