@@ -725,26 +725,78 @@ if (Meteor.isServer) {
           name: 'Supplier.Inc.',
           amount: -100,
         });
-
-        Communities.update({ _id: Fixture.demoCommunityId }, { $set: { 'settings.paymentsToBills': [] } });
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId4 });
         const entry4 = StatementEntries.findOne(entryId4);
         chai.assert.equal(entry4.match.confidence, 'info');
 
         Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId4 });
         chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 4);
-
         bill3 = Transactions.findOne(billId3);
         chai.assert.equal(bill3.amount, 500);
-        // no guessing for matching bills in info match
-        /* chai.assert.equal(bill3.getPayments().length, 2);
+        chai.assert.equal(bill3.getPayments().length, 2);
         chai.assert.equal(bill3.getPaymentTransactions()[0].reconciled, true);
         chai.assert.equal(bill3.outstanding, 300);
-        Fixture.builder.execute(Transactions.methods.post, { _id: bill3.getPayments()[1].id }); */
-        const payment4 = Transactions.findOne({ category: 'payment', 'lines.0': { $exists: true } });
-        Fixture.builder.execute(Transactions.methods.post, { _id: payment4._id });
+        Fixture.builder.execute(Transactions.methods.post, { _id: bill3.getPayments()[1].id });
         chai.assert.equal(bill3.partner().outstanding(undefined, 'supplier'), 300);
-        Communities.update({ _id: Fixture.demoCommunityId }, { $set: { 'settings.paymentsToBills': ['supplier', 'customer'] } });
+      });
+
+      it('Recognition deals with different signs', function () {
+        const billId4 = Fixture.builder.create('bill', {
+          relation: 'supplier',
+          partnerId: Fixture.supplier,
+          relationAccount: '`454',
+          lines: [{
+            title: 'Refund',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: -40,
+            account: '`861',
+            localizer: '@',
+          }],
+        });
+        Fixture.builder.execute(Transactions.methods.post, { _id: billId4 });
+        let bill4 = Transactions.findOne(billId4);
+        chai.assert.equal(bill4.partner().outstanding(undefined, 'supplier'), 260);
+
+        const entryId5 = Fixture.builder.create('statementEntry', {
+          account: bankAccount.code,
+          valueDate: Clock.currentDate(),
+          name: 'Supplier.Inc.',
+          amount: 40,
+        });
+
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId5 });
+        const entry5 = StatementEntries.findOne(entryId5);
+        chai.assert.equal(entry5.match.confidence, 'warning');
+        chai.assert.equal(entry5.match.tx.lines.length, 0);
+        chai.assert.equal(entry5.match.tx.bills.length, 0);
+
+        const entryId6 = Fixture.builder.create('statementEntry', {
+          account: bankAccount.code,
+          valueDate: Clock.currentDate(),
+          name: 'Supplier.Inc.',
+          amount: -280,
+        });
+
+        Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId6 });
+        const entry6 = StatementEntries.findOne(entryId6);
+        chai.assert.equal(entry6.match.confidence, 'info');
+        chai.assert.equal(entry6.match.tx.lines.length, 0);
+
+        Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId6 });
+        chai.assert.equal(Transactions.find({ category: 'payment' }).count(), 5);
+        const bill3 = Transactions.findOne({ category: 'bill', 'lines.0.title': 'Next Work' });
+        bill4 = Transactions.findOne(billId4);
+        chai.assert.equal(bill3.amount, 500);
+        chai.assert.equal(bill3.getPayments().length, 3);
+        chai.assert.equal(bill3.outstanding, 0);
+        chai.assert.equal(bill4.amount, -40);
+        chai.assert.equal(bill4.getPayments().length, 1);
+        chai.assert.equal(bill4.outstanding, 0);
+
+        Fixture.builder.execute(Transactions.methods.post, { _id: bill3.getPayments()[2].id });
+        Fixture.builder.execute(Transactions.methods.post, { _id: bill4.getPayments()[0].id });
+        chai.assert.equal(bill3.partner().outstanding(undefined, 'supplier'), -20);
       });
 
       it('[1] Entry has unknown bank account number - will not be auto reconciled', function () {

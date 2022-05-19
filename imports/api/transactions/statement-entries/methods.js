@@ -357,17 +357,25 @@ export const recognize = new ValidatedMethod({
       // ---------------------------
       tx.bills = []; tx.lines = [];
       let amountToFill = adjustedEntryAmount;
-      /* matchingBills.forEach(bill => {
-        if (amountToFill === 0) return false;
-        const amount = Math.min(amountToFill, bill.outstanding);
-        tx.bills.push({ id: bill._id, amount });
-        amountToFill -= amount;
-      });
-      if (amountToFill > 0) { */
-      const localizer = contract?.accounting?.localizer;
       let confidence = 'info';
-      if (relation === 'member' && !localizer) confidence = 'warning';
-      if (!_.contains(community.settings.paymentsToBills, relation)) {
+      if (_.contains(community.settings.paymentsToBills, relation)) {
+        let totalOutstanding = 0;
+        matchingBills.forEach((bill) => {
+          totalOutstanding += bill.outstanding;
+        });
+        if (Math.sign(adjustedEntryAmount) === Math.sign(totalOutstanding)) {
+          matchingBills.oppositeSignsFirst(totalOutstanding, 'amount').forEach((bill) => {
+            if (amountToFill === 0) return false;
+            let amount;
+            if (amountToFill >= 0) amount = bill.outstanding >= 0 ? Math.min(amountToFill, bill.outstanding) : bill.outstanding;
+            if (amountToFill < 0) amount = bill.outstanding < 0 ? Math.max(amountToFill, bill.outstanding) : bill.outstanding;
+            tx.bills.push({ id: bill._id, amount });
+            amountToFill -= amount;
+          });
+        } else confidence = 'warning';
+      } else {
+        const localizer = contract?.accounting?.localizer;
+        if (relation === 'member' && !localizer) confidence = 'warning';
         tx.lines = [
           Object.cleanUndefined({
             amount: amountToFill,
