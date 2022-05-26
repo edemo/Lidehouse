@@ -45,25 +45,24 @@
             </thead>
             <tbody>
                 {{#afEachArrayItem name="bills"}}
-                <!--{{#if notNullLine this}}-->
                 <tr class="js-autofill">
                     <td class="text-left">
-                      <button type="button" class="btn btn-info autoform-remove-item">
-                          <i class="fa fa-trash"></i>
-                      </button>
+                        <button type="button" class="btn btn-info autoform-remove-item">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </td>
                     <td>
                     {{#if docField this.current.id}}
-                      {{> afFormGroup name=this.current.id type='hidden'}}
-                      <div>
-                        <strong>{{displayBill this.current.id}}</strong>
-                      </div>                                
+                        {{> afFormGroup name=this.current.id type='hidden'}}
+                        <div>
+                            <strong>{{displayBill this.current.id}}</strong>
+                        </div>                                
                     {{else}} 
-                      {{> afFormGroup name=this.current.id}}
+                        {{> afFormGroup name=this.current.id}}
                     {{/if}}
                     </td>
                     <!--td data-line="{{this.name}}">
-                      <button type="button" class="btn btn-default js-full-amount"><i class="fa fa-arrow-right"></i> {{_ 'Full'}} <i class="fa fa-arrow-right"></i></button>
+                    <button type="button" class="btn btn-default js-full-amount"><i class="fa fa-arrow-right"></i> {{_ 'Full'}} <i class="fa fa-arrow-right"></i></button>
                     </td-->
                     <td>{{> afFormGroup name=this.current.amount}}</td>
                 </tr>
@@ -94,17 +93,17 @@
             </thead>
             <tbody>
                 {{#afEachArrayItem name="lines"}}
-                <!--{{#if notNullLine this}}-->
+                {{markNullLine this}}
                 <tr class="js-autofill">
                     <td class="text-left">
-                      <button type="button" class="btn btn-info autoform-remove-item">
-                          <i class="fa fa-trash"></i>
-                      </button>
+                        <button type="button" class="btn btn-info autoform-remove-item">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </td>
                     <td>{{> afFormGroup name=this.current.account}}</td>
                     <td>{{> afFormGroup name=this.current.localizer}}</td>
                     <!--td data-line="{{this.name}}">
-                      <button type="button" class="btn btn-default js-remainder-amount"><i class="fa fa-arrow-down"></i> {{_ 'Remainder'}} <i class="fa fa-arrow-right"></i></button>
+                    <button type="button" class="btn btn-default js-remainder-amount"><i class="fa fa-arrow-down"></i> {{_ 'Remainder'}} <i class="fa fa-arrow-right"></i></button>
                     </td-->
                     <td>{{> afFormGroup name=this.current.amount}}</td>
                 </tr>

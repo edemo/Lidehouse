@@ -163,7 +163,7 @@ export const update = new ValidatedMethod({
     newDoc = Transactions._transform(newDoc);
     newDoc.validate?.();
     modifier.$set?.lines?.forEach((line, i) => {
-      if (line.localizer) {
+      if (line?.localizer) {
         const parcel = Localizer.parcelFromCode(line.localizer, doc.communityId);
         line.parcelId = parcel?._id;
       }
