@@ -94,12 +94,12 @@
             </thead>
             <tbody>
                 {{#afEachArrayItem name="lines"}}
-                <!--{{#if notNullLine this}}-->
+                {{markNullLine this}}
                 <tr class="js-autofill">
                     <td class="text-left">
-                      <button type="button" class="btn btn-info autoform-remove-item">
-                          <i class="fa fa-trash"></i>
-                      </button>
+                        <button type="button" class="btn btn-info autoform-remove-item">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </td>                       
                     <td>{{> afFormGroup name=this.current.title}}</td>
                     <td>{{> afFormGroup name=this.current.quantity}}</td>
@@ -107,7 +107,7 @@
                     <td>{{> afFormGroup name=this.current.unitPrice}} </td>
                     <td>{{> afFormGroup name=this.current.discoPct}}</td>
                     {{#if afDoc.community.settings.subjectToVat}}
-                      <td>{{> afFormGroup name=this.current.taxPct}}</td>
+                        <td>{{> afFormGroup name=this.current.taxPct}}</td>
                     {{/if}}
                     <td>{{> afFormGroup name=this.current.amount}} </td>
                     <!--td class="text-center">{{lineTotal this}}</td-->
@@ -122,11 +122,10 @@
                 </tr>
                 {{#if currentUserHasPermission 'transactions.post'}}
                 <tr>
-                      <td></td>
-                      <td>{{> afFormGroup name=this.current.account}}</td>
-                      <td>{{> afFormGroup name=this.current.localizer}}</td>
+                    <td></td>
+                    <td>{{> afFormGroup name=this.current.account}}</td>
+                    <td>{{> afFormGroup name=this.current.localizer}}</td>
                 </tr>
-                <!--{{/if}}-->
                 {{/if}}
                 {{/afEachArrayItem}}
             </tbody>

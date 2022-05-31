@@ -44,12 +44,14 @@ Template.Bill_edit.viewmodel({
   defaultDueDate() {
     return moment().add(30, 'day').toDate();
   },
-  notNullLine(afLine) {
-    // Not the right place to find out if line is null (got removed earlier)
-    // Should be dealt with within autoform iterator
+  markNullLine(afLine) {
+    // As in autoform ArrayTracker remove - item will be hidden
     const index = afLine.name.split('.')[1];
-//    Log.debug(AutoForm.getFieldValue('lines')[index]);
-    return AutoForm.getFieldValue('lines')[index];
+    const doc = this.templateInstance.data.doc;
+    if (doc.lines[index] === null) {
+      afLine.removed = true;
+      AutoForm.arrayTracker.info[afLine.formId][afLine.arrayFieldName].deps?.changed();
+    }
   },
   cashPayAccount() {
     if (this.isBill()) return false;

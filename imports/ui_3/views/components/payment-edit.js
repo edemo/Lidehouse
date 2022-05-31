@@ -55,6 +55,16 @@ Template.Payment_edit.viewmodel({
     if (account?.category === 'cash') return true;
     return false;
   },
+  markNullLine(afLine) {
+    // As in autoform ArrayTracker remove - item will be hidden
+    const index = afLine.name.split('.')[1];
+    const arrayName = afLine.arrayFieldName;
+    const doc = this.templateInstance.data.doc;
+    if (doc[arrayName]?.[index] === null) {
+      afLine.removed = true;
+      AutoForm.arrayTracker.info[afLine.formId][arrayName].deps?.changed();
+    }
+  },
 /*  showContractField() {
     const doc = this.afDoc();
     const partnerId = AutoForm.getFieldValue('partnerId');

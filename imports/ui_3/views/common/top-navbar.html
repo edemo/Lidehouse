@@ -80,14 +80,18 @@
                 <li>
                     <a id="privatechat" class="right-sidebar-toggle count-info" href="">
                         <i class="fa fa-envelope"></i>  
-                        {{> Badge color='danger' title=(_ 'Unread') value=(unseenEventsCount 'private chat') class="label"}}
+                        {{#with (unseenEventsCount 'private chat')}}
+                        {{> Badge color='danger' title=correspondents value=count class="label"}}
+                        {{/with}}
                     </a>                    
                 </li>
                 {{#if currentUserHasPermission 'do.techsupport'}}
                 <li>
                     <a id="techsupport" class="right-sidebar-toggle count-info" href="">
                         <i class="fa fa-lg fa-question-circle"></i>
-                        {{> Badge color='danger' title=(_ 'Unread') value=(unseenEventsCount 'tech support') class="label"}}
+                        {{#with (unseenEventsCount 'tech support')}}
+                        {{> Badge color='danger' title=correspondents value=count class="label"}}
+                        {{/with}}
                     </a>                    
                 </li>   
                 {{/if}}
