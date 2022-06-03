@@ -421,7 +421,7 @@
     },
     "delegateId": {
       "label": "Paying partner",
-      "help": "Fill this if the bill is not paid bz the owner, but another delegated person. This person will get a copy of every bill."
+      "help": "Fill this if the bill should not be paid by the owner, but another person. This person will get a copy of every bill."
     },
     "topicIds": {
       "label": "Worksheets"

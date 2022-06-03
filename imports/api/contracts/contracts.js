@@ -103,7 +103,7 @@ Contracts.helpers({
     let partnerIds = [this.partnerId];
     if (this.relation === 'member' && this.parcelId) {
       const Memberships = Mongo.Collection.get('memberships');
-      const owners = Memberships.findActive({ role: 'owner', parcelId: this.parcelId }).map(m => m.partnerId);
+      const owners = Memberships.findActive({ role: { $in: ['owner', 'benefactor'] }, parcelId: this.parcelId }).map(m => m.partnerId);
       partnerIds = _.union(partnerIds, owners);
     }
     return partnerIds;
