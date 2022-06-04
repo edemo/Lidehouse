@@ -14,9 +14,13 @@ import './members-panel.html';
 const MEMBERS_TO_SHOW = 10;
 
 Template.Members_panel.onCreated(function onCreated() {
-//  const communityId = ModalStack.getVar('communityId');
-//  const manager = Memberships.findOneActive({ communityId, role: 'manager' });
-//  if (manager) Session.set('messengerPartnerId', manager.userId);
+  this.autorun(() => {
+    const communityId = ModalStack.getVar('communityId');
+    const userId = Meteor.userId();
+    if (communityId && userId) {
+      this.subscribe('topics.roomsOfUser', { communityId, userId });
+    }
+  });
 });
 
 Template.Members_panel.onRendered(function onRendered() {

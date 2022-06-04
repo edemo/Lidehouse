@@ -46,8 +46,6 @@ Template.Main_layout.onCreated(function() {
       this.subscribe('contracts.ofSelf', { communityId });
       this.subscribe('delegations.toUser', { communityId });
       this.subscribe('delegations.fromUser', { communityId });
-      // We need all the room topics and their comments for the counter badge
-      this.subscribe('topics.roomsOfUser', { communityId, userId });
     }
   });
   this.autorun(() => {
