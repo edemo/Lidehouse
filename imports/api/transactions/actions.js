@@ -101,8 +101,7 @@ Transactions.actions = {
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: doc && (user.hasPermission('transactions.inCommunity', doc) || getActivePartnerId() === doc.partnerId
-      || (doc.contractId && _.contains(Contracts.findOneActive(doc.contractId)?.entitledToView(), getActivePartnerId()))),
+    visible: doc && (user.hasPermission('transactions.inCommunity', doc) || doc.contract()?.entitledToView(user)),
     run() {
       const entity = Transactions.entities[doc.entityName()];
       Modal.show('Autoform_modal', {

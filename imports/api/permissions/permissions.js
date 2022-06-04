@@ -31,7 +31,7 @@ export const Permissions = [
   { name: 'parcels.inCommunity',    roles: exceptGuest },
   { name: 'parcels.codes',          roles: everyRole },
   { name: 'parcels.details',        roles: ['manager', 'owner@parcel', 'benefactor@parcel'] },
-  { name: 'parcels.finances',       roles: ['manager', 'accountant', 'treasurer', 'overseer', 'owner'] },
+  { name: 'parcels.finances',       roles: ['manager', 'accountant', 'treasurer', 'overseer', 'owner@parcel', 'benefactor@parcel'] },
   { name: 'parcels.insert',         roles: ['manager'] },
   { name: 'parcels.update',         roles: ['manager'] },
   { name: 'parcels.remove',         roles: ['manager'] },
