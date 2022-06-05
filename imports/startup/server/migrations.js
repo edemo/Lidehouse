@@ -33,7 +33,7 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
 import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
 import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
-import { updateMyLastSeen } from '/imports/api/users/methods.js';
+import { updateMyLastSeen, mergeLastSeen } from '/imports/api/users/methods.js';
 import { autoValueUpdate } from '/imports/api/mongo-utils.js';
 
 import '/imports/api/transactions/accounts/template.js';
@@ -1137,6 +1137,32 @@ Migrations.add({
       let years = _.filter(balances.map(b => Period.fromTag(b.tag).year), y => y);
       years = _.uniq(_.sortBy(years, y => y), true);
       AccountingPeriods.upsert({ communityId }, { $set: { communityId, years } });
+    });
+  },
+});
+
+Migrations.add({
+  version: 64,
+  name: 'Merge double room topics',
+  up() {
+    Communities.find().forEach(community => {
+      const communityId = community._id;
+      Topics.find({ communityId, category: 'room' }).forEach((room) => {
+        const participant1 = room.participantIds[0];
+        const participant2 = room.participantIds[1];
+        const original = Topics.find({ communityId, participantIds: { $all: [participant1, participant2] }, title: room.title },
+          { sort: { createdAt: 1 } }).fetch()[0];
+        const originalId = original._id;
+        if (room._id === originalId) return;
+        room.comments().forEach((comment) => {
+          Comments.update(comment._id, { $set: { topicId: originalId } });
+        });
+        [participant1, participant2].forEach((userId) => {
+          const user = Meteor.users.findOne(userId);
+          mergeLastSeen(user, room._id, originalId);
+        });
+        Topics.direct.remove(room._id);
+      });
     });
   },
 });

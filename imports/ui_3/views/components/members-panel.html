@@ -13,6 +13,7 @@
         </div>
     </div>
     <!-- normally there is exactly 1 manager (kk) -->
+    {{#if Template.subscriptionsReady}}
     <div>
         {{#each leaders}}
           {{> Member_slot}}
@@ -24,6 +25,9 @@
           {{> Member_slot}}
         {{/each}}
     </div>
+    {{else}}
+        &nbsp;{{_ 'Loading'}}...
+    {{/if}}
 </template>
 
 <template name="Member_slot">
