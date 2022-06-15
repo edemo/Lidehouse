@@ -89,8 +89,6 @@ if (Meteor.isClient) {
       const topic = Topics.findOne(topicId);
       const oldLastSeenInfo = this.lastSeens()[seenType][topic._id];
       const comments = topic.comments().fetch(); // returns newest-first order
-      if (!comments[0] && topic.creatorId === this._id) { return; }
-      if (comments[0] && comments[0].creatorId === this._id) { return; }  
       const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
       const newLastSeenInfo = { timestamp: lastseenTimestamp };
       if (oldLastSeenInfo && oldLastSeenInfo.timestamp.getTime() >= newLastSeenInfo.timestamp.getTime()) {
