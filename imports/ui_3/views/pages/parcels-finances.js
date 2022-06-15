@@ -33,6 +33,7 @@ Template.Parcels_finances.viewmodel({
       instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('accountingPeriods.inCommunity', { communityId });
       instance.subscribe('parcels.ofSelf', { communityId });
+      instance.subscribe('contracts.ofEntitledOnes', { communityId });
       if (Meteor.userOrNull().hasPermission('transactions.inCommunity', { communityId })) {
         if (self.showAllParcels()) {
           instance.subscribe('parcels.outstanding', { communityId, selector: 'partner' });
