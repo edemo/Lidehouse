@@ -103,7 +103,8 @@ Contracts.helpers({
     if (this.partner()?.userId === user._id) return true;
     if (this.delegate()?.userId === user._id) return true;
     if (this.relation === 'member' && this.parcelId) {
-      return user.hasPermission('parcels.finances', this);
+      const parcelDoc = Parcels.findOne(this.parcelId);
+      return user.hasPermission('parcels.finances', parcelDoc);
     } else return false;
   },
   code() {

@@ -334,6 +334,112 @@ if (Meteor.isServer) {
         });
       });
 
+      describe('Move topic, comment, merge lastSeens', function () {
+        let adminId;
+
+        beforeEach(function () {
+          Topics.remove({});
+          Comments.remove({});
+
+          userId = Fixture.demoUserId;
+          managerId = Fixture.demoManagerId;
+          adminId = Fixture.demoAdminId;
+
+          topicId = Fixture.builder.create('forum', { creatorId: managerId });
+          otherTopicId = Fixture.builder.create('forum', { creatorId: managerId });
+        });
+
+        it('unseen topic without comments goes to unseen topic without comments', function (done) {
+          const topic1 = Topics.findOne(topicId);
+          const topic2 = Topics.findOne(otherTopicId);
+          chai.assert.isTrue(topic1.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          chai.assert.isTrue(topic1.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
+          chai.assert.isTrue(topic2.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          chai.assert.isTrue(topic2.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
+          Topics.methods.move._execute({ userId: adminId }, { _id: otherTopicId, destinationId: topicId });
+          chai.assert.isTrue(topic1.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          chai.assert.isTrue(topic1.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
+          chai.assert.equal(topic1.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 1);
+          done();
+        });
+
+
+        it('newer seen topic goes to unseen topic', function (done) {
+          const topic1 = Topics.findOne(topicId);
+          const topic2 = Topics.findOne(otherTopicId);
+          userHasNowSeen(userId, otherTopicId);
+          chai.assert.isTrue(topic1.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          chai.assert.isFalse(topic2.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          Topics.methods.move._execute({ userId: adminId }, { _id: otherTopicId, destinationId: topicId });
+          chai.assert.isFalse(topic1.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          chai.assert.equal(topic1.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 0);
+          done();
+        });
+
+        it('unseen topic goes to newer seen topic', function (done) {
+          const topic1 = Topics.findOne(topicId);
+          const topic2 = Topics.findOne(otherTopicId);
+          userHasNowSeen(userId, otherTopicId);
+          chai.assert.isTrue(topic1.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          chai.assert.isFalse(topic2.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          Topics.methods.move._execute({ userId: adminId }, { _id: topicId, destinationId: otherTopicId });
+          chai.assert.isFalse(topic2.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          chai.assert.equal(topic2.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 0);
+          done();
+        });
+
+        it('unseen topic goes to older seen topic', function (done) {
+          const topic1 = Topics.findOne(topicId);
+          const topic2 = Topics.findOne(otherTopicId);
+          userHasNowSeen(userId, topicId);
+          chai.assert.isTrue(topic2.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          chai.assert.isFalse(topic1.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          Topics.methods.move._execute({ userId: adminId }, { _id: otherTopicId, destinationId: topicId });
+          chai.assert.isFalse(topic1.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          chai.assert.equal(topic1.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 1);
+          done();
+        });
+
+        it('seen topic with unseen comments goes to newer seen topic without comments', function (done) {
+          userHasNowSeen(userId, topicId);
+          Fixture.builder.create('comment', { creatorId: managerId, topicId, text: 'comment 1' });
+          const topic1 = Topics.findOne(topicId);
+          chai.assert.equal(topic1.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 1);
+          const topicId3 = Fixture.builder.create('forum', { creatorId: managerId });
+          const topic3 = Topics.findOne(topicId3);
+          userHasNowSeen(userId, topicId3);
+          chai.assert.isFalse(topic3.isUnseenBy(userId, Meteor.users.SEEN_BY.EYES));
+          Topics.methods.move._execute({ userId: adminId }, { _id: topicId3, destinationId: topicId });
+          chai.assert.equal(topic1.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 2);
+          done();
+        });
+
+        it('topic with seen comments goes to older topic with unseen comments', function (done) {
+          userHasNowSeen(userId, topicId);
+          Fixture.builder.create('comment', { creatorId: managerId, topicId, text: 'comment 1' });
+          Fixture.builder.create('comment', { creatorId: managerId, topicId: otherTopicId, text: 'comment 2' });
+          userHasNowSeen(userId, otherTopicId);
+          const topic1 = Topics.findOne(topicId);
+          const topic2 = Topics.findOne(otherTopicId);
+          chai.assert.equal(topic1.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 1);
+          chai.assert.equal(topic2.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 0);
+          Topics.methods.move._execute({ userId: adminId }, { _id: otherTopicId, destinationId: topicId });
+          chai.assert.equal(topic1.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES), 3);
+          done();
+        });
+
+        /*
+        'seen topic with older unseen comments' 'unseen topic newer'
+        'seen topic with newer unseen comments' 'unseen topic older'
+        'seen topic with older seen comments' 'unseen topic newer'
+        'seen topic with newer seen comments' 'unseen topic older'
+        'seen topic with newer unseen comments' 'seen topic with older unseen comments'
+        'seen topic with older seen comments' 'seen topic with newer unseen comments'
+        'seen topic with newer seen comments''seen topic with older unseen comments'
+        'seen topic with older seen comments''seen topic with newer seen comments'
+        */
+      });
+
       describe('statusChange', function () {
         before(function () {
           // Clear
