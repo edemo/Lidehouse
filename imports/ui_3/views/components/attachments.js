@@ -10,8 +10,8 @@ Template.Attachments.helpers({
     const attachments = { images: [], files: [] };
     const docAttachments = callOrRead.call(this.doc, this.doc.attachments);
     docAttachments?.forEach((path) => {
-      if (isImage(path)) attachments.images.push(path);
-      else attachments.files.push(path);
+      if (path && isImage(path)) attachments.images.push(path);
+      else if (path) attachments.files.push(path);
     });
     return attachments;
   },
