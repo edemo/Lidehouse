@@ -16,7 +16,7 @@ export function sendAddedToRoleInfoEmail(user, communityId, role) {
   const language = user.settings.language;
   role = TAPi18n.__(role, {}, language);
 
-  EmailSender.send({
+  return EmailSender.send({
     to: user.getPrimaryEmail(),
     subject: TAPi18n.__('email.Notifications', {}, language) + ' ' + TAPi18n.__('email.fromTheCommunity', { name }, language),
     text: TAPi18n.__('email.AddedToRole', {

@@ -68,6 +68,7 @@
   "err_constraint": "Value does not meet constraints",
   "err_notAvailable": "Not available",
   "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
+  "err_email": "Could not send email",
 
   "youNeedToSaveYourChanges": "Your changes only take effect once you press the Save button at the bottom",
   "needToRemoveCurrentToAddNew" : "To add a different file, you need to remove the current one",

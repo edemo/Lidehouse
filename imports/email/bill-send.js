@@ -25,7 +25,7 @@ export function sendBillEmail(bill) {
   const user = partner.user();
 
   if (!user || user.settings.getBillEmail) {
-    EmailSender.send({
+    return EmailSender.send({
       to: emailAddress,
       cc: ccAddress,
       subject: EmailTemplateHelpers.subject('New bill', user, community),
