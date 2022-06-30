@@ -316,6 +316,7 @@ export class CommunityBuilder {
         name: fileSpec.name[this.lang] || fileSpec.name,
         type: fileSpec.type,
         folderId: fileSpec.folder,
+        topicId: fileSpec.topicId,
       }, fileSpec.file[this.lang] || fileSpec.file);
     });
   }
