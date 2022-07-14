@@ -12,10 +12,10 @@ export function sendOutstandingsEmail(partnerId) {
   const user = partner.user();
   const community = partner.community();
   const email = partner.primaryEmail();
-  
+
   if (!email) return;
 
-  EmailSender.send({
+  return EmailSender.send({
     to: email,
     subject: EmailTemplateHelpers.subject('Outstandings', user, community),
     template: 'Outstandings_Email',

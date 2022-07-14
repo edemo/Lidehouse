@@ -63,7 +63,7 @@ export const EmailSender = {
         template: options.template,
         data: options.data,
       });
-      Mailer.send(sendOptions);
+      return Mailer.send(sendOptions);
     } else if (options.text) {
       _.extend(sendOptions, {
         text: options.text,
@@ -72,6 +72,7 @@ export const EmailSender = {
         Email.send(sendOptions);
       } catch (ex) {
         Log.error(`Could not send email to: ${options.to} - ${ex.message}`);
+        return false;
       }
     } else debugAssert(false, 'Email has to be html or plain text');
   },

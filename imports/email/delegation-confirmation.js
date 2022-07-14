@@ -52,7 +52,7 @@ export function delegationConfirmationEmail(delegation, method, formerDelegation
       }, language) :
       '';
     
-    EmailSender.send({
+    return EmailSender.send({
       to: user.getPrimaryEmail(),
       subject: TAPi18n.__('email.ConfirmDelegationSubject', { community, methodType: methodType() }, language),
       text: TAPi18n.__('email.ConfirmDelegationText', {

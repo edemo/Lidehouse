@@ -110,7 +110,7 @@ export const resend = new ValidatedMethod({
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
     if (Meteor.isServer && doc.category === 'bill' && doc.relation === 'member') {
-      sendBillEmail(doc);
+      if (sendBillEmail(doc) === false) throw new Meteor.Error('err_email');
     }
   },
 });
