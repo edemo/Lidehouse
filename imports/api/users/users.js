@@ -166,6 +166,7 @@ Meteor.users.detailedFields = _.extend({
 Meteor.startup(function indexMeteorUsers() {
   if (Meteor.isServer) {
     Meteor.users._ensureIndex({ 'emails.0.address': 1 });
+    Meteor.users._ensureIndex({ super: 1 }, { sparse: true });
   }
 });
 
@@ -331,7 +332,7 @@ Meteor.users.helpers({
     rolesWithThePermission.forEach(role => {
       if (role === 'null') return true;
       activeMemberships.forEach(membership => {
-        if (membership.role === role || (membership.role + '@parcel' === role && membership.parcelId === parcelId)) {
+        if (membership.role === role || (membership.role + '@parcel' === role && (!parcelId || parcelId === membership.parcelId))) {
           result = true;
         }
       });
@@ -368,6 +369,35 @@ Meteor.users.helpers({
     return user.isFlaggedBy(this._id);
   },
 });
+
+Meteor.users.withPermission = function withPermission(permissionName, doc = { communityId: getActiveCommunityId() }) {
+  const permission = Permissions.find(p => p.name === permissionName);
+  debugAssert(permission, `No such permission "${permissionName}"`);
+  const creatorId = doc?.creatorId || doc.userId; // uploads use userId
+  const entityName = permissionName.split('.')[0];
+  const communityId = (entityName === 'communities') ? doc._id : doc.communityId;
+  const parcelId = (entityName === 'parcels') ? doc._id : doc.parcelId;
+  const rolesWithThePermission = permission.roles;
+  let activeMemberships;
+  if (_.contains(rolesWithThePermission, 'null')) {
+    activeMemberships =  Memberships.findActive({ communityId }).fetch();
+  } else {
+    const parcelScopedRoles = [];
+    const communityScopedRoles = [];
+    rolesWithThePermission.forEach(role => {
+      const split = role.split('@');
+      if (split[1] === 'parcel') parcelScopedRoles.push(split[0]);
+      else if (!split[1]) communityScopedRoles.push(split[0]);
+    });
+    const parcelScopedMemberships = Memberships.findActive({ communityId, parcelId, role: { $in: parcelScopedRoles } }).fetch();
+    const communityScopedMemberships = Memberships.findActive({ communityId, role: { $in: communityScopedRoles } }).fetch();
+    activeMemberships = parcelScopedMemberships.concat(communityScopedMemberships);
+  }
+  const users = _.uniq(_.pluck(activeMemberships, 'userId'));
+  if (permission.allowAuthor && creatorId) users.push(creatorId);
+  const superUsers = Meteor.users.find({ super: true }).fetch();
+  return users.concat(superUsers);
+};
 
 Meteor.users.attachSchema(Meteor.users.schema);
 Meteor.users.attachBehaviour(Timestamped);

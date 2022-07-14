@@ -152,7 +152,9 @@ export const remindOutstandings = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Partners, _id);
     checkPermissions(this.userId, 'partners.remindOutstandings', doc);
-    if (Meteor.isServer) return sendOutstandingsEmail(_id);
+    if (Meteor.isServer) {
+      if (sendOutstandingsEmail(_id) === false) throw new Meteor.Error('err_email');
+    }
   },
 });
 

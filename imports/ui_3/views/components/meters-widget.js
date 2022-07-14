@@ -5,18 +5,19 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunity, getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 
 import './meters-widget.html';
 
 Template.Meters_widget.viewmodel({
-  ownedParcels() {
+  relevantParcels() {
     const user = Meteor.user();
     const communityId = getActiveCommunityId();
     if (!user || !communityId) return [];
-    return user.ownedParcels(communityId);
+    return Parcels.find({ communityId, category: '@property' }).fetch().filter(p => user.hasPermission('parcels.finances', p));
   },
   oldestReadMeter() {
-    const meter = _.sortBy(this.ownedParcels().map(p => p.oldestReadMeter()), m => m?.lastReadingDate().getTime())[0];
+    const meter = _.sortBy(this.relevantParcels().map(p => p.oldestReadMeter()), m => m?.lastReadingDate().getTime())[0];
     return meter;
   },
   lastReadingDate() {
@@ -41,7 +42,7 @@ Template.Meters_widget.events({
     const community = getActiveCommunity();
     const communityId = community._id;
     const user = Meteor.user();
-    const parcels = user.ownedParcels(communityId);
+    const parcels = instance.viewmodel.relevantParcels();
     Modal.show('Modal', {
       id: 'meters.view',
       title: __('meters'),

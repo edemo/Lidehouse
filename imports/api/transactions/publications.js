@@ -44,7 +44,7 @@ Meteor.publish('transactions.byPartnerContract', function transactionsByPartnerC
   const user = Meteor.users.findOne(this.userId);
   if (!user) return this.ready();
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
-    if (contractId && !_.contains(contract.entitledToView(), user.partnerId(communityId))) return this.ready();
+    if (!contract?.entitledToView(user)) return this.ready();
     if (!contractId && partnerId && Partners.findOne(partnerId).userId !== this.userId) return this.ready();
   }
   const selector = Transactions.makeFilterSelector(params);

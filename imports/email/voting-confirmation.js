@@ -40,7 +40,7 @@ export function voteCastConfirmationEmail(voters, topicId, registrator) {
       voteValue.push(choice);
     });
     
-    EmailSender.send({
+    return EmailSender.send({
       to: user.getPrimaryEmail(),
       subject: TAPi18n.__('email.ConfirmVoteSubject', { community }, language),
       text: TAPi18n.__('email.ConfirmVoteText', {

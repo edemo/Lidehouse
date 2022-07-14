@@ -98,15 +98,14 @@ Contracts.helpers({
     if (this.delegateId) return Partners.findOne(this.delegateId);
     return undefined;
   },
-  entitledToView() {
+  entitledToView(user) {
     if (!this.partnerId) return undefined;
-    let partnerIds = [this.partnerId];
+    if (this.partner()?.userId === user._id) return true;
+    if (this.delegate()?.userId === user._id) return true;
     if (this.relation === 'member' && this.parcelId) {
-      const Memberships = Mongo.Collection.get('memberships');
-      const owners = Memberships.findActive({ role: 'owner', parcelId: this.parcelId }).map(m => m.partnerId);
-      partnerIds = _.union(partnerIds, owners);
-    }
-    return partnerIds;
+      const parcelDoc = Parcels.findOne(this.parcelId);
+      return user.hasPermission('parcels.finances', parcelDoc);
+    } else return false;
   },
   code() {
     return Partners.code(this.partnerId, this._id);

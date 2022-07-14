@@ -753,7 +753,8 @@
   "Dont know how to parse": "Az elemző nem ismeri fel ezt a típust",
   "Not a valid json": "Nem beolvasható JSON",
   "invocation-failed": "Előfordulhat, hogy a metódus hívás sikertelen volt, a szerverrel való kapcsolat megszakadása miatt.",
-  
+  "err_email": "Az email küldés nem sikerült",
+
   "logout": "kilépés",
   "login": "belépés",
   "register": "új fiók",

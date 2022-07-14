@@ -114,8 +114,8 @@ export const linkUser = new ValidatedMethod({
         // Lets resend the enrollment request
         Accounts.sendEnrollmentEmail(doc.userId);
       } else if (doc.accepted === false) {
-        sendAddedToRoleInfoEmail(linkedUser, doc.communityId, doc.role);
         Memberships.update(doc._id, { $set: { accepted: true } }, { selector: { role: doc.role } });
+        sendAddedToRoleInfoEmail(linkedUser, doc.communityId, doc.role);
        // now we auto-accept it for him (if he is already verified user), we could send acceptance request email instead of info
       }
       return;   // thats all, user is already linked
