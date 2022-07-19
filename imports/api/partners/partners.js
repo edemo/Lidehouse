@@ -176,7 +176,7 @@ Partners.helpers({
     return this.balance(account) * Relations.sign(relation) * (-1);
   },
   mostOverdueDays() {
-    if (this.balance() === 0) return 0;
+    if (this.outstanding() <= 0) return 0;
     const daysOfExpiring = this.outstandingBills().map(bill => bill.overdueDays());
     return daysOfExpiring.length > 0 ? Math.max.apply(Math, daysOfExpiring) : 0;
   },
