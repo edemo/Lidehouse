@@ -714,6 +714,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
     type: 'image/jpg',
     folder: 'voting',
+    topicId: voteTopicBike,
   });
 
   // ===== Tickets =====
@@ -1110,7 +1111,9 @@ export function insertDemoHouse(lang, demoOrTest) {
   // An Invoice, half paid
   const invoiceId = builder.create('bill', {
     relation: 'customer',
-    valueDate: Date.newUTC(`${lastYear}-03-15`),
+    issueDate: Date.newUTC(`${lastYear}-06-15`),
+    deliveryDate: Date.newUTC(`${lastYear}-06-30`),
+    dueDate: Date.newUTC(`${lastYear}-06-30`),
     partnerId: customer0,
     contractId: contract10,
     relationAccount: '`31',
@@ -1128,7 +1131,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     relation: 'customer',
     bills: [{ id: invoiceId, amount: 25000 }],
     amount: 25000,
-    valueDate: Date.newUTC(`${lastYear}-03-25`),
+    valueDate: Date.newUTC(`${lastYear}-06-25`),
     partnerId: customer0,
     payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
   });
@@ -1416,6 +1419,8 @@ Meteor.methods({
         // lastSeens were updated in the comments.insert method,
 
         builder.generateDemoPayments(demoParcel, demoMembership, 3);
+        const toPost = Transactions.find({ communityId, partnerId: demoMembership.partnerId, postedAt: { $exists: false } });
+        builder.execute(Transactions.methods.batch.post, { args: toPost.map(t => ({ _id: t._id })) }, builder.getUserWithRole('accountant'));
 
         Meteor.setTimeout(function () {
           purgeDemoUserWithParcel(demoUserId, demoParcelId, communityId);
