@@ -317,7 +317,7 @@ Meteor.users.helpers({
     const userHasTheseRoles = this.activeRoles(communityId);
     return _.contains(userHasTheseRoles, roleName);
   },
-  hasPermission(permissionName, doc = { communityId: getActiveCommunityId() }) {
+  hasPermission(permissionName, doc = { communityId: getActiveCommunityId() }, parcelScoped = true) {
     if (this.super) return true;
     const permission = Permissions.find(p => p.name === permissionName);
     debugAssert(permission, `No such permission "${permissionName}"`);
@@ -332,7 +332,7 @@ Meteor.users.helpers({
     rolesWithThePermission.forEach(role => {
       if (role === 'null') return true;
       activeMemberships.forEach(membership => {
-        if (membership.role === role || (membership.role + '@parcel' === role && (!parcelId || parcelId === membership.parcelId))) {
+        if (membership.role === role || (membership.role + '@parcel' === role && ((!parcelId && !parcelScoped) || parcelId === membership.parcelId))) {
           result = true;
         }
       });

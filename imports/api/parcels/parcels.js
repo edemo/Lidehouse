@@ -143,17 +143,11 @@ Parcels.helpers({
     const selector = { communityId: this.communityId, approved: true, parcelId: this.leadParcelId(), role: 'owner' };
     return active ? Memberships.findActive(selector) : Memberships.find(selector);
   },
-  representors(active = true) {
-    const Memberships = Mongo.Collection.get('memberships');
-    const selector = { communityId: this.communityId, approved: true, parcelId: this.leadParcelId(), role: 'owner', 'ownership.representor': true };
-    return active ? Memberships.findActive(selector) : Memberships.find(selector);
-  },
   representor() {
-    let representor = this.representors().fetch()[0];
-    if (!representor) {
-      const owners = this.owners().fetch();
-      if (owners.length === 1) representor = owners[0];
-    }
+    const owners = this.owners().fetch();
+    let representor;
+    if (owners.length === 1) representor = owners[0];
+    else representor = owners.find(o => o.ownership?.representor === true);
     return representor;
   },
   representorOrFirstOwner() {

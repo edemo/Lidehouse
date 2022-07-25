@@ -176,7 +176,7 @@ Partners.helpers({
     return this.balance(account) * Relations.sign(relation) * (-1);
   },
   mostOverdueDays() {
-    if (this.outstanding() <= 0) return 0;
+    if (this.balance() >= 0) return 0; // we do not check suppliers, otherwise outstanding() with proper relation should be used
     const daysOfExpiring = this.outstandingBills().map(bill => bill.overdueDays());
     return daysOfExpiring.length > 0 ? Math.max.apply(Math, daysOfExpiring) : 0;
   },

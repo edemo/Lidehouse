@@ -196,8 +196,9 @@ Topics.categoryHelpers('vote', {
       function getVoteResult(voterId) {
         const castedVote = directVotes[voterId];
         if (castedVote) {
+          const votingUnits = votership.votingUnits();
           const result = {
-            votingShare: votership.votingUnits(),
+            votingShare: votingUnits,
             castedVote,
             votePath,
           };
@@ -208,10 +209,10 @@ Topics.categoryHelpers('vote', {
           castedVote.forEach((choice, i) => {
             voteSummary[choice] = voteSummary[choice] || 0;
             const choiceWeight = (voteType === 'preferential') ? (1 - (i / castedVote.length)) : 1;
-            voteSummary[choice] += votership.votingUnits() * choiceWeight;
+            voteSummary[choice] += votingUnits * choiceWeight;
           });
           voteParticipation.count += 1;
-          voteParticipation.units += votership.votingUnits();
+          voteParticipation.units += votingUnits;
           return true;
         }
         const delegations = Delegations.find({ sourceId: voterId,

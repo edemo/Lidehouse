@@ -114,7 +114,7 @@
                         <!--span class="fa arrow"> </span-->
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='finances|inventory|accounting' className='submenu-open'}}">
-                        {{#if currentUserHasPermission 'parcels.finances'}}
+                        {{#if (currentUserHasPermission 'parcels.finances' undefined false)}}
                         <li class="{{isActivePath regex='parcels-finances'}}">
                             <a href="{{pathFor 'Parcels finances'}}">
                                 <i class="fa fa-pie-chart" aria-hidden="true"></i>
