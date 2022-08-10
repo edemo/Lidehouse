@@ -38,7 +38,9 @@ Template.Accounting_bills.viewmodel({
     ModalStack.setVar('relation', this.activePartnerRelation(), true);
     instance.autorun(() => {
       //initializeDatatablesSelectButtons('Bills');
-      instance.subscribe('parcelBillings.inCommunity', { communityId: this.communityId() });
+      const communityId = this.communityId();
+      instance.subscribe('parcelBillings.inCommunity', { communityId });
+      instance.subscribe('balances.inCommunity', { communityId, partners: [], tags: ['T'], notNull: true });
     });
   },
   parcelBillings() {
@@ -135,12 +137,12 @@ Template.Accounting_bills.viewmodel({
     selector.relation = this.activePartnerRelation();
     return selector;
   },
-  partnersSubscriptionFn() {
+/*   partnersSubscriptionFn() {
     const self = this;
     return (instance) => {
       instance.subscribe('balances.inCommunity', { communityId: self.communityId(), partners: [], tags: ['T'] });
     };
-  },
+  }, */
   partnersTableDataFn() {
     const self = this;
     return () => {
