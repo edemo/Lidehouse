@@ -54,6 +54,11 @@ Template.Topic_vote_body.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
   },
+  adderName(userId) {
+    if (!userId) return undefined;
+    const user = Meteor.users.findOne(userId);
+    return user?.displayOfficialName();
+  },
   chartType() {
     const vote = this.vote;
     const chartType = (vote.type === 'preferential' || vote.type === 'multiChoose') ? 'bar' : 'doughnut';

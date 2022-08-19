@@ -92,7 +92,7 @@
                       <tbody> 
                         {{#each sum in this.voteSummaryDisplay}}
                           <tr>
-                            <td>{{_ sum.choice}}:</td>
+                            <td>{{_ sum.choice}}: {{#if sum.adderId}}<i class="fa fa-user-plus" title="{{_ 'Suggested by'}}: {{adderName sum.adderId}}"></i>{{/if}} </td>
                             <td class="nowrap text-center">{{sum.votingUnits}}</td>
                             <td class="nowrap text-center">{{displayPercent sum.percentOfVotes}}</td>
                           </tr>
