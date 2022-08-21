@@ -270,12 +270,14 @@ Topics.categoryHelpers('vote', {
     if (!this.voteSummary) return [];   // Results come down in a different sub, so it might not be there just yet
     const voteSummarydata = Object.keys(this.voteSummary).map(key => {
       const choice = this.vote.choices[key];
+      const adderId = this.vote.choicesAddedBy?.[key];
       const votingUnits = this.voteSummary[key];
       const votingShare = this.unitsToShare(this.voteSummary[key]);
       const percentOfTotal = (votingShare.toNumber() * 100);
       const percentOfVotes = ((votingUnits / this.voteParticipation.units) * 100);
-      return { 
+      return {
         choice,
+        adderId,
         votingUnits: votingUnits.round(0),
         votingShare,
         percentOfTotal: percentOfTotal.round(2),
