@@ -125,7 +125,8 @@ Topics.categoryHelpers('vote', {
     return votingShare;
   },
   voteSuccessLimit() {
-    return this.vote.type === 'petition' ? 10 : 50;
+    // TODO: voteSuccessLimit as a data field, and default values can be 10 for petition, and 50 for other vote types, but can be set when creating a new vote
+     return this.vote.type === 'petition' ? 10 : 0;
   },
   eligibleVoterCount() {
 //    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
