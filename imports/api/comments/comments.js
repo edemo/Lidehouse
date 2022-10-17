@@ -87,10 +87,7 @@ Comments.helpers({
 // --- Before/after actions ---
 
 Comments.after.insert(function (userId, doc) {
-  const topic = Topics.findOne(doc.topicId);
-  const modifier = { $inc: { commentCounter: 1 } };
-  if (topic.closed === true) modifier.$set = { closed: false };
-  Topics.update(doc.topicId, modifier, { selector: { category: topic.category } });
+  Topics.update(doc.topicId, { $inc: { commentCounter: 1 }, $set: { closed: false } }, { selector: { category: 'forum' } });
 });
 
 Comments.after.update(function (userId, doc, fieldNames, modifier, options) {
