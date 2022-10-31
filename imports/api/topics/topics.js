@@ -144,9 +144,9 @@ Topics.helpers({
   unseenCommentListBy(userId, seenType) {
     return this.unseenCommentsBy(userId, seenType).fetch();
   },
-  hasThingsToDisplayBy(userId, seenType) { // false if everything new with this topic is hidden for the user
+  hasThingsToDisplayFor(userId, seenType) { // false if everything new with this topic is hidden for the user
     let result = false;
-    if (this.isUnseen(userId, seenType) && !this.topic.hiddenBy(userId)) {
+    if (this.isUnseenBy(userId, seenType) && !this.hiddenBy(userId)) {
       result = true;
     } else {
       this.unseenCommentListBy(userId, seenType).forEach((comment) => {
