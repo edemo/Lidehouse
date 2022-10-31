@@ -176,7 +176,7 @@ Topics.helpers({
       },
       hasThingsToDisplay() { // false if everything new with this topic is hidden for the user
         if (this._hasThingsToDisplay === null) {
-          this._hasThingsToDisplay = this.hasThingsToDisplayBy(userId, seenType);
+          this._hasThingsToDisplay = this.topic.hasThingsToDisplayFor(userId, seenType);
         }
         return this._hasThingsToDisplay;
       },
