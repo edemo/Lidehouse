@@ -287,11 +287,11 @@ Transactions.actions = {
     label: 'registerIdentification',
     icon: 'fa fa-arrow-circle-left',
     color: 'warning',
-    visible: doc && doc.isPosted() && doc.category === 'bill' && doc.outstanding && doc.availableAmountFromOverPayment() > 0 && user.hasPermission('transactions.update', doc),
+    visible: doc && doc.isPosted() && doc.category === 'bill' && doc.outstanding && (doc.outstanding < 0 || doc.availableAmountFromOverPayment() > 0) && user.hasPermission('transactions.update', doc),
     run() {
       ModalStack.setVar('billId', doc._id);
       const overpayment = doc.availableAmountFromOverPayment();
-      debugAssert(overpayment > 0, 'Can only use this action when there is overpayment on this partner contract');
+      debugAssert(doc.outstanding < 0 || overpayment > 0, 'Can only use this action when there is overpayment on this partner contract');
       const paymentDef = doc.correspondingIdentificationTxdef();
       const paymentOptions = _.extend({}, options, { entity: Transactions.entities.payment, txdef: paymentDef });
       const paymentAmount = Math.min(doc.outstanding, overpayment);

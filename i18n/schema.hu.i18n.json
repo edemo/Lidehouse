@@ -172,10 +172,12 @@
     "settings": {
       "label": "Beálítások",
       "language": {
-        "label": "Nyelv"
+        "label": "Nyelv",
+        "help": "Ezen a nyelven látja az oldalt, és az értesítői is ezen a nyelven kerülnek kiküldésre."
       },
       "delegatee": {
-        "label": "Bejövő meghatalmazások engedélyezése"
+        "label": "Bejövő meghatalmazások engedélyezése",
+        "help": "Jelölje be, ha elfogadja azt hogy mások a házban meghatalmazhassák önt. Ilyenkor az ő szavazati hányadukkal is ön tud szavazni."
       },
       "notiFrequency": {
         "label": "Email értesítések gyakorisága a házban történő eseményekről",
@@ -184,7 +186,8 @@
           "weekly": "Hetente legfeljebb egyszer",
           "daily": "Naponta legfeljebb egyszer",
           "frequent": "Naponta akár töbször is"
-        }
+        },
+        "help": "Ha napi értesítőt állít be, akkor naponta egyszer kap egy összefoglaló emailt mindarról ami aznap történt. Ha nem történt aznap semmi, akkor nem kerül email kiküldése. Heti értesítő esetén hetente egyszer kap emailt, ha történt bármi a héten."
       },
       "notiLevel": {
         "label": "Email értesítéseket mely eseményekről kérek a házban",

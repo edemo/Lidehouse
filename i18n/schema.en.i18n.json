@@ -172,10 +172,12 @@
     "settings": {
       "label": "Settings",
       "language": {
-        "label": "Language"
+        "label": "Language",
+        "help": "This language is applied for you on the webpage, and also the notification emails are going out in this language."
       },
       "delegatee": {
-        "label": "Allow incoming delegations"
+        "label": "Allow incoming delegations",
+        "help": "Set this if you wish to allow others to delegate their voting power to you."
       },
       "notiFrequency": {
         "label": "Email notification frequency about the events in the community",
@@ -184,7 +186,8 @@
           "weekly": "Once a week maximum",
           "daily": "Once a day maximum",
           "frequent": "Several times a day"
-        }
+        },
+        "help": "If you set it to once a day, you will get daily an email containing what happened that day. If nothing happened, no email will be sent. Similarly once a week means you will receive a collation only weekly, in case anything happened."
       },
       "notiLevel": {
         "label": "Email notifications I'd like about these types of events in the community",

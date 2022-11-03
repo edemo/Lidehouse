@@ -144,6 +144,21 @@ Topics.helpers({
   unseenCommentListBy(userId, seenType) {
     return this.unseenCommentsBy(userId, seenType).fetch();
   },
+  hasThingsToDisplayFor(userId, seenType) { // false if everything new with this topic is hidden for the user
+    let result = false;
+    if (this.isUnseenBy(userId, seenType) && !this.hiddenBy(userId)) {
+      result = true;
+    } else {
+      this.unseenCommentListBy(userId, seenType).forEach((comment) => {
+        if (!comment.hiddenBy(userId)) {
+          result = true;
+          return false;
+        } else return true;
+      });
+    }
+    return result;
+  },
+
   // This goes into the UI badges
   unseenCommentCount() {
     debugAssert(Meteor.isClient);
@@ -161,17 +176,7 @@ Topics.helpers({
       },
       hasThingsToDisplay() { // false if everything new with this topic is hidden for the user
         if (this._hasThingsToDisplay === null) {
-          this._hasThingsToDisplay = false;
-          if (this.isUnseen && !this.topic.hiddenBy(userId)) {
-            this._hasThingsToDisplay = true;
-          } else {
-            this.unseenComments.forEach((comment) => {
-              if (!comment.hiddenBy(userId)) {
-                this._hasThingsToDisplay = true;
-                return false;
-              } else return true;
-            });
-          }
+          this._hasThingsToDisplay = this.topic.hasThingsToDisplayFor(userId, seenType);
         }
         return this._hasThingsToDisplay;
       },

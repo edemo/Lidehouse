@@ -40,7 +40,9 @@ Template.Navigation.viewmodel({
     const topics = Topics.find({ communityId: getActiveCommunityId(), category });
     let count = 0;
     topics.map(topic => {
-      count += topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES);
+      if (topic.hasThingsToDisplayFor(userId,  Meteor.users.SEEN_BY.EYES)) {
+        count += topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES);
+      }
     });
     return count;
   },
