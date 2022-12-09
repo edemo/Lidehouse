@@ -101,8 +101,11 @@ String.prototype.deaccent = function deaccent() {
 };
 
 Number.prototype.round = function round(places) {
-//  return Math.round((this * 100) + Number.EPSILON) / 100;
-  return +(Math.round(this + 'e+' + places) + 'e-' + places);
+  if (!places) {
+    return Math.round(this);
+  } else {
+    return Number(this.toFixed(places));
+  }
 };
 
 Math.smallerInAbs = function smallerInAbs(a, b) {
