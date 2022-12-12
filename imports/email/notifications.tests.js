@@ -360,6 +360,7 @@ if (Meteor.isServer) {
           name: 'Promo house',
           settings: {
             language: 'hu',
+            ownershipScheme: 'condominium',
           },
         };
         admin = { email: 'promoAdmin@promoemail.hu', language: 'hu' };
@@ -376,7 +377,6 @@ if (Meteor.isServer) {
       it('Sends promo invitation link in email when launching community from promo', function () {
         _.extend(community, {
           status: 'sandbox',
-          totalunits: 10000,
           city: '?-város',
           street: '?-utca',
           number: '?-szám',
@@ -384,6 +384,8 @@ if (Meteor.isServer) {
           lot: '?-hrsz',
           settings: {
             language: 'hu',
+            ownershipScheme: 'condominium',
+            totalUnits: 10000,
             accountingMethod: 'cash',
           },
         });

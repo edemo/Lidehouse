@@ -25,7 +25,7 @@ export const Promo_Launch_Link = {
     data: (params) => {
       return {
         admin: { email: 'belaba@demo.com' },
-        community: { name: 'Kankalin u 8', settings: { language: 'hu' } },
+        community: { name: 'Kankalin u 8', settings: { language: 'hu', ownershipScheme: 'condominium' } },
         parcelCount: 100,
         promoCode: 'covid',
         ...Promo_Launch_Link.layoutData,

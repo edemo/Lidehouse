@@ -5,7 +5,7 @@ import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { ParcelRefFormat } from '/imports/comtypes/condominium/parcelref-format.js';
+import { ParcelRefFormat } from '/imports/api/communities/parcelref-format.js';
 
 // Helpers form manipulating with the Localizer
 export const Localizer = {

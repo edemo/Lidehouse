@@ -25,7 +25,6 @@ export function insertUnittestFixture(lang) {
   debugAssert(!demoCommunity, 'Db was not cleaned before unit test');
   demoCommunity = Factory.create('community', {
     name: 'Unittest house',
-    totalunits: 100,
   });
   const demoCommunityId = demoCommunity._id;
 
@@ -43,7 +42,7 @@ export function insertUnittestFixture(lang) {
 
 // ===== Parcels =====
 
-  const dummyParcels = [];
+const dummyParcels = [];
   dummyParcels[0] = demoBuilder.createProperty({
     units: 0,
     floor: 'G',

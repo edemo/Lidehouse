@@ -1167,6 +1167,21 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 65,
+  name: 'Communities.settings.ownershipScheme',
+  up() {
+    Communities.direct.update({}, { $set: { 'settings.ownershipScheme': 'condominium' } });
+    Communities.find().forEach(community => {
+      const communityId = community._id;
+      if (community.totalunits) {
+        Communities.direct.update({ _id: communityId }, { $set: { 'settings.totalUnits': community.totalunits } });
+        Communities.direct.update({ _id: communityId }, { $unset: { 'totalunits': '' } });        
+      }
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes

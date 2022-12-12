@@ -19,7 +19,7 @@ import { FreeFields } from '/imports/api/behaviours/free-fields.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
-import { ParcelRefFormat } from '/imports/comtypes/condominium/parcelref-format.js';
+import { ParcelRefFormat } from '/imports/api/communities/parcelref-format.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { ActiveTimeMachine } from '../behaviours/active-time-machine';
 
@@ -308,21 +308,24 @@ Parcels.simpleSchema({ category: '#tag' }).i18n('schemaParcels');
 // --- Before/after actions ---
 
 function updateCommunity(parcel, revertSign = 1) {
-  if (!parcel.type) return;
-  const community = Communities.findOne(parcel.communityId);
-  const modifier = {};
-  if (community.parcels[parcel.type] === -1 * revertSign) {
-    modifier.$unset = {};
-    modifier.$unset[`parcels.${parcel.type}`] = '';
-  } else {
-    modifier.$inc = modifier.$inc || {};
-    modifier.$inc[`parcels.${parcel.type}`] = revertSign;
+  let modifier;
+  if (parcel.type) {
+    modifier = modifier || {};
+    const community = Communities.findOne(parcel.communityId);
+    if (community.parcels[parcel.type] === -1 * revertSign) {
+      modifier.$unset = {};
+      modifier.$unset[`parcels.${parcel.type}`] = '';
+    } else {
+      modifier.$inc = modifier.$inc || {};
+      modifier.$inc[`parcels.${parcel.type}`] = revertSign;
+    }
   }
   if (parcel.units) {
+    modifier = modifier || {};
     modifier.$inc = modifier.$inc || {};
     modifier.$inc.registeredUnits = revertSign * parcel.units;
   }
-  Communities.update(parcel.communityId, modifier);
+  if (modifier) Communities.update(parcel.communityId, modifier);
 }
 
 if (Meteor.isServer) {

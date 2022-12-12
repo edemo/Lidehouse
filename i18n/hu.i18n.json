@@ -120,8 +120,6 @@
   "lastName": "vezetéknév",
   "community": "közösség",
   "communities": "közösségek",
-  "Join a community": "Közösséghez csatlakozás",
-  "Create a community": "Közösség létrehozása",
   "membership": "tagság",
   "memberships": "tagságok",
   "ownership": "tulajdonviszony",
@@ -338,6 +336,14 @@
   "No actions available": "Nincs elvégezhető művelet",
 
   // community page
+  "Join a community": "Csatlakozás egy házhoz",
+  "Create a community": "Létrehozok egy házat",
+  "Community finder": "Házkereső",
+  "Community finder note": "Ha létrehoz egy új társasházat, ön lesz az Adminisztrátor!",
+  "Community finder text": ["Itt láthatja azokat a rendszerünkben létrehozott társasházakat, melyek fogadnak még új tagokat. ",
+    "Ha megtalálja saját házát a listában és még nem tagja a közösségnek, a ház adatlapján csatlakozási kérelmet adhat be, melyet a ház vezetői hagyhatnak jóvá. ",
+    "Ha a háza még nem található meg a rendszerben, akkor létrehozhatja azt és meghívhatja lakótársait is, hogy csatlakozzanak."],
+  "ownership proportion": "tulajdoni hányad",
   "representor": "képviselője",
   "Lead parcel": "Vezető albetét",
   "Communities list": "Házak listája",

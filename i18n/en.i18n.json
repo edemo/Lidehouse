@@ -20,6 +20,12 @@
   "close topic": "Close",
   "period": "Period",
 
+  // communities
+  "Community finder note": "If you create a new community, you will be its Administrator.",
+  "Community finder text": ["Here you can see the communities created in our system that are open to receive new members. ",
+     "If you find your community in the list and are not yet a member of the community, you can submit a request to join on the community page, which can be approved by the executives. ",
+     "If your community is not already in your system, you can create it and invite your mates to join."],
+
   // topics
   "Do show content": "I want to see it now",
   "Change status to": "Change status to %s",

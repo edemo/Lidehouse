@@ -7,7 +7,7 @@ import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
 
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { comtype } from '/imports/comtypes/comtype.js';
+import { AddressSchema } from '/imports/localization/localization.js';
 import { allowedOptions, imageUpload } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
 import { availableLanguages } from '/imports/startup/both/language.js';
@@ -20,11 +20,14 @@ const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
 Communities.statusValues = ['sandbox', 'live', 'official'];
 Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'documents'];
+Communities.ownershipSchemeValues = ['condominium', 'corporation', 'cooperative']; //  'meritocracy' coming soon
 
 Communities.settingsSchema = new SimpleSchema({
   modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', checked: true } },
   joinable: { type: Boolean, defaultValue: true },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
+  ownershipScheme: { type: String, allowedValues: Communities.ownershipSchemeValues, autoform: { defaultValue: 'condominium' } },
+  totalUnits: { type: Number, optional: true }, // If it is a fixed value, it is provided here
   parcelRefFormat: { type: String, optional: true },
   topicAgeDays: { type: Number, defaultValue: 90 },
   communalModeration: { type: Number, defaultValue: 0, autoform: { defaultValue() { return 0; } } },
@@ -41,10 +44,11 @@ Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
   description: { type: String, max: 1200, optional: true },
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
-}, comtype().profileSchema, {
+}, AddressSchema, {
+  lot: { type: String, max: 100 }, 
   management: { type: String, optional: true, autoform: { type: 'textarea' } },
   taxNo: { type: String, max: 50, optional: true },
-  totalunits: { type: Number, optional: true }, // If it is a fixed value, it is provided here
+  totalunits: { type: Number, optional: true, autoform: { omit: true } }, // DEPRICATED (removed in migration 65)
   status: { type: String, allowedValues: Communities.statusValues, defaultValue: 'live', autoform: { type: 'hidden' } },
   settings: { type: Communities.settingsSchema },
   // cached fields:
@@ -56,8 +60,9 @@ Communities.schema = new SimpleSchema([{
 Communities.listingsFields = {
   name: 1,
   parcels: 1,
+  lot: 1,
 };
-comtype().profileSchema._schemaKeys.forEach((key) => {
+AddressSchema._schemaKeys.forEach((key) => {
   _.extend(Communities.listingsFields, { [key]: 1 });
 });
 
@@ -82,7 +87,7 @@ Communities.helpers({
     return maxSerial + 1;
   },
   totalUnits() {
-    return this.totalunits || this.registeredUnits;
+    return this.settings.totalUnits || this.registeredUnits;
   },
   displayAddress() {
     return displayAddress(this);
@@ -179,6 +184,7 @@ Factory.define('community', Communities, {
   settings: {
     joinable: true,
     language: 'en',
+    ownershipScheme: 'condominium',
     parcelRefFormat: 'bfdd',
     accountingMethod: 'accrual',
     allowPostToGroupAccounts: true,

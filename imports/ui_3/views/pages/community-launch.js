@@ -28,9 +28,10 @@ Template.Community_launch.onRendered(function onRendered() {
       zip: '1111',
       lot: '?-hrsz',
       status: 'sandbox',
-      totalunits: 100 * FlowRouter.getQueryParam('count'),  // new joiners will get 100 voting units
       settings: {
         language: FlowRouter.getQueryParam('lang'),
+        ownershipScheme: 'condominium',
+        totalUnits: 100 * FlowRouter.getQueryParam('count'),  // new joiners will get 100 voting units
         accountingMethod: 'cash',
       },
     },

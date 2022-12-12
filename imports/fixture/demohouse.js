@@ -70,6 +70,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     taxNo: '128686-1-41',
     settings: {
       language: lang,
+      ownershipScheme: 'condominium',
       parcelRefFormat: 'bfdd',
       accountingMethod: 'accrual',
       topicAgeDays: 365,

@@ -58,6 +58,251 @@
       }
     }
   },
+  "schemaCommunities": {
+    "_": {
+      "label": "Community"
+    },
+    "name": {
+      "label": "Name of Community",
+      "placeholder": "(eg. Marina Gardens)"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "(eg. The most colourful building in the street.)"
+    },
+    "avatar": {
+      "label": "Image",
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+    },
+    "zip": {
+      "label": "Zip code",
+      "placeholder": "(eg. 1089)"
+    },
+    "city": {
+      "label": "City",
+      "placeholder": "(eg. Budapest)"
+    },
+    "street": {
+      "label": "Street",
+      "placeholder": "(eg. Tulip street or Heros square)"
+    },
+    "number": {
+      "label": "House number",
+      "placeholder": "(eg. 101 or 25/B)"
+    },
+    "lot": {
+      "label": "Lot number",
+      "help": "For companies you can use this field for the registration number",
+      "placeholder": "(eg. 29732/9)"
+    },
+    "management": {
+      "label": "Contact info of management",
+      "placeholder": "(eg. office address, phone, opening hours)",
+      "help": "You can set some some text here freely and it will be displayed for everybody, not just for the members of this community. You can provide contact information here for outsiders."
+    },
+    "taxNo": {
+      "label": "Tax number",
+      "placeholder": "(eg. international VAT number)",
+      "help": "Not mandatory, but you can set this, if you'd like it to appear on invoices and bills."
+    },
+    "registeredUnits": {
+      "label": "Registered ownership units",
+      "placeholder": "(eg. 10000)"
+    },
+    "settings": {
+      "label": "Settings",
+      "modules": {
+        "label": "Modules activated",
+        "options": {
+          "forum": "Forum",
+          "voting": "Decsion making",
+          "maintenance": "Maintenance",
+          "finances": "Finaces",
+          "documents": "Documentstore"
+        }
+      },
+      "joinable": {
+        "label": "Accepts join requests",
+        "help": "If you are not providing all parcel owner's data yourself, and you'd like them to be able to join the community, providing their own data, allow this option. Before approving a join request, you can still edit the submitted data."
+      },
+      "language": {
+        "label": "Language",
+        "help": "The official language of the community. (Users receive their notifications translated to their own language.)"
+      },
+      "ownershipScheme": {
+        "label": "Ownership scheme",
+        "help": "Voting power is determined based on the owned flats in a Condominium, based on the owned shares in a Corporation, and in case of a Cooperative everybody has 1 vote.",
+        "options": {
+          "condominium": "Condominium",
+          "corporation": "Corporation",
+          "cooperative": "Cooperative"
+        }
+      },
+      "totalUnits": {
+        "label": "Total shares outstanding",
+        "placeholder": "(eg. 10000)",
+        "help": "If the value is fixed, provide it here. If you don't provide one, the system will calculate it by summing the parcels' units"
+      },
+      "parcelRefFormat": {
+        "label": "Parcel reference format",
+        "placeholder": "(eg. bfdd)",
+        "help": "If a format is supplied, then the building, floor, door data can be calculated from the parcel reference. For example bfdd means the first character is the building, the second is the floor, and the 3rd-4th is the door number, so B108 is used for building B, first floor, door 8."
+      },
+      "topicAgeDays": {
+        "label": "Topic ageing days",
+        "help": "Topics get automatically closed after this many days of inactivity."
+      },
+      "communalModeration": {
+        "label": "Communal moderation",
+        "help": "When a number of users flag a content, the content is moderated for the rest of the users as well. Enter the number of flags needed, or enter 0 to switch this functionality off."
+      },
+      "accountingMethod": {
+        "label": "Accounting method",
+        "help": "Depending on this, the accounting transactions are generated differently from bills and payments. Never change this setting during the fiscal year.",
+        "options": {
+          "accrual": "Accrual",
+          "cash": "Cash"
+        }
+      },
+      "subjectToVat": {
+        "label": "Under VAT"
+      },
+      "paymentsWoStatement": {
+        "label": "Payments can be registered without a bank statement",
+        "help": "When it is turned on, you can register the payments before having the corresponding bank statement. When it is off, you may only create Payments from bank statements."
+      },
+      "paymentsToBills": {
+        "label": "Payments need to be reconciled to the bills",
+        "options": {
+          "customer": "Customers",
+          "supplier": "Suppliers",
+          "member": "Owners"
+        },
+        "help": "You can set the option independently for each bill direction, if you will reconcile the payments to bills."
+      },
+      "allowPostToGroupAccounts": {
+        "label": "Allow posting to group accounts",
+        "help": "When it is turned off, you may not post to the group accounts, only to their sub accounts"
+      },
+      "enableMeterEstimationDays": {
+        "label": "Enable meter estimation after (days)",
+        "help": "If there was no reading registered with meter within this many days, before a billing takes place, then the system will estimate the reading for the bill. Eg. if you put 30 here, then any meters that have not been read within a month will estimate their reading, and those that have reading will use the reading. Use 0 to always use estimation, use a very large number if you never wish to use an estimation."
+      }
+    }
+  },
+  "schemaParcels": {
+    "_": {
+      "label": "Place"
+    },
+    "category": {
+      "label": "Kind of place",
+      "options": {
+        "@property": "Property",
+        "@common": "Common area",
+        "@group": "Group",
+        "#tag": "Hashtag"
+      }
+    },
+    "serial": {
+      "label": "Serial",
+      "placeholder": "(eg. 34)",
+      "help": "The serial number of the property. An integer that grows, and lets you sort your list."
+    },
+    "ref": {
+      "label": "Reference name",
+      "placeholder": "(eg. B405 or II/4 or 'Ground floor')",
+      "help": "An abritrary but unique reference within the community"
+    },
+    "leadRef": {
+      "label": "Lead parcel",
+      "placeholder": "(eg. K108)"
+    },
+    "code": {
+      "label": "Accounting code",
+      "placeholder": "(eg. @B for building B)",
+      "help": "The accounting code can be anz unique character sequence. When codes share the same beginning sequence, they are sub-codes of that parent code. We recommend using using @ for physical location, and then follw with a convention like, bulding, floor, door. If you don't supply a code, the system will use '@'+Reference as the accounting code."
+    },
+    "units": {
+      "label": "Voting share units",
+      "placeholder": "(eg. 135)"
+    },
+    "building": {
+      "label": "Building",
+      "placeholder": "(eg. F)"
+    },
+    "floor": {
+      "label": "Floor",
+      "placeholder": "(eg. 4 or IV)"
+    },
+    "door": {
+      "label": "Door",
+      "placeholder": "24"
+    },
+    "type": {
+      "label": "Type",
+      "placeholder": "(eg. Apartment or Parking space)",
+      "help": "We can create the parcel billings by type.",
+        "flat": "Apartment",
+        "parking": "Parking",
+        "storage": "Storage",
+        "cellar": "Cellar",
+        "attic": "Attic",
+        "shop": "Shop",
+        "office": "Office",
+        "other": "Other"
+    },
+    "group": {
+      "label": "Group",
+      "help": "Arbitrary tag to identify which group of parcels it belongs to. Can be used in parcel billings.",
+      "placeholder": "(eg. HasWaterMeter)"
+    },
+    "lot": {
+      "label": "Lot No.",
+      "placeholder": "(eg. 293457/A/21)"
+    },
+    "location": {
+      "label": "Location"
+    },
+    "area": {
+      "label": "Area total(m2)",
+      "placeholder": "(eg. 45)"
+    },
+    "area1": {
+      "label": "Area 1/1 weighted(m2)",
+      "help": "Base or net area",
+      "placeholder": "(eg. 35)"
+    },
+    "area2": {
+      "label": "Area 1/2 weighted(m2)",
+      "help": "1/2 weighted area, eg. terrace or loggia",
+      "placeholder": "(eg. 5)"
+    },
+    "area3": {
+      "label": "Area 1/3 weighted(m2)",
+      "help": "1/3 weighted area, eg. garden",
+      "placeholder": "(eg. 12)"
+    },
+    "volume": {
+      "label": "Volume (m3)",
+      "placeholder": "(eg. 142)"
+    },
+    "occupants": {
+      "label": "Occupants"
+    },
+    "freeFields": {
+      "label": "Free fields",
+      "$": {
+        "key": {
+          "label": "Field name",
+          "placeholder": "(pl. Height)"
+        },
+        "value": {
+          "label": "Field value",
+          "placeholder": "(eg. 3.5m)"
+        }
+      }
+    }
+  },
   "schemaAccountingPeriods": {
     "accountingClosedAt": "Accounting closed at"
   },
