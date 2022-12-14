@@ -35,6 +35,9 @@ Template.Navigation.viewmodel({
       this.templateInstance.subscribe('topics.list', { communityId: activeCommunityId, category: 'ticket', closed: false });
     }
   },
+  community() {
+    return getActiveCommunity();
+  },
   unseenEventsCount(category) {
     const userId = Meteor.userId();
     const topics = Topics.find({ communityId: getActiveCommunityId(), category });
@@ -60,10 +63,6 @@ Template.Navigation.viewmodel({
     const unapprovedParcelCount = Parcels.find({ communityId, approved: false }).count();
     const unapprovedMembershipCount = Memberships.find({ communityId, approved: false }).count();
     return unapprovedParcelCount + unapprovedMembershipCount;
-  },
-  isActiveModule(moduleName) {
-    const community = getActiveCommunity();
-    return !community.settings.modules || _.contains(community.settings.modules, moduleName);
   },
   developerMode() {
     return false;     // set this true to access developer features

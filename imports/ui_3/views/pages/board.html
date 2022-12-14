@@ -4,12 +4,13 @@
     <div class="row">
 
       <!-- right side -->
-      <div class="col-xs-12 col-lg-4 pull-right">
+      <div class="col-xs-12 {{lgCol 4}} pull-right">
         {{> Balance_widget}}
         {{> News}}
       </div>
 
       <div class="col-xs-12 col-lg-8">
+        {{#if community.isActiveModule 'voting'}}
         {{#Collapse_section id='vote' title=activeVotingsTitle }}
           {{#each topic in (topics 'vote')}}
             {{> Topic_box topic=topic commentsIncluded=true}}
@@ -25,13 +26,16 @@
           </div>
           {{/each}}
         {{/Collapse_section}}
+        {{/if}}
 
-        {{#Collapse_section id='forum' title='Forum' notFirst=true}}
+        {{#if community.isActiveModule 'forum'}}
+        {{#Collapse_section id='forum' title='Forum' notFirst=(community.isActiveModule 'voting')}}
           {{> New_forum_topic}}
           {{#each topic in (topics 'forum')}}
             {{> Topic_box topic=topic commentsIncluded=true}}
           {{/each}}
         {{/Collapse_section}}
+        {{/if}}
       </div>
 
     </div>
