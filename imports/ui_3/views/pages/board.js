@@ -42,13 +42,10 @@ Template.Board.viewmodel({
     const communityId = this.communityId();
     return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
   },
-  isActiveModule(moduleName) {
-    const community = this.community();
-    return !community.settings?.modules || _.contains(community.settings.modules, moduleName);
-  },
   lgCol(width) {
     let cols = '';
-    if (this.isActiveModule('forum') || this.isActiveModule('voting')) {
+    const community = this.community();
+    if (community.isActiveModule('forum') || community.isActiveModule('voting')) {
       cols = `col-lg-${width}`;
     }
     return cols;

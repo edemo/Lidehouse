@@ -10,7 +10,7 @@
       </div>
 
       <div class="col-xs-12 col-lg-8">
-        {{#if isActiveModule 'voting'}}
+        {{#if community.isActiveModule 'voting'}}
         {{#Collapse_section id='vote' title=activeVotingsTitle }}
           {{#each topic in (topics 'vote')}}
             {{> Topic_box topic=topic commentsIncluded=true}}
@@ -28,8 +28,8 @@
         {{/Collapse_section}}
         {{/if}}
 
-        {{#if isActiveModule 'forum'}}
-        {{#Collapse_section id='forum' title='Forum' notFirst=(isActiveModule 'voting')}}
+        {{#if community.isActiveModule 'forum'}}
+        {{#Collapse_section id='forum' title='Forum' notFirst=(community.isActiveModule 'voting')}}
           {{> New_forum_topic}}
           {{#each topic in (topics 'forum')}}
             {{> Topic_box topic=topic commentsIncluded=true}}

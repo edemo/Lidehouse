@@ -150,6 +150,9 @@ Communities.helpers({
     const Agendas = Mongo.Collection.get('agendas');
     return !!Agendas.findOne({ communityId: this._id, live: true });
   },
+  isActiveModule(moduleName) {
+    return !this.settings.modules || _.contains(this.settings.modules, moduleName);
+  },
   toString() {
     return this.name;
   },
