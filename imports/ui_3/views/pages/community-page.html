@@ -207,12 +207,12 @@
 <template name='Parcels_box'>
     <div class="parcels">
         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
-        <h2 class="text-capitalize">{{_ "properties"}}</h2>
+        <h2 class="text-capitalize">{{_ (concat "properties." community.settings.ownershipScheme)}}</h2>
         <div class="btn-group pull-right">
             {{#unless showAllParcels}}
             <button class="btn btn-primary btn-sm js-show-all"><strong> {{_ 'Show all parcels'}}</strong></button>
             {{/unless}}
-            {{>Action_buttons_group collection='parcels' actions='create,import' options=(obj '{"entity": "@property"}') size='md'}}
+            {{>Action_buttons_group collection='parcels' actions='create,import' options=(obj '{"entity": "property"}') size='md'}}
         </div>
         <p>
             {{#if showAllParcels}}
@@ -234,7 +234,7 @@
 </template>
 
 <template name="Community_page">
-
+    {{#if community}}
     <!-- Page heading -->
     {{> Page_heading title=title }}
 
@@ -262,7 +262,7 @@
             <div class="col-md-4">
                 <div class="ibox float-e-margins communities" data-id={{communityId}}>
                     <div class="ibox-title">
-                        <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
+                        <h5 class="text-capitalize">{{_ 'data'}}</h5>
                         <div class="pull-right">
                             {{>Action_buttons_group collection='communities' actions='edit' doc=community size='lg'}}
                         </div>
@@ -351,4 +351,5 @@
             </div>
         </div>
     </div>
+    {{/if}}
 </template>

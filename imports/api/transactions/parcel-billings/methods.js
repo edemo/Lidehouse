@@ -55,7 +55,8 @@ export const apply = new ValidatedMethod({
         ? ParcelBillings.findActive({ communityId, _id: { $in: ids } }, { sort: { rank: 1 } })
         : ParcelBillings.findActive({ communityId }, { sort: { rank: 1 } });
       const billingPeriod = Period.monthOfDate(date);
-      const activeParcels = ParcelBillings.filterParcels(communityId, localizer, withFollowers);
+      const activeParcels = ParcelBillings.filterParcelsByLocalizer(communityId, localizer, withFollowers);
+
       activeParcelBillings.forEach((parcelBilling) => {
 //        const alreadyAppliedAt = parcelBilling.alreadyAppliedAt(billingPeriod.label);
 //        if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
@@ -89,6 +90,7 @@ export const apply = new ValidatedMethod({
               dueDate: moment(issueDate).add(BILLING_DUE_DAYS, 'days').toDate(),
               lines: [],
             };
+            console.log('line', line);
             billsToSend[leadParcel._id].lines.push(line);
           }
 

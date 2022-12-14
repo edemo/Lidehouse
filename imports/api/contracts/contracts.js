@@ -45,7 +45,7 @@ Contracts.memberSchema = new SimpleSchema({
     } },
   },
   delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { type: () => (ModalStack.getVar('parcelId') ? 'hidden' : undefined), relation: '@property' } },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { type: () => (ModalStack.getVar('parcelId') ? 'hidden' : undefined), relation: 'property' } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty } },
 //  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   habitants: { type: Number, optional: true, autoform: { ...noUpdate } },
@@ -164,7 +164,7 @@ Contracts.helpers({
     return this.partnerName() + ': ' + this.toString();
   },
   toString() {
-    if (this.relation === 'member') return `${__('property')} ${this.parcel()?.ref}`;
+    if (this.relation === 'member') return `${__('schemaParcels.category.options.property')} ${this.parcel()?.ref}`;
     else return this.displayTitle();
   },
   asOption() {

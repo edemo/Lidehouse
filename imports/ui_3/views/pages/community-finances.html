@@ -1,7 +1,7 @@
 <template name="Community_finances">
-
+    {{#if community}}
     <!-- Page heading -->
-    {{> Page_heading title=(_ 'Community finances') }}
+    {{> Page_heading title=(_ (concat community.displayType ' finances')) }}
 
     <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
@@ -196,4 +196,5 @@
 
     </div>
     </div>
+    {{/if}}
 </template>

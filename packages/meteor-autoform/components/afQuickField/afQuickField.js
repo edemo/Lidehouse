@@ -40,6 +40,10 @@ Template.afQuickField.helpers({
     var c = AutoForm.Utility.getComponentContext(this, "afQuickField");
     return c.atts.relation;
   },
+  relationEntityName() {
+    var c = AutoForm.Utility.getComponentContext(this, "afQuickField");
+    return 'entities.' + c.atts.relation + '.label';
+  },
   getReactiveValue() {
     return Template.instance().reactiveValue.get();
   },

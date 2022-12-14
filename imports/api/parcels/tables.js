@@ -16,17 +16,21 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 
-export function parcelColumns() {
+export function parcelColumns(community) {
   return [
     { data: 'serial', title: __('schemaParcels.serial.label') },
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    getActiveCommunity()?.hasLeadParcels() &&
+    community?.hasLeadParcels() &&
       { data: 'leadParcelRef()', title: __('schemaParcels.leadRef.label') },
-    { data: 'location()', title: __('schemaParcels.location.label') },
+    community?.hasPhysicalLocations() && 
+      { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label') },
-    { data: 'lot', title: __('schemaParcels.lot.label') },
-    { data: 'area', title: __('schemaParcels.area.label'), render: Render.formatNumber(2) },
-    { data: 'units', title: __('schemaParcels.units.label') },
+    community?.hasPhysicalLocations() && 
+      { data: 'lot', title: __('schemaParcels.lot.label') },
+    community?.hasPhysicalLocations() && 
+      { data: 'area', title: __('schemaParcels.area.label'), render: Render.formatNumber(2) },
+    community?.hasVotingUnits() && 
+      { data: 'units', title: __('schemaParcels.units.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,

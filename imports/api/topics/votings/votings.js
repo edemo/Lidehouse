@@ -130,7 +130,7 @@ Topics.categoryHelpers('vote', {
   },
   eligibleVoterCount() {
 //    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
-    return Parcels.find({ communityId: this.communityId, category: '@property' }).count();
+    return Parcels.find({ communityId: this.communityId, category: { $in: ['%property', '@property'] } }).count();
   },
   votedCount() {
     return this.voteParticipation.count;

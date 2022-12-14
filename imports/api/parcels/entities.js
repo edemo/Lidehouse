@@ -1,13 +1,14 @@
 import { Meteor } from 'meteor/meteor';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Parcels } from './parcels';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 Parcels.entities = {
-  '@property': {
-    name: '@property',
-    schema: Parcels.simpleSchema({ category: '@property' }),
+  'property': {
+    name: 'property',
+    category: () => getActiveCommunity().propertyCategory(),
+    schema: () => Parcels.simpleSchema({ category: getActiveCommunity().propertyCategory() }),
   },
   '@common': {
     name: '@common',

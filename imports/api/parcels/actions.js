@@ -3,10 +3,11 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Fraction } from 'fractional';
-import { _ } from 'meteor/jquery';
+import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
+import { callOrRead } from '/imports/api/utils.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal.js';
 import { BatchAction } from '/imports/api/batch-action.js';
@@ -35,7 +36,7 @@ Parcels.actions = {
       if (typeof entity === 'string') entity = Parcels.entities[entity];
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.create`,
-        schema: entity.schema,
+        schema: callOrRead.call(this, entity.schema),
         doc,
         type: 'method',
         meteormethod: 'parcels.insert',
@@ -56,7 +57,7 @@ Parcels.actions = {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.view`,
-        schema: entity.schema,
+        schema: callOrRead.call(this, entity.schema),
         doc,
         type: 'readonly',
       });
@@ -181,7 +182,7 @@ Parcels.actions = {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.edit`,
-        schema: entity.schema,
+        schema: callOrRead.call(this, entity.schema),
         doc,
         type: 'method-update',
         meteormethod: 'parcels.update',
@@ -255,17 +256,17 @@ function onJoinParcelInsertSuccess(parcelId) {
   );
 }
 
-Parcels.categoryValues.forEach(category => {
-  AutoForm.addModalHooks(`af.${category}.create`);
-  AutoForm.addModalHooks(`af.${category}.edit`);
+_.each(Parcels.entities, (entity, key) => {
+  AutoForm.addModalHooks(`af.${entity.name}.create`);
+  AutoForm.addModalHooks(`af.${entity.name}.edit`);
 
-  AutoForm.addHooks(`af.${category}.create`, {
+  AutoForm.addHooks(`af.${entity.name}.create`, {
     formToDoc(doc) {
-      doc.category = category;
+      doc.category = entity.category?.() || entity.name;
       return doc;
     },
   });
-  AutoForm.addHooks(`af.${category}.edit`, {
+  AutoForm.addHooks(`af.${entity.name}.edit`, {
     formToModifier(modifier) {
       modifier.$set.approved = true;
       return modifier;
@@ -273,11 +274,11 @@ Parcels.categoryValues.forEach(category => {
   });
 });
 
-AutoForm.addModalHooks('af.@property.create.unapproved');
-AutoForm.addHooks('af.@property.create.unapproved', {
+AutoForm.addModalHooks('af.property.create.unapproved');
+AutoForm.addHooks('af.property.create.unapproved', {
   formToDoc(doc) {
     doc.approved = false;
-    doc.category = '@property';
+    doc.category = doc.community().propertyCategory();
     return doc;
   },
   onSuccess(formType, result) {

@@ -125,7 +125,7 @@
                         <li class="{{isActivePath regex='community-finances'}}">
                             <a href="{{pathFor 'Community finances'}}">
                                 <i class="fa fa-bar-chart" aria-hidden="true"></i>
-                                <span class="nav-label">{{_ 'Community finances'}}</span>
+                                <span class="nav-label">{{_ (concat community.displayType ' finances')}}</span>
                             </a>
                         </li>
                         {{#if currentUserHasPermission 'transactions.inCommunity'}}
@@ -150,7 +150,7 @@
                 <li class="{{isActivePath regex='community/'}} {{isActivePath path='/community'}}">
                     <a href="{{pathFor 'Community page'}}">
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
-                        <span class="nav-label">{{_ 'Community page'}}</span>
+                        <span class="nav-label">{{_ (concat community.displayType ' page')}}</span>
                         {{#if currentUserHasPermission 'parcels.update'}}
                         {{> Badge color='danger' title=(_ 'Todo') value=countUnapprovedEntities align='right'}}
                         {{/if}}

@@ -18,7 +18,7 @@
             {{! >Action_buttons_group collection=collection actions='edit' size='lg'}}
           {{else}}
             {{#unless isDisabled}}
-              <button type="button" class="btn btn-xs btn-default pull-right js-create"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relation}}</button>
+              <button type="button" class="btn btn-xs btn-default pull-right js-create"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relationEntityName}}</button>
               {{! >Action_buttons_group collection=collection actions='create' size='lg' options=entityObj}}
             {{/unless}}
           {{/if}}

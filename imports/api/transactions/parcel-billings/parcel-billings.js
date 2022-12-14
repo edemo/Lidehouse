@@ -12,7 +12,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { ActiveTimeMachine } from '/imports/api/behaviours/active-time-machine';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
@@ -24,8 +24,23 @@ import { displayMoney } from '/imports/ui_3/helpers/utils.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
-ParcelBillings.projectionBaseValues = ['absolute', 'area', 'area1', 'area2', 'area3', 'volume', 'habitants'];
+ParcelBillings.projectionBaseValues = ['absolute', 'units', 'area', 'area1', 'area2', 'area3', 'volume', 'habitants'];
 //ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+
+ParcelBillings.projectionBaseOptions = function() {
+  return {
+    options() {
+      const community = getActiveCommunity();
+      if (!community) return [];
+      const values = ['absolute'];
+      if (community.hasVotingUnits()) values.push('units');
+      if (community.hasPhysicalLocations()) values.push('area', 'area1', 'area2', 'area3', 'volume', 'habitants');
+      const i18Path = 'schemaParcelBillings.projection.base.options.';
+      return values.map(function option(t) { return { label: __(i18Path + t), value: t }; });
+    },
+    firstOption: () => __('(Select one)'),
+  };
+}
 
 const chooseFromExistingParcelTypes = {
   options() {
@@ -68,7 +83,7 @@ ParcelBillings.consumptionSchema = new SimpleSchema({
 });
 
 ParcelBillings.projectionSchema = new SimpleSchema({
-  base: { type: String, allowedValues: ParcelBillings.projectionBaseValues, autoform: allowedOptions() },
+  base: { type: String, allowedValues: ParcelBillings.projectionBaseValues, autoform: { ...ParcelBillings.projectionBaseOptions() } },
   unitPrice: { type: Number, decimal: true },
 });
 
@@ -83,7 +98,7 @@ ParcelBillings.schema = new SimpleSchema({
   consumption: { type: ParcelBillings.consumptionSchema, optional: true }, // if consumption based
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
   digit: { type: String, autoform: { ...Accounts.choosePayinType } },
-  localizer: { type: String, autoform: { ...Parcels.choosePhysical } },
+  localizer: { type: String, optional: true, autoform: { ...Parcels.choosePhysical } },
   type: { type: [String], optional: true, autoform: { ...chooseFromExistingParcelTypes } },
   group: { type: String, optional: true, autoform: { ...chooseFromExistingGroups } },
   rank: { type: Number, defaultValue: 1, autoform: { defaultValue: 1 } },
@@ -111,11 +126,16 @@ const chooseParcelBilling = {
 
 function chooseParcelBillingLocalizer() {
   return _.extend(Parcels.chooseSubNode('@'), {
+    type: () => {
+      const communityId = ModalStack.getVar('communityId');
+      const community = Communities.findOne(communityId);
+      return community?.hasPhysicalLocations() ? undefined : 'hidden';
+    },
     value: () => {
       const activeParcelBillingId = ModalStack.getVar('parcelBillingId');
       const localizer = activeParcelBillingId
         ? ParcelBillings.findOne(activeParcelBillingId).localizer
-        : '@';
+        : undefined;
       return localizer;
     },
   });
@@ -133,11 +153,13 @@ Meteor.startup(function indexParcelBillings() {
   ParcelBillings.ensureIndex({ communityId: 1, rank: 1 });
 });
 
-ParcelBillings.filterParcels = function filterParcels(communityId, localizer, withFollowers) {
-  const selector = { communityId, category: '@property' };
+ParcelBillings.filterParcelsByLocalizer = function filterParcelsByLocalizer(communityId, localizer, withFollowers) {
+  const selector = { communityId, category: { $in: ['%property', '@property'] } };
   if (localizer) selector.code = new RegExp('^' + localizer);
+  console.log('selector', selector);
   let parcels = Parcels.find(selector).fetch();
   if (withFollowers) parcels = parcels.map(p => p.withFollowers()).flat(1);
+  console.log('Parcels', parcels);
   return parcels;
 };
 
@@ -146,7 +168,7 @@ ParcelBillings.helpers({
     return Communities.findOne(this.communityId);
   },
   parcelsToBill() {
-    const selector = { communityId: this.communityId, category: '@property' };
+    const selector = { communityId: this.communityId, category: { $in: ['%property', '@property'] } };
     if (this.localizer) selector.code = new RegExp('^' + this.localizer);
     if (this.type) selector.type = { $in: this.type };
     if (this.group) selector.group = this.group;
@@ -156,6 +178,7 @@ ParcelBillings.helpers({
   projectionUom() {
     switch (this.projection.base) {
       case 'absolute': return 'piece';
+      case 'units': return 'unit';
       case 'area':
       case 'area1':
       case 'area2':
@@ -169,6 +192,7 @@ ParcelBillings.helpers({
     let result;
     switch (this.projection.base) {
       case 'absolute': result = 1; break;
+      case 'units': result = parcel.units; break;
       case 'area': result = parcel.area; break;
       case 'area1': result = parcel.area1; break;
       case 'area2': result = parcel.area2; break;

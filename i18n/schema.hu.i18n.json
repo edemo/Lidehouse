@@ -91,8 +91,8 @@
       "placeholder": "(pl. 101 vagy 25/B)"
     },
     "lot": {
-      "label": "Helyrajzi szám",
-      "help": "Cég esetében a cégjegyzékszámot rögzítheti itt",
+      "label": "Helyrajzi/cégjegyzék szám",
+      "help": "Ház esetében a helyrajzi, Cég esetében a cégjegyzékszámot rögzítheti itt. Ezzel az egyedi azonosítóval lehet a közösséget egyértelműen megtalálni az adatbázisban.",
       "placeholder": "(pl. 29732/9)"
     },
     "registeredUnits": {
@@ -131,11 +131,14 @@
       },
       "ownershipScheme": {
         "label": "Tulajdoni struktúra",
-        "help": "A közösségben a szavazóerőt a tulajdoni hányad határozza meg. A tulajdoni hányadot Társasházban az albetét, Cég esetében a részvények száma határozza meg, Szövetkezet esetében pedig mindenkinek 1 szavazata van.",
+        "help": "A tulajdoni hányadot Társasházban az albetét, Cég esetében a részvények száma határozza meg, Egyesület és Szövetkezet esetében pedig mindenkinek 1 szavazata van.",
         "options": {
           "condominium": "Társasház",
           "corporation": "Cég",
-          "cooperative": "Egyesület"
+          "foundation": "Alapítvány",
+          "cooperative": "Egyesület",
+          "condo-coop": "Lakásszövetkezet",
+          "basket-coop": "Kosárközösség"
         }
       },
       "totalUnits": {
@@ -198,6 +201,8 @@
     "category": {
       "label": "Hely jellege",
       "options": {
+        "property": "Albetét",
+        "%property": "Részesedés",
         "@property": "Albetét",
         "@common": "Közös tulajdon",
         "@group": "Gyűjtő",
@@ -212,7 +217,7 @@
     "ref": {
       "label": "Azonosító név",
       "placeholder": "(pl. B405 vagy II/4 vagy Földszint)",
-      "help": "Egyedi név, mellyel hivatkozni lehet erre a helyre"
+      "help": "Egyedi azonosító név, mellyel hivatkozni lehet rá"
     },
     "leadRef": {
       "label": "Vezető albetét",
@@ -1558,7 +1563,8 @@
         "$": {
           "uom": {
             "label": "Fogyasztási egység",
-            "placeholder": "(pl. kW)"
+            "placeholder": "(pl. kW)",
+            "help": "Fontos hogy ugyanaz legyen itt, amiben a mérőórák mérnek. Ha többféle fogyasztási egységben is vannak mérőórák, akkor több ilyen blokkot is hozzáadhat, és mindegyik fogyasztási egységnek más ára lehet."
           },
           "unitPrice": {
             "label": "Fogyasztási egységár (Ft)",
@@ -1579,6 +1585,7 @@
         "label": "Vetítési alap",
         "options": {
           "absolute": "abszolút (Ft)",
+          "units": "tulajdoni hányad (/egység)",
           "area": "terület össz(/m2)",
           "area1": "terület 1/1 súlyú(/m2)",
           "area2": "terület 1/2 súlyú(/m2)",

@@ -61,6 +61,7 @@ export function displayAccount(code) {
   let icon;
   switch (text.charAt(0)) {
     case '`': icon = 'tag'; break;
+    case '%': 
     case '&': // physical place - common area
     case '@': icon = 'map-marker'; break; // physical place - parcel/property
     case '#': icon = 'flag'; break; // virtual localizer

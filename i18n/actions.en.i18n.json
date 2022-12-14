@@ -162,9 +162,9 @@
       "label": "parcel",
       "it": "the parcel"
     },
-    "@property": {
-      "label": "property",
-      "it": "the property"
+    "property": {
+      "label": "holding",
+      "it": "the holding"
     },
     "@common": {
       "label": "common property",

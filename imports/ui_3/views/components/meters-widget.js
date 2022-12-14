@@ -12,9 +12,10 @@ import './meters-widget.html';
 Template.Meters_widget.viewmodel({
   relevantParcels() {
     const user = Meteor.user();
-    const communityId = getActiveCommunityId();
+    const community = getActiveCommunity();
+    const communityId = community._id;
     if (!user || !communityId) return [];
-    return Parcels.find({ communityId, category: '@property' }).fetch().filter(p => user.hasPermission('parcels.finances', p));
+    return Parcels.find({ communityId, category: community.propertyCategory() }).fetch().filter(p => user.hasPermission('parcels.finances', p));
   },
   oldestReadMeter() {
     const meter = _.sortBy(this.relevantParcels().map(p => p.oldestReadMeter()), m => m?.lastReadingDate().getTime())[0];

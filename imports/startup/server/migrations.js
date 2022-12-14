@@ -1171,7 +1171,7 @@ Migrations.add({
   version: 65,
   name: 'Communities.settings.ownershipScheme',
   up() {
-    Communities.direct.update({}, { $set: { 'settings.ownershipScheme': 'condominium' } });
+    Communities.direct.update({}, { $set: { 'settings.ownershipScheme': 'condominium' } }, { multi: true });
     Communities.find().forEach(community => {
       const communityId = community._id;
       if (community.totalunits) {

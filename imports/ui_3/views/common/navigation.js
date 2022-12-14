@@ -35,6 +35,9 @@ Template.Navigation.viewmodel({
       this.templateInstance.subscribe('topics.list', { communityId: activeCommunityId, category: 'ticket', closed: false });
     }
   },
+  community() {
+    return getActiveCommunity() || { displayType: () => 'Community' };
+  },
   unseenEventsCount(category) {
     const userId = Meteor.userId();
     const topics = Topics.find({ communityId: getActiveCommunityId(), category });

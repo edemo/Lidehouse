@@ -53,7 +53,7 @@ Template.Parcels_finances.viewmodel({
     const user = Meteor.user();
     const communityId = ModalStack.getVar('communityId');
     if (!user || !communityId) return [];
-    return Parcels.find({ communityId, category: '@property', approved: true }).fetch().filter(p => !p.isLed() && p.payerContract() && user.hasPermission('parcels.finances', p));
+    return Parcels.find({ communityId, category: { $in: ['%property', '@property'] }, approved: true }).fetch().filter(p => !p.isLed() && p.payerContract() && user.hasPermission('parcels.finances', p));
   },
   contractChoices() {
     const parcels = this.relevantParcels();
@@ -79,7 +79,7 @@ Template.Parcels_finances.viewmodel({
     const self = this;
     return () => {
       const communityId = self.communityId();
-      let parcels = Tracker.nonreactive(() => Parcels.find({ communityId, category: '@property', approved: true }).fetch());
+      let parcels = Tracker.nonreactive(() => Parcels.find({ communityId, category: { $in: ['%property', '@property'] }, approved: true }).fetch());
       if (!self.showAllParcels()) {
         const myParcelIds = Memberships.find({ communityId, !!!: Meteor.userId() }).map(m => m.parcelId);
         parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
@@ -98,7 +98,7 @@ Template.Parcels_finances.viewmodel({
         assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', { communityId }),
       };
       return {
-        columns: parcelColumns(permissions),
+        columns: parcelColumns(),
         createdRow: highlightMyRow,
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],

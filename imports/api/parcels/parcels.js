@@ -25,14 +25,15 @@ import { ActiveTimeMachine } from '../behaviours/active-time-machine';
 
 export const Parcels = new Mongo.Collection('parcels');
 
-Parcels.categoryValues = ['@property', '@common', '@group', '#tag'];
+Parcels.categoryValues = ['%property', '@property', '@common', '@group', '#tag'];
 
 Parcels.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   category: { type: String, allowedValues: Parcels.categoryValues, autoform: { omit: true } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
-  ref: { type: String,    // 1. unique reference within a community (readable by the user)
-                          // 2. can be used to identify a parcel, which is not a true parcel, just a sub-part of a parcel
+  ref: { type: String,
+      // 1. unique reference within a community (readable by the user)
+      // 2. can be used to identify a parcel, which is not a true parcel, just a sub-part of a parcel
     autoValue() {
       if (!this.isSet) {
         const community = Meteor.isClient ? getActiveCommunity() : Communities.findOne(this.field('communityId').value);
@@ -54,7 +55,6 @@ Parcels.baseSchema = new SimpleSchema({
 });
 
 Parcels.physicalSchema = new SimpleSchema({
-  type: { type: String, max: 25, optional: true },
   building: { type: String, max: 25, optional: true },
   floor: { type: String, max: 25, optional: true },
   door: { type: String, max: 25, optional: true },
@@ -63,18 +63,19 @@ Parcels.physicalSchema = new SimpleSchema({
         if (this.isInsert) return community().lot + '/A/' + serial;
         return undefined;
   */
-});
-
-Parcels.propertySchema = new SimpleSchema({
-  serial: { type: Number, optional: true },
-  units: { type: Number, optional: true },
-  group: { type: String, max: 25, optional: true },
   // cost calculation purposes
   area: { type: Number, decimal: true, optional: true },
   area1: { type: Number, decimal: true, optional: true },
   area2: { type: Number, decimal: true, optional: true },
   area3: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
+});
+
+Parcels.propertySchema = new SimpleSchema({
+  serial: { type: Number, optional: true },
+  units: { type: Number, optional: true, autoform: { type: () => (getActiveCommunity().hasVotingUnits() ? undefined : 'hidden') } },
+  type: { type: String, max: 25, optional: true },
+  group: { type: String, max: 25, optional: true },
 });
 
 Parcels.publicFields = {
@@ -161,12 +162,12 @@ Parcels.helpers({
     return { communityId: this.communityId, relation: 'member', parcelId: this._id };
   },
   contract() {
-    if (this.category !== '@property') return undefined;
+    if (this.category !== '%property' && this.category !== '@property') return undefined;
     const Contracts = Mongo.Collection.get('contracts');
     return Contracts.findOneActive({ communityId: this.communityId, relation: 'member', parcelId: this._id });
   },
   payerContract() {
-    if (this.category !== '@property') return undefined;
+    if (this.category !== '%property' && this.category !== '@property') return undefined;
     const Contracts = Mongo.Collection.get('contracts');
     const contractSelector = this._contractSelector();
     let payerContract = Contracts.findOneActive(contractSelector);
@@ -275,6 +276,11 @@ _.extend(Parcels, {
     };
   },
   choosePhysical: {
+    type() {
+      const communityId = ModalStack.getVar('communityId');
+      const community = Communities.findOne(communityId);
+      return community?.hasPhysicalLocations() ? undefined : 'hidden';
+    },
     options() {
       const communityId = ModalStack.getVar('communityId');
       return Parcels.nodeOptionsOf(communityId, '@', false);
@@ -294,12 +300,14 @@ Parcels.attachBaseSchema(Parcels.baseSchema);
 // Parcels.attachBehaviour(FreeFields);
 Parcels.attachBehaviour(Timestamped);
 
-Parcels.attachVariantSchema(Parcels.physicalSchema, { selector: { category: '@property' } });
+Parcels.attachVariantSchema(Parcels.propertySchema, { selector: { category: '%property' } });
 Parcels.attachVariantSchema(Parcels.propertySchema, { selector: { category: '@property' } });
+Parcels.attachVariantSchema(Parcels.physicalSchema, { selector: { category: '@property' } });
 Parcels.attachVariantSchema(Parcels.physicalSchema, { selector: { category: '@common' } });
 Parcels.attachVariantSchema(undefined, { selector: { category: '@group' } });
 Parcels.attachVariantSchema(undefined, { selector: { category: '#tag' } });
 
+Parcels.simpleSchema({ category: '%property' }).i18n('schemaParcels');
 Parcels.simpleSchema({ category: '@property' }).i18n('schemaParcels');
 Parcels.simpleSchema({ category: '@common' }).i18n('schemaParcels');
 Parcels.simpleSchema({ category: '@group' }).i18n('schemaParcels');
@@ -349,6 +357,12 @@ if (Meteor.isServer) {
 // --- Factory ---
 
 Factory.define('parcel', Parcels, {
+});
+
+Factory.define('%property', Parcels, {
+  category: '%property',
+  // serial
+  // ref
 });
 
 Factory.define('@property', Parcels, {
@@ -401,10 +415,11 @@ export const chooseParcel = function (code = '') {
 };
 
 export const chooseProperty = {
-  relation: '@property',
+  relation: 'property',
   options() {
     const communityId = ModalStack.getVar('communityId');
-    const parcels = Parcels.find({ communityId, category: '@property' }, { sort: { ref: 1 } });
+    const community = Communities.findOne(communityId);
+    const parcels = Parcels.find({ communityId, category: community.propertyCategory() }, { sort: { ref: 1 } });
     const options = parcels.map(function option(p) {
       return { label: p.ref, value: p._id };
     });

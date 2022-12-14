@@ -20,7 +20,7 @@ const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
 Communities.statusValues = ['sandbox', 'live', 'official'];
 Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'documents'];
-Communities.ownershipSchemeValues = ['condominium', 'corporation', 'cooperative']; //  'meritocracy' coming soon
+Communities.ownershipSchemeValues = ['condominium', 'corporation', 'foundation', 'cooperative', 'condo-coop', 'basket-coop']; //  'meritocracy' coming soon
 
 Communities.settingsSchema = new SimpleSchema({
   modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', checked: true } },
@@ -75,14 +75,40 @@ Meteor.startup(function indexCommunities() {
 
 Communities.helpers({
   officialName() {
-    return this.name + ' ' + TAPi18n.__('community', {}, this.settings.language);
+    return this.name;
   },
   parcelTypeValues() {
     return Object.keys(this.parcels);
   },
+  displayType() {
+    if (this.settings.ownershipScheme === 'condominium' || this.settings.ownershipScheme === 'condo-coop') return 'condo';
+    return 'community';
+  },
+  hasPhysicalLocations() {
+    if (this.settings.ownershipScheme === 'condominium' || this.settings.ownershipScheme === 'condo-coop') return true;
+    return false
+  },
+  propertyCategory() {
+    if (this.hasPhysicalLocations()) return '@property';
+    return '%property';
+  },
+  hasVotingUnits() {
+    switch(this.settings.ownershipScheme) {
+      case 'condominium':
+      case 'corporation':
+      case 'basket-coop':
+        return true;
+      case 'foundation':
+      case 'cooperative':
+      case 'condo-coop':
+        return false;
+      default:
+        debugAssert(false, `No such ownershipScheme: ${this.settings.ownershipScheme}`);
+    }
+  },
   nextAvailableSerial() {
     const Parcels = Mongo.Collection.get('parcels');
-    const serials = _.pluck(Parcels.find({ communityId: this._id, category: '@property' }).fetch(), 'serial');
+    const serials = _.pluck(Parcels.find({ communityId: this._id, category: this.propertyCategory() }).fetch(), 'serial');
     const maxSerial = serials.length ? Math.max(...serials) : 0;
     return maxSerial + 1;
   },

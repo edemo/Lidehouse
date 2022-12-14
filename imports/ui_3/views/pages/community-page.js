@@ -143,17 +143,19 @@ Template.Parcels_box.viewmodel({
   },
   parcels() {
     const communityId = this.templateInstance.data.communityId();
-    return Parcels.find({ communityId, category: '@property' });
+    const community = Communities.findOne(communityId);
+    return Parcels.find({ communityId, category: community.propertyCategory() });
   },
   parcelsTableContent() {
     const communityId = this.templateInstance.data.communityId();
+    const community = Communities.findOne(communityId);community.propertyCategory()
     return {
       collection: 'parcels',
-      selector: { communityId, category: '@property' },
+      selector: { communityId, category: { $in: ['@property', '%property'] } },
       options() {
         return () => {
           return {
-            columns: parcelColumns(),
+            columns: parcelColumns(community),
             createdRow: highlightMyRow,
             tableClasses: 'display',
             language: datatables_i18n[TAPi18n.getLanguage()],
@@ -206,7 +208,7 @@ Template.Community_page.viewmodel({
   },
   title() {
     const community = this.community();
-    return `${__('Community page')} - ${community && community.name}`;
+    return `${__(community.displayType() + ' page')} - ${community && community.name}`;
   },
   /*  thingsToDisplayWithCounter() {
       const result = [];

@@ -78,6 +78,7 @@ Communities.actions = {
     visible: doc.settings && doc.settings.joinable,
     run() {
       const communityId = doc._id;
+      const community = Communities.findOne(communityId);
       const language = doc.settings.language;
       const type = TAPi18n.__('schemaParcels.type.flat', {}, language);
       if (user.hasJoinedCommunity(communityId)) {  // should not let same person join twice
@@ -86,15 +87,15 @@ Communities.actions = {
       }
       if (doc.status === 'sandbox') {   // Sandboxes have immediate (no questions asked) joining, with a fixed ownership share
         Meteor.call('parcels.insert',
-          { communityId, category: '@property', approved: false, serial: 0, ref: 'auto', units: 100, type },
+          { communityId, category: community.propertyCategory(), approved: false, serial: 0, ref: 'auto', units: 100, type },
           onSuccess(res => setMeAsParcelOwner(res, communityId, onSuccess(r => FlowRouter.go('App home')),
           )),
         );
       } else {
         Modal.show('Autoform_modal', {
           title: 'pleaseSupplyParcelData',
-          id: 'af.@property.create.unapproved',
-          schema: Parcels.simpleSchema({ category: '@property' }),
+          id: 'af.property.create.unapproved',
+          schema: Parcels.simpleSchema({ category: community.propertyCategory() }),
           doc: { communityId },
           fields: ['communityId', 'ref', 'type', 'building', 'floor', 'door'],
           type: 'method',

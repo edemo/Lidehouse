@@ -9,6 +9,7 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Settings } from '/imports/api/settings/settings';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import '/imports/api/communities/actions.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { resetSession } from '/imports/startup/client/session.js';
@@ -54,6 +55,9 @@ Template.Top_navbar.onDestroyed(function() {
 });
 
 Template.Top_navbar.helpers({
+  community() {
+    return getActiveCommunity() || { displayType: () => 'Community' };
+  },
   userCommunities() {
     if (!Meteor.user()) { return []; }
     return Meteor.user().communities();

@@ -14,7 +14,7 @@ export const Parcelships = new Mongo.Collection('parcelships');
 
 Parcelships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden', relation: '@property' } },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden', relation: 'property' } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseProperty } },
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
@@ -49,19 +49,19 @@ Parcelships.simpleSchema().i18n('schemaParcelships');
 
 if (Meteor.isServer) {
   Parcelships.after.insert(function (userId, doc) {
-    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } }, { selector: { category: '@property' } });
+    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } }, { selector: { category: '%property' } });
   });
 
   Parcelships.before.update(function (userId, doc, fieldNames, modifier, options) {
-    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } }, { selector: { category: '@property' } });
+    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } }, { selector: { category: '%property' } });
   });
 
   Parcelships.after.update(function (userId, doc, fieldNames, modifier, options) {
-    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } }, { selector: { category: '@property' } });
+    if (doc.active) Parcels.update(doc.parcelId, { $set: { leadRef: Parcels.findOne(doc.leadParcelId).ref } }, { selector: { category: '%property' } });
   });
 
   Parcelships.after.remove(function (userId, doc) {
-    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } }, { selector: { category: '@property' } });
+    if (doc.active) Parcels.update(doc.parcelId, { $unset: { leadRef: '' } }, { selector: { category: '%property' } });
   });
 }
 

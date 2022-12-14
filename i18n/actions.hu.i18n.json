@@ -162,7 +162,7 @@
       "label": "hely",
       "it": "a helyet"
     },
-    "@property": {
+    "property": {
       "label": "albetét",
       "it": "az albetétet"
     },

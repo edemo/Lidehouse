@@ -135,7 +135,10 @@
         "options": {
           "condominium": "Condominium",
           "corporation": "Corporation",
-          "cooperative": "Cooperative"
+          "foundation": "Foundation",
+          "cooperative": "Cooperative",
+          "condo-coop": "Condo cooperative",
+          "basket-coop": "Basket cooperative"
         }
       },
       "totalUnits": {
@@ -197,6 +200,8 @@
     "category": {
       "label": "Kind of place",
       "options": {
+        "property": "Holding",
+        "%property": "Share",
         "@property": "Property",
         "@common": "Common area",
         "@group": "Group",
@@ -1572,6 +1577,7 @@
         "label": "Projection base",
         "options": {
           "absolute": "absolute ($)",
+          "units": "ownership share (/unit)",
           "area": "area total(/m2)",
           "area1": "area 1/1 weighted(/m2)",
           "area2": "area 1/2 weighted(/m2)",

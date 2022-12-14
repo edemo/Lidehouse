@@ -95,7 +95,7 @@ const launch = new ValidatedMethod({
 
     Memberships.insert({ communityId, userId, role: 'admin', approved: true, accepted: true });
     const type = TAPi18n.__('schemaParcels.type.flat', {}, language);
-    const parcelId = Parcels.insert({ communityId, category: '@property', approved: true, serial: 1, ref: 'A001', units: 100, type });
+    const parcelId = Parcels.insert({ communityId, category: communityDoc.propertyCategory(), approved: true, serial: 1, ref: 'A001', units: 100, type });
     Memberships.insert({ communityId, userId, parcelId, approved: true, accepted: true,
       role: 'owner', ownership: { share: new Fraction(1) },
     });
