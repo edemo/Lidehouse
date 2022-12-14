@@ -36,7 +36,7 @@ Template.Navigation.viewmodel({
     }
   },
   community() {
-    return getActiveCommunity() || { displayType: () => 'Community' };
+    return getActiveCommunity() || { displayType: () => 'community' };
   },
   unseenEventsCount(category) {
     const userId = Meteor.userId();
@@ -63,10 +63,6 @@ Template.Navigation.viewmodel({
     const unapprovedParcelCount = Parcels.find({ communityId, approved: false }).count();
     const unapprovedMembershipCount = Memberships.find({ communityId, approved: false }).count();
     return unapprovedParcelCount + unapprovedMembershipCount;
-  },
-  isActiveModule(moduleName) {
-    const community = getActiveCommunity();
-    return !community.settings.modules || _.contains(community.settings.modules, moduleName);
   },
   developerMode() {
     return false;     // set this true to access developer features

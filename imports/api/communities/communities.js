@@ -23,7 +23,7 @@ Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'd
 Communities.ownershipSchemeValues = ['condominium', 'corporation', 'foundation', 'cooperative', 'condo-coop', 'basket-coop']; //  'meritocracy' coming soon
 
 Communities.settingsSchema = new SimpleSchema({
-  modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', checked: true } },
+  modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', defaultValue: Communities.availableModules } },
   joinable: { type: Boolean, defaultValue: true },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   ownershipScheme: { type: String, allowedValues: Communities.ownershipSchemeValues, autoform: { defaultValue: 'condominium' } },
@@ -180,6 +180,9 @@ Communities.helpers({
   hasLiveAssembly() {
     const Agendas = Mongo.Collection.get('agendas');
     return !!Agendas.findOne({ communityId: this._id, live: true });
+  },
+  isActiveModule(moduleName) {
+    return !this.settings.modules || _.contains(this.settings.modules, moduleName);
   },
   toString() {
     return this.name;

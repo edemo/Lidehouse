@@ -2,9 +2,10 @@
 
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
+import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/methods.js';
@@ -19,22 +20,35 @@ import '../components/comments-section.js';
 import '../components/balance-widget.js';
 import './board.html';
 
-Template.Board.onCreated(function boardOnCreated() {
-  this.autorun(() => {
-    const communityId = getActiveCommunityId();
-    this.subscribe('topics.active', { communityId });
-  });
-});
-
-Template.Board.helpers({
+Template.Board.viewmodel({
+  autorun() {
+    const communityId = this.communityId();
+    if (communityId) {
+      this.templateInstance.subscribe('topics.active', { communityId });
+    }
+  },
+  communityId() {
+    return getActiveCommunityId();
+  },
+  community() {
+    return getActiveCommunity();
+  },
   activeVotingsTitle() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.communityId();
     const topicsCount = Topics.find({ communityId, category: 'vote', closed: false }).count();
     return `${__('Active votings')} (${topicsCount})`;
   },
   topics(category) {
-    const communityId = getActiveCommunityId();
+    const communityId = this.communityId();
     return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
+  },
+  lgCol(width) {
+    let cols = '';
+    const community = this.community();
+    if (community.isActiveModule('forum') || community.isActiveModule('voting')) {
+      cols = `col-lg-${width}`;
+    }
+    return cols;
   },
 });
 

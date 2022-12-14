@@ -38,7 +38,7 @@
                         {{/if}}
                     </a>
                 </li-->
-                {{#if isActiveModule 'forum'}}
+                {{#if community.isActiveModule 'forum'}}
                 <li class="{{isActivePath regex='forum'}}">
                     <a href="{{pathFor 'Forum'}}">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
@@ -47,7 +47,7 @@
                     </a>
                 </li>
                 {{/if}}
-                {{#if isActiveModule 'voting'}}
+                {{#if community.isActiveModule 'voting'}}
                 <li class="{{isActivePath regex='votings|agendas|delegations'}}">
                     <a class="js-submenu-toggle" href="#"><i class="fa fa-legal"></i>
                         <span class="nav-label">{{_ 'Decision making'}}</span>
@@ -77,7 +77,7 @@
                     </ul>
                 </li>
                 {{/if}}
-                {{#if isActiveModule 'maintenance'}}
+                {{#if community.isActiveModule 'maintenance'}}
                 <li class="{{isActivePath regex='tickets|worksheets|contracts'}}">
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
                         <span class="nav-label">{{_ 'Maintenance'}}</span>
@@ -107,7 +107,7 @@
                     </ul>
                 </li>
                 {{/if}}
-                {{#if isActiveModule 'finances'}}
+                {{#if community.isActiveModule 'finances'}}
                 <li class="{{isActivePath regex='finances|inventory|accounting'}}">
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-piggy-bank"></i>
                         <span class="nav-label">{{_ 'Finances'}}</span>
@@ -156,7 +156,7 @@
                         {{/if}}
                     </a>
                 </li>
-                {{#if isActiveModule 'documents'}}
+                {{#if community.isActiveModule 'documents'}}
                 <li class="{{isActivePath regex='documents'}}">
                     <a href="{{pathFor 'Documentstore'}}">
                         <i class="glyphicon glyphicon-paperclip" aria-hidden="true"></i>

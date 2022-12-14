@@ -56,7 +56,7 @@ Template.Top_navbar.onDestroyed(function() {
 
 Template.Top_navbar.helpers({
   community() {
-    return getActiveCommunity() || { displayType: () => 'Community' };
+    return getActiveCommunity() || { displayType: () => 'community' };
   },
   userCommunities() {
     if (!Meteor.user()) { return []; }
