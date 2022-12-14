@@ -22,7 +22,7 @@ Communities.statusValues = ['sandbox', 'live', 'official'];
 Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'documents'];
 
 Communities.settingsSchema = new SimpleSchema({
-  modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', checked: true } },
+  modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', defaultValue: Communities.availableModules } },
   joinable: { type: Boolean, defaultValue: true },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   parcelRefFormat: { type: String, optional: true },
