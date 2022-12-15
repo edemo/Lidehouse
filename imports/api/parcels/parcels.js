@@ -73,7 +73,7 @@ Parcels.physicalSchema = new SimpleSchema({
 
 Parcels.propertySchema = new SimpleSchema({
   serial: { type: Number, optional: true },
-  units: { type: Number, optional: true, autoform: { type: () => (getActiveCommunity().hasVotingUnits() ? undefined : 'hidden') } },
+  units: { type: Number, optional: true, defaultValue: 1, autoform: { type: () => (getActiveCommunity().hasVotingUnits() ? undefined : 'hidden') } },
   type: { type: String, max: 25, optional: true },
   group: { type: String, max: 25, optional: true },
 });
