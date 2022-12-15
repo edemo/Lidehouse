@@ -2,13 +2,13 @@
   "email": {
     "EnrollAccountSubject": "Enrollment to __name__'s honline system",
     "EnrollAccount": ["You have been added as a member of community __name__ with role: __role__. ",
-      "Hereby you are invited to join the honline condominium management system, where you can follow the community issues, discuss them and even vote online. ",
+      "Hereby you are invited to join the honline __communityType__ management system, where you can follow the community issues, discuss them and even vote online. ",
       "You can start enjoying all of the system's benefits as soon as you confirm your registration.",
       "\nThe following link takes you to our simple one click registration confirmation:",
       "(You will be asked to set up a password for your account and you are ready to go) \n __url__ \n",
       "If you think you have been added by accident, or in fact not want to be part of the community, you don't need to accept the invitation link.",
-      "You may also contact the community administrator at __email__, to get more information.",
-      "Welcome to the age of online condominium management! \n\nHonline team"],
+      "You may also contact the __communityType__ administrator at __email__, to get more information.",
+      "Welcome to the age of online __communityType__ management! \n\nHonline team"],
     "VerifyEmailSubject": "Verify your email address on Honline",
     "VerifyEmail": ["Hello,\n",
       "You have been registered as a user in the Honline system with this email address. ",
@@ -107,4 +107,5 @@
       "Object of delegation: __formerScopeObject__\n"
     ]  
   }
+
 }

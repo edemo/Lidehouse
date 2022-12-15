@@ -49,6 +49,7 @@
                                   link=(urlFor 'User data page')
                                   frequency=(lowcase (_ (concat 'schemaUsers.settings.notiFrequency.options.' user.settings.notiFrequency)))
                                   adminEmail=community.admin.getPrimaryEmail
+                                  communityType=(_ community.displayType)
                                 }}}
                                 {{/let}}
                             </td>

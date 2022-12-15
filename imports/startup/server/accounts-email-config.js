@@ -15,6 +15,7 @@ if (Meteor.settings.mailSender) {
 function dualTranslate(symbol, context, lang, separator) {
   const translatedContext = _.clone(context);
   translatedContext.role = TAPi18n.__(context.role, {}, lang);
+  translatedContext.communityType = TAPi18n.__(context.communityType, {}, lang);
   let result = TAPi18n.__(symbol, translatedContext, lang);
   if (lang !== 'en') {
     _.extend(context, { lng: 'en' }); 
@@ -44,6 +45,7 @@ Accounts.emailTemplates.enrollAccount = {
     const adminEmail = community.admin().getPrimaryEmail();
     return dualTranslate('email.EnrollAccount', {
       name: community.name,
+      communityType: community.displayType(),
       role: membership.role,
       email: adminEmail,
       url,

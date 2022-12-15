@@ -277,14 +277,12 @@ _.each(Parcels.entities, (entity, key) => {
 AutoForm.addModalHooks('af.property.create.unapproved');
 AutoForm.addHooks('af.property.create.unapproved', {
   formToDoc(doc) {
-    debugger
     doc.approved = false;
     const community = Communities.findOne(doc.communityId);
     doc.category = community.propertyCategory();
     return doc;
   },
   onSuccess(formType, result) {
-    debugger
     onJoinParcelInsertSuccess(result);
   },
 });

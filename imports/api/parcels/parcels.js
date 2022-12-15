@@ -12,7 +12,7 @@ import { Log } from '/imports/utils/log.js';
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { allowedOptions } from '/imports/utils/autoform.js';
+import { allowedOptions, noUpdate } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { FreeFields } from '/imports/api/behaviours/free-fields.js';
