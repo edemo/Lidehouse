@@ -107,6 +107,13 @@
       "doing": "meghívása",
       "done": "meghívásra került"
     },
+    "approve": {
+      "label": "jóváhagyás",
+      "help": "A beérkezett de még jóvá nem hagyott kérelmeket látja itt. Úgy tudja jóváhagyni őket, hogy szerkeszti és elmenti. A szerkesztés során tud bármit módosítani a beadványon, vagy elmentheti változatlanul, úgy ahogy beérkezett. Az ön általi elmentés jóváhagyottá teszi. Elutasítani úgy tudja, hogy törli.",
+      "do": "jóváhagyja",
+      "doing": "jóváhagyás",
+      "done": "jóváhagyva"
+    },
     "send": {
       "label": "küldés",
       "do": "elküldi",
@@ -135,7 +142,7 @@
       "do": "automatikusan egyezteti",
       "done": "automatikusan egyeztetve"
     } ,
-   "revoke": {
+    "revoke": {
       "do": "visszavonja",
       "done": "visszavonva"
     },

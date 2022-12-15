@@ -81,11 +81,13 @@ Communities.helpers({
     return Object.keys(this.parcels);
   },
   displayType() {
-    if (this.settings.ownershipScheme === 'condominium' || this.settings.ownershipScheme === 'condo-coop') return 'condo';
+    const scheme = this.settings?.ownershipScheme;
+    if (scheme === 'condominium' || scheme === 'condo-coop') return 'condo';
     return 'community';
   },
   hasPhysicalLocations() {
-    if (this.settings.ownershipScheme === 'condominium' || this.settings.ownershipScheme === 'condo-coop') return true;
+    const scheme = this.settings?.ownershipScheme;
+    if (scheme === 'condominium' || scheme === 'condo-coop') return true;
     return false
   },
   propertyCategory() {
@@ -93,7 +95,9 @@ Communities.helpers({
     return '%property';
   },
   hasVotingUnits() {
-    switch(this.settings.ownershipScheme) {
+    const scheme = this.settings?.ownershipScheme;
+    if (!scheme) return;
+    switch(scheme) {
       case 'condominium':
       case 'corporation':
       case 'basket-coop':
@@ -103,7 +107,7 @@ Communities.helpers({
       case 'condo-coop':
         return false;
       default:
-        debugAssert(false, `No such ownershipScheme: ${this.settings.ownershipScheme}`);
+        debugAssert(false, `No such ownershipScheme: ${scheme}`);
     }
   },
   nextAvailableSerial() {
@@ -113,7 +117,7 @@ Communities.helpers({
     return maxSerial + 1;
   },
   totalUnits() {
-    return this.settings.totalUnits || this.registeredUnits;
+    return this.settings?.totalUnits || this.registeredUnits;
   },
   displayAddress() {
     return displayAddress(this);
@@ -182,7 +186,7 @@ Communities.helpers({
     return !!Agendas.findOne({ communityId: this._id, live: true });
   },
   isActiveModule(moduleName) {
-    return !this.settings.modules || _.contains(this.settings.modules, moduleName);
+    return !this?.settings.modules || _.contains(this.settings.modules, moduleName);
   },
   toString() {
     return this.name;

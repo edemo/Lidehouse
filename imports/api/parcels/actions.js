@@ -262,7 +262,7 @@ _.each(Parcels.entities, (entity, key) => {
 
   AutoForm.addHooks(`af.${entity.name}.create`, {
     formToDoc(doc) {
-      doc.category = entity.category?.() || entity.name;
+      doc.category = callOrRead.call(this, entity.category);
       return doc;
     },
   });
@@ -277,11 +277,14 @@ _.each(Parcels.entities, (entity, key) => {
 AutoForm.addModalHooks('af.property.create.unapproved');
 AutoForm.addHooks('af.property.create.unapproved', {
   formToDoc(doc) {
+    debugger
     doc.approved = false;
-    doc.category = doc.community().propertyCategory();
+    const community = Communities.findOne(doc.communityId);
+    doc.category = community.propertyCategory();
     return doc;
   },
   onSuccess(formType, result) {
+    debugger
     onJoinParcelInsertSuccess(result);
   },
 });

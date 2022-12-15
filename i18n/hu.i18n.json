@@ -244,7 +244,6 @@
   "ok": "OK",
   "cancel": "mégsem",
   "close": "bezárás",
-  "confirm": "Jóváhagy?",
   "Loading": "Betöltés folyamatban",
   "period": "Időszak",
   "post": "Könyvelésbe küldés",
@@ -826,7 +825,7 @@
 
   // Notifications
   "Join request submitted": "Csatlakozási kérelem beadva a(z) %s közösséghez",
-  "Join request notification": "A csatlakozási kérelmet a képviselőknek jóvá kell hagyniuk. A ház adatait csak a kérelem jóváhagyását követően fogja látni, és akkortól fog tudni hozzászólni a témákhoz.",
+  "Join request notification": "A csatlakozási kérelmet a vezető tisztségviselőknek jóvá kell hagyniuk. A közösség adatait csak a kérelem jóváhagyását követően fogja látni, és akkortól fog tudni hozzászólni a témákhoz.",
   "Vote casted": "Szavazat sikeresen leadva",
   "Vote revoked": "Szavazat sikeresen visszavonva",
   "user data updated": "felhasználói adatok elmentve",

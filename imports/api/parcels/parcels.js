@@ -94,7 +94,7 @@ Meteor.startup(function indexParcels() {
 
 Parcels.helpers({
   entityName() {
-    return this.category;
+    return this.category.substring(1);
   },
   community() {
     return Communities.findOne(this.communityId);

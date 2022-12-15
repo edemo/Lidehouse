@@ -10,16 +10,19 @@ Parcels.entities = {
     category: () => getActiveCommunity().propertyCategory(),
     schema: () => Parcels.simpleSchema({ category: getActiveCommunity().propertyCategory() }),
   },
-  '@common': {
-    name: '@common',
+  'common': {
+    name: 'common',
+    category: '@common',
     schema: Parcels.simpleSchema({ category: '@common' }),
   },
-  '@group': {
-    name: '@group',
+  'group': {
+    name: 'group',
+    category: '@group',
     schema: Parcels.simpleSchema({ category: '@group' }),
   },
-  '#tag': {
-    name: '#tag',
+  'tag': {
+    name: 'tag',
+    category: '#tag',
     schema: Parcels.simpleSchema({ category: '#tag' }),
   },
 };

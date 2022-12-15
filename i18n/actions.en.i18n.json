@@ -107,6 +107,13 @@
       "doing": "invite",
       "done": "invited"
     },
+    "approve": {
+      "label": "approve",
+      "help": "Listed here you see the submitted but not yet approved applicatios. You can approve them by editing and saving them. While editing, you may modify any data, or leave everything as submitted and save it. Saving it by you makes it approved. To reject them, simply delete them.", 
+      "do": "approve",
+      "doing": "approve",
+      "done": "approved"
+    },
     "send": {
       "label": "send",
       "do": "send",
