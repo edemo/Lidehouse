@@ -51,7 +51,7 @@ Contracts.memberSchema = new SimpleSchema({
   },
   delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // DEPRICATED
   cc: { type: [Contracts.ccIdSchema] },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { type: () => (ModalStack.getVar('parcelId') ? 'hidden' : undefined), relation: 'property' } },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { ...noUpdate, ...chooseProperty, type: () => (ModalStack.getVar('parcelId') ? 'hidden' : undefined) } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty } },
 //  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   habitants: { type: Number, optional: true, autoform: { ...noUpdate, type: () => (getActiveCommunity()?.hasPhysicalLocations() ?  undefined : 'hidden') } },
