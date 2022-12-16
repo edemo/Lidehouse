@@ -1182,6 +1182,19 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 66,
+  name: 'Contracts.cc',
+  up() {
+    Contracts.find().forEach(contract => {
+      if (contract.delegateId) {
+        Contracts.direct.update({ _id: contract._id }, { $set: { 'cc': [{ partnerId: contract.delegateId }] } }, { selector: { relation: 'member' } });
+        Contracts.direct.update({ _id: contract._id }, { $unset: { 'delegateId': '' } }, { selector: { relation: 'member' } });        
+      }
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes

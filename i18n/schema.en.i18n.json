@@ -677,9 +677,12 @@
         "label": "Location"
       }
     },
-    "delegateId": {
-      "label": "Paying partner",
-      "help": "Fill this if the bill should not be paid by the owner, but another person. This person will get a copy of every bill."
+    "cc": {
+      "label": "Receives bill copies",
+      "partnerId": {
+        "label": "Partner",
+        "help": "Fill this if the bill is not to be paid by the owner, but by other persons. These partners will also get a copy of all bills."
+      }
     },
     "topicIds": {
       "label": "Worksheets"

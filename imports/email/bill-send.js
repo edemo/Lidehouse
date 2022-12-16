@@ -12,7 +12,7 @@ export function sendBillEmail(bill) {
   const community = bill.community();
   const partner = bill.partner();
   let emailAddress = partner.primaryEmail();
-  let ccAddress = bill.contract()?.delegate()?.primaryEmail();
+  let ccAddress = bill.contract()?.ccPartners()?.map(partner => partner.primaryEmail());
   if (!emailAddress) {
     if (ccAddress) {
       emailAddress = ccAddress;

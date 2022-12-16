@@ -38,6 +38,10 @@ Contracts.detailsSchema = new SimpleSchema({
   text: { type: String, max: 5000,  autoform: { rows: 8 }, optional: true },
 });
 
+Contracts.ccIdSchema = new SimpleSchema({
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
+});
+
 Contracts.memberSchema = new SimpleSchema({
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
     autoform: { ...noUpdate, ...choosePartnerOfParcel, value: () => {
@@ -45,7 +49,8 @@ Contracts.memberSchema = new SimpleSchema({
       return leadParcelId && Contracts.findOneActive({ parcelId: leadParcelId })?.partnerId;
     } },
   },
-  delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
+  delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // DEPRICATED
+  cc: { type: [Contracts.ccIdSchema] },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { type: () => (ModalStack.getVar('parcelId') ? 'hidden' : undefined), relation: 'property' } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty } },
 //  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
@@ -61,7 +66,7 @@ Contracts.modifiableFields = [
   'text',
   'accounting.account',
   'accounting.localizer',
-  'delegateId',
+  'cc',
 //  'habitants',
 ];
 
@@ -95,14 +100,18 @@ Contracts.helpers({
   partnerName() {
     return this.partner()?.displayName();
   },
-  delegate() {
-    if (this.delegateId) return Partners.findOne(this.delegateId);
+  ccIds() {
+    if (this.cc) return this.cc.map(c => c.partnerId);
+    return undefined;
+  },
+  ccPartners() {
+    if (this.cc) return Partners.find({ _id: { $in: this.ccIds() } }).fetch();
     return undefined;
   },
   entitledToView(user) {
     if (!this.partnerId) return undefined;
     if (this.partner()?.userId === user._id) return true;
-    if (this.delegate()?.userId === user._id) return true;
+    if (_.contains(this.ccPartners()?.map(p => p.userId), user._id)) return true;
     if (this.relation === 'member' && this.parcelId) {
       const parcelDoc = Parcels.findOne(this.parcelId);
       return user.hasPermission('parcels.finances', parcelDoc);
