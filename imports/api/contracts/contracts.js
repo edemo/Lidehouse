@@ -14,6 +14,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { noUpdate } from '/imports/utils/autoform.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Partners, choosePartner, choosePartnerOfParcel } from '/imports/api/partners/partners.js';
 import { Parcels, chooseParcel, chooseProperty } from '/imports/api/parcels/parcels.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
@@ -48,7 +49,7 @@ Contracts.memberSchema = new SimpleSchema({
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { type: () => (ModalStack.getVar('parcelId') ? 'hidden' : undefined), relation: 'property' } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty } },
 //  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  habitants: { type: Number, optional: true, autoform: { ...noUpdate } },
+  habitants: { type: Number, optional: true, autoform: { ...noUpdate, type: () => (getActiveCommunity()?.hasPhysicalLocations() ?  undefined : 'hidden') } },
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
 
