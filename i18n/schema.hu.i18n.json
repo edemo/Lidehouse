@@ -91,9 +91,14 @@
       "placeholder": "(pl. 101 vagy 25/B)"
     },
     "lot": {
-      "label": "Helyrajzi/cégjegyzék szám",
-      "help": "Ház esetében a helyrajzi, Cég esetében a cégjegyzékszámot rögzítheti itt. Ezzel az egyedi azonosítóval lehet a közösséget egyértelműen megtalálni az adatbázisban.",
+      "label": "Helyrajzi szám",
+      "help": "Ház esetében ezzel az egyedi azonosítóval lehet a közösséget egyértelműen megtalálni az adatbázisban.",
       "placeholder": "(pl. 29732/9)"
+    },
+    "regNo": {
+      "label": "Cégjegyzék szám",
+      "help": "Bejegyzett cégek esetében kitöltendő",
+      "placeholder": "(BS-CF-NNNNNN)"
     },
     "registeredUnits": {
       "label": "Regisztrált albetétek hányada",

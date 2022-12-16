@@ -45,7 +45,8 @@ Communities.schema = new SimpleSchema([{
   description: { type: String, max: 1200, optional: true },
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
 }, AddressSchema, {
-  lot: { type: String, max: 100 }, 
+  lot: { type: String, max: 100, optional: true },
+  regNo: { type: String, max: 100, optional: true },
   management: { type: String, optional: true, autoform: { type: 'textarea' } },
   taxNo: { type: String, max: 50, optional: true },
   totalunits: { type: Number, optional: true, autoform: { omit: true } }, // DEPRICATED (removed in migration 65)

@@ -273,8 +273,9 @@
                         </div>
                         <div class="ibox-content profile-content">
                             <h4><strong>{{community.name}}</strong></h4>
-                            <p>{{_ 'schemaCommunities.lot.label'}}: {{community.lot}}<br>
-                            <i class="fa fa-map-marker"></i>{{community.displayAddress}}</p>
+                            <p>{{#if community.lot}}{{_ 'schemaCommunities.lot.label'}}: {{community.lot}}<br>{{/if}}
+                                {{#if community.regNo}}{{_ 'schemaCommunities.regNo.label'}}: {{community.regNo}}<br>{{/if}}
+                                <i class="fa fa-map-marker"></i>{{community.displayAddress}}</p>
                             {{#if community.description}}
                             <div class="m-t-md">
                                 <h5>{{_ 'schemaCommunities.description.label'}}</h5>

@@ -92,8 +92,13 @@
     },
     "lot": {
       "label": "Lot number",
-      "help": "For companies you can use this field for the registration number",
+      "help": "For condominiums",
       "placeholder": "(eg. 29732/9)"
+    },
+    "regNo": {
+      "label": "Registration number",
+      "help": "For registered companies only",
+      "placeholder": "(BS-CF-NNNNNN)"
     },
     "management": {
       "label": "Contact info of management",
