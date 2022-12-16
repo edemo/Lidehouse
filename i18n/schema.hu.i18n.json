@@ -680,9 +680,11 @@
     },
     "cc": {
       "label": "Számlamásolatot kapnak",
-      "partnerId": {
-        "label": "Partner",
-        "help": "Ha a számlákat nem a számlán szereplő személy, hanem más fogja fizetni, itt megadhat más partnert, aki részére szintén meg lesznek küldve a számlák."
+      "$": {
+        "partnerId": {
+          "label": "Partner",
+          "help": "Ha a számlákat nem a számlán szereplő személy, hanem más fogja fizetni, itt megadhat más partnert, aki részére szintén meg lesznek küldve a számlák."
+        }  
       }
     },
     "topicIds": {

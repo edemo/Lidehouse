@@ -90,7 +90,6 @@ export const apply = new ValidatedMethod({
               dueDate: moment(issueDate).add(BILLING_DUE_DAYS, 'days').toDate(),
               lines: [],
             };
-            console.log('line', line);
             billsToSend[leadParcel._id].lines.push(line);
           }
 

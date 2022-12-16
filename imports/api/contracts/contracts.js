@@ -101,7 +101,7 @@ Contracts.helpers({
     return this.partner()?.displayName();
   },
   ccIds() {
-    if (this.cc) return this.cc.map(c => c.partnerId);
+    if (this.cc) return this.cc.map(c => c?.partnerId);
     return undefined;
   },
   ccPartners() {

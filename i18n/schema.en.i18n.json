@@ -679,9 +679,11 @@
     },
     "cc": {
       "label": "Receives bill copies",
-      "partnerId": {
-        "label": "Partner",
-        "help": "Fill this if the bill is not to be paid by the owner, but by other persons. These partners will also get a copy of all bills."
+      "$": {
+        "partnerId": {
+          "label": "Partner",
+          "help": "Fill this if the bill is not to be paid by the owner, but by other persons. These partners will also get a copy of all bills."
+        }  
       }
     },
     "topicIds": {

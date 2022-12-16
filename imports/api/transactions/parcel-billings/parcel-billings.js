@@ -156,10 +156,8 @@ Meteor.startup(function indexParcelBillings() {
 ParcelBillings.filterParcelsByLocalizer = function filterParcelsByLocalizer(communityId, localizer, withFollowers) {
   const selector = { communityId, category: { $in: ['%property', '@property'] } };
   if (localizer) selector.code = new RegExp('^' + localizer);
-  console.log('selector', selector);
   let parcels = Parcels.find(selector).fetch();
   if (withFollowers) parcels = parcels.map(p => p.withFollowers()).flat(1);
-  console.log('Parcels', parcels);
   return parcels;
 };
 
