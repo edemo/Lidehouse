@@ -16,10 +16,10 @@ import { Flagable } from '/imports/api/behaviours/flagable.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { AttachmentField } from '/imports/api/behaviours/attachment-field.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Parcels, chooseLocalizer } from '/imports/api/parcels/parcels.js';
 import '/imports/api/users/users.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Attachments } from '/imports/api/attachments/attachments.js';
-import { chooseLocalizer } from '/imports/api/parcels/parcels.js';
 
 import './category-helpers.js';
 
@@ -40,7 +40,7 @@ Topics.baseSchema = new SimpleSchema({
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { type: 'markdown' } },
-  notiLocalizer: { type: [String], optional: true, autoform: chooseLocalizer },
+  notiLocalizer: { type: [String], optional: true, autoform: Parcels.choosePhysical },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
   movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 });

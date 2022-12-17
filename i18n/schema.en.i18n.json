@@ -205,12 +205,10 @@
     "category": {
       "label": "Kind of place",
       "options": {
-        "property": "Holding",
-        "%property": "Share",
-        "@property": "Property",
-        "@common": "Common area",
-        "@group": "Group",
-        "#tag": "Hashtag"
+        "property": "Property",
+        "common": "Common area",
+        "group": "Group",
+        "tag": "Hashtag"
       }
     },
     "serial": {

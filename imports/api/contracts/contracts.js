@@ -16,14 +16,14 @@ import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Partners, choosePartner, choosePartnerOfParcel } from '/imports/api/partners/partners.js';
-import { Parcels, chooseParcel, chooseProperty } from '/imports/api/parcels/parcels.js';
+import { Parcels, chooseLocalizer, chooseProperty } from '/imports/api/parcels/parcels.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
 export const Contracts = new Mongo.Collection('contracts');
 
 Contracts.accountingSchema = new SimpleSchema({
   account: { type: String /* account code */, autoform: { ...Accounts.chooseNode }, optional: true },
-  localizer: { type: String /* account code */, autoform: chooseParcel(), optional: true },
+  localizer: { type: String /* account code */, autoform: chooseLocalizer(), optional: true },
 });
 
 Contracts.baseSchema = new SimpleSchema({
@@ -50,7 +50,7 @@ Contracts.memberSchema = new SimpleSchema({
     } },
   },
   delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // DEPRICATED
-  cc: { type: [Contracts.ccIdSchema] },
+  cc: { type: [Contracts.ccIdSchema], optional: true },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { ...noUpdate, ...chooseProperty, type: () => (ModalStack.getVar('parcelId') ? 'hidden' : undefined) } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty } },
 //  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },

@@ -173,15 +173,15 @@
       "label": "holding",
       "it": "the holding"
     },
-    "@common": {
+    "common": {
       "label": "common property",
       "it": "the common property"
     },
-    "@group": {
+    "group": {
       "label": "group",
       "it": "the group"
     },
-    "#tag": {
+    "tag": {
       "label": "tag",
       "it": "the tag"
     },

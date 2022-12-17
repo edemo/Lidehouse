@@ -15,7 +15,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Parcels, chooseParcel } from '/imports/api/parcels/parcels.js';
+import { Parcels, chooseLocalizer } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -67,7 +67,7 @@ const lineSchema = {
   billing: { type: billingSchema, optional: true, autoform: { type: 'hidden' } },
   metering: { type: meteringSchema, optional: true, autoform: { type: 'hidden' } },
   account: { type: String, optional: true, autoform: chooseConteerAccount() },
-  localizer: { type: String, optional: true, autoform: chooseParcel() },
+  localizer: { type: String, optional: true, autoform: chooseLocalizer() },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
@@ -78,7 +78,7 @@ const simpleLineSchema = {
   title: { type: String },
   amount: { type: Number, decimal: true },
   account: { type: String, optional: true, autoform: chooseConteerAccount() },
-  localizer: { type: String, optional: true, autoform: chooseParcel() },
+  localizer: { type: String, optional: true, autoform: chooseLocalizer() },
 };
 */
 

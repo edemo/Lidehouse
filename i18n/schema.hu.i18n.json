@@ -207,11 +207,9 @@
       "label": "Hely jellege",
       "options": {
         "property": "Albetét",
-        "%property": "Részesedés",
-        "@property": "Albetét",
-        "@common": "Közös tulajdon",
-        "@group": "Gyűjtő",
-        "#tag": "Elszámolási egység"
+        "common": "Közös tulajdon",
+        "group": "Gyűjtő",
+        "tag": "Elszámolási egység"
       }
     },
     "serial": {

@@ -173,15 +173,15 @@
       "label": "albetét",
       "it": "az albetétet"
     },
-    "@common": {
+    "common": {
       "label": "közös tulajdon",
       "it": "a közös tulajdont"
     },
-    "@group": {
+    "group": {
       "label": "gyűjtő",
       "it": "a gyűjtőt"
     },
-    "#tag": {
+    "tag": {
       "label": "elszámolási egység",
       "it": "az elszámolási egységet"
     },

@@ -359,14 +359,8 @@ if (Meteor.isServer) {
 Factory.define('parcel', Parcels, {
 });
 
-Factory.define('%property', Parcels, {
-  category: '%property',
-  // serial
-  // ref
-});
-
-Factory.define('@property', Parcels, {
-  category: '@property',
+Factory.define('property', Parcels, {
+  category: () => getActiveCommunity()?.propertyCategory() || '@property',
   // serial
   // ref
   // leadRef
@@ -379,26 +373,26 @@ Factory.define('@property', Parcels, {
   area: () => faker.random.number(150),
 });
 
-Factory.define('@common', Parcels, {
+Factory.define('common', Parcels, {
   category: '@common',
 });
 
-Factory.define('@group', Parcels, {
+Factory.define('group', Parcels, {
   category: '@group',
 });
 
-Factory.define('#tag', Parcels, {
+Factory.define('tag', Parcels, {
   category: '#tag',
 });
 
 // ------------------------------------
 
-export const chooseParcel = function (code = '') {
+export const chooseLocalizer = function (code = '') {
   return {
-    relation: '#tag',
+    relation: 'tag',
     value() {
       const selfId = AutoForm.getFormId();
-      const value = ModalStack.readResult(selfId, 'af.#tag.create');
+      const value = ModalStack.readResult(selfId, 'af.tag.create');
       return value;
     },
     options() {
@@ -428,7 +422,6 @@ export const chooseProperty = {
   firstOption: () => __('(Select one)'),
 };
 
-export const chooseLocalizer = Parcels.choosePhysical;
 /*
 export const chooseLocalizer = {
   options() {
