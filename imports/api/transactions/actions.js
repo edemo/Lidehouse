@@ -72,6 +72,7 @@ Transactions.actions = {
           AutoForm.setDoc(doc, formId);
         }
       };
+      doc.autoAllocate?.();
 
       Modal.show('Autoform_modal', {
         body: entity.editForm,
