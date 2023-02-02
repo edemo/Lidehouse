@@ -152,7 +152,7 @@ export class CommunityBuilder {
     });
 
     this.nextSerial += 1;
-    return this.create('@property', data);
+    return this.create('property', data);
   }
   createLoginableUser(role, userData, membershipData) {
     const emailAddress = `${role}@${this.demoOrTest}.${this.com}`;
