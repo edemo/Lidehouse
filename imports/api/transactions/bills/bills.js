@@ -112,7 +112,7 @@ Bills.extensionSchema = new SimpleSchema([
   },
 ]);
 
-Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partnerId'];
+Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partnerId', 'contractId'];
 
 Meteor.startup(function indexBills() {
   if (Meteor.isClient && MinimongoIndexing) {

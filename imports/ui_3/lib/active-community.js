@@ -18,12 +18,13 @@ export function autosetActiveCommunity() {
 }
 
 export function getActiveCommunityId() {
+  if (!Meteor.isClient) return undefined;
   return ModalStack.getVar('communityId') || Settings.get('activeCommunityId');
 }
 
 export function getActiveCommunity() {
   const id = getActiveCommunityId();
-  return Communities.findOne(id);
+  return id && Communities.findOne(id);
 }
 
 export function defaultNewDoc() {

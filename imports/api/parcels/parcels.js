@@ -360,7 +360,7 @@ Factory.define('parcel', Parcels, {
 });
 
 Factory.define('property', Parcels, {
-  category: () => getActiveCommunity()?.propertyCategory() || '@property',
+  category: () => '@property',
   // serial
   // ref
   // leadRef
