@@ -118,6 +118,7 @@ Template.Community_finances.viewmodel({
   },
   endIndex() {
     const currentMonthIndex = this.periodBreakdown()?.leafs().findIndex(l => l.code === Period.currentMonthTag());
+    debugAssert(currentMonthIndex > 0, 'Unable to find current month in the accountingPeriods',  _.pluck(this.periodBreakdown()?.leafs(), 'code'));
     if (this.community().settings.balancesUploaded && currentMonthIndex > 0) return currentMonthIndex - 1;
     else return currentMonthIndex;
   },
