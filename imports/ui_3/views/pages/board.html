@@ -1,6 +1,6 @@
 <template name="Board">
   <div id="board" class="wrapper wrapper-content animated fadeInRight">
-
+    {{#if activeCommunity}}
     <div class="row">
 
       <!-- right side -->
@@ -39,6 +39,7 @@
       </div>
 
     </div>
+    {{/if}}
   </div>
 </template>
 
