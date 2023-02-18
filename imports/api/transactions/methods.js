@@ -89,6 +89,10 @@ export const post = new ValidatedMethod({
     if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {
       doc.getLines().forEach((line) => {
         if (line.metering) {
+          const meter = Meters.findOne(line.metering.id);
+          if (meter?.lastBilling().value !== line.metering.start.value) {
+            throw new Meteor.Error('err_invalidData', 'The posted meter billing does not start from where the previous billing ended', line.metering);
+          }
           Meters.methods.registerBilling._execute({ userId: this.userId }, { _id: line.metering.id,
             billing: { date: line.metering.end.date, value: line.metering.end.value, billId: doc._id },
           });
