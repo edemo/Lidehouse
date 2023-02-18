@@ -314,7 +314,7 @@ if (Meteor.isServer) {
         const partner = Partners.findOne(partnerId);
         const partner2Id = Fixture.builder.create('customer', { creatorId: Fixture.demoManagerId });
         const bill = Transactions.findOne(billId);
-        Contracts.update({ _id: bill.contractId }, { $set: { delegateId: partner2Id } }, { selector: { relation: 'member' } });
+        Contracts.update({ _id: bill.contractId }, { $set: { 'cc': [{ partnerId: partner2Id }] } }, { selector: { relation: 'member' } });
         const partner2 = Partners.findOne(partner2Id);
         sinon.assert.notCalled(EmailSender.send);
 
@@ -322,7 +322,7 @@ if (Meteor.isServer) {
         sinon.assert.calledOnce(EmailSender.send);
         sinon.assert.calledWithMatch(EmailSender.send, { template: 'Bill_Email' });
         sinon.assert.calledWithMatch(EmailSender.send, { to: partner.primaryEmail() });
-        sinon.assert.calledWithMatch(EmailSender.send, { cc: partner2.primaryEmail() });
+        sinon.assert.calledWithMatch(EmailSender.send, { cc: [partner2.primaryEmail()] });
         sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ user: partner.user(), community: bill.community(), bill }) });
       });
 
