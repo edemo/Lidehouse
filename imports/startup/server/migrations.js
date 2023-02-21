@@ -1195,6 +1195,22 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 67,
+  name: 'Fix unremoved payments from bills',
+  up() {
+    Transactions.find({ category: 'bill' }).forEach(bill => {
+      const pids = bill.getPayments();
+      pids.forEach(p => {
+        const payment = Transactions.findOne(p.id);
+        const found = _.find(payment.getBills(), b => b.id === bill._id);
+        if (!found) console.log("Payment", payment._id, payment.serialId, "does not have bill ",  bill._id, bill.serialId);
+      });
+    });
+  },
+});
+
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes
