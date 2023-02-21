@@ -35,23 +35,6 @@ Object.setByString = function (object, string, value) {
   }
 };
 
-// Source: http://adripofjavascript.com/blog/drips/object-equality-in-javascript.html
-Object.deepEquals = function deepEquals(a, b) {
-  if (a === undefined && b === undefined) return true;
-  if (a === undefined || b === undefined) return false;
-  if (a === b) return true;
-  const aProps = Object.getOwnPropertyNames(a);
-  const bProps = Object.getOwnPropertyNames(b);
-  if (aProps.length != bProps.length) return false;
-  for (let i = 0; i < aProps.length; i++) {
-    const propName = aProps[i];
-    if (!Object.deepEquals(a[propName], b[propName])) {
-      return false;
-    }
-  }
-  return true;
-};
-
 // Info: https://www.samanthaming.com/tidbits/70-3-ways-to-clone-objects/
 Object.deepClone = function deepClone(obj) {
   const clone = {};
@@ -119,8 +102,8 @@ Math.smallerInAbs = function smallerInAbs(a, b) {
 // So by calling fetch, you can make sure it becomes an Array
 Array.difference = function difference(array1, array2) {
   const result = [];
-  array1.forEach(elem1 => {
-    const foundInArray2 = _.find(array2, (elem2 => _.isEqual(elem1, elem2)));
+  (array1 || []).forEach(elem1 => {
+    const foundInArray2 = _.find((array2 || []), (elem2 => _.isEqual(elem1, elem2)));
     if (!foundInArray2) result.push(elem1);
   });
   return result;

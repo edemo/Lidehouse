@@ -446,18 +446,18 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     const oldDoc = Transactions._transform(this.previous);
     const newDoc = tdoc;
-    if (tdoc.category === 'payment' && modifierChangesField(modifier, ['bills'])) {
+    if (tdoc.category === 'payment' && modifierChangesField(oldDoc, newDoc, ['bills'])) {
       Array.difference(oldDoc.getBills(), newDoc.getBills()).forEach(bp => oldDoc.registerOnBill(bp, -1));
       Array.difference(newDoc.getBills(), oldDoc.getBills()).forEach(bp => newDoc.registerOnBill(bp, +1));
     }
-    if (modifierChangesField(modifier, ['amount'])) {
+    if (modifierChangesField(oldDoc, newDoc, ['amount'])) {
       newDoc.seId?.forEach((id) => {
         const sE = StatementEntries.findOne(id);
         const reconciled = sE.calculateReconciled();
         if (reconciled !== sE.reconciled) StatementEntries.direct.update(id, { $set: { reconciled } });
       });
     }
-    if (modifierChangesField(modifier, ['valueDate', 'debit', 'credit', 'postedAt'])) {
+    if (modifierChangesField(oldDoc, newDoc, ['valueDate', 'debit', 'credit', 'postedAt'])) {
       if (oldDoc.postedAt) oldDoc.updateBalances(-1);
       if (newDoc.postedAt) newDoc.updateBalances(+1);
     }

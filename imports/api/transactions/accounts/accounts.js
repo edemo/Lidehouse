@@ -248,7 +248,7 @@ if (Meteor.isServer) {
   });
 
   Accounts.after.update(function (userId, doc, fieldNames, modifier, options) {
-    if (modifierChangesField(modifier, ['code'])) {
+    if (modifierChangesField(this.previous, this, ['code'])) {
       unmarkGroupAccountsUpward(this.previous);
       markGroupAccountsUpward(doc);
     }

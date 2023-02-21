@@ -8,16 +8,14 @@ export function isFieldDeleted(doc, modifier, field) {
   return false;
 }
 
-export function modifierChangesField(modifier, fields) {
+export function modifierChangesField(oldDoc, newDoc, fields) {
   let result = false;
-  function checkOperator(operator) {
-    _.each(operator, (value, key) => {
-      if (_.contains(fields, key)) result = true;
-    });
-  }
-  checkOperator(modifier.$set);
-  checkOperator(modifier.$sunset);
-  checkOperator(modifier.$inc);
+  fields.forEach(field => {
+    if (!_.isEqual(newDoc[field], oldDoc[field])) {
+      result = true;
+      return false;
+    }
+  });
   return result;
 }
 
