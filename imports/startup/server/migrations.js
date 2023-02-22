@@ -1203,6 +1203,7 @@ Migrations.add({
       const pids = bill.getPayments();
       pids.forEach(p => {
         const payment = Transactions.findOne(p.id);
+        if (!payment) console.log("Payment", p.id, "does not exist anymore. Referenced on bill ",  bill._id, bill.serialId);
         const found = _.find(payment.getBills(), b => b.id === bill._id);
         if (!found) console.log("Payment", payment._id, payment.serialId, "does not have bill ",  bill._id, bill.serialId);
       });
