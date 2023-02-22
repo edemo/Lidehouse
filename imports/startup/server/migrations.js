@@ -1199,9 +1199,17 @@ Migrations.add({
   version: 67,
   name: 'Fix unremoved payments from bills',
   up() {
+  },
+});
+
+Migrations.add({
+  version: 68,
+  name: 'Log unremoved payments from bills',
+  up() {
     Transactions.find({ category: 'bill' }).forEach(bill => {
       const pids = bill.getPayments();
       pids.forEach(p => {
+        if (p.amount === 0) return;
         const payment = Transactions.findOne(p.id);
         if (!payment) {
           console.log("Payment", p.id, "does not exist anymore. Referenced on bill ",  bill._id, bill.serialId);
@@ -1213,7 +1221,6 @@ Migrations.add({
     });
   },
 });
-
 
 // Use only direct db operations to avoid unnecessary hooks!
 
