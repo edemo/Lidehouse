@@ -756,6 +756,7 @@
   "errorInFormFieldValidation": "Az adatok megadása hiányos vagy nem megfelelő. A pirossal jelölt mezők kitöltése kötelező ezen az adatlapon",
   "Parcel is missing data for billing calculation": "Az albetéten nincs megadva az adat, ami a számlázáshoz szükséges",
   "The posted meter billing does not start from where the previous billing ended": "A lekönyvelt számlán a mérőórán kiszámlázott érték nem onnan indul, ami a legutóbb kiszámlázott érték. És ezért a mért értéket nem lehetett bekönyvelni.",
+  "Not possible to bill with future date": "Jövőbeli dátummal nem lehet előírni",
   "err_constraint": "Az engedélyezetteken kívüli érték",
   "err_notAvailable": "Nem elérhető", 
   "Server is busy, please try again in a few seconds": "A szerver foglalt, kérjük próbálja újra néhány másodperc múlva",

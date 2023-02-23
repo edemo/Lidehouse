@@ -47,6 +47,7 @@ export const apply = new ValidatedMethod({
   run({ communityId, date, ids, localizer, withFollowers }) {
     if (Meteor.isClient) return;
     checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
+    if (Date.now() < date) throw new Meteor.Error('err_invalidData', 'Not possible to bill with future date', date);
     const relationAccount = Accounts.getByName('Members', communityId).code;
     const incomeAccount = Accounts.getByName('Owner payins', communityId).code;
     ActiveTimeMachine.runAtTime(date, () => {
