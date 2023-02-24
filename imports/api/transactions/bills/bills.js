@@ -7,6 +7,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
+import { productionAssert } from '/imports/utils/assert.js';
 import { Clock } from '/imports/utils/clock.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -220,8 +221,11 @@ Transactions.categoryHelpers('bill', {
   lineRelationAccount(line) {
     if (line.relationAccount) return line.relationAccount;
     let account = this.relationAccount;
-    if (line.billing) account += ParcelBillings.findOne(line.billing.id).digit;
-    else if (this.relation === 'member' && line.account && this.defId) {
+    if (line.billing) {
+      const billing = ParcelBillings.findOne(line.billing.id);
+      productionAssert(billing, 'Unable to find the billing which created this bill line', { bill: this, line });
+      account += billing.digit;
+    } else if (this.relation === 'member' && line.account && this.defId) {
       let digit = '';
       this.txdef()[this.conteerSide()].forEach(code => {
         if (line.account.startsWith(code)) {

@@ -192,6 +192,9 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(ParcelBillings, _id);
     checkPermissions(this.userId, 'parcelBillings.remove', doc);
+    if (doc.applyCount() > 0) {
+      throw new Meteor.Error('err_unableToRemove', 'Not possible to remove billing, if it was already applied, archive it instead');
+    }
     return ParcelBillings.remove(_id);
   },
 });

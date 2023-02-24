@@ -213,6 +213,10 @@ ParcelBillings.helpers({
     const found = this.appliedAt.find(a => a.period === period);
     return found ? found.valueDate : undefined;
   },
+  bills() {
+    // WARNING: Bills are not indexed by billing.id!
+    return Transactions.find({ communityId: doc.communityId, category: 'bill', 'lines.billing.id': this._id }).fetch();
+  },
   toString() {
     debugAssert(Meteor.isClient, 'Needs the active locale to display');
     const consumptionPart = this.consumption ? `${displayMoney(this.consumption.charges[0].unitPrice)}/${__('consumed')} ${this.consumption.charges[0].uom}` : '';
