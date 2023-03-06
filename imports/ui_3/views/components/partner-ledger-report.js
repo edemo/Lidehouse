@@ -28,6 +28,17 @@ Template.Partner_ledger_report.helpers({
     if (sideFunc === 'total') result *= -1;
     return result;
   },
+  balance431(contract, tag, sideFunc, tagtype) {
+    const balance = Balances.get({
+      communityId: ModalStack.getVar('communityId'),
+      account: '`431',
+      partner: contract.code(),
+      tag,
+    }, tagtype);
+    let result = balance[sideFunc]();
+    if (sideFunc === 'total') result *= -1;
+    return result;
+  },
   hasActivity(contract, tag) {
     return !!Balances.findOne({
       communityId: ModalStack.getVar('communityId'),
