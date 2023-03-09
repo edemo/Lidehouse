@@ -25,12 +25,12 @@
                     {{displayNumber cellValue}}
                 </td>
                 {{/let}}
-                {{#let cellValue=(balance contract '`33' tag 'debitSum' 'period')}}
+                {{#let cellValue=(add (balance contract relationAccount tag 'debitSum' 'period') (balance contract '`434' tag 'creditTotal' 'period'))}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-contract="{{contract._id}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayNumber cellValue}}
                 </td>
                 {{/let}}
-                {{#let cellValue=(add (balance contract '`33' tag 'creditSum' 'period') (balance contract '`431' tag 'creditTotal' 'period'))}}
+                {{#let cellValue=(add (balance contract relationAccount tag 'creditSum' 'period') (balance contract '`431' tag 'creditTotal' 'period'))}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-contract="{{contract._id}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayNumber cellValue}}
                 </td>
@@ -50,7 +50,7 @@
                     {{displayNumber cellValue}}
                 </td>
                 {{/let}}
-                {{#let cellValue=(balance contract '`431' tag 'total' 'closing')}}
+                {{#let cellValue=(balance contract '`43' tag 'total' 'closing')}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-contract="{{contract._id}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayNumber cellValue}}
                 </td>

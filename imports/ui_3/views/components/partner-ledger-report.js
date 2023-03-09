@@ -10,14 +10,22 @@ import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
 import './partner-ledger-report.html';
 
-Template.Partner_ledger_report.onCreated(function onCreated() {
-  this.autorun(() => {
-    const communityId = ModalStack.getVar('communityId');
-    this.subscribe('balances.inCommunity', { communityId, partners: [] /*, tags: [Template.currentData().tag]*/ });
-  });
-});
-
-Template.Partner_ledger_report.helpers({
+Template.Partner_ledger_report.viewmodel({
+  onCreated(instance) {
+    instance.autorun(() => {
+      const communityId = ModalStack.getVar('communityId');
+      instance.subscribe('balances.inCommunity', { communityId, partners: [] /*, tags: [Template.currentData().tag]*/ });
+    });
+  },
+  relationAccount() {
+    // TODO: Get it from configuration
+    const relation = this.templateInstance.data.relation;
+    if (relation === 'member') return '`33';
+    if (relation === 'customer') return '`31';
+    if (relation === 'supplier') return '`454';
+    debugAssert(false);
+    return null;
+  },
   balance(contract, account, tag, sideFunc, tagtype) {
     const balance = Balances.get({
       communityId: ModalStack.getVar('communityId'),

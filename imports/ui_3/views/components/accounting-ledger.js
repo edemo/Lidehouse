@@ -54,8 +54,8 @@ Template.Accounting_ledger.viewmodel({
   partnerContractOptions() {
     return Contracts.partnerContractOptionsWithAll({ communityId: this.communityId });
   },
-  contracts() {
-    return Contracts.find({ communityId: this.communityId(), relation: 'member' }).fetch();
+  contracts(relation) {
+    return Contracts.find({ communityId: this.communityId(), relation }).fetch();
   },
   contractOptions() {
     return this.contracts().map(c => c.asOption());
