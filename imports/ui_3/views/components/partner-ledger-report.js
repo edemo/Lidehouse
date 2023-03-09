@@ -18,20 +18,10 @@ Template.Partner_ledger_report.onCreated(function onCreated() {
 });
 
 Template.Partner_ledger_report.helpers({
-  balance(contract, tag, sideFunc, tagtype) {
+  balance(contract, account, tag, sideFunc, tagtype) {
     const balance = Balances.get({
       communityId: ModalStack.getVar('communityId'),
-      partner: contract.code(),
-      tag,
-    }, tagtype);
-    let result = balance[sideFunc]();
-    if (sideFunc === 'total') result *= -1;
-    return result;
-  },
-  balance431(contract, tag, sideFunc, tagtype) {
-    const balance = Balances.get({
-      communityId: ModalStack.getVar('communityId'),
-      account: '`431',
+      account,
       partner: contract.code(),
       tag,
     }, tagtype);
