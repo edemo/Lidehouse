@@ -72,6 +72,9 @@ export const EmailTemplateHelpers = {
   concat() {
     return Array.prototype.slice.call(arguments, 0, -1).join('');
   },
+  contains(array, elem) {
+    return _.contains(array, elem);
+  },
   entriesOf(obj) {
     return Object.entries(obj);
   },

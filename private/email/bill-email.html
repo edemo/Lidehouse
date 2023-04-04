@@ -65,9 +65,11 @@
                         <strong>{{_ 'schemaPartners.BAN.label'}}: {{account.BAN}}{{#if account.bank}} ({{account.bank}}){{/if}}</strong>
                         {{/let}}
                     </p>
+                    {{#if (contains community.settings.paymentsToBills bill.relation)}}
                     <p>{{_ 'email.PaymentInstructions'}}:<br>
                         <strong>{{_ 'schemaStatementEntries.note.label'}}: {{bill.serialId}}</strong>
                     </p>
+                    {{/if}}
                 </td>
             </tr>
         </tbody>
