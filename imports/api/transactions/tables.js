@@ -24,10 +24,10 @@ Render.txdefName = function (cellData, renderType, currentRow) {
 
 export function transactionColumns() {
   const columns = [
-    { data: 'serialId', title: __('schemaSerialId.serialId.label') },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
-    { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber(0) },
+    { data: 'serialId', title: __('schemaSerialId.serialId.label') },
     { data: 'defId', title: __('schemaTransactions.defId.label'), render: Render.txdefName },
+    { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber(0) },
     { data: 'debit', title: __('schemaTransactions.debit.label'), render: Render.journalEntries },
     { data: 'credit', title: __('schemaTransactions.credit.label'), render: Render.journalEntries },
     { data: 'choppedNotes()', title: __('schemaNoted.notes.label') },
