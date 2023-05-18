@@ -194,7 +194,7 @@ Topics.actions = {
   archive: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'archive',
     icon: 'fa fa-archive',
-    visible: ['news', 'forum'].includes(doc?.entityName()) && !doc?.closed && user.hasPermission(`${doc.entityName()}.remove`, doc),
+    visible: ['news', 'forum', 'vote'].includes(doc?.entityName()) && !doc?.closed && user.hasPermission(`${doc.entityName()}.remove`, doc),
     run() {
       Modal.confirmAndCall(Topics.methods.archive, { _id: doc._id }, {
         action: 'archive',

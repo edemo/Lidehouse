@@ -16,13 +16,14 @@ import { updateMyLastSeen } from '/imports/api/users/methods.js';
 
 const schema = new SimpleSchema({
   status: { type: String, autoform: { omit: true } }, /* needs to be checked against the workflow rules */
-  closed: { type: Boolean, autoform: { omit: true }, autoValue() {
-    if (this.isSet) return this.value;
-    const status = this.field('status').value;
-    if (!status) return undefined; // don't touch
-    if (status === 'closed' || status === 'deleted') return true;
-    else return false;
-  } },
+  closed: { type: Boolean, autoform: { omit: true } }, // Should be called "archived". It is not related to the status, it is a performance enhancement, to not load archived items by default
+// autoValue() { This is not working for unknown reason
+//    if (this.isSet) return this.value;
+//    const status = this.field('status').value;
+//    if (!status) return undefined; // don't touch
+//    if (status === 'closed' || status === 'deleted') return true;
+//    else return false;
+//  } 
   opensAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate),
     custom() {
       const now = Clock.currentTime();

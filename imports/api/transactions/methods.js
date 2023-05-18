@@ -200,6 +200,8 @@ export const reallocate = new ValidatedMethod({ // This methods reposts the tran
     }
     checkModifier(doc, modifier, ['bills', 'lines']);
 
+    // TODO: We should modify first into a TransactionsStage, because validate() depends on the context (eg when deciding if partner has enough unidentfied amount)
+    // But the problem is that the staged Transactions should do their before/after updates into a BalancesStage. This requires the Stage to not be limited to only one Collection.
     let newDoc = rusdiff.clone(doc);
     rusdiff.apply(newDoc, modifier);
     newDoc = Transactions._transform(newDoc);
