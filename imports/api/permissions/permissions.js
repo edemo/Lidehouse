@@ -40,7 +40,7 @@ export const Permissions = [
   { name: 'meters.insert',          roles: ['manager'] },
   { name: 'meters.insert.unapproved', roles: ['owner@parcel'] },
   { name: 'meters.update',          roles: ['manager'] },
-  { name: 'meters.registerReading', roles: ['manager', 'owner@parcel'] },
+  { name: 'meters.registerReading', roles: ['manager', 'owner@parcel', 'benefactor@parcel'] },
   { name: 'meters.remove',          roles: ['manager'] },
   { name: 'meters.upsert',          roles: ['manager'] },
   { name: 'agendas.inCommunity',    roles: everyRole },
