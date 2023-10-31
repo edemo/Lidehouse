@@ -51,6 +51,7 @@ export function checkPermissions(userId, permissionName, doc) {
     throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
       `${permissionName}, ${userId}, ${JSON.stringify(doc)}`);
   }
+  return user;
 }
 
 export function checkPermissionsWithApprove(userId, permissionName, doc) {

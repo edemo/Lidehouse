@@ -68,7 +68,7 @@ export const registerReading = new ValidatedMethod({
 
   run({ _id, reading }) {
     const doc = checkExists(Meters, _id);
-    checkPermissions(this.userId, 'meters.registerReading', doc);
+    const user = checkPermissions(this.userId, 'meters.registerReading', doc);
 
     const lastReading = doc.lastReading();
     if (lastReading && reading.date < lastReading.date) {
@@ -78,7 +78,7 @@ export const registerReading = new ValidatedMethod({
       throw new Meteor.Error('err_notAllowed', 'There is already a higher reading');
     }
 
-    _.extend(reading, { approved: false });
+    _.extend(reading, { approved: user.hasPermission('meters.update', doc) });
     const modifier = { $push: { readings: reading } };
 
     return Meters.update(_id, modifier);
