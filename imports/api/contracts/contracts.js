@@ -36,6 +36,8 @@ Contracts.baseSchema = new SimpleSchema({
 Contracts.detailsSchema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000,  autoform: { rows: 8 }, optional: true },
+  billingPeriod: { type: String, max: 50, optional: true },
+  billingAmount: { type: Number, decimal: true, optional: true },
 });
 
 Contracts.ccIdSchema = new SimpleSchema({
@@ -64,6 +66,8 @@ Contracts.modifiableFields = [
   // 'partnerId' and 'leadParcelId' are definitely not allowed to change! - you should create new Contract in that case
   'title',
   'text',
+  'billingPeriod',
+  'billingAmount',
   'accounting.account',
   'accounting.localizer',
   'cc',

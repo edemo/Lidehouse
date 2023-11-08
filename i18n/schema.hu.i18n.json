@@ -663,6 +663,16 @@
       "label": "Leírás",
       "placeholder": "(pl. 2012 CXXL. kormányrendelet alapján kötelező)"
     },
+    "billingPeriod": {
+      "label": "Fizetési gyakoriság",
+      "help": "Ilyen időszakonként kerül számla kiállításra.",
+      "placeholder": "(pl. Havi v Negyedéves)"
+    },
+    "billingAmount": {
+      "label": "Fizetési összeg",
+      "help": "Ennyit számláznak minden egyes időszakban.",
+      "placeholder": "(pl. 156000)"
+    },
     "partnerId": {
       "label": "Partner"
     },

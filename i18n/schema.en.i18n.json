@@ -662,6 +662,16 @@
       "label": "Description",
       "placeholder": "(eg. 2012 CXXL. regulation makes it mandatory)"
     },
+    "billingPeriod": {
+      "label": "Billing period",
+      "help": "A new bill is issued in each period.",
+      "placeholder": "(eg. Monthly or Quarterly)"
+    },
+    "billingAmount": {
+      "label": "Billing amount",
+      "help": "This amount is being billed for each billing period.",
+      "placeholder": "(eg. 1500)"
+    },
     "partnerId": {
       "label": "Partner"
     },
