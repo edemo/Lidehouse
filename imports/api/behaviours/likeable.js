@@ -12,11 +12,27 @@ const schema = new SimpleSchema({
 });
 
 const helpers = {
+  getLikes() {
+    return this.likes || [];
+  },
   isLikedBy(userId) {
     return _.contains(this.likes, userId);
   },
   likesCount() {
-    return this.likes.length;
+    return this.getLikes().length;
+  },
+  likeStrength() {
+    // A number between 100 and 1000, matching CSS font-weight scale. Normal font-weight is 400. 
+    return Math.min(400 + this.likesCount() * 100, 1000); 
+  },
+  likerNames() {
+    let result = '';
+    this.getLikes().forEach((userId, i) => {
+      const user = Meteor.users.findOne(userId);
+      if (i > 0) result += '\n';
+      result += user?.displayOfficialName();
+    });
+    return result;
   },
   /* To update, you need to call the 'like' meteormethod
   toggleLike(userId) {

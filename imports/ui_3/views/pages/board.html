@@ -46,7 +46,7 @@
 <template name="News_topic">
     <div class="feed-element">
         <div class="news-elem" data-id="{{_id}}">
-            <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom doc.createdAt}}</small>
+            <small class="pull-right text-navy" title={{displayTime doc.createdAt}}>{{displayTimeFrom doc.createdAt}}</small>
             <strong>{{doc.title}}</strong>
             <div>{{>Chopped text=doc.text chars=600 markdown=true}}</div>
             <!-- {{#if photo}}<img src="{{absoluteUrl photo}}" class="img-embed">{{/if}} -->

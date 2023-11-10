@@ -56,10 +56,10 @@
         {{> Attachments doc=this}}
     {{else}}
         {{#hideable}}
-            <span class="text-dark newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
+            <span class="text-dark newlines" data-id="{{_id}}" style="font-weight:{{this.likeStrength}}">{{>Chopped text=text}}</span>
             {{> Attachments doc=this}}
             <div>
-                <a href="" class="small cap-first js-like">
+                <a href="" class="small cap-first js-like" title={{this.likerNames}}>
                     <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
                     {{_ 'important'}}! ({{this.likesCount}})
                 </a> -
