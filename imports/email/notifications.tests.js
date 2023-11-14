@@ -186,7 +186,7 @@ if (Meteor.isServer) {
 
       it('Emails only users at the ticket location', function () {
         const localizer = '@A103';  // So this will be relevant to dummyUser3 but not to dummyUser4
-        Topics.methods.statusUpdate._execute({ userId: demoManager._id }, { _id: ticketId, modifier: { $set: { 'ticket.localizer': localizer } } });
+        Topics.methods.update._execute({ userId: demoManager._id }, { _id: ticketId, modifier: { $set: { 'ticket.localizer': localizer } } });
         Fixture.builder.create('comment', { topicId: ticketId, creatorId: ownerWithNotiNever._id, text: 'Update' });
         processNotifications('daily');
         sinon.assert.calledOnce(EmailSender.send);
@@ -194,7 +194,7 @@ if (Meteor.isServer) {
 
       it('Emails only users within the ticket location', function () {
         const localizer = '@A1';  // So this will be relevant to the whole first floor
-        Topics.methods.statusUpdate._execute({ userId: demoManager._id }, { _id: ticketId, modifier: { $set: { 'ticket.localizer': localizer } } });
+        Topics.methods.update._execute({ userId: demoManager._id }, { _id: ticketId, modifier: { $set: { 'ticket.localizer': localizer } } });
         Fixture.builder.create('comment', { topicId: ticketId, creatorId: ownerWithNotiNever._id, text: 'Update' });
         processNotifications('daily');
         sinon.assert.calledTwice(EmailSender.send);

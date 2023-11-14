@@ -32,14 +32,18 @@
         </a>
         <div class="media-body" >
             <a href="{{pathFor 'User show' _id=this.creatorId}}">
-                {{creator.displayOfficialName}}
+                {{this.creator.displayOfficialName}}
             </a>
             {{#if (includes this.entityName "statusChange")}}
-                {{#let eventStatusObject = (this.topic.statusObject this.status)}}
-                {{_ 'changed the status'}}: <span class="label label-{{eventStatusObject.color}}">{{_ (concat 'schemaTopics.status.options.' this.status)}}</span><!--<strong>{{_ this.status}}</strong>--><br>
-                {{/let}}
+                {{#if this.status}}
+                    {{#let eventStatusObject = (this.topic.statusObject this.status)}}
+                    {{_ 'actions.statusChange.did'}}: <span class="label label-{{eventStatusObject.color}}">{{_ (concat 'schemaTopics.status.options.' this.status)}}</span><!--<strong>{{_ this.status}}</strong>--><br>
+                    {{/let}}
+                {{else}}
+                    {{_ 'actions.statusUpdate.did'}}<br>
+                {{/if}}                
             {{/if}}
-            {{#if editing}}
+                {{#if editing}}
                 <textarea class="form-control" data-id="{{_id}}" value={{text}}></textarea>
                 <div class="text-right">
                     <span class="btn btn-xs btn-default m-t-xs js-edit">

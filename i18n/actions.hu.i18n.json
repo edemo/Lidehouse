@@ -87,13 +87,15 @@
       "label": "státusz váltás",
       "do": "más státuszba teszi",
       "doing": "státusz váltása",
-      "done": "státusza módosítva"
+      "done": "státusza módosítva",
+      "did": "megváltoztatta a státuszt"
     },
     "statusUpdate": {
       "label": "státusz frissítés",
       "do": "frissíti",
       "doing": "státusz frissítése",
-      "done": "státusz frissítve"
+      "done": "státusz frissítve",
+      "did": "frissítette a státuszt"
     },
     "period": {
       "label": "időszak módosítás",
