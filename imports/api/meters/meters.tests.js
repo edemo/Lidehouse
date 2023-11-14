@@ -6,6 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { Clock } from '/imports/utils/clock.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 
 if (Meteor.isServer) {
   let Fixture;
@@ -20,11 +21,13 @@ if (Meteor.isServer) {
 
     describe('api', function () {
       let meteredParcelId;
+      let meteredUserId;
       let meterId;
       let registerReading;
       let assertEstimate;
       before(function () {
         meteredParcelId = Fixture.dummyParcels[0];
+        meteredUserId = Parcels.findOne(meteredParcelId).representorOrFirstOwner().userId;
         meterId = Fixture.builder.create('meter', {
           parcelId: meteredParcelId,
           identifier: 'CW-01010101',
@@ -56,8 +59,8 @@ if (Meteor.isServer) {
         chai.assert.equal(meter.getEstimatedValue(new Date('2018-04-04')), 0);
       });
 
-      it('Can register reading', function () {
-        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-05-05'), value: 10 } });
+      it('Owner can register unapproved reading', function () {
+        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-05-05'), value: 10 } }, meteredUserId);
         const meter = Meters.findOne(meterId);
         chai.assert.deepEqual(meter.lastReading(), { date: new Date('2018-05-05'), value: 10, approved: false });
       });
@@ -91,7 +94,7 @@ if (Meteor.isServer) {
       });
 
       it('Can register more reading', function () {
-        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-06-06'), value: 15 } });
+        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-06-06'), value: 15 } }, meteredUserId);
         const meter = Meters.findOne(meterId);
         chai.assert.deepEqual(meter.lastReading(), { date: new Date('2018-06-06'), value: 15, approved: false });
       });
