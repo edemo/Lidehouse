@@ -92,6 +92,7 @@ export const Permissions = [
   { name: 'comment.update',         roles: nobody, allowAuthor: true },
   { name: 'comment.move',           roles: ['moderator'] },
   { name: 'comment.remove',         roles: ['moderator'], allowAuthor: true },
+  { name: 'statusChange.update',    roles: ['manager'], allowAuthor: true },
   { name: 'pointAt.insert',         roles: exceptGuest },
   { name: 'pointAt.update',         roles: nobody, allowAuthor: true },
   { name: 'pointAt.remove',         roles: nobody, allowAuthor: true },
