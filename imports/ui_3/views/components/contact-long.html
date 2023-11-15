@@ -2,9 +2,13 @@
     <div class="contact-box center-version">
         <a href="">
             <img alt="image" class="img-circle" src="{{absoluteUrl avatar}}">
-            <h3 class="m-b-xs"><strong>{{this.displayOfficialName}}</strong></h3>
+            <h3 class="m-b-xs"><strong>{{this.displayOfficialName}}</strong>
+                <span style="opacity:.25">[{{#if showDebugInfo}}{{this._id}}{{else}}<i class="fa fa-info" title={{this._id}}></i>{{/if}}]</span>
+            </h3>
             {{#each this.memberships activeCommunityId}}
-            <div class="font-bold">{{this.displayRole}}</div>
+            <div class="font-bold">{{this.displayRole}}
+                <span style="opacity:.25">[{{#if showDebugInfo}}{{this._id}}{{else}}<i class="fa fa-info" title={{this._id}}></i>{{/if}}]</span>
+            </div>
             {{/each}}
             <address class="m-t-sm">
                 {{#if profile.bio}}<i>"{{profile.bio}}"</i><br><br>{{/if}}
