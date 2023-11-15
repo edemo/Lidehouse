@@ -128,8 +128,8 @@ const Renderers = {
   'Tickets.ticket.urgency': displayUrgency,
   'Tickets.ticket.localizer': displayLocalizer,
   'Tickets.ticket.chargeType': displayChargeType,
-  'Tickets.ticket.partnerId': id => (Partners.findOne(id) ? Partners.findOne(id).getName() : undefined),
-  'Tickets.ticket.contractId': id => (Contracts.findOne(id) ? Contracts.findOne(id).title : undefined),
+  'Tickets.ticket.partnerId': id => Partners.findOne(id)?.getName(),
+  'Tickets.ticket.contractId': id => Contracts.findOne(id)?.title,
   //'ticket.txId'
   'Votings.agendaId': id => (Agendas.findOne(id) ? Agendas.findOne(id).title : undefined),
 };
