@@ -97,13 +97,14 @@ Partners.helpers({
     return '/images/avatars/avatarnull.png';
   },
   getName() {
-    return this.idCard && this.idCard.name;
+    return this.idCard?.name;
   },
   isApproved() {
     return !!this.getName();
   },
   displayName(lang) {
-    if (this.idCard && this.idCard.name) return this.idCard.name;
+    const name = this.getName();
+    if (name) return name;
     if (this.userId) {
       const user = this.user();
 //      const preText = (Meteor.isClient && Meteor.user().hasPermission('partners.update', this) && this.community().needsJoinApproval()) ?

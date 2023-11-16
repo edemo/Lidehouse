@@ -229,7 +229,7 @@ export const chooseContract = {
     if (result) return result;
     const communityId = AutoForm.getFieldValue('communityId');
     const relation = AutoForm.getFieldValue('relation');
-    const partnerId = AutoForm.getFieldValue('partnerId');
+    const partnerId = AutoForm.getFieldValue('partnerId')|| AutoForm.getFieldValue('ticket.partnerId');
     const selector = { communityId, relation, partnerId };
     const contractId = partnerId && Contracts.findOne(Object.cleanUndefined(selector))?._id;
     return contractId;
@@ -237,7 +237,7 @@ export const chooseContract = {
   options() {
     const communityId = ModalStack.getVar('communityId');
     const relation = AutoForm.getFieldValue('relation') || ModalStack.getVar('relation');
-    const partnerId = AutoForm.getFieldValue('partnerId') || ModalStack.getVar('partnerId');
+    const partnerId = AutoForm.getFieldValue('partnerId') || AutoForm.getFieldValue('ticket.partnerId') || ModalStack.getVar('partnerId');
     if (!partnerId) return [{ label: __('schemaTransactions.contractId.placeholder'), value: '' }];
     const contracts = Contracts.find({ communityId, relation, partnerId });
     const options = contracts.map(c => ({ label: c.toString(), value: c._id }));
