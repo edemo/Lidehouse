@@ -35,13 +35,21 @@ const schema = new SimpleSchema({
   activeTime: { type: TimePeriodSchema, optional: true },
   active: { type: Boolean, autoform: { omit: true },
     autoValue() {
+      let result;
       const beginDate = this.field('activeTime.begin').value;
       const endDate = this.field('activeTime.end').value;
       const nowDate = new Date();
-      if (this.isUpdate && !beginDate && !endDate) return undefined;
+      if (this.isUpdate && this.field('activeTime').operator === '$unset') {
+        result = true;
+        // this.field('activeTime'): { isSet: true, value: '', operator: '$unset' }
+    } else if (this.isUpdate && !beginDate && !endDate) {
+        result = undefined;
         // If we have one of those set (begin or end) then both should be set
         // - autoform does that - and if you call update by hand, make sure you do that too!
-      return (!beginDate || beginDate <= nowDate) && (!endDate || nowDate <= endDate);
+      } else {
+        result = (!beginDate || beginDate <= nowDate) && (!endDate || nowDate <= endDate);
+      }
+      return result;
     },
   },
 });
@@ -97,13 +105,8 @@ export const ActivePeriod = { name: 'ActivePeriod',
   schema, helpers, methods, hooks, /*indexes,*/
 };
 
-ActivePeriod.fields = [
-  'activeTime.begin',
-  'activeTime.end',
-  'active',
-];
-
 ActivePeriod.modifiableFields = [
+  'activeTime',
   'activeTime.begin',
   'activeTime.end',
   'active',
@@ -145,7 +148,7 @@ const updateActivePeriod = new ValidatedMethod({
     if (doc.communityId) {   // TODO: figure out which permission needed
       checkPermissions(userId, `${entity}.update`, doc);
     }
-    checkModifier(doc, modifier, ActivePeriod.fields);
+    checkModifier(doc, modifier, ActivePeriod.modifiableFields);
 
     collection.update(_id, modifier, { selector: doc });
   },

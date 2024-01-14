@@ -44,9 +44,13 @@ if (Meteor.isServer) {
     const updateMembershipModifier = function (beginDate, endDate) {
       const modifier = { $set: {}, $unset: {} };
       if (beginDate) modifier.$set['activeTime.begin'] = beginDate;
-      else modifier.$unset['activeTime.begin'] = false;
       if (endDate) modifier.$set['activeTime.end'] = endDate;
-      else modifier.$unset['activeTime.end'] = false;
+      if (!beginDate && !endDate) {
+        modifier.$unset['activeTime'] = '';
+      } else {
+        if (!beginDate) modifier.$unset['activeTime.begin'] = '';
+        if (!endDate) modifier.$unset['activeTime.end'] = '';
+      }
       return modifier;
     };
 
@@ -129,6 +133,16 @@ if (Meteor.isServer) {
 
       Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(past, undefined) });
+      testMembership = Memberships.findOne(testMembershipId);
+      chai.assert.equal(testMembership.active, true);
+
+      Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
+        { _id: testMembershipId, modifier: updateMembershipModifier(past2, past) });
+      testMembership = Memberships.findOne(testMembershipId);
+      chai.assert.equal(testMembership.active, false);
+
+      Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
+        { _id: testMembershipId, modifier: updateMembershipModifier(undefined, undefined) });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, true);
 
