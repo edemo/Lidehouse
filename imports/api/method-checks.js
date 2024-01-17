@@ -101,7 +101,6 @@ export function checkModifier(object, modifier, modifiableFields, exclude = fals
       }
     });
   });
-  console.log('modifiedFields', modifiedFields);
   modifiedFields = _.without(modifiedFields, 'updatedAt');
   modifiedFields.forEach((mf) => {
     if ((exclude && _.contains(modifiableFields, mf))
