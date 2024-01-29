@@ -263,7 +263,7 @@ Transactions.categoryHelpers('payment', {
     const subTxEntry = (accountingMethod === 'cash') ? { subTx: 1 } : {};
     if (this.subType() !== 'remission') {
       const payEntry = { amount: this.amount, account: this.payAccount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined };
-      this.makeEntry(this.relationSide(), payEntry);
+      this.makeEntry(this.relationSide(), payEntry); // `38
     }
     this.getBills().forEach(billPaid => {
       if (unallocatedAmount === 0) return false;
@@ -272,16 +272,25 @@ Transactions.categoryHelpers('payment', {
       const makeEntries = function makeEntries(line, amount) {
         const relationAccount = bill.lineRelationAccount(line);
         const newEntry = { amount, partner: this.partnerContractCode(), localizer: line.localizer, parcelId: line.parcelId };
-        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, _.extend({}, newEntry, subTxEntry)));
-        if (this.subType() === 'remission') {
-          this.makeEntry(this.relationSide(), _.extend({ account: line.account }, newEntry));
-        }
-        if (accountingMethod === 'cash') {
-          const technicalAccount = Accounts.toTechnicalCode(line.account);
-          this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, _.extend({}, newEntry, subTxEntry)));
-          if (this.subType() !== 'remission') {
-            this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
+        if (this.subType() !== 'remission') {  // 'payment' or 'identification'
+          if (accountingMethod === 'accrual') {
+            this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry)); // `331
+          } else if (accountingMethod === 'cash') {
+            this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));  // `95
+            const technicalAccount = Accounts.toTechnicalCode(line.account);
+            this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, _.extend({}, newEntry, subTxEntry))); // `095
+            const technicalRelationAccount = Accounts.toTechnicalCode(relationAccount);
+            this.makeEntry(this.conteerSide(), _.extend({ account: technicalRelationAccount }, _.extend({}, newEntry, subTxEntry))); // `0331
           }
+        } else if (this.subType() === 'remission') {
+          let undoLineAccount = line.account;
+          let undoRelationAccount = relationAccount;
+          if (accountingMethod === 'cash') {
+            undoLineAccount = Accounts.toTechnicalCode(undoLineAccount);
+            undoRelationAccount = Accounts.toTechnicalCode(undoRelationAccount);
+          }
+          this.makeEntry(this.relationSide(), _.extend({ account: undoLineAccount }, newEntry)); // `95 or `095
+          this.makeEntry(this.conteerSide(), _.extend({ account: undoRelationAccount }, newEntry)); // `331 or `0331
         }
       };
 
@@ -341,8 +350,9 @@ Transactions.categoryHelpers('payment', {
           }
         });
         relationAccount += digit;
+        const technicalRelationAccount = Accounts.toTechnicalCode(relationAccount);
         this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, _.extend({}, newEntry, subTxEntry)));
-        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, _.extend({}, newEntry, subTxEntry)));
+        this.makeEntry(this.conteerSide(), _.extend({ account: technicalRelationAccount }, _.extend({}, newEntry, subTxEntry)));
       }
       unallocatedAmount -= line.amount;
     });

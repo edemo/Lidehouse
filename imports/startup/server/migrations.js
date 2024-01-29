@@ -1222,6 +1222,19 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 69,
+  name: 'Reposting bills and payments for cash accounting',
+  up() {
+    Communities.find({ 'settings.accountingMethod': 'cash' }).forEach(community => {
+      const adminId = community.admin()._id;
+      Transactions.find({ communityId: community._id, category: { $in: ['bill', 'payment'] }, status: 'posted' }).forEach(tx => {
+        Transactions.methods.post._execute({ userId: adminId }, { _id: tx._id });
+      });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes

@@ -1427,8 +1427,8 @@ if (Meteor.isServer) {
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
           const bill = Transactions.findOne(billId);
           chai.assert.deepEqual(bill.debit, [
-            { amount: 300, account: '`331', ...locationTags },
-            { amount: 250, account: '`3324', ...locationTags },
+            { amount: 300, account: '`0331', ...locationTags },
+            { amount: 250, account: '`03324', ...locationTags },
           ]);
           chai.assert.deepEqual(bill.credit, [
             { amount: 300, account: '`0951' },
@@ -1450,10 +1450,10 @@ if (Meteor.isServer) {
             { amount: 250, account: '`09524', subTx: 1 },
           ]);
           chai.assert.deepEqual(payment.credit, [
-            { amount: 300, account: '`331', ...locationTags, subTx: 1 },
             { amount: 300, account: '`951' },
-            { amount: 250, account: '`3324', ...locationTags, subTx: 1 },
+            { amount: 300, account: '`0331', ...locationTags, subTx: 1 },
             { amount: 250, account: '`9524' },
+            { amount: 250, account: '`03324', ...locationTags, subTx: 1 },
           ]);
         });
 
@@ -1464,9 +1464,9 @@ if (Meteor.isServer) {
           FixtureA.builder.execute(Transactions.methods.post, { _id: billId2 });
           const bill = Transactions.findOne(billId1);
           chai.assert.deepEqual(bill.debit, [
-            { amount: 300, account: '`331', ...locationTags },
-            { amount: 250, account: '`3324', ...locationTags },
-            { amount: -100, account: '`3324', ...locationTags },
+            { amount: 300, account: '`0331', ...locationTags },
+            { amount: 250, account: '`03324', ...locationTags },
+            { amount: -100, account: '`03324', ...locationTags },
           ]);
           chai.assert.deepEqual(bill.credit, [
             { amount: 300, account: '`0951' },
@@ -1484,17 +1484,17 @@ if (Meteor.isServer) {
           const payment1 = Transactions.findOne(paymentId1);
           chai.assert.deepEqual(payment1.debit, [
             { amount: 210, account: '`381' },
-            { amount: 100, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 100, account: '`9524' },
+            { amount: 100, account: '`03324', ...locationTags, subTx: 1 },
             { amount: 300, account: '`0951', subTx: 1 },
             { amount: 10, account: '`09524', subTx: 1 },
           ]);
           chai.assert.deepEqual(payment1.credit, [
             { amount: 100, account: '`09524', subTx: 1 },
-            { amount: 300, account: '`331', ...locationTags, subTx: 1 },
             { amount: 300, account: '`951' },
-            { amount: 10, account: '`3324', ...locationTags, subTx: 1 },
+            { amount: 300, account: '`0331', ...locationTags, subTx: 1 },
             { amount: 10, account: '`9524' },
+            { amount: 10, account: '`03324', ...locationTags, subTx: 1 },
           ]);
 
           const paymentId2 = FixtureA.builder.create('payment', {
@@ -1509,19 +1509,19 @@ if (Meteor.isServer) {
           chai.assert.deepEqual(payment2.debit, [
             { amount: 690, account: '`381' },
             { amount: 240, account: '`09524', subTx: 1 },
-            { amount: 100, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 100, account: '`9524' },
+            { amount: 100, account: '`03324', ...locationTags, subTx: 1 },
             { amount: 250, account: '`09524', subTx: 1 },
             { amount: 300, account: '`0951', subTx: 1 },
           ]);
           chai.assert.deepEqual(payment2.credit, [
-            { amount: 240, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 240, account: '`9524' },
+            { amount: 240, account: '`03324', ...locationTags, subTx: 1 },
             { amount: 100, account: '`09524', subTx: 1 },
-            { amount: 250, account: '`3324', ...locationTags, subTx: 1 },
             { amount: 250, account: '`9524' },
-            { amount: 300, account: '`331', ...locationTags, subTx: 1 },
+            { amount: 250, account: '`03324', ...locationTags, subTx: 1 },
             { amount: 300, account: '`951' },
+            { amount: 300, account: '`0331', ...locationTags, subTx: 1 },
           ]);
         });
 
@@ -1545,12 +1545,12 @@ if (Meteor.isServer) {
             { amount: 450, account: '`0952', subTx: 1 },
           ]);
           chai.assert.deepEqual(payment.credit, [
-            { amount: 300, account: '`331', ...locationTags, subTx: 1 },
             { amount: 300, account: '`951' },
-            { amount: 250, account: '`3324', ...locationTags, subTx: 1 },
+            { amount: 300, account: '`0331', ...locationTags, subTx: 1 },
             { amount: 250, account: '`9524' },
+            { amount: 250, account: '`03324', ...locationTags, subTx: 1 },
             { amount: 450, account: '`952' },
-            { amount: 450, account: '`332', ...locationTags, subTx: 1 },
+            { amount: 450, account: '`0332', ...locationTags, subTx: 1 },
           ]);
         });
       });
@@ -1682,7 +1682,8 @@ if (Meteor.isServer) {
           chai.assert.equal(partner.balance(), 50);
           chai.assert.equal(otherPartner.balance(), 450);
           chai.assert.equal(otherPartner.balance('`431'), 0);
-          chai.assert.equal(otherPartner.balance('`33'), 450);
+          chai.assert.equal(otherPartner.balance('`33'), 0);
+          chai.assert.equal(otherPartner.balance('`033'), 450);
         });
       });
 
