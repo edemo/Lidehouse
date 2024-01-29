@@ -132,7 +132,7 @@ Topics.methods = Topics.methods || {};
 _.extend(Topics.methods, { insert, update, move, archive, remove });
 _.extend(Topics.methods, crudBatchOps(Topics));
 Meteor.startup(() => { // statusUpdate is a behaviour method -- not ready yet
-  Topics.methods.batch.statusUpdate = new BatchMethod(Topics.methods.statusUpdate);
+  Topics.methods.batch.statusChange = new BatchMethod(Topics.methods.statusChange);
 });
 
 // ----- RATE LIMITING --------

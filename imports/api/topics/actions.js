@@ -123,16 +123,15 @@ Topics.actions = {
     visible: doc && doc.statusObject().data && user.hasPermission(`${doc.category}.update`, doc)
       && user.hasPermission(`${doc.category}.statusChange.${doc.status}.enter`, doc),
     run() {
-      const entity = Topics.entities[doc.entityName()];
+      ModalStack.setVar('topicId', doc._id);
+      ModalStack.setVar('status', doc.status);
       Modal.show('Autoform_modal', {
-        id: `af.${doc.entityName()}.statusUpdate`,
-        schema: entity.schema,
-        fields: doc.statusFields(),
-        omitFields: entity.omitFields,
-        doc,
-        type: 'method-update',
-        meteormethod: 'topics.statusUpdate',
-        singleMethodArgument: true,
+        id: `af.${doc.entityName()}.statusChange`,
+        schema: statusChangeSchema(doc, doc.status),
+        omitFields: ['options'],
+        type: 'method',
+        meteormethod: 'topics.statusChange',
+        btnOK: 'actions.statusUpdate.doing',
       });
     },
   }),
@@ -226,7 +225,6 @@ Topics.batchActions = {
 _.each(Topics.entities, (entity, entityName) => {
   AutoForm.addModalHooks(`af.${entityName}.create`);
   AutoForm.addModalHooks(`af.${entityName}.edit`);
-  AutoForm.addModalHooks(`af.${entityName}.statusUpdate`);
   AutoForm.addModalHooks(`af.${entityName}.statusChange`);
 
   AutoForm.addHooks(`af.${entityName}.create`, {
@@ -245,10 +243,10 @@ _.each(Topics.entities, (entity, entityName) => {
   AutoForm.addHooks(`af.${entityName}.statusChange`, {
     formToDoc(doc) {
       doc.topicId = ModalStack.getVar('topicId');
-      doc.category = 'statusChange'; // `statusChange.${status}`;
+      doc.category = 'statusChange';
       doc.status = ModalStack.getVar('status');
-      //  const topic = Topics.findOne(doc.topicId);
-      doc.dataUpdate = doc['ticket'] || {}; // can use topic.category instrad of ticket, if other than tickets have data too
+
+      doc.dataUpdate = doc['ticket'] || {}; // can use topic.category instead of ticket, if other than tickets have data too
       delete doc['ticket'];
       return doc;
     },

@@ -52,6 +52,12 @@
                 <div class="contracts">
                     <div><span style="font-weight:600">{{_ 'schemaContracts.partnerId.label'}}:</span> {{this.partner}}</div>
                     <div><span style="font-weight:600">{{_ 'schemaContracts.text.label'}}:</span> {{this.text}}</div>
+                    {{#if this.billingPeriod}}
+                    <div><span style="font-weight:600">{{_ 'schemaContracts.billingPeriod.label'}}:</span> {{this.billingPeriod}}</div>
+                    {{/if}}
+                    {{#if this.billingAmount}}
+                    <div><span style="font-weight:600">{{_ 'schemaContracts.billingAmount.label'}}:</span> {{displayMoney this.billingAmount}}</div>
+                    {{/if}}
                     {{#if this.activeTime.begin}}
                     <div><span style="font-weight:600">{{_ 'Begin date'}}:</span> {{displayDate this.activeTime.begin}}</div>
                     {{/if}}

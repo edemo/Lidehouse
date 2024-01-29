@@ -110,52 +110,43 @@ const statusChange = new ValidatedMethod({
     const topic = checkExists(Topics, event.topicId);
     const category = topic.category;
     const workflow = topic.workflow();
-    // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic);
-    checkPermissions(this.userId, `${category}.statusChange.${event.status}.enter`, topic, topic);
-    checkStatusChangeAllowed(topic, event.status);
+    if (event.status === topic.status) delete event.status; // This is a status update. When the status itself does not change, only the data.
+    
+    if (event.status) {
+      // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic);
+      checkPermissions(this.userId, `${category}.statusChange.${event.status}.enter`, topic, topic);
+      checkStatusChangeAllowed(topic, event.status);
+    } else {
+      checkPermissions(this.userId, `${category}.statusChange.${topic.status}.enter`, topic, topic);
+    }
 
-    const onLeave = workflow[topic.status].obj.onLeave;
-    if (onLeave) onLeave(event, topic);
+    if (event.status) {
+      const onLeave = workflow[topic.status].obj.onLeave;
+      if (onLeave) onLeave(event, topic);  
+    }
 
+    const newStatus = event.status || topic.status;
     const topicModifier = { category: topic.category };
     topicModifier.status = event.status;
-    const statusObject = Topics.categories[category].statuses ? Topics.categories[category].statuses[event.status] : defaultStatuses[event.status];
+    const statusObject = Topics.categories[category].statuses ? Topics.categories[category].statuses[newStatus] : defaultStatuses[newStatus];
     if (statusObject.data) {
       statusObject.data.forEach(key => topicModifier[`${category}.${key}`] = event.dataUpdate[key]);
     }
-    const updateResult = Topics.update(event.topicId, { $set: topicModifier });
-
+    const updateResult = Topics.update(event.topicId, { $set: topicModifier }, { selector: { category } });
     const insertResult = Comments.insert(event);
 
     const newComment = Comments.findOne(insertResult);
     const newTopic = Topics.findOne(event.topicId);
-    const onEnter = workflow[event.status].obj.onEnter;
-    if (onEnter) onEnter(event, newTopic);
+    if (event.status) {
+      const onEnter = workflow[event.status].obj.onEnter;
+      if (onEnter) onEnter(event, newTopic);
+    }
 
     updateMyLastSeen._execute({ userId: this.userId },
       { topicId: topic._id, lastSeenInfo: { timestamp: newComment.createdAt } },
     );
 
     return insertResult;
-  },
-});
-
-const statusUpdate = new ValidatedMethod({
-  name: 'statusUpdate',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    modifier: { type: Object, blackbox: true },
-  }).validator(),
-  run({ _id, modifier }) {
-    const topic = checkExists(Topics, _id);
-    const category = topic.category;
-    const modifiableFields = [];
-    if (topic.modifiableFieldsByStatus()) {
-      topic.modifiableFieldsByStatus().forEach(key => modifiableFields.push(`${category}.${key}`));
-    }
-    checkPermissions(this.userId, `${category}.statusChange.${topic.status}.enter`, topic);
-    checkModifier(topic, modifier, modifiableFields);
-    Topics.update(_id, modifier, { selector: { category } });
   },
 });
 
@@ -175,6 +166,6 @@ export function Workflow(workflow = defaultWorkflow) {
   });
 
   return { name: 'Workflow',
-    schema, modifiableFields, helpers, methods: { statusChange, statusUpdate }, hooks,
+    schema, modifiableFields, helpers, methods: { statusChange }, hooks,
   };
 }

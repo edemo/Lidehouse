@@ -56,23 +56,27 @@
                   {{else}}  
                     <a href="{{userUrlFor  comment.creator}}">{{comment.creator.displayOfficialName community._id user.settings.language}}</a>
                     {{#if (equals comment.category 'statusChange')}}
-                        {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
-                        {{_ 'changed the status'}}: <span class="label {{eventStatusObject.color}}">
-                           {{_ (concat 'schemaTopics.status.options.' comment.status)}}
-                        </span><br>
-                        {{/let}}
-                        {{#if (equals comment.topic.category 'ticket')}}
-                            {{#each dataEntry in entriesOf comment.dataUpdate}}
-                            <span>
-                            {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
-                            {{displayStatusChangeDataUpdate dataEntry.[0] dataEntry.[1]}}
-                            </span><br>
-                            {{/each}}
-                        {{/if}}
+                        {{#if comment.status}}
+                          {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
+                          {{_ 'actions.statusChange.did'}}: <span class="label {{eventStatusObject.color}}">
+                              {{_ (concat 'schemaTopics.status.options.' comment.status)}}</span><br>
+                          {{/let}}
+                        {{else}}
+                          {{_ 'actions.statusUpdate.did'}}<br>
+                        {{/if}}             
                     {{/if}}
                     {{#if comment.text}}
-                    <span>{{curb comment.text 500 }}</span><br>
+                        <span>{{curb comment.text 500 }}</span><br>
                     {{/if}}
+                    {{#if (equals comment.topic.category 'ticket')}}
+                        {{#each dataEntry in entriesOf comment.dataUpdate}}
+                        <span>
+                            {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
+                            {{displayStatusChangeDataUpdate dataEntry.[0] dataEntry.[1]}}
+                        </span><br>
+                        {{/each}}
+                    {{/if}}
+
                   {{/if}}
                   <small class="text-muted" >{{displayTime comment.createdAt}}</small>
                 </td> 

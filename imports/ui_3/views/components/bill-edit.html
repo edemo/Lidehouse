@@ -111,20 +111,24 @@
                     {{/if}}
                     <td>{{> afFormGroup name=this.current.amount}} </td>
                     <!--td class="text-center">{{lineTotal this}}</td-->
-                    <!-- hidden, needed for autoform doc data -->
-                    <td>{{> afQuickFields name=this.current.billing type="hidden"}} </td>
-                    {{#if (lineHasField this.index 'metering')}}
-                        <td>{{> afQuickField name=(concat "lines." this.index ".metering.id") type="hidden"}} </td>
-                        <td>{{> afQuickFields name=(concat "lines." this.index ".metering.start") type="hidden"}} </td>
-                        <td>{{> afQuickFields name=(concat "lines." this.index ".metering.end") type="hidden"}} </td>
-                    {{/if}}
-                    <!-- hidden, needed for autoform doc data -->
                 </tr>
                 {{#if currentUserHasPermission 'transactions.post'}}
                 <tr>
                     <td></td>
                     <td>{{> afFormGroup name=this.current.account}}</td>
                     <td>{{> afFormGroup name=this.current.localizer}}</td>
+                    <!-- hidden, needed for autoform doc data -->
+                    <td>
+                        {{> afQuickFields name=this.current.billing type="hidden"}}
+                        {{#if (lineHasField this.index 'metering')}}
+                        <!-- Since metering is an object of objects, you have to do it by objects individually  -->
+                            {{> afQuickField name=(concat "lines." this.index ".metering.id") type="hidden"}}
+                            {{> afQuickFields name=(concat "lines." this.index ".metering.start") type="hidden"}}
+                            {{> afQuickFields name=(concat "lines." this.index ".metering.end") type="hidden"}}
+                        {{/if}}
+                        {{> afQuickField name=this.current.details type="hidden"}}
+                    </td>
+                    <!-- hidden, needed for autoform doc data -->
                 </tr>
                 {{/if}}
                 {{/afEachArrayItem}}

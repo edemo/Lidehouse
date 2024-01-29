@@ -6,7 +6,7 @@
         </div>
         {{/if}}
         {{#each event in eventsOfTopic}}
-            {{> Frame event}}
+            {{> Comment event}}
             {{#if equals @index (subtract eventsOfTopic.length 1)}}{{Waypoint 'refreshAll'}}{{/if}}
         {{/each}}
       
@@ -25,57 +25,55 @@
     </div>
 </template>
 
-<template name="Frame">
+<template name="Comment">
     <div class="social-comment">         
         <a href="{{pathFor 'User show' _id=this.creatorId}}" class="pull-left">
             <img alt="avatar" class="message-avatar" src={{absoluteUrl this.creator.avatar}}>
         </a>
         <div class="media-body" >
             <a href="{{pathFor 'User show' _id=this.creatorId}}">
-                {{creator.displayOfficialName}}
+                {{this.creator.displayOfficialName}}
             </a>
-            {{#if (equals entityName "comment")}}
-                {{> Comment this}}
+            {{#if (includes this.entityName "statusChange")}}
+                {{#if this.status}}
+                    {{#let eventStatusObject = (this.topic.statusObject this.status)}}
+                    {{_ 'actions.statusChange.did'}}: <span class="label label-{{eventStatusObject.color}}">{{_ (concat 'schemaTopics.status.options.' this.status)}}</span><!--<strong>{{_ this.status}}</strong>--><br>
+                    {{/let}}
+                {{else}}
+                    {{_ 'actions.statusUpdate.did'}}<br>
+                {{/if}}                
             {{/if}}
-            {{#if (includes entityName "statusChange")}}
-                {{> StatusChange this}}
+                {{#if editing}}
+                <textarea class="form-control" data-id="{{_id}}" value={{text}}></textarea>
+                <div class="text-right">
+                    <span class="btn btn-xs btn-default m-t-xs js-edit">
+                        <i class="glyphicon glyphicon-paperclip"></i>  {{_ 'Attachments'}}
+                    </span>
+                    <span class="btn btn-xs btn-default m-t-xs text-capitalize js-cancel">{{_ 'cancel'}}</span>
+                    <span class="btn btn-xs btn-primary m-t-xs text-capitalize js-save">{{_ 'save'}}</span>
+                </div>
+                {{#if (includes this.entityName "statusChange")}} {{> StatusChangeData this}} {{/if}}
+                {{> Attachments doc=this}}
+            {{else}}
+                {{#hideable}}
+                    <span class="text-dark newlines" data-id="{{_id}}" style="font-weight:{{this.likeStrength}}">{{>Chopped text=text}}</span>
+                    {{#if (includes this.entityName "statusChange")}} {{> StatusChangeData this}} {{/if}}
+                    {{> Attachments doc=this}}
+                    <div>
+                        <a href="" class="small cap-first js-like" title={{this.likerNames}}>
+                            <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+                            {{_ 'important'}}! ({{this.likesCount}})
+                        </a> -
+                        <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+                        {{>Action_buttons_group doc=this collection='comments' actions='inplaceEdit,move,delete,mute' size='sm'}}
+                    </div>
+                {{/hideable}}
             {{/if}}
         </div>
     </div>
 </template>
 
-<template name="Comment">
-    {{#if editing}}
-        <textarea class="form-control" data-id="{{_id}}" value={{text}}></textarea>
-        <div class="text-right">
-            {{#if this.attachments}}<span class="btn btn-xs btn-default m-t-xs js-edit">
-                <i class="glyphicon glyphicon-paperclip"></i>  {{_ 'Attachments'}}</span>{{/if}}
-            <span class="btn btn-xs btn-default m-t-xs text-capitalize js-cancel">{{_ 'cancel'}}</span>
-            <span class="btn btn-xs btn-primary m-t-xs text-capitalize js-save">{{_ 'save'}}</span>
-        </div>
-        {{> Attachments doc=this}}
-    {{else}}
-        {{#hideable}}
-            <span class="text-dark newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
-            {{> Attachments doc=this}}
-            <div>
-                <a href="" class="small cap-first js-like">
-                    <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
-                    {{_ 'important'}}! ({{this.likesCount}})
-                </a> -
-                <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
-                {{>Action_buttons_group doc=this collection='comments' actions='inplaceEdit,move,delete,mute' size='sm'}}
-            </div>
-        {{/hideable}}
-    {{/if}}
-</template>
-
-<template name="StatusChange">
-    {{#let eventStatusObject = (this.topic.statusObject this.status)}}
-    {{_ 'changed the status'}}: <span class="label label-{{eventStatusObject.color}}">{{_ (concat 'schemaTopics.status.options.' this.status)}}</span><!--<strong>{{_ this.status}}</strong>--><br>
-    {{#if this.text}}
-    <span><!--{{_ 'schemaTickets.text.label'}}:--> {{this.text}}</span><br>
-    {{/if}}
+<template name="StatusChangeData">
     {{#if entriesOf this.dataUpdate}}
     <div class="well">
         {{#each dataEntry in entriesOf this.dataUpdate}}
@@ -87,9 +85,6 @@
         {{/each}}
     </div>
     {{/if}}
-    {{> Attachments doc=this}}
-    <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
-    {{/let}}
 </template>
 
 

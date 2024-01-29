@@ -87,13 +87,15 @@
       "label": "change status",
       "do": "change status of",
       "doing": "change status",
-      "done": "status changed"
+      "done": "status changed",
+      "did": "changed the status"
     },
     "statusUpdate": {
       "label": "update status",
       "do": "update status of",
       "doing": "update status",
-      "done": "status updated"
+      "done": "status updated",
+      "did": "updated the status"
     },
     "period": {
       "label": "update period",

@@ -22,7 +22,10 @@ Template.Topic_show.onCreated(function topicShowOnCreated() {
     const topicId = FlowRouter.getParam('_tid');
     const topic = topicId && Topics.findOne(topicId);
     this.subscribe('topics.byId', { _id: topicId });  // brings all comments with it
-    if (topic) ModalStack.setVar('communityId', topic.communityId);
+    if (topic) {
+      ModalStack.setVar('communityId', topic.communityId, true);
+      if (topic.category === 'ticket') ModalStack.setVar('relation', 'supplier', true);
+    }
   });
 });
 

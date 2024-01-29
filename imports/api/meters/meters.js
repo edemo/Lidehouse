@@ -17,16 +17,10 @@ import { Communities } from '/imports/api/communities/communities.js';
 export const Meters = new Mongo.Collection('meters');
 
 Meters.readingSchema = new SimpleSchema({
-  date: { type: Date, autoform: { defaultValue() { return Clock.currentDate(); } } },
+  date: { type: Date, autoform: { defaultValue() { return Clock.currentDate(); }, readonly() { return !Meteor.userOrNull().hasPermission('meters.update') } } },
   value: { type: Number, decimal: true },
   photo: { type: String, optional: true, autoform: imageUpload() },
-  approved: { type: Boolean, optional: true, autoform: { omit: true }, defaultValue: true },
-});
-
-Meters.unapprovedReadingSchema = new SimpleSchema({
-  date: { type: Date, autoValue() { return Clock.currentDate(); }, autoform: { defaultValue() { return Clock.currentDate(); }, readonly: true } },
-  value: { type: Number, decimal: true },
-  photo: { type: String, optional: true, autoform: imageUpload() },
+  approved: { type: Boolean, optional: true, autoform: { type: 'hidden' } },
 });
 
 // Meters.billingTypeValues = ['reading', 'estimate'];
@@ -158,7 +152,7 @@ Meters.registerReadingSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   identifier: { type: String, optional: true, autoform: { readonly: true } },
   service: { type: String, optional: true, autoform: { readonly: true } },
-  reading: { type: Meters.unapprovedReadingSchema },
+  reading: { type: Meters.readingSchema },
 });
 
 Meters.simpleSchema().i18n('schemaMeters');

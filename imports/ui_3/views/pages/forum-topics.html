@@ -33,9 +33,9 @@
                     <div class="col-sm-10">
                         <div class="vote-actions">
                             {{#let liked=(this.isLikedBy currentUser._id) }}
-                            <a href="" class="{{#if liked}}invisible{{/if}} js-like"><i class="fa fa-hand-o-up"> </i></a>
+                            <a href="" class="{{#if liked}}invisible{{/if}} js-like" title={{_ 'important'}}><i class="fa fa-hand-o-up"> </i></a>
                             <div>{{this.likesCount}}</div>
-                            <a href="" class="{{#unless liked}}invisible{{/unless}} js-like"><i class="fa fa-hand-o-down"> </i></a>
+                            <a href="" class="{{#unless liked}}invisible{{/unless}} js-like" title={{_ 'unimportant'}}><i class="fa fa-hand-o-down"> </i></a>
                             {{/let}}
                         </div>
                         <a href="{{pathFor 'Topic show' _tid=_id}}" class="vote-title">

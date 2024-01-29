@@ -12,6 +12,7 @@ Template.Chopped.viewmodel({
   },
   choppedText() {
     const td = this.templateInstance.data;
+    if (!td.text) return;
     let text;
     if (td.text.length <= this.chars() || this.showmore()) text = td.text;
     else text = td.text.substr(0, this.chars()) + '...';

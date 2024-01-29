@@ -51,6 +51,7 @@ export function checkPermissions(userId, permissionName, doc) {
     throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
       `${permissionName}, ${userId}, ${JSON.stringify(doc)}`);
   }
+  return user;
 }
 
 export function checkPermissionsWithApprove(userId, permissionName, doc) {
@@ -79,11 +80,31 @@ export function checkTopicPermissions(userId, permissionName, topic) {
 export function checkModifier(object, modifier, modifiableFields, exclude = false) {
   // Checks that the *modifier* only tries to modify the *modifiableFields* on the given *object*
   // if exclude === true, then the fields given, are the ones that should NOT be modified, and all other fields can be modified
-  let modifiedFields = Object.keys(modifier.$set);
+  let modifiedFields = []; //Object.keys(modifier.$set);
+  _.each(modifier, (modVal, modKey) => {
+    _.each(modVal, (val, key) => {
+      switch (modKey) {
+        case '$set':         
+          if (!_.isEqual(val, Object.getByString(object, key))) modifiedFields.push(key);
+          break;
+        case '$unset':         
+          if (!_.isUndefined(Object.getByString(object, key))) modifiedFields.push(key);
+          break;
+        case '$push':         
+        case '$pull':         
+        case '$inc':         
+          modifiedFields.push(key);
+          break;
+        default:
+          throw new Meteor.Error('err_permissionDenied', 'Unrecognized modifier key',
+            `Key: ${modKey}\n Modifier: ${JSON.stringify(modifier)}\n Object: ${JSON.stringify(object)}`);
+      }
+    });
+  });
   modifiedFields = _.without(modifiedFields, 'updatedAt');
   modifiedFields.forEach((mf) => {
-    if ((exclude && _.contains(modifiableFields, mf) && !_.isEqual(Object.getByString(object, mf), modifier.$set[mf]))
-      || (!exclude && !_.contains(modifiableFields, mf) && !_.isEqual(Object.getByString(object, mf), modifier.$set[mf]))) {
+    if ((exclude && _.contains(modifiableFields, mf))
+      || (!exclude && !_.contains(modifiableFields, mf) )) {
       throw new Meteor.Error('err_permissionDenied', 'Field is not modifiable',
         `Field: ${mf}\n Modifier: ${JSON.stringify(modifier)}\n Object: ${JSON.stringify(object)}`);
     }

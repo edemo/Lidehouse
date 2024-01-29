@@ -21,6 +21,7 @@ Template.Transaction_show.viewmodel({
     const communityId = tx && tx.communityId;
     if (communityId) {
       this.templateInstance.subscribe('txdefs.inCommunity', { communityId });
+      this.templateInstance.subscribe('accounts.inCommunity', { communityId });
     }
   },
   id() {

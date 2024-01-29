@@ -234,6 +234,7 @@ Template.Worksheets.viewmodel({
       };
       return {
         columns: ticketColumns(permissions),
+        order: [[7, 'desc']],
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
         searching: false,
