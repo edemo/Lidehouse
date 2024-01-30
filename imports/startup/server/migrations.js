@@ -1230,7 +1230,9 @@ Migrations.add({
       const adminId = community.admin()._id;
       console.log('Reposting community', community.name);
       const period = AccountingPeriods.findOne({ communityId: community._id });
-      AccountingPeriods.direct.update(period._id, { $unset: { accountingClosedAt: '' } });
+      if (period) {
+        AccountingPeriods.direct.update(period._id, { $unset: { accountingClosedAt: '' } });
+      }
       const txs = Transactions.find({ communityId: community._id, category: { $in: ['bill', 'payment'] }, status: 'posted' }).fetch();
       console.log('Tx count in community', txs.length);
       txs.forEach(tx => {
