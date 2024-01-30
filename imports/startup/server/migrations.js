@@ -1226,7 +1226,7 @@ Migrations.add({
   version: 69,
   name: 'Reposting bills and payments for cash accounting',
   up() {
-    Communities.find({ 'settings.accountingMethod': 'cash' }).fetch().forEach(community => {
+    Communities.find({ 'settings.accountingMethod': 'cash' }).fetch().reverse().forEach(community => {
       const adminId = community.admin()._id;
       console.log('Reposting community', community.name);
       const period = AccountingPeriods.findOne({ communityId: community._id });
