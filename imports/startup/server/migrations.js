@@ -1228,6 +1228,8 @@ Migrations.add({
   up() {
     Communities.find({ 'settings.accountingMethod': 'cash' }).forEach(community => {
       const adminId = community.admin()._id;
+      const period = AccountingPeriods.findOne({ communityId: community._id });
+      AccountingPeriods.direct.update(period._id, { $unset: { accountingClosedAt: '' } });
       Transactions.find({ communityId: community._id, category: { $in: ['bill', 'payment'] }, status: 'posted' }).forEach(tx => {
         Transactions.methods.post._execute({ userId: adminId }, { _id: tx._id });
       });
