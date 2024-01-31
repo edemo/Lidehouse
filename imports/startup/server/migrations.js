@@ -1244,6 +1244,37 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 70,
+  name: 'Reposting bills and payments for cash accounting',
+  up() {
+    Communities.find({ 'settings.accountingMethod': 'cash' }).fetch().forEach(community => {
+      console.log('Reposting community', community.name);
+      Balances.remove({ communityId: community._id });
+      const txs = Transactions.find({ communityId: community._id, category: { $in: ['bill', 'payment'] } }).fetch();
+      console.log('Tx count in community', txs.length);
+      const accountsToMove = ['`31', '`33', '454'];
+      function modify(je) {
+        accountsToMove.forEach(c => {
+          if (je.account.startsWith(c)) {
+            je.account = Accounts.toTechnicalCode(je.account);
+            return false;
+          }
+        });
+      }
+      txs.forEach(tx => {
+        const newTx = {
+          debit: tx.debit,
+          credit: tx.credit,
+        };
+        newTx.debit.forEach(je => modify(je));
+        newTx.credit.forEach(je => modify(je));
+        Transactions.direct.update(tx._id, { $set: newTx });
+      });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes

@@ -10,6 +10,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { ensureAllCorrect } from '/imports/api/transactions/balances/methods.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
 import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
@@ -113,11 +114,8 @@ Template.Accounting_ledger.events({
   },
   'click .js-fix-balances'(event, instance) {
     const communityId = instance.viewmodel.communityId();
-    Meteor.call('balances.ensureAllCorrect', { communityId },
-      (error, result) => {
-        if (error) console.log(error);
-      },
-    );
+    Modal.confirmAndCall(ensureAllCorrect, { communityId },
+      { entity: 'balance', action: 'edit', message: 'It recalculates all balances, which takes a long long time!' });
   },
   'click .js-income-statement'(event, instance) {
     const communityId = instance.viewmodel.communityId();

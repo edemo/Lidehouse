@@ -275,6 +275,10 @@
       "label": "transaction",
       "it": "the transaction"
     },
+    "balance": {
+      "label": "balance",
+      "it": "the balance"
+    },
     "bill": {
       "label": "bill",
       "it": "the bill"

@@ -275,6 +275,10 @@
       "label": "tranzakció",
       "it": "a tranzakciót"
     },
+    "balance": {
+      "label": "egyenleg",
+      "it": "az egyenleget"
+    },
     "bill": {
       "label": "számla",
       "it": "a számlát"
