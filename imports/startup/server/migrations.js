@@ -1267,8 +1267,8 @@ Migrations.add({
           debit: tx.debit,
           credit: tx.credit,
         };
-        newTx.debit.forEach(je => modify(je));
-        newTx.credit.forEach(je => modify(je));
+        newTx.debit?.forEach(je => modify(je));
+        newTx.credit?.forEach(je => modify(je));
         Transactions.direct.update(tx._id, { $set: newTx });
       });
     });
