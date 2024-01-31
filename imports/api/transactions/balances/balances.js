@@ -284,7 +284,7 @@ Balances.ensureAllCorrect = function ensureAllCorrect(communityId) {
   if (Meteor.isClient) return;
   const selector = communityId ? { communityId } : {};
   Balances.remove(selector);
-  Transactions.find(selector).forEach((tx, index) => {
+  Transactions.find(selector).fetch().forEach((tx, index) => {
     if (index % 100 === 0) Log.info('Rebalanced txs', index);
     tx.updateBalances(+1);
   });
