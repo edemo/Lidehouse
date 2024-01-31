@@ -42,12 +42,17 @@
             {{#if selectedPeriodIsOpen}}
             <button class="btn btn-default js-close" title="{{_ 'Closed at'}}: {{accountingClosedAt}}"><i class="fa fa-lock"></i> {{_ 'Close period'}}</button>
             {{/if}}
-            {{#if currentUser.super}}
-            <button class="btn btn-default js-check-journals"><i class="fa fa-list"></i> {{_ 'Check journals'}}</button>
-            {{/if}}
             {{#if community.settings.balancesUploaded}}
             <button class="btn btn-default js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i> {{_ 'Upload balances'}}</button>
             {{/if}}
+        </div>
+    </div>
+    {{/if}}
+    {{#if currentUser.super}}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <button class="btn btn-danger js-check-journals"><i class="fa fa-list"></i> {{_ 'Check journals'}}</button>
+            <button class="btn btn-danger js-fix-balances"><i class="fa fa-wrench"></i> {{_ 'Fix balances'}}</button>
         </div>
     </div>
     {{/if}}

@@ -111,6 +111,14 @@ Template.Accounting_ledger.events({
       size: 'lg',
     });
   },
+  'click .js-fix-balances'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    Meteor.call('balances.ensureAllCorrect', { communityId },
+      (error, result) => {
+        if (error) console.log(error);
+      },
+    );
+  },
   'click .js-income-statement'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     // ModalStack.setVar('parcelId', doc._id);
