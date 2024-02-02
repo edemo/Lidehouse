@@ -1288,7 +1288,7 @@ Migrations.add({
       if (period) {
         AccountingPeriods.direct.update(period._id, { $unset: { accountingClosedAt: '' } });
       }
-      const bills = Transactions.find({ communityId: community._id, category: 'bills', status: 'posted' }).fetch().filter(bill => bill.getPayments().length >= 2);
+      const bills = Transactions.find({ communityId: community._id, category: 'bill', status: 'posted' }).fetch().filter(bill => bill.getPayments().length >= 2);
       console.log('Bills count in community', bills.length);
       let paymentIds = [];
       bills.forEach(bill => {
