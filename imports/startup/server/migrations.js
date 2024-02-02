@@ -1297,7 +1297,9 @@ Migrations.add({
       paymentIds = _.uniq(paymentIds);
       console.log('Payments count in community', paymentIds.length);
       paymentIds.forEach(id => {
-        Transactions.methods.post._execute({ userId: adminId }, { _id: id });
+        if (Transactions.findOne(id)) {
+          Transactions.methods.post._execute({ userId: adminId }, { _id: id });
+        }
       });
     });
   },
