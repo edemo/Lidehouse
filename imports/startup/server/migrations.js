@@ -1288,14 +1288,21 @@ Migrations.add({
       if (period) {
         AccountingPeriods.direct.update(period._id, { $unset: { accountingClosedAt: '' } });
       }
-      const txs = Transactions.find({ communityId: community._id, category: 'payment', status: 'posted' }).fetch().filter(p => p.getBills().length >= 2);
-      console.log('Tx count in community', txs.length);
-      txs.forEach(tx => {
-        Transactions.methods.post._execute({ userId: adminId }, { _id: tx._id });
+      const bills = Transactions.find({ communityId: community._id, category: 'bills', status: 'posted' }).fetch().filter(bill => bill.getPayments().length >= 2);
+      console.log('Bills count in community', bills.length);
+      let paymentIds = [];
+      bills.forEach(bill => {
+        paymentIds.concat(bill.getPayments().map(p => p.id));
+      });
+      paymentIds = _.uniq(paymentIds);
+      console.log('Payments count in community', paymentIds.length);
+      paymentIds.forEach(id => {
+        Transactions.methods.post._execute({ userId: adminId }, { _id: id });
       });
     });
   },
 });
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes
