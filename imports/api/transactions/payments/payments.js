@@ -304,7 +304,8 @@ Transactions.categoryHelpers('payment', {
       } else if (Math.abs(billPaid.amount) < Math.abs(bill.amount)) {
         let paidBefore = 0;
         bill.payments?.forEach(payment => {
-          if (payment.id !== this._id) paidBefore += payment.amount;
+          if (payment.id === this._id) return false;
+          else paidBefore += payment.amount;
         });
         let unallocatedFromBill = billPaid.amount;
         const billLines = bill.getLines().oppositeSignsFirst(bill.amount, 'amount');

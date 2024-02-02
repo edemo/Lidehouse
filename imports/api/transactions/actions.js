@@ -159,10 +159,10 @@ Transactions.actions = {
       }
     },
   }),
-/*  repost: (options, doc, user = Meteor.userOrNull()) => ({
+  repost: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'repost',
     icon: 'fa fa-check-square-o',
-    visible: doc && doc.isPosted() && user.hasPermission('transactions.post', doc),
+    visible: doc && doc.isPosted() && user.super, // user.hasPermission('transactions.post', doc),
     run() {
       doc.makeJournalEntries(doc.community().settings.accountingMethod);
       Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
@@ -174,7 +174,7 @@ Transactions.actions = {
         size: 'lg',
       });
     },
-  }), */
+  }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
