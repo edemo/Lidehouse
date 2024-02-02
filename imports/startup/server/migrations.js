@@ -1292,7 +1292,7 @@ Migrations.add({
       console.log('Bills count in community', bills.length);
       let paymentIds = [];
       bills.forEach(bill => {
-        paymentIds.concat(bill.getPayments().map(p => p.id));
+        paymentIds = paymentIds.concat(bill.getPayments().map(p => p.id));
       });
       paymentIds = _.uniq(paymentIds);
       console.log('Payments count in community', paymentIds.length);
