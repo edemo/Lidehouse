@@ -60,6 +60,7 @@
       "no-else-return": "off",
       "no-nested-ternary": "off",
       "no-unused-expressions": "off",
+      "no-restricted-syntax": "off",
       "no-lonely-if": "off",
       "object-shorthand": [
         "error",

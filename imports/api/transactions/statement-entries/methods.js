@@ -360,18 +360,18 @@ export const recognize = new ValidatedMethod({
       let confidence = 'info';
       if (_.contains(community.settings.paymentsToBills, relation)) {
         let totalOutstanding = 0;
-        matchingBills.forEach((bill) => {
+        for (const bill of matchingBills) {
           totalOutstanding += bill.outstanding;
-        });
+        }
         if (Math.sign(adjustedEntryAmount) === Math.sign(totalOutstanding)) {
-          matchingBills.oppositeSignsFirst(totalOutstanding, 'amount').forEach((bill) => {
-            if (amountToFill === 0) return false;
+          for (const bill of matchingBills.oppositeSignsFirst(totalOutstanding, 'amount')) {
+            if (amountToFill === 0) break;
             let amount;
             if (amountToFill >= 0) amount = bill.outstanding >= 0 ? Math.min(amountToFill, bill.outstanding) : bill.outstanding;
             if (amountToFill < 0) amount = bill.outstanding < 0 ? Math.max(amountToFill, bill.outstanding) : bill.outstanding;
             tx.bills.push({ id: bill._id, amount });
             amountToFill -= amount;
-          });
+          }
         } else confidence = 'warning';
       } else {
         const localizer = contract?.accounting?.localizer;

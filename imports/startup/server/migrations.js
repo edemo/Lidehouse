@@ -1255,12 +1255,12 @@ Migrations.add({
       console.log('Tx count in community', txs.length);
       const accountsToMove = ['`31', '`33', '454'];
       function modify(je) {
-        accountsToMove.forEach(c => {
+        for (const c of accountsToMove) {
           if (je.account.startsWith(c)) {
             je.account = Accounts.toTechnicalCode(je.account);
-            return false;
+            break;
           }
-        });
+        }
       }
       txs.forEach(tx => {
         const newTx = {

@@ -10,12 +10,12 @@ export function isFieldDeleted(doc, modifier, field) {
 
 export function modifierChangesField(oldDoc, newDoc, fields) {
   let result = false;
-  fields.forEach(field => {
+  for (const field of fields) {
     if (!_.isEqual(newDoc[field], oldDoc[field])) {
       result = true;
-      return false;
+      break;
     }
-  });
+  }
   return result;
 }
 
