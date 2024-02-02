@@ -1277,6 +1277,25 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 71,
+  name: 'Reposting multi leg  payments for cash accounting',
+  up() {
+    Communities.find({ 'settings.accountingMethod': 'cash' }).fetch().forEach(community => {
+      const adminId = community.admin()._id;
+      console.log('Reposting community', community.name);
+      const period = AccountingPeriods.findOne({ communityId: community._id });
+      if (period) {
+        AccountingPeriods.direct.update(period._id, { $unset: { accountingClosedAt: '' } });
+      }
+      const txs = Transactions.find({ communityId: community._id, category: 'payment', status: 'posted' }).fetch().filter(p => p.getBills().length >= 2);
+      console.log('Tx count in community', txs.length);
+      txs.forEach(tx => {
+        Transactions.methods.post._execute({ userId: adminId }, { _id: tx._id });
+      });
+    });
+  },
+});
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes
