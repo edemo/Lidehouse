@@ -78,10 +78,10 @@ Meters.helpers({
     debugAssert(this.readings.length >= 1, 'Meters should have at least an initial reading');
     if (!date) return _.last(this.readings);
     let lastReading;
-    this.readings.forEach(r => {
+    for (const r of this.readings) {
       if (r.date <= date) lastReading = r;
       else return false;
-    });
+    }
     productionAssert(lastReading, 'Meter has no reading before the date, looks like it did not exist at that time', { meter: this.toString(), date });
     return lastReading;
   },

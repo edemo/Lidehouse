@@ -57,8 +57,9 @@
               <tr style="font-weight: bold">
                   <td>{{_ 'schemaTransactions.valueDate.label'}}</td>
                   <!--td>{{_ 'ContraAccount'}}</td-->
+                  <td>{{_ 'schemaSerialId.serialId.label'}}</td>
                   <td>{{_ 'Localizer'}}</td>
-                  <td>{{_ 'schemaNoted.notes.label'}}</td>
+                  <!--td>{{_ 'schemaNoted.notes.label'}}</td-->
                   <td>{{_ 'schemaTransactions.debit.label'}}</td>
                   <td>{{_ 'schemaTransactions.credit.label'}}</td>
                   <!--td></td>
@@ -73,8 +74,9 @@
               <tr>
                   <td>{{displayDate entry.valueDate}}</td>
                   <!--td>{{{displayAccountSpecification entry.contra}}}</td-->
+                  <td>{{entry.tx.serialId}}</td>
                   <td>{{{displayLocalizer entry.localizer}}}</td>
-                  <td>{{entry.notes}}</td>
+                  <!--td>{{entry.notes}}</td-->
                   <!--td class="{{negativeClass entry}}">{{displayMoney (entryAmount sign)}}</td-->
                   <td>{{displayMoney (entry.debitAmount)}}</td>
                   <td>{{displayMoney (entry.creditAmount)}}</td>

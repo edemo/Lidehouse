@@ -84,7 +84,7 @@ export const ensureAllCorrect = new ValidatedMethod({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ communityId }) {
-    checkPermissions(this.userId, 'balances.update', { communityId });
+    checkPermissions(this.userId, 'balances.upsert', { communityId });
     Balances.ensureAllCorrect(communityId);
   },
 });

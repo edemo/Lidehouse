@@ -218,8 +218,8 @@ Transactions.categoryHelpers('payment', {
   autoAllocate() {
     if (!this.amount) return;
     let amountToAllocate = this.amount;
-    this.getBills().forEach(pb => {
-      if (!pb?.id) return true; // can be null, when a line is deleted from the array
+    for (const pb of this.getBills()) {
+      if (!pb?.id) continue; // can be null, when a line is deleted from the array
       const bill = Transactions.findOne(pb.id);
       let billOutstanding = bill.outstanding;
       if (this._id) {   // if this is not insert operation, the payment may already be on the bill
@@ -231,24 +231,24 @@ Transactions.categoryHelpers('payment', {
       if (Math.abs(pb.amount) > Math.abs(billOutstanding)) pb.amount = autoAmount;
       if (!pb.amount) pb.amount = autoAmount; // we dont override amounts that are specified
       amountToAllocate -= pb.amount;
-      if (amountToAllocate === 0) return false;
-    });
+      if (amountToAllocate === 0) break;
+    }
     if (Accounts.getByCode(this.payAccount, this.communityId)?.category === 'cash'
       && amountToAllocate && equalWithinRounding(0, amountToAllocate)) {
       this.rounding = amountToAllocate;
       amountToAllocate -= this.rounding;
     } else if (this.rounding) this.rounding = 0;
-    this.getLines().forEach(line => {
-      if (!line) return true; // can be null, when a line is deleted from the array
+    for (const line of this.getLines()) {
+      if (!line) continue; // can be null, when a line is deleted from the array
       if (line.amount && line.amount < amountToAllocate) {
         amountToAllocate -= line.amount;
-        return true;
+        continue;
       } else if (line.amount > amountToAllocate) {
         line.amount = amountToAllocate;
         amountToAllocate = 0;
-        return false;
+        break;
       }
-    });
+    }
     this.outstanding = this.calculateOutstanding();
   },
   fillFromStatementEntry(entry) {
@@ -263,44 +263,54 @@ Transactions.categoryHelpers('payment', {
     const subTxEntry = (accountingMethod === 'cash') ? { subTx: 1 } : {};
     if (this.subType() !== 'remission') {
       const payEntry = { amount: this.amount, account: this.payAccount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined };
-      this.makeEntry(this.relationSide(), payEntry);
+      this.makeEntry(this.relationSide(), payEntry); // `38
     }
-    this.getBills().forEach(billPaid => {
-      if (unallocatedAmount === 0) return false;
+    for (const billPaid of this.getBills()) {
+      if (unallocatedAmount === 0) break;
       const bill = Transactions.findOne(billPaid.id);
       debugAssert(billPaid.amount < 0 === bill.amount < 0, 'Bill amount and its payment must have the same sign');
       const makeEntries = function makeEntries(line, amount) {
         const relationAccount = bill.lineRelationAccount(line);
         const newEntry = { amount, partner: this.partnerContractCode(), localizer: line.localizer, parcelId: line.parcelId };
-        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, _.extend({}, newEntry, subTxEntry)));
-        if (this.subType() === 'remission') {
-          this.makeEntry(this.relationSide(), _.extend({ account: line.account }, newEntry));
-        }
-        if (accountingMethod === 'cash') {
-          const technicalAccount = Accounts.toTechnicalCode(line.account);
-          this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, _.extend({}, newEntry, subTxEntry)));
-          if (this.subType() !== 'remission') {
-            this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
+        if (this.subType() !== 'remission') {  // 'payment' or 'identification'
+          if (accountingMethod === 'accrual') {
+            this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, newEntry)); // `331
+          } else if (accountingMethod === 'cash') {
+            this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));  // `95
+            const technicalAccount = Accounts.toTechnicalCode(line.account);
+            this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, _.extend({}, newEntry, subTxEntry))); // `095
+            const technicalRelationAccount = Accounts.toTechnicalCode(relationAccount);
+            this.makeEntry(this.conteerSide(), _.extend({ account: technicalRelationAccount }, _.extend({}, newEntry, subTxEntry))); // `0331
           }
+        } else if (this.subType() === 'remission') {
+          let undoLineAccount = line.account;
+          let undoRelationAccount = relationAccount;
+          if (accountingMethod === 'cash') {
+            undoLineAccount = Accounts.toTechnicalCode(undoLineAccount);
+            undoRelationAccount = Accounts.toTechnicalCode(undoRelationAccount);
+          }
+          this.makeEntry(this.relationSide(), _.extend({ account: undoLineAccount }, newEntry)); // `95 or `095
+          this.makeEntry(this.conteerSide(), _.extend({ account: undoRelationAccount }, newEntry)); // `331 or `0331
         }
       };
 
       if (billPaid.amount === bill.amount) {
-        bill.getLines().forEach((line) => {
-          if (unallocatedAmount === 0) return false;
+        for (const line of bill.getLines()) {
+          if (unallocatedAmount === 0) break;
           const amount = line.amount;
           makeEntries.call(this, line, amount);
           unallocatedAmount -= amount;
-        });
+        }
       } else if (Math.abs(billPaid.amount) < Math.abs(bill.amount)) {
         let paidBefore = 0;
-        bill.payments?.forEach(payment => {
-          if (payment.id !== this._id) paidBefore += payment.amount;
-        });
+        for (const payment of bill.payments) {
+          if (payment.id === this._id) break;
+          else paidBefore += payment.amount;
+        }
         let unallocatedFromBill = billPaid.amount;
         const billLines = bill.getLines().oppositeSignsFirst(bill.amount, 'amount');
-        billLines.forEach(line => {
-          if (unallocatedAmount === 0) return false;
+        for (const line of billLines) {
+          if (unallocatedAmount === 0) break;
           if (paidBefore === 0) {
             let amount;
             if (bill.amount >= 0) amount = line.amount >= 0 ? Math.min(line.amount, unallocatedAmount, unallocatedFromBill) : line.amount;
@@ -321,12 +331,11 @@ Transactions.categoryHelpers('payment', {
             unallocatedAmount -= amount;
             unallocatedFromBill -= amount;
           }
-        });
-      }
-      debugAssert(Math.abs(billPaid.amount) <= Math.abs(bill.amount), "payed amount for a bill can not be more than bill's amount");
-    });
-    this.getLines().forEach(line => {
-      if (unallocatedAmount === 0) return false;
+        }
+      } else productionAssert(false, "payed amount for a bill can not be more than bill's amount");
+    }
+    for (const line of this.getLines()) {
+      if (unallocatedAmount === 0) break;
       debugAssert(unallocatedAmount < 0 === line.amount < 0, 'All lines must have the same sign');
       const newEntry = { amount: line.amount, partner: this.partnerContractCode(), localizer: line.localizer, parcelId: line.parcelId };
       this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
@@ -341,11 +350,12 @@ Transactions.categoryHelpers('payment', {
           }
         });
         relationAccount += digit;
+        const technicalRelationAccount = Accounts.toTechnicalCode(relationAccount);
         this.makeEntry(this.relationSide(), _.extend({ account: technicalAccount }, _.extend({}, newEntry, subTxEntry)));
-        this.makeEntry(this.conteerSide(), _.extend({ account: relationAccount }, _.extend({}, newEntry, subTxEntry)));
+        this.makeEntry(this.conteerSide(), _.extend({ account: technicalRelationAccount }, _.extend({}, newEntry, subTxEntry)));
       }
       unallocatedAmount -= line.amount;
-    });
+    }
     if (unallocatedAmount) { // still has remainder, that goes as unidentified
       const unidentifiedAccount = this.txdef().unidentifiedAccount();
       const newEntry = { account: unidentifiedAccount, amount: unallocatedAmount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined };

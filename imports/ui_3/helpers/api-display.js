@@ -50,7 +50,10 @@ export function displayOutstanding(value) {
 export function displayAccountText(code) {
   if (!code) return '';
   const collection = code.charAt(0) === '`' ? Accounts : Parcels;
-  const account = collection.getByCode(code);
+  const isTechnical = Accounts.isTechnicalCode(code);
+  const nonTechnicalCode = isTechnical ? Accounts.fromTechnicalCode(code) : code;
+  let account = collection.getByCode(nonTechnicalCode);
+  if (isTechnical) account = Accounts.toTechnical(account);
   return account?.displayAccount() || code;
 }
 

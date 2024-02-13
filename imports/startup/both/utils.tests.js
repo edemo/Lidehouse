@@ -33,6 +33,39 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(Array.difference(array1, array2), ['apple', 'banana']);
         chai.assert.deepEqual(Array.difference(array2, array1), []);
       });
+
+      it('cannot break out of an array.forEach', function () {
+        const array = ['apple', 'banana', 'citron', 'doodle'];
+        let counter = 0;
+        array.forEach(elem => {
+          if (elem === 'banana') return false;
+          else counter += 1;
+        });
+        chai.assert.equal(counter, 3);
+      });
+
+      it('can break out of an array.every', function () {
+        const array = ['apple', 'banana', 'citron', 'doodle'];
+        let counter = 0;
+        array.every(elem => {
+          if (elem === 'banana') return false;
+          else counter += 1;
+        });
+        chai.assert.equal(counter, 1);
+      });
+
+      it('can break and continue out of an array for/of', function () {
+        const array = ['apple', 'banana', 'citron', 'doodle'];
+        let counter = 0;
+        for (const elem of array) {
+          if (elem === 'banana') break;
+          else {
+            counter += 1;
+            continue;
+          }
+        }
+        chai.assert.equal(counter, 1);
+      });
     });
 
   });

@@ -194,7 +194,8 @@ _.extend(Accounts, {
     let result = false;
     const accountsToLocalize = Accounts.toLocalize(communityId);
     accountsToLocalize.forEach(c => {
-      if (code.startsWith(c)) {
+      const tc = Accounts.toTechnicalCode(c);
+      if (code.startsWith(c) || code.startsWith(tc)) {
         result = true;
         return false;
       }

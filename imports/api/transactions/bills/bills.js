@@ -260,14 +260,14 @@ Transactions.categoryHelpers('bill', {
     this.credit = [];
     this.getLines().forEach(line => {
       const newEntry = { amount: line.amount, partner: this.partnerContractCode(), localizer: line.localizer, parcelId: line.parcelId };
-      if (accountingMethod === 'accrual') {
-        this.makeEntry(this.conteerSide(), _.extend({ account: line.account }, newEntry));
-      } else if (accountingMethod === 'cash') {
-        const technicalAccount = Accounts.toTechnicalCode(line.account);
-        this.makeEntry(this.conteerSide(), _.extend({ account: technicalAccount }, newEntry));
-      }
-      const relationAccount = this.lineRelationAccount(line);
-      this.makeEntry(this.relationSide(), _.extend({ account: relationAccount }, newEntry));
+      let lineAccount = line.account;
+      let lineRelationAccount = this.lineRelationAccount(line);
+      if (accountingMethod === 'cash') {
+        lineAccount = Accounts.toTechnicalCode(lineAccount);
+        lineRelationAccount = Accounts.toTechnicalCode(lineRelationAccount);
+      } else debugAssert(accountingMethod === 'accrual');
+      this.makeEntry(this.conteerSide(), _.extend({ account: lineAccount }, newEntry));
+      this.makeEntry(this.relationSide(), _.extend({ account: lineRelationAccount }, newEntry));
     });
     return { debit: this.debit, credit: this.credit };
   },
