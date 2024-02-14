@@ -55,7 +55,7 @@ Template.Accounting_bills.viewmodel({
     }
   },
   findTxdefs(category) {
-    const txdefs = Txdefs.find({
+    const txdefs = Txdefs.findTfetch({
       communityId: this.communityId(),
       category,
       'data.relation': this.activePartnerRelation(),

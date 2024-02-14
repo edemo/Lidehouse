@@ -22,15 +22,24 @@ Template.Shareddoc_store.viewmodel({
   sortBy: 'name',
   sortDirection: 1,
   viewMode: 'grid',
-  activeFolderId: 'main',
+  activeFolderId: undefined,
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       if (communityId) {
-        instance.subscribe('sharedfolders.ofCommunity', { communityId });
         instance.subscribe('shareddocs.ofCommunity', { communityId });
       }
     });
+    instance.autorun(() => {
+      const mainFolder = Sharedfolders.findOne({ content: 'main' });
+      if (mainFolder) this.activeFolderId(mainFolder._id);
+    });
+  },
+  communityId() {
+    return ModalStack.getVar('communityId');
+  },
+  community() {
+    return Communities.findOne(this.communityId());
   },
   storeHasDocuments() {
     const activeCommunityId = ModalStack.getVar('communityId');
@@ -38,32 +47,31 @@ Template.Shareddoc_store.viewmodel({
     return Shareddocs.find({ communityId: activeCommunityId }).count() > 0;
   },
   builtinFolders() {
-    return Sharedfolders.find({ communityId: null });
+    return Sharedfolders.find({ communityId: this.community()?.settings?.templateId }, { sort: { createdAt: 1 } });
   },
   communityFolders() {
-    const communityId = ModalStack.getVar('communityId');
-    return Sharedfolders.find({ communityId });
+    return Sharedfolders.find({ communityId: this.communityId() }, { sort: { createdAt: 1 } });
   },
   isActive(folderId) {
     return this.activeFolderId() === folderId;
   },
   activeFolder() {
-    const id = this.activeFolderId();
-    return Sharedfolders.findOne(id);
+    const _id = this.activeFolderId();
+    return Sharedfolders.findOne(_id);
   },
   disabledUpload() {
     if (!Meteor.userOrNull().hasPermission('shareddocs.upload')) return 'disabled';
     return this.activeFolder()?.externalUrl && 'disabled';
   },
   shareddocs() {
-    const communityId = ModalStack.getVar('communityId');
+    const communityId = this.communityId();
     const folderId = this.activeFolderId();
     if (!communityId || !folderId) return [];
     let containedFiles;
     const sortBy = this.sortBy();
     const sortDirection = this.sortDirection();
     if (sortBy === 'name') {
-      const community = Communities.findOne(communityId);
+      const community = this.community();
       const sharedDocs = Shareddocs.find({ communityId, folderId }).fetch();
       containedFiles = sharedDocs.fetch().sort((a, b) => a.name.localeCompare(b.name, community.settings.language, { sensitivity: 'accent' }));
       if (sortDirection === '-1') containedFiles = containedFiles.reverse();
@@ -87,9 +95,9 @@ Template.Shareddoc_store.viewmodel({
   },
   embedUrl(externalUrl) {
     const split = externalUrl.split('/');
-    const folderId = _.last(split).split('?')[0];
-    debugAssert(split[2] === 'drive.google.com' && folderId.length === 33);
-    return `https://drive.google.com/embeddedfolderview?id=${folderId}#${this.viewMode()}`;
+    const driveFolderId = _.last(split).split('?')[0];
+    debugAssert(split[2] === 'drive.google.com' && driveFolderId.length === 33);
+    return `https://drive.google.com/embeddedfolderview?id=${driveFolderId}#${this.viewMode()}`;
   },
   extensions() {
     return ['doc', 'pdf', 'mpg'];

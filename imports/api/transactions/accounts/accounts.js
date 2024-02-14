@@ -12,9 +12,11 @@ import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { modifierChangesField, autoValueUpdate } from '/imports/api/mongo-utils.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { TemplatedMongoCollection } from '/imports/api/transactions/templates/templated-collection.js';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
+import { Communities } from '/imports/api/communities/communities.js';
 
-export const Accounts = new Mongo.Collection('accounts');
+export const Accounts = new TemplatedMongoCollection('accounts', 'code');
 
 Accounts.mainCategoryValues = ['asset', 'liability', 'equity', 'income', 'expense', 'technical'];
 Accounts.simpleCategoryValues = Accounts.mainCategoryValues.concat(['payable', 'receivable']);
@@ -45,7 +47,7 @@ Accounts.bankExtensionSchema = new SimpleSchema({
 //  protocol: { type: String, optional: true },
 });
 
-Meteor.startup(function indexMoneyAccounts() {
+Meteor.startup(function indexAccounts() {
   if (Meteor.isServer) {
     Accounts._ensureIndex({ communityId: 1, code: 1 });
     Accounts._ensureIndex({ communityId: 1, name: 1 });
@@ -55,7 +57,7 @@ Meteor.startup(function indexMoneyAccounts() {
 
 Accounts.isPayableOrReceivable = function isPayableOrReceivable(code, communityId) {
   if (!code.startsWith('`') || code.startsWith('`0')) return false;
-  const category = Accounts.findOne({ code, communityId }).category;
+  const category = Accounts.findOneT({ code, communityId }).category;
   return (category === 'payable' || category === 'receivable');
 };
 
@@ -86,12 +88,12 @@ Accounts.helpers({
     const majorCategory = _.contains(['cash', 'bank'], this.category) ? this.category : 'simple';
     return majorCategory + 'Account';
   },
-  nodes(leafsOnly = false) {
+  nodes(communityId, leafsOnly = false) {
     const regexp = new RegExp('^' + this.code + (leafsOnly ? '.+' : ''));
-    return Accounts.find({ communityId: this.communityId, code: regexp }, { sort: { code: 1 } });
+    return Accounts.findTfetch({ communityId, code: regexp }, { sort: { code: 1 } });
   },
-  leafs() {
-    return this.nodes(true);
+  leafs(communityId) {
+    return this.nodes(communityId, true);
   },
   parent() {
     // TODO
@@ -105,8 +107,8 @@ Accounts.helpers({
   asOption() {
     return { label: this.displayAccount(), value: this.code };
   },
-  nodeOptions(leafsOnly) {
-    const nodes = this.nodes(leafsOnly);
+  nodeOptions(communityId, leafsOnly) {
+    const nodes = this.nodes(communityId, leafsOnly);
     return nodes.map(node => node.asOption());
   },
 });
@@ -118,39 +120,101 @@ Accounts.toLocalize = function toLocalize(communityId) {  // These accounts' bal
   return def.debit;
 };
 
-_.extend(Accounts, {
-  checkExists(communityId, code) {
-    if (!code || !Accounts.findOne({ communityId, code })) {
-      throw new Meteor.Error('err_notExists', 'No such account', { code });
+Accounts.directMove = function directMove(communityId, codeFrom, codeTo) {
+  const Transactions = Mongo.Collection.get('transactions');
+  const Balances = Mongo.Collection.get('balances');
+  productionAssert(!Balances.findOne({ communityId, account: new RegExp('^' + codeTo) }), `Account ${codeTo} is already used in community ${communityId}`);
+                    // TODO: Could handle this case with balance merging
+  const txs = Transactions.find({ communityId });
+  console.log('Replacing', codeFrom, 'with', codeTo, 'in Tx count', txs.count());
+  txs.forEach(tx => {
+    let needsUpdate = false;
+    const newTx = {
+      debit: tx.debit,
+      credit: tx.credit,
+    };
+    newTx.debit?.forEach(je => {
+      if (je.account.startsWith(codeFrom)) {
+        je.account = je.account.replace(codeFrom, codeTo);
+        needsUpdate = true;
+      }
+    });
+    newTx.credit?.forEach(je => {
+      if (je.account.startsWith(codeFrom)) {
+        je.account = je.account.replace(codeFrom, codeTo);
+        needsUpdate = true;
+      }
+    });
+    if (needsUpdate) {
+      Transactions.direct.update(tx._id, { $set: newTx });
     }
-  },
+  });
+  const bals = Balances.find({ communityId, account: new RegExp('^' + codeFrom) });
+  bals.forEach(bal => {
+    Balances.direct.update(bal._id, { $set: { account: bal.account.replace(codeFrom, codeTo) } });
+  });
+};
+
+Accounts.move = function move(communityId, codeFrom, codeTo) {
+  const Transactions = Mongo.Collection.get('transactions');
+  const Balances = Mongo.Collection.get('balances');
+  productionAssert(!Balances.findOne({ communityId, account: new RegExp('^' + codeTo) }), `Account ${codeTo} is already used in community ${communityId}`);
+                    // TODO: Could handle this case with balance merging
+  const txs = Transactions.find({ communityId });
+  txs.forEach(tx => {
+    let needsUpdate = false;
+ //   console.log("Tx BEFORE", tx);
+    needsUpdate = tx.moveTransactionAccounts(codeFrom, codeTo);
+    if (needsUpdate) {
+      tx.moveJournalEntryAccounts(codeFrom, codeTo);
+      const _id = tx._id; delete tx._id;
+//    console.log("Tx AFTER", tx);
+      Transactions.direct.update(_id, { $set: tx });
+    }
+  });
+  const bals = Balances.find({ communityId, account: new RegExp('^' + codeFrom) });
+  bals.forEach(bal => {
+    Balances.direct.update(bal._id, { $set: { account: bal.account.replace(codeFrom, codeTo) } });
+  });
+};
+
+Accounts.moveTemplate = function move(templateName, codeFrom, codeTo) {
+  console.log('Replacing', codeFrom, 'with', codeTo, 'in Tempalte', templateName);
+  const template = Communities.findOne({ name: templateName, isTemplate: true });
+  productionAssert(template && template._id, `Could not find template named '${templateName}'`);
+  Communities.find({ 'settings.templateId': template._id }).forEach(community => {
+    Accounts.move(community._id, codeFrom, codeTo);
+  });
+};
+
+_.extend(Accounts, {
   coa(communityId = getActiveCommunityId()) {
-    return Accounts.findOne({ communityId, code: '`' });
+    return Accounts.findOneT({ communityId, code: '`' });
   },
   all(communityId) {
-    return Accounts.find({ communityId }, { sort: { code: 1 } });
+    return Accounts.findTfetch({ communityId }, { sort: { code: 1 } });
   },
   allWithTechnical(communityId) {
-    const accounts = Accounts.find({ communityId }).fetch();
+    const accounts = Accounts.findTfetch({ communityId });
     const technicalAccounts = accounts.map(a => Accounts.toTechnical(a));
     const allAccounts = accounts.concat(technicalAccounts);
     const sortedAccounts = _.sortBy(allAccounts, a => a.code);
     return _.uniq(sortedAccounts, true, a => a.code);
   },
   getByCode(code, communityId = getActiveCommunityId()) {
-    return Accounts.findOne({ communityId, code });
+    return Accounts.findOneT({ communityId, code });
   },
   getByName(name, communityId = getActiveCommunityId()) {
-    return Accounts.findOne({ communityId, name });
+    return Accounts.findOneT({ communityId, name });
   },
   findPayinDigitByName(name) {
-    const tmpl = Templates.findOne('Condominium_Payins');
+    const tmpl = Templates['Honline előírás nemek'];
     const node = tmpl.accounts.find(a => a.name === name);
     return node.code;
   },
   nodesOf(communityId, code, leafsOnly = false) {
     const regexp = new RegExp('^' + code + (leafsOnly ? '.+' : ''));
-    return Accounts.find({ communityId, code: regexp }, { sort: { code: 1 } });
+    return Accounts.findTfetch({ communityId, code: regexp }, { sort: { code: 1 } });
   },
   nodeOptionsOf(communityId, codeS, leafsOnly, addRootNode = false) {
     const codes = (codeS instanceof Array) ? codeS : [codeS];

@@ -117,7 +117,7 @@ export const remove = new ValidatedMethod({
 
 export function closeInactiveTopics() {
   const exceptCategories = ['ticket'];
-  Communities.find({}).forEach(community => {
+  Communities.find({ isTemplate: { $ne: true } }).forEach(community => {
     const localAdminId = community.admin()._id;
     const topicAgeDays = community.settings.topicAgeDays;
     const archiveTime = moment().subtract(topicAgeDays, 'days').toDate();

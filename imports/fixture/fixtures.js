@@ -294,7 +294,7 @@ const dummyParcels = [];
 
   // ===== Breakdowns =====
 
-  demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
+  demoBuilder.execute(Transactions.methods.setAccountingTemplate, { communityId: demoCommunityId }, demoAccountantId);
 
   // ===== Transactions =====
 

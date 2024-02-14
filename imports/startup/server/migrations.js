@@ -36,8 +36,6 @@ import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/p
 import { updateMyLastSeen, mergeLastSeen } from '/imports/api/users/methods.js';
 import { autoValueUpdate } from '/imports/api/mongo-utils.js';
 
-import '/imports/api/transactions/accounts/template.js';
-
 const keepOrderSort = { sort: { updatedAt: 1 } };   // use this to keep updatedAt order intact
 
 // Use only direct db operations to avoid unnecessary hooks!
@@ -1244,48 +1242,15 @@ Migrations.add({
   },
 });
 
-Accounts.move = function move(communityId, codeFrom, codeTo) {
-  productionAssert(!Balances.findOne({ communityId, account: new RegExp('^' + codeTo) }), `Account ${codeTo} is already used in community ${communityId}`);
-                    // TODO: Could handle this case with balance merging
-  const txs = Transactions.find({ communityId });
-  console.log('Replacing', codeFrom, 'with', codeTo, 'in Tx count', txs.count());
-  txs.forEach(tx => {
-    let needsUpdate = false;
-    const newTx = {
-      debit: tx.debit,
-      credit: tx.credit,
-    };
-    newTx.debit?.forEach(je => {
-      if (je.account.startsWith(codeFrom)) {
-        je.account = je.account.replace(codeFrom, codeTo);
-        needsUpdate = true;
-      }
-    });
-    newTx.credit?.forEach(je => {
-      if (je.account.startsWith(codeFrom)) {
-        je.account = je.account.replace(codeFrom, codeTo);
-        needsUpdate = true;
-      }
-    });
-    if (needsUpdate) {
-      Transactions.direct.update(tx._id, { $set: newTx });
-    }
-  });
-  const bals = Balances.find({ communityId, account: new RegExp('^' + codeFrom) });
-  bals.forEach(bal => {
-    Balances.direct.update(bal._id, { $set: { account: bal.account.replace(codeFrom, codeTo) } });
-  });
-};
-
 Migrations.add({
   version: 70,
   name: 'Reposting bills and payments for cash accounting',
   up() {
     Communities.find({ 'settings.accountingMethod': 'cash' }).fetch().forEach(community => {
       console.log('Reposting community', community.name);
-      Accounts.move(community._id, '`31', '`031');
-      Accounts.move(community._id, '`33', '`033');
-      Accounts.move(community._id, '`454', '`0454');
+      Accounts.directMove(community._id, '`31', '`031');
+      Accounts.directMove(community._id, '`33', '`033');
+      Accounts.directMove(community._id, '`454', '`0454');
     });
   },
 });
@@ -1319,6 +1284,61 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 72,
+  name: 'Sharedfolders becomes part of the template',
+  up() {
+    const template = Communities.findOne({ name: 'Honline Társasház Sablon', isTemplate: true });
+    productionAssert(template, 'Template Not found');
+    Sharedfolders.find({}).forEach(sf => {
+      if (sf.communityId === null) {
+        sf.communityId = template._id;
+        sf.content = sf._id;
+        const oldFolderId = sf._id; delete sf._id;
+        const newFolderId = Sharedfolders.insert(sf);
+        Shareddocs.direct.update({ folderId: oldFolderId }, { $set: { folderId: newFolderId } }, { multi: true });
+        Sharedfolders.direct.remove(oldFolderId);
+      }
+    });
+    Communities.find({ isTemplate: { $ne: true } }).forEach(community => {
+      if (community.settings.templateId !== template._id) {
+        Communities.direct.update(community._id, { $set: { 'settings.templateId': template._id } });
+      }
+    });
+  },
+});
+/*
+Migrations.add({
+  version: 73,
+  name: 'Remove redundant docs in community where Template has the exact same doc',
+  up() {
+    const template = Communities.findOne({ name: 'Honline Társasház Sablon', isTemplate: true });
+    productionAssert(template, 'Template Not found');
+    Communities.find({ isTemplate: { $ne: true } }).forEach(community => {
+      console.log('Doing community', community.name);
+      Accounts.find({ communityId: community._id, category: { $ne: 'bank' } }).forEach(account => {
+        const templateVersion = Accounts.findOne({ code: account.code, name: account.name, communityId: template._id });
+        if (templateVersion) {
+          Accounts.direct.remove(account._id); // we refer to it by the code, so no other updates neccesary
+        }
+      });
+      Parcels.find({ communityId: community._id, category: { $in: ['@group', '#tag'] } }).forEach(localizer => {
+        const templateVersion = Parcels.findOne({ code: localizer.code, name: localizer.name, communityId: template._id });
+        if (templateVersion) {
+          Parcels.direct.remove(localizer._id); // we don't use these yet, so no other updates neccesary
+        }
+      });
+      Txdefs.find({ communityId: community._id }).forEach(txdef => {
+        const templateVersion = Txdefs.findOne({ name: txdef.name, communityId: template._id });
+        if (templateVersion && _.isEqual(templateVersion.debit, txdef.debit) && _.isEqual(templateVersion.credit, txdef.credit)) {
+          Transactions.direct.update({ defId: txdef._id }, { $set: { defId: templateVersion._id } }, { multi: true });
+          Txdefs.direct.remove(txdef._id);
+        }
+      });
+    });
+  },
+});
+*/
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes

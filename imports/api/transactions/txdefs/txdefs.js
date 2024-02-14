@@ -16,19 +16,12 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Log } from '/imports/utils/log.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { TemplatedMongoCollection } from '/imports/api/transactions/templates/templated-collection';
 
-export const Txdefs = new Mongo.Collection('txdefs');
+export const Txdefs = new TemplatedMongoCollection('txdefs', 'name');
 
 Txdefs.define = function define(doc) {
   Txdefs.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
-};
-
-Txdefs.clone = function clone(name, communityId) {
-  const doc = Txdefs.findOne({ name, communityId: null });
-  if (!doc) return undefined;
-  Mongo.Collection.stripAdministrativeFields(doc);
-  doc.communityId = communityId;
-  return Txdefs.insert(doc);
 };
 
 Txdefs.paymentSubtypeValues = [
@@ -141,25 +134,25 @@ Txdefs.helpers({
   },
   correspondingBillDef() {
     debugAssert(this.category === 'payment');
-    return Txdefs.findOne({ communityId: this.communityId, category: 'bill', 'data.relation': this.data.relation });
+    return Txdefs.findOneT({ communityId: this.communityId, category: 'bill', 'data.relation': this.data.relation });
   },
   correspondingPaymentDef() {
     debugAssert(this.category === 'bill');
-    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.data.relation, 'data.paymentSubType': 'payment' });
+    return Txdefs.findOneT({ communityId: this.communityId, category: 'payment', 'data.relation': this.data.relation, 'data.paymentSubType': 'payment' });
   },
 });
 
 _.extend(Txdefs, {
   getByCode(code, communityId = getActiveCommunityId()) {
-    return Txdefs.find({ communityId, $or: [{ debit: code }, { credit: code }] });
+    return Txdefs.findTfetch({ communityId, $or: [{ debit: code }, { credit: code }] });
   },
   getByName(name, communityId = getActiveCommunityId()) {
-    const txdef = Txdefs.findOne({ communityId, name });
+    const txdef = Txdefs.findOneT({ communityId, name });
     productionAssert(txdef, "You've removed an essential txdef", { name });
     return txdef;
   },
   findByName(name, communityId = getActiveCommunityId()) {
-    const txdef = Txdefs.findOne({ communityId, name });
+    const txdef = Txdefs.findOneT({ communityId, name });
     return txdef;
   },
 });

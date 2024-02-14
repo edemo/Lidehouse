@@ -31,6 +31,8 @@ Template.Main_layout.onCreated(function() {
     const communityId = ModalStack.getVar('communityId');
     if (communityId) {
       this.subscribe('communities.byId', { _id: communityId });
+      this.subscribe('templates.inCommunity', { communityId });
+      this.subscribe('sharedfolders.ofCommunity', { communityId });
       this.subscribe('agendas.inCommunity', { communityId });
       this.subscribe('topics.active', { communityId });
       this.subscribe('parcels.codes', { communityId });

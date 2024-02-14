@@ -3,9 +3,10 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkPermissions, checkModifier, checkConstraint } from '/imports/api/method-checks.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Accounts } from './accounts.js';
+import { Communities } from '/imports/api/communities/communities.js';
 
 export const insert = new ValidatedMethod({
   name: 'accounts.insert',
@@ -27,11 +28,21 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
-    const doc = checkExists(Accounts, _id);
-    checkModifier(doc, modifier, ['code'], true);
+    let doc = checkExists(Accounts, _id);
+    const communityId = modifier.$set?.communityId || doc.communityId;
+    if (communityId !== doc.communityId) { // Editing a template entry (doc.communityId is the templlateId)
+      const community = Communities.findOne(communityId);
+      checkConstraint(community.settings.templateId === doc.communityId, 'You can update only from your own template');
+      checkPermissions(this.userId, 'accounts.update', { communityId });
+      const clonedDocId = Accounts.clone(doc, communityId);
+      doc = Accounts.findOne(clonedDocId);
+    }
     checkPermissions(this.userId, 'accounts.update', doc);
+    if (modifier.$set.code !== doc.code) {
+      Accounts.move(communityId, doc.code, modifier.$set.code);
+    }
 
-    Accounts.update({ _id }, modifier, { selector: { category: doc.category } });
+    return Accounts.update({ _id: doc._id }, modifier, { selector: { category: doc.category } });
   },
 });
 
@@ -44,7 +55,7 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Accounts, _id);
     checkPermissions(this.userId, 'accounts.remove', doc);
-    Accounts.remove(_id);
+    return Accounts.remove(_id);
   },
 });
 

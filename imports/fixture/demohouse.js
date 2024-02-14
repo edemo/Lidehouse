@@ -369,7 +369,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Breakdowns =====
   // Create breakdowns (incl Localizer)
-  builder.execute(Transactions.methods.cloneAccountingTemplates, { communityId }, demoAccountantId);
+  builder.execute(Transactions.methods.setAccountingTemplate, { communityId }, demoAccountantId);
 
 /*
   builder.create('cashAccount', {
@@ -781,7 +781,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       ticket: {
         type: 'maintenance',
         urgency: 'normal',
-        localizer: Accounts.findOne({ communityId, category: 'location', name: 'Lift' }),
+        localizer: Parcels.findOneT({ communityId, name: 'Lift' }),
         chargeType: 'lumpsum',
         contractId: contract1,
         expectedStart: maintainanceDate.toDate(),
@@ -814,7 +814,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   builder.execute(statusChange, { topicId: ticket0, status: 'confirmed',
     text: __('demo.ticket.lift.comment.0'),
     dataUpdate: {
-      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Lift' }),
+      localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Lift' }),
       chargeType: 'lumpsum',
       contractId: contract1,
       expectedStart: Clock.date(1, 'days', 'ahead'),
@@ -900,7 +900,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   builder.execute(statusChange, { topicId: ticket3, status: 'confirmed',
     text: __('demo.ticket.plaster.comment.0'),
     dataUpdate: {
-      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Lépcsőház' }),
+      localizer: Parcels.findOneT({ communityId, category: 'location', name: 'Lépcsőház' }),
       chargeType: 'oneoff',
       contractId: contract0,
       expectedCost: 10000,
@@ -1035,7 +1035,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // Unidentified payin
   builder.create('statementEntry', {
-    account: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+    account: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
     valueDate: Date.newUTC(`${lastYear}-12-30`),
     amount: 24500,
     name: 'Gipsz Jakab',
@@ -1059,7 +1059,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: Date.newUTC(`${lastYear}-01-01`),
       side: 'debit',
       amount: opening[2],
-      account: Accounts.findOne({ communityId, category: opening[0], name: opening[1] }).code,
+      account: Accounts.findOneT({ communityId, category: opening[0], name: opening[1] }).code,
     });
   });
 
@@ -1090,7 +1090,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         uom: 'hónap',
         quantity: 3,
         unitPrice: 94200,
-        account: Accounts.findOne({ communityId, category: 'expense', name: 'Takarítás' }).code,
+        account: Accounts.findOneT({ communityId, category: 'expense', name: 'Takarítás' }).code,
         localizer: '@',
       }],
     });
@@ -1104,7 +1104,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: Date.newUTC(`${lastYear}-${mm}-25`),
         partnerId: supplier2,
         relationAccount: '`454',
-        payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+        payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
       });
     }
   });
@@ -1123,7 +1123,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       uom: 'year',
       quantity: 1,
       unitPrice: 50200,
-      account: Accounts.findOne({ communityId, category: 'income', name: 'Különféle egyéb bevételek' }).code,
+      account: Accounts.findOneT({ communityId, category: 'income', name: 'Különféle egyéb bevételek' }).code,
       localizer: '@',
     }],
   });
@@ -1134,7 +1134,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     amount: 25000,
     valueDate: Date.newUTC(`${lastYear}-06-25`),
     partnerId: customer0,
-    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+    payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
   });
 
   // === Incomes ===
@@ -1175,10 +1175,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       uom: 'db',
       quantity: 1,
       unitPrice: 35000,
-      account: Accounts.findOne({ communityId, category: 'income', name: 'Különféle egyéb bevételek' }).code,
-//      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
+      account: Accounts.findOneT({ communityId, category: 'income', name: 'Különféle egyéb bevételek' }).code,
+//      localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Central' }).code,
     }],
-    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+    payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
   });
 
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
@@ -1190,10 +1190,10 @@ export function insertDemoHouse(lang, demoOrTest) {
         uom: 'hó',
         quantity: 1,
         unitPrice: 400,
-        account: Accounts.findOne({ communityId, category: 'income', name: 'Hitelintézettől kapott kamatok' }).code,
-//        localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
+        account: Accounts.findOneT({ communityId, category: 'income', name: 'Hitelintézettől kapott kamatok' }).code,
+//        localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Central' }).code,
       }],
-      payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+      payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
     });
   });
 
@@ -1205,10 +1205,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       uom: 'db',
       quantity: 1,
       unitPrice: 600000,
-      account: Accounts.findOne({ communityId, category: 'income', name: 'Támogatások' }).code,
-//      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
+      account: Accounts.findOneT({ communityId, category: 'income', name: 'Támogatások' }).code,
+//      localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Central' }).code,
     }],
-    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+    payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
     notes: __('demo.transactions.notes.1'),
   });
 
@@ -1220,10 +1220,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       uom: 'év',
       quantity: 1,
       unitPrice: 155000,
-      account: Accounts.findOne({ communityId, category: 'income', name: 'Bérleti díj bevételek' }).code,
-//      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
+      account: Accounts.findOneT({ communityId, category: 'income', name: 'Bérleti díj bevételek' }).code,
+//      localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Central' }).code,
     }],
-    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+    payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
     notes: __('demo.transactions.notes.2'),
   });
 
@@ -1235,10 +1235,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       uom: '?',
       quantity: 1,
       unitPrice: 500000,
-      account: Accounts.findOne({ communityId, category: 'income', name: 'Különféle egyéb bevételek' }).code,
-//      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
+      account: Accounts.findOneT({ communityId, category: 'income', name: 'Különféle egyéb bevételek' }).code,
+//      localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Central' }).code,
     }],
-    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+    payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
     notes: __('demo.transactions.notes.3'),
   });
 
@@ -1250,9 +1250,9 @@ export function insertDemoHouse(lang, demoOrTest) {
       uom: 'db',
       quantity: 1,
       unitPrice: 3500000,
-      account: Accounts.findOne({ communityId, category: 'liability', name: 'Hosszú lejáratú bank hitel' }).code,
+      account: Accounts.findOneT({ communityId, category: 'liability', name: 'Hosszú lejáratú bank hitel' }).code,
     }],
-    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Savings account' }).code,
+    payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Savings account' }).code,
     notes: __('demo.transactions.notes.4'),
   });
 
@@ -1265,10 +1265,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       uom: 'db',
       quantity: 2,
       unitPrice: 495000,
-      account: Accounts.findOne({ communityId, category: 'asset', name: 'MŰSZAKI BERENDEZÉSEK' }).code,
-//      localizer: Accounts.findOne({ communityId, category: 'location', name: 'Heating system' }).code,
+      account: Accounts.findOneT({ communityId, category: 'asset', name: 'MŰSZAKI BERENDEZÉSEK' }).code,
+//      localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Heating system' }).code,
     }],
-    payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+    payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
   });
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
@@ -1280,10 +1280,10 @@ export function insertDemoHouse(lang, demoOrTest) {
         uom: 'm3',
         quantity: 100 + Math.floor(Math.random() * 70),
         unitPrice: 800,
-        account: Accounts.findOne({ communityId, category: 'expense', name: 'Víz díj' }).code,
-//        localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
+        account: Accounts.findOneT({ communityId, category: 'expense', name: 'Víz díj' }).code,
+//        localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Central' }).code,
       }],
-      payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+      payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
     });
 
     builder.create('expense', {
@@ -1294,10 +1294,10 @@ export function insertDemoHouse(lang, demoOrTest) {
         uom: 'hó',
         quantity: 1,
         unitPrice: 98500,
-        account: Accounts.findOne({ communityId, category: 'expense', name: 'Csatorna díjak' }).code,
-//        localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
+        account: Accounts.findOneT({ communityId, category: 'expense', name: 'Csatorna díjak' }).code,
+//        localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Central' }).code,
       }],
-      payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+      payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
     });
 
     builder.create('expense', {
@@ -1308,10 +1308,10 @@ export function insertDemoHouse(lang, demoOrTest) {
         uom: 'mért',
         quantity: 1,
         unitPrice: 150000 + Math.floor(Math.random() * 50000),
-        account: Accounts.findOne({ communityId, category: 'expense', name: 'Áram díj' }).code,
-//        localizer: Accounts.findOne({ communityId, category: 'location', name: 'Central' }).code,
+        account: Accounts.findOneT({ communityId, category: 'expense', name: 'Áram díj' }).code,
+//        localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Central' }).code,
       }],
-      payAccount: Accounts.findOne({ communityId, category: 'bank', name: 'Checking account' }).code,
+      payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
     });
   });
 

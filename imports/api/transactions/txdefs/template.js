@@ -1,12 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
-//import { Txdefs } from './txdefs.js';
+import { Txdefs } from './txdefs.js';
 
 export function defineTxdefTemplates() {
 // Kettős könyvelés verzió
 
-  Templates.define({ _id: 'Condominium_Txdefs', txdefs: [{
+  Templates.define({ name: 'Honline Társasház Sablon', txdefs: [{
     name: 'Supplier bill', // 'Szállító számla',
     category: 'bill',
     data: { relation: 'supplier' },
@@ -197,6 +197,16 @@ export function defineTxdefTemplates() {
   }],
   });
 }
+
+Txdefs.insertTemplateDoc = function insertTemplateDoc(templateId, doc) {
+  const docToInsert = _.extend({ communityId: templateId }, doc);
+  Txdefs.updateOrInsert({ communityId: templateId, name: doc.name }, docToInsert);
+};
+
+// To insert a new template doc: Just insert doc into the Template def
+// To change anything other than the NAME on a template doc: just change it the Template def, and it will be changed at the next server start
+// To change the NAME : change it the Template def AND use migration to change it in DB
+// To remove a template doc: remove it from Template def AND use a migration to remove the doc from DB
 
 if (Meteor.isServer) {
   Meteor.startup(defineTxdefTemplates);

@@ -13,7 +13,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 export const chooseTxdef = {
   options() {
     const communityId = ModalStack.getVar('communityId');
-    const txdefs = Txdefs.find({ communityId }).fetch().filter(td => td.isReconciledTx());
+    const txdefs = Txdefs.findTfetch({ communityId }).filter(td => td.isReconciledTx());
     const options = txdefs.map(txdef => ({ label: __(txdef.name), value: txdef._id }));
     return options;
   },

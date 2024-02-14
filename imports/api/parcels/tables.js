@@ -14,7 +14,6 @@ import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Contracts } from '/imports/api/contracts/contracts.js';
 
 export function parcelColumns(community) {
   return [

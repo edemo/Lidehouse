@@ -9,7 +9,7 @@ import faker from 'faker';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { dateSelector } from '/imports/api/utils';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Clock } from '/imports/utils/clock.js';
@@ -275,6 +275,31 @@ Transactions.helpers({
       if (!entry.subTx) entry.subTx = 0;
       return JournalEntries._transform(entry);
     });
+  },
+  moveJournalEntryAccounts(codeFrom, codeTo) {
+    productionAssert(!Accounts.isTechnicalCode(codeFrom));
+    productionAssert(!Accounts.isTechnicalCode(codeTo));    // Technical accounts should not be moved directy. They move indirectly
+    const techCodeFrom = Accounts.toTechnicalCode(codeFrom);
+    const techCodeTo = Accounts.toTechnicalCode(codeTo);
+    this.debit?.forEach(je => {
+      if (je.account.startsWith(codeFrom)) {
+        je.account = je.account.replace(codeFrom, codeTo);
+      }
+      if (je.account.startsWith(techCodeFrom)) {
+        je.account = je.account.replace(techCodeFrom, techCodeTo);
+      }
+    });
+    this.credit?.forEach(je => {
+      if (je.account.startsWith(codeFrom)) {
+        je.account = je.account.replace(codeFrom, codeTo);
+      }
+      if (je.account.startsWith(techCodeFrom)) {
+        je.account = je.account.replace(techCodeFrom, techCodeTo);
+      }
+    });
+  },
+  moveTransactionAccounts(codeFrom, codeTo) {
+    productionAssert(false, `Accounts move is not implemented for transaction category ${this.category}`);
   },
   getContractAmount(contract) {
     let amount = 0;

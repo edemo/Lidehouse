@@ -6,6 +6,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
+import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
@@ -15,11 +16,13 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import '/imports/api/transactions/txdefs/actions.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { accountColumns } from '/imports/api/transactions/accounts/tables.js';
+import { accountColumns, highlightTemplateOverrides } from '/imports/api/transactions/accounts/tables.js';
 import { localizerColumns } from '/imports/api/parcels/tables.js';
+import { txdefColumns } from '/imports/api/transactions/txdefs/tables.js';
 import '/imports/api/transactions/accounts/actions.js';
 import '/imports/api/transactions/txdefs/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -33,36 +36,36 @@ Template.Accounting_setup.viewmodel({
   communityId() {
     return ModalStack.getVar('communityId');
   },
-  noAccountsDefined() {
-    return !Accounts.findOne({ communityId: this.communityId() });
+  community() {
+    return Communities.findOne(this.communityId());
   },
-  txdefs() {
-    const txdefs = Txdefs.find({ communityId: this.communityId() });
-    return txdefs;
+  noAccountsDefined() {
+    return !this.community()?.settings.templateId;
   },
   accounts() {
-    const accounts = Accounts.find({ communityId: this.communityId() }, { sort: { code: 1 } });
+    const accounts = Accounts.findTfetch({ communityId: this.communityId() }, { sort: { code: 1 } });
     return accounts;
   },
   moneyAccounts() {
-//    const accounts = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
+//    const accounts = Accounts.findOneT({ communityId: this.communityId(), name: 'Money accounts' });
 //    return accounts && accounts.nodes(true);
-    const accounts = Accounts.find({ communityId: this.communityId(), category: { $in: ['bank', 'cash'] } }, { sort: { code: 1 } });
-    return accounts.fetch();
+    const accounts = Accounts.findTfetch({ communityId: this.communityId(), category: { $in: ['bank', 'cash'] } }, { sort: { code: 1 } });
+    return accounts;
   },
-  accountsTableDataFn(tab) {
+  moneyAccountsTableDataFn() {
     const templateInstance = Template.instance();
     const self = this;
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = self.communityId();
-      return Accounts.find({ communityId }, { sort: { code: 1 } }).fetch();
+      return Accounts.findTfetch({ communityId, category: { $in: ['bank', 'cash'] } }, { sort: { code: 1 } });
     }
     return getTableData;
   },
-  accountsOptionsFn() {
+  moneyAccountsOptionsFn() {
     return () => Object.create({
-      columns: accountColumns(),
+      columns: accountColumns(true),
+      createdRow: highlightTemplateOverrides,
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
@@ -72,19 +75,43 @@ Template.Accounting_setup.viewmodel({
       ...DatatablesSelectButtons(Accounts),
     });
   },
-  localizersTableDataFn(tab) {
+  accountsTableDataFn() {
     const templateInstance = Template.instance();
     const self = this;
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = self.communityId();
-      return Parcels.find({ communityId }).fetch();
+      return Accounts.findTfetch({ communityId }, { sort: { code: 1 } });
+    }
+    return getTableData;
+  },
+  accountsOptionsFn() {
+    return () => Object.create({
+      columns: accountColumns(),
+      createdRow: highlightTemplateOverrides,
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+      lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+      pageLength: 25,
+      info: false,
+      ...DatatablesExportButtons,
+      ...DatatablesSelectButtons(Accounts),
+    });
+  },
+  localizersTableDataFn() {
+    const templateInstance = Template.instance();
+    const self = this;
+    function getTableData() {
+      if (!templateInstance.subscriptionsReady()) return [];
+      const communityId = self.communityId();
+      return Parcels.findTfetch({ communityId });
     }
     return getTableData;
   },
   localizersOptionsFn() {
     return () => Object.create({
       columns: localizerColumns(),
+      createdRow: highlightTemplateOverrides,
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
@@ -94,14 +121,35 @@ Template.Accounting_setup.viewmodel({
       ...DatatablesSelectButtons(Parcels),
     });
   },
+  txdefsTableDataFn() {
+    const templateInstance = Template.instance();
+    const self = this;
+    function getTableData() {
+      if (!templateInstance.subscriptionsReady()) return [];
+      const communityId = self.communityId();
+      return Txdefs.findTfetch({ communityId });
+    }
+    return getTableData;
+  },
+  txdefsOptionsFn() {
+    return () => Object.create({
+      columns: txdefColumns(),
+      createdRow: highlightTemplateOverrides,
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+      lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+      pageLength: 25,
+      info: false,
+    });
+  },
   optionsOf(accountCode) {
     return Accounts.nodeOptionsOf(this.communityId(), accountCode, true);
   },
 });
 
 Template.Accounting_setup.events({
-  'click #coa .js-clone'(event, instance) {
+  'click #coa .js-template'(event, instance) {
     const communityId = ModalStack.getVar('communityId');
-    Transactions.methods.cloneAccountingTemplates.call({ communityId }, handleError);
+    Transactions.methods.setAccountingTemplate.call({ communityId }, handleError);
   },
 });

@@ -126,7 +126,8 @@
   "This operation will be performed on many documents": "If you approve, this operation will be performed on <strong>%s selected documents</strong> at once",
   "Changing partner email address will unlink user": "By changing the partner's email address you are disconnecting them from the user account. Are you sure to continue?",
   "warningPartnerMerge": "This operation deletes the partner you invoked it on, and merges his balance into the below selected partner. Data of the below selected partner will overwrite data from the partner to be removed.",
-
+  "warningAccountWillBeMoved": "If you change the account number, all accounting transactions that used the old number will be moved to the new account number",
+  "warningAccountRemoval": "Make sure you don't delete accounts that have been already used to account to in thte past. Rathter modify these accounts, and then the past transacions will be moved.",
   // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
   "Create your own community": "Couldn't find your community? Why not create it yourself?",

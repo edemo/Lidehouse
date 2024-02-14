@@ -45,7 +45,7 @@ Template.Accounting_transactions.viewmodel({
     function setTxdefOptions() {
       const communityId = this.communityId();
       const txdefOptions = [{ value: '', label: __('All') }];
-      Txdefs.find({ communityId }).map(function (def) {
+      Txdefs.findTfetch({ communityId }).map(function (def) {
         txdefOptions.push({ value: def._id, label: __(def.name) });
       });
       this.txdefOptions(txdefOptions);
@@ -57,9 +57,9 @@ Template.Accounting_transactions.viewmodel({
       const communityId = this.communityId(); if (!communityId) return;
       const coa = Accounts.coa(communityId); if (!coa) return;
       const txdef = Txdefs.findOne(this.txdefSelected());
-      const debitAccountOptions = txdef ? Accounts.nodeOptionsOf(communityId, txdef.debit) : coa.nodeOptions();
+      const debitAccountOptions = txdef ? Accounts.nodeOptionsOf(communityId, txdef.debit) : coa.nodeOptions(communityId);
       this.debitAccountOptions(debitAccountOptions);
-      const creaditAccountOptions = txdef ? Accounts.nodeOptionsOf(communityId, txdef.credit) : coa.nodeOptions();
+      const creaditAccountOptions = txdef ? Accounts.nodeOptionsOf(communityId, txdef.credit) : coa.nodeOptions(communityId);
       this.creditAccountOptions(creaditAccountOptions);
       this.debitAccountSelected('`');
       this.creditAccountSelected('`');
@@ -67,7 +67,7 @@ Template.Accounting_transactions.viewmodel({
   ],
   txdefs() {
     const communityId = ModalStack.getVar('communityId');
-    const txdefs = Txdefs.find({ communityId }, { sort: { createdAt: 1 } }).fetch().filter(c => c.isAccountantTx());
+    const txdefs = Txdefs.findTfetch({ communityId }, { sort: { createdAt: 1 } }).filter(c => c.isAccountantTx());
     return txdefs;
   },
   optionsOf(accountCode) {

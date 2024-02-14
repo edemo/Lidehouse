@@ -166,7 +166,7 @@ Template.Community_finances.viewmodel({
   },
   moneyData() {
     const datasets = [];
-    const moneyAccount = Accounts.findOne({ communityId: this.communityId(), name: 'Money accounts' });
+    const moneyAccount = Accounts.findOneT({ communityId: this.communityId(), name: 'Money accounts' });
     moneyAccount?.leafs().fetch().reverse().forEach((account, index) => {
       datasets.push(_.extend({
         label: __(account.name),
@@ -244,7 +244,7 @@ Template.Community_finances.viewmodel({
   getBalance(account) {
     const communityId = getActiveCommunityId();
     if (!account.startsWith('`')) {
-      const a = Accounts.findOne({ communityId, name: account });
+      const a = Accounts.findOneT({ communityId, name: account });
       if (!a) {
         Log.warning('No such account:', account);
         return 0;
@@ -263,12 +263,12 @@ Template.Community_finances.viewmodel({
     ];
   },
   leafsOf(account) {
-    const accounts = Accounts.findOne({ communityId: this.communityId(), name: account });
+    const accounts = Accounts.findOneT({ communityId: this.communityId(), name: account });
     if (!accounts) {
       Log.warning('No such account:', account);
       return [];
     }
-    return accounts.leafs();
+    return accounts.leafs(this.communityId());
   },
   commitmentAccounts() {
     return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK'];

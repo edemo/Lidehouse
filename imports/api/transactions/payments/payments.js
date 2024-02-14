@@ -151,7 +151,7 @@ Transactions.categoryHelpers('payment', {
     return result;
   },
   correspondingBillTxdef() {
-    return Txdefs.findOne({ communityId: this.communityId, category: 'bill', 'data.relation': this.relation });
+    return Txdefs.findOneT({ communityId: this.communityId, category: 'bill', 'data.relation': this.relation });
   },
   validate() {
     let billSum = 0;
@@ -364,6 +364,20 @@ Transactions.categoryHelpers('payment', {
     if (this.rounding) this.makeEntry(this.conteerSide(), { amount: this.rounding, account: '`99' });
     const legs = { debit: this.debit, credit: this.credit };
     return legs;
+  },
+  moveTransactionAccounts(codeFrom, codeTo) {
+    let updated = false;
+    if (this.payAccount?.startsWith(codeFrom)) {
+      this.payAccount = this.payAccount.replace(codeFrom, codeTo);
+      updated = true;
+    }
+    this.getLines().forEach(line => {
+      if (line.account?.startsWith(codeFrom)) {
+        line.account = line.account.replace(codeFrom, codeTo);
+        updated = true;
+      }
+    });
+    return updated;
   },
   registerOnBill(billPaid, direction = +1) {
     const bill = Transactions.findOne(billPaid.id);

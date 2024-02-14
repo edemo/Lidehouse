@@ -5,11 +5,17 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
-import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+// import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 // Declare store collection
 export const Sharedfolders = new Mongo.Collection('sharedfolders');
+
+Meteor.startup(function indexSharedfolders() {
+  if (Meteor.isServer) {
+    Sharedfolders._ensureIndex({ communityId: 1, content: 1, name: 1 });
+  }
+});
 
 // Setting up collection permissions
 Sharedfolders.deny({
@@ -21,6 +27,7 @@ Sharedfolders.deny({
 Sharedfolders.schema = new SimpleSchema({
   _id: { type: String, optional: true, /* using the folder name */ autoform: { omit: true } },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
+  content: { type: String, optional: true, autoform: { type: 'hidden' } },
   name: { type: String },
   externalUrl: { type: String, optional: true },
 });

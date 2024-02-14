@@ -13,8 +13,10 @@ import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Votings } from '/imports/api/topics/votings/votings.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
+import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import '/imports/ui_3/views/components/shareddoc-display.js';
 import './voting-edit.html';
 
@@ -106,11 +108,10 @@ Template.Voting_edit.events({
     $('.js-enter-choice').focus();
   },
   'click .js-upload'(event) {
+    const communityId = ModalStack.getVar('communityId');
+    const community = Communities.findOne(communityId);
+    const folder = Sharedfolders.findOne({ communityId: community.settings.templateId, content: 'voting' });
     const topicId = getTopicId();
-    Shareddocs.upload({
-      communityId: ModalStack.getVar('communityId'),
-      folderId: 'voting',
-      topicId,
-    });
+    Shareddocs.upload({ communityId, folderId: folder._id, topicId });
   },
 });

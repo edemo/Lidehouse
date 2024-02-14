@@ -22,6 +22,14 @@ Communities.statusValues = ['sandbox', 'live', 'official'];
 Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'documents'];
 Communities.ownershipSchemeValues = ['condominium', 'corporation', 'foundation', 'cooperative', 'condo-coop', 'basket-coop']; //  'meritocracy' coming soon
 
+const chooseTemplate = {
+  options() {
+    return Communities.find({ isTemplate: true }).map(function option(v) {
+      return { label: v.name, value: v._id };
+    });
+  },
+};
+
 Communities.settingsSchema = new SimpleSchema({
   modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', defaultValue: Communities.availableModules } },
   joinable: { type: Boolean, defaultValue: true },
@@ -32,6 +40,7 @@ Communities.settingsSchema = new SimpleSchema({
   topicAgeDays: { type: Number, defaultValue: 90 },
   communalModeration: { type: Number, defaultValue: 0, autoform: { defaultValue() { return 0; } } },
   // accounting
+  templateId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTemplate },
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions() },
   paymentsToBills: { type: [String], allowedValues: Relations.values, defaultValue: Relations.mainValues, autoform: { type: 'select-checkbox-inline' } },
   paymentsWoStatement: { type: Boolean, optional: true },
@@ -42,6 +51,7 @@ Communities.settingsSchema = new SimpleSchema({
 
 Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
+  isTemplate: { type: Boolean, optional: true, autoform: { omit: true } },
   description: { type: String, max: 1200, optional: true },
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
 }, AddressSchema, {
@@ -89,7 +99,7 @@ Communities.helpers({
   hasPhysicalLocations() {
     const scheme = this.settings?.ownershipScheme;
     if (scheme === 'condominium' || scheme === 'condo-coop') return true;
-    return false
+    return false;
   },
   propertyCategory() {
     if (this.hasPhysicalLocations()) return '@property';
@@ -133,17 +143,17 @@ Communities.helpers({
   },
   accounts() {
     const Accounts = Mongo.Collection.get('accounts');
-    return Accounts.find({ communityId: this._id }, { sort: { code: 1 } });
+    return Accounts.findT({ communityId: this._id, templateId: this.settings?.templateId }, { sort: { code: 1 } });
   },
   primaryBankAccount() {
     const Accounts = Mongo.Collection.get('accounts');
-    const bankAccount = Accounts.findOne({ communityId: this._id, category: 'bank', primary: true });
+    const bankAccount = Accounts.findOneT({ communityId: this._id, templateId: this.settings?.templateId, category: 'bank', primary: true });
 //    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
     return bankAccount;
   },
   primaryCashAccount() {
     const Accounts = Mongo.Collection.get('accounts');
-    const cashAccount = Accounts.findOne({ communityId: this._id, category: 'cash', primary: true });
+    const cashAccount = Accounts.findOneT({ communityId: this._id, templateId: this.settings?.templateId, category: 'cash', primary: true });
 //    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
     return cashAccount;
   },

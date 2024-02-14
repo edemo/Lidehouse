@@ -5,6 +5,7 @@ import { UploadFS } from 'meteor/jalik:ufs';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Log } from '/imports/utils/log.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Sharedfolders } from './sharedfolders/sharedfolders.js';
 
 import Compress from 'compress.js';
 const compress = new Compress();
@@ -15,8 +16,8 @@ function permissionsByFolders(userId, doc, permissions) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
   debugAssert(permissions.default, 'default folder permission required');
-  const folder = doc.folderId;
-  if (permissions[folder]) return user.hasPermission(permissions[folder], doc);
+  const folder = Sharedfolders.findOne(doc.folderId);
+  if (permissions[folder.content]) return user.hasPermission(permissions[folder.content], doc);
   else return user.hasPermission(permissions.default, doc);
 }
 

@@ -6,6 +6,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Parcels } from './parcels.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
@@ -15,9 +16,10 @@ Meteor.publish('parcels.codes', function parcelsCodes(params) {
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validate(params);
   const { communityId } = params;
+  const  community = Communities.findOne(communityId);
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('parcels.codes', { communityId })) {
+  if (!user.hasPermission('parcels.codes', { communityId: { $in: [communityId, community.settings.templateId] } })) {
     return this.ready();
   }
 
@@ -29,6 +31,7 @@ Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(param
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validate(params);
   const { communityId } = params;
+  const  community = Communities.findOne(communityId);
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('parcels.inCommunity', { communityId })) {
@@ -37,7 +40,7 @@ Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(param
 
   return {
     find() {
-      return Parcels.find({ communityId }, { fields: Parcels.publicFields });
+      return Parcels.find({ communityId: { $in: [communityId, community.settings.templateId] } }, { fields: Parcels.publicFields });
     },
     children: [{
       // Publish the Meters of the Parcel

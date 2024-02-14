@@ -43,7 +43,7 @@ Template.Accounting_page.viewmodel({
   },
   noAccountsDefined() {
     if (!Template.instance().subscriptionsReady()) return false;
-    return !Accounts.findOne({ communityId: this.communityId() });
+    return !Accounts.findOneT({ communityId: this.communityId() });
   },
   countUnpostedTxs() {
     const communityId = this.communityId();

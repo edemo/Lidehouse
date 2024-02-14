@@ -164,6 +164,10 @@
         "label": "Communal moderation",
         "help": "When a number of users flag a content, the content is moderated for the rest of the users as well. Enter the number of flags needed, or enter 0 to switch this functionality off."
       },
+      "templateId": {
+        "label": "Accounting Template",
+        "help": "Base template for account codes etc (all can be modified and extended for your specific community)"
+      },
       "accountingMethod": {
         "label": "Accounting method",
         "help": "Depending on this, the accounting transactions are generated differently from bills and payments. Never change this setting during the fiscal year.",

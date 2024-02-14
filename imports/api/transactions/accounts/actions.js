@@ -1,9 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
-
-import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { __ } from '/imports/localization/i18n.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
@@ -35,7 +36,7 @@ Accounts.actions = {
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: user.hasPermission('accounts.inCommunity', doc),
+    visible: user.hasPermission('accounts.inCommunity', { communityId: ModalStack.getVar('communityId') }),
     run() {
       const entityName = doc.entityName();
       const entity = Accounts.entities[entityName];
@@ -51,7 +52,7 @@ Accounts.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: user.hasPermission('accounts.update', doc),
+    visible: user.hasPermission('accounts.update', { communityId: ModalStack.getVar('communityId') }),
     run() {
       const entityName = doc.entityName();
       const entity = Accounts.entities[entityName];
@@ -63,6 +64,7 @@ Accounts.actions = {
         type: 'method-update',
         meteormethod: 'accounts.update',
         singleMethodArgument: true,
+        description: __('warningAccountWillBeMoved'),
       });
     },
   }),
@@ -74,7 +76,7 @@ Accounts.actions = {
       Modal.confirmAndCall(Accounts.methods.remove, { _id: doc._id }, {
         action: 'delete',
         entity: doc.entityName(),
-        message: __('Some accounting transactions might be connected to it'),
+        message: __('warningAccountRemoval'),
       });
     },
   }),
@@ -93,6 +95,12 @@ _.each(Accounts.entities, (entity, entityName) => {
     formToDoc(doc) {
       if (doc.code && doc.code.charAt(0) !== '`') doc.code = '`' + doc.code;
       return doc;
+    },
+  });
+  AutoForm.addHooks(`af.${entityName}.edit`, {
+    formToModifier(modifier) {
+      modifier.$set.communityId = ModalStack.getVar('communityId'); // overriding the templateId
+      return modifier;
     },
   });
 });

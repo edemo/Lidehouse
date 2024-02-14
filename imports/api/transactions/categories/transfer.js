@@ -31,6 +31,18 @@ Transactions.categoryHelpers('transfer', {
     this.credit = [{ account: this.fromAccount, amount: this.amount }];
     return { debit: this.debit, credit: this.credit };
   },
+  moveTransactionAccounts(codeFrom, codeTo) {
+    let updated = false;
+    if (this.fromAccount?.startsWith(codeFrom)) {
+      this.fromAccount = this.fromAccount.replace(codeFrom, codeTo);
+      updated = true;
+    }
+    if (this.toAccount?.startsWith(codeFrom)) {
+      this.toAccount = this.toAccount.replace(codeFrom, codeTo);
+      updated = true;
+    }
+    return updated;
+  },
 });
 
 Transactions.attachVariantSchema(transferSchema, { selector: { category: 'transfer' } });

@@ -18,7 +18,7 @@ Template.Communities_listing.helpers({
   },
   reactiveTableDataFn() {
     function getTableData() {
-      return Communities.find().fetch();
+      return Communities.find({ isTemplate: { $ne: true } }).fetch();
     }
     return getTableData;
   },
