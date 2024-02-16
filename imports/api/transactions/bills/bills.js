@@ -247,13 +247,13 @@ Transactions.categoryHelpers('bill', {
     }
   },
   correspondingPaymentTxdef() {
-    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'payment' });
+    return Txdefs.findOneT({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'payment' });
   },
   correspondingIdentificationTxdef() {
-    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'identification' });
+    return Txdefs.findOneT({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'identification' });
   },
   correspondingRemissionTxdef() {
-    return Txdefs.findOne({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'remission' });
+    return Txdefs.findOneT({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'remission' });
   },
   makeJournalEntries(accountingMethod) {
     this.debit = [];
@@ -270,6 +270,20 @@ Transactions.categoryHelpers('bill', {
       this.makeEntry(this.relationSide(), _.extend({ account: lineRelationAccount }, newEntry));
     });
     return { debit: this.debit, credit: this.credit };
+  },
+  moveTransactionAccounts(codeFrom, codeTo) {
+    let updated = false;
+    if (this.relationAccount?.startsWith(codeFrom)) {
+      this.relationAccount = this.relationAccount.replace(codeFrom, codeTo);
+      updated = true;
+    }
+    this.getLines().forEach(line => {
+      if (line.account?.startsWith(codeFrom)) {
+        line.account = line.account.replace(codeFrom, codeTo);
+        updated = true;
+      }
+    });
+    return updated;
   },
   hasConteerData() {
     let result = true;

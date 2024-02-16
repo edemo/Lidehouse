@@ -10,8 +10,8 @@ import { checkExists, checkNotExists, checkPermissions, checkModifier } from '/i
 function checkExternalUrl(externalUrl) {
   if (!externalUrl) return;
   const split = externalUrl.split('/');
-  const folderId = _.last(split).split('?')[0];
-  if (split[2] !== 'drive.google.com' || folderId.length !== 33) {
+  const driveFolderId = _.last(split).split('?')[0];
+  if (split[2] !== 'drive.google.com' || driveFolderId.length !== 33) {
     throw new Meteor.Error('err_invalidData', 'Not a valid google drive link');
   }
 }

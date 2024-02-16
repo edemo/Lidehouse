@@ -14,7 +14,7 @@ import { insertUnittestFixture } from '/imports/fixture/fixtures.js';
 import { defineAccountTemplates } from '/imports/api/transactions/accounts/template.js';
 import { defineLocalizerTemplates } from '/imports/api/parcels/template.js';
 import { defineTxdefTemplates } from '/imports/api/transactions/txdefs/template.js';
-import { initializeBuiltinFolders } from '/imports/api/shareddocs/sharedfolders/builtin.js';
+import { defineSharedFoldersTemplates } from '/imports/api/shareddocs/sharedfolders/template.js';
 
 chai.config.truncateThreshold = Infinity;
 
@@ -30,7 +30,7 @@ function initializeDatabase() {
   defineAccountTemplates();
   defineLocalizerTemplates();
   defineTxdefTemplates();
-  initializeBuiltinFolders();
+  defineSharedFoldersTemplates();
 }
 
 export function emptyFixture() {

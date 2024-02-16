@@ -254,19 +254,19 @@ export const remove = new ValidatedMethod({
   },
 });
 
-export const cloneAccountingTemplates = new ValidatedMethod({
-  name: 'transactions.cloneAccountingTemplates',
+export const setAccountingTemplate = new ValidatedMethod({
+  name: 'transactions.setAccountingTemplate',
   validate: new SimpleSchema({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-//    name: { type: String, regEx: SimpleSchema.RegEx.Id },
+    name: { type: String, optional: true },
   }).validator(),
-  run({ communityId /*, name*/ }) {
+  run({ communityId, name }) {
+    const defaultName = 'Honline Társasház Sablon';
     checkPermissions(this.userId, 'accounts.insert', { communityId });
-    if (Meteor.isClient) return; // account templates are not available on client side
-    Templates.clone('Condominium_COA', communityId);
-    Templates.clone('Condominium_Localizer', communityId);
-    Templates.clone('Condominium_Txdefs', communityId);
-    AccountingPeriods.insert({ communityId });
+    if (Meteor.isClient) return undefined; // account templates are not available on client side
+    const template = checkExists(Communities, { name: name || defaultName, isTemplate: true });
+    if (!AccountingPeriods.findOne({ communityId })) AccountingPeriods.insert({ communityId });
+    return Communities.update(communityId, { $set: { 'settings.templateId': template._id } });
   },
 });
 
@@ -298,6 +298,6 @@ export const statistics = new ValidatedMethod({
 });
 
 Transactions.methods = Transactions.methods || {};
-_.extend(Transactions.methods, { insert, update, post, reallocate, resend, remove, cloneAccountingTemplates });
+_.extend(Transactions.methods, { insert, update, post, reallocate, resend, remove, setAccountingTemplate });
 _.extend(Transactions.methods, crudBatchOps(Transactions));
 Transactions.methods.batch.post = new BatchMethod(Transactions.methods.post);

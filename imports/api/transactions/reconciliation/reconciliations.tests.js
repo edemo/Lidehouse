@@ -11,7 +11,6 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Communities } from '/imports/api/communities/communities.js';
 
-
 if (Meteor.isServer) {
   let Fixture;
   let bankAccount;
@@ -21,7 +20,7 @@ if (Meteor.isServer) {
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
       Fixture = freshFixture();
-      bankAccount = Accounts.findOne({ communityId: Fixture.communityId, category: 'bank' });
+      bankAccount = Accounts.findOneT({ communityId: Fixture.demoCommunityId, category: 'bank' });
     });
     after(function () {
     });
@@ -807,7 +806,7 @@ if (Meteor.isServer) {
           amount: -300,
         });
         let entry = StatementEntries.findOne(entryId);
-        let bankAccountDoc = Accounts.findOne({ communityId: entry.communityId, code: '`383' });
+        let bankAccountDoc = Accounts.findOneT({ communityId: entry.communityId, code: '`383' });
 
         chai.assert.isUndefined(bankAccountDoc.BAN);
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
@@ -817,8 +816,8 @@ if (Meteor.isServer) {
         Fixture.builder.execute(StatementEntries.methods.autoReconcile, { _id: entryId });
         chai.assert.equal(Transactions.find({ category: 'transfer' }).count(), 0);
 
-        Fixture.builder.execute(Accounts.methods.update, { _id: bankAccountDoc._id, modifier: { $set: { BAN: 'IBAN-1234-5678' } } });
-        bankAccountDoc = Accounts.findOne({ communityId: entry.communityId, code: '`383' });
+        Fixture.builder.execute(Accounts.methods.update, { _id: bankAccountDoc._id, modifier: { $set: { BAN: 'IBAN-1234-5678', communityId: Fixture.demoCommunityId } } }, Fixture.demoAccountantId);
+        bankAccountDoc = Accounts.findOneT({ communityId: entry.communityId, code: '`383' });
         chai.assert.equal(bankAccountDoc.BAN, 'IBAN-1234-5678');
         Fixture.builder.execute(StatementEntries.methods.recognize, { _id: entryId });
         entry = StatementEntries.findOne(entryId);
@@ -848,8 +847,8 @@ if (Meteor.isServer) {
           amount: 300,
         });
         let entry = StatementEntries.findOne(entryId);
-        const bankAccountDoc = Accounts.findOne({ communityId: entry.communityId, code: '`382' });
-        Fixture.builder.execute(Accounts.methods.update, { _id: bankAccountDoc._id, modifier: { $set: { BAN: 'IBAN-4321-8765' } } });
+        const bankAccountDoc = Accounts.findOneT({ communityId: entry.communityId, code: '`382' });
+        Fixture.builder.execute(Accounts.methods.update, { _id: bankAccountDoc._id, modifier: { $set: { BAN: 'IBAN-4321-8765', communityId: Fixture.demoCommunityId } } }, Fixture.demoAccountantId);
         const transferId = Transactions.findOne({ category: 'transfer' })._id;
         Fixture.builder.execute(StatementEntries.methods.reconcile, { _id: entryId, txId: transferId });
         entry = StatementEntries.findOne(entryId);

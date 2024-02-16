@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Txdefs } from './txdefs.js';
@@ -28,7 +29,7 @@ Txdefs.actions = {
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: user.hasPermission('accounts.inCommunity', doc),
+    visible: user.hasPermission('accounts.inCommunity', { communityId: ModalStack.getVar('communityId') }),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.txdef.view',
@@ -41,7 +42,7 @@ Txdefs.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: user.hasPermission('accounts.update', doc),
+    visible: user.hasPermission('accounts.update', { communityId: ModalStack.getVar('communityId') }),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.txdef.edit',
@@ -70,5 +71,9 @@ Txdefs.actions = {
 
 AutoForm.addModalHooks('af.txdef.create');
 AutoForm.addModalHooks('af.txdef.edit');
-
-
+AutoForm.addHooks('af.txdef.edit', {
+  formToModifier(modifier) {
+    modifier.$set.communityId = ModalStack.getVar('communityId'); // overriding the templateId
+    return modifier;
+  },
+});

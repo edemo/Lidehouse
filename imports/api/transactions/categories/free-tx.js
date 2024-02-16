@@ -35,6 +35,9 @@ Transactions.categoryHelpers('freeTx', {
     this.credit.forEach(je => clean(je));
     return { debit: this.debit, credit: this.credit };
   },
+  moveTransactionAccounts(codeFrom, codeTo) {
+    // Nothing to do here
+  },
 });
 
 Transactions.attachVariantSchema(freeTxSchema, { selector: { category: 'freeTx' } });

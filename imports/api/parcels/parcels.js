@@ -22,8 +22,9 @@ import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/acti
 import { ParcelRefFormat } from '/imports/api/communities/parcelref-format.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { ActiveTimeMachine } from '../behaviours/active-time-machine';
+import { TemplatedMongoCollection } from '/imports/api/transactions/templates/templated-collection';
 
-export const Parcels = new Mongo.Collection('parcels');
+export const Parcels = new TemplatedMongoCollection('parcels', 'code');
 
 Parcels.categoryValues = ['%property', '@property', '@common', '@group', '#tag'];
 
@@ -239,23 +240,18 @@ Parcels.helpers({
 
 _.extend(Parcels, {
   // Almost a duplicate of Accounts functions, to use Parcels as localizer
-  checkExists(communityId, code) {
-    if (!code || !Parcels.findOne({ communityId, code })) {
-      throw new Meteor.Error('err_notExists', 'No such parcel', { code });
-    }
-  },
   all(communityId) {
-    return Parcels.find({ communityId }, { sort: { code: 1 } });
+    return Parcels.findTfetch({ communityId }, { sort: { code: 1 } });
   },
   getByCode(code, communityId = getActiveCommunityId()) {
-    return Parcels.findOne({ communityId, code });
+    return Parcels.findOneT({ communityId, code });
   },
   getByRef(ref, communityId = getActiveCommunityId()) {
     return Parcels.findOne({ communityId, ref });
   },
   nodesOf(communityId, code, leafsOnly = false) {
     const regexp = new RegExp('^' + code + (leafsOnly ? '.+' : ''));
-    return Parcels.find({ communityId, code: regexp }, { sort: { code: 1 } });
+    return Parcels.findTfetch({ communityId, code: regexp }, { sort: { code: 1 } });
   },
   nodeOptionsOf(communityId, codeS, leafsOnly, addRootNode = false) {
     const codes = (codeS instanceof Array) ? codeS : [codeS];

@@ -41,7 +41,7 @@ Template.Reconciliation.onRendered(function () {
   instance.autorun((computation) => {
     const defId = AutoForm.getFieldValue('defId');
     if (!defId) return;
-    const txdef = Txdefs.findOne(defId);
+    const txdef = Txdefs.findOneT(defId);
     const newDoc = ModalStack.getVar('newDoc');
     Transactions.setTxdef(newDoc, txdef);
     ModalStack.setVar('newDoc', newDoc, true);

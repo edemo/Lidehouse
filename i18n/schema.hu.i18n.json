@@ -164,6 +164,10 @@
         "label": "Közösségi moderálás",
         "help": "Ha egy adott számú felhasználó kéretlennek jelöl meg egy tartalmat, akkor az a tartalom mindenki számára halkításra kerül. Adja meg azt a számot, ahány jelölés kell ehhez, vagy írjon be 0-t, ha ki szeretné kapcsolni ezt a funkciót."
       },
+      "templateId": {
+        "label": "Könyvelési sablon",
+        "help": "Alap számlatükör és könyvelési helyek (Saját testre szabható, bővíthető, módosítható)"
+      },
       "accountingMethod": {
         "label": "Könyvelési mód",
         "help": "A könyvelési mód - egyszeres (pénzforgalmi) vagy kettős - határozza meg mikor jönnek létre könyvelési tranzakciók a számlákból (befogadáskor vagy kifizetéskor). A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",

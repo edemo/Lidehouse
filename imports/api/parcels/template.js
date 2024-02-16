@@ -1,14 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Templates } from '/imports/api/transactions/templates/templates.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 
 export function defineLocalizerTemplates() {
-  Templates.define({ _id: 'Condominium_PhysicalRoot', parcels: [
-    { code: '@', name: 'Parcels', category: '@group' }, // Albetétek
-  ],
-  });
-
-  Templates.define({ _id: 'Condominium_Localizer', parcels: [
+  Templates.define({ name: 'Honline Társasház Sablon', parcels: [
 //    { code: '', name: 'Locations', category: 'location', locked: true },
     { code: '@', name: 'Parcels', category: '@group' }, // Albetétek
 //    { code: '@A', name: 'Main building', category: '@group' },
@@ -43,6 +39,12 @@ export function defineLocalizerTemplates() {
   ],
   });
 }
+
+Parcels.insertTemplateDoc = function insertTemplateDoc(templateId, doc) {
+  const docToInsert = _.extend({ communityId: templateId, approved: true }, doc);
+  docToInsert.ref = docToInsert.name; delete docToInsert.name;
+  Parcels.updateOrInsert({ communityId: templateId, code: doc.code }, docToInsert);
+};
 
 if (Meteor.isServer) {
   Meteor.startup(defineLocalizerTemplates);

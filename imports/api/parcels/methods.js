@@ -4,7 +4,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { checkExists, checkUnique, checkModifier, checkPermissions, } from '/imports/api/method-checks.js';
+import { checkExists, checkUnique, checkModifier, checkPermissions, checkConstraint } from '/imports/api/method-checks.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ParcelRefFormat } from '/imports/api/communities/parcelref-format.js';
@@ -48,13 +48,20 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
-    const doc = checkExists(Parcels, _id);
+    let doc = checkExists(Parcels, _id);
+    if (doc.communityId !== modifier.$set.communityId) { // Editing a template entry
+      const community = Communities.findOne(modifier.$set.communityId);
+      checkConstraint(community.settings.templateId === doc.communityId, 'You can update only from your own template');
+      checkPermissions(this.userId, 'parcels.update', { communityId: modifier.$set.communityId });
+      const clonedDocId = Parcels.clone(doc, modifier.$set.communityId);
+      doc = Parcels.findOne(clonedDocId);
+    }
     checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'parcels.update', doc);
 
     const ParcelsStage = Parcels.Stage();
-    const result = ParcelsStage.update({ _id }, modifier, { selector: doc });
-    const newDoc = ParcelsStage.findOne(_id);
+    const result = ParcelsStage.update({ _id: doc._id }, modifier, { selector: doc });
+    const newDoc = ParcelsStage.findOne(doc._id);
     checkUnique(ParcelsStage, newDoc);
     ParcelsStage.commit();
 

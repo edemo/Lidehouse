@@ -807,7 +807,8 @@
   "Back to the board": "Vissza a főoldalra",
   "Activate community": "Aktiválom a házamat",
   "warningPartnerMerge": "Ezzel a művelettel a partner, amelyiken meghívta, törlődni fog, annak adatait és egyenlegét beleolvasztjuk az alább kijelölt partnerbe. A törlendő partner adatait felülírja a cél partner adata, ha mindkettőn meg van adva.",
-
+  "warningAccountWillBeMoved": "Ha a főkönyvi kódszámot is módosítja, akkkor minden korábbi tranzakció, ami a régi számra könyvelt, az át lesz könyvelve az új számra",
+  "warningAccountRemoval": "Ügyeljen rá, hogy olyan főkönyvi számot ne töröljön, amire már vannak könyvelve tranzakciók. Az ilyet inkább módosítsa, és akkor az odakönyvelt tranzakciók is át lesznek mozgatva.",
   "userAccountsSubtitle": {
     "signIn": "A rendszer használatához lépjen be",
     "signIn_Forced": "A kért tartalom eléréséhez belépés szükséges",

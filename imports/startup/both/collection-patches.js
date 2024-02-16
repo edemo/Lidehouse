@@ -17,6 +17,17 @@ Mongo.Collection.stripAdministrativeFields = function(doc) {
   delete doc.postedAt;
 };
 
+// The provided upsert does not do the  insert opertaions for SimpleSchema.
+// So we make one that perform an actual insert inistead.
+Mongo.Collection.prototype.updateOrInsert = function updateOrInsert(selector, newDoc) {
+  const oldDoc = this.findOne(selector);
+  if (oldDoc) {
+    this.update(oldDoc._id, { $set: newDoc });
+  } else {
+    this.insert(newDoc);
+  }
+};
+
 // With this function you can create the same logical index on the client and server sides
 // https://github.com/helfer/minimongo-index/issues/1
 // This might be a good or a not so good idea, because implementations of indexes are very different technically

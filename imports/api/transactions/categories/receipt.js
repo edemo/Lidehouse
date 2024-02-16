@@ -22,6 +22,7 @@ const receiptSchema = new SimpleSchema([
     // amount overrides non-optional value of transactions, with optional & calculated value
     amount: { type: Number, decimal: true, optional: true },
     tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+    disco: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
     title: { type: String, max: 200, optional: true }, // title here used only when there are no lines
     lines: { type: Array, defaultValue: [] },
     'lines.$': { type: Bills.lineSchema },
@@ -52,6 +53,20 @@ Transactions.categoryHelpers('receipt', {
     this.makeEntry(this.relationSide(), { account: this.payAccount, amount: this.amount });
     if (this.rounding) this.makeEntry(this.conteerSide(), { amount: this.rounding, account: '`99' });
     return { debit: this.debit, credit: this.credit };
+  },
+  moveTransactionAccounts(codeFrom, codeTo) {
+    let updated = false;
+    if (this.payAccount?.startsWith(codeFrom)) {
+      this.payAccount = this.payAccount.replace(codeFrom, codeTo);
+      updated = true;
+    }
+    this.getLines().forEach(line => {
+      if (line.account?.startsWith(codeFrom)) {
+        line.account = line.account.replace(codeFrom, codeTo);
+        updated = true;
+      }
+    });
+    return updated;
   },
   hasConteerData() {
     let result = true;

@@ -81,7 +81,7 @@ export const apply = new ValidatedMethod({
               communityId: parcelBilling.communityId,
               category: 'bill',
               relation: 'member',
-              defId: Txdefs.findOne({ communityId, category: 'bill', 'data.relation': 'member' })._id,
+              defId: Txdefs.findOneT({ communityId, category: 'bill', 'data.relation': 'member' })._id,
     //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
               partnerId: leadParcel.payerPartner()._id,
               contractId: leadParcel.payerContract()._id,

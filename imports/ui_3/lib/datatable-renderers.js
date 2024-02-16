@@ -9,6 +9,10 @@ import { checkmarkBoolean } from '/imports/ui_3/helpers/api-display.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
 export const Render = Meteor.isServer ? {} : {
+  noDisplay(cellData, renderType, currentRow) {
+    if (renderType === 'display') return '';
+    return cellData;  // sorting on the data will work
+  },
   translate(cellData, renderType, currentRow) {
     return __(cellData);
   },

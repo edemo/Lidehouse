@@ -93,7 +93,7 @@ if (Meteor.isServer) {
       it('AutoAllocates payment correctly - without rounding (Bank payAccount)', function () {
         bill = Transactions.findOne(billId);
         const memberPaymentDef = bill.correspondingPaymentTxdef();
-        const bankAccount = Accounts.findOne({ communityId: FixtureA.communityId, category: 'bank' });
+        const bankAccount = Accounts.findOneT({ communityId: FixtureA.demoCommunityId, category: 'bank' });
         payment = FixtureA.builder.build('payment', {
           defId: memberPaymentDef._id,
           relation: bill.relation,
@@ -179,7 +179,7 @@ if (Meteor.isServer) {
       it('AutoAllocates payment correctly - with rounding (Cash payAccount)', function () {
         bill = Transactions.findOne(billId);
         const memberPaymentDef = bill.correspondingPaymentTxdef();
-        const cashAccount = Accounts.findOne({ communityId: FixtureA.communityId, category: 'cash' });
+        const cashAccount = Accounts.findOneT({ communityId: FixtureA.demoCommunityId, category: 'cash' });
         payment = FixtureA.builder.build('payment', {
           defId: memberPaymentDef._id,
           relation: bill.relation,

@@ -48,7 +48,7 @@ StatementEntries.actions = {
     visible: user.hasPermission('statements.upsert', doc),
     run(event, instance) {
       const accountCode = instance.viewmodel.accountSelected();
-      const account = Accounts.findOne({ communityId: getActiveCommunityId(), code: accountCode });
+      const account = Accounts.findOneT({ communityId: getActiveCommunityId(), code: accountCode });
       const format = (account.category === 'bank' && account.bank) || (account.category === 'cash' && 'CR') || 'default';
       importCollectionFromFile(StatementEntries, {
         format,
@@ -104,7 +104,7 @@ StatementEntries.actions = {
     icon: 'fa fa-external-link',
     color: 'danger',
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
-    subActions: !doc.txdef && Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx())
+    subActions: !doc.txdef && Txdefs.findTfetch({ communityId: doc.communityId }).filter(td => td.isReconciledTx())
       .map(txdef => StatementEntries.actions.matchedReconcile({ txdef }, doc, user)),
   }),
   matchedReconcile: (options, doc, user = Meteor.userOrNull()) => ({

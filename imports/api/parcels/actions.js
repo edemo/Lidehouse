@@ -6,9 +6,9 @@ import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { callOrRead } from '/imports/api/utils.js';
-import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
@@ -52,7 +52,7 @@ Parcels.actions = {
   view: (options, doc, user) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: user.hasPermission('parcels.inCommunity', doc),
+    visible: user.hasPermission('parcels.inCommunity', { communityId: ModalStack.getVar('communityId') }),
     run() {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -177,7 +177,7 @@ Parcels.actions = {
     name: 'edit',
     icon: 'fa fa-pencil',
     color: !doc.approved ? 'danger' : '',
-    visible: user.hasPermission('parcels.update', doc),
+    visible: user.hasPermission('parcels.update', { communityId: ModalStack.getVar('communityId') }),
     run() {
       const entity = Parcels.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -268,6 +268,7 @@ _.each(Parcels.entities, (entity, key) => {
   });
   AutoForm.addHooks(`af.${entity.name}.edit`, {
     formToModifier(modifier) {
+      modifier.$set.communityId = ModalStack.getVar('communityId'); // overriding the templateId
       modifier.$set.approved = true;
       return modifier;
     },

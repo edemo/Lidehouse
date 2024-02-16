@@ -78,3 +78,22 @@ Meteor.publishComposite('communities.byName', function communitiesById(params) {
 // - facilitates observer reuse (when different observers subscribe to same data set, one observer can be shared on the server)
 // - publications need to be permission checked, and these would get duplicated everywhere (-> more places to make errors)
 // - publications need to be tested, so less tests have to be written
+
+Meteor.publish('templates.listing', function tempatesInCommunity() {
+  return Communities.find({ isTemplate: true });
+});
+
+Meteor.publish('templates.inCommunity', function tempatesInCommunity(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+  }).validate(params);
+  const { communityId } = params;
+  const community = Communities.findOne(communityId);
+
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!community.settings?.templateId || !user.hasPermission('accounts.inCommunity', { communityId })) {
+    return this.ready();
+  }
+
+  return Communities.find({ _id: community.settings.templateId });
+});

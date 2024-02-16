@@ -185,8 +185,9 @@ Template.Action_buttons_group.viewmodel(buttonHelpers);
 Template.Action_button.events({
   // This can be used most of the time to handle the click event - except when we are unable to render a proper template (like into a jquery cell).
   'click .btn'(event, instance) {
-    try { instance.data.action.run(event, instance); }
-    catch (err) { displayError(err); }
+    try {
+      instance.data.action.run(event, instance);
+    } catch (err) { displayError(err); }
   },
 });
 

@@ -47,7 +47,8 @@ Template.Accounting_ledger.viewmodel({
     return this.showTechnicalAccounts() ? Accounts.allWithTechnical(this.communityId()) : Accounts.all(this.communityId());
   },
   accountOptions() {
-    return Accounts.coa(this.communityId()).nodeOptions();
+    const communityId = this.communityId();
+    return Accounts.coa(communityId).nodeOptions(communityId);
   },
   localizerOptions() {
     return Parcels.nodeOptionsOf(this.communityId(), '');

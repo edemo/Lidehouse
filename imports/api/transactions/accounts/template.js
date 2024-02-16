@@ -1,11 +1,27 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
+
 import { Templates } from '/imports/api/transactions/templates/templates.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 
 export function defineAccountTemplates() {
 // Kettős könyvelés verzió
+  Templates.define({ name: 'Honline előírás nemek', included: true, accounts: [
+    { code: '1', name: 'Közös költség előírás' },
+    { code: '2', name: 'Fogyasztás előírás' },
+    { code: '21', name: 'Hidegvíz előírás' },
+    { code: '22', name: 'Melegvíz előírás' },
+    { code: '23', name: 'Csatornadíj előírás' },
+    { code: '24', name: 'Fűtési díj előírás' },
+    { code: '25', name: 'Légkondícionáló előírás' },
+    { code: '26', name: 'Egyéb fogyasztás előírás' },
+    { code: '3', name: 'Fejlesztési alap előírás' },
+    { code: '4', name: 'Egyéb előírás' },
+    { code: '5', name: 'Rendkivüli befizetés előírás' },
+  ],
+  });
 
-  Templates.define({ _id: 'Condominium_COA', accounts: [
+  Templates.define({ name: 'Honline Társasház Sablon', accounts: [
     { code: '`', name: 'Chart of Accounts', category: 'technical', locked: true },
     { code: '`0', name: 'Technical accounts', category: 'technical', locked: true },  // TECHNIKAI SZÁMLÁK
     { code: '`1', name: 'BEFEKTETETT ESZKÖZÖK', category: 'asset', locked: true, sign: +1 },
@@ -21,7 +37,7 @@ export function defineAccountTemplates() {
     { code: '`3', name: 'Assets', category: 'asset', locked: true, sign: +1 },  // KÖVETELÉSEK
     { code: '`31', name: 'Customers', category: 'receivable' },
     { code: '`33', name: 'Members', category: 'receivable', // KÖVETELÉSEK TULAJDONOSSAL SZEMBEN
-      include: 'Condominium_Payins',
+      include: 'Honline előírás nemek',
     },
     { code: '`34', name: 'HÁTRALÉKOK', category: 'asset' },
     { code: '`341', name: 'Jelzáloggal nem terhelt hátralék', category: 'asset' },
@@ -142,7 +158,7 @@ export function defineAccountTemplates() {
     { code: '`911', name: 'Bérleti díj bevételek', category: 'income' },
     { code: '`915', name: 'Egyéb adóköteles bevételek', category: 'income' },
     { code: '`95', name: 'Owner payins', category: 'income',
-      include: 'Condominium_Payins',
+      include: 'Honline előírás nemek',
     },
     { code: '`96', name: 'EGYÉB BEVÉTELEK', category: 'income' },
     { code: '`966', name: 'Támogatások', category: 'income' },
@@ -155,21 +171,6 @@ export function defineAccountTemplates() {
     { code: '`98', name: 'RENDKIVÜLI BEVÉTELEK', category: 'income' },
     { code: '`981', name: 'Tovább hárított szolgáltatások', category: 'income' },
     { code: '`99', name: 'KEREKÍTÉSI NYERESÉG-VESZTESÉG', category: 'income' },
-  ],
-  });
-
-  Templates.define({ _id: 'Condominium_Payins', accounts: [
-    { code: '1', name: 'Közös költség előírás' },
-    { code: '2', name: 'Fogyasztás előírás' },
-    { code: '21', name: 'Hidegvíz előírás' },
-    { code: '22', name: 'Melegvíz előírás' },
-    { code: '23', name: 'Csatornadíj előírás' },
-    { code: '24', name: 'Fűtési díj előírás' },
-    { code: '25', name: 'Légkondícionáló előírás' },
-    { code: '26', name: 'Egyéb fogyasztás előírás' },
-    { code: '3', name: 'Fejlesztési alap előírás' },
-    { code: '4', name: 'Egyéb előírás' },
-    { code: '5', name: 'Rendkivüli befizetés előírás' },
   ],
   });
 
@@ -188,6 +189,22 @@ export function defineAccountTemplates() {
   });
 */
 }
+
+Accounts.insertTemplateDoc = function insertTemplateDoc(templateId, doc, includer) {
+  const docToInsert = includer
+    ? _.extend({ communityId: templateId }, doc, { code: includer.code + doc.code, category: includer.category })
+    : _.extend({ communityId: templateId }, doc);
+  Accounts.updateOrInsert({ communityId: templateId, code: doc.code }, docToInsert);
+  if (doc.include) {
+    const includedTemplate = Templates[doc.include];
+    includedTemplate.accounts.forEach(a => Accounts.insertTemplateDoc(templateId, a, doc));
+  }
+};
+
+// To insert a new template doc: Just insert doc into the Template def
+// To change anything other than the CODE on a template doc: just change it the Template def, and it will be changed at the next server start
+// To change the CODE : change it the Template def AND use migration - Accounts.moveTemplate
+// To remove a template doc: remove it from Template def AND use a migration - Accounts.moveTemplate + remove the doc from Template
 
 if (Meteor.isServer) {
   Meteor.startup(defineAccountTemplates);

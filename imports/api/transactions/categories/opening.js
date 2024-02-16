@@ -27,6 +27,14 @@ Transactions.categoryHelpers('opening', {
     this[otherSide] = [{ account: otherAccount, amount: this.amount }];
     return { debit: this.debit, credit: this.credit };
   },
+  moveTransactionAccounts(codeFrom, codeTo) {
+    let updated = false;
+    if (this.account?.startsWith(codeFrom)) {
+      this.account = this.account.replace(codeFrom, codeTo);
+      updated = true;
+    }
+    return updated;
+  },
 });
 
 Transactions.attachVariantSchema(openingSchema, { selector: { category: 'opening' } });
