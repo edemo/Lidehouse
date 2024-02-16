@@ -40,7 +40,7 @@ Communities.settingsSchema = new SimpleSchema({
   topicAgeDays: { type: Number, defaultValue: 90 },
   communalModeration: { type: Number, defaultValue: 0, autoform: { defaultValue() { return 0; } } },
   // accounting
-  templateId: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: chooseTemplate },
+  templateId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTemplate },
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions() },
   paymentsToBills: { type: [String], allowedValues: Relations.values, defaultValue: Relations.mainValues, autoform: { type: 'select-checkbox-inline' } },
   paymentsWoStatement: { type: Boolean, optional: true },
@@ -79,7 +79,7 @@ AddressSchema._schemaKeys.forEach((key) => {
 
 Meteor.startup(function indexCommunities() {
   if (Meteor.isServer) {
-    Communities._ensureIndex({ name: 1 });
+    Communities._ensureIndex({ isTemplate: 1, name: 1 }, { sparse: true });
     Communities._ensureIndex({ lot: 1 });
   }
 });

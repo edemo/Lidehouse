@@ -20,10 +20,6 @@ import { TemplatedMongoCollection } from '/imports/api/transactions/templates/te
 
 export const Txdefs = new TemplatedMongoCollection('txdefs', 'name');
 
-Txdefs.define = function define(doc) {
-  Txdefs.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
-};
-
 Txdefs.paymentSubtypeValues = [
   'payment',   // partner is credited
   'identification',  // no partner accounting needed, just internal accounting done

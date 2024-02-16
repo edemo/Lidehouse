@@ -1307,7 +1307,7 @@ Migrations.add({
     });
   },
 });
-/*
+
 Migrations.add({
   version: 73,
   name: 'Remove redundant docs in community where Template has the exact same doc',
@@ -1338,7 +1338,17 @@ Migrations.add({
     });
   },
 });
-*/
+
+Migrations.add({
+  version: 74,
+  name: 'Communities.templateId non-optional',
+  up() {
+    Communities.find({ isTemplate: true }).forEach(community => {
+      Communities.direct.update(community._id, { $set: { 'settings.templateId': 'xQhxdpneEbvT9RuMr' } });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes
