@@ -237,8 +237,8 @@ Template.Worksheets.viewmodel({
         order: [[7, 'desc']],
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
-        searching: false,
-        paging: false,
+        lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+        pageLength: 25,
         ...DatatablesExportButtons,
         ...DatatablesSelectButtons(Topics),
       };
