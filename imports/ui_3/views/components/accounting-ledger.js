@@ -8,7 +8,6 @@ import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { ensureAllCorrect } from '/imports/api/transactions/balances/methods.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
@@ -30,7 +29,6 @@ Template.Accounting_ledger.viewmodel({
   periodSelected: Period.currentYearTag(),
   periodOrCumulation: 'period',
   showTechnicalAccounts: false,
-  showPartnerLedger: false,
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
@@ -52,15 +50,6 @@ Template.Accounting_ledger.viewmodel({
   },
   localizerOptions() {
     return Parcels.nodeOptionsOf(this.communityId(), '');
-  },
-  partnerContractOptions() {
-    return Contracts.partnerContractOptionsWithAll({ communityId: this.communityId });
-  },
-  contracts(relation) {
-    return Contracts.find({ communityId: this.communityId(), relation }).fetch();
-  },
-  contractOptions() {
-    return this.contracts().map(c => c.asOption());
   },
   totalTag() {
     return ['T'];
@@ -87,10 +76,6 @@ Template.Accounting_ledger.events({
   'change .periodRadio'(event, instance) {
     const selected = event.target.value;
     instance.viewmodel.periodOrCumulation(selected);
-  },
-  'click .js-partner-ledger'(event, instance) {
-    const val = instance.viewmodel.showPartnerLedger();
-    instance.viewmodel.showPartnerLedger(!val);
   },
   'click .js-journals'(event, instance) {
     const communityId = instance.viewmodel.communityId();

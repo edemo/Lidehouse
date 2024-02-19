@@ -9,9 +9,11 @@ import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { validDateOrUndefined } from '/imports/api/utils';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/balances/balances.js';
@@ -34,6 +36,7 @@ import './accounting-bills.html';
 
 Template.Accounting_bills.viewmodel({
   share: 'accountingFilter',
+  showPartnerLedger: false,
   onCreated(instance) {
     ModalStack.setVar('relation', this.activePartnerRelation(), true);
     instance.autorun(() => {
@@ -158,6 +161,14 @@ Template.Accounting_bills.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
     });
   },
+  contractsForPartnerLedger() {
+    return Contracts.find({ communityId: this.communityId(), relation: this.activePartnerRelation() }).fetch();
+  },
+  periodTagFromBeginDate() {
+    const beginDate = validDateOrUndefined(this.beginDate());
+    const periodTag = `T-${beginDate.getFullYear()}`;
+    return periodTag;
+  },
 });
 
 Template.Accounting_bills.events({
@@ -179,5 +190,9 @@ Template.Accounting_bills.events({
       bodyContext: {},
     };
     Modal.show('Modal', modalContext);
+  },
+  'click .js-partner-ledger'(event, instance) {
+    const val = instance.viewmodel.showPartnerLedger();
+    instance.viewmodel.showPartnerLedger(!val);
   },
 });
