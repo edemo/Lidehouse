@@ -18,7 +18,7 @@ Template.Partner_ledger_report.viewmodel({
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       const accounts = [this.relationAccount(), this.unidentifiedIncomeAccount(), this.unidentifiedExpenseAccount()];
-      instance.subscribe('balances.inCommunity', { communityId, partners: [] /*, tags: [Template.currentData().tag]*/ });
+      instance.subscribe('balances.inCommunity', { communityId, partners: [], tags: ['years'] });
     });
   },
   communityId() {

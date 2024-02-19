@@ -22,7 +22,11 @@ Meteor.publish('balances.inCommunity', function balancesInCommunity(params) {
   }
   const selector = { communityId };
   if (params.accounts) selector.account = { $in: params.accounts };
-  if (params.tags) selector.tag = { $in: params.tags };
+  if (params.tags) {
+    if (params.tags[0] === 'years') selector.tag = new RegExp(/^T-\d{4}$/);
+    else if (params.tags[0] === 'months') selector.tag = new RegExp(/^T-\d{4}-\d{2}$/);
+    else selector.tag = { $in: params.tags };
+  }
   if (params.localizers) {
     if (params.localizers.length) selector.localizer = { $in: params.localizers };
     else selector.localizer = { $exists: true };
