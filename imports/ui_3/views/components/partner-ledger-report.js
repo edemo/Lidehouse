@@ -17,6 +17,7 @@ Template.Partner_ledger_report.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
+      const accounts = [this.relationAccount(), this.unidentifiedIncomeAccount(), this.unidentifiedExpenseAccount()];
       instance.subscribe('balances.inCommunity', { communityId, partners: [] /*, tags: [Template.currentData().tag]*/ });
     });
   },
@@ -27,21 +28,15 @@ Template.Partner_ledger_report.viewmodel({
     return Communities.findOne(this.communityId());
   },
   relationAccount() {
-    // TODO: Get it from configuration
     const relation = this.templateInstance.data.relation;
-    let accountCode;
-    if (relation === 'member') accountCode = '`33';
-    else if (relation === 'customer') accountCode = '`31';
-    else if (relation === 'supplier') accountCode = '`454';
-    else debugAssert(false);
-    if (this.community()?.settings.accountingMethod === 'cash') accountCode = Accounts.toTechnicalCode(accountCode);
-    return accountCode;
+    const community = this.community();
+    return Accounts.getRelationAccount(community, relation);
   },
   unidentifiedIncomeAccount() {
-    return '`431'; // TODO: Get it from configuration
+    return Accounts.getUnidentifiedIncomeAccount();
   },
   unidentifiedExpenseAccount() {
-    return '`434'; // TODO: Get it from configuration
+    return Accounts.getUnidentifiedExpenseAccount();
   },
   unidentifiedAccount() {
     const relation = this.templateInstance.data.relation;

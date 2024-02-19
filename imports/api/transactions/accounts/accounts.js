@@ -83,6 +83,26 @@ Accounts.toTechnical = function toTechnical(account) {
   return technicalAccount;
 };
 
+// TODO: Get these special accounts from configuration
+Accounts.getRelationAccount = function getRelationAccount(community, relation) {
+  let accountCode;
+  if (relation === 'member') accountCode = '`33';
+  else if (relation === 'customer') accountCode = '`31';
+  else if (relation === 'supplier') accountCode = '`454';
+  else debugAssert(false);
+  if (community.settings.accountingMethod === 'cash') accountCode = Accounts.toTechnicalCode(accountCode);
+  return accountCode;
+};
+
+Accounts.getUnidentifiedIncomeAccount = function getUnidentifiedIncomeAccount(community) {
+  return '`431';
+};
+
+Accounts.getUnidentifiedExpenseAccount = function getUnidentifiedExpenseAccount(community) {
+  return '`434';
+};
+// TODO end
+
 Accounts.helpers({
   entityName() {
     const majorCategory = _.contains(['cash', 'bank'], this.category) ? this.category : 'simple';
