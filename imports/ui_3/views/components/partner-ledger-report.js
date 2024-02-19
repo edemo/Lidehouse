@@ -5,7 +5,10 @@ import { moment } from 'meteor/momentjs:moment';
 import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
+import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
 import './partner-ledger-report.html';
@@ -17,18 +20,37 @@ Template.Partner_ledger_report.viewmodel({
       instance.subscribe('balances.inCommunity', { communityId, partners: [] /*, tags: [Template.currentData().tag]*/ });
     });
   },
+  communityId() {
+    return ModalStack.getVar('communityId');
+  },
+  community() {
+    return Communities.findOne(this.communityId());
+  },
   relationAccount() {
     // TODO: Get it from configuration
     const relation = this.templateInstance.data.relation;
-    if (relation === 'member') return '`33';
-    if (relation === 'customer') return '`31';
-    if (relation === 'supplier') return '`454';
-    debugAssert(false);
-    return null;
+    let accountCode;
+    if (relation === 'member') accountCode = '`33';
+    else if (relation === 'customer') accountCode = '`31';
+    else if (relation === 'supplier') accountCode = '`454';
+    else debugAssert(false);
+    if (this.community()?.settings.accountingMethod === 'cash') accountCode = Accounts.toTechnicalCode(accountCode);
+    return accountCode;
+  },
+  unidentifiedIncomeAccount() {
+    return '`431'; // TODO: Get it from configuration
+  },
+  unidentifiedExpenseAccount() {
+    return '`434'; // TODO: Get it from configuration
+  },
+  unidentifiedAccount() {
+    const relation = this.templateInstance.data.relation;
+    if (relation === 'supplier') return this.unidentifiedExpenseAccount();
+    else return this.unidentifiedIncomeAccount();
   },
   balance(contract, account, tag, sideFunc, tagtype) {
     const balance = Balances.get({
-      communityId: ModalStack.getVar('communityId'),
+      communityId: this.communityId(),
       account,
       partner: contract.code(),
       tag,
@@ -39,7 +61,7 @@ Template.Partner_ledger_report.viewmodel({
   },
   hasActivity(contract, tag) {
     return !!Balances.findOne({
-      communityId: ModalStack.getVar('communityId'),
+      communityId: this.communityId(),
       partner: new RegExp('^' + contract.code()),
       tag,
     });
