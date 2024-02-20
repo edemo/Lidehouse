@@ -13,6 +13,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { defaultRoles } from '/imports/api/permissions/roles.js';
+import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
@@ -56,6 +57,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     }
   }
 
+  const templateId = Communities.findOne({ name: 'Honline Társasház Sablon', isTemplate: true })._id;
+
   Clock.AUTO_TICK = 1000; // one second pass after each Clock call - to avoid same timestamp on two things
   Clock.starts(2, 'year', 'ago');
   Log.info('Creating house:', demoHouseName);
@@ -72,6 +75,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       language: lang,
       ownershipScheme: 'condominium',
       parcelRefFormat: 'bfdd',
+      templateId,
       accountingMethod: 'accrual',
       topicAgeDays: 365,
     },
@@ -661,6 +665,10 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Shareddocs =====
 
   const serverFilePath = 'assets/app/demohouseDocs/';
+  function getDemoFolderId(content) {
+    const folder = Sharedfolders.findOne({ communityId: templateId, content });
+    return folder._id;
+  }
 
   builder.uploadShareddoc({
     file: serverFilePath + 'alaprajz.jpg',
@@ -669,7 +677,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       hu: 'Alaprajz.jpg',
     },
     type: 'image/jpg',
-    folder: 'main',
+    folder: getDemoFolderId('main'),
   });
   builder.uploadShareddoc({
     file: {
@@ -681,7 +689,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       hu: 'Fontos_telefonszámok.xls',
     },
     type: 'application/vnd.ms-excel',
-    folder: 'main',
+    folder: getDemoFolderId('main'),
   });
   builder.uploadShareddoc({
     file: {
@@ -693,7 +701,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       hu: 'Társasházi_törvény.pdf',
     },
     type: 'application/pdf',
-    folder: 'main',
+    folder: getDemoFolderId('main'),
   });
   builder.uploadShareddoc({
     file: {
@@ -705,7 +713,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       hu: 'SZMSZ_201508.pdf',
     },
     type: 'application/pdf',
-    folder: 'community',
+    folder: getDemoFolderId('community'),
   });
   builder.uploadShareddoc({
     file: serverFilePath + 'kerekpartarolo.jpg',
@@ -714,7 +722,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       hu: 'kerekpartarolo.jpg',
     },
     type: 'image/jpg',
-    folder: 'voting',
+    folder: getDemoFolderId('voting'),
     topicId: voteTopicBike,
   });
 
