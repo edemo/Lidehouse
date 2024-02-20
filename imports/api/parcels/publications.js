@@ -19,11 +19,11 @@ Meteor.publish('parcels.codes', function parcelsCodes(params) {
   const  community = Communities.findOne(communityId);
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('parcels.codes', { communityId: { $in: [communityId, community.settings.templateId] } })) {
+  if (!user.hasPermission('parcels.codes', { communityId })) {
     return this.ready();
   }
 
-  return Parcels.find({ communityId }, { fields: { communityId: 1, category: 1, ref: 1, code: 1, name: 1 } });
+  return Parcels.find({ communityId: { $in: [communityId, community.settings.templateId] } }, { fields: { communityId: 1, category: 1, ref: 1, code: 1, name: 1 } });
 });
 
 Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(params) {
