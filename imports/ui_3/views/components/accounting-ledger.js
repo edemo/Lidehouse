@@ -7,6 +7,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { ensureAllCorrect } from '/imports/api/transactions/balances/methods.js';
@@ -50,6 +51,15 @@ Template.Accounting_ledger.viewmodel({
   },
   localizerOptions() {
     return Parcels.nodeOptionsOf(this.communityId(), '');
+  },
+  partnerContractOptions() {
+    return Contracts.partnerContractOptionsWithAll({ communityId: this.communityId });
+  },
+  contracts(relation) {
+    return Contracts.find({ communityId: this.communityId(), relation }).fetch();
+  },
+  contractOptions() {
+    return this.contracts().map(c => c.asOption());
   },
   totalTag() {
     return ['T'];
