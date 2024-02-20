@@ -194,7 +194,7 @@ Accounts.insertTemplateDoc = function insertTemplateDoc(templateId, doc, include
   const docToInsert = includer
     ? _.extend({ communityId: templateId }, doc, { code: includer.code + doc.code, category: includer.category })
     : _.extend({ communityId: templateId }, doc);
-  Accounts.updateOrInsert({ communityId: templateId, code: doc.code }, docToInsert);
+  Accounts.updateOrInsert({ communityId: templateId, code: docToInsert.code }, docToInsert);
   if (doc.include) {
     const includedTemplate = Templates[doc.include];
     includedTemplate.accounts.forEach(a => Accounts.insertTemplateDoc(templateId, a, doc));

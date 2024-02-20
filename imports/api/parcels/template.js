@@ -9,10 +9,10 @@ export function defineLocalizerTemplates() {
     { code: '@', name: 'Parcels', category: '@group' }, // Albetétek
 //    { code: '@A', name: 'Main building', category: '@group' },
 
-    { code: '&', name: 'Common areas', category: '@group' },  // Közös tulajdonú helyiségek
-    { code: '&1', name: 'Padlás', category: '@common' },
-    { code: '&2', name: 'Pince', category: '@common' },
-    { code: '&3', name: 'Kert', category: '@common' },
+//    { code: '&', name: 'Common areas', category: '@group' },  // Közös tulajdonú helyiségek
+//    { code: '&1', name: 'Padlás', category: '@common' },
+//    { code: '&2', name: 'Pince', category: '@common' },
+//    { code: '&3', name: 'Kert', category: '@common' },
 //    { code: '&4', name: 'Tárolók', category: '@common' },
 //    { code: '&5', name: 'Garázs', category: '@common' },
 //    { code: '&6', name: 'Lépcsőház', category: '@common' },
