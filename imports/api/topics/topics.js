@@ -40,7 +40,7 @@ Topics.baseSchema = new SimpleSchema({
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { type: 'markdown' } },
-  notiLocalizer: { type: [String], optional: true, autoform: Parcels.choosePhysical },
+//  notiLocalizer: { type: [String], optional: true, autoform: Parcels.choosePhysical },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
   movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 });
@@ -185,9 +185,9 @@ Topics.helpers({
   isRelevantTo(userId) {
     const localizers = this.notiLocalizer || [];
     const user = Meteor.users.findOne(userId);
+    if (userId === this.creatorId || user.hasPermission('ticket.statusChange', this)) return true;
     // For tickets the default noti localization is 'none', for all other categories it is 'everywhere'
     if (this.category === 'ticket') {
-      if (userId === this.creatorId || user.hasPermission('ticket.statusChange', this)) return true;
       if (this.ticket?.localizer) localizers.push(this.ticket.localizer);
       if (!localizers.length) return false;
     } else {
