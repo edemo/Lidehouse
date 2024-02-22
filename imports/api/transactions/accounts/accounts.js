@@ -109,10 +109,12 @@ Accounts.helpers({
     return majorCategory + 'Account';
   },
   nodes(communityId, leafsOnly = false) {
+    debugAssert(communityId);
     const regexp = new RegExp('^' + this.code + (leafsOnly ? '.+' : ''));
     return Accounts.findTfetch({ communityId, code: regexp }, { sort: { code: 1 } });
   },
   leafs(communityId) {
+    debugAssert(communityId);
     return this.nodes(communityId, true);
   },
   parent() {

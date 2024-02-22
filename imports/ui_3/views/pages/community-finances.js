@@ -108,7 +108,7 @@ Template.Community_finances.viewmodel({
   community() { return Communities.findOne(this.communityId()); },
   startIndex() {
     let firstBalanceIndex = 0;
-    this.periodBreakdown()?.leafs().some((leaf, index) => {
+    this.periodBreakdown()?.leafs(this.communityId()).some((leaf, index) => {
       if (Balances.findOne({ tag: leaf.code })) {
         firstBalanceIndex = index;
         return true;
@@ -117,12 +117,13 @@ Template.Community_finances.viewmodel({
     return Math.max(firstBalanceIndex, this.endIndex() - chartLookbackMonths);
   },
   endIndex() {
-    const currentMonthIndex = this.periodBreakdown()?.leafs().findIndex(l => l.code === Period.currentMonthTag());
-    debugAssert(currentMonthIndex > 0, 'Unable to find current month in the accountingPeriods',  _.pluck(this.periodBreakdown()?.leafs(), 'code'));
+    const leafs = this.periodBreakdown()?.leafs(this.communityId());
+    const currentMonthIndex = leafs.findIndex(l => l.code === Period.currentMonthTag());
+    if (currentMonthIndex < 0) return leafs.length - 1;  // 'Unable to find current month in the accountingPeriods',  _.pluck(this.periodBreakdown()?.leafs(this.communityId()), 'code'));
     if (this.community().settings.balancesUploaded && currentMonthIndex > 0) return currentMonthIndex - 1;
     else return currentMonthIndex;
   },
-  periods() { return this.periodBreakdown()?.leafs().slice(this.startIndex(), this.endIndex() + 1); },
+  periods() { return this.periodBreakdown()?.leafs(this.communityId()).slice(this.startIndex(), this.endIndex() + 1); },
   periodLabels() { return this.periods()?.map(l => `${l.label === 'JAN' ? __(l.parent.name) : __(l.label)}`); },
 
   onCreated(instance) {
@@ -167,7 +168,7 @@ Template.Community_finances.viewmodel({
   moneyData() {
     const datasets = [];
     const moneyAccount = Accounts.findOneT({ communityId: this.communityId(), name: 'Money accounts' });
-    moneyAccount?.leafs().fetch().reverse().forEach((account, index) => {
+    moneyAccount?.leafs(this.communityId()).fetch().reverse().forEach((account, index) => {
       datasets.push(_.extend({
         label: __(account.name),
         data: this.monthlyData(account.code),
