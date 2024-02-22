@@ -17,6 +17,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 
 export function parcelColumns(community) {
   return [
+    { data: 'createdAt.getTime()', title: '', render: Render.noDisplay },
     { data: 'serial', title: __('schemaParcels.serial.label') },
     { data: 'ref', title: __('schemaParcels.ref.label') },
     community?.hasLeadParcels() &&
