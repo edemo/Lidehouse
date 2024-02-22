@@ -15,7 +15,7 @@ export function ticketColumns() {
   return [
     { data: 'serialId', title: __('schemaTickets.id.label') },
     { data: '_id', title: __('schemaTickets.title.label'), render: Render.displayTitle },
-    { data: 'unseenCommentCount()', render: Render.badge,
+    { data: 'blueBadgeCount()', render: Render.badge,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Badge,
         { color: 'info', value: cellData }, cell),
     },

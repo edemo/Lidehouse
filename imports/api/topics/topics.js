@@ -145,24 +145,20 @@ Topics.helpers({
     return this.unseenCommentsBy(userId, seenType).fetch();
   },
   hasThingsToDisplayFor(userId, seenType) { // false if everything new with this topic is hidden for the user
-    let result = false;
-    if (this.isUnseenBy(userId, seenType) && !this.hiddenBy(userId)) {
-      result = true;
-    } else {
+    let result = 0;
+    if (!this.hiddenBy(userId)) {
+      if (this.isUnseenBy(userId, seenType)) result += 1;
       this.unseenCommentListBy(userId, seenType).forEach((comment) => {
-        if (!comment.hiddenBy(userId)) {
-          result = true;
-          return false;
-        } else return true;
+        if (!comment.hiddenBy(userId)) result += 1;
       });
     }
     return result;
   },
 
   // This goes into the UI badges
-  unseenCommentCount() {
+  blueBadgeCount(userId = Meteor.userId(), seenType = Meteor.users.SEEN_BY.EYES) {
     debugAssert(Meteor.isClient);
-    return this.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
+    return this.hasThingsToDisplayFor(userId, seenType);
   },
   // This goes into the user's event feed
   unseenEventsBy(userId, seenType) {

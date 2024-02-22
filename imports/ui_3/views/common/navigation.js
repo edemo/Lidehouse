@@ -42,11 +42,7 @@ Template.Navigation.viewmodel({
     const userId = Meteor.userId();
     const topics = Topics.find({ communityId: getActiveCommunityId(), category });
     let count = 0;
-    topics.map(topic => {
-      if (topic.hasThingsToDisplayFor(userId,  Meteor.users.SEEN_BY.EYES)) {
-        count += topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES);
-      }
-    });
+    topics.map((topic) => count += topic.hasThingsToDisplayFor(userId,  Meteor.users.SEEN_BY.EYES));
     return count;
   },
   needsAttentionCount(category) {
