@@ -230,6 +230,7 @@ Factory.define('community', Communities, {
     language: 'en',
     ownershipScheme: 'condominium',
     parcelRefFormat: 'bfdd',
+    templateId: () => Communities.findOne({ name: 'Honline Társasház Sablon', isTemplate: true })._id,
     accountingMethod: 'accrual',
     allowPostToGroupAccounts: true,
     enableMeterEstimationDays: 5,

@@ -49,7 +49,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     let doc = checkExists(Parcels, _id);
-    if (doc.communityId !== modifier.$set.communityId) { // Editing a template entry
+    if (modifier.$set?.communityId && modifier.$set.communityId !== doc.communityId) { // Editing a template entry
       const community = Communities.findOne(modifier.$set.communityId);
       checkConstraint(community.settings.templateId === doc.communityId, 'You can update only from your own template');
       checkPermissions(this.userId, 'parcels.update', { communityId: modifier.$set.communityId });

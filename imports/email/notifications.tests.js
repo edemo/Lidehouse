@@ -386,6 +386,7 @@ if (Meteor.isServer) {
             language: 'hu',
             ownershipScheme: 'condominium',
             totalUnits: 10000,
+            templateId: Communities.findOne({ name: 'Honline Társasház Sablon', isTemplate: true })._id,
             accountingMethod: 'cash',
           },
         });

@@ -38,7 +38,7 @@ export const update = new ValidatedMethod({
       doc = Accounts.findOne(clonedDocId);
     }
     checkPermissions(this.userId, 'accounts.update', doc);
-    if (modifier.$set.code !== doc.code) {
+    if (modifier.$set?.code && modifier.$set.code !== doc.code) {
       Accounts.move(communityId, doc.code, modifier.$set.code);
     }
 
