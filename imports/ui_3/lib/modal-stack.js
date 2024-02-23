@@ -25,114 +25,80 @@ if (Meteor.isClient) {
   // [{ id:'af.object.action', result: { id1: result1, id2: result2 } }]
 
   ModalStack = {
-    contextForTheNext: {},
-    get() {
-      let modalStack = Session.get('modalStack');
-      if (!modalStack) {
-        modalStack = [{ id: 'root', context: {} }];
-        Session.set('modalStack', modalStack);
-        Session.set('modalStackResults_root', {});
-      }
-      return modalStack;
+    _stack: ['root'],
+    _context: { root: {} },
+    _results: { root: {} },
+    _contextForTheNext: {},
+    _height() {
+      debugAssert(ModalStack._stack.length >= 1);
+      return ModalStack._stack.length - 1;
     },
-    push(dataId) { // called upon Modal.show();
-      const modalStack = ModalStack.get();
-      // Log.debug('before push:', modalStack);
-      modalStack.push({ id: dataId, context: ModalStack.contextForTheNext });
-      const resultsKey = 'modalStackResults_' + dataId;
-      // Log.debug('after push:', modalStack);
-      Session.set('modalStack', modalStack);
-      Session.set(resultsKey, {});
-      ModalStack.contextForTheNext = {};
-    },
-    pop(dataId) { // called upon Modal.hide();
-      const modalStack = ModalStack.get();
-      // Log.debug('before pop:', modalStack);
-      let topModal = modalStack.pop();
-      // at changing modals eg. in import, push may happen before pop
-      if (topModal.id !== dataId) {
-        const nextModal = modalStack.pop();
-        debugAssert((!nextModal.id && !dataId) || nextModal.id === dataId, 'No modal to pop on ModalStack');
-        modalStack.push(topModal);
-        topModal = nextModal;
-      }
-      const resultsKey = 'modalStackResults_' + topModal.id;
-      if (ModalStack.computation && modalStack.length <= 1) {
-        ModalStack.computation.stop();
-        delete ModalStack.computation;
-      }
-      // Log.debug('after pop:', modalStack);
-      Session.set('modalStack', modalStack);
-      Session.set(resultsKey, undefined);
-      if (modalStack.length > 1) $('body').addClass('modal-open');
+    _dump() {
+      return  'stack:' + JSON.stringify(ModalStack._stack) + '\n'
+      + 'context:' + JSON.stringify(ModalStack._context) + '\n'
+      + 'results:' + JSON.stringify(ModalStack._results) + '\n'
+      + 'contextForTheNext:' + JSON.stringify(ModalStack._contextForTheNext) + '\n'
+      + 'Sessoin:' + JSON.stringify(Session) + '\n';
     },
     active() {
-      const modalStack = ModalStack.get();
-      return (modalStack.length > 1) && _.last(modalStack);
+      return (ModalStack._height() > 0 && _.last(ModalStack._stack));
     },
-    height() {
-      const modalStack = ModalStack.get();
-      return modalStack.length - 1;
+    push(dataId) { // called upon Modal.show();
+      // Log.debug('Before Push', ModalStack._dump());
+      ModalStack._stack.push(dataId);
+      ModalStack._context[dataId] = ModalStack._contextForTheNext;
+      ModalStack._contextForTheNext = {};
+      _.each(ModalStack._context[dataId], (val, k) => {
+        Session.set(`modalStack/${dataId}/key/${k}`, val);
+      });
+      ModalStack._results[dataId] = {};
+      // Log.debug('After Push', ModalStack._dump());
+    },
+    pop(dataId) { // called upon Modal.hide();
+      // Log.debug('Before Pop', ModalStack._dump());
+      let topModalId = ModalStack._stack.pop();
+      if (topModalId !== dataId) {  // at changing modals eg. in import, push may happen before pop
+        const nextModalId = ModalStack._stack.pop();
+        debugAssert((!nextModalId && !dataId) || nextModalId === dataId, 'No modal to pop on ModalStack');
+        ModalStack._stack.push(topModalId);
+        topModalId = nextModalId;
+      }
+      // clean Session
+      _.each(ModalStack._context[topModalId], (val, k) => delete Session.keys[`modalStack/${topModalId}/key/${k}`]);
+      _.each(ModalStack._results[topModalId], (val, k) => delete Session.keys[`modalStack/${topModalId}/result/${k}`]);
+      delete ModalStack._context[topModalId];
+      delete ModalStack._results[topModalId];
+      // Log.debug('After Pop', ModalStack._dump());
+      if (ModalStack._height() > 0) $('body').addClass('modal-open');
     },
     recordResult(afId, result) {
-      let modalStack;
-      Tracker.nonreactive(() => { modalStack = ModalStack.get(); });
-      if (modalStack.length <= 1) return; // If there is no modal, no need to pass on the result
-      const currentLevel = modalStack.length - 1;
-      const lowerModalId = modalStack[currentLevel - 1].id;
-      const resultsKey = 'modalStackResults_' + lowerModalId;
-      let results;
-      Tracker.nonreactive(() => { results = Session.get(resultsKey); });
-      results[afId] = result;
-      Session.set(resultsKey, results);
+      if (ModalStack._height() <= 0) return; // If there is no modal, no need to pass on the result
+      const lowerModalId = ModalStack._stack[ModalStack._height() - 1];
+      Session.set(`modalStack/${lowerModalId}/result/${afId}`, result);
+      ModalStack._results[lowerModalId][afId] = result;
     },
     readResult(ownId, afId) {
-      const resultsKey = 'modalStackResults_' + ownId;
-      const results = Session.get(resultsKey);
-      const result = results?.[afId];
+      const result = Session.get(`modalStack/${ownId}/result/${afId}`);
       return result;
     },
-    setVar(key, value, keep = false) { // Should not call this within an autorun - would cause infinite loop
-      if (key === 'communityId') {
-        Session.set('communityId', value);   // temporary solution, for efficiency (communityId is used in subscription parameters)
-        return;
-      }
-      const modalStack = ModalStack.get();
-      // Log.debug('before set', modalStack);
-      // Log.debug('set value', value);
-      if (keep) { // keep sets it for this level
-        _.last(modalStack).context[key] = value;
-        Session.set('modalStack', modalStack);
+    setVar(key, value, keep = false) {
+      // Log.debug('Before Set value', value);
+      if (keep) {
+        const topModalId = _.last(ModalStack._stack);
+        ModalStack._context[topModalId][key] = value;
+        Session.set(`modalStack/${topModalId}/key/${key}`, value);
       } else { // no keep sets it only for the next level
-        ModalStack.contextForTheNext[key] = value;
+        ModalStack._contextForTheNext[key] = value;
       }
-      // Log.debug('after set', modalStack);
+      // Log.debug('After Set', ModalStack._dump());
     },
     getVar(key) {
-      if (key === 'communityId') {
-        return Session.get('communityId'); // temporary solution, for efficiency (communityId is used in subscription parameters)
-      }
-      let modalStack;
-      Tracker.nonreactive(() => { modalStack = ModalStack.get(); });
-      // Log.debug('before get', modalStack);
-      const currentLevel = modalStack.length - 1;
-      for (let i = currentLevel; i >= 0; i--) {
-        const value = modalStack[i].context[key];
+      // Log.debug('Before Get value', ModalStack._dump());
+      for (let i = ModalStack._height(); i >= 0; i--) {
+        const value = Session.get(`modalStack/${ModalStack._stack[i]}/key/${key}`);
         if (value !== undefined) return value;
       }
       return undefined;
     },
-    autorun(func) {
-      ModalStack.computation = Tracker.autorun(func);
-    },
-/*    setCallback(callback) {
-      const modalStack = ModalStack.get();
-      _.last(modalStack).callback = callback;
-      Session.set('modalStack', modalStack);
-    },
-    getCallback() {
-      const modalStack = ModalStack.get();
-      return _.last(modalStack).callback;
-    },*/
   };
 }
