@@ -28,7 +28,7 @@ function uploadFile(file, context, inst) {
     name: file.name,
     size: file.size,
     type: file.type,
-    communityId: Session.get('communityId'),
+    communityId: Session.get('modalStack/root/key/communityId'),
     userId: Meteor.userId(),
   };
   const inputField = inst.inputFieldName.split('.')[0];
