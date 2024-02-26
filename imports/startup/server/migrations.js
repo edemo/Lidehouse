@@ -1349,6 +1349,17 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 75,
+  name: 'Notilocalizer becomes ticket localizer',
+  up() {
+    Topics.find({ category: 'ticket', notiLocalizer: { $exists: true } }).forEach(ticket => {
+      console.log('Ticket', ticket._id, 'notiLocalizer', ticket.notiLocalizer, ticket.notiLocalizer[0], 'localizer', ticket.ticket.localizer);
+      Topics.direct.update(ticket._id, { $set: { 'ticket.localizer': ticket.notiLocalizer[0] }, $unset: { notiLocalizer: '' } }, { selector: { category: 'ticket' } });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes

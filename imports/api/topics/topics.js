@@ -40,7 +40,7 @@ Topics.baseSchema = new SimpleSchema({
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { type: 'markdown' } },
-//  notiLocalizer: { type: [String], optional: true, autoform: Parcels.choosePhysical },
+  notiLocalizer: { type: [String], optional: true, autoform: { type: 'hidden' } }, // autoform: Parcels.choosePhysical
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
   movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 });
