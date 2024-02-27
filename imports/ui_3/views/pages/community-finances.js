@@ -149,6 +149,9 @@ Template.Community_finances.viewmodel({
   monthlyData(account) {
     return this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: 'T' + l.code.substring(1) }, 'closing').displayTotal());
   },
+  moneyOutstanding() {
+    return this.getBalance(Accounts.getRelationAccount(this.community(), 'member'));
+  },
   statusData() {
     const data = {
       labels: this.periodLabels(),
@@ -159,7 +162,7 @@ Template.Community_finances.viewmodel({
         }, plusColors[0]),
         _.extend({
           label: __("Commitments"),
-          data: this.monthlyData('`45'),
+          data: this.monthlyData(Accounts.getRelationAccount(this.community(), 'supplier')),
         }, minusColors[0]),
       ],
     };
@@ -184,11 +187,11 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK"),
-          data: this.monthlyData('`44'),
+          data: this.monthlyData(Accounts.getLongTermCommitmentsAccount()),
         }, minusColors[0]),
         _.extend({
           label: __("RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK"),
-          data: this.monthlyData('`45'),
+          data: this.monthlyData(Accounts.getRelationAccount(this.community(), 'supplier')),
         }, minusColors[0]),
       ],
     };
@@ -260,7 +263,7 @@ Template.Community_finances.viewmodel({
   statusAccounts() {
     return [
       { name: 'Money accounts', code: '`38' },
-      { name: 'Commitments', code: '`45' },
+      { name: 'Commitments', code: Accounts.getRelationAccount(this.community(), 'supplier') },
     ];
   },
   leafsOf(account) {

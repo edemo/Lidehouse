@@ -94,6 +94,10 @@ Accounts.getRelationAccount = function getRelationAccount(community, relation) {
   return accountCode;
 };
 
+Accounts.getLongTermCommitmentsAccount = function getLongTermCommitmentsAccount(community) {
+  return '`44';
+};
+
 Accounts.getUnidentifiedIncomeAccount = function getUnidentifiedIncomeAccount(community) {
   return '`431';
 };
