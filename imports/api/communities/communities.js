@@ -37,7 +37,7 @@ Communities.settingsSchema = new SimpleSchema({
   ownershipScheme: { type: String, allowedValues: Communities.ownershipSchemeValues, autoform: { defaultValue: 'condominium' } },
   totalUnits: { type: Number, optional: true }, // If it is a fixed value, it is provided here
   parcelRefFormat: { type: String, optional: true },
-  topicAgeDays: { type: Number, defaultValue: 90 },
+  topicAgeDays: { type: Number, defaultValue: 365 },
   communalModeration: { type: Number, defaultValue: 0, autoform: { defaultValue() { return 0; } } },
   // accounting
   templateId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTemplate },
