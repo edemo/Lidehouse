@@ -63,7 +63,8 @@ Balances.helpers({
   displayTotal() {
     let displaySign = 1;
     if (this.account) {
-      switch (this.account.charAt(1)) {
+      const accountMainGroup = this.account.charAt(1) || this.account.charAt(2);
+      switch (accountMainGroup) {
         case '1':
         case '2':
         case '3':
