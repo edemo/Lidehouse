@@ -29,15 +29,6 @@ export const Notifications_Email = {
     userUrlFor(user) {
       return FlowRouterHelpers.urlFor('User show', { _id: user._id });
     },
-    voteHasBeenClosed(topic) {
-      if (topic.status === 'closed' && topic.category === 'vote') {
-        const unseenComments = topic.unseenCommentListBy(this.user._id, Meteor.users.SEEN_BY.NOTI);
-        const closingEvent = unseenComments.find(comment => comment.type === 'statusChange' && comment.status === 'closed');
-        if (closingEvent) return true;
-        return false;
-      }
-      return false;
-    },
     categoryImgUrlFor(category) {
       const file = {
         // feedback: '',

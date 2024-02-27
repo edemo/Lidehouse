@@ -402,6 +402,8 @@
   "Unread": "Olvasatlan",
   "Todo": "Tennivaló",
   "This topic has been merged with an other one, you will be redirected": "Ez a téma egyesítésre került egy másikkal, átirányítás folyamatban.",
+  "More on the Forum" : "Továbbiak a Fórumon",
+  "Older topics": "Régebbi témák",
 
   // voting
   "choice": "választási lehetőség",
@@ -424,8 +426,8 @@
   "Participation necessary": "Eredményesség feltétele",  
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
-  "Actives only": "Csak az Aktívak",
-  "Opened only": "Nyitottak mutatása",
+  "Actives only": "Csak az aktívak",
+  "Opened only": "Csak a nyitottak",
   "Show results": "Eredmények megtekintése",
   "Show attachment": "Előterjesztés megtekintése",
   "The voting has been closed": "A szavazás lezárult",

@@ -68,7 +68,6 @@ Topics.publicFields = {
   participantIds: 1,
   opensAt: 1,
   closesAt: 1,
-  closed: 1,
   sticky: 1,
   likes: 1,
   flags: 1,
@@ -83,14 +82,14 @@ Topics.publicFields = {
 Topics.idSet = ['communityId', 'category', 'serial'];
 
 Meteor.startup(function indexTopics() {
-  Topics.ensureIndex({ communityId: 1, agendaId: 1 }, { sparse: true });
-  Topics.ensureIndex({ communityId: 1, category: 1, closed: 1, serial: 1 });
+  Topics.ensureIndex({ agendaId: 1 }, { sparse: true });
+  Topics.ensureIndex({ communityId: 1, serial: 1 });
+  Topics.ensureIndex({ communityId: 1, status: 1, category: 1 });
   if (Meteor.isClient && MinimongoIndexing) {
-    Topics._collection._ensureIndex(['category', 'closed']);
     Topics._collection._ensureIndex(['title', 'participantIds']);
   } else if (Meteor.isServer) {
-    Topics._ensureIndex({ communityId: 1, category: 1, closed: 1, createdAt: -1 });
-    Topics._ensureIndex({ communityId: 1, participantIds: 1, closed: 1 });
+    Topics._ensureIndex({ communityId: 1, category: 1, createdAt: -1 });
+    Topics._ensureIndex({ communityId: 1, participantIds: 1, status: 1 });
   }
 });
 
@@ -199,6 +198,8 @@ Topics.helpers({
   // This number goes into the red badge to show you how many work to do
   needsAttention(userId, seenType = Meteor.users.SEEN_BY.EYES) {
     if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
+    const user = Meteor.users.findOne(userId);
+    const partnerId = user.partnerId(this.communityId);
     switch (this.category) {
 // These guys have been separated into the info badge
 //      case 'news':
@@ -211,12 +212,10 @@ Topics.helpers({
 //        if (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0) return 1;
 //        break;
       case 'vote':
-        const user = Meteor.users.findOne(userId);
-        const partnerId = user.partnerId(this.communityId);
-        if (!this.votingClosed() && !this.hasVoted(partnerId)) return 1;
+        if (!this.votingClosed() && !this.hasVoted(partnerId) && user.totalVotingPower(this.communityId) > 0) return 1;
         break;
       case 'ticket':
-        if (!this.closed && Meteor.user().hasPermission(`ticket.statusChange.${this.status}.leave`, this)) return 1;
+        if (!_.contains(['finished', 'closed', 'deleted'], this.status) && Meteor.user().hasPermission(`ticket.statusChange.${this.status}.leave`, this)) return 1;
         break;
       case 'feedback':
         if (this.isUnseenBy(userId, seenType)) return 1;
@@ -243,7 +242,7 @@ Topics.topicsWithUnseenEvents = function topicsWithUnseenEvents(userId, communit
   debugAssert(userId);
   debugAssert(communityId);
   debugAssert(seenType);
-  return Topics.find({ communityId, closed: false,
+  return Topics.find({ communityId, status: { $ne: 'closed' },
     $or: [
       { participantIds: { $exists: false } },
       { participantIds: userId },

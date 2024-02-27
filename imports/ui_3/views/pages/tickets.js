@@ -14,7 +14,7 @@ import '/imports/ui_3/views/components/ticket-list.js';
 import './tickets.html';
 
 Template.Tickets.viewmodel({
-  activesOnly: true,
+  activesOnly: false,
   filterCreatedBy: null,
   searchText: '',
   communityId() {
@@ -24,9 +24,9 @@ Template.Tickets.viewmodel({
     ModalStack.setVar('relation', 'supplier', true);
     instance.autorun(() => {
       const communityId = this.communityId();
-      const ticketListParams = { communityId, category: 'ticket' };
-      if (this.activesOnly()) ticketListParams.closed = false;
-      instance.subscribe('topics.list', ticketListParams);
+      if (!this.activesOnly()) {
+        instance.subscribe('topics.list', { communityId, category: 'ticket', status: { $in: ['closed', 'deleted'] } });
+      }
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
     });

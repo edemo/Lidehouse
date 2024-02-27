@@ -154,6 +154,7 @@ Tickets.statusValues = Object.keys(Tickets.statuses);
 Tickets.workflows = {
   issue: {
     start: [reported],
+    finish: [finished],
     reported: { obj: reported, next: [confirmed, finished, closed, deleted] },
     confirmed: { obj: confirmed, next: [progressing, suspended, finished, closed] },
     progressing: { obj: progressing, next: [suspended, finished, closed] },
@@ -164,6 +165,7 @@ Tickets.workflows = {
   },
   upgrade: {
     start: [reported],
+    finish: [finished],
     reported: { obj: reported, next: [confirmed, finished, closed, deleted] },
     confirmed: { obj: confirmed, next: [progressing, suspended, toApprove, toVote, finished, closed] },
     toApprove: { obj: toApprove, next: [progressing, confirmed, finished, closed] },
@@ -176,6 +178,7 @@ Tickets.workflows = {
   },
   maintenance: {
     start: [scheduled],
+    finish: [finished],
     scheduled: { obj: scheduled, next: [progressing, finished, closed] },
     progressing: { obj: progressing, next: [finished, closed] },
     finished: { obj: finished, next: [closed, progressing] },

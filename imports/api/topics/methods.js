@@ -96,8 +96,9 @@ export const archive = new ValidatedMethod({
   }).validator(),
   run({ _id }) {
     const topic = checkExists(Topics, _id);
-    checkTopicPermissions(this.userId, 'remove', topic);
-    Topics.update(_id, { $set: { closed: true } }, { selector: { category: topic.category } });
+    checkTopicPermissions(this.userId, `statusChange.${topic.status}.leave`, topic);
+    checkTopicPermissions(this.userId, 'statusChange.closed.enter', topic);
+    Topics.update(_id, { $set: { status: 'closed' } }, { selector: { category: topic.category } });
   },
 });
 
@@ -121,9 +122,9 @@ export function closeInactiveTopics() {
     const localAdminId = community.admin()._id;
     const topicAgeDays = community.settings.topicAgeDays;
     const archiveTime = moment().subtract(topicAgeDays, 'days').toDate();
-    const closableTopics = Topics.find({ communityId: community._id, category: { $nin: exceptCategories }, closed: false, updatedAt: { $lt: archiveTime } });
+    const closableTopics = Topics.find({ communityId: community._id, category: { $nin: exceptCategories }, status: { $ne: 'closed' }, updatedAt: { $lt: archiveTime } });
     closableTopics.forEach((topic) => {
-      Topics.methods.update._execute({ userId: localAdminId }, { _id: topic._id, modifier: { $set: { closed: true } } });
+      Topics.methods.update._execute({ userId: localAdminId }, { _id: topic._id, modifier: { $set: { status: 'closed' } } });
     });
   });
 }

@@ -22,16 +22,29 @@ Template.Forum_topics.viewmodel({
   searchText: '',
   onCreated(instance) {
     instance.autorun(() => {
-      instance.subscribe('topics.list', this.selector());
+      const communityId = this.communityId();
+      if (this.show().archived) {
+        instance.subscribe('topics.list', { communityId, category: 'forum', status: { $in: ['closed', 'deleted'] } });
+      }
     });
   },
+  communityId() {
+    return ModalStack.getVar('communityId');
+  },
   forumTopics() {
-    let topics = Topics.find(this.selector(), { sort: { updatedAt: -1 } }).fetch();
+    const communityId = this.communityId();
+    let topics = [];
+    if (this.show().active) {
+      topics = Topics.find({ communityId, category: 'forum', status: 'opened' }, { sort: { updatedAt: -1 } }).fetch();
+    }
+    if (this.show().archived) {
+      topics = topics.concat(Topics.find({ communityId, category: 'forum', status: 'closed' }, { sort: { updatedAt: -1 } }).fetch());
+    }
 //  .fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
     if (this.searchText()) {
       topics = topics.filter(t =>
-          t.title.toLowerCase().search(this.searchText().toLowerCase()) >= 0
-      || t.text.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+        t.title.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+        || t.text.toLowerCase().search(this.searchText().toLowerCase()) >= 0
       );
     }
     if (!this.show().muted) return topics.fetch().filter(t => !t.hiddenBy(Meteor.userId()));
@@ -42,19 +55,6 @@ Template.Forum_topics.viewmodel({
   },
   activeClass(group) {
     return this.show()[group] && 'btn-primary active';
-  },
-  selector() {
-    const communityId = ModalStack.getVar('communityId');
-    const selector = { communityId, category: 'forum', status: { $ne: 'deleted' } };
-    const show = this.show();
-    if (show.archived) {
-      if (show.active) delete selector.closed;
-      else selector.closed = true
-    } else {
-      if (show.active) selector.closed = false;
-      else selector.closed = { $exists: false }
-    }
-    return selector;
   },
 });
 

@@ -87,7 +87,10 @@ Comments.helpers({
 // --- Before/after actions ---
 
 Comments.after.insert(function (userId, doc) {
-  Topics.update(doc.topicId, { $inc: { commentCounter: 1 }, $set: { closed: false } }, { selector: { category: 'forum' } });
+  const topic = Topics.findOne(doc.topicId);
+  const setStatus = topic.finishStatus().name;
+  Topics.update(doc.topicId, { $inc: { commentCounter: 1 }, $set: { status: setStatus }  }, { selector: { category: 'forum' } });
+  // Increasing the commentCounter touches the updatedAt field, so if you sort on that field, it will come up
 });
 
 Comments.after.update(function (userId, doc, fieldNames, modifier, options) {

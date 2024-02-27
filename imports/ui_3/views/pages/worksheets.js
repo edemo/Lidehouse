@@ -53,9 +53,9 @@ Template.Worksheets.viewmodel({
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('communities.byId', { _id: communityId });
-      const ticketListParams = { communityId, category: 'ticket' };
-      if (!_.intersection(['closed', 'deleted'], this.ticketStatusSelected()).length) ticketListParams.closed = false;
-      instance.subscribe('topics.list', ticketListParams);
+      if (!this.ticketStatusSelected().length || _.intersection(['closed', 'deleted'], this.ticketStatusSelected()).length) {
+        instance.subscribe('topics.list', { communityId, category: 'ticket', status: { $in: ['closed', 'deleted'] } });
+      }
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('partners.inCommunity', { communityId });
     });

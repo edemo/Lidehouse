@@ -36,7 +36,7 @@ Meteor.publish('balances.inCommunity', function balancesInCommunity(params) {
     else selector.partner = { $exists: true };
   } else selector.partner = { $exists: false };
   if (params.notNull) _.extend(selector, { $expr: { $ne: ['$debit', '$credit'] } });
-  console.log('Publishing balances', selector);
-  console.log('Initial count:', Balances.find(selector).count());
+//  console.log('Publishing balances', selector);
+//  console.log('Initial count:', Balances.find(selector).count());
   return Balances.find(selector);
 });

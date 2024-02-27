@@ -24,7 +24,7 @@ Template.Board.viewmodel({
   autorun() {
     const communityId = this.communityId();
     if (communityId) {
-      this.templateInstance.subscribe('topics.active', { communityId });
+      this.templateInstance.subscribe('topics.board', { communityId });
     }
   },
   communityId() {
@@ -35,12 +35,12 @@ Template.Board.viewmodel({
   },
   activeVotingsTitle() {
     const communityId = this.communityId();
-    const topicsCount = Topics.find({ communityId, category: 'vote', closed: false }).count();
+    const topicsCount = Topics.find({ communityId, category: 'vote', status: { $ne: 'closed' } }).count();
     return `${__('Active votings')} (${topicsCount})`;
   },
   topics(category) {
     const communityId = this.communityId();
-    return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
+    return Topics.find({ communityId, category, status: { $ne: 'closed' } }, { sort: { createdAt: -1 } });
   },
   lgCol(width) {
     let cols = '';
@@ -52,20 +52,29 @@ Template.Board.viewmodel({
   },
 });
 
-Template.News.helpers({
+Template.News.viewmodel({
+  showArchived: false,
+  autorun() {
+    const communityId = this.communityId();
+    if (communityId && this.showArchived()) {
+      this.templateInstance.subscribe('topics.list', { communityId, category: 'news', status: { $in: ['closed'] } });
+    }
+  },
+  communityId() {
+    return getActiveCommunityId();
+  },
   topics(category, stickyVal) {
-    const communityId = getActiveCommunityId();
-    return Topics.find({ communityId, category, closed: false, sticky: stickyVal }, { sort: { createdAt: -1 } });
+    const communityId = this.communityId();
+    return Topics.find({ communityId, category, status: { $ne: 'closed' }, sticky: stickyVal }, { sort: { createdAt: -1 } });
   },
   archivedNews() {
-    const communityId = getActiveCommunityId();
-    return Topics.find({ communityId, category: 'news', closed: true }, { sort: { createdAt: -1 } });
+    const communityId = this.communityId();
+    return Topics.find({ communityId, category: 'news', status: 'closed' }, { sort: { createdAt: -1 } });
   },
 });
 
 Template.News.events({
   'click .js-show-archive'(event, instance) {
-    const communityId = getActiveCommunityId();
-    instance.subscribe('topics.list', { communityId, category: 'news', closed: true });
+    instance.viewmodel.showArchived(true);
   },
 });

@@ -1,13 +1,13 @@
 <template name="Revision_history">
-      {{#each version in (sortedRevisions doc)}}  
-        {{#if (equals version.field 'closed')}}
+      {{#each version in (sortedRevisions doc)}}
+        {{#if (equals version.field 'status')}}
         <div class="feed-element">
             <!--a href="" class="pull-left">
                 <img alt="image" class="img-circle" src="{{doc.creator.avatar}}">
             </a-->
             <div class="media-body ">
                 <small class="pull-right" title="{{displayTime version.time}}">{{displayTimeFrom version.time}}</small>
-                <strong class="text-capitalize"> {{_ 'closed'}}.</strong><br>
+                <strong class="text-capitalize"> {{_ version.oldValue }}.</strong><br>
                 <small class="text-muted">{{displayTime version.time}}</small>
             </div>
         </div>

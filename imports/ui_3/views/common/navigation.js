@@ -27,27 +27,31 @@ Template.Navigation.onRendered(function() {
 
 Template.Navigation.viewmodel({
   autorun() {
-    const activeCommunityId = getActiveCommunityId();
-    if (activeCommunityId) {
-      this.templateInstance.subscribe('communities.byId', { _id: activeCommunityId });
-      this.templateInstance.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
-      this.templateInstance.subscribe('topics.list', { communityId: activeCommunityId, category: 'vote', closed: false });
-      this.templateInstance.subscribe('topics.list', { communityId: activeCommunityId, category: 'ticket', closed: false });
+    const communityId = getActiveCommunityId();
+    if (communityId) {
+      this.templateInstance.subscribe('communities.byId', { _id: communityId });
+      this.templateInstance.subscribe('memberships.inCommunity', { communityId });
+      this.templateInstance.subscribe('topics.list', { communityId, status: { $nin: ['closed', 'deleted'] } }); // for the badges
     }
+  },
+  communityId() {
+    return getActiveCommunityId();
   },
   community() {
     return getActiveCommunity() || { displayType: () => 'community' };
   },
   unseenEventsCount(category) {
+    const communityId = this.communityId();
     const userId = Meteor.userId();
-    const topics = Topics.find({ communityId: getActiveCommunityId(), category });
+    const topics = Topics.find({ communityId, category });
     let count = 0;
     topics.map((topic) => count += topic.hasThingsToDisplayFor(userId,  Meteor.users.SEEN_BY.EYES));
     return count;
   },
   needsAttentionCount(category) {
+    const communityId = this.communityId();
     const userId = Meteor.userId();
-    const topics = Topics.find({ communityId: getActiveCommunityId(), category });
+    const topics = Topics.find({ communityId, category });
     let count = 0;
     topics.map(topic => {
       count += topic.needsAttention(userId, Meteor.users.SEEN_BY.EYES);
@@ -55,7 +59,7 @@ Template.Navigation.viewmodel({
     return count;
   },
   countUnapprovedEntities() {
-    const communityId = getActiveCommunityId();
+    const communityId = this.communityId();
     const unapprovedParcelCount = Parcels.find({ communityId, approved: false }).count();
     const unapprovedMembershipCount = Memberships.find({ communityId, approved: false }).count();
     return unapprovedParcelCount + unapprovedMembershipCount;

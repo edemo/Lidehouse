@@ -23,7 +23,9 @@ Template.Vote_topics.viewmodel({
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       instance.subscribe('agendas.inCommunity', { communityId });
-      instance.subscribe('topics.list', { communityId, category: 'vote' });
+      if (!this.activesOnly()) {
+        instance.subscribe('topics.list', { communityId, category: 'vote', status: { $in: ['closed', 'deleted'] } });
+      }
     });
   },
   activeClass() {

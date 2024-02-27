@@ -52,7 +52,7 @@ export function notifyExpiringVotings() {
     const expiringVotings = Topics.find({
       communityId: community._id,
       category: 'vote',
-      closed: false,
+      status: 'opened',
       closesAt: {
         $gt: moment().add(EXPIRY_NOTI_DAYS, 'day').subtract(12, 'hour').toDate(),
         $lte: moment().add(EXPIRY_NOTI_DAYS, 'day').add(12, 'hour').toDate(),

@@ -16,15 +16,7 @@ import { updateMyLastSeen } from '/imports/api/users/methods.js';
 
 const schema = new SimpleSchema({
   status: { type: String, autoform: { omit: true } }, /* needs to be checked against the workflow rules */
-  closed: { type: Boolean, autoform: { omit: true }, // Should be called "archived". It is not related to the status, it is a performance enhancement, to not load archived items by default
-    autoValue() { // BUG: This is not working
-      if (this.isSet) return this.value;
-      const status = this.field('status').value;
-      if (!status) return undefined; // don't touch
-      if (status === 'closed' || status === 'deleted') return true;
-      else return false;
-    },
-  },    
+  closed: { type: Boolean, optional: true, autoform: { omit: true } }, // deprecated
   opensAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate),
     custom() {
       const now = Clock.currentTime();
@@ -45,7 +37,7 @@ const schema = new SimpleSchema({
   },
 });
 
-const modifiableFields = ['closed'];
+const modifiableFields = ['status'];
 
 const helpers = {
   statusObject(statusName) {
@@ -59,6 +51,10 @@ const helpers = {
     const startStatuses = this.possibleStartStatuses();
     debugAssert(startStatuses.length >= 1);
     return startStatuses[0];
+  },
+  finishStatus() {
+    const statuses = this.workflow().finish;
+    return statuses[0];
   },
   possibleNextStatuses() {
     const statuses = this.workflow()[this.status].next;
@@ -85,9 +81,10 @@ const defaultStatuses = {
 export const defaultWorkflow = {
   statusValues: ['opened', 'closed', 'deleted'],
   start: [opened],
+  finish: [opened],
   opened: { obj: opened, next: [closed, deleted] },
-  closed: { obj: closed, next: [deleted] },
-  deleted: { obj: deleted, next: [] },
+  closed: { obj: closed, next: [opened, deleted] },
+  deleted: { obj: deleted, next: [opened, closed] },
 };
 
 function checkStatusStartAllowed(topic, status) {

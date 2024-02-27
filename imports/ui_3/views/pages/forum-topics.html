@@ -9,7 +9,7 @@
             <div class="col-sm-4">
                 <div class="btn-group">
                 {{#each group in groups}}
-                <button type="button" class="btn {{activeClass group}} text-capitalize js-filter" data-value="{{group}}">{{_ group}}</button>
+                <button type="button" class="btn btn-outline {{activeClass group}} text-capitalize js-filter" data-value="{{group}}">{{_ group}}</button>
                 {{/each}}
                 </div>
             </div>
@@ -57,5 +57,10 @@
             </div>
             {{/each}}
         </div>
+        {{#if (not show.archived) }}
+        <div class="text-center">
+            <button type="button" class="btn btn-block btn-outline btn-info js-filter" data-value="archived">{{_ 'Older topics'}} ({{_ 'archived'}})</button>
+        </div>
+        {{/if}}
     </div>
 </template>

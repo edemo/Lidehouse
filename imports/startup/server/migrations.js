@@ -1360,6 +1360,18 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 76,
+  name: 'Closed flag becomes closed status',
+  up() {
+    Topics.find({ closed: true, status: { $nin: ['closed', 'deleted'] } }).forEach(topic => {
+      console.log('Topic', topic.status,  topic);
+      Topics.direct.update(topic._id, { $set: { status: 'closed' } }, { selector: { category: 'forum' } });
+    });
+    Topics.direct.update({}, { $unset: { closed: '' } }, { selector: { category: 'forum' }, multi: true });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes

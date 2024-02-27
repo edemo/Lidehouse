@@ -35,7 +35,6 @@ Template.Main_layout.onCreated(function() {
       this.subscribe('templates.listing');  // just for the Create New Community window
       this.subscribe('sharedfolders.ofCommunity', { communityId });
       this.subscribe('agendas.inCommunity', { communityId });
-      this.subscribe('topics.active', { communityId });
       this.subscribe('parcels.codes', { communityId });
       this.subscribe('memberships.inCommunity', { communityId });
       this.subscribe('contracts.inCommunity', { communityId });

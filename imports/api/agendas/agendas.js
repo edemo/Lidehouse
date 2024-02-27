@@ -47,7 +47,7 @@ Agendas.helpers({
   },
   closed() {
     if (!this.topics().length) return 'empty';
-    return _.all(this.topics(), topic => topic.closed);
+    return _.all(this.topics(), topic => topic.status === 'closed');
   },
 });
 
