@@ -5,7 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -61,9 +61,10 @@ Balances.helpers({
     return (this.credit > this.debit) ? (this.credit - this.debit) : 0;
   },
   displayTotal() {
-    let displaySign = 1;
+    let displaySign = 0;
     if (this.account) {
-      const accountMainGroup = this.account.charAt(1) || this.account.charAt(2);
+      let accountMainGroup = this.account.charAt(1);
+      if (accountMainGroup === '0') accountMainGroup = this.account.charAt(2); // Techncal account
       switch (accountMainGroup) {
         case '1':
         case '2':
@@ -72,7 +73,7 @@ Balances.helpers({
         case '8': displaySign = +1; break;
         case '4':
         case '9': displaySign = -1; break;
-        default: break;
+        default: productionAssert(false); break;
       }
     }
     return displaySign * this.total();
