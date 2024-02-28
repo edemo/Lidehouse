@@ -61,11 +61,11 @@ export function defineAccountTemplates() {
     { code: '`432', name: 'Befizetések dijbeszedőn keresztül', category: 'liability' },
     { code: '`433', name: 'Postai befizetések', category: 'liability' },
     { code: '`434', name: 'Unidentified expenses', category: 'liability' }, //Nem azonosított Kiadások
-    { code: '`44', name: 'HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', category: 'liability' },
+    { code: '`44', name: 'Long-term liabilities', category: 'liability' }, // HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK
     { code: '`441', name: 'Hosszú lejáratú bank hitel', category: 'liability' },
     { code: '`442', name: 'Beruházási és fejlesztési hitelek', category: 'liability' },
     { code: '`443', name: 'Egyéb hitel', category: 'liability' },
-    { code: '`45', name: 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK', category: 'liability' },
+    { code: '`45', name: 'Short-term liabilities', category: 'liability' }, // RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK
     { code: '`451', name: 'Rövid lejáratú bank Hitel', category: 'liability' },
     { code: '`452', name: 'Egyéb rövid lejáratú kötelezettségek', category: 'liability' },
     { code: '`454', name: 'Suppliers', category: 'payable' },  // Szállítók

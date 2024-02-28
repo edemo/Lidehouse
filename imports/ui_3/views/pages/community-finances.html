@@ -28,9 +28,9 @@
                       <table class="table table-condensed nowrap">
                         {{#each account in statusAccounts}}
                         <tr>
-                            <td>{{_ account.name}}</td>
+                            <td>{{_ account}}</td>
                             <td class="text-right text-bold"> 
-                                {{displayMoney (getBalance account.code)}}
+                                {{displayMoney (getBalance account)}}
                             </td>
                         </tr>
                         {{/each}}

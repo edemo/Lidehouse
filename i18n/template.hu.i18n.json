@@ -7,6 +7,8 @@
   "Expenses" : "RÁFORDÍTÁSOK",
   "Assets": "KÖVETELÉSEK",
   "Liabilities": "FORRÁSOK",
+  "Long-term liabilities": "HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK",
+  "Short-term liabilities": "RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK",
   "Equity": "SAJÁT TŐKE",
   "Owners": "Tulajdonosok",
   "Owner payin types": "Albetétek előírás típusai",

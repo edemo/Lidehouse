@@ -147,10 +147,13 @@ Template.Community_finances.viewmodel({
     return array.map((elem) => { sum += elem; return sum; });
   },
   monthlyData(account) {
-    return this.periods().map(l => Balances.get({ communityId: this.communityId(), account, tag: 'T' + l.code.substring(1) }, 'closing').displayTotal());
+    return this.periods().map(l => this.getBalance({ account, tag: 'T' + l.code.substring(1) }));
   },
-  moneyOutstanding() {
-    return this.getBalance(Accounts.getRelationAccount(this.community(), 'member'));
+  statusAccounts() {
+    return ['Money accounts', 'Short-term liabilities'];
+  },
+  getStatusBalance() {
+    return this.getBalance('Money accounts') - this.getBalance('Short-term liabilities');
   },
   statusData() {
     const data = {
@@ -158,15 +161,18 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("Money accounts"),
-          data: this.monthlyData('`38'),
+          data: this.monthlyData('Money accounts'),
         }, plusColors[0]),
         _.extend({
-          label: __("Commitments"),
-          data: this.monthlyData(Accounts.getRelationAccount(this.community(), 'supplier')),
+          label: __("Short-term liabilities"),
+          data: this.monthlyData('Short-term liabilities'),
         }, minusColors[0]),
       ],
     };
     return data;
+  },
+  moneyOutstanding() {
+    return this.getBalance('Members');
   },
   moneyData() {
     const datasets = [];
@@ -181,17 +187,20 @@ Template.Community_finances.viewmodel({
     const moneyData = { labels: this.periodLabels(), datasets };
     return moneyData;
   },
+  commitmentAccounts() {
+    return ['Long-term liabilities', 'Short-term liabilities'];
+  },
   commitmentData() {
     const data = {
       labels: this.periodLabels(),
       datasets: [
         _.extend({
-          label: __("HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK"),
-          data: this.monthlyData(Accounts.getLongTermCommitmentsAccount()),
+          label: __("Long-term liabilities"),
+          data: this.monthlyData('Long-term liabilities'),
         }, minusColors[0]),
         _.extend({
-          label: __("RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK"),
-          data: this.monthlyData(Accounts.getRelationAccount(this.community(), 'supplier')),
+          label: __("Short-term liabilities"),
+          data: this.monthlyData('Short-term liabilities'),
         }, minusColors[0]),
       ],
     };
@@ -245,26 +254,26 @@ Template.Community_finances.viewmodel({
       maintainAspectRatio: false,
     };
   },
-  getBalance(account) {
+  getBalance(def) {
     const communityId = getActiveCommunityId();
-    if (!account.startsWith('`')) {
-      const a = Accounts.findOneT({ communityId, name: account });
+    let requestedDef;
+    if (typeof def === 'object') {
+      requestedDef = def;
+    } else if (typeof def === 'string') {
+      requestedDef = { communityId, account: def, tag: 'T' };  
+    }
+    if (!requestedDef.account.startsWith('`')) {
+      const a = Accounts.findOneT({ communityId, name: requestedDef.account });
       if (!a) {
-        Log.warning('No such account:', account);
+        Log.warning('No such account:', requestedDef.account);
         return 0;
       }
-      account = a.code;
+      requestedDef.account = a.code;
     }
-    return Balances.get({ communityId, account, tag: 'T' }, 'closing').displayTotal();
-  },
-  getStatusBalance() {
-    return this.getBalance('Money accounts') - this.getBalance('RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK');
-  },
-  statusAccounts() {
-    return [
-      { name: 'Money accounts', code: '`38' },
-      { name: 'Commitments', code: Accounts.getRelationAccount(this.community(), 'supplier') },
-    ];
+    const balanceOnAccount = Balances.get(requestedDef, 'closing').displayTotal();
+    requestedDef.account = Accounts.toTechnicalCode(requestedDef.account);
+    const balanceOnTechnical = Balances.get(requestedDef, 'closing').displayTotal();
+    return balanceOnAccount + balanceOnTechnical;
   },
   leafsOf(account) {
     const accounts = Accounts.findOneT({ communityId: this.communityId(), name: account });
@@ -273,9 +282,6 @@ Template.Community_finances.viewmodel({
       return [];
     }
     return accounts.leafs(this.communityId());
-  },
-  commitmentAccounts() {
-    return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK'];
   },
 //  breakdown(name) {
 //    return Breakdowns.findOneByName(name, ModalStack.getVar('communityId'));
