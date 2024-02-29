@@ -103,26 +103,6 @@ export const reconcile = new ValidatedMethod({
         if (reconciledTx.partnerId && entryName && entryName !== reconciledTx.partner().idCard.name) {
           Recognitions.set('name', entryName, reconciledTx.partner().idCard.name, { communityId });
         }
-        if (reconciledTx.lines?.length === 1) {
-          let contract = reconciledTx.contract() || reconciledTx.partner().contracts(reconciledTx.relation).fetch()[0];
-          const line = reconciledTx.lines[0];
-          if (!contract) {
-            let parcelId;
-            if (reconciledTx.relation === 'member') {
-              if (!line.localizer) throw new Meteor.Error('err_notAllowed', 'Need to provide a location');
-              parcelId = Localizer.parcelFromCode(line.localizer, communityId)._id;
-            }
-            const doc = Object.cleanUndefined({ communityId, relation: reconciledTx.relation, partnerId: reconciledTx.partnerId, parcelId });
-            newContractId = Contracts.insert(doc);
-            contract = Contracts.findOne(newContractId);
-          }
-          if (line.account !== contract.accounting?.account ||
-            line.localizer !== contract.accounting?.localizer ||
-            (reconciledTx.relation === 'member' && !contract.parcelId)) {
-            const modifier = { $set: { 'accounting.account': line.account, 'accounting.localizer': line.localizer } };
-            Contracts.update(contract._id, modifier, { selector: { relation: contract.relation } });
-          }
-        }
       } else if (reconciledTx.category === 'transfer') {
         const contraAccountField = entry.amount > 0 ? 'fromAccount' : 'toAccount';
         const contraBankAccount = Accounts.findOneT({ communityId, category: 'bank', code: reconciledTx[contraAccountField] });

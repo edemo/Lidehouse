@@ -388,8 +388,14 @@ export const chooseLocalizer = function (code = '') {
     relation: 'tag',
     value() {
       const selfId = AutoForm.getFormId();
-      const value = ModalStack.readResult(selfId, 'af.tag.create');
-      return value;
+      const result = ModalStack.readResult(selfId, 'af.tag.create');
+      if (result) return result;
+      const contractId = AutoForm.getFieldValue('contractId');
+      if (contractId) {
+        const Contracts = Mongo.Collection.get('contracts');
+        const contract = Contracts.findOne(contractId);
+        return contract.accounting?.localizer;
+      }
     },
     options() {
       const communityId = ModalStack.getVar('communityId');

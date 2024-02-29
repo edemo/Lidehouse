@@ -172,6 +172,14 @@ Txdefs.codesOf = function codesOf(sideParam) {
 
 export const chooseConteerAccount = function (sideParam = false) { // false -> tx conteer side, true -> other side
   return {
+    value() {
+      const contractId = AutoForm.getFieldValue('contractId');
+      if (contractId) {
+        const Contracts = Mongo.Collection.get('contracts');
+        const contract = Contracts.findOne(contractId);
+        return contract.accounting?.account;
+      }
+    },
     options() {
       const communityId = ModalStack.getVar('communityId');
       const codes = Txdefs.codesOf(sideParam);

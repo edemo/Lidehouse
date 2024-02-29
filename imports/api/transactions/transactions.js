@@ -450,6 +450,12 @@ if (Meteor.isServer) {
     if (tdoc.category === 'bill' && !_.contains(community.billsUsed, tdoc.relation)) {
       Communities.update(community._id, { $push: { billsUsed: tdoc.relation } });
     }
+    const contract = tdoc.contract();
+    if (contract && !contract.accounting && tdoc.lines?.length === 1) {
+      const line =  tdoc.lines[0];
+      const modifier = { $set: { 'accounting.account': line.account, 'accounting.localizer': line.localizer } };
+      Contracts.update(contract._id, modifier, { selector: { relation: contract.relation } });
+    }
   });
 
   Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
