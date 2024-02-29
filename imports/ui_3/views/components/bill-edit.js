@@ -45,7 +45,6 @@ Template.Bill_edit.viewmodel({
     return moment().add(30, 'day').toDate();
   },
   markNullLine(afLine) {
-    debugger;
     // As in autoform ArrayTracker remove - item will be hidden
     const index = afLine.name.split('.')[1];
     const doc = this.templateInstance.data.doc;
