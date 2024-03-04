@@ -39,14 +39,19 @@ export const EmailSender = {
 };
 */
 
+const emailRetryDelays  =  [10 * 60 * 1000, 100 * 60 * 1000, 1000 * 60 * 1000, 0];
+
 export const EmailSender = {
   config: {
     from: 'Honline <noreply@honline.hu>',
     bcc: 'Honline <noreply@honline.hu>',
     siteName: 'Honline',
   },
-  send(options) {
-    if (options.to.includes('@demo.') || options.to.includes('@test.')) return;
+  trySend(options) {
+    if (options.to.includes('@demo.') || options.to.includes('@test.')) {
+      Log.info(`Not sending email to: ${options.to} (demo or test address)`);
+      return undefined;
+    }
     const sendOptions = {
       from: this.config.from,
       to: options.to,
@@ -63,6 +68,7 @@ export const EmailSender = {
         template: options.template,
         data: options.data,
       });
+      // Mailer.send calls Email.send, catches exceptions,logs it and returns false then
       return Mailer.send(sendOptions);
     } else if (options.text) {
       _.extend(sendOptions, {
@@ -70,11 +76,31 @@ export const EmailSender = {
       });
       try {
         Email.send(sendOptions);
+        return true;
       } catch (ex) {
-        Log.error(`Could not send email to: ${options.to} - ${ex.message}`);
+        Log.error(`Could not send email: ${ex.message}`, 'meteor/Email');
         return false;
       }
-    } else debugAssert(false, 'Email has to be html or plain text');
+    } else {
+      debugAssert(false, 'Email has to be html or plain text');
+      return undefined;
+    }
+  },
+  send(options) {
+    const success = EmailSender.trySend(options);
+    if (success === true) {
+      Log.info(`Successful email sending to: ${options.to}`);
+    } else if (success === false) {
+      options.retries = options.retries || 0;
+      const delay = emailRetryDelays[options.retries];
+      options.retries += 1;
+      if (delay > 0) {
+        Log.error(`Could not send email to: ${options.to},  retrying in ${delay / 1000} seconds`);
+        Meteor.setTimeout(() => EmailSender.send(options), delay);
+      } else {
+        Log.error(`Giving up on sending email to: ${options.to}`);
+      }
+    }
   },
 };
 
