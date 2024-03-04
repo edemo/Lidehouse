@@ -170,16 +170,9 @@ Txdefs.codesOf = function codesOf(sideParam) {
   return txdef.conteerCodes(sideParam);
 };
 
-export const chooseConteerAccount = function (sideParam = false) { // false -> tx conteer side, true -> other side
-  return {
-    value() {
-      const contractId = AutoForm.getFieldValue('contractId');
-      if (contractId) {
-        const Contracts = Mongo.Collection.get('contracts');
-        const contract = Contracts.findOne(contractId);
-        return contract.accounting?.account;
-      }
-    },
+// sideParam can be 'debit', 'credit' or falsy -> tx conteer side, truthy -> other side
+export const chooseConteerAccount = function (sideParam = false) {
+  const resultObject = {
     options() {
       const communityId = ModalStack.getVar('communityId');
       const codes = Txdefs.codesOf(sideParam);
@@ -190,4 +183,16 @@ export const chooseConteerAccount = function (sideParam = false) { // false -> t
       return (codes.length > 1) ? __('Chart of Accounts') : false;
     },
   };
+  if (!sideParam) {
+    resultObject.value = () => {
+      const contractId = AutoForm.getFieldValue('contractId');
+      if (contractId) {
+        const Contracts = Mongo.Collection.get('contracts');
+        const contract = Contracts.findOne(contractId);
+        return contract.accounting?.account;
+      }
+      return undefined;
+    };
+  }
+  return resultObject;
 };

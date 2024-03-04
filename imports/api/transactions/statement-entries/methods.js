@@ -53,6 +53,7 @@ export const update = new ValidatedMethod({
 });
 
 function checkReconcileMatch(entry, transaction) {
+  Log.debug('Reconciliaton check', 'entry:', entry, 'transaction:', transaction);
   function throwMatchError(mismatch, entryVal, txVal) {
     Log.info('Reconciliaton mismatch', JSON.stringify(mismatch));
     Log.info('entry', JSON.stringify(entry));
