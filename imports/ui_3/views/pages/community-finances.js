@@ -101,6 +101,15 @@ const minusColors = [
 
 const chartLookbackMonths = 24;
 
+function addArrays(array1, array2) {
+  debugAssert(array1.length === array2.length);
+  const result = [];
+  for (let i=0; i< array1.length; ++i) {
+    result.push(array1[i] + array2[i]);
+  }
+  return result;
+};
+
 Template.Community_finances.viewmodel({
   accountToView: '`382',
   periodBreakdown: undefined,
@@ -142,18 +151,14 @@ Template.Community_finances.viewmodel({
   },
   onRendered(instance) {
   },
-  aggregate(array, startValue) {
-    let sum = startValue || 0;
-    return array.map((elem) => { sum += elem; return sum; });
-  },
-  monthlyData(account) {
-    return this.periods().map(l => this.getBalance({ account, tag: 'T' + l.code.substring(1) }));
+  monthlyData(account, balanceType) {
+    return this.periods().map(l => this.getBalance({ communityId: this.communityId(), account, tag: 'T' + l.code.substring(1) }, balanceType));
   },
   statusAccounts() {
     return ['Money accounts', 'Short-term liabilities'];
   },
   getStatusBalance() {
-    return this.getBalance('Money accounts') - this.getBalance('Short-term liabilities');
+    return this.getBalance('Money accounts', 'closing') - this.getBalance('Short-term liabilities', 'closing');
   },
   statusData() {
     const data = {
@@ -161,18 +166,21 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("Money accounts"),
-          data: this.monthlyData('Money accounts'),
+          data: this.monthlyData('Money accounts', 'closing'),
         }, plusColors[0]),
         _.extend({
           label: __("Short-term liabilities"),
-          data: this.monthlyData('Short-term liabilities'),
+          data: this.monthlyData('Short-term liabilities', 'closing'),
         }, minusColors[0]),
       ],
     };
     return data;
   },
   moneyOutstanding() {
-    return this.getBalance('Members');
+    return this.getBalance('Members', 'closing');
+  },
+  moneyOverpaid() {
+    return this.getBalance(Accounts.getUnidentifiedIncomeAccount(this.communityId()), 'closing');
   },
   moneyData() {
     const datasets = [];
@@ -180,7 +188,7 @@ Template.Community_finances.viewmodel({
     moneyAccount?.leafs(this.communityId()).fetch().reverse().forEach((account, index) => {
       datasets.push(_.extend({
         label: __(account.name),
-        data: this.monthlyData(account.code),
+        data: this.monthlyData(account.code, 'closing'),
         fill: true,
       }, plusColors[index + 1]));
     });
@@ -196,11 +204,11 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("Long-term liabilities"),
-          data: this.monthlyData('Long-term liabilities'),
+          data: this.monthlyData('Long-term liabilities', 'closing'),
         }, minusColors[0]),
         _.extend({
           label: __("Short-term liabilities"),
-          data: this.monthlyData('Short-term liabilities'),
+          data: this.monthlyData('Short-term liabilities', 'closing'),
         }, minusColors[0]),
       ],
     };
@@ -234,15 +242,15 @@ Template.Community_finances.viewmodel({
   barData() {
     const monthsArray = monthTags.children.map(c => c.label);
     return {
-      labels: monthsArray,
+      labels: this.periodLabels(),
       datasets: [{
-        label: __('Bevételek (e Ft)'),
-        data: [425, 425, 425, 425, 480, 428, 2725, 425, 1765, 925, 425, 425],
+        label: __('Incomes'),
+        data: this.monthlyData('Incomes', 'period'),
         backgroundColor: choiceColors[0],
         borderWidth: 2,
       }, {
-        label: __('Kiadások (e Ft)'),
-        data: [510, 520, 530, 500, 550, 510, 800, 1800, 880, 510, 550, 520],
+        label: __('Expenses'),
+        data: addArrays(this.monthlyData('`5', 'period'), this.monthlyData('`8', 'period')),
         backgroundColor: choiceColors[1],
         borderWidth: 2,
       }],
@@ -252,27 +260,33 @@ Template.Community_finances.viewmodel({
     return {
       responsive: true,
       maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value, index, values) => numeral(value).format('0,0$'),
+          },
+        }],
+      },
     };
   },
-  getBalance(def) {
-    const communityId = getActiveCommunityId();
+  getBalance(def, balaceType) {
     let requestedDef;
     if (typeof def === 'object') {
       requestedDef = def;
     } else if (typeof def === 'string') {
-      requestedDef = { communityId, account: def, tag: 'T' };  
+      requestedDef = { communityId: this.communityId(), account: def, tag: 'T' };  
     }
     if (!requestedDef.account.startsWith('`')) {
-      const a = Accounts.findOneT({ communityId, name: requestedDef.account });
+      const a = Accounts.findOneT({ communityId: requestedDef.communityId, name: requestedDef.account });
       if (!a) {
         Log.warning('No such account:', requestedDef.account);
         return 0;
       }
       requestedDef.account = a.code;
     }
-    const balanceOnAccount = Balances.get(requestedDef, 'closing').displayTotal();
+   const balanceOnAccount = Balances.get(requestedDef, balaceType).displayTotal();
     requestedDef.account = Accounts.toTechnicalCode(requestedDef.account);
-    const balanceOnTechnical = Balances.get(requestedDef, 'closing').displayTotal();
+    const balanceOnTechnical = Balances.get(requestedDef, balaceType).displayTotal();
     return balanceOnAccount + balanceOnTechnical;
   },
   leafsOf(account) {

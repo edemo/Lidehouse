@@ -6,193 +6,185 @@
     <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
 
-    {{#if currentUserHasPermission 'balances.inCommunity'}}
-    <div class="col-md-12">
-        <div class="ibox float-e-margins" id="moneyBalances">
-            <div class="ibox-content">
-                <div class= "row">
+        {{#if currentUserHasPermission 'balances.inCommunity'}}
+        <!--div class="col-md-12">
+            <div class="ibox float-e-margins" id="moneyBalances">
+                <div class="ibox-content">
+                    <div class= "row">
 
-                    <div class="col-md-6 text-right pull-right">
-                    <!--span class="pull-right text-right"-->
-                        <small>A behajtás alatt álló ügyeket az alábbi adat nem tartalmazza</small><br/>
-                            {{_ 'Money outstanding'}}: <strong>{{displayMoney moneyOutstanding }}</strong>
-                    <!--/span-->
+                        <div class="col-md-3">
+                            <h1 class="m-b-xs">{{displayMoney getStatusBalance}}</h1>
+                            <h3 class="font-bold no-margins"> {{_ 'community'}}{{_ "'s status report"}}</h3>
+                        </div>
+
+                        <div class="col-md-3">
+                        <table class="table table-condensed nowrap">
+                            {{#each account in statusAccounts}}
+                            <tr>
+                                <td>{{_ account}}</td>
+                                <td class="text-right text-bold"> 
+                                    {{displayMoney (getBalance account)}}
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </table>
+                        </div>
+
                     </div>
 
-                    <div class="col-md-3">
-                        <h1 class="m-b-xs">{{displayMoney getStatusBalance}}</h1>
-                        <h3 class="font-bold no-margins"> {{_ 'community'}}{{_ "'s status report"}}</h3>
-                    </div>
+                    {{#if Template.subscriptionsReady}}
+                    {{> Chart type='line' data=statusData options=normalChartOptions height="70"}}
+                    {{/if}}
 
-                    <div class="col-md-3">
-                      <table class="table table-condensed nowrap">
-                        {{#each account in statusAccounts}}
-                        <tr>
-                            <td>{{_ account}}</td>
-                            <td class="text-right text-bold"> 
-                                {{displayMoney (getBalance account)}}
-                            </td>
-                        </tr>
-                        {{/each}}
-                      </table>
-                    </div>
-
+                    {{> Disclaimer}}
                 </div>
-
-                {{#if Template.subscriptionsReady}}
-                {{> Chart type='line' data=statusData options=normalChartOptions height="70"}}
-                {{/if}}
-
-                {{> Disclaimer}}
             </div>
-        </div>
-    </div>
-    {{/if}}
+        </div-->
+        {{/if}}
 
-    {{#if currentUserHasPermission 'balances.inCommunity'}}
-    <div class="col-md-12">
-        <div class="ibox float-e-margins" id="moneyBalances">
-            <div class="ibox-content">
-                <div class= "row">
+        {{#if currentUserHasPermission 'balances.inCommunity'}}
+        <div class="col-md-12">
+            <div class="ibox float-e-margins" id="moneyBalances">
+                <div class="ibox-content">
+                    <div class= "row">
 
-                    <div class="col-md-3">
-                        <h1 class="m-b-xs">{{displayMoney (getBalance 'Money accounts')}}</h1>
-                        <h3 class="font-bold no-margins"> {{_ 'Money accounts total'}}</h3>
+                        <div class="col-md-6 text-right pull-right">
+                            <!--span class="pull-right text-right"-->
+                                <small>A behajtás alatt álló ügyeket az alábbi adat nem tartalmazza</small><br/>
+                                    {{_ 'Money outstanding'}}: <strong>{{displayMoney moneyOutstanding }}</strong>
+                            <!--/span-->
+                        </div>
+    
+                        <div class="col-md-3">
+                            <h1 class="m-b-xs">{{displayMoney (getBalance 'Money accounts' 'closing')}}</h1>
+                            <h3 class="font-bold no-margins"> {{_ 'Money accounts total'}}</h3>
+                        </div>
+
+                        <div class="col-md-3">
+                        <table class="table table-condensed nowrap">
+                            {{#each account in (leafsOf 'Money accounts')}}
+                            <tr>
+                                <td>{{_ account.name}}</td>
+                                <td class="text-right text-bold"> 
+                                    <!--a href="#account-history" class="js-view" data-id={{account.code}}-->
+                                    {{displayMoney (getBalance account.code 'closing')}}
+                                    <!--/a-->
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </table>
+                        </div>
+
                     </div>
 
-                    <div class="col-md-3">
-                      <table class="table table-condensed nowrap">
-                        {{#each account in (leafsOf 'Money accounts')}}
-                        <tr>
-                            <td>{{_ account.name}}</td>
-                            <td class="text-right text-bold"> 
-                                <!--a href="#account-history" class="js-view" data-id={{account.code}}-->
-                                {{displayMoney (getBalance account.code)}}
-                                <!--/a-->
-                            </td>
-                        </tr>
-                        {{/each}}
-                      </table>
-                    </div>
+                    {{#if Template.subscriptionsReady}}
+                    {{> Chart type='line' data=moneyData options=stackedChartOptions height="70"}}
+                    {{/if}}
 
+                    {{> Disclaimer}}
                 </div>
-
-                {{#if Template.subscriptionsReady}}
-                {{> Chart type='line' data=moneyData options=stackedChartOptions height="70"}}
-                {{/if}}
-
-                {{> Disclaimer}}
             </div>
         </div>
-    </div>
-    {{/if}}
+        {{/if}}
 
-    {{#if currentUserHasPermission 'balances.inCommunity'}}
-    <div class="col-md-12">
-        <div class="ibox float-e-margins" id="commitmentBalances">
-            <div class="ibox-content">
-                <div class= "row">
+        {{#if currentUserHasPermission 'balances.inCommunity'}}
+        <div class="col-md-12">
+            <div class="ibox float-e-margins" id="commitmentBalances">
+                <div class="ibox-content">
+                    <div class= "row">
 
-                    <div class="col-md-3">
-                        <h1 class="m-b-xs">{{displayMoney (add (getBalance 'HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK') (getBalance 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK'))}}</h1>
-                        <h3 class="font-bold no-margins"> {{_ 'Commitments total'}}</h3>
+                        <div class="col-md-6 text-right pull-right">
+                                    {{_ 'Overpayments'}}: <strong>{{displayMoney moneyOverpaid }}</strong>
+                        </div>
+
+                        <div class="col-md-3">
+                            <h1 class="m-b-xs">{{displayMoney (add (getBalance 'Long-term liabilities' 'closing') (getBalance 'Short-term liabilities' 'closing'))}}</h1>
+                            <h3 class="font-bold no-margins"> {{_ 'Commitments total'}}</h3>
+                        </div>
+
+                        <div class="col-md-3">
+                        <table class="table table-condensed nowrap">
+                            {{#each account in commitmentAccounts}}
+                            <tr>
+                                <td>{{_ account}}</td>
+                                <td class="text-right text-bold"> {{displayMoney (getBalance account 'closing')}}</td>
+                            </tr>
+                            {{/each}}
+                        </table>
+                        </div>
+
                     </div>
 
-                    <div class="col-md-3">
-                      <table class="table table-condensed nowrap">
-                        {{#each account in commitmentAccounts}}
-                        <tr>
-                            <td>{{_ account}}</td>
-                            <td class="text-right text-bold"> {{displayMoney (getBalance account)}}</td>
-                        </tr>
-                        {{/each}}
-                      </table>
-                    </div>
+                    {{#if Template.subscriptionsReady}}
+                    {{> Chart type='line' data=commitmentData options=stackedChartOptions height="70"}}
+                    {{/if}}
 
+                    {{> Disclaimer}}
                 </div>
-
-                {{#if Template.subscriptionsReady}}
-                {{> Chart type='line' data=commitmentData options=stackedChartOptions height="70"}}
-                {{/if}}
-
-                {{> Disclaimer}}
             </div>
         </div>
-    </div>
-    {{/if}}
+        {{/if}}
 
-    {{#if currentUserHasPermission 'transactions.inCommunity'}}
-    <div class="col-md-12">
-        <div class="ibox ibox-dark" id='account-history'>
-            <div class="ibox-title">
-                <h5>{{_ 'Account history'}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                {{>Account_history beginDate=beginDate endDate=defaultEndDate accountOptions=(subAccountOptionsOf '`38') accountSelected=accountToView}}
-            </div>
-        </div>
-    </div>
-    {{/if}}
-
-    {{#if currentUserHasPermission 'balances.inCommunity'}}
-    <!--div class="col-md-12">
-        <div class="ibox ibox-dark" id='balances-report'>
-            <div class="ibox-title">
-                <h5>{{_ 'Balance sheet'}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                {{#if Template.subscriptionsReady}}
-                <div class="row">
-                    <div class="col-md-6 p-md">
-                        <h3>{{_ 'Assets'}}</h3>
-                        {{> Balance_report breakdown=(breakdown 'Assets') tags=totalTag }}
-                    </div>
-                    <div class="col-md-6 p-md">
-                        <h3>{{_ 'Liabilities'}}</h3>
-                        {{> Balance_report breakdown=(breakdown 'Liabilities') tags=totalTag }}
-                    </div>
+        {{#if currentUserHasPermission 'balances.inCommunity'}}
+        <div class="col-md-12">
+            <div class="ibox ibox-dark" id='incomes-expenses-history'>
+                <div class="ibox-title">
+                    <h5>{{_ 'Incomes'}}/{{_ 'Expenses'}} {{_ "'s history"}}</h5>
+                    {{>iboxTools}}
                 </div>
-                {{else}}
-                {{_ 'Loading'}}...
-                {{/if}}
-                {{> Disclaimer}}
-            </div>
-        </div>
-    </div-->
-    {{/if}}
-
-    {{#if this.DEMO}}
-    {{#if currentUserHasPermission 'balances.inCommunity'}}
-    <!--div class="col-md-12">
-        <div class="ibox ibox-dark" id='incomes-expenses-history'>
-            <div class="ibox-title">
-                <h5>{{_ 'Incomes'}}/{{_ 'Expenses'}} {{_ "'s history"}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                {{#if Template.subscriptionsReady}}
-                {{> Chart type='bar' data=barData options=barOptions height="250"}}
-                <div class="row nowrap">
-                    <div class="col-md-12 p-md">
-                        <h3>{{_ 'Incomes'}}</h3>
-                        {{> Balance_report breakdown=(breakdown 'Incomes') tags=last12MonthsTag }}
-                    </div>
-                    <div class="col-md-12 p-md">
-                        <h3>{{_ 'Expenses'}}</h3>
-                        {{> Balance_report breakdown=(breakdown 'Expenses') tags=last12MonthsTag }}
-                    </div>
+                <div class="ibox-content">
+                    {{#if Template.subscriptionsReady}}
+                    {{> Chart type='bar' data=barData options=barOptions height="250"}}
+                    {{else}}
+                    {{_ 'Loading'}}...
+                    {{/if}}
+                    {{> Disclaimer}}
                 </div>
-                {{else}}
-                {{_ 'Loading'}}...
-                {{/if}}
-                {{> Disclaimer}}
             </div>
         </div>
-    </div-->
-    {{/if}}
-    {{/if}}
+        {{/if}}
+
+        {{#if currentUserHasPermission 'transactions.inCommunity'}}
+        <div class="col-md-12">
+            <div class="ibox ibox-dark" id='account-history'>
+                <div class="ibox-title">
+                    <h5>{{_ 'Account history'}}</h5>
+                    {{>iboxTools}}
+                </div>
+                <div class="ibox-content">
+                    {{>Account_history beginDate=beginDate endDate=defaultEndDate accountOptions=(subAccountOptionsOf '`38') accountSelected=accountToView}}
+                </div>
+            </div>
+        </div>
+        {{/if}}
+
+        {{#if currentUserHasPermission 'balances.inCommunity'}}
+        <!--div class="col-md-12">
+            <div class="ibox ibox-dark" id='balances-report'>
+                <div class="ibox-title">
+                    <h5>{{_ 'Balance sheet'}}</h5>
+                    {{>iboxTools}}
+                </div>
+                <div class="ibox-content">
+                    {{#if Template.subscriptionsReady}}
+                    <div class="row">
+                        <div class="col-md-6 p-md">
+                            <h3>{{_ 'Assets'}}</h3>
+                            {{> Balance_report breakdown=(breakdown 'Assets') tags=totalTag }}
+                        </div>
+                        <div class="col-md-6 p-md">
+                            <h3>{{_ 'Liabilities'}}</h3>
+                            {{> Balance_report breakdown=(breakdown 'Liabilities') tags=totalTag }}
+                        </div>
+                    </div>
+                    {{else}}
+                    {{_ 'Loading'}}...
+                    {{/if}}
+                    {{> Disclaimer}}
+                </div>
+            </div>
+        </div-->
+        {{/if}}
 
     </div>
     </div>
