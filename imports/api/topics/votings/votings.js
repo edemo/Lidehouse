@@ -75,7 +75,7 @@ Votings.voteSchema = new SimpleSchema({
 
 Votings.voteParticipationSchema = new SimpleSchema({
   count: { type: Number },
-  units: { type: Number, decimal: true /* so that partial owned units are OK to vote */ },
+  units: { type: Number, decimal: true },
 });
 
 // How to create default value for votes only (but not for any other topics)

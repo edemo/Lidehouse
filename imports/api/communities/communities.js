@@ -64,7 +64,7 @@ Communities.schema = new SimpleSchema([{
   settings: { type: Communities.settingsSchema },
   // cached fields:
   parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
-  registeredUnits: { type: Number, defaultValue: 0, autoform: { omit: true } },
+  registeredUnits: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
   billsUsed: { type: [String], defaultValue: [], allowedValues: Relations.values, autoform: { omit: true } },
 }]);
 
