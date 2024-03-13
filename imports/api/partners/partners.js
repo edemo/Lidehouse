@@ -47,7 +47,11 @@ Partners.schema = new SimpleSchema({
   taxNo: { type: String, max: 50, optional: true },
 });
 
-Partners.idSet = ['communityId', 'ref', 'userId', 'idCard.name'];
+Partners.idSet = [
+  ['communityId', 'ref'],
+  ['communityId', 'userId'],
+  ['communityId', 'idCard.name'],
+];
 
 Partners.publicFields = {
   'idCard.address': 0,

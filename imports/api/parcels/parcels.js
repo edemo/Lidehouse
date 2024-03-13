@@ -83,7 +83,7 @@ Parcels.publicFields = {
   // fields come from behaviours
 };
 
-Parcels.idSet = ['communityId', 'ref'];
+Parcels.idSet = [['communityId', 'ref']];
 
 Meteor.startup(function indexParcels() {
   Parcels.ensureIndex({ communityId: 1, ref: 1 });

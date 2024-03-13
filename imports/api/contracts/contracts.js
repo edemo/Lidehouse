@@ -60,7 +60,7 @@ Contracts.memberSchema = new SimpleSchema({
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
 
-Contracts.idSet = ['parcelId'];
+Contracts.idSet = [['parcelId']];
 
 Contracts.modifiableFields = [
   // 'partnerId' and 'leadParcelId' are definitely not allowed to change! - you should create new Contract in that case

@@ -19,10 +19,10 @@ export const insert = new ValidatedMethod({
   run(doc) {
     const community = Communities.findOne(doc.communityId);
     if (doc.category === '%property') {
-      if (!doc.serial) doc.serial = community.nextAvailableSerial();
+      if (_.isUndefined(doc.serial)) doc.serial = community.nextAvailableSerial();
       if (doc.ref === 'auto') doc.ref = doc.serial;
     } else if (doc.category === '@property') {
-      if (!doc.serial) doc.serial = community.nextAvailableSerial();
+      if (_.isUndefined(doc.serial)) doc.serial = community.nextAvailableSerial();
       if (doc.ref === 'auto') doc.ref = 'A' + doc.serial.toString().padStart(3, '0');
     }
     if (doc.ref) {

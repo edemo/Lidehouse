@@ -148,7 +148,7 @@ if (Meteor.isServer) {
 
       it('when upserting multiple, and one has error, the rest is upserted', function (done) {
         topic1 = { ...header, serial: 1, title: 'FIRST', text: '-' };
-        topic2 = { communityId, category: 'INVALID', title: 'SECOND', text: '-' };
+        topic2 = { communityId, serial: 2, category: 'INVALID', title: 'SECOND', text: '-' };
         topic3 = { ...header, serial: 3, title: 'THIRD', text: '-' };
         const params = { args: [topic1, topic2, topic3] };
 

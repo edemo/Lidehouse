@@ -89,7 +89,7 @@ Transactions.baseSchema = new SimpleSchema([
   Transactions.legsSchema,
 ]);
 
-Transactions.idSet = ['communityId', 'serialId'];
+Transactions.idSet = [['communityId', 'serialId']];
 
 Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, serialId: 1 });

@@ -133,7 +133,7 @@ export const Conductors = {
           dictionary: {
             communityId: { default: getActiveCommunityId() },
             relation: { default: ['member'] },
-            idCard: { type: { default: 'natural' } },
+            'idCard.type': { default: 'natural' },
           },
         }, {
           collectionName: 'memberships',

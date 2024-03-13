@@ -33,7 +33,7 @@ Balances.schema = new SimpleSchema([
   },
 ]);
 
-Balances.idSet = ['communityId', 'account', 'localizer', 'tag'];
+Balances.idSet = [['communityId', 'account', 'localizer', 'tag']];
 
 Balances.helpers({
   tagType() {

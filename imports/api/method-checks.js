@@ -36,10 +36,11 @@ export function checkNotExists(collection, predicate) {
   }
 }
 
-export function checkUnique(collection, doc) {
+export function checkUnique(collection, doc, idSetParam) {
 //  Log.debug('checkUnique', doc);
 //  Log.debug('from:', collection.find({}).fetch());
-  const selector = _.pick(doc, ...collection.idSet);
+  const idSet = idSetParam || collection.idSet[0];
+  const selector = _.pick(doc, ...idSet);
   selector._id = { $ne: doc._id }; // in case doc is already in the collection when we check (after stage update)
   checkNotExists(collection, selector);
 }

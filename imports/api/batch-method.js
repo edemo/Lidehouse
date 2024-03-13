@@ -55,9 +55,26 @@ function difference(oldDoc, newDoc) {
   const modifier = rusdiff.diff(oldDoc, newDoc);
   delete modifier.$unset;
   delete modifier.$rename;
-//  Log.debug('Changes between', oldDoc, newDoc);
-//  Log.debug(modifier);
+  Log.debug('Difference between', oldDoc, newDoc, modifier);
   return modifier;
+}
+
+function findNonEmptySelector(collection, doc) {
+  let selector;
+  for (const idSet of collection.idSet) {
+    selector = {};
+    let emptyIdField = false;
+    for (const fieldName of idSet) {
+      const fieldValue = Object.getByString(doc, fieldName);
+      if (_.isDefined(fieldValue)) selector[fieldName] = fieldValue;
+      else {
+        emptyIdField = true; // selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
+        break;
+      }
+    }
+    if (!emptyIdField) return selector;
+  }
+  return undefined;
 }
 export class BatchTester extends ValidatedMethod {
   constructor(collection) {
@@ -74,21 +91,16 @@ export class BatchTester extends ValidatedMethod {
         args.forEach((doc, i) => {
 //          collection.simpleSchema(doc).clean(doc);
 //          collection.simpleSchema(doc).validate(doc);
-          const selector = {};
-          collection.idSet.forEach((fieldName) => {
-            const fieldValue = Object.getByString(doc, fieldName);
-            if (fieldValue) selector[fieldName] = fieldValue;
-//            else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
-          });
-//          Log.debug('selector', selector);
-          if (_.isEmpty(selector)) return;
+          const selector = findNonEmptySelector(collection, doc);
+          if (!selector) return;
+          Log.debug('selector', selector);
           const existingDoc = collection.findOne(selector);
           if (!existingDoc) neededOperations.insert.push(i);
           else {
             const modifier = difference(existingDoc, doc);
             if (!_.isEmpty(modifier)) {
               neededOperations.update.push({ _id: existingDoc._id, modifier });
-            // Log.debug(`Field ${hasChanges(doc, existingDoc)} has changed in doc: ${JSON.stringify(existingDoc)}`);
+              // Log.debug(`Field ${hasChanges(doc, existingDoc)} has changed in doc: ${JSON.stringify(existingDoc)}`);
             } else neededOperations.noChange.push(i);
             // Shall we determine also what to remove?
           }
@@ -108,23 +120,18 @@ export class UpsertMethod extends ValidatedMethod {
       validate: null, // doc => collection.simpleSchema(doc).validator({ clean: true })(doc),
                       // cannot validate here - that causes defaultvalues to be addded, which cause differing
       run(doc) {
-//        Log.info('Upserting:', doc);
+        Log.info('Upserting:', doc);
         const communityId = doc.communityId;
         const userId = this.userId;
         const methodInvocation = this;
         checkPermissions(userId, upsertName, { communityId });
         if (Meteor.isClient) return null; // Upsert methods are not simulated on the client, just executed on the server
-
-        const selector = {};
-        collection.idSet.forEach((fieldName) => {
-          const fieldValue = Object.getByString(doc, fieldName);
-          if (fieldValue) selector[fieldName] = fieldValue;
-//          else selector[fieldName] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
-        });
-        if (_.isEmpty(selector)) return null;
+        const selector = findNonEmptySelector(collection, doc);
+        if (!selector) return null;
+        Log.debug('selector', selector);
         const existingDoc = collection.findOne(selector);
         if (!existingDoc) {
-//          Log.info('No existing doc, so inserting', doc);
+          Log.info('No existing doc, so inserting', doc);
           return collection.methods.insert._execute(methodInvocation, doc);
         } else {
           const modifier = difference(existingDoc, doc);

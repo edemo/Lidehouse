@@ -52,7 +52,7 @@ Meters.schema = new SimpleSchema({
   'billings.$': { type: Meters.billingSchema },
 });
 
-Meters.idSet = ['communityId', 'identifier'];
+Meters.idSet = [['communityId', 'identifier']];
 
 Meteor.startup(function indexParcels() {
   Meters.ensureIndex({ communityId: 1, active: 1 });

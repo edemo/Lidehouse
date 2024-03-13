@@ -19,7 +19,7 @@ Parcelships.schema = new SimpleSchema({
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
 
-Parcelships.idSet = ['parcelId'];
+Parcelships.idSet = [['parcelId']];
 
 Meteor.startup(function indexParcelships() {
   Parcelships.ensureIndex({ parcelId: 1 });

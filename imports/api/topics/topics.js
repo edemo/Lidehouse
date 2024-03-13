@@ -79,7 +79,7 @@ Topics.publicFields = {
   serialId: 1,
 };
 
-Topics.idSet = ['communityId', 'category', 'serial'];
+Topics.idSet = [['communityId', 'category', 'serial']];
 
 Meteor.startup(function indexTopics() {
   Topics.ensureIndex({ agendaId: 1 }, { sparse: true });

@@ -48,7 +48,7 @@ export const ParcelRefFormat = {
     switch (format) {
       case 'fdd':
         extract.floor = ref[0];
-        extract.door = ref[1] + ref[2];
+        extract.door = ref.substring(1);
         break;
       case 'bfdd':
         extract.building = ref[0];

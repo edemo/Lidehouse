@@ -61,11 +61,12 @@ export class Parser {
       }
       case 'String': {
         switch (schemaValue?.autoform?.relation) {
-          case '@property': {
+          case 'property': {
             try {
               check(cellValue, Meteor.Collection.ObjectID);
               return cellValue;
             } catch (err) {
+              // ref
               const parcel = Parcels.findOne({ communityId: doc.communityId, ref: cellValue.toString() });
               productionAssert(parcel, 'No parcel with this ref', { cellValue });
               return parcel?._id;
