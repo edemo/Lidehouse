@@ -284,8 +284,8 @@
                             {{/if}}
                             <div class="m-t-md">
                                 <p>{{_ 'schemaCommunities.settings.totalUnits.label'}}: {{community.totalUnits}}</p>
-                                {{#if (not (equals community.totalUnits community.registeredUnits)) }}
-                                <span class="label label-warning">{{_ 'schemaCommunities.registeredUnits.label'}}: {{community.registeredUnits}}</span>
+                                {{#if (not (equals community.totalUnits.toFixed community.registeredUnits.toFixed)) }}
+                                <span class="label label-warning">{{_ 'schemaCommunities.registeredUnits.label'}}: {{community.registeredUnits.toFixed}}</span>
                                 {{/if}}
                             </div>
                             <table class="m-t-md" width="100%">
