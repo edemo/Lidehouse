@@ -124,7 +124,7 @@ export function closeInactiveTopics() {
     const archiveTime = moment().subtract(topicAgeDays, 'days').toDate();
     const closableTopics = Topics.find({ communityId: community._id, category: { $nin: exceptCategories }, status: { $ne: 'closed' }, updatedAt: { $lt: archiveTime } });
     closableTopics.forEach((topic) => {
-      Topics.methods.update._execute({ userId: localAdminId }, { _id: topic._id, modifier: { $set: { status: 'closed' } } });
+      Topics.methods.update._execute({ userId: localAdminId }, { _id: topic._id, modifier: { $set: { category: topic.category, status: 'closed' } } });
     });
   });
 }

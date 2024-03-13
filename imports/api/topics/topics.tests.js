@@ -489,11 +489,12 @@ if (Meteor.isServer) {
 
       describe('autoClose', function () {
         before(function () {
+          Topics.remove({});
           userId = Fixture.dummyUsers[2];
         });
-     
+
         it('closes old topics and only old ones', function (done) {
-          Clock.setSimulatedTime(moment().subtract(4, 'month').toDate());
+          Clock.setSimulatedTime(moment().subtract(14, 'month').toDate());
           topicId = Fixture.builder.create('forum', { creatorId: userId });
           otherTopicId = Fixture.builder.create('vote', { creatorId: Fixture.demoManagerId });
           const thirdTopicId = Fixture.builder.create('forum', { creatorId: userId });

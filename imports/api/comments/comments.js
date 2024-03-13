@@ -87,10 +87,15 @@ Comments.helpers({
 // --- Before/after actions ---
 
 Comments.after.insert(function (userId, doc) {
-  const topic = Topics.findOne(doc.topicId);
-  const setStatus = topic.finishStatus().name;
-  Topics.update(doc.topicId, { $inc: { commentCounter: 1 }, $set: { status: setStatus }  }, { selector: { category: 'forum' } });
-  // Increasing the commentCounter touches the updatedAt field, so if you sort on that field, it will come up
+  Topics.update(doc.topicId, { $inc: { commentCounter: 1 } }, { selector: { category: 'forum' } });
+  if (doc.category === 'comment') {
+    const topic = Topics.findOne(doc.topicId);
+    if (topic.status === 'closed') {
+      const setStatus = topic.finishStatus().name;
+      Topics.update(doc.topicId, { $set: { status: setStatus } }, { selector: { category: 'forum' } });
+      // Increasing the commentCounter touches the updatedAt field, so if you sort on that field, it will come up
+    }
+  }
 });
 
 Comments.after.update(function (userId, doc, fieldNames, modifier, options) {

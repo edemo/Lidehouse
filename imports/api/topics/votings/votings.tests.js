@@ -85,7 +85,7 @@ if (Meteor.isServer) {
       });
 
       it('can not vote if voting is not in opened status', function (done) {
-        const closedVotingId = Topics.findOne({ status: 'closed' })._id;
+        const closedVotingId = Topics.findOne({ category: 'vote', status: 'closed' })._id;
         chai.assert.throws(() => {
           castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: closedVotingId, castedVote: [1] });
         }, 'err_permissionDenied');

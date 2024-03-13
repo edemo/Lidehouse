@@ -108,7 +108,7 @@ const statusChange = new ValidatedMethod({
     const category = topic.category;
     const workflow = topic.workflow();
     if (event.status === topic.status) delete event.status; // This is a status update. When the status itself does not change, only the data.
-    
+
     if (event.status) {
       // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic);
       checkPermissions(this.userId, `${category}.statusChange.${event.status}.enter`, topic, topic);
@@ -119,7 +119,7 @@ const statusChange = new ValidatedMethod({
 
     if (event.status) {
       const onLeave = workflow[topic.status].obj.onLeave;
-      if (onLeave) onLeave(event, topic);  
+      if (onLeave) onLeave(event, topic);
     }
 
     const newStatus = event.status || topic.status;
@@ -129,7 +129,7 @@ const statusChange = new ValidatedMethod({
     if (statusObject.data) {
       statusObject.data.forEach(key => topicModifier[`${category}.${key}`] = event.dataUpdate[key]);
     }
-    const updateResult = Topics.update(event.topicId, { $set: topicModifier }, { selector: { category } });
+    const updateResult = Topics.update(event.topicId, { $set: topicModifier });
     const insertResult = Comments.insert(event);
 
     const newComment = Comments.findOne(insertResult);
