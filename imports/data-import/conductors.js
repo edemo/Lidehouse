@@ -403,6 +403,7 @@ export const Conductors = {
         valueDate: { label: 'Könyvelés dátuma' },
         amount: { label: 'Összeg' },
         name: { label: 'Partner elnevezése' },
+        contraBAN: { label: 'Partner számla' },
         note: { label: 'Közlemény' },
       });
       return {

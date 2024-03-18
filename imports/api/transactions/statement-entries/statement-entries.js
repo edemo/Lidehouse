@@ -34,7 +34,7 @@ StatementEntries.schema = new SimpleSchema({
   reconciled: { type: Boolean, optional: true, autoform: { omit: true } }, // calculated in hooks
 });
 
-StatementEntries.idSet = [['communityId', 'valueDate', 'ref', 'refType', 'amount', 'partner']];
+StatementEntries.idSet = [['communityId', 'valueDate', 'ref', 'refType', 'amount', 'name']];
 
 Meteor.startup(function indexStatementEntries() {
   StatementEntries.ensureIndex({ ref: 1 });
