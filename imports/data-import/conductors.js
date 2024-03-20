@@ -438,6 +438,25 @@ export const Conductors = {
         }],
       };
     },
+    'UniCredit'(options) {
+      _.extend(options.dictionary, {
+        refType: { label: 'Tranzakció típusa' },
+        valueDate: { label: 'Értéknap' },
+        amount: { label: 'Összeg' },
+        name: { label: 'Partner neve' },
+        contraBAN: { label: 'Partner számlaszáma' },
+        note: { label: 'Közlemény' },
+      });
+      return {
+        collectionName: 'statementEntries',
+        format: 'UniCredit',
+        phases: [{
+          collectionName: 'statementEntries',
+          options,
+          dictionary: options.dictionary,
+        }],
+      };
+    },
     'CR'(options) {
       _.extend(options.dictionary, {
         ref: { label: 'Sorszám' },
