@@ -10,7 +10,7 @@ export function defineTxdefTemplates() {
     name: 'Supplier bill', // 'Szállító számla',
     category: 'bill',
     data: { relation: 'supplier' },
-    debit: ['`1', '`5', '`8'],
+    debit: ['`1', '`2', '`5', '`8'],
     credit: ['`454'],
 /*
   }, {
@@ -42,7 +42,7 @@ export function defineTxdefTemplates() {
     category: 'payment',
     data: { relation: 'supplier', paymentSubType: 'remission' },
     debit: ['`454'],
-    credit: ['`1', '`5', '`8'],
+    credit: ['`1', '`2', '`5', '`8'],
   }, {
     name: 'Customer bill', // 'Vevő számla',
     category: 'bill',
@@ -132,7 +132,7 @@ export function defineTxdefTemplates() {
     name: 'Expense receipt', // 'Kiadás',
     category: 'receipt',
     data: { relation: 'supplier' },
-    debit: ['`1', '`5', '`8'],
+    debit: ['`1', '`2', '`5', '`8'],
     credit: ['`38'],
   }, {
     name: 'Pass through income', // 'Átfolyó bevétel',
