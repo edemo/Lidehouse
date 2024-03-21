@@ -35,7 +35,7 @@ Contracts.baseSchema = new SimpleSchema({
 
 Contracts.detailsSchema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
-  text: { type: String, max: 5000,  autoform: { rows: 8 }, optional: true },
+  text: { type: String, max: 5000, autoform: { type: 'markdown' }, optional: true },
   billingPeriod: { type: String, max: 50, optional: true },
   billingAmount: { type: Number, decimal: true, optional: true },
 });
