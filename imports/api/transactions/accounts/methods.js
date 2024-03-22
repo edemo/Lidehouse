@@ -30,8 +30,8 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     let doc = checkExists(Accounts, _id);
     const communityId = modifier.$set?.communityId || doc.communityId;
+    const community = Communities.findOne(communityId);
     if (communityId !== doc.communityId) { // Editing a template entry (doc.communityId is the templlateId)
-      const community = Communities.findOne(communityId);
       checkConstraint(community.settings.templateId === doc.communityId, 'You can update only from your own template');
       checkPermissions(this.userId, 'accounts.update', { communityId });
       const clonedDocId = Accounts.clone(doc, communityId);
@@ -39,7 +39,11 @@ export const update = new ValidatedMethod({
     }
     checkPermissions(this.userId, 'accounts.update', doc);
     if (modifier.$set?.code && modifier.$set.code !== doc.code) {
-      Accounts.move(communityId, doc.code, modifier.$set.code);
+      if (community.isTemplate) {
+        Accounts.moveTemplate(communityId, doc.code, modifier.$set.code);
+      } else {
+        Accounts.move(communityId, doc.code, modifier.$set.code);
+      }
     }
 
     return Accounts.update({ _id: doc._id }, modifier, { selector: { category: doc.category } });

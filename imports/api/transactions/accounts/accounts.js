@@ -184,11 +184,15 @@ Accounts.move = function move(communityId, codeFrom, codeTo) {
                     // TODO: Could handle this case with balance merging
   const txs = Transactions.find({ communityId });
   txs.forEach(tx => {
-    let needsUpdate = false;
  //   console.log("Tx BEFORE", tx);
-    needsUpdate = tx.moveTransactionAccounts(codeFrom, codeTo);
+    const result = tx.moveTransactionAccounts(codeFrom, codeTo);
+    const codeFromT = Accounts.toTechnicalCode(codeFrom);
+    const codeToT = Accounts.toTechnicalCode(codeTo);
+    const resultT = tx.moveTransactionAccounts(codeFromT, codeToT);
+    const needsUpdate = result || resultT;
     if (needsUpdate) {
       tx.moveJournalEntryAccounts(codeFrom, codeTo);
+      tx.moveJournalEntryAccounts(codeFromT, codeToT);
       const _id = tx._id; delete tx._id;
 //    console.log("Tx AFTER", tx);
       Transactions.direct.update(_id, { $set: tx });
@@ -200,10 +204,10 @@ Accounts.move = function move(communityId, codeFrom, codeTo) {
   });
 };
 
-Accounts.moveTemplate = function move(templateName, codeFrom, codeTo) {
-  console.log('Replacing', codeFrom, 'with', codeTo, 'in Tempalte', templateName);
-  const template = Communities.findOne({ name: templateName, isTemplate: true });
-  productionAssert(template && template._id, `Could not find template named '${templateName}'`);
+Accounts.moveTemplate = function move(templateId, codeFrom, codeTo) {
+  console.log('Replacing', codeFrom, 'with', codeTo, 'in Tempalte', templateId);
+  const template = Communities.findOne(templateId) || Communities.findOne({ name: templateId, isTemplate: true });
+  productionAssert(template && template._id, `Could not find template named '${templateId}'`);
   Communities.find({ 'settings.templateId': template._id }).forEach(community => {
     Accounts.move(community._id, codeFrom, codeTo);
   });
