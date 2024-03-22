@@ -180,7 +180,7 @@ Accounts.directMove = function directMove(communityId, codeFrom, codeTo) {
 Accounts.move = function move(communityId, codeFrom, codeTo) {
   const Transactions = Mongo.Collection.get('transactions');
   const Balances = Mongo.Collection.get('balances');
-  productionAssert(!Balances.findOne({ communityId, account: new RegExp('^' + codeTo) }), `Account ${codeTo} is already used in community ${communityId}`);
+  productionAssert(!Balances.findOne({ communityId, account: new RegExp('^' + codeTo),  $expr: { $ne: ['$debit', '$credit'] } }), `Account ${codeTo} is already used in community ${communityId}`);
                     // TODO: Could handle this case with balance merging
   const txs = Transactions.find({ communityId });
   txs.forEach(tx => {

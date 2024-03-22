@@ -48,6 +48,12 @@ Transactions.categoryHelpers('exchange', {
     this.credit = [{ amount: this.amount, account: this.account, partner: this.toPartner }];
     return { debit: this.debit, credit: this.credit };
   },
+  moveTransactionAccounts(codeFrom, codeTo) {
+    if (this.account?.startsWith(codeFrom)) {
+      this.account = this.account.replace(codeFrom, codeTo);
+      return true;
+    } else return false;
+  },
 });
 
 Transactions.attachVariantSchema(exchangeSchema, { selector: { category: 'exchange' } });
