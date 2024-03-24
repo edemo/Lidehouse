@@ -184,15 +184,11 @@ Accounts.move = function move(communityId, codeFrom, codeTo) {
                     // TODO: Could handle this case with balance merging
   const txs = Transactions.find({ communityId });
   txs.forEach(tx => {
+    let needsUpdate = false;
  //   console.log("Tx BEFORE", tx);
-    const result = tx.moveTransactionAccounts(codeFrom, codeTo);
-    const codeFromT = Accounts.toTechnicalCode(codeFrom);
-    const codeToT = Accounts.toTechnicalCode(codeTo);
-    const resultT = tx.moveTransactionAccounts(codeFromT, codeToT);
-    const needsUpdate = result || resultT;
+    needsUpdate = tx.moveTransactionAccounts(codeFrom, codeTo);
     if (needsUpdate) {
       tx.moveJournalEntryAccounts(codeFrom, codeTo);
-      tx.moveJournalEntryAccounts(codeFromT, codeToT);
       const _id = tx._id; delete tx._id;
 //    console.log("Tx AFTER", tx);
       Transactions.direct.update(_id, { $set: tx });
