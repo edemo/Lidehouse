@@ -1273,7 +1273,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       uom: 'db',
       quantity: 2,
       unitPrice: 495000,
-      account: Accounts.findOneT({ communityId, category: 'asset', name: 'MŰSZAKI BERENDEZÉSEK' }).code,
+      account: Accounts.findOneT({ communityId, category: 'asset', name: 'Műszaki berendezések' }).code,
 //      localizer: Accounts.findOneT({ communityId, category: 'location', name: 'Heating system' }).code,
     }],
     payAccount: Accounts.findOneT({ communityId, category: 'bank', name: 'Checking account' }).code,
