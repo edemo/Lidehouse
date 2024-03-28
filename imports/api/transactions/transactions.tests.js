@@ -1734,7 +1734,7 @@ if (Meteor.isServer) {
       });
     });
 
-    describe.only('Moving accounts', function () {
+    describe('Moving accounts', function () {
       let FixtureC;
       let billId;
       let bill;
