@@ -177,20 +177,17 @@ Accounts.directMove = function directMove(communityId, codeFrom, codeTo) {
   });
 };
 
-Accounts.move = function move(communityId, codeFrom, codeTo) {
+Accounts._move = function move(communityId, codeFrom, codeTo) {
   const Transactions = Mongo.Collection.get('transactions');
   const Balances = Mongo.Collection.get('balances');
   productionAssert(!Balances.findOne({ communityId, account: new RegExp('^' + codeTo),  $expr: { $ne: ['$debit', '$credit'] } }), `Account ${codeTo} is already used in community ${communityId}`);
                     // TODO: Could handle this case with balance merging
   const txs = Transactions.find({ communityId });
   txs.forEach(tx => {
-    let needsUpdate = false;
- //   console.log("Tx BEFORE", tx);
-    needsUpdate = tx.moveTransactionAccounts(codeFrom, codeTo);
-    if (needsUpdate) {
-      tx.moveJournalEntryAccounts(codeFrom, codeTo);
-      const _id = tx._id; delete tx._id;
-//    console.log("Tx AFTER", tx);
+    const need1 = tx.moveTransactionAccounts(codeFrom, codeTo);
+    const need2 = tx.moveJournalEntryAccounts(codeFrom, codeTo);
+    const _id = tx._id; delete tx._id;
+    if (need1 || need2) {
       Transactions.direct.update(_id, { $set: tx });
     }
   });
@@ -198,6 +195,16 @@ Accounts.move = function move(communityId, codeFrom, codeTo) {
   bals.forEach(bal => {
     Balances.direct.update(bal._id, { $set: { account: bal.account.replace(codeFrom, codeTo) } });
   });
+};
+
+Accounts.move = function move(communityId, codeFrom, codeTo) {
+  // Technical accounts should not be moved directy. They move indirectly.
+  productionAssert(!Accounts.isTechnicalCode(codeFrom));
+  productionAssert(!Accounts.isTechnicalCode(codeTo));
+  const techCodeFrom = Accounts.toTechnicalCode(codeFrom);
+  const techCodeTo = Accounts.toTechnicalCode(codeTo);
+  Accounts._move(communityId, codeFrom, codeTo);
+  Accounts._move(communityId, techCodeFrom, techCodeTo);
 };
 
 Accounts.moveTemplate = function move(templateId, codeFrom, codeTo) {

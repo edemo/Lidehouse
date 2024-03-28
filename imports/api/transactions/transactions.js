@@ -277,26 +277,20 @@ Transactions.helpers({
     });
   },
   moveJournalEntryAccounts(codeFrom, codeTo) {
-    productionAssert(!Accounts.isTechnicalCode(codeFrom));
-    productionAssert(!Accounts.isTechnicalCode(codeTo));    // Technical accounts should not be moved directy. They move indirectly
-    const techCodeFrom = Accounts.toTechnicalCode(codeFrom);
-    const techCodeTo = Accounts.toTechnicalCode(codeTo);
+    let result = false;
     this.debit?.forEach(je => {
       if (je.account.startsWith(codeFrom)) {
         je.account = je.account.replace(codeFrom, codeTo);
-      }
-      if (je.account.startsWith(techCodeFrom)) {
-        je.account = je.account.replace(techCodeFrom, techCodeTo);
+        result = true;
       }
     });
     this.credit?.forEach(je => {
       if (je.account.startsWith(codeFrom)) {
         je.account = je.account.replace(codeFrom, codeTo);
-      }
-      if (je.account.startsWith(techCodeFrom)) {
-        je.account = je.account.replace(techCodeFrom, techCodeTo);
+        result = true;
       }
     });
+    return result;
   },
   moveTransactionAccounts(codeFrom, codeTo) {
     productionAssert(false, `Accounts move is not implemented for transaction category ${this.category}`);

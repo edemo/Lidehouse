@@ -15,6 +15,7 @@ import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Partners } from '../partners/partners';
@@ -494,7 +495,6 @@ if (Meteor.isServer) {
             unitPrice: 300,
           }],
         });
-        const bill = Transactions.findOne(billId);
       });
       after(function () {
         Transactions.remove(billId);
@@ -1731,6 +1731,179 @@ if (Meteor.isServer) {
           chai.assert.equal(tx.debit[0].amount, 1000);
           chai.assert.equal(tx.credit[0].amount, 1000);
         });
+      });
+    });
+
+    describe.only('Moving accounts', function () {
+      let FixtureC;
+      let billId;
+      let bill;
+      let paymentId1;
+      let paymentId2;
+      let paymentIdVoid;
+      let payment1;
+      let payment2;
+      let paymentVoid;
+
+      before(function () {
+        FixtureC = freshFixture();
+        Communities.update(FixtureC.demoCommunityId, { $set: { 'settings.accountingMethod': 'cash' } });
+        billId = FixtureC.builder.create('bill', {
+          relation: 'supplier',
+          partnerId: FixtureC.supplier,
+          relationAccount: '`454',
+          lines: [{
+            title: 'The Work',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 300,
+            account: '`861',
+            localizer: '@',
+          }],
+        });
+        bill = Transactions.findOne(billId);
+        FixtureC.builder.execute(Transactions.methods.post, { _id: billId });
+      });
+      after(function () {
+        Transactions.remove(billId);
+      });
+
+      it('Cash method uses technical account', function () {
+        bill = Transactions.findOne(billId);
+        chai.assert.deepEqual(bill.debit, [{ amount: 300, account: '`0861' }]);
+        chai.assert.deepEqual(bill.credit, [{ amount: 300, account: '`0454', localizer: '@', partner: bill.partnerContractCode() }]);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'supplier'), 300);
+      });
+
+      it('Can register Payments', function () {
+        paymentId1 = FixtureC.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, partnerId: FixtureC.supplier, valueDate: Clock.currentTime(), payAccount: '`381' });
+        paymentId2 = FixtureC.builder.create('payment', { bills: [{ id: billId, amount: 200 }], amount: 200, partnerId: FixtureC.supplier, valueDate: Clock.currentTime(), payAccount: '`381' });
+        FixtureC.builder.execute(Transactions.methods.post, { _id: paymentId1 });
+        payment1 = Transactions.findOne(paymentId1);
+        chai.assert.deepEqual(payment1.debit, [{ amount: 100, account: '`861' }, { amount: 100, account: '`0454', localizer: '@', partner: bill.partnerContractCode(), subTx: 1 }]);
+        chai.assert.deepEqual(payment1.credit, [{ amount: 100, account: '`381' }, { amount: 100, account: '`0861', subTx: 1 }]);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'supplier'), 200);
+
+        FixtureC.builder.execute(Transactions.methods.post, { _id: paymentId2 });
+        payment2 = Transactions.findOne(paymentId2);
+        chai.assert.deepEqual(payment2.debit, [{ amount: 200, account: '`861' }, { amount: 200, account: '`0454', localizer: '@', partner: bill.partnerContractCode(), subTx: 1 }]);
+        chai.assert.deepEqual(payment2.credit, [{ amount: 200, account: '`381' }, { amount: 200, account: '`0861', subTx: 1 }]);
+        chai.assert.equal(bill.partner().outstanding(undefined, 'supplier'), 0);
+      });
+
+      it('Can storno a Payment', function () {
+        FixtureC.builder.execute(Transactions.methods.remove, { _id: paymentId1 });
+        payment1 = Transactions.findOne(paymentId1);
+        chai.assert.equal(payment1.status, 'void');
+        bill = Transactions.findOne(billId);
+        chai.assert.equal(bill.outstanding, 100);
+        paymentIdVoid = _.last(bill.getPayments()).id;
+        paymentVoid = Transactions.findOne(paymentIdVoid);
+        chai.assert.equal(paymentVoid.status, 'void');
+        chai.assert.deepEqual(paymentVoid.debit, [{ amount: -100, account: '`861' }, { amount: -100, account: '`0454', localizer: '@', partner: bill.partnerContractCode(), subTx: 1 }]);
+        chai.assert.deepEqual(paymentVoid.credit, [{ amount: -100, account: '`381' }, { amount: -100, account: '`0861', subTx: 1 }]);
+      });
+
+      it('Cannot move technical Account', function () {
+        // Technical accounts are moved implicitly. It is not allowed to move them by hand.
+        const accountT = Accounts.getByCode('`0861', FixtureC.demoCommunityId);
+        chai.assert.throws(() => {
+          FixtureC.builder.execute(Accounts.methods.update, { _id: accountT._id, $set: { communityId: FixtureC.demoCommunityId, code: '`056' } });
+        } /*, 'err_notAllowed'*/);
+        chai.assert.throws(() => {
+          Accounts.move(FixtureC.demoCommunityId, '`0861', '`056');
+        } /*, 'err_notAllowed'*/);
+      });
+
+      it('Can move an Account', function () {
+        let balanceBefore = Balances.get({ communityId: FixtureC.demoCommunityId, account: '`861', tag: 'T' });
+        let balanceAfter = Balances.get({ communityId: FixtureC.demoCommunityId, account: '`56', tag: 'T' });
+        chai.assert.notEqual(balanceBefore.total(), 0);
+        const balanceTotal = balanceBefore.total();
+        chai.assert.equal(balanceAfter.total(), 0);
+
+        const account = Accounts.getByCode('`861', FixtureC.demoCommunityId);
+        const accountCommunity = Communities.findOne(account.communityId);
+        chai.assert.isTrue(accountCommunity.isTemplate);
+        FixtureC.builder.execute(Accounts.methods.update, { _id: account._id, modifier: { $set: { communityId: FixtureC.demoCommunityId, code: '`56' } } }, FixtureC.demoAccountantId);
+
+        bill = Transactions.findOne(billId);
+        chai.assert.deepEqual(bill.debit, [{ amount: 300, account: '`056' }]);
+        payment1 = Transactions.findOne(paymentId1);
+        payment2 = Transactions.findOne(paymentId2);
+        paymentVoid = Transactions.findOne(paymentIdVoid);
+        chai.assert.equal(bill.lines[0].account, '`56');
+        chai.assert.deepEqual(payment1.debit, [{ amount: 100, account: '`56' }, { amount: 100, account: '`0454', localizer: '@', partner: bill.partnerContractCode(), subTx: 1 }]);
+        chai.assert.deepEqual(payment1.credit, [{ amount: 100, account: '`381' }, { amount: 100, account: '`056', subTx: 1 }]);
+        chai.assert.deepEqual(payment2.debit, [{ amount: 200, account: '`56' }, { amount: 200, account: '`0454', localizer: '@', partner: bill.partnerContractCode(), subTx: 1 }]);
+        chai.assert.deepEqual(payment2.credit, [{ amount: 200, account: '`381' }, { amount: 200, account: '`056', subTx: 1 }]);
+        chai.assert.deepEqual(paymentVoid.debit, [{ amount: -100, account: '`56' }, { amount: -100, account: '`0454', localizer: '@', partner: bill.partnerContractCode(), subTx: 1 }]);
+        chai.assert.deepEqual(paymentVoid.credit, [{ amount: -100, account: '`381' }, { amount: -100, account: '`056', subTx: 1 }]);
+
+        balanceBefore = Balances.get({ communityId: FixtureC.demoCommunityId, account: '`861', tag: 'T' });
+        balanceAfter = Balances.get({ communityId: FixtureC.demoCommunityId, account: '`56', tag: 'T' });
+        chai.assert.equal(balanceBefore.total(), 0);
+        chai.assert.equal(balanceAfter.total(), balanceTotal);
+
+        const oldAccount = Accounts.getByCode('`861', FixtureC.demoCommunityId);
+        const newAccount = Accounts.getByCode('`56', FixtureC.demoCommunityId);
+        const oldAccountCommunity = Communities.findOne(oldAccount.communityId);
+        const newAccountCommunity = Communities.findOne(newAccount.communityId);
+        chai.assert.isTrue(oldAccountCommunity.isTemplate);
+        chai.assert.isTrue(!newAccountCommunity.isTemplate);
+        FixtureC.builder.execute(Accounts.methods.remove, { _id: newAccount._id });
+
+        balanceAfter = Balances.get({ communityId: FixtureC.demoCommunityId, account: '`56', tag: 'T' });
+        chai.assert.equal(balanceAfter.total(), balanceTotal);
+        const newOwnAccount = Accounts.getByCode('`56', FixtureC.demoCommunityId);
+        const newOwnAccountCommunity = Communities.findOne(newOwnAccount.communityId);
+        chai.assert.isTrue(newOwnAccountCommunity.isTemplate);
+      });
+
+      it('Can move a PayAccount', function () {
+        const account = Accounts.getByCode('`381', FixtureC.demoCommunityId);
+        FixtureC.builder.execute(Accounts.methods.update, { _id: account._id, modifier: { $set: { communityId: FixtureC.demoCommunityId, code: '`382' } } }, FixtureC.demoAccountantId);
+        payment1 = Transactions.findOne(paymentId1);
+        payment2 = Transactions.findOne(paymentId2);
+        paymentVoid = Transactions.findOne(paymentIdVoid);
+        chai.assert.equal(payment1.payAccount, '`382');
+        chai.assert.equal(payment2.payAccount, '`382');
+        chai.assert.equal(paymentVoid.payAccount, '`382');
+        chai.assert.deepEqual(payment1.credit, [{ amount: 100, account: '`382' }, { amount: 100, account: '`056', subTx: 1 }]);
+        chai.assert.deepEqual(payment2.credit, [{ amount: 200, account: '`382' }, { amount: 200, account: '`056', subTx: 1 }]);
+        chai.assert.deepEqual(paymentVoid.credit, [{ amount: -100, account: '`382' }, { amount: -100, account: '`056', subTx: 1 }]);
+      });
+
+      it('Can move Template Account', function () {
+        let balanceBefore = Balances.get({ communityId: FixtureC.demoCommunityId, account: '`0454', partner: bill.partnerContractCode(), tag: 'T' });
+        let balanceAfter = Balances.get({ communityId: FixtureC.demoCommunityId, account: '`0451', partner: bill.partnerContractCode(), tag: 'T' });
+        chai.assert.notEqual(balanceBefore.total(), 0);
+        const balanceTotal = balanceBefore.total();
+        chai.assert.equal(balanceAfter.total(), 0);
+
+        const account = Accounts.getByCode('`454', FixtureC.demoCommunityId);
+        const accountCommunity = Communities.findOne(account.communityId);
+        chai.assert.isTrue(accountCommunity.isTemplate);
+        const superUserId = FixtureC.demoAdminId;
+        Memberships.direct.insert({ communityId: account.communityId, userId: superUserId, role: 'admin' });
+        FixtureC.builder.execute(Accounts.methods.update, { _id: account._id, modifier: { $set: { communityId: account.communityId, code: '`451' } } }, superUserId);
+
+        bill = Transactions.findOne(billId);
+        chai.assert.deepEqual(bill.debit, [{ amount: 300, account: '`056' }]);
+        chai.assert.deepEqual(bill.credit, [{ amount: 300, account: '`0451', localizer: '@', partner: bill.partnerContractCode() }]);
+        payment1 = Transactions.findOne(paymentId1);
+        payment2 = Transactions.findOne(paymentId2);
+        paymentVoid = Transactions.findOne(paymentIdVoid);
+//        console.log('bill', bill, 'payment1', payment1, 'payment2', payment2, 'paymentVoid', paymentVoid);
+        chai.assert.equal(bill.relationAccount, '`451');
+        chai.assert.deepEqual(payment1.debit, [{ amount: 100, account: '`56' }, { amount: 100, account: '`0451', localizer: '@', partner: bill.partnerContractCode(), subTx: 1 }]);
+        chai.assert.deepEqual(payment2.debit, [{ amount: 200, account: '`56' }, { amount: 200, account: '`0451', localizer: '@', partner: bill.partnerContractCode(), subTx: 1 }]);
+        chai.assert.deepEqual(paymentVoid.debit, [{ amount: -100, account: '`56' }, { amount: -100, account: '`0451', localizer: '@', partner: bill.partnerContractCode(), subTx: 1 }]);
+
+        balanceBefore = Balances.get({ communityId: FixtureC.demoCommunityId, account: '`0454', partner: bill.partnerContractCode(), tag: 'T' });
+        balanceAfter = Balances.get({ communityId: FixtureC.demoCommunityId, account: '`0451', partner: bill.partnerContractCode(), tag: 'T' });
+        chai.assert.equal(balanceBefore.total(), 0);
+        chai.assert.equal(balanceAfter.total(), balanceTotal);
       });
     });
   });
