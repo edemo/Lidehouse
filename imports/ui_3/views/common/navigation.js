@@ -31,7 +31,7 @@ Template.Navigation.viewmodel({
     if (communityId) {
       this.templateInstance.subscribe('communities.byId', { _id: communityId });
       this.templateInstance.subscribe('memberships.inCommunity', { communityId });
-      this.templateInstance.subscribe('topics.list', { communityId, status: { $nin: ['closed', 'deleted'] } }); // for the badges
+      this.templateInstance.subscribe('topics.board', { communityId }); // for the badges
     }
   },
   communityId() {

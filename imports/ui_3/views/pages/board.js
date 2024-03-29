@@ -22,10 +22,10 @@ import './board.html';
 
 Template.Board.viewmodel({
   autorun() {
-    const communityId = this.communityId();
-    if (communityId) {
-      this.templateInstance.subscribe('topics.board', { communityId });
-    }
+//    const communityId = this.communityId();
+//    if (communityId) {
+//      this.templateInstance.subscribe('topics.board', { communityId });  --: Moved to navigation
+//    }
   },
   communityId() {
     return getActiveCommunityId();
