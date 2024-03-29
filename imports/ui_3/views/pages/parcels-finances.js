@@ -10,6 +10,7 @@ import { Session } from 'meteor/session';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { parcelFinancesColumns } from '/imports/api/parcels/tables.js';
+import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
@@ -70,6 +71,7 @@ Template.Parcels_finances.viewmodel({
       columns: parcelFinancesColumns(),
       order: [[4, 'desc']],
       language: datatables_i18n[TAPi18n.getLanguage()],
+      ...DatatablesExportButtons,
     });
   },
   beginDate() {

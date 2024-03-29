@@ -167,6 +167,12 @@ Contracts.helpers({
     const Balances = Mongo.Collection.get('balances');
     return Balances.get({ communityId: this.communityId, partner: this.code(), tag }, 'closing').total() * (-1);
   },
+  lastBill() {
+    const Transactions = Mongo.Collection.get('transactions');
+    let bill = Transactions.findOne({ category: 'bill', partnerId: this.partnerId, contractId: this._id }, { sort: { createdAt: -1 } });
+    if (!bill) bill = { serialId: () => '---', amount: 0 };
+    return bill;
+  },
   periodTraffic(tag) {
     const Balances = Mongo.Collection.get('balances');
     return Balances.get({ communityId: this.communityId, partner: this.code(), tag }, 'period').total() * (-1);

@@ -9,8 +9,8 @@ export const DatatablesExportButtons = {
   buttons: [
     { extend: 'copy' },
     { extend: 'csv' },
-    { extend: 'excel', title: 'honline' },
-    { extend: 'pdf', title: 'honline' },
+    { extend: 'excel', title: 'honline-export' },
+    { extend: 'pdf', title: 'honline-export' },
     { extend: 'print',
       customize(win) {
         $(win.document.body).addClass('white-bg');

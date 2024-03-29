@@ -385,9 +385,11 @@
   "meters": "mérőórák",
   "lead parcel": "vezető albetét",
   "follower parcels": "kapcsolt albetétek",
+  "last bill": "utolsó számla",
+  "last amount": "utolsó összeg",
 
   // topics
-  "The": "A",
+  "The": "A(z)",
   "was modified, previous content": "módosításra került, korábbi tartalom",
   "Report this": "Hozzászólás jelentése",
   "Block content from": "%s írásainak lehalkítása",

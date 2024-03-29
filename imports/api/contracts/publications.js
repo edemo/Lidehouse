@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Partners } from '/imports/api/partners/partners.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Contracts } from './contracts.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -68,6 +69,10 @@ Meteor.publishComposite('contracts.ofEntitledOnes', function contractsOfSelf(par
     children: [{
       find(contract) {
         return Balances.find({ communityId, partner: new RegExp(contract._id + '$') });
+      },
+    }, {
+      find(contract) {
+        return Transactions.find({ communityId, category: 'bill', partnerId: contract.partnerId, contractId: contract._id }, { limit: 1, sort: { createdAt: -1 } });
       },
     }],
   };

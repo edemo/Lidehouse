@@ -53,11 +53,13 @@ export function localizerColumns() {
 
 export function parcelFinancesColumns() {
   return [
-    { data: 'ref', title: __('schemaParcels.ref.label') },
+    { data: 'ref', title: __('schemaParcels.leadRef.label') },
     { data: 'type', title: __('schemaParcels.type.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: 'withFollowers()', title: __('follower parcels') },
     { data: 'payerContract().outstanding()', title: __('schemaBills.outstanding.label') },
+    { data: 'payerContract().lastBill().serialId', title: __('last bill') },
+    { data: 'payerContract().lastBill().amount', title: __('last amount') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'parcels', actions: 'finances,meters', size: 'sm' }, cell),
