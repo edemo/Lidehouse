@@ -44,6 +44,7 @@ export const update = new ValidatedMethod({
       } else {
         Accounts.move(communityId, doc.code, modifier.$set.code);
       }
+      Accounts.remove({ communityId, code: modifier.$set.code });
     }
 
     return Accounts.update({ _id: doc._id }, modifier, { selector: { category: doc.category } });

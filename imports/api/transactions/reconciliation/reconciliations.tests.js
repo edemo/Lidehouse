@@ -466,7 +466,7 @@ if (Meteor.isServer) {
             uom: 'piece',
             quantity: 1,
             unitPrice: 4560,
-            account: '`5207',
+            account: '`5201',
             localizer: '@',
           }],
         });

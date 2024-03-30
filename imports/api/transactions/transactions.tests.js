@@ -1904,6 +1904,9 @@ if (Meteor.isServer) {
         balanceAfter = Balances.get({ communityId: FixtureC.demoCommunityId, account: '`0451', partner: bill.partnerContractCode(), tag: 'T' });
         chai.assert.equal(balanceBefore.total(), 0);
         chai.assert.equal(balanceAfter.total(), balanceTotal);
+
+        chai.assert.equal(Accounts.findT({ code: '`454', communityId: FixtureC.demoCommunityId }).count(), 0);
+        chai.assert.equal(Accounts.findT({ code: '`451', communityId: FixtureC.demoCommunityId }).count(), 1);
       });
     });
   });
