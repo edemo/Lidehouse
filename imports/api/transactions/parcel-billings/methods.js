@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
+import { Log } from '/imports/utils/log.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
@@ -110,6 +111,7 @@ export const apply = new ValidatedMethod({
               if (date < lastBilling.date) throw new Meteor.Error('err_invalidData', 'The meter was already billed at a later date', { identifier: activeMeter.identifier, lastBillingDate: lastBilling.date });
               const value = activeMeter.getEstimatedValue(date);
               const currentBilling = { date, value };
+              Log.info(`Consumption billing of meter ${activeMeter._id} - currentBilling: ${currentBilling}, lastBilling: ${lastBilling}, lastReading: ${lastReading}`);
               line.metering = { id: activeMeter._id, start: lastBilling, end: currentBilling };
               line.quantity = (currentBilling.value - lastBilling.value).round(3); /* parcelBilling.consumption.decimals */
               line.details = lineDetails(activeMeter, currentBilling, lastBilling, lastReading);
