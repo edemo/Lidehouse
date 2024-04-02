@@ -80,7 +80,7 @@ Meters.helpers({
     let lastReading;
     for (const r of this.readings) {
       if (r.date <= date) lastReading = r;
-      else return false;
+      else break;
     }
     productionAssert(lastReading, 'Meter has no reading before the date, looks like it did not exist at that time', { meter: this.toString(), date });
     return lastReading;
