@@ -12,6 +12,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
+import { AccountingPeriods } from '../../../api/transactions/periods/accounting-periods';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -40,7 +41,7 @@ Template.Accounting_setup.viewmodel({
     return Communities.findOne(this.communityId());
   },
   noAccountsDefined() {
-    return !this.community()?.settings.templateId;
+    return !AccountingPeriods.findOne({ communityId: this.communityId() });
   },
   accounts() {
     const accounts = Accounts.findTfetch({ communityId: this.communityId() }, { sort: { code: 1 } });
