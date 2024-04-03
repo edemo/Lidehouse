@@ -35,8 +35,8 @@ StatementEntries.schema = new SimpleSchema({
 });
 
 StatementEntries.idSet = [
-  ['communityId', 'valueDate', 'refType', 'amount', 'name'],
-  ['communityId', 'ref'],
+  ['communityId', 'valueDate', 'refType', 'amount', 'name'], // UniCredit
+  ['communityId', 'valueDate', 'ref', 'refType', 'amount'],  // K&H
 ];
 
 Meteor.startup(function indexStatementEntries() {
