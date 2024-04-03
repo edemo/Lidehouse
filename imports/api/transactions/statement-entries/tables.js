@@ -30,7 +30,7 @@ function renderLinkedTransactions(linkedTransactions, renderType, currentRow) {
   const txs = linkedTransactions.txs;
   let text = '';
   txs?.forEach((tx, i, array) => {
-    text += tx.displayInStatement();
+    text += tx?.displayInStatement() || 'NOT FOUND TX';
     if (i < array.length - 1) text += ',<br>';
     // Maybe we could put individial buttons to each tx
     // const buttons = Blaze.renderWithData(Template.Action_buttons_group,
