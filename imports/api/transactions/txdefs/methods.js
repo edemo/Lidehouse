@@ -1,3 +1,5 @@
+import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
@@ -28,17 +30,33 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     let doc = checkExists(Txdefs, _id);
-    if (doc.communityId !== modifier.$set.communityId) {
-      const community = Communities.findOne(modifier.$set.communityId);
+    const communityId = modifier.$set?.communityId || doc.communityId;
+    const community = Communities.findOne(communityId);
+    if (communityId !== doc.communityId) { // Editing a template entry (doc.communityId is the templlateId)
       checkConstraint(community.settings.templateId === doc.communityId, 'You can update only from your own template');
-      checkPermissions(this.userId, 'accounts.update', { communityId: modifier.$set.communityId });
-      const clonedDocId = Txdefs.clone(doc, modifier.$set.communityId);
+      checkPermissions(this.userId, 'accounts.update', { communityId });
+      const clonedDocId = Txdefs.clone(doc, communityId);
       doc = Txdefs.findOne(clonedDocId);
     }
+    checkPermissions(this.userId, 'accounts.update', doc);
     // checkModifier(doc, modifier, ['name'], true); - can you change the name? it is referenced by that by other accounts
     checkNotExists(Txdefs, { _id: { $ne: doc._id }, communityId: doc.communityId, name: modifier.$set.name });
-    checkNotExists(Transactions, { communityId: doc.communityId, defId: _id }); // TODO: Need to move those transactions firsst
-    checkPermissions(this.userId, 'accounts.update', doc);
+    // Check that the existing txs with this txdef conform to the new debit and credit list. 
+    const removedDebitAccounts = modifier.$set.debit ? Array.difference(doc.debit, modifier.$set.debit) : [];
+    const removedCreditAccounts = modifier.$set.credit ? Array.difference(doc.credit, modifier.$set.credit) : [];
+    if (removedDebitAccounts.length > 0 || removedCreditAccounts.length > 0) {
+      const txs = Transactions.find({ communityId, defId: _id });
+      txs.forEach(tx => {
+        tx.journalEntries(true).forEach(je => {
+          if (je.side === 'debit' && removedDebitAccounts.includes(je.account)) {
+            throw new Meteor.Error('err_notAllowed', 'Cannot remove account, transaction uses it.', { side: 'debit', account: je.account, tx });
+          }
+          if (je.side === 'credit' && removedCreditAccounts.includes(je.account)) {
+            throw new Meteor.Error('err_notAllowed', 'Cannot remove account, transaction uses it.', { side: 'credit', account: je.account, tx });
+          }
+        });
+      });
+    }
 
     return Txdefs.update({ _id: doc._id }, modifier);
   },
@@ -53,7 +71,18 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Txdefs, _id);
     checkPermissions(this.userId, 'accounts.remove', doc);
-    checkNotExists(Transactions, { communityId: doc.communityId, defId: _id }); // TODO: Need to move those transactions firsst
+    const communityId =  doc.communityId;
+    const community = Communities.findOne(communityId);
+    if (!community.isTemplate) {
+      const templateTxdef = Txdefs.findOne({ communityId: community.settings.templateId, name: doc.name });
+      if (templateTxdef && _.isEqual(templateTxdef.debit, doc.debit) && _.isEqual(templateTxdef.credit, doc.credit)) {
+        Transactions.update({ communityId, defId: doc._id }, { $set: { defId: templateTxdef._id } }, { multi: true });
+      } else {
+        checkNotExists(Transactions, { communityId, defId: _id });
+      }
+    } else {
+      checkNotExists(Transactions, { defId: _id });
+    }
 
     return Txdefs.remove(_id);
   },
