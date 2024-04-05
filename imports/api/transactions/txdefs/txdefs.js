@@ -185,13 +185,14 @@ export const chooseConteerAccount = function (sideParam = false) {
   };
   if (!sideParam) {
     resultObject.value = () => {
+      const selfId = AutoForm.getFormId();
       const contractId = AutoForm.getFieldValue('contractId');
+      if (AutoForm.getCurrentDataForForm(selfId)?.type !== 'method') return undefined; // method === input form      
       if (contractId) {
         const Contracts = Mongo.Collection.get('contracts');
         const contract = Contracts.findOne(contractId);
         return contract.accounting?.account;
       }
-      return undefined;
     };
   }
   return resultObject;

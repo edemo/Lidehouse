@@ -238,7 +238,8 @@ export const chooseContract = {
     const partnerId = AutoForm.getFieldValue('partnerId')|| AutoForm.getFieldValue('ticket.partnerId');
     const selector = { communityId, relation, partnerId };
     const contractId = partnerId && Contracts.findOne(Object.cleanUndefined(selector))?._id;
-    return contractId;
+    if (AutoForm.getCurrentDataForForm(selfId)?.type !== 'method') return undefined; // method === input form      
+    if (contractId) return contractId;
   },
   options() {
     const communityId = ModalStack.getVar('communityId');

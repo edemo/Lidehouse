@@ -391,6 +391,7 @@ export const chooseLocalizer = function (code = '') {
       const result = ModalStack.readResult(selfId, 'af.tag.create');
       if (result) return result;
       const contractId = AutoForm.getFieldValue('contractId');
+      if (AutoForm.getCurrentDataForForm(selfId)?.type !== 'method') return undefined; // method === input form
       if (contractId) {
         const Contracts = Mongo.Collection.get('contracts');
         const contract = Contracts.findOne(contractId);
