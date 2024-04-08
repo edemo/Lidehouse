@@ -76,7 +76,7 @@ export const remove = new ValidatedMethod({
     if (!community.isTemplate) {
       const templateTxdef = Txdefs.findOne({ communityId: community.settings.templateId, name: doc.name });
       if (templateTxdef && _.isEqual(templateTxdef.debit, doc.debit) && _.isEqual(templateTxdef.credit, doc.credit)) {
-        Transactions.update({ communityId, defId: doc._id }, { $set: { defId: templateTxdef._id } }, { multi: true });
+        Transactions.direct.update({ communityId, defId: doc._id }, { $set: { defId: templateTxdef._id } }, { multi: true });
       } else {
         checkNotExists(Transactions, { communityId, defId: _id });
       }
