@@ -28,6 +28,7 @@ Template.Partner_history.viewmodel({
       if (this.partnerSelected()) {
         instance.subscribe('transactions.byPartnerContract', this.subscribeParams());
         instance.subscribe('txdefs.inCommunity', { communityId: this.communityId() });
+        instance.subscribe('balances.inCommunity', this.beginBalanceDef());
       }
     });
   },
@@ -71,18 +72,17 @@ Template.Partner_history.viewmodel({
     if (!this.contractToView()) return {};
     const contract = Contracts.findOne(this.contractToView());
     const year = validDateOrUndefined(this.beginDate())?.getFullYear();
-    const period = Period.fromValues(year);
     return {
       communityId: this.communityId(),
       partner: contract?.code() || null,
-      tag: period.toTag(),
+      tag: `O-${year}`,
     };
   },
   history() {
     if (!this.contractToView()) return {};
     const result = {};
     const contract = Contracts.findOne(this.contractToView());
-    result.beginBalance = Balances.getOpeningValue(this.beginBalanceDef()).total() * (-1);
+    result.beginBalance = Balances.get(this.beginBalanceDef()).total() * (-1);
     const selector = Transactions.makeFilterSelector(this.subscribeParams());
     const txs = Transactions.find(selector, { sort: [['valueDate', 'asc'], ['createdAt', 'asc']] });
     let total = result.beginBalance;

@@ -43,6 +43,7 @@ if (Meteor.isServer) {
     before(function () {
       // Fixture
       Fixture = freshFixture();
+      Communities.update(Fixture.demoCommunityId, { $set: { 'settings.sendBillEmail': ['member'] } });
       Contracts.remove({ parcelId: Fixture.dummyParcels[1] }); // No need for leadParcel for dummyUsers[1] as he needs own votership
       demoCommunity = Communities.findOne(Fixture.demoCommunityId);
       demoManager = Meteor.users.findOne(Fixture.demoManagerId);
@@ -290,9 +291,14 @@ if (Meteor.isServer) {
     describe('Payment request emails', function () {
       let billId;
       let partnerId;
+      let partner2Id;
+
+      before(function () {
+        partnerId = Fixture.builder.create('member', { creatorId: Fixture.demoManagerId });
+        partner2Id = Fixture.builder.create('customer', { creatorId: Fixture.demoManagerId });
+      });
 
       it('Sends new bill', function () {
-        partnerId = Fixture.builder.create('member', { creatorId: Fixture.demoManagerId });
         const partner = Partners.findOne(partnerId);
         billId = Fixture.builder.create('bill', {
           creatorId: Fixture.demoManagerId,
@@ -300,9 +306,17 @@ if (Meteor.isServer) {
           relation: 'member',
           relationAccount: '`33',
         });
+        const customerBillId = Fixture.builder.create('bill', {
+          creatorId: Fixture.demoManagerId,
+          partnerId: partner2Id,
+          relation: 'customer',
+          relationAccount: '`31',
+        });
         const bill = Transactions.findOne(billId);
         sinon.assert.notCalled(EmailSender.send);
 
+        Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: customerBillId });
+        sinon.assert.notCalled(EmailSender.send);
         Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: billId });
         sinon.assert.calledOnce(EmailSender.send);
         sinon.assert.calledWithMatch(EmailSender.send, { template: 'Bill_Email' });
@@ -312,9 +326,8 @@ if (Meteor.isServer) {
 
       it('Sends bill to contract delegatee (payer partner)', function () {
         const partner = Partners.findOne(partnerId);
-        const partner2Id = Fixture.builder.create('customer', { creatorId: Fixture.demoManagerId });
         const bill = Transactions.findOne(billId);
-        Contracts.update({ _id: bill.contractId }, { $set: { 'cc': [{ partnerId: partner2Id }] } }, { selector: { relation: 'member' } });
+        Contracts.update({ _id: bill.contractId }, { $set: { cc: [{ partnerId: partner2Id }] } }, { selector: { relation: 'member' } });
         const partner2 = Partners.findOne(partner2Id);
         sinon.assert.notCalled(EmailSender.send);
 

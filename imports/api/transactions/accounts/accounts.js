@@ -18,7 +18,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 
 export const Accounts = new TemplatedMongoCollection('accounts', 'code');
 
-Accounts.mainCategoryValues = ['asset', 'liability', 'equity', 'income', 'expense', 'technical'];
+Accounts.mainCategoryValues = ['asset', 'liability', 'equity', 'income', 'expense', 'balance', 'technical'];
 Accounts.simpleCategoryValues = Accounts.mainCategoryValues.concat(['payable', 'receivable']);
 Accounts.categoryValues = Accounts.mainCategoryValues.concat(['payable', 'receivable', 'cash', 'bank']);
 Accounts.syncValues = ['none', 'manual', 'auto'];
@@ -84,6 +84,15 @@ Accounts.toTechnical = function toTechnical(account) {
 };
 
 // TODO: Get these special accounts from configuration
+Accounts.isCarriedOver = function isCarriedOver(code, communityId) {
+  if (code === '`491' || code === '`492') return false; // Opening and closing accounts not carried over
+  if (code.startsWith('`0')) {
+    return (code.startsWith('`01') || code.startsWith('`02') || code.startsWith('`03') || code.startsWith('`04'));
+  } else {
+    return (code.startsWith('`1') || code.startsWith('`2') || code.startsWith('`3') || code.startsWith('`4'));
+  }
+};
+
 Accounts.getRelationAccount = function getRelationAccount(community, relation) {
   let accountCode;
   if (relation === 'member') accountCode = '`33';
@@ -286,13 +295,13 @@ _.extend(Accounts, {
   needsLocalization(code, communityId) {
     let result = false;
     const accountsToLocalize = Accounts.toLocalize(communityId);
-    accountsToLocalize.forEach(c => {
+    for (const c of accountsToLocalize) {
       const tc = Accounts.toTechnicalCode(c);
       if (code.startsWith(c) || code.startsWith(tc)) {
         result = true;
-        return false;
+        break;
       }
-    });
+    }
     return result;
   },
 });
@@ -316,6 +325,9 @@ Accounts.simpleCategoryValues.forEach((category) => {
 
 function markGroupAccountsUpward(doc) {
   const code = doc.code;
+  if (Accounts.find({ communityId: doc.communityId, code: new RegExp('^' + code) }).count() > 1) {
+    Accounts.direct.update(doc._id, { $set: { isGroup: true } });
+  }
   const parentCodes = [];
   for (let i = 1; i < code.length; i++) {
     const parentCode = code.slice(0, -1 * i);
@@ -331,7 +343,7 @@ function unmarkGroupAccountsUpward(doc) {
     parentCode = code.slice(0, -1 * i);
     if (Accounts.findOne({ communityId: doc.communityId, code: parentCode })) break;
   }
-  if (Accounts.find({ communityId: doc.communityId, code: new RegExp('^' + parentCode) }).fetch().length === 1) {
+  if (Accounts.find({ communityId: doc.communityId, code: new RegExp('^' + parentCode) }).count() === 1) {
     Accounts.direct.update({ communityId: doc.communityId, code: parentCode }, { $set: { isGroup: false } });
   }
 }

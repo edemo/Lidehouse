@@ -73,6 +73,26 @@ AccountingPeriods.helpers({
   fullYearMonths(year) {
     return this.leafsOf(`T-${year}`).map(l => l.code);
   },
+  isClosed(period) {
+//    debugAssert(period.type() === 'year'); // We only close the years
+    return this.accountingClosedAt && (period.endDate().getTime() <= this.accountingClosedAt.getTime());
+  },
+  previous(period) {
+    if (period.type() === 'entire') return undefined;
+    const prevPeriod = period.previous();
+    const prevType = prevPeriod.type();
+    if (prevType === 'year') return this.years.includes(prevPeriod.year) ? prevPeriod : undefined;
+    if (prevType === 'month') return prevPeriod;
+    debugAssert(false); return undefined;
+  },
+  next(period) {
+    if (period.type() === 'entire') return undefined;
+    const nextPeriod = period.next();
+    const nextType = nextPeriod.type();
+    if (nextType === 'year') return this.years.includes(nextPeriod.year) ? nextPeriod : undefined;
+    if (nextType === 'month') return nextPeriod;
+    debugAssert(false); return undefined;
+  },
 });
 
 AccountingPeriods.get = function get(communityId) {

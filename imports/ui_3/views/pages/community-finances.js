@@ -142,7 +142,12 @@ Template.Community_finances.viewmodel({
       if (periodsDoc) this.periodBreakdown(periodsDoc.breakdown());
       instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('accountingPeriods.inCommunity', { communityId });
-      instance.subscribe('balances.inCommunity', { communityId /*, tags: ['T'].concat(_.pluck(this.periods(), 'code'))*/ });
+      const monthTags = _.pluck(this.periods(), 'code');
+      const monthCTags = monthTags.map(t => 'C' + t.substring(1));
+//      const lastYear = periodsDoc?.years[periodsDoc.years.length - 1];
+//      const prevYear = periodsDoc?.years[periodsDoc.years.length - 2];
+//      const yearTags = [`O-${lastYear}`, `O-${prevYear}`, `T-${lastYear}`, `T-${prevYear}`];
+      instance.subscribe('balances.inCommunity', { communityId, tags: ['T'].concat(monthTags, monthCTags) });
     });
 //    instance.autorun(() => {
 //      const periods = AccountingPeriods.findOne({ communityId: this.communityId() });
@@ -158,7 +163,7 @@ Template.Community_finances.viewmodel({
     return ['Money accounts', 'Short-term liabilities'];
   },
   getStatusBalance() {
-    return this.getBalance('Money accounts', 'closing') - this.getBalance('Short-term liabilities', 'closing');
+    return this.getBalance('Money accounts', 'C') - this.getBalance('Short-term liabilities', 'C');
   },
   statusData() {
     const data = {
@@ -166,21 +171,21 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("Money accounts"),
-          data: this.monthlyData('Money accounts', 'closing'),
+          data: this.monthlyData('Money accounts', 'C'),
         }, plusColors[0]),
         _.extend({
           label: __("Short-term liabilities"),
-          data: this.monthlyData('Short-term liabilities', 'closing'),
+          data: this.monthlyData('Short-term liabilities', 'C'),
         }, minusColors[0]),
       ],
     };
     return data;
   },
   moneyOutstanding() {
-    return this.getBalance('Members', 'closing');
+    return this.getBalance('Members', 'C');
   },
   moneyOverpaid() {
-    return this.getBalance(Accounts.getUnidentifiedIncomeAccount(this.communityId()), 'closing');
+    return this.getBalance(Accounts.getUnidentifiedIncomeAccount(this.communityId()), 'C');
   },
   moneyData() {
     const datasets = [];
@@ -188,7 +193,7 @@ Template.Community_finances.viewmodel({
     moneyAccount?.leafs(this.communityId()).fetch().reverse().forEach((account, index) => {
       datasets.push(_.extend({
         label: __(account.name),
-        data: this.monthlyData(account.code, 'closing'),
+        data: this.monthlyData(account.code, 'C'),
         fill: true,
       }, plusColors[index + 1]));
     });
@@ -204,11 +209,11 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("Long-term liabilities"),
-          data: this.monthlyData('Long-term liabilities', 'closing'),
+          data: this.monthlyData('Long-term liabilities', 'C'),
         }, minusColors[0]),
         _.extend({
           label: __("Short-term liabilities"),
-          data: this.monthlyData('Short-term liabilities', 'closing'),
+          data: this.monthlyData('Short-term liabilities', 'C'),
         }, minusColors[0]),
       ],
     };
@@ -245,12 +250,12 @@ Template.Community_finances.viewmodel({
       labels: this.periodLabels(),
       datasets: [{
         label: __('Incomes'),
-        data: this.monthlyData('Incomes', 'period'),
+        data: this.monthlyData('Incomes', 'T'),
         backgroundColor: choiceColors[0],
         borderWidth: 2,
       }, {
         label: __('Expenses'),
-        data: addArrays(this.monthlyData('`5', 'period'), this.monthlyData('`8', 'period')),
+        data: addArrays(this.monthlyData('`5', 'T'), this.monthlyData('`8', 'T')),
         backgroundColor: choiceColors[1],
         borderWidth: 2,
       }],

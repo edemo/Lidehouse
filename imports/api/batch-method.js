@@ -43,7 +43,7 @@ export class BatchMethod extends ValidatedMethod {
           }
         });
 //        PerformanceLogger.stopAggregation();
-        if (errors.length) throw new Meteor.Error('bundledErrors', errors);
+        if (errors.length) throw newBundledErrors(errors);
         else return results;
       },
     };

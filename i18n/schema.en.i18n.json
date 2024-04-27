@@ -196,6 +196,14 @@
         "label": "Allow posting to group accounts",
         "help": "When it is turned off, you may not post to the group accounts, only to their sub accounts"
       },
+      "sendBillEmail": {
+        "label": "Email notification on bills",
+        "help": "Send an email about each new bill automatically to the receipient, at the time of posting.",
+        "options": {
+          "customer": "Customers",
+          "member": "Owners"
+        }
+      },
       "enableMeterEstimationDays": {
         "label": "Enable meter estimation after (days)",
         "help": "If there was no reading registered with meter within this many days, before a billing takes place, then the system will estimate the reading for the bill. Eg. if you put 30 here, then any meters that have not been read within a month will estimate their reading, and those that have reading will use the reading. Use 0 to always use estimation, use a very large number if you never wish to use an estimation."
@@ -327,6 +335,7 @@
         "equity": "Equity",
         "income": "Income",
         "expense": "Expense",
+        "balance": "Balance",
         "technical": "Technical",
         "payable": "Payable",
         "receivable": "Receivable",

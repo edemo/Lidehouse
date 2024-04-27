@@ -14,9 +14,9 @@ Template.Transaction_view.viewmodel({
     const doc = this.templateInstance.data.doc;
     for (let i = 0; i < 100; i++) {
       const docClone = _.clone(doc);
-      docClone.debit = doc.debit.filter(je => je.subTx === (i || undefined));
+      docClone.debit = doc.debit.filter(je => (i ? (je.subTx === i) : (je.subTx === 0 || je.subTx === undefined)));
       if (docClone.debit.length === 0) break;
-      docClone.credit = doc.credit.filter(je => je.subTx === (i || undefined));
+      docClone.credit = doc.credit.filter(je => (i ? (je.subTx === i) : (je.subTx === 0 || je.subTx === undefined)));
       result.push(docClone);
     }
     return result;

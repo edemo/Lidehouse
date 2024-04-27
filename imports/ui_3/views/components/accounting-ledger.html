@@ -13,12 +13,12 @@
             <select id="period" name="period" {{b 'options: periodOptions, value: periodSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
         </div> 
         <div class="col-sm-3 form-group">
-            <div><label><input type="radio" class="periodRadio" name="periodTypeSelector" value="period" checked> {{_ 'Change during period'}}</label></div>
-            <div><label><input type="radio" class="periodRadio" name="periodTypeSelector" value="closing"> {{_ 'Balance at the end of period'}}</label></div>
+            <div><label><input type="checkbox" id="openingOnlyCheckbox" name="openingOnlyCheckbox" {{b "check: showOpeningOnly"}}> {{_ 'Show opening of period'}}</label></div>
+            <div><label><input type="checkbox" id="trafficOnlyCheckbox" name="trafficOnlyCheckbox" {{b "check: showTrafficOnly"}}> {{_ 'Show change during period'}}</label></div>
             <div><label><input type="checkbox" id="technicalCheckbox" name="technicalCheckbox" {{b "check: showTechnicalAccounts"}}> {{_ 'Show technical accounts'}}</label></div>
         </div>
     </div>
-        {{> Ledger_report accounts=accounts tag=periodSelected tagtype=periodOrCumulation }}
+        {{> Ledger_report accounts=accounts tag=periodSelected tagtype=tagtypeSelected }}
         <div class="row">
             <div class="col-xs-12 text-center">
                 {{#if currentUserHasPermission 'transactions.inCommunity'}}
@@ -34,6 +34,8 @@
         <div class="col-xs-12 text-center">
             {{#if selectedPeriodIsOpen}}
             <button class="btn btn-default js-close" title="{{_ 'Closed at'}}: {{accountingClosedAt}}"><i class="fa fa-lock"></i> {{_ 'Close period'}}</button>
+            {{else}}
+            <button class="btn btn-default js-open" title="{{_ 'Closed at'}}: {{accountingClosedAt}}"><i class="fa fa-unlock"></i> {{_ 'Open period'}}</button>
             {{/if}}
             {{#if community.settings.balancesUploaded}}
             <button class="btn btn-default js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i> {{_ 'Upload balances'}}</button>

@@ -10,8 +10,11 @@ import { Log } from '/imports/utils/log.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
+import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
 
 export const Balances = new Mongo.Collection('balances');
 
@@ -35,9 +38,23 @@ Balances.schema = new SimpleSchema([
 
 Balances.idSet = [['communityId', 'account', 'localizer', 'tag']];
 
+function getTypeOfTag(tag) {
+  return tag[0];
+}
+
+function setTypeOfTag(tag, balanceType) {
+  debugAssert(balanceType.length === 1);
+  const split = tag.split('-');
+  split[0] = balanceType;
+  return split.join('-');
+}
+
 Balances.helpers({
-  tagType() {
-    return this.tag.split('-')[0];
+  tagType(setVal) {
+    if (setVal) {
+      this.tag = setTypeOfTag(this.tag, setVal);
+      return setVal;
+    } else return getTypeOfTag(this.tag);
   },
   period() {
     let periodTag = this.tag.split('-');
@@ -47,6 +64,9 @@ Balances.helpers({
   },
   total() { // It returns the debit balance. Which is from the company's asset sheet's perspective
     return this.debit - this.credit;
+  },
+  reverseTotal() {
+    return this.credit - this.debit;
   },
   debitSum() {
     return this.debit;
@@ -78,6 +98,24 @@ Balances.helpers({
     }
     return displaySign * this.total();
   },
+  toJournalEntry() {
+    const je = {
+      txId: 'opening', // Minimongo indexing cannot handle null or undefined 
+      tx: () => ({ category: 'opening', serialId: __('Opening balance'),/* defId: Txdefs.getByName('Opening', this.communityId), amount: this.amount,*/ }),
+      valueDate: Period.fromTag(this.tag).beginDate(),
+      account: this.account, // Accounts.getByName('Opening account', this.communityId),
+      partner: this.partner,
+      localizer: this.localizer,
+    };
+    if (this.debit > this.credit) {
+      je.side = 'debit';
+      je.amount = this.debit - this.credit;
+    } else {
+      je.side = 'credit';
+      je.amount = this.credit - this.debit;
+    }
+    return JournalEntries._transform(je);
+  },
 });
 
 Meteor.startup(function indexBalances() {
@@ -106,46 +144,71 @@ function subdefSelector(def) {
 }
 
 Balances.nullValue = function nullValue(def) {
-  return _.extend({ debit: 0, credit: 0 }, def);
+  return Balances._transform(_.extend({ debit: 0, credit: 0 }, def));
+};
+
+Balances.add = function add(bal1, bal2) {
+  debugAssert(bal1.communityId === bal2.communityId);
+  const debit = bal1.debit + bal2.debit;
+  const credit = bal1.credit + bal2.credit;
+  return _.extend({}, bal1, { debit, credit });
 };
 
 Balances.get = function get(def, balanceType) {
-  if (!balanceType || balanceType === 'period') return Balances.getPeriodTraffic(def);
-  if (balanceType === 'opening') return Balances.getOpeningValue(def);
-  if (balanceType === 'closing') return Balances.getClosingValue(def);
-  debugAssert(false, `Unknown balance type ${balanceType}`); return undefined;
+  //console.log("Lookin for Balance", def, balanceType);
+  Balances.defSchema.validate(def);
+  const defPeriod = Period.fromTag(def.tag);
+  const accountingPeriods = AccountingPeriods.findOne({ communityId: def.communityId });
+  if (!balanceType) balanceType = getTypeOfTag(def.tag);
+  const _def = _.extend(def, { tag: setTypeOfTag(def.tag, balanceType) });
+  if (balanceType === 'T') {
+    const result = Balances._aggregateSubResults(_def);
+    //console.log('T result:', result);
+    return result;
+  } else if (balanceType === 'O') {
+    if (defPeriod.type() === 'entire') return Balances.nullValue(_def);
+    const prevPeriod = accountingPeriods.previous(defPeriod);
+    if (!prevPeriod) return Balances.nullValue(_def);
+    //else console.log("Prev period is", prevPeriod, 'Closed:', accountingPeriods.isClosed(prevPeriod));
+    if (prevPeriod.type() === 'year' && accountingPeriods.isClosed(prevPeriod)) { // O balances should exist then, because the closing creates them
+      const thisYearPeriod = prevPeriod.next();
+      const result = Balances._aggregateSubResults(_.extend({}, _def, { tag: 'O-' + thisYearPeriod.label }));
+      //console.log('O result:', result);
+      return result;
+    } else {
+      const prevTagDef = _.extend({}, def, { tag: prevPeriod.toTag() });
+      return Balances.get(prevTagDef, 'C');
+    }
+  } else if (balanceType === 'C') {
+    if (defPeriod.type() === 'entire') return Balances.get(def, 'T');  // Entire period closing C is the same as entire traffic T;
+    const hasUploadedCBals = Balances.findOne(subdefSelector(_def));
+    //console.log("Has uploaded C balances:", hasUploadedCBals);
+    if (hasUploadedCBals) return Balances._aggregateSubResults(_def);
+//    if (def.partner) debugAssert(defPeriod.endsOnYearEnd(), 'closing partner balance works only for end of year');
+    /*if (defPeriod.endsOnYearEnd() && accountingPeriods.isClosed(defPeriod)) {
+      const nextPeriod = accountingPeriods.next(defPeriod);
+      debugAssert(nextPeriod, 'A closed period should gave a next period'); // Because the closing should create it
+      console.log("Next period is", nextPeriod);
+      const nextTagDef = _.extend({}, def, { tag: nextPeriod.toTag() });
+      return Balances.get(nextTagDef, 'O');
+    } else {*/
+      //console.log("Just adding current T and O");
+      return Balances.add(Balances.get(def, 'T'), Balances.get(def, 'O'));
+    //}
+  } else {
+    debugAssert(false, `Unknown balance type ${balanceType}`);
+    return undefined;
+  }
 };
 
-Balances.getPeriodTraffic = function getPeriodTraffic(def) {
-  Balances.defSchema.validate(def);
-//  console.log("Lookin for Balance", def);
+Balances._aggregateSubResults = function _aggregateSubResults(def) {
   let result = _.extend({ debit: 0, credit: 0 }, def);
-
-//  This version is slower in gathering sub-accounts first,
-//  but minimongo indexing does not handle sorting, so in fact might be faster after all
-//  if (def.localizer) {
-//    const parcel = Parcels.findOne({ communityId: def.communityId, code: def.localizer });
-//    debugAssert(parcel.isLeaf()); // Currently not prepared for upward cascading localizer
-    // If you want to know the balance of a whole floor or building, the transaction update has to trace the localizer's parents too
-//  }
-/*  leafs.forEach(leaf => {
-    const balance = Balances.findOne({/
-      communityId: def.communityId,
-      account: leaf.code,
-      localizer: def.localizer,
-      tag: def.tag,
-    });
-    result += balance ? balance[side]() : 0;
-  });*/
-
-  Balances.find(subdefSelector(def)).forEach((balance) => {
-//    console.log("Adding balance", balance);
-    result.debit += balance.debit;
-    result.credit += balance.credit;
+  Balances.find(subdefSelector(def)).forEach((b) => {
+//    console.log("Adding balance", b);
+    result.debit += b.debit;
+    result.credit += b.credit;
   });
   result = Balances._transform(result);
-//  console.log("Resulting balance", result);
-
   return result;
 };
 
@@ -156,60 +219,18 @@ Balances.increase = function increase(selector, side, amount) {
   const incObj = {}; incObj[side] = amount;
   Balances.update(balId, { $inc: incObj });
 };
-
-Balances.getOpeningValue = function getOpeningValue(def) {
-  let openingBalance;
-  const period = Period.fromTag(def.tag);
-  const oTag = 'O' + def.tag.substr(1);
-  // Should we first look for O tags in the db, if they exist? Currently only C balances can be uploaded
-  if (period.type() === 'entire') openingBalance = Balances.nullValue(def);
-  else {
-    const prevPeriod = period.previous();
-    const prevTag = prevPeriod.toTag();
-    const prevTagDef = _.extend({}, def, { tag: prevTag });
-    openingBalance = Balances.getClosingValue(prevTagDef);
+/*
+Balances.increase = function increase(selector, side, amount) {
+  Balances._increase(selector, side, amount);
+  // Plus creating the next period opening values
+  const period = Period.fromTag(selector.tag);
+  if (period.type() === 'year') {
+    const nextPeriod = period.next();
+    const nextOSelector = _.extend({}, selector, { tag: 'O' + nextPeriod.toTag().substring(1) });
+    Balances._increase(nextOSelector, side, amount);
   }
-  openingBalance.tag = oTag;
-  openingBalance = Balances._transform(openingBalance);
-  return openingBalance;
 };
-
-Balances.getClosingValue = function getClosingValue(def) {
-  let result = _.extend({ debit: 0, credit: 0 }, def);
-  const cTag = 'C' + def.tag.substr(1);
-  const defPeriod = Period.fromTag(def.tag);
-  if (def.partner) debugAssert(defPeriod.endsOnYearEnd(), 'closing partner balance works only for end of year');
-  const cBals = Balances.find(_.extend(subdefSelector(def), { tag: cTag })).fetch();
-  if (cBals.length > 0) { // If there is any C balance for the given period, we assume that all C balances are uploaded for the period
-    cBals.forEach(cBal => {
-      result.credit += cBal.credit;
-      result.debit += cBal.debit;
-    });
-  } else {  // If no C balance available, we have to calculate it by adding up the T balances
-    if (def.tag === 'T') {
-      result = Balances.get(def);  // Entire period closing C is the same as entire traffic T
-    } else {
-      const selector = _.extend(subdefSelector(def), { tag: new RegExp('^T-') });
-      const tBals = Balances.find(selector).fetch();
-      const prevBals = tBals.filter(b => {
-        const period = b.period();
-        if (defPeriod.endsOnYearEnd()) return (period.year <= defPeriod.year && !period.month);
-        else {
-          return (period.year < defPeriod.year && !period.month)
-          || (period.year == defPeriod.year && (period.month && period.month <= defPeriod.month));
-        }
-      });
-      prevBals.forEach(b => {
-        result.credit += b.credit;
-        result.debit += b.debit;
-      });
-    }
-  }
-  result.tag = cTag;
-  result = Balances._transform(result);
-  return result;
-};
-
+*/
 Balances.checkNullBalance = function checkNullBalance(def) {
   const bal = Balances.get(def);
   if (bal.total()) {

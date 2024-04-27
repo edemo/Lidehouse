@@ -1062,13 +1062,14 @@ export function insertDemoHouse(lang, demoOrTest) {
     ['bank', 'Savings account', 1400000],
     ['bank', 'LTP', 100000],
   ];
-  openings.forEach((opening) => {
-    builder.create('opening', {
-      valueDate: Date.newUTC(`${lastYear}-01-01`),
-      side: 'debit',
-      amount: opening[2],
-      account: Accounts.findOneT({ communityId, category: opening[0], name: opening[1] }).code,
-    });
+  const debit = [];
+  openings.forEach(o => debit.push({
+    account: Accounts.findOneT({ communityId, category: o[0], name: o[1] }).code,
+    amount: o[2],
+  }));
+  builder.create('opening', {
+    valueDate: Date.newUTC(`${lastYear}-01-01`),
+    debit,
   });
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {

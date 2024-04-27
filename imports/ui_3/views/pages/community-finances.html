@@ -56,7 +56,7 @@
                         </div>
     
                         <div class="col-md-3">
-                            <h1 class="m-b-xs">{{displayMoney (getBalance 'Money accounts' 'closing')}}</h1>
+                            <h1 class="m-b-xs">{{displayMoney (getBalance 'Money accounts' 'C')}}</h1>
                             <h3 class="font-bold no-margins"> {{_ 'Money accounts total'}}</h3>
                         </div>
 
@@ -67,7 +67,7 @@
                                 <td>{{_ account.name}}</td>
                                 <td class="text-right text-bold"> 
                                     <!--a href="#account-history" class="js-view" data-id={{account.code}}-->
-                                    {{displayMoney (getBalance account.code 'closing')}}
+                                    {{displayMoney (getBalance account.code 'C')}}
                                     <!--/a-->
                                 </td>
                             </tr>
@@ -98,7 +98,7 @@
                         </div>
 
                         <div class="col-md-3">
-                            <h1 class="m-b-xs">{{displayMoney (add (getBalance 'Long-term liabilities' 'closing') (getBalance 'Short-term liabilities' 'closing'))}}</h1>
+                            <h1 class="m-b-xs">{{displayMoney (add (getBalance 'Long-term liabilities' 'C') (getBalance 'Short-term liabilities' 'C'))}}</h1>
                             <h3 class="font-bold no-margins"> {{_ 'Commitments total'}}</h3>
                         </div>
 
@@ -107,7 +107,7 @@
                             {{#each account in commitmentAccounts}}
                             <tr>
                                 <td>{{_ account}}</td>
-                                <td class="text-right text-bold"> {{displayMoney (getBalance account 'closing')}}</td>
+                                <td class="text-right text-bold"> {{displayMoney (getBalance account 'C')}}</td>
                             </tr>
                             {{/each}}
                         </table>

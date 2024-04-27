@@ -17,24 +17,18 @@
                 <td class="row-header nowrap" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{account.displayAccount}}
                 </td>
-                {{#let cellValue=(balance account tag 'debitSum' tagtype)}}
-                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                    {{displayNumber cellValue}}
+                {{#let balance=(getBalance account tag tagtype) }}
+                <td class="cell nowrap {{negativeClass balance.debitSum}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber balance.debitSum}}
                 </td>
-                {{/let}}
-                {{#let cellValue=(balance account tag 'creditSum' tagtype)}}
-                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                    {{displayNumber cellValue}}
+                <td class="cell nowrap {{negativeClass balance.creditSum}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber balance.creditSum}}
                 </td>
-                {{/let}}
-                {{#let cellValue=(balance account tag 'debitTotal' tagtype)}}
-                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                    {{displayNumber cellValue}}
+                <td class="cell nowrap {{negativeClass balance.debitTotal}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber balance.debitTotal}}
                 </td>
-                {{/let}}
-                {{#let cellValue=(balance account tag 'creditTotal' tagtype)}}
-                <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                    {{displayNumber cellValue}}
+                <td class="cell nowrap {{negativeClass balance.creditTotal}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber balance.creditTotal}}
                 </td>
                 {{/let}}
             </tr>

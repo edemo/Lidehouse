@@ -197,6 +197,14 @@
         "label": "Lehessen a gyűjtőszámlákra könyvelni",
         "help": "Ha nincs bekapcsolva, akkor a gyűjtő számlákra nem enged könyvelni a rendszer, csak azok alszámláira"
       },
+      "sendBillEmail": {
+        "label": "Email értesítő a kiállított számlákról",
+        "help": "Automatikus email küldése a kiállított számlákról, a könyvelésbe küldés pillanatában",
+        "options": {
+          "customer": "Vevőknek",
+          "member": "Tulajdonosoknak"
+        }
+      },
       "enableMeterEstimationDays": {
         "label": "Becsült óraállás használata ennyi nap után",
         "help": "Ha az előírás napjához képest ennyi napon belül, nem volt előtte leolvasás, akkor a rendszer becsült értékkel fog dolgozni. Például ha itt 30 van megadva, akkor minden mérőóra ami az elmúlt 30 napban le volt olvasva, az a leolvasott állással számlázódik, amik pedig nem voltak leolvasva, azok megbecsült óraállással számlázódnak. Írjon ide 0-t ha mindig szeretne becsülni, ha pedig soha, akkor egy nagyon nagy számot"
@@ -328,6 +336,7 @@
         "equity": "Saját tőke",
         "income": "Bevétel",
         "expense": "Kiadás",
+        "balance": "Mérleg",
         "technical": "Technikai",
         "payable": "Tartozás",
         "receivable": "Követelés",

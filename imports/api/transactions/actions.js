@@ -102,7 +102,7 @@ Transactions.actions = {
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: doc && (user.hasPermission('transactions.inCommunity', doc) || doc.contract()?.entitledToView(user)),
+    visible: doc?._id && (user.hasPermission('transactions.inCommunity', doc) || doc.contract()?.entitledToView(user)),
     run() {
       const entity = Transactions.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -122,10 +122,10 @@ Transactions.actions = {
   }),
   post: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'post',
-    icon: doc && doc.isPosted() ? 'fa fa-list' : 'fa fa-check-square-o',
-    color: doc && doc.isPosted() ? undefined : 'warning',
-    label: doc && doc.isPosted() ? 'Accounting view' : 'post',
-    visible: doc && !(doc.category === 'bill' && !doc.hasConteerData())
+    icon: doc?._id && doc.isPosted() ? 'fa fa-list' : 'fa fa-check-square-o',
+    color: doc?._id && doc.isPosted() ? undefined : 'warning',
+    label: doc?._id && doc.isPosted() ? 'Accounting view' : 'post',
+    visible: doc?._id && !(doc.category === 'bill' && !doc.hasConteerData())
       && user.hasPermission('transactions.post', doc),
     run() {
       if (doc.isPosted()) {
@@ -162,7 +162,7 @@ Transactions.actions = {
   repost: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'repost',
     icon: 'fa fa-check-square-o',
-    visible: doc && doc.isPosted() && user.super, // user.hasPermission('transactions.post', doc),
+    visible: doc?._id && doc.isPosted() && user.super, // user.hasPermission('transactions.post', doc),
     run() {
       doc.makeJournalEntries(doc.community().settings.accountingMethod);
       Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
@@ -178,7 +178,7 @@ Transactions.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: doc && !(doc.isPosted() && doc.isPetrified())
+    visible: doc?._id && !(doc.isPosted() && doc.isPetrified())
 //      && !(doc.category === 'bill' && doc.relation === 'member') // cannot edit manually, use parcel billing
       && user.hasPermission('transactions.update', doc),
     run() {
@@ -206,7 +206,7 @@ Transactions.actions = {
     name: 'reallocate',
     label: 'reallocate',
     icon: 'fa fa-edit',
-    visible: doc && doc.isPosted() && (doc.category === 'payment') && user.hasPermission('transactions.update', doc),
+    visible: doc?._id && doc.isPosted() && (doc.category === 'payment') && user.hasPermission('transactions.update', doc),
     run() {
       const entity = Transactions.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -230,7 +230,7 @@ Transactions.actions = {
   resend: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'resend',
     icon: 'fa fa-envelope',
-    visible: doc && doc.category === 'bill' && doc.isPosted() && doc.outstanding && user.hasPermission('transactions.post', doc),
+    visible: doc?._id && doc.category === 'bill' && doc.isPosted() && doc.outstanding && user.hasPermission('transactions.post', doc),
     run() {
       Modal.confirmAndCall(Transactions.methods.resend, { _id: doc._id }, {
         action: 'resend',
@@ -244,7 +244,7 @@ Transactions.actions = {
     label: 'registerPayment',
     icon: 'fa fa-credit-card',
     color: 'info',
-    visible: doc.community().settings.paymentsWoStatement && doc?.category === 'bill' && doc.outstanding && !(doc.availableAmountFromOverPayment() > 0)
+    visible: doc?._id && doc.community().settings.paymentsWoStatement && doc?.category === 'bill' && doc.outstanding && !(doc.availableAmountFromOverPayment() > 0)
       && user.hasPermission('transactions.insert', doc),
     run() {
       ModalStack.setVar('billId', doc._id);
@@ -288,7 +288,7 @@ Transactions.actions = {
     label: 'registerIdentification',
     icon: 'fa fa-arrow-circle-left',
     color: 'warning',
-    visible: doc && doc.isPosted() && doc.category === 'bill' && doc.outstanding && (doc.outstanding < 0 || doc.availableAmountFromOverPayment() > 0) && user.hasPermission('transactions.update', doc),
+    visible: doc?._id && doc.isPosted() && doc.category === 'bill' && doc.outstanding && (doc.outstanding < 0 || doc.availableAmountFromOverPayment() > 0) && user.hasPermission('transactions.update', doc),
     run() {
       ModalStack.setVar('billId', doc._id);
       const overpayment = doc.availableAmountFromOverPayment();
@@ -315,7 +315,7 @@ Transactions.actions = {
     name: 'registerRemission',
     label: 'registerRemission',
     icon: 'fa fa-times',
-    visible: doc && doc.isPosted() && doc.category === 'bill' && doc.outstanding && user.hasPermission('transactions.update', doc),
+    visible: doc?._id && doc.isPosted() && doc.category === 'bill' && doc.outstanding && user.hasPermission('transactions.update', doc),
     run() {
       ModalStack.setVar('billId', doc._id);
       const paymentDef = doc.correspondingRemissionTxdef();
@@ -338,7 +338,7 @@ Transactions.actions = {
   }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
-    label: doc.isPosted() ? 'storno' : 'delete',
+    label: doc?._id && doc.isPosted() ? 'storno' : 'delete',
     icon: 'fa fa-trash',
     visible: user.hasPermission('transactions.remove', doc) && (doc.status !== 'void')
       && (doc.isPosted() ? user.hasPermission('transactions.post', doc) : true),

@@ -75,7 +75,7 @@
                   <td>{{displayDate entry.valueDate}}</td>
                   <!--td>{{{displayAccountSpecification entry.contra}}}</td-->
                   <td>{{entry.tx.serialId}}</td>
-                  <td>{{{displayLocalizer entry.localizer}}}</td>
+                  <td>{{{displayPartner entry.partner}}} {{{displayLocalizer entry.localizer}}}</td>
                   <!--td>{{entry.notes}}</td-->
                   <!--td class="{{negativeClass entry}}">{{displayMoney (entryAmount sign)}}</td-->
                   <td>{{displayMoney (entry.debitAmount)}}</td>
@@ -85,7 +85,7 @@
                   <!--td><strong>{{displayMoney entry.total}}</strong></td-->
                   <td><strong>{{displayMoney entry.debitTotal}}</strong></td>
                   <td><strong>{{displayMoney entry.creditTotal}}</strong></td>
-                  <td>{{>Action_buttons_group collection='transactions' actions='view' doc=entry.txId size='sm'}}</td>
+                  <td>{{>Action_buttons_group collection='transactions' actions='view,post' doc=entry.txId size='sm'}}</td>
                   <td>{{{checkmarkBoolean entry.transaction.reconciled}}}</td>
               </tr>
               {{/each}}

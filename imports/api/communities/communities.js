@@ -46,6 +46,7 @@ Communities.settingsSchema = new SimpleSchema({
   paymentsWoStatement: { type: Boolean, optional: true },
   allowPostToGroupAccounts: { type: Boolean, optional: true },
   subjectToVat: { type: Boolean, optional: true },
+  sendBillEmail: { type: [String], allowedValues: ['member', 'customer'], defaultValue: [], autoform: { type: 'select-checkbox-inline' } },
   enableMeterEstimationDays: { type: Number, defaultValue: 30 },
 });
 

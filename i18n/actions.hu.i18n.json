@@ -59,6 +59,12 @@
       "doing": "könyvelésbe küldése",
       "done": "könyvelésbe küldve"
     },
+    "open": {
+      "label": "megnyitás",
+      "do": "megnyitja",
+      "doing": "megnyitása",
+      "done": "megnyitva"
+    },
     "close": {
       "label": "lezárás",
       "do": "lezárja",

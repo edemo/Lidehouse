@@ -31,7 +31,7 @@ import { StatementEntries } from '/imports/api/transactions/statement-entries/st
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'exchange', 'transfer', 'opening', 'freeTx'];
+Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'exchange', 'transfer', 'opening', 'closing', 'freeTx'];
 Transactions.reconciledCategories = ['payment', 'receipt', 'transfer'];
 
 Transactions.statuses = {
@@ -54,6 +54,7 @@ Transactions.entrySchema = new SimpleSchema([
 Transactions.coreSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   category: { type: String, allowedValues: Transactions.categoryValues, autoform: { type: 'hidden' } },
+  generated: { type: Boolean, optional: true, autoform: { omit: true } }, // Generated transactions do not trigger balance updates
   valueDate: { type: Date },
   amount: { type: Number, decimal: true },
   rounding: { type: Number, decimal: true, optional: true },
@@ -324,10 +325,12 @@ Transactions.helpers({
     tx.debit?.forEach(l => { if (l.amount) l.amount *= -1; });
     tx.credit?.forEach(l => { if (l.amount) l.amount *= -1; });
 //    const temp = tx.credit; tx.credit = tx.debit; tx.debit = temp;
+//    console.log("Storno Tx", tx);
     return tx;
   },
   updateBalances(directionSign = 1) {
-  //    if (!doc.complete) return;
+    //    if (!doc.complete) return;
+    if (this.generated) return;
     const communityId = this.communityId;
     const Balances =  Mongo.Collection.get('balances');
     const leafTag = 'T-' + moment(this.valueDate).format('YYYY-MM');
@@ -351,11 +354,20 @@ Transactions.helpers({
     });
     // checkBalances([doc]);
   },
+  cleanJournalEntry(entry) {
+    if (!entry.amount) entry.amount = this.amount;
+    if (!Accounts.needsLocalization(entry.account, this.communityId)) {
+      delete entry.partner;
+      delete entry.localizer;
+      delete entry.parcelId;
+    }
+  },
   validateJournalEntries() {
     const creditAmount = [];
     const debitAmount = [];
     this.journalEntries(true).forEach(je => {
       let accountCode;
+      debugAssert(je.account, `No account on je. Je: ${JSON.stringify(je)}, Tx: ${JSON.stringify(this)}`);
       if (Accounts.isTechnicalCode(je.account)) accountCode = Accounts.fromTechnicalCode(je.account);
       else accountCode = je.account;
       const account = Accounts.getByCode(accountCode, je.communityId);

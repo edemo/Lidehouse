@@ -11,25 +11,25 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { freeTxSchema } from './free-tx.js';
 
-Transactions.categoryHelpers('opening', {
+Transactions.categoryHelpers('closing', {
   makeJournalEntries() {
     const self = this;
     let subTx = 0;
     const newDebitEntries = [];
     const newCreditEntries = [];
-    const openingAccount = Accounts.getByName('Opening account', this.communityId).code;
+    const closingAccount = Accounts.getByName('Closing account', this.communityId).code;
     this.debit?.forEach(je => {
       if (je.subTx) { subTx = je.SubTx + 1; return; }
       je.subTx = subTx++;
-      newCreditEntries.push(_.extend({}, je, { account: openingAccount }));
+      newCreditEntries.push(_.extend({}, je, { account: closingAccount }));
     });
     this.credit?.forEach(je => {
       if (je.subTx) { subTx = je.SubTx + 1; return; }
       je.subTx = subTx++;
-      newDebitEntries.push(_.extend({}, je, { account: openingAccount }));
+      newDebitEntries.push(_.extend({}, je, { account: closingAccount }));
     });
     this.debit = (this.debit || []).concat(newDebitEntries);
-    this.credit = newCreditEntries.concat(this.credit || []);
+    this.credit = (this.credit || []).concat(newCreditEntries);
     this.debit?.forEach(je => self.cleanJournalEntry(je));
     this.credit?.forEach(je => self.cleanJournalEntry(je));
     return { debit: this.debit, credit: this.credit };
@@ -39,15 +39,15 @@ Transactions.categoryHelpers('opening', {
   },
 });
 
-Transactions.attachVariantSchema(freeTxSchema, { selector: { category: 'opening' } });
+Transactions.attachVariantSchema(freeTxSchema, { selector: { category: 'closing' } });
 
-Transactions.simpleSchema({ category: 'opening' }).i18n('schemaTransactions');
+Transactions.simpleSchema({ category: 'closing' }).i18n('schemaTransactions');
 
 // --- Factory ---
 
-Factory.define('opening', Transactions, {
+Factory.define('closing', Transactions, {
   valueDate: () => Clock.currentDate(),
-  category: 'opening',
+  category: 'closing',
   amount: 1000,
-  debit: [{ account: '`38' }],
+  debit: [{ account: '`88' }],
 });

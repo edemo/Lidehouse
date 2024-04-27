@@ -10,7 +10,7 @@ import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 
-const freeTxSchema = new SimpleSchema({
+export const freeTxSchema = new SimpleSchema({
     // Would it be better to store the je data in the tx and copy over the data, when posting? 
     // So that no journalEntries would exist in the db until then.
 
@@ -23,16 +23,8 @@ const freeTxSchema = new SimpleSchema({
 Transactions.categoryHelpers('freeTx', {
   makeJournalEntries() {
     const self = this;
-    function clean(entry) {
-      if (!entry.amount) entry.amount = self.amount;
-      if (!Accounts.needsLocalization(entry.account, self.communityId)) {
-        delete entry.partner;
-        delete entry.localizer;
-        delete entry.parcelId;
-      }
-    }
-    this.debit.forEach(je => clean(je));
-    this.credit.forEach(je => clean(je));
+    this.debit?.forEach(je => self.cleanJournalEntry(je));
+    this.credit?.forEach(je => self.cleanJournalEntry(je));
     return { debit: this.debit, credit: this.credit };
   },
   moveTransactionAccounts(codeFrom, codeTo) {

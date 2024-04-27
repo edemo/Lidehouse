@@ -47,7 +47,7 @@
                     {{#if leg}}
                     <tr>
                         <td>{{{displayAccountText leg.account}}}</td>
-                        <td>{{{displayAccountText leg.localizer}}}</td>
+                        <td>{{{displayPartnerContract leg.partner}}} {{{displayAccountText leg.localizer}}}</td>
                         <td class="nowrap">{{displayMoney leg.amount}}</td>
                     </tr>
                     {{/if}}

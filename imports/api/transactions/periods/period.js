@@ -10,6 +10,7 @@ export class Period {
     this.year = split[0];
     this.month = split[1];
     const day = split[2];
+    debugAssert(!day, 'Day defined period currently not supperted');
     if (day) {  // We allow creating a period, with its last day
       const date = moment(label);
       debugAssert(date.date() === date.daysInMonth(), 'period closing date has to be last day of month');
@@ -53,6 +54,13 @@ export class Period {
     return prevPeriod;
   }
 
+  next() {
+    let nextPeriod;
+    if (!this.year) debugAssert(false, 'entire period has no next');
+    else if (!this.month || this.month == 12) nextPeriod = Period.fromValues(parseInt(this.year) + 1);
+    else nextPeriod = Period.fromValues(this.year, parseInt(this.month) + 1);
+    return nextPeriod;
+  }
   type() {
     if (!this.year) return 'entire';
     else if (!this.month) return 'year';
@@ -61,26 +69,30 @@ export class Period {
 
   begin(format = 'YYYY-MM-DD') {
     let date;
-    if (!this.year) date = moment(0);
-    else if (!this.month) date = moment([this.year]).startOf('year');
-    else date = moment([this.year, this.month - 1]).startOf('month');
+    if (!this.year) date = moment.utc(0);
+    else if (!this.month) date = moment.utc([this.year]).startOf('year');
+    else date = moment.utc([this.year, this.month - 1]).startOf('month');
     return date.format(format);
   }
 
   end(format = 'YYYY-MM-DD') {
     let date;
-    if (!this.year) date = moment();
-    else if (!this.month) date = moment([this.year]).endOf('year');
-    else date = moment([this.year, this.month - 1]).endOf('month');
+    if (!this.year) date = moment.utc();
+    else if (!this.month) date = moment.utc([this.year]).endOf('year');
+    else date = moment.utc([this.year, this.month - 1]).endOf('month');
     return date.format(format);
   }
 
   beginDate() {
-    return new Date(this.begin());
+    return moment.utc(this.begin()).toDate();
   }
 
   endDate() {
-    return new Date(this.end());
+    return moment.utc(this.end()).toDate();
+  }
+
+  beginsOnYearBegin() {
+    return (!this.month || this.month == 1);
   }
 
   endsOnYearEnd() {

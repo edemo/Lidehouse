@@ -18,7 +18,8 @@ Template.Partner_ledger_report.viewmodel({
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       const accounts = [this.relationAccount(), this.unidentifiedIncomeAccount(), this.unidentifiedExpenseAccount()];
-      instance.subscribe('balances.inCommunity', { communityId, partners: [], tags: ['years'] });
+      // If we restrict to the accounts, then the subaccounts will not be published
+      instance.subscribe('balances.inCommunity', { communityId, partners: [], tag: 'C' + Template.currentData().tag.substring(1) });
     });
   },
   communityId() {
@@ -28,7 +29,7 @@ Template.Partner_ledger_report.viewmodel({
     return Communities.findOne(this.communityId());
   },
   relationAccount() {
-    const relation = this.templateInstance.data.relation;
+    const relation = Template.currentData().relation;
     const community = this.community();
     return Accounts.getRelationAccount(community, relation);
   },
@@ -39,7 +40,7 @@ Template.Partner_ledger_report.viewmodel({
     return Accounts.getUnidentifiedExpenseAccount();
   },
   unidentifiedAccount() {
-    const relation = this.templateInstance.data.relation;
+    const relation = Template.currentData().relation;
     if (relation === 'supplier') return this.unidentifiedExpenseAccount();
     else return this.unidentifiedIncomeAccount();
   },

@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { moment } from 'meteor/momentjs:moment';
 
 import '/imports/ui_3/views/modals/modal.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -28,7 +29,8 @@ import './accounting-ledger.html';
 Template.Accounting_ledger.viewmodel({
   periodBreakdown: undefined,
   periodSelected: Period.currentYearTag(),
-  periodOrCumulation: 'period',
+  showOpeningOnly: false,
+  showTrafficOnly: false,
   showTechnicalAccounts: false,
   onCreated(instance) {
     instance.autorun(() => {
@@ -44,6 +46,15 @@ Template.Accounting_ledger.viewmodel({
   },
   accounts() {
     return this.showTechnicalAccounts() ? Accounts.allWithTechnical(this.communityId()) : Accounts.all(this.communityId());
+  },
+  tagtypeSelected() {
+    if (this.showTrafficOnly()) {
+      if (this.showOpeningOnly()) return 'C';
+      else return 'T';
+    } else {
+      if (this.showOpeningOnly()) return 'O';
+      else return 'C';
+    }
   },
   accountOptions() {
     const communityId = this.communityId();
@@ -78,15 +89,11 @@ Template.Accounting_ledger.viewmodel({
   },
   selectedPeriodIsOpen() {
     const period = Period.fromTag(this.periodSelected());
-    return (this.accountingClosedAt()?.getTime() || 0) < period.endDate().getTime();
+    return moment.utc(this.accountingClosedAt() || 0).valueOf() < moment.utc(period.end()).valueOf();
   },
 });
 
 Template.Accounting_ledger.events({
-  'change .periodRadio'(event, instance) {
-    const selected = event.target.value;
-    instance.viewmodel.periodOrCumulation(selected);
-  },
   'click .js-journals'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     // ModalStack.setVar('parcelId', doc._id);
@@ -129,6 +136,12 @@ Template.Accounting_ledger.events({
     const tag = instance.viewmodel.periodSelected();
     Modal.confirmAndCall(AccountingPeriods.methods.close, { communityId, tag },
       { entity: 'period', action: 'close', message: 'Close period warning' });
+  },
+  'click .js-open'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    const tag = instance.viewmodel.periodSelected();
+    Modal.confirmAndCall(AccountingPeriods.methods.open, { communityId, tag },
+      { entity: 'period', action: 'open', message: 'Open period warning' });
   },
   'click .js-import'(event, instance) {
     importCollectionFromFile(Balances);

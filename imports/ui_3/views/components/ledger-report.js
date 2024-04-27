@@ -10,22 +10,45 @@ import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
 import './ledger-report.html';
 
+/*
+Template.Ledger_report.viewmodel({
+  tag: undefined,
+  tagType: undefined,
+  accounts: [],
+  onCreated(instance) {
+  },
+  autorun: [
+    function subscribe() {
+      debugger;
+      const communityId = ModalStack.getVar('communityId');
+      const tags =  [this.tag()];
+      console.log(' this.tagType()',  this.tagType());
+      if (this.tagType() === 'C') {
+        debugger;
+        tags.push('O' + this.tag().substring(1, 6), 'C' + this.tag().substr(1, 6));
+      }
+      console.log('tags', tags);
+      this.templateInstance.subscribe('balances.inCommunity', { communityId, tags });
+    },
+  ],
+*/
+
 Template.Ledger_report.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
-    const tags =  Template.currentData().tagtype === 'period' ? [Template.currentData().tag] : undefined;
+    const tags =  ['C' + Template.currentData().tag.substring(1)];
     this.subscribe('balances.inCommunity', { communityId, tags });
   });
 });
 
 Template.Ledger_report.helpers({
-  balance(account, tag, sideFunc, tagtype) {
+  getBalance(account, tag, tagtype) {
     const balance = Balances.get({
       communityId: ModalStack.getVar('communityId'),
       account: account.code,
       tag,
     }, tagtype);
-    return balance[sideFunc]();
+    return balance;
   },
   hasActivity(account) {
     return !!Balances.findOne({

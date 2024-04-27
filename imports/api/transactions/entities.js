@@ -35,7 +35,11 @@ Transactions.entities = {
   },
   opening: {
     name: 'opening',
-    omitFields: () => ['debit', 'credit'],
+    omitFields: () => [],
+  },
+  closing: {
+    name: 'closing',
+    omitFields: () => [],
   },
   freeTx: {
     name: 'freeTx',

@@ -47,6 +47,23 @@ export function displayOutstanding(value) {
   return value == 0 ? value : label(value, 'info');
 }
 
+export function displayPartner(code) {
+  const split = code.split('/');
+  const partner = split[0] ? Partners.findOne(split[0]) : undefined;
+  const text = partner?.toString();
+  return label(text, 'primary', 'user');
+}
+
+export function displayPartnerContract(code) {
+  const split = code.split('/');
+  const partner = split[0] ? Partners.findOne(split[0]) : undefined;
+  const contract = split[1] ? Contracts.findOne(split[1]) : undefined;
+  let text = '';
+  if (partner) text += partner.toString();
+  if (contract) text += '/' + contract.toString();
+  return label(text, 'primary', 'user');
+}
+
 export function displayAccountText(code) {
   if (!code) return '';
   const collection = code.charAt(0) === '`' ? Accounts : Parcels;
@@ -155,6 +172,8 @@ if (Meteor.isClient) {
   Template.registerHelper('checkmarkBoolean', checkmarkBoolean);
   Template.registerHelper('displayMeterService', displayMeterService);
   Template.registerHelper('displayReading', displayReading);
+  Template.registerHelper('displayPartner', displayPartner);
+  Template.registerHelper('displayPartnerContract', displayPartnerContract);
   Template.registerHelper('displayAccountText', displayAccountText);
   Template.registerHelper('displayAccount', displayAccount);
   Template.registerHelper('displayAccountSet', displayAccountSet);

@@ -68,7 +68,8 @@
   "parcel_bill": "parcel invoice",
   "unreconciledOnlyHelp": "Only those bills that are unpaid. Only those payments that are not reconciled to bills or not reconciled to bank statements. Only those partners which have an outstanding balance. In short only those items that need to be handled in some way.",
   "Close period warning": "You will no longer be able to record transactions that belong to this period",
-
+  "Open period warning": "You will allow new transactions for this period AGAIN",
+  
   // feedback
   "FeedbackPaneCallout": "Tell us your opinion about the app!",
   "FeedbackPaneTitle": "Your feedback can help the app develepment a lot. </br> If you notice technical errors, or you have a suggestion for a new feature, please let us know.",

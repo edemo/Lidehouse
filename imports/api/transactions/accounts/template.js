@@ -77,13 +77,14 @@ export function defineAccountTemplates() {
     { code: '`467', name: 'VAT payable', category: 'payable' },  // Fizetendő általános forgalmi adó
     { code: '`468', name: 'VAT clearing', category: 'receivable' },  // Általános forgalmi adó elszámolási számla
     { code: '`48', name: 'Passzív  időbeli elhatárolások', category: 'liability' },
-    { code: '`49', name: 'Évi mérlegszámlák', category: 'liability' },
-    { code: '`491', name: 'Opening account', category: 'liability' },
-    { code: '`492', name: 'Closing account', category: 'liability' },
-    { code: '`493', name: 'Adózott eredmény elszámolása', category: 'liability' },
-    { code: '`494', name: 'Előző évi eredmény elszámolása', category: 'liability' },
+    { code: '`49', name: 'Évi mérlegszámlák', category: 'balance' },
+    { code: '`491', name: 'Opening account', category: 'balance' },
+    { code: '`492', name: 'Closing account', category: 'balance' },
+    { code: '`493', name: 'Adózott eredmény elszámolása', category: 'balance' },
+    { code: '`494', name: 'Előző évi eredmény elszámolása', category: 'balance' },
     // 5
     { code: '`5', name: 'KÖLTSÉGNEMEK', category: 'expense', locked: true, sign: +1 },  // 5-ös számlaosztály kész
+    { code: '`50', name: 'Költségnemek átvezetése', category: 'expense' },
     { code: '`51', name: 'Anyagköltség', category: 'expense' },
     { code: '`5101', name: 'Víz díj', category: 'expense' },
     { code: '`5102', name: 'Áram díj', category: 'expense' },
@@ -145,7 +146,7 @@ export function defineAccountTemplates() {
     { code: '`552', name: 'Lift költségek', category: 'expense' },
     { code: '`5521', name: 'Lift karbantartás', category: 'expense' },
     { code: '`5522', name: 'Lift javítás', category: 'expense' },
-    { code: '`5523', name: 'Lift elenőrzés', category: 'expense' },
+    { code: '`5523', name: 'Lift ellenőrzés', category: 'expense' },
     { code: '`5524', name: 'Lift felülvizsgálat', category: 'expense' },
     { code: '`5525', name: 'Lift távfelügyelet', category: 'expense' },
     { code: '`553', name: 'Gépészeti munkák', category: 'expense' },
@@ -156,6 +157,7 @@ export function defineAccountTemplates() {
     { code: '`5535', name: 'Szellőző rendszer karbantartás', category: 'expense' },
     { code: '`5536', name: 'Garázskapu és beléptető rendszer', category: 'expense' },
     { code: '`5537', name: 'Esővíz szivattyú, purátor', category: 'expense' },
+    { code: '`5538', name: 'Kaputelefon', category: 'expense' },
     { code: '`5539', name: 'Egyéb gépészeti javítások', category: 'expense' },
     { code: '`554', name: 'Szakipari munkák', category: 'expense' },
     { code: '`5541', name: 'Vízvezeték szerelés', category: 'expense' },
@@ -175,9 +177,9 @@ export function defineAccountTemplates() {
     { code: '`572', name: 'Terven felüli écs', category: 'expense' },
     { code: '`573', name: 'Értékhatár alatti tárgyi eszközök écs', category: 'expense' },
     { code: '`58', name: 'Felújítási munkák', category: 'expense' },
-    { code: '`59', name: 'Költségnemek átvezetése', category: 'expense' },
     // 8
     { code: '`8', name: 'Expenses', category: 'expense', locked: true, sign: +1 }, // RÁFORDÍTÁSOK
+    { code: '`80', name: 'Expenses closing', category: 'expense' },
     { code: '`86', name: 'Egyéb ráfordítások', category: 'expense' },
     { code: '`861', name: 'Adók', category: 'expense' },
     { code: '`862', name: 'Bírságok', category: 'expense' },
@@ -189,6 +191,7 @@ export function defineAccountTemplates() {
     { code: '`891', name: 'Társasági adó', category: 'expense' },
     // 9
     { code: '`9', name: 'Incomes', category: 'income', locked: true, sign: -1 },   // BEVÉTELEK
+    { code: '`90', name: 'Incomes closing', category: 'expense' },
     { code: '`91', name: 'Értékesítés árbevétele', category: 'income' },
     { code: '`911', name: 'Bérleti díj bevételek', category: 'income' },
     { code: '`915', name: 'Egyéb adóköteles bevételek', category: 'income' },
