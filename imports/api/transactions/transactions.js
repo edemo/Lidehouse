@@ -355,6 +355,10 @@ Transactions.helpers({
     // checkBalances([doc]);
   },
   cleanJournalEntry(entry) {
+    if (!entry.account) {
+      entry.amount = 0;
+      return;
+    }
     if (!entry.amount) entry.amount = this.amount;
     if (!Accounts.needsLocalization(entry.account, this.communityId)) {
       delete entry.partner;

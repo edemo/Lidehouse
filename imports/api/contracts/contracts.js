@@ -254,6 +254,8 @@ export const chooseContract = {
 };
 
 Contracts.partnerContractOptions = function partnerContractOptions(selector) {
+  const communityId = ModalStack.getVar('communityId');
+  const community = Communities.findOne(communityId);
   const partners = Partners.find(Object.cleanUndefined(selector));
   const partnerContracts = [];
   partners.forEach(p => {
@@ -268,7 +270,8 @@ Contracts.partnerContractOptions = function partnerContractOptions(selector) {
     label: Partners.code(pc[0].toString(), pc[1]?.toString()), // pc[0].toString() + (pc[1] ? `/${pc[1].toString()}` : ''),
     value: Partners.code(pc[0]._id, pc[1]?._id),
   }));
-  return options;
+  const sortedOptions = options.sort((a, b) => a.label.localeCompare(b.label, community.settings.language, { sensitivity: 'accent' }));
+  return sortedOptions;
 };
 
 Contracts.partnerContractOptionsWithAll = function partnerContractOptionsWithAll(selector) {
