@@ -94,7 +94,7 @@ export const post = new ValidatedMethod({
           });
         }
       });
-      if (doc.community().settings.sendBillEmail.includes(doc.relation)) {
+      if (doc.community().settings.sendBillEmail?.includes(doc.relation)) {
         sendBillEmail(doc);
       }
     }
