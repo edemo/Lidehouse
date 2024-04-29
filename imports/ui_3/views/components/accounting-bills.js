@@ -43,7 +43,7 @@ Template.Accounting_bills.viewmodel({
       //initializeDatatablesSelectButtons('Bills');
       const communityId = this.communityId();
       instance.subscribe('parcelBillings.inCommunity', { communityId });
-      instance.subscribe('balances.inCommunity', { communityId, partners: [], tags: ['T'], notNull: true });
+      instance.subscribe('balances.inCommunity', { communityId, partners: [], tag: 'T', notNull: true });
     });
   },
   parcelBillings() {

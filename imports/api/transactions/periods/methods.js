@@ -89,63 +89,70 @@ export const close = new ValidatedMethod({
       const oBal = _.extend({}, tBal, { tag: 'O' + doc.tag.substring(1) });
       oBals.push(oBal);
     }); // At this point oBals contain (oBals + tBals)
-    const debitOpen = [];
-    const creditOpen = [];
-    let debitOpenAmount = 0;
-    let creditOpenAmount = 0;
-    const nextYearOBals = [];
-    oBals.forEach(oBal => {
-      if (!Accounts.isCarriedOver(oBal.account, oBal.communityId)) return;
-      if (oBal.account === Accounts.getByName('Opening account').code) return;
-      if (!oBal.partner && !oBal.localizer) {   // Only the one dimensional Balances will be connected to an Opening tx
-        if (oBal.debitTotal()) {
-          debitOpen.push({ account: oBal.account, amount: oBal.debitTotal() });
-          debitOpenAmount += oBal.debitTotal();
-        } else if (oBal.creditTotal()) {
-          creditOpen.push({ account: oBal.account, amount: oBal.creditTotal() });
-          creditOpenAmount += oBal.creditTotal();
+    ['normal', 'technical'].forEach(NoT => {
+      let openingAccountCode = Accounts.getByName('Opening account').code;
+      if (NoT === 'technical') openingAccountCode = Accounts.toTechnicalCode(openingAccountCode);
+      const debitOpen = [];
+      const creditOpen = [];
+      let debitOpenAmount = 0;
+      let creditOpenAmount = 0;
+      const nextYearOBals = [];
+      oBals.forEach(oBal => {
+        if (NoT === 'normal' && Accounts.isTechnicalCode(oBal.account)) return;
+        if (NoT === 'technical' && !Accounts.isTechnicalCode(oBal.account)) return;
+        const normalAccount = (NoT === 'normal') ? oBal.account : Accounts.fromTechnicalCode(oBal.account);
+        if (!Accounts.isCarriedOver(normalAccount, oBal.communityId)) return;
+        // if (oBal.account === openingAccount) return; // redundant, the isCarriedover is false for the opening account
+        if (!oBal.partner && !oBal.localizer) {   // Only the one dimensional Balances will be connected to an Opening tx
+          if (oBal.debitTotal()) {
+            debitOpen.push({ account: oBal.account, amount: oBal.debitTotal() });
+            debitOpenAmount += oBal.debitTotal();
+          } else if (oBal.creditTotal()) {
+            creditOpen.push({ account: oBal.account, amount: oBal.creditTotal() });
+            creditOpenAmount += oBal.creditTotal();
+          }
         }
-      }
-      const nextOBal = _.extend({}, oBal, {
-        tag: `O-${nextPeriod.year}`,
-        debit: oBal.debitTotal(),
-        credit: oBal.creditTotal(),
+        const nextOBal = _.extend({}, oBal, {
+          tag: `O-${nextPeriod.year}`,
+          debit: oBal.debitTotal(),
+          credit: oBal.creditTotal(),
+        });
+        delete nextOBal._id;
+        console.log('nextOBal', nextOBal);
+        nextYearOBals.push(nextOBal);
       });
-      delete nextOBal._id;
-//      console.log('nextOBal', nextOBal);
-      nextYearOBals.push(nextOBal);
+  //    console.log('nextYearOBals', nextYearOBals);
+      /* Creating the Opening Tx ----------------------------- not needed
+      const openingDate =  closingDate.clone().add(1, 'day');
+      const valueDate = openingDate.toDate();
+      console.log('valueDate', valueDate);
+      console.log('selector', { communityId: doc.communityId, category: 'opening', valueDate });
+      const opResult = Transactions.remove({ communityId: doc.communityId, category: 'opening', valueDate: { $gte: closingDate.toDate(), $lte: openingDate.clone().add(1, 'day').toDate() } });
+      console.log('removed', opResult);
+      const openingTx = {
+        communityId: doc.communityId,
+        category: 'opening',
+        generated: true,    // so it does not trigger Balance updates
+        defId: Txdefs.getByName('Opening', doc.communityId)._id,
+        valueDate,
+        amount: debitOpenAmount + creditOpenAmount,
+        debit: debitOpen,
+        credit: creditOpen,
+      };
+      const openingTxId = Transactions.methods.insert._execute({ userId: this.userId }, openingTx);
+      console.log('inserted');
+      Transactions.methods.post._execute({ userId: this.userId }, { _id: openingTxId }); // Need to post, to create the oppposite side journal entries
+      //console.log('tx', Transactions.findOne(openingTxId)); */
+      nextYearOBals.forEach(bal => Balances.insert(bal));  // We cannot calculate back the correct opening Tx, that would result in the correct two dimensional Balance structure
+      Balances.insert({
+        communityId: doc.communityId,
+        account: openingAccountCode,
+        tag: `O-${nextPeriod.year}`,
+        debit: creditOpenAmount,
+        credit: debitOpenAmount,
+      });
     });
-//    console.log('nextYearOBals', nextYearOBals);
-    /* Creating the Opening Tx ----------------------------- not needed
-    const openingDate =  closingDate.clone().add(1, 'day');
-    const valueDate = openingDate.toDate();
-    console.log('valueDate', valueDate);
-    console.log('selector', { communityId: doc.communityId, category: 'opening', valueDate });
-    const opResult = Transactions.remove({ communityId: doc.communityId, category: 'opening', valueDate: { $gte: closingDate.toDate(), $lte: openingDate.clone().add(1, 'day').toDate() } });
-    console.log('removed', opResult);
-    const openingTx = {
-      communityId: doc.communityId,
-      category: 'opening',
-      generated: true,    // so it does not trigger Balance updates
-      defId: Txdefs.getByName('Opening', doc.communityId)._id,
-      valueDate,
-      amount: debitOpenAmount + creditOpenAmount,
-      debit: debitOpen,
-      credit: creditOpen,
-    };
-    const openingTxId = Transactions.methods.insert._execute({ userId: this.userId }, openingTx);
-    console.log('inserted');
-    Transactions.methods.post._execute({ userId: this.userId }, { _id: openingTxId }); // Need to post, to create the oppposite side journal entries
-    //console.log('tx', Transactions.findOne(openingTxId)); */
-    nextYearOBals.forEach(bal => Balances.insert(bal));  // We cannot calculate back the correct opening Tx, that would result in the correct two dimensional Balance structure
-    Balances.insert({
-      communityId: doc.communityId,
-      account: Accounts.getByName('Opening account').code,
-      tag: `O-${nextPeriod.year}`,
-      debit: creditOpenAmount,
-      credit: debitOpenAmount,
-    });
-//    console.log('Balances.find', Balances.find({ tag: new RegExp('^O') }).fetch());
+    console.log('Balances.find', Balances.find({ tag: new RegExp('^O') }).fetch());
     // --- ---
 //    AccountingPeriods.methods.open._execute({ userId: this.userId }, { communityId: doc.communityId, tag: nextPeriod.toTag() });
     return AccountingPeriods.update(periodsDoc._id, { $set: { accountingClosedAt: closingDate.toDate() } });

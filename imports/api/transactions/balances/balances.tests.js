@@ -512,15 +512,25 @@ if (Meteor.isServer) {
         });
         AccountingPeriods.methods.close._execute({ userId: Fixture.demoAccountantId }, { tag: 'T-2017', communityId: Fixture.demoCommunityId });
         assertBalances();
+        chai.assert.equal(0, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2016' }, 'O').debitSum());
+        chai.assert.equal(0, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2017' }, 'O').debitSum());
+        chai.assert.equal(0, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2018' }, 'O').debitSum());
+        chai.assert.equal(0, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2019' }, 'O').debitSum());
         chai.assert.throws(() => { // Accounting period is not the next one to close
           AccountingPeriods.methods.close._execute({ userId: Fixture.demoAccountantId }, { tag: 'T-2019', communityId: Fixture.demoCommunityId });
         });
         AccountingPeriods.methods.close._execute({ userId: Fixture.demoAccountantId }, { tag: 'T-2018', communityId: Fixture.demoCommunityId });
         assertBalances();
+        chai.assert.equal(300, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2019' }, 'O').debitSum());
+        chai.assert.equal(300, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2019' }, 'O').creditSum());
         AccountingPeriods.methods.close._execute({ userId: Fixture.demoAccountantId }, { tag: 'T-2019', communityId: Fixture.demoCommunityId });
         assertBalances();
+        chai.assert.equal(3550, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2020' }, 'O').debitSum());
+        chai.assert.equal(3550, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2020' }, 'O').creditSum());
         AccountingPeriods.methods.close._execute({ userId: Fixture.demoAccountantId }, { tag: 'T-2020', communityId: Fixture.demoCommunityId });
         assertBalances();
+        chai.assert.equal(9110, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2021' }, 'O').debitSum());
+        chai.assert.equal(9110, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2021' }, 'O').creditSum());
       });
     });
 
@@ -579,6 +589,9 @@ if (Meteor.isServer) {
         chai.assert.equal(openingValue('`12A', undefined, localizer1, 'T-2018'), 3200);
         chai.assert.equal(openingValue('`12A', undefined, localizer2, 'T-2018'), 1400);
         chai.assert.equal(openingValue('`12A', undefined, undefined, 'T-2018'), 11600);
+
+        chai.assert.equal(11600, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2018' }, 'O').debitSum());
+        chai.assert.equal(11600, Balances.get({ communityId: Fixture.demoCommunityId, account: '`491', tag: 'T-2018' }, 'O').creditSum());
 
         // We don't create an Opening tx now
         // const openingTx = Transactions.findOne({ communityId: Fixture.demoCommunityId, defId: Txdefs.getByName('Opening', Fixture.demoCommunityId)._id });

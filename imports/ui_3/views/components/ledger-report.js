@@ -36,8 +36,8 @@ Template.Ledger_report.viewmodel({
 Template.Ledger_report.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
-    const tags =  ['C' + Template.currentData().tag.substring(1)];
-    this.subscribe('balances.inCommunity', { communityId, tags });
+    const tag =  'C' + Template.currentData().tag.substring(1);
+    this.subscribe('balances.inCommunity', { communityId, tag });
   });
 });
 

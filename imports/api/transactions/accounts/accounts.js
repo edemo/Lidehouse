@@ -86,11 +86,7 @@ Accounts.toTechnical = function toTechnical(account) {
 // TODO: Get these special accounts from configuration
 Accounts.isCarriedOver = function isCarriedOver(code, communityId) {
   if (code === '`491' || code === '`492') return false; // Opening and closing accounts not carried over
-  if (code.startsWith('`0')) {
-    return (code.startsWith('`01') || code.startsWith('`02') || code.startsWith('`03') || code.startsWith('`04'));
-  } else {
-    return (code.startsWith('`1') || code.startsWith('`2') || code.startsWith('`3') || code.startsWith('`4'));
-  }
+  return (code.startsWith('`1') || code.startsWith('`2') || code.startsWith('`3') || code.startsWith('`4'));
 };
 
 Accounts.getRelationAccount = function getRelationAccount(community, relation) {
