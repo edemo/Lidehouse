@@ -37,11 +37,15 @@ Meteor.publish('balances.inCommunity', function balancesInCommunity(params) {
       if (t.startsWith('C')) {
         addedTags.push('T' + t.substring(1));
         const period = Period.fromTag(t);
+        addedTags.push('O-' + period.year);
         if (period.type() === 'year') {
           addedTags.push('O-' + period.next().year);
-        }
-        if (period.type() === 'year' || period.month == 1) {
-          addedTags.push('O-' + period.year);
+        } else if (period.type() === 'month') {
+          for (let i = period.month; i > 0; i--) {
+            const ip = Period.fromValues(period.year, i);
+            const ipTag = ip.toTag();
+            addedTags.push('T' + ipTag.substring(1));
+          }
         }
       }
     });
