@@ -356,6 +356,9 @@
       "label": "Allow posting here",
       "help": "Turn it off, if you will never post here"
     },
+    "isGroup": {
+      "label": "Group?"
+    },
     "bank": {
       "label": "Bank name",
       "placeholder": "(pl. HSBC)"

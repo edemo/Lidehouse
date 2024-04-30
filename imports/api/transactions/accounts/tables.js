@@ -15,6 +15,7 @@ export function accountColumns(moneyOnly = undefined) {
     { data: 'code', title: __('schemaAccounts.code.label') },
     { data: 'name', title: __('schemaAccounts.name.label'), render: Render.translate },
     { data: 'category', title: __('schemaAccounts.category.label'), render: Render.translateWithScope('schemaAccounts.category') },
+    { data: 'isGroup', title: __('schemaAccounts.isGroup.label'), render: Render.checkmarkBoolean },
     moneyOnly &&
     { data: 'BAN', title: __('schemaAccounts.BAN.label') },
     moneyOnly &&

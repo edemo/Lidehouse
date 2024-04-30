@@ -357,6 +357,9 @@
       "label": "Könyvelhetünk ide",
       "help": "Kapcsolja ki, ha nem lehet ide könyvelni"
     },
+    "isGroup": {
+      "label": "Gyűjtő?"
+    },
     "bank": {
       "label": "Bank neve",
       "placeholder": "(pl. OTP)"
