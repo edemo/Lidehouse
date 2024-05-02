@@ -360,7 +360,7 @@ export const recognize = new ValidatedMethod({
         tx.lines = [
           Object.cleanUndefined({
             amount: amountToFill,
-            account: contract?.accounting?.account || paymentDef.conteerCodes()[0],
+            account: contract?.accounting?.account || paymentDef.conteerCodes(false, community.settings.accountingMethod)[0],
             localizer,
           }),
         ];

@@ -97,19 +97,19 @@ Txdefs.helpers({
     debugAssert(this[uniKey].length === 1);
     return _.first(this[uniKey]);
   },
-  conteerCodes(sideParam) {
-//    Log.debug('conteerCodes');
-//    Log.debug('def:', this, 'sideParam:', sideParam);
+  conteerCodes(sideParam, accountingMethod) {
+//    Log.info('conteerCodes');
+//    Log.info('def:', this, 'sideParam:', sideParam, 'accountingMethod', accountingMethod);
     let def = this;
     let side = sideParam;
     if (!Transactions.isValidSide(side)) {
       side = def.conteerSide();
       if (sideParam) side = Transactions.oppositeSide(side);
     }
-    if (this.category === 'payment' && !sideParam && this.community().settings.accountingMethod === 'cash') {
+    if (this.category === 'payment' && !sideParam && accountingMethod === 'cash') {
       def = this.correspondingBillDef();
     }
-//    Log.debug('usedDef:', def, 'side:', side);
+ //   Log.info('usedDef:', def, 'side:', side);
     return def[side];
   },
   transformToTransaction(doc) {
@@ -163,11 +163,11 @@ Txdefs.simpleSchema().i18n('schemaTxdefs');
 Factory.define('txdef', Txdefs, {
 });
 
-Txdefs.codesOf = function codesOf(sideParam) {
+Txdefs.codesOf = function codesOf(sideParam, accountingMethod) {
   const defId = AutoForm.getFieldValue('defId');
   if (!defId) return [];
   const txdef = Txdefs.findOne(defId);
-  return txdef.conteerCodes(sideParam);
+  return txdef.conteerCodes(sideParam, accountingMethod);
 };
 
 // sideParam can be 'debit', 'credit' or falsy -> tx conteer side, truthy -> other side
@@ -175,11 +175,14 @@ export const chooseConteerAccount = function (sideParam = false) {
   const resultObject = {
     options() {
       const communityId = ModalStack.getVar('communityId');
-      const codes = Txdefs.codesOf(sideParam);
+      const community = Communities.findOne(communityId);
+      const codes = Txdefs.codesOf(sideParam, community.settings.accountingMethod);
       return Accounts.nodeOptionsOf(communityId, codes, /*leafsOnly*/ false, /*addRootNode*/ false);
     },
     firstOption() {
-      const codes = Txdefs.codesOf(sideParam);
+      const communityId = ModalStack.getVar('communityId');
+      const community = Communities.findOne(communityId);
+      const codes = Txdefs.codesOf(sideParam, community.settings.accountingMethod);
       return (codes.length > 1) ? __('Chart of Accounts') : false;
     },
   };

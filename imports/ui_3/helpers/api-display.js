@@ -48,6 +48,7 @@ export function displayOutstanding(value) {
 }
 
 export function displayPartner(code) {
+  if (!code) return '';
   const split = code.split('/');
   const partner = split[0] ? Partners.findOne(split[0]) : undefined;
   const text = partner?.toString();
@@ -55,6 +56,7 @@ export function displayPartner(code) {
 }
 
 export function displayPartnerContract(code) {
+  if (!code) return '';
   const split = code.split('/');
   const partner = split[0] ? Partners.findOne(split[0]) : undefined;
   const contract = split[1] ? Contracts.findOne(split[1]) : undefined;
