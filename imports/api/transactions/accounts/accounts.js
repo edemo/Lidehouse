@@ -275,6 +275,13 @@ _.extend(Accounts, {
     },
     firstOption: () => __('(Select one)'),
   },
+  chooseNodeWithTechnical: {
+    options() {
+      const communityId = ModalStack.getVar('communityId');
+      return Accounts.allWithTechnical(communityId).map(a => a.asOption());
+    },
+    firstOption: () => __('(Select one)'),
+  },
   choosePayinType: {
     options() {
       const communityId = ModalStack.getVar('communityId');

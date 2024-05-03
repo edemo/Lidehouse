@@ -19,14 +19,16 @@ Transactions.categoryHelpers('opening', {
     const newCreditEntries = [];
     const openingAccount = Accounts.getByName('Opening account', this.communityId).code;
     this.debit?.forEach(je => {
-      if (je.subTx) { subTx = je.SubTx + 1; return; }
+      if (je.subTx !== undefined) { subTx = je.subTx + 1; return; }
       je.subTx = subTx++;
-      newCreditEntries.push(_.extend({}, je, { account: openingAccount }));
+      const account = Accounts.isTechnicalCode(je.account) ? Accounts.toTechnicalCode(openingAccount) : openingAccount;
+      newCreditEntries.push(_.extend({}, je, { account }));
     });
     this.credit?.forEach(je => {
-      if (je.subTx) { subTx = je.SubTx + 1; return; }
+      if (je.subTx !== undefined) { subTx = je.subTx + 1; return; }
       je.subTx = subTx++;
-      newDebitEntries.push(_.extend({}, je, { account: openingAccount }));
+      const account = Accounts.isTechnicalCode(je.account) ? Accounts.toTechnicalCode(openingAccount) : openingAccount;
+      newDebitEntries.push(_.extend({}, je, { account }));
     });
     this.debit = (this.debit || []).concat(newDebitEntries);
     this.credit = newCreditEntries.concat(this.credit || []);

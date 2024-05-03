@@ -12,7 +12,7 @@ export const LocationTagsSchema = new SimpleSchema({
 });
 
 export const AccountSchema = new SimpleSchema({
-  account: { type: String /* account code */, autoform: { ...Accounts.chooseNode }, optional: true },
+  account: { type: String /* account code */, autoform: { ...Accounts.chooseNodeWithTechnical }, optional: true },
 });
 
 export class AccountSpecification {
