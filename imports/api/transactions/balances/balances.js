@@ -155,7 +155,7 @@ Balances.add = function add(bal1, bal2) {
 };
 
 Balances.get = function get(def, balanceType) {
-  //console.log("Lookin for Balance", def, balanceType);
+  console.log("Lookin for Balance", def, balanceType);
   Balances.defSchema.validate(def);
   const defPeriod = Period.fromTag(def.tag);
   const accountingPeriods = AccountingPeriods.findOne({ communityId: def.communityId });
@@ -163,17 +163,17 @@ Balances.get = function get(def, balanceType) {
   const _def = _.extend(def, { tag: setTypeOfTag(def.tag, balanceType) });
   if (balanceType === 'T') {
     const result = Balances._aggregateSubResults(_def);
-    //console.log('T result:', result);
+    console.log('T result:', result);
     return result;
   } else if (balanceType === 'O') {
     if (defPeriod.type() === 'entire') return Balances.nullValue(_def);
     const prevPeriod = accountingPeriods.previous(defPeriod);
     if (!prevPeriod) return Balances.nullValue(_def);
-    //else console.log("Prev period is", prevPeriod, 'Closed:', accountingPeriods.isClosed(prevPeriod));
+    else console.log("Prev period is", prevPeriod, 'Closed:', accountingPeriods.isClosed(prevPeriod));
     if (prevPeriod.type() === 'year' && accountingPeriods.isClosed(prevPeriod)) { // O balances should exist then, because the closing creates them
       const thisYearPeriod = prevPeriod.next();
       const result = Balances._aggregateSubResults(_.extend({}, _def, { tag: 'O-' + thisYearPeriod.label }));
-      //console.log('O result:', result);
+      console.log('O result:', result);
       return result;
     } else {
       const prevTagDef = _.extend({}, def, { tag: prevPeriod.toTag() });
@@ -182,7 +182,7 @@ Balances.get = function get(def, balanceType) {
   } else if (balanceType === 'C') {
     if (defPeriod.type() === 'entire') return Balances.get(def, 'T');  // Entire period closing C is the same as entire traffic T;
     const hasUploadedCBals = Balances.findOne(subdefSelector(_def));
-    //console.log("Has uploaded C balances:", hasUploadedCBals);
+    console.log("Has uploaded C balances:", hasUploadedCBals);
     if (hasUploadedCBals) return Balances._aggregateSubResults(_def);
 //    if (def.partner) debugAssert(defPeriod.endsOnYearEnd(), 'closing partner balance works only for end of year');
     /*if (defPeriod.endsOnYearEnd() && accountingPeriods.isClosed(defPeriod)) {
@@ -192,7 +192,7 @@ Balances.get = function get(def, balanceType) {
       const nextTagDef = _.extend({}, def, { tag: nextPeriod.toTag() });
       return Balances.get(nextTagDef, 'O');
     } else {*/
-      //console.log("Just adding current T and O");
+      console.log("Just adding current T and O");
       return Balances.add(Balances.get(def, 'T'), Balances.get(def, 'O'));
     //}
   } else {
@@ -204,11 +204,12 @@ Balances.get = function get(def, balanceType) {
 Balances._aggregateSubResults = function _aggregateSubResults(def) {
   let result = _.extend({ debit: 0, credit: 0 }, def);
   Balances.find(subdefSelector(def)).forEach((b) => {
-//    console.log("Adding balance", b);
+    console.log("Adding balance", b);
     result.debit += b.debit;
     result.credit += b.credit;
   });
   result = Balances._transform(result);
+  console.log("Resulting balance", result);
   return result;
 };
 
