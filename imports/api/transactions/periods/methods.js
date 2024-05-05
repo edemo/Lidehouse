@@ -67,6 +67,8 @@ export const close = new ValidatedMethod({
     Balances.remove({ tag: `O-${nextPeriod.year}` });
     const tBals = Balances.find({ communityId: doc.communityId, tag: doc.tag }).fetch();
     const oBals = Balances.find({ communityId: doc.communityId, tag: 'O' + doc.tag.substr(1) }).fetch();
+    console.log('oBals', oBals);
+    console.log('tBals', tBals);
     oBals.forEach(oBal => {
       const balDef = {
         communityId: oBal.communityId,
@@ -81,14 +83,13 @@ export const close = new ValidatedMethod({
       const found =  _.findWhere(tBals, balDef);
       if (found) found.done = true;
     });
-  //  console.log('oBals', oBals);
-  //  console.log('tBals', tBals);
     tBals.forEach(tBal => {
       if (tBal.done) return;
       delete tBal._id;
       const oBal = _.extend({}, tBal, { tag: 'O' + doc.tag.substring(1) });
       oBals.push(oBal);
     }); // At this point oBals contain (oBals + tBals)
+    console.log('oBals AFTER', oBals);
     ['normal', 'technical'].forEach(NoT => {
       let openingAccountCode = Accounts.getByName('Opening account').code;
       if (NoT === 'technical') openingAccountCode = Accounts.toTechnicalCode(openingAccountCode);
@@ -143,6 +144,7 @@ export const close = new ValidatedMethod({
       console.log('inserted');
       Transactions.methods.post._execute({ userId: this.userId }, { _id: openingTxId }); // Need to post, to create the oppposite side journal entries
       //console.log('tx', Transactions.findOne(openingTxId)); */
+      console.log('NEXTYEAR oBals', oBals);
       nextYearOBals.forEach(bal => Balances.insert(bal));  // We cannot calculate back the correct opening Tx, that would result in the correct two dimensional Balance structure
       Balances.insert({
         communityId: doc.communityId,
