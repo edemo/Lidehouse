@@ -379,6 +379,7 @@ Transactions.helpers({
         throw new Meteor.Error('err_notExists', 'No such account', { code: accountCode, tx: JSON.stringify(this) });
       }
       if (!this.community().settings.allowPostToGroupAccounts && account?.isGroup) {
+        console.log('Accounts', Accounts.findTfetch({ communityId: this.communityId }));
         throw new Meteor.Error('err_notAllowed', 'Not allowed to post to group accounts', account.displayAccount());
       }
       if (je.side === 'credit') creditAmount[je.subTx] = creditAmount[je.subTx] ? (creditAmount[je.subTx] + je.amount) : je.amount;
