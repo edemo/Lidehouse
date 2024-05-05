@@ -67,8 +67,8 @@ export const close = new ValidatedMethod({
     Balances.remove({ tag: `O-${nextPeriod.year}` });
     const tBals = Balances.find({ communityId: doc.communityId, tag: doc.tag }).fetch();
     const oBals = Balances.find({ communityId: doc.communityId, tag: 'O' + doc.tag.substr(1) }).fetch();
-    console.log('oBals', oBals);
-    console.log('tBals', tBals);
+//    console.log('oBals', oBals);
+//    console.log('tBals', tBals);
     oBals.forEach(oBal => {
       const balDef = {
         communityId: oBal.communityId,
@@ -77,11 +77,14 @@ export const close = new ValidatedMethod({
         localizer: oBal.localizer,
         tag: 'T' + oBal.tag.substring(1),
       };
-      const tBal = Balances.get(balDef, 'T');
-      oBal.debit += tBal.debit;
-      oBal.credit += tBal.credit;
-      const found =  _.findWhere(tBals, balDef);
-      if (found) found.done = true;
+      const tBal = Balances.findOne(balDef);
+      if (tBal) {
+        oBal.debit += tBal.debit;
+        oBal.credit += tBal.credit;
+        const found =  _.findWhere(tBals, balDef);
+        debugAssert(found);
+        found.done = true;
+      }
     });
     tBals.forEach(tBal => {
       if (tBal.done) return;
@@ -89,7 +92,7 @@ export const close = new ValidatedMethod({
       const oBal = _.extend({}, tBal, { tag: 'O' + doc.tag.substring(1) });
       oBals.push(oBal);
     }); // At this point oBals contain (oBals + tBals)
-    console.log('oBals AFTER', oBals);
+  //  console.log('oBals + tBals', oBals);
     ['normal', 'technical'].forEach(NoT => {
       let openingAccountCode = Accounts.getByName('Opening account').code;
       if (NoT === 'technical') openingAccountCode = Accounts.toTechnicalCode(openingAccountCode);
@@ -119,10 +122,9 @@ export const close = new ValidatedMethod({
           credit: oBal.creditTotal(),
         });
         delete nextOBal._id;
-        console.log('nextOBal', nextOBal);
+//        Log.debug('nextOBal', nextOBal);
         nextYearOBals.push(nextOBal);
       });
-  //    console.log('nextYearOBals', nextYearOBals);
       /* Creating the Opening Tx ----------------------------- not needed
       const openingDate =  closingDate.clone().add(1, 'day');
       const valueDate = openingDate.toDate();
@@ -144,7 +146,7 @@ export const close = new ValidatedMethod({
       console.log('inserted');
       Transactions.methods.post._execute({ userId: this.userId }, { _id: openingTxId }); // Need to post, to create the oppposite side journal entries
       //console.log('tx', Transactions.findOne(openingTxId)); */
-      console.log('NEXTYEAR oBals', oBals);
+  //    console.log('nextYearOBals', nextYearOBals);
       nextYearOBals.forEach(bal => Balances.insert(bal));  // We cannot calculate back the correct opening Tx, that would result in the correct two dimensional Balance structure
       Balances.insert({
         communityId: doc.communityId,
@@ -154,7 +156,7 @@ export const close = new ValidatedMethod({
         credit: debitOpenAmount,
       });
     });
-    console.log('Balances.find', Balances.find({ tag: new RegExp('^O') }).fetch());
+//    console.log('Balances.find', Balances.find({ tag: new RegExp('^O') }).fetch());
     // --- ---
 //    AccountingPeriods.methods.open._execute({ userId: this.userId }, { communityId: doc.communityId, tag: nextPeriod.toTag() });
     return AccountingPeriods.update(periodsDoc._id, { $set: { accountingClosedAt: closingDate.toDate() } });
