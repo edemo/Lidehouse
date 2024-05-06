@@ -5,7 +5,6 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { replaceDotsInString } from '/imports/api/utils';
 import { Breakdowns, BreakdownsHelpers } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Period } from './period.js';
 

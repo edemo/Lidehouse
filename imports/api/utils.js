@@ -44,9 +44,10 @@ export function equalWithinRounding(amount1, amount2) {
   return Math.abs(amount1 - amount2) < smallestCurrencyUnit / 2;
 }
 
-export function replaceDotsInString(dottedString, newChar = '\\u002e') {
+export function objectKeyCompatibleString(dottedString, newChar = '\\u002e') {
   const withoutDots = dottedString.replace(/\./g, newChar);
-  return withoutDots;
+  if (/^\+?(0|[1-9]\d*)$/.test(withoutDots)) return '#' + withoutDots;  // Integer numbers are interpreted as array indexes if used in $set mongo operators, so in order to be able to use them as Object keys, they have to be made non-integers
+  else return withoutDots;
 }
 
 export function callOrRead(variable) {

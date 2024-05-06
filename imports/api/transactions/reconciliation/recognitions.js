@@ -1,8 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+
+import { Log } from '/imports/utils/log.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { replaceDotsInString } from '/imports/api/utils';
+import { objectKeyCompatibleString } from '/imports/api/utils';
 
 let getDefaultSelector;
 if (Meteor.isClient) {
@@ -32,18 +34,18 @@ Meteor.startup(function indexRecognitions() {
 });
 
 Recognitions.get = function get(what, name, selector = getDefaultSelector()) {
-  //console.log('Recognitions.get', what, name, selector);
+  Log.debug('Recognitions.get', what, name, selector);
   const setting = Recognitions.findOne(selector);
   if (!setting) return undefined;
-  const compatibleName = replaceDotsInString(name);
+  const compatibleName = objectKeyCompatibleString(name);
   return Object.getByString(setting, `${what}s.${compatibleName}`);
 };
 
 Recognitions.set = function set(what, name, value, selector = getDefaultSelector()) {
-  //console.log('Recognitions.set', what, name, value, selector);
+  Log.debug('Recognitions.set', what, name, value, selector);
   const setting = Recognitions.findOne(selector);
   const settingId = setting ? setting._id : Recognitions.insert(selector);
-  const compatibleName = replaceDotsInString(name);
+  const compatibleName = objectKeyCompatibleString(name);
   Recognitions.update(settingId, { $set: { [`${what}s.${compatibleName}`]: value } });
 };
 
