@@ -18,6 +18,7 @@ import { Contracts } from '/imports/api/contracts/contracts.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 
 import '/imports/ui_3/views/components/transaction-view.js';
+import '/imports/ui_3/views/components/transaction-edit.js';
 import '/imports/ui_3/views/components/bill-view.js';
 import '/imports/ui_3/views/components/bill-edit.js';
 import '/imports/ui_3/views/components/payment-view.js';

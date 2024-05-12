@@ -35,14 +35,23 @@ Transactions.entities = {
   },
   opening: {
     name: 'opening',
+    viewForm: 'Transaction_view_actionable',
+    editForm: 'Transaction_edit',
     omitFields: () => [],
+    size: 'lg',
   },
   closing: {
     name: 'closing',
+    viewForm: 'Transaction_view_actionable',
+    editForm: 'Transaction_edit',
     omitFields: () => [],
+    size: 'lg',
   },
   freeTx: {
     name: 'freeTx',
+    viewForm: 'Transaction_view_actionable',
+    editForm: 'Transaction_edit',
     omitFields: () => [],
+    size: 'lg',
   },
 };

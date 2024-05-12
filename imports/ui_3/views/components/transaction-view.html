@@ -1,3 +1,13 @@
+<template name="Transaction_view_actionable">
+
+    {{>Transaction_view doc=doc}}
+
+    <div class="text-right" data-id="{{doc._id}}">
+        {{>Action_buttons_group collection='transactions' doc=doc actions='post,edit,delete' size='xl'}}
+    </div>
+
+</template>
+
 <template name="Transaction_view">
     <div class="row">
         <div class="col-sm-12 col-md-8 pull-right text-right">
@@ -8,6 +18,7 @@
             </h4>
             <p>
                 <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>
+                <span><strong>{{_ 'schemaTransactions.amount.label'}}:</strong> {{displayMoney doc.amount}}</span><br/>
             </p>
         </div>
     </div>
@@ -28,6 +39,12 @@
     {{#each subTx in subTxs}}
         {{>SubTx_view doc=subTx}}
     {{/each}}
+
+    {{#if doc.notes}}
+    <div class="well m-t"><strong>{{_ 'schemaNoted.notes.label'}}:</strong><br>
+        {{doc.notes}}
+    </div>
+    {{/if}}
 </template>
 
 <template name="SubTx_view">

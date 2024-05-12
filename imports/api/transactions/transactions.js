@@ -55,7 +55,7 @@ Transactions.coreSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   category: { type: String, allowedValues: Transactions.categoryValues, autoform: { type: 'hidden' } },
   generated: { type: Boolean, optional: true, autoform: { omit: true } }, // Generated transactions do not trigger balance updates
-  valueDate: { type: Date },
+  valueDate: { type: Date, autoform: { defaultValue: () => new Date() } },
   amount: { type: Number, decimal: true },
   rounding: { type: Number, decimal: true, optional: true },
   defId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },

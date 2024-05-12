@@ -1,0 +1,43 @@
+<template name="Transaction_edit">
+    {{#let afDoc=afDoc}}
+    <div class="row">
+        <!-- hidden, needed for autoform doc data -->
+        {{> afQuickField name="communityId" type="hidden"}} 
+        {{> afQuickField name="category" type="hidden"}}
+        {{> afQuickField name="defId" type="hidden"}}
+         <!-- hidden, needed for autoform doc data -->
+        <div class="col-sm-12 col-md-8 pull-right">
+            <h4>
+              {{{displayTxStatus afDoc.status afDoc}}} 
+              {{_ (or afDoc.txdef.name 'schemaTransactions.serialId.label')}}:
+              <span class="text-navy">{{afDoc.serialId}}</span>
+            </h4>
+            <p>
+                <span>{{> afQuickField name="valueDate" type=hiddenWhenReconciling}}</span>
+                <span>{{> afQuickField name="amount"}}</span>
+            </p>
+        </div>
+    </div>
+
+     {{>SubTx_edit}}
+
+    <div class="well m-t">
+        {{> afQuickField name="notes"}}
+    </div>
+    {{/let}}
+</template>
+
+<template name="SubTx_edit">
+    <div class="row">
+        <div class="col-sm-6">
+        <div class="table-responsive m-t">
+            {{> afQuickField name="debit" defaultValue=emptyArray}}
+        </div>
+        </div>
+        <div class="col-sm-6">
+        <div class="table-responsive m-t">
+            {{> afQuickField name="credit" defaultValue=emptyArray}}
+        </div>
+        </div>
+    </div>
+</template>
