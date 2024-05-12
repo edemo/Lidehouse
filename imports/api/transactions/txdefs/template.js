@@ -91,7 +91,7 @@ export function defineTxdefTemplates() {
     data: { relation: 'member', paymentSubType: 'remission' },
     debit: ['`95'],
     credit: ['`33'],
-  }, {
+  }, /* {
     name: 'Non identified income', // 'Nem azonosítható bevétel',
     category: 'transfer',
     debit: ['`38'],
@@ -101,7 +101,7 @@ export function defineTxdefTemplates() {
     category: 'transfer',
     debit: ['`434'],
     credit: ['`38'],
-  }, {
+  },  */{
     name: 'Money transfer', // 'Átvezetés pénz számlák között',
     category: 'transfer',
     debit: ['`38'],
