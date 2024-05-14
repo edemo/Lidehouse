@@ -64,7 +64,7 @@ export const close = new ValidatedMethod({
       throw new Meteor.Error('err_notAllowed', `Period ${needsClosingDate} before has to be closed first`, { closingDate, accountingClosedAt: periodsDoc.accountingClosedAt });
     }
     // --- Creating the opening transaction for the next period ---
-    Balances.remove({ tag: `O-${nextPeriod.year}` });
+    Balances.remove({ communityId: doc.communityId, tag: `O-${nextPeriod.year}` });
     const tBals = Balances.find({ communityId: doc.communityId, tag: doc.tag }).fetch();
     const oBals = Balances.find({ communityId: doc.communityId, tag: 'O' + doc.tag.substr(1) }).fetch();
 //    console.log('oBals', oBals);
