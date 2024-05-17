@@ -197,6 +197,10 @@
         "label": "Lehessen a gyűjtőszámlákra könyvelni",
         "help": "Ha nincs bekapcsolva, akkor a gyűjtő számlákra nem enged könyvelni a rendszer, csak azok alszámláira"
       },
+      "balancesUploaded": {
+        "label": "Egyenlegek feltölthetők",
+        "help": "Ha be van kapcsolva, akkor a főkönyvi egyenlegeket külső fájlból is be lehet importálni. Ha ki van kapcsolva, akkor az egyenlegek a zárt rendszeren belül kerülnek kiszámításra, a tranzakciókból."
+      },
       "sendBillEmail": {
         "label": "Email értesítő a kiállított számlákról",
         "help": "Automatikus email küldése a kiállított számlákról, a könyvelésbe küldés pillanatában",

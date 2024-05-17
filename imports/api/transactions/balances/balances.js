@@ -36,7 +36,11 @@ Balances.schema = new SimpleSchema([
   },
 ]);
 
-Balances.idSet = [['communityId', 'account', 'localizer', 'tag']];
+Balances.idSet = [
+  ['communityId', 'account', 'partner', 'tag'],
+  ['communityId', 'account', 'localizer', 'tag'],
+  ['communityId', 'account', 'tag'],
+];
 
 function getTypeOfTag(tag) {
   return tag[0];

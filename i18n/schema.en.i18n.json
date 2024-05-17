@@ -196,6 +196,10 @@
         "label": "Allow posting to group accounts",
         "help": "When it is turned off, you may not post to the group accounts, only to their sub accounts"
       },
+      "balancesUploaded": {
+        "label": "Allow importing balances from file",
+        "help": "When it is turned on, you may import the account balances from a file. If turned off, balances are calculated within the closed system, from the transactions."
+      },
       "sendBillEmail": {
         "label": "Email notification on bills",
         "help": "Send an email about each new bill automatically to the receipient, at the time of posting.",
