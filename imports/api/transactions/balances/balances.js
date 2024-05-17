@@ -81,22 +81,21 @@ Balances.helpers({
     return (this.credit > this.debit) ? (this.credit - this.debit) : 0;
   },
   displayTotal() {
-    let displaySign = 0;
-    if (this.account) {
-      let accountMainGroup = this.account.charAt(1);
-      if (accountMainGroup === '0') accountMainGroup = this.account.charAt(2); // Techncal account
-      switch (accountMainGroup) {
-        case '1':
-        case '2':
-        case '3':
-        case '5':
-        case '8': displaySign = +1; break;
-        case '4':
-        case '9': displaySign = -1; break;
-        default: productionAssert(false); break;
-      }
+    if (!this.account) return undefined;
+    let accountMainGroup = this.account.charAt(1);
+    if (accountMainGroup === '0') accountMainGroup = this.account.charAt(2); // Techncal account
+    switch (accountMainGroup) {
+      case '1':
+      case '2':
+      case '3': return this.debit - this.credit;
+      case '4': return this.credit - this.debit;
+      case '5':
+      case '6':
+      case '7':
+      case '8': return this.debit;
+      case '9': return this.credit;
+      default: productionAssert(false); return undefined;
     }
-    return displaySign * this.total();
   },
   toJournalEntry() {
     const je = {
