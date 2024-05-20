@@ -69,6 +69,7 @@
                         <span>{{curb comment.text 500 }}</span><br>
                     {{/if}}
                     {{#if (equals comment.topic.category 'ticket')}}
+                    {{#if comment.dataUpdate }}
                         {{#each dataEntry in entriesOf comment.dataUpdate}}
                         <span>
                             {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
@@ -76,7 +77,7 @@
                         </span><br>
                         {{/each}}
                     {{/if}}
-
+                    {{/if}}
                   {{/if}}
                   <small class="text-muted" >{{displayTime comment.createdAt}}</small>
                 </td> 
