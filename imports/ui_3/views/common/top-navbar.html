@@ -33,7 +33,7 @@
                     </a>
                     <ul class="dropdown-menu animated fadeInDown m-t-xs">
                         {{#each userCommunities}}
-                        <li><a href="" class="js-switch-community">{{name}}</a></li>
+                        <li><a href="" class="js-switch-community">{{name}} {{> Badge color='info' title=(_ 'Unread') value=(notiCount _id)}}</a></li>
                         {{/each}}
                         <li role="separator" class="divider"></li>
                         <li><a href="{{pathFor 'Communities list'}}"> + {{_ (concat 'Join a ' community.displayType)}} </a></li>

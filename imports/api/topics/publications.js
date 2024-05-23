@@ -12,6 +12,34 @@ import { Partners } from '/imports/api/partners/partners.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
 
+Meteor.publishComposite(null, function selfNotiBadges() {
+  const user = Meteor.users.findOneOrNull(this.userId);
+  const communityIds = user.communityIds();
+  if (communityIds.length <= 1) return this.ready();
+
+  const selector = {
+    communityId: { $in: communityIds },
+    status: { $nin: ['closed', 'deleted'] },
+    category: { $in: ['vote', 'forum', 'news', 'ticket', 'room'] },
+    // Filter for 'No participantIds (meaning everyone), or contains userId'
+    $or: [
+      { participantIds: { $exists: false } },
+      { participantIds: this.userId },
+    ],
+  };
+
+  return {
+    find() {
+      return Topics.find(selector, { fields: { communityId: 1, createdAt: 1 } });
+    },
+    children: [{
+      find(topic) {
+        return Comments.find({ topicId: topic._id }, { limit: 1, fields: { communityId: 1, topicId: 1, createdAt: 1 }, sort: { createdAt: -1 } });
+      },
+    }],
+  };
+});
+
 Meteor.publishComposite('topics.byId', function topicsById(params) {
   new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },

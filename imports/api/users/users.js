@@ -49,6 +49,12 @@ export const nullUser = {
   ownedLeadParcels(communityId) {
     return [];
   },
+  communityIds() {
+    return [];
+  },
+  communities() {
+    return [];
+  },
 };
 
 Meteor.userOrNull = function userOrNull() {
@@ -291,9 +297,13 @@ Meteor.users.helpers({
   activeRoles(communityId) {
     return _.uniq(this.memberships(communityId).fetch().map(m => m.role));
   },
-  communities() {
+  communityIds() {
     const memberships = Memberships.findActive({ approved: true, userId: this._id }).fetch();
     const communityIds = _.uniq(_.pluck(memberships, 'communityId'));
+    return communityIds;
+  },
+  communities() {
+    const communityIds = this.communityIds();
     const communities = Communities.find({ _id: { $in: communityIds } });
     // Log.debug(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;

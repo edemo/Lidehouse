@@ -66,6 +66,15 @@ Template.Top_navbar.helpers({
     if (!Meteor.user()?.super) { return undefined; }
     return Communities.find({}).fetch();
   },
+  notiCount(communityId) {
+    const userId = Meteor.userId();
+    const topics = Topics.find({ communityId });
+    let count = 0;
+    topics.forEach(topic => {
+      count += topic.hasThingsToDisplayFor(userId, Meteor.users.SEEN_BY.EYES);
+    });
+    return count;
+  },
   unseenEventsCount(roomTitle) {
     const communityId = ModalStack.getVar('communityId');
     const userId = Meteor.userId();
