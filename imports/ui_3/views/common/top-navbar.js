@@ -75,7 +75,7 @@ Template.Top_navbar.helpers({
       const c = topic.hasThingsToDisplayFor(userId, Meteor.users.SEEN_BY.EYES);
       if (c > 0) {
         count += c;
-        titles += `${topic.title} (${c}),`;
+        titles += `${topic.title} ${topic.participantIds || ''} (${c}),`;
       }
     });
     return { count, titles };
