@@ -94,14 +94,10 @@ Template.Member_slot.helpers({
     }
     return params;
   },
-  hasUnreadMessages() {
+  hasThingsToDisplay() {
     const room = Rooms.getRoom(Session.get('roomMode'), this.userId);
-    if (!room) return false;
-    return room.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES) > 0;
-  },
-  unreadMessagesCount() {
-    const room = Rooms.getRoom(Session.get('roomMode'), this.userId);
-    return room.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
+    if (!room) return undefined;
+    return room.hasThingsToDisplayFor(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
   },
 });
 

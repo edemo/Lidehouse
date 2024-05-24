@@ -87,7 +87,7 @@ Template.Top_navbar.helpers({
     let count = 0;
     const correspondents = [];
     rooms.map(room => {
-      const unseenCommentsCount = room.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.EYES);
+      const unseenCommentsCount = room.hasThingsToDisplayFor(userId, Meteor.users.SEEN_BY.EYES);
       count += unseenCommentsCount;
       if (unseenCommentsCount > 0) {
         const otherUserId = room.participantIds.find(id => id !== userId);

@@ -1,3 +1,6 @@
+<template name="Message_subscriber">
+</template>
+
 <template name="Message_history">
     {{#each messages}}
         {{#if ownMessage this}}    <!-- box for my messages -->
@@ -55,6 +58,7 @@
 
                     <div class="ibox-content">
                         <div class="chat-discussion">
+                            {{> Message_subscriber}}
                             {{#if hasMessages}}
                             <div class="messages">
                                 {{> Message_history}}

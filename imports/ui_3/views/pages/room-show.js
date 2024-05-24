@@ -70,7 +70,7 @@ Template.Room_show.helpers({
 
 // -------------------- Msg_box ---------------------------
 
-Template.Message_history.onCreated(function tmplMsgBoxOnCreated() {
+Template.Message_subscriber.onCreated(function tmplMsgContainerOnCreated() {
   this.autorun(() => {
     // this is needed for comments
     const roomId = FlowRouter.getParam('_rid');
@@ -78,7 +78,7 @@ Template.Message_history.onCreated(function tmplMsgBoxOnCreated() {
   });
 });
 
-Template.Message_history.onRendered(function tmplMsgBoxOnRendered() {
+Template.Message_subscriber.onRendered(function tmplMsgBoxOnRendered() {
   this.autorun(() => {
     $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
     const roomId = FlowRouter.getParam('_rid');
