@@ -60,6 +60,7 @@ export const Permissions = [
   { name: 'news.insert',            roles: ['manager'] },
   { name: 'news.update',            roles: ['manager'] },
   { name: 'news.remove',            roles: ['manager'] },
+  { name: 'room.remove',            roles: ['admin'] },
   { name: 'poll.insert',            roles: ['admin', 'manager', 'owner'] },
   { name: 'poll.update',            roles: nobody, allowAuthor: true },
   { name: 'poll.remove',            roles: nobody, allowAuthor: true },

@@ -31,8 +31,13 @@
             <div class="form-group">
                 <textarea class="form-control js-focused" placeholder={{_ 'messengerMessagePlaceholder'}}></textarea>
             </div>
+            {{#if currentUserHasPermission 'room.remove'}}
+            <div class="pull-left">
+                <span class="btn btn-sm btn-danger btn-outline m-t-n-xs js-delete"><strong>{{_ 'Delete chat room'}}</strong></span>
+            </div>
+            {{/if}}
             <div class="text-right">
-                <span class="js-send btn btn-sm btn-primary m-t-n-xs"><strong>{{_ 'Send message'}}</strong></span>
+                <span class="btn btn-sm btn-primary m-t-n-xs js-send"><strong>{{_ 'Send message'}}</strong></span>
             </div>
         </form>
     </div>
@@ -52,6 +57,7 @@
                         {{#if hasMessages}}
                         <small class="pull-right text-muted">{{_ 'Last message'}}: 
                             <br class="rwd-break">{{selectedRoom.updatedAt.toLocaleString}}</small>
+                            {{>Action_buttons_group doc=this collection='topics' actions='delete' size='lg'}}
                         {{/if}}
                         <strong>{{selectedPerson.displayOfficialName}} [{{_ selectedRoom.title}}]</strong>
                     </div>

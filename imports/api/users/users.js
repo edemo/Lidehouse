@@ -55,6 +55,9 @@ export const nullUser = {
   communities() {
     return [];
   },
+  isFlaggedBy(userId) {
+    return false;
+  },
 };
 
 Meteor.userOrNull = function userOrNull() {

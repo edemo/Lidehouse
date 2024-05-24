@@ -251,6 +251,10 @@
       "label": "upgrade",
       "it": "the upgrade"
     },
+    "room": {
+      "label": "chatroom",
+      "it": "the chatroom"
+    },
     "comment": {
       "label": "comment",
       "it": "the comment"

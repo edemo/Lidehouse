@@ -257,6 +257,10 @@
       "label": "felújítás",
       "it": "a felújítást"
     },
+    "room": {
+      "label": "chatszoba",
+      "it": "a chatszobát"
+    },
     "comment": {
       "label": "hozzászólás",
       "it": "a hozzászólást"

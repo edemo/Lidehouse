@@ -3,11 +3,13 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/topics/rooms/rooms.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 
 import '../components/members-panel.js';
 import '../components/contact-long.js';
@@ -110,7 +112,6 @@ Template.Message_send.events({
     const textarea = instance.find('textarea');
     const text = textarea.value;
     const roomId = FlowRouter.getParam('_rid');
-    const topic = Topics.findOne(roomId);
     Meteor.call('comments.insert', {
       topicId: roomId,
       text,
@@ -119,5 +120,13 @@ Template.Message_send.events({
       textarea.value = '';
       if ($(window).width() > 768) $('.js-focused').focus();
     }));
+  },
+  'click .js-delete'(event, instance) {
+    const roomId = FlowRouter.getParam('_rid');
+    Modal.confirmAndCall(Topics.methods.remove, { _id: roomId }, {
+      action: 'delete',
+      entity: 'room',
+      message: 'This will delete all messages in this room',
+    });
   },
 });

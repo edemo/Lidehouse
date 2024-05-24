@@ -41,7 +41,7 @@ Template.Members_panel.viewmodel({
   members() {
     const communityId = ModalStack.getVar('communityId');
     const partnerSearch = Session.get('messengerPartnerSearch');
-    let nonManagers = Memberships.findActive({ communityId, role: { $not: { $in: leaderRoles } }, userId: { $exists: true, $ne: Meteor.userId() } }).fetch();
+    let nonManagers = Memberships.find({ communityId, role: { $not: { $in: leaderRoles } }, userId: { $exists: true, $ne: Meteor.userId() } }).fetch();
     nonManagers = _.uniq(nonManagers, false, m => m.userId);
     if (nonManagers.length > MEMBERS_TO_SHOW * 2) this.tooManyMembers(true);
     if (partnerSearch) nonManagers = nonManagers.filter(m => m.partner() && m.partner().displayName().toLowerCase().search(partnerSearch.toLowerCase()) >= 0);
