@@ -70,10 +70,15 @@ Template.Top_navbar.helpers({
     const userId = Meteor.userId();
     const topics = Topics.find({ communityId });
     let count = 0;
+    let titles = '';
     topics.forEach(topic => {
-      count += topic.hasThingsToDisplayFor(userId, Meteor.users.SEEN_BY.EYES);
+      const c = topic.hasThingsToDisplayFor(userId, Meteor.users.SEEN_BY.EYES);
+      if (c > 0) {
+        count += c;
+        titles += `${topic.title} (${c}),`;
+      }
     });
-    return count;
+    return { count, titles };
   },
   unseenEventsCount(roomTitle) {
     const communityId = ModalStack.getVar('communityId');
