@@ -54,6 +54,9 @@ Template.Board.viewmodel({
 
 Template.News.viewmodel({
   showArchived: false,
+  onRendered(instance) {
+    Topics.find({ communityId: this.communityId(), category: 'news' }).forEach(topic => Meteor.user().hasNowSeen(topic._id));
+  },
   autorun() {
     const communityId = this.communityId();
     if (communityId && this.showArchived()) {
