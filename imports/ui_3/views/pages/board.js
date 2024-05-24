@@ -1,5 +1,4 @@
-/* globals document */
-
+/* globals document Waypoint */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
@@ -54,9 +53,6 @@ Template.Board.viewmodel({
 
 Template.News.viewmodel({
   showArchived: false,
-  onRendered(instance) {
-    Topics.find({ communityId: this.communityId(), category: 'news' }).forEach(topic => Meteor.user().hasNowSeen(topic._id));
-  },
   autorun() {
     const communityId = this.communityId();
     if (communityId && this.showArchived()) {
@@ -80,4 +76,14 @@ Template.News.events({
   'click .js-show-archive'(event, instance) {
     instance.viewmodel.showArchived(true);
   },
+});
+
+Template.News_topic.onRendered(function () {
+  this.waypoint = new Waypoint({
+    element: this.find('.news-elem'),
+    handler() {
+      const topicId = this.element.dataset.id;
+      Meteor.user().hasNowSeen(topicId);
+    },
+  });
 });
