@@ -30,7 +30,7 @@ Meteor.publishComposite(null, function selfNotiBadges() {
 
   return {
     find() {
-      return Topics.find(selector, { fields: { communityId: 1, createdAt: 1 } });
+      return Topics.find(selector, { fields: { communityId: 1, title: 1, createdAt: 1 } });
     },
     children: [{
       find(topic) {
