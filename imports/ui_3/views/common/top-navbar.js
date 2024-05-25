@@ -92,7 +92,7 @@ Template.Top_navbar.helpers({
       if (unseenCommentsCount > 0) {
         const otherUserId = room.participantIds.find(id => id !== userId);
         const otherUserName = Meteor.users.findOne(otherUserId)?.displayOfficialName();
-        correspondents.push(otherUserName);
+        correspondents.push(`${otherUserName} [${otherUserId}]`);
       }
     });
     return { count, correspondents };
