@@ -97,6 +97,13 @@
       "done": "status updated",
       "did": "updated the status"
     },
+    "categoryChange": {
+      "label": "category change",
+      "do": "change category of",
+      "doing": "change category",
+      "done": "category changed",
+      "did": "changed the category"
+    },
     "period": {
       "label": "update period",
       "do": "update period of",

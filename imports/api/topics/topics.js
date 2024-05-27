@@ -45,6 +45,10 @@ Topics.baseSchema = new SimpleSchema({
   movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 });
 
+Topics.categoryChangeSchema = new SimpleSchema({
+  category: { type: String, allowedValues: Topics.categoryValues },
+});
+
 Topics.extensionSchemas.news = new SimpleSchema({
   category: { type: String, defaultValue: 'news', autoform: { type: 'hidden', defaultValue: 'news' } },
   sticky: { type: Boolean, optional: true, defaultValue: false },

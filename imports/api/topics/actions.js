@@ -102,6 +102,17 @@ Topics.actions = {
       });
     },
   }),
+  categoryChange: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'categoryChange',
+    icon: 'fa fa-arrows-alt',
+    visible: doc && doc.category === 'forum' && user.hasPermission(`${doc.entityName()}.update`, doc),
+    run() {
+      Modal.confirmAndCall(Topics.methods.categoryChange, { _id: doc._id }, {
+        action: 'categoryChange',
+        entity: doc.entityName(),
+      });
+    },
+  }),
   move: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'move',
     label: __('move under other topic'),

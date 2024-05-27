@@ -85,7 +85,22 @@ export const move = new ValidatedMethod({
     doc.comments().forEach((comment) => {
       Comments.update(comment._id, { $set: { topicId: destinationId } });
     });
-    Topics.update(_id, { $set: { movedTo: destinationId, status: 'deleted' } }, { selector: doc });
+    return Topics.update(_id, { $set: { movedTo: destinationId, status: 'deleted' } }, { selector: doc });
+  },
+});
+
+export const categoryChange = new ValidatedMethod({
+  name: 'topics.categoryChange',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id }) {
+    const topic = checkExists(Topics, _id);
+//    topic.category = 'ticket';
+//    topic.ticket = { type: 'issue' };
+    checkPermissions(this.userId, 'forum.update', topic);
+    checkPermissions(this.userId, 'ticket.statusChange.reported.enter', topic);
+    return Topics.update(_id, { $set: { category: 'ticket', status: 'reported', ticket: { type: 'issue', urgency: 'normal' } } }, { selector: { category: 'ticket' } });
   },
 });
 
@@ -98,7 +113,7 @@ export const archive = new ValidatedMethod({
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, `statusChange.${topic.status}.leave`, topic);
     checkTopicPermissions(this.userId, 'statusChange.closed.enter', topic);
-    Topics.update(_id, { $set: { status: 'closed' } }, { selector: { category: topic.category } });
+    return Topics.update(_id, { $set: { status: 'closed' } }, { selector: { category: topic.category } });
   },
 });
 
@@ -111,8 +126,9 @@ export const remove = new ValidatedMethod({
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'remove', topic);
 
-    Topics.remove(_id);
+    const result = Topics.remove(_id);
     Comments.remove({ topicId: _id });
+    return result;
   },
 });
 
@@ -130,7 +146,7 @@ export function closeInactiveTopics() {
 }
 
 Topics.methods = Topics.methods || {};
-_.extend(Topics.methods, { insert, update, move, archive, remove });
+_.extend(Topics.methods, { insert, update, move, archive, categoryChange, remove });
 _.extend(Topics.methods, crudBatchOps(Topics));
 Meteor.startup(() => { // statusUpdate is a behaviour method -- not ready yet
   Topics.methods.batch.statusChange = new BatchMethod(Topics.methods.statusChange);

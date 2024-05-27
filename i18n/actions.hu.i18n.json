@@ -103,6 +103,13 @@
       "done": "státusz frissítve",
       "did": "frissítette a státuszt"
     },
+    "categoryChange": {
+      "label": "kategória váltás",
+      "do": "kategóriát vált",
+      "doing": "kategória váltása",
+      "done": "kategória módosítva",
+      "did": "megváltoztatta a kategóriát"
+    },
     "period": {
       "label": "időszak módosítás",
       "do": "módosítja",
