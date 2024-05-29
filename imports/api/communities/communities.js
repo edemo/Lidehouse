@@ -161,9 +161,14 @@ Communities.helpers({
   },
   userWithRole(role) {
     const Memberships = Mongo.Collection.get('memberships');
-    const membershipWithRole = Memberships.findOneActive({ communityId: this._id, role });
+    const membershipWithRole = Memberships.findOneActive({ communityId: this._id, userId: { $exists: true }, role });
     if (!membershipWithRole) return undefined;
     return membershipWithRole.user();
+  },
+  usersWithRoles(roles) {
+    const Memberships = Mongo.Collection.get('memberships');
+    const users = Memberships.findActive({ communityId: this._id, userId: { $exists: true }, role: { $in: roles } }).map(membership => membership.user());
+    return _.without(_.uniq(users, false, u => u._id), undefined);
   },
   admin() {
     const user = this.userWithRole('admin');
@@ -172,6 +177,9 @@ Communities.helpers({
   },
   treasurer() {
     return this.userWithRole('treasurer') || this.userWithRole('manager') || this.userWithRole('admin');
+  },
+  ticketHandlers() {
+    return this.usersWithRoles(['maintainer', 'manager', 'admin']);
   },
   techsupport() {
     return this.admin(); // TODO: should be the person with do.techsupport permission

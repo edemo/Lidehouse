@@ -229,6 +229,15 @@ Topics.helpers({
     }
     return 0;
   },
+  immediateNotifiees() {
+    switch (this.category) {
+      case 'ticket':
+        if (this.ticket?.urgency === 'high') return this.community().ticketHandlers();
+        else return [];
+      default:
+        return [];
+    }
+  },
   modifiableFields() {
     return Topics.modifiableFields;
   },

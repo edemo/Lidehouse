@@ -20,9 +20,7 @@ export const insert = new ValidatedMethod({
     checkPermissions(this.userId, `${doc.entityName()}.insert`, topic);
     const docId = Comments.insert(doc);
     const newDoc = Comments.findOne(docId); // we need the createdAt timestamp
-    updateMyLastSeen._execute({ userId: this.userId },
-      { topicId: topic._id, lastSeenInfo: { timestamp: newDoc.createdAt } },
-    );
+    updateMyLastSeen._execute({ userId: this.userId }, { topicId: topic._id, lastSeenInfo: { timestamp: newDoc.createdAt } });
     return docId;
   },
 });

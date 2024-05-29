@@ -21,6 +21,7 @@ import { updateMyLastSeen, mergeLastSeen } from '/imports/api/users/methods.js';
 import './rooms/rooms.js';
 import './feedbacks/feedbacks.js';
 import { autoOpen } from './votings/methods.js';
+import { sendSingleTopicNotification } from '/imports/email/notifications-send.js';
 
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
@@ -31,11 +32,14 @@ export const insert = new ValidatedMethod({
     // readableId(Topics, doc);
     checkTopicPermissions(this.userId, 'insert', doc);
     const topicId = Topics.insert(doc);
+    const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
+    updateMyLastSeen._execute({ userId: this.userId }, { topicId, lastSeenInfo: { timestamp: newTopic.createdAt } });
     if (Meteor.isServer) {
-      const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
       autoOpen(newTopic);
-      updateMyLastSeen._execute({ userId: this.userId },
-      { topicId, lastSeenInfo: { timestamp: newTopic.createdAt } });
+      newTopic.immediateNotifiees().forEach(user => {
+        const topicToDisplay = newTopic.unseenEventsBy(user._id, Meteor.users.SEEN_BY.NOTI);
+        sendSingleTopicNotification(user, newTopic.community(), topicToDisplay);
+      });
     }
     return topicId;
   },

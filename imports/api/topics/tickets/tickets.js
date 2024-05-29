@@ -230,7 +230,7 @@ Factory.define('issue', Topics, {
   status: 'reported',
   ticket: {
     type: 'issue',
-    urgency: 'high',
+    urgency: 'normal',
   },
 });
 

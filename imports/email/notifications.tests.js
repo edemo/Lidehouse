@@ -32,13 +32,15 @@ if (Meteor.isServer) {
     this.timeout(150000);
     let topicId;
     let ticketId;
+    let assertGotAllEmails;
     let demoCommunity;
-    let demoManager;
+    let demoAdmin, demoManager, demoMaintainer;
     let ownerWithNotiFrequent;
     let ownerWithNotiDaily;
     let ownerWithNotiWeekly;
     let ownerWithRepresentorOnParcel;
     let ownerWithNotiNever;
+    let ticketHandlers;
 
     before(function () {
       // Fixture
@@ -46,7 +48,9 @@ if (Meteor.isServer) {
       Communities.update(Fixture.demoCommunityId, { $set: { 'settings.sendBillEmail': ['member'] } });
       Contracts.remove({ parcelId: Fixture.dummyParcels[1] }); // No need for leadParcel for dummyUsers[1] as he needs own votership
       demoCommunity = Communities.findOne(Fixture.demoCommunityId);
+      demoAdmin = Meteor.users.findOne(Fixture.demoAdminId);
       demoManager = Meteor.users.findOne(Fixture.demoManagerId);
+      demoMaintainer = Meteor.users.findOne(Fixture.dummyUsers[0]);
       Meteor.users.update(Fixture.demoUserId, { $set: { 'settings.notiFrequency': 'frequent' } });
       Meteor.users.update(Fixture.dummyUsers[3], { $set: { 'settings.notiFrequency': 'daily' } });
       Meteor.users.update(Fixture.dummyUsers[4], { $set: { 'settings.notiFrequency': 'daily' } });
@@ -58,6 +62,7 @@ if (Meteor.isServer) {
       ownerWithNotiWeekly = Meteor.users.findOne(Fixture.dummyUsers[2]);
       ownerWithRepresentorOnParcel = Meteor.users.findOne(Fixture.dummyUsers[5]);
       ownerWithNotiNever = Meteor.users.findOne(Fixture.dummyUsers[1]);
+      ticketHandlers = demoCommunity.ticketHandlers();
       // Mocking the Email sending
       sinon.stub(EmailSender);
     });
@@ -70,10 +75,7 @@ if (Meteor.isServer) {
         Topics.remove({});
         topicId = Fixture.builder.create('forum', { creatorId: ownerWithNotiFrequent._id });
         ticketId = Fixture.builder.create('issue', { creatorId: demoManager._id, 'ticket.localizer': '@' });
-      });
-
-      it('New users get all the past events in one bunch', function () {
-        function assertGotAllEmails(user, emailData, count) {
+        assertGotAllEmails = function (user, emailData, count) {
           chai.assert.equal(emailData.to, user.getPrimaryEmail());
           chai.assert.match(emailData.subject, /Updates/);
           chai.assert.equal(emailData.template, 'Notifications_Email');
@@ -81,7 +83,9 @@ if (Meteor.isServer) {
           chai.assert.equal(emailData.data.community._id, demoCommunity._id);
           chai.assert.equal(emailData.data.topicsToDisplay.length, count);
         }
+      });
 
+      it('New users get all the past events in one bunch', function () {
         processNotifications('frequent');
         sinon.assert.calledOnce(EmailSender.send);
         assertGotAllEmails(ownerWithNotiFrequent, EmailSender.send.getCall(0).args[0], 1);
@@ -146,6 +150,23 @@ if (Meteor.isServer) {
         processNotifications('daily');
         processNotifications('weekly');
         sinon.assert.notCalled(EmailSender.send);
+      });
+
+      it('Tickethandlers get noti email, immediately', function () {
+        chai.assert.equal(ticketHandlers.length, 3);
+
+        const urgentTicketId = Fixture.builder.create('issue', { creatorId: Fixture.demoManagerId, 'ticket.localizer': '@', 'ticket.urgency': 'high' });
+        sinon.assert.calledThrice(EmailSender.send);
+        assertGotAllEmails(demoAdmin, EmailSender.send.getCall(0).args[0], 1);
+        assertGotAllEmails(demoMaintainer, EmailSender.send.getCall(1).args[0], 1);
+//        assertGotAllEmails(demoManager, EmailSender.send.getCall(2).args[0], 1);
+        sinon.resetHistory();
+
+        processNotifications('frequent');
+        sinon.assert.calledOnce(EmailSender.send);
+        processNotifications('daily');
+        sinon.assert.calledThrice(EmailSender.send);
+        processNotifications('weekly');
       });
 
       it('Doesnt email closed group content outside the group', function () {
