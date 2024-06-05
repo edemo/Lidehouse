@@ -68,6 +68,7 @@ Contracts.modifiableFields = [
   'text',
   'billingPeriod',
   'billingAmount',
+  'accounting',
   'accounting.account',
   'accounting.localizer',
   'cc',
