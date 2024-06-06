@@ -232,7 +232,7 @@ Transactions.helpers({
     let expectedSeIdLength = 0;
     tx.journalEntries(true).forEach(je => {
       const account = Accounts.getByCode(je.account, this.communityId);
-      if (account?.category === 'bank') expectedSeIdLength += 1;
+      if (['bank', 'cash'].includes(account?.category)) expectedSeIdLength += 1;
     });
     if (expectedSeIdLength) return this.seId?.length === expectedSeIdLength;
     else return undefined;

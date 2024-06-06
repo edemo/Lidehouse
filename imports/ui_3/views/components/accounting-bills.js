@@ -46,6 +46,9 @@ Template.Accounting_bills.viewmodel({
       instance.subscribe('balances.inCommunity', { communityId, partners: [], tag: 'T', notNull: true });
     });
   },
+  paymentsWoStatement() {
+    return this.community()?.settings?.paymentsWoStatement;
+  },
   parcelBillings() {
     return ParcelBillings.find({ communityId: this.communityId() });
   },

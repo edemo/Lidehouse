@@ -21,9 +21,11 @@
                           {{#each txdef in (findTxdefs 'bill')}}
                           <li><a href="" class="js-create" data-defid={{txdef._id}} data-entity="bill"> {{_ 'new'}} {{_ txdef.name}}</a></li>
                           {{/each}}
+                        {{#if paymentsWoStatement}}
                           {{#each txdef in (findTxdefs 'receipt')}}
                           <li><a href="" class="js-create" data-defid={{txdef._id}} data-entity="receipt"> {{_ 'new'}} {{_ txdef.name}}</a></li>
                           {{/each}}
+                        {{/if}}
                       </ul>
                       {{>Action_buttons_group collection='transactions' actions='import' size='md'}}
                   </div>
