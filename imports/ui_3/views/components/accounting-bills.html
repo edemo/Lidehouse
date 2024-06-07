@@ -86,16 +86,11 @@
                         <div class="table-responsive partners">
                             {{> ReactiveDatatable tableData=partnersTableDataFn options=partnersOptionsFn }}
                         </div>
-                        {{#if showPartnerLedger}}
-                          <h2 class="text-center">{{_ 'Partner ledger'}} {{periodTagFromBeginDate}}</h2>
-                          {{> Partner_ledger_report relation=activePartnerRelation contracts=contractsForPartnerLedger tag=periodTagFromBeginDate }}
-                        {{else}}
                         <div class="row">
                           <div class="col-xs-12 text-center">
                               <button class="btn btn-default js-partner-ledger"><i class="fa fa-list"></i> {{_ 'Partner ledger'}}</button>
                           </div>
-                        </div>    
-                        {{/if}}
+                        </div>
                       {{/LazyTab}}
                     </div>
                 </div>

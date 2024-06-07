@@ -36,7 +36,6 @@ import './accounting-bills.html';
 
 Template.Accounting_bills.viewmodel({
   share: 'accountingFilter',
-  showPartnerLedger: false,
   onCreated(instance) {
     ModalStack.setVar('relation', this.activePartnerRelation(), true);
     instance.autorun(() => {
@@ -195,7 +194,18 @@ Template.Accounting_bills.events({
     Modal.show('Modal', modalContext);
   },
   'click .js-partner-ledger'(event, instance) {
-    const val = instance.viewmodel.showPartnerLedger();
-    instance.viewmodel.showPartnerLedger(!val);
+    const communityId = instance.viewmodel.communityId();
+    if (!Meteor.user().hasPermission('transactions.inCommunity', { communityId })) return;
+    Modal.show('Modal', {
+      id: 'partnerledger.view',
+      title: __('Partner ledger'),
+      body: 'Partner_ledger_report',
+      bodyContext: {
+        relation: instance.viewmodel.activePartnerRelation(),
+        contracts: instance.viewmodel.contractsForPartnerLedger(),
+        tag: instance.viewmodel.periodTagFromBeginDate(),
+      },
+      size: 'lg',
+    });
   },
 });
