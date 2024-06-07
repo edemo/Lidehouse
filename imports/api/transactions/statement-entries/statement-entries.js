@@ -36,11 +36,11 @@ StatementEntries.schema = new SimpleSchema({
 
 // IFF all idSet fields are present in the doc, than that should be unique selector in the collection. And if some not present, the next set is taken.
 StatementEntries.idSet = [
-  ['communityId', 'valueDate', 'ref', 'refType', 'amount', 'name', 'note'],
-  ['communityId', 'valueDate', 'ref', 'refType', 'amount', 'name'],
-  ['communityId', 'valueDate', 'ref', 'amount', 'name'],
-  ['communityId', 'valueDate', 'ref', 'refType', 'amount'],  // K&H has Csomagdíj every month with the same ref, reftype, amount, and no name, no note
-  ['communityId', 'valueDate', 'refType', 'amount', 'name'], // UniCredit has no ref
+  ['communityId', 'account', 'valueDate', 'ref', 'refType', 'amount', 'name', 'note'],
+  ['communityId', 'account', 'valueDate', 'ref', 'refType', 'amount', 'name'],
+  ['communityId', 'account', 'valueDate', 'ref', 'amount', 'name'],
+  ['communityId', 'account', 'valueDate', 'ref', 'refType', 'amount'],  // K&H has Csomagdíj every month with the same ref, reftype, amount, and no name, no note
+  ['communityId', 'account', 'valueDate', 'refType', 'amount', 'name'], // UniCredit has no ref
 ];
 
 Meteor.startup(function indexStatementEntries() {
