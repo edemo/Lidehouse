@@ -17,9 +17,10 @@ Template.Partner_ledger_report.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
+      const tag =  'C' + Template.currentData().tag.substring(1);
       const accounts = [this.relationAccount(), this.unidentifiedIncomeAccount(), this.unidentifiedExpenseAccount()];
       // If we restrict to the accounts, then the subaccounts will not be published
-      instance.subscribe('balances.inCommunity', { communityId, partners: [], tag: 'C' + Template.currentData().tag.substring(1) });
+      instance.subscribe('balances.inCommunity', { communityId, partners: [], tag });
     });
   },
   communityId() {
@@ -45,6 +46,7 @@ Template.Partner_ledger_report.viewmodel({
     else return this.unidentifiedIncomeAccount();
   },
   balance(contract, account, tag, sideFunc, tagtype) {
+    // console.log('balance called for', contract.code(), account, tag, sideFunc, tagtype);
     const balance = Balances.get({
       communityId: this.communityId(),
       account,
@@ -53,6 +55,7 @@ Template.Partner_ledger_report.viewmodel({
     }, tagtype);
     let result = balance[sideFunc]();
     if (sideFunc === 'total') result *= -1;
+    // console.log('result:', result);
     return result;
   },
   hasActivity(contract, tag) {
@@ -66,11 +69,10 @@ Template.Partner_ledger_report.viewmodel({
 
 Template.Partner_ledger_report.events({
   'click .cell,.row-header'(event, instance) {
-    const pageInstance = instance.parent(1);
-    const communityId = pageInstance.viewmodel.communityId();
+    const communityId = instance.viewmodel.communityId();
     if (!Meteor.user().hasPermission('transactions.inCommunity', { communityId })) return;
     const contractId = $(event.target).closest('[data-contract]').data('contract');
-    const periodTag = $(event.target).closest('[data-tag]').data('tag');
+    const periodTag = instance.data.tag;
     const period = Period.fromTag(periodTag);
     Modal.show('Modal', {
       id: 'partnerhistory.view',
@@ -79,7 +81,7 @@ Template.Partner_ledger_report.events({
       bodyContext: {
         beginDate: period.begin(),
         endDate: period.end(),
-        partnerOptions: pageInstance.viewmodel.contractOptions(),
+        partnerOptions: instance.viewmodel.contracts().map(c => c.asOption()),
         partnerSelected: contractId,
       },
       size: 'lg',

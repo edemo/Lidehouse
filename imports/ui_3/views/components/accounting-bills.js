@@ -29,6 +29,7 @@ import '/imports/ui_3/views/components/print-action.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
 import '/imports/ui_3/views/components/accounting-filter.js';
+import '/imports/ui_3/views/components/accounting-partner-ledger.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/components/lazy-tab.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
@@ -163,9 +164,6 @@ Template.Accounting_bills.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
     });
   },
-  contractsForPartnerLedger() {
-    return Contracts.find({ communityId: this.communityId(), relation: this.activePartnerRelation() }).fetch();
-  },
   periodTagFromBeginDate() {
     const beginDate = validDateOrUndefined(this.beginDate());
     const periodTag = `T-${beginDate.getFullYear()}`;
@@ -199,12 +197,8 @@ Template.Accounting_bills.events({
     Modal.show('Modal', {
       id: 'partnerledger.view',
       title: __('Partner ledger'),
-      body: 'Partner_ledger_report',
-      bodyContext: {
-        relation: instance.viewmodel.activePartnerRelation(),
-        contracts: instance.viewmodel.contractsForPartnerLedger(),
-        tag: instance.viewmodel.periodTagFromBeginDate(),
-      },
+      body: 'Accounting_partner_ledger',
+      bodyContext: {},
       size: 'lg',
     });
   },
