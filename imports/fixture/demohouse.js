@@ -12,6 +12,7 @@ import { Partners } from '/imports/api/partners/partners.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { defaultRoles } from '/imports/api/permissions/roles.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
@@ -1341,6 +1342,7 @@ const DEMO_LIFETIME = moment.duration(2, 'hours').asMilliseconds();
 function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `purgeDemoUserWithParcel parameter not defined ${userId} ${parcelId} ${communityId}`);
   const user = Meteor.users.findOne(userId);
+  const partnerId = user.partnerId(communityId);
   // Purge user activity
   Topics.remove({ creatorId: userId });
   Topics.remove({ 'participantIds.$': userId });
@@ -1357,10 +1359,11 @@ function purgeDemoUserWithParcel(userId, parcelId, communityId) {
     modifiedTopics.forEach(topic => topic.voteEvaluate());
   }
   // Purge finacial records
-  Transactions.remove({ partnerId: user.partnerId(communityId), category: 'payment' }); // needs the bills
-  Transactions.remove({ partnerId: user.partnerId(communityId) });
+  Transactions.remove({ partnerId, category: 'payment' }); // needs the bills
+  Transactions.remove({ partnerId });
   // Purge parcel/membership/partner
   Memberships.remove({ parcelId }); // removing added benefactors as well
+  Contracts.remove({ partnerId });
   Parcels.remove({ _id: parcelId });
   Partners.remove({ userId });
   Meteor.users.remove(userId);
