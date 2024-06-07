@@ -457,6 +457,25 @@ export const Conductors = {
         }],
       };
     },
+    'MagNet'(options) {
+      _.extend(options.dictionary, {
+        ref: { label: 'Tranz szám' },
+        valueDate: { label: 'Dátum' },
+        amount: { label: 'Összeg' },
+        name: { label: 'Ellenpartner' },
+        contraBAN: { label: 'Ellenszámla' },
+        note: { label: 'Közlemény' },
+      });
+      return {
+        collectionName: 'statementEntries',
+        format: 'MagNet',
+        phases: [{
+          collectionName: 'statementEntries',
+          options,
+          dictionary: options.dictionary,
+        }],
+      };
+    },
     'CR'(options) {
       _.extend(options.dictionary, {
         ref: { label: 'Sorszám' },

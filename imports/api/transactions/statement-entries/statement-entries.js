@@ -38,6 +38,7 @@ StatementEntries.schema = new SimpleSchema({
 StatementEntries.idSet = [
   ['communityId', 'valueDate', 'ref', 'refType', 'amount', 'name', 'note'],
   ['communityId', 'valueDate', 'ref', 'refType', 'amount', 'name'],
+  ['communityId', 'valueDate', 'ref', 'amount', 'name'],
   ['communityId', 'valueDate', 'ref', 'refType', 'amount'],  // K&H has Csomagdíj every month with the same ref, reftype, amount, and no name, no note
   ['communityId', 'valueDate', 'refType', 'amount', 'name'], // UniCredit has no ref
 ];
