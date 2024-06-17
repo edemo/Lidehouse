@@ -357,12 +357,28 @@ if (Meteor.isServer) {
         sinon.assert.calledWithMatch(EmailSender.send, { template: 'Bill_Email' });
         sinon.assert.calledWithMatch(EmailSender.send, { to: partner.primaryEmail() });
         sinon.assert.calledWithMatch(EmailSender.send, { cc: [partner2.primaryEmail()] });
-        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ user: partner.user(), community: bill.community(), bill }) });
+        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ community: bill.community(), bill }) });
+      });
+
+      it('Sends outstandings reminder', function () {
+        const partner = Partners.findOne(partnerId);
+        const partner2 = Partners.findOne(partner2Id);
+        const bill = Transactions.findOne(billId);
+        const contract = bill.contract();
+        chai.assert.isDefined(contract);
+        sinon.assert.notCalled(EmailSender.send);
+  
+        Contracts.methods.remindOutstandings._execute({ userId: Fixture.demoManagerId }, { _id: contract._id });
+        sinon.assert.calledOnce(EmailSender.send);
+        sinon.assert.calledWithMatch(EmailSender.send, { template: 'Outstandings_Email' });
+        sinon.assert.calledWithMatch(EmailSender.send, { to: partner.primaryEmail() });
+        sinon.assert.calledWithMatch(EmailSender.send, { cc: [partner2.primaryEmail()] });
+        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ community: bill.community(), contract }) });
       });
 
       it('Doesnt send bill to suppliers', function () {
         partnerId = Fixture.builder.create('supplier', { creatorId: Fixture.demoManagerId });
-        billId = Fixture.builder.create('bill', { 
+        billId = Fixture.builder.create('bill', {
           creatorId: Fixture.demoManagerId,
           partnerId,
           relation: 'supplier',
@@ -371,16 +387,6 @@ if (Meteor.isServer) {
 
         Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: billId });
         sinon.assert.notCalled(EmailSender.send);
-      });
-
-      it('Sends outstandings reminder', function () {
-        sinon.assert.notCalled(EmailSender.send);
-        Partners.methods.remindOutstandings._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
-        const partner = Partners.findOne(partnerId);
-        sinon.assert.calledOnce(EmailSender.send);
-        sinon.assert.calledWithMatch(EmailSender.send, { template: 'Outstandings_Email' });
-        sinon.assert.calledWithMatch(EmailSender.send, { to: partner.primaryEmail() });
-        sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ user: partner.user(), community: partner.community(), partner }) });
       });
     });
 

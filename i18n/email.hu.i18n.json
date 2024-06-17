@@ -44,6 +44,7 @@
     "Dear": "Kedves",
     "glyphAfterDear": "!",
     "OutstandingsPretext": "Könyvelésünk szerint Önnek az ezidáig kifizetetlen számláiból az alábbi hátraléka mutatkozik.",
+    "OutstandingsContract": "Szóban forgó szerződés/albetét",
     "OutstandingsTotal": "Tartozás összege",
     "OutstandingsDetails": "mely __quantity__ rendezetlen számlából adódik össze.",
     "OutstandingsCallToAction": "Kérjük, hogy a fenti összeget legyen kedves 8 napon belül kiegyenlíteni.",

@@ -5,6 +5,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { defaultBeginDate, defaultEndDate } from '/imports/ui_3/helpers/utils.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
@@ -54,6 +55,27 @@ Contracts.actions = {
       });
     },
   }),
+  history: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'history',
+    label: 'history',
+    icon: 'fa fa-money',
+    visible: user.hasPermission('contracts.inCommunity', doc),
+    run(event, instance) {
+      const contracts = [doc];
+      Modal.show('Modal', {
+        id: 'partnerhistory.view',
+        title: 'Partner history',
+        body: 'Partner_history',
+        bodyContext: {
+          beginDate: defaultBeginDate(),
+          endDate: defaultEndDate(),
+          partnerOptions: contracts.map(c => ({ label: c.toString(), value: c._id })),
+//          partnerSelected: ,
+        },
+        size: 'lg',
+      });
+    },
+  }),
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
@@ -82,6 +104,20 @@ Contracts.actions = {
         type: 'method-update',
         meteormethod: 'contracts.update',
         singleMethodArgument: true,
+      });
+    },
+  }),
+  remindOutstandings: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'remindOutstandings',
+    label: 'remindOutstandings',
+    color: doc.mostOverdueDaysColor(),
+    icon: 'fa fa-exclamation',
+    visible: user.hasPermission('transactions.post', doc) && (ModalStack.getVar('relation') !== 'supplier') && doc.mostOverdueDays(),
+    run() {
+      Modal.confirmAndCall(Contracts.methods.remindOutstandings, { _id: doc._id }, {
+        action: 'send',
+        entity: 'outstandings reminder',
+        message: __('Sending outstandings reminder', { partner: doc.partner().displayName(), contract: doc.toString() }),
       });
     },
   }),

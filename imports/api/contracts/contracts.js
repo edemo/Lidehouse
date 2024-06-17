@@ -6,6 +6,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { Log } from '/imports/utils/log.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -94,6 +95,9 @@ Contracts.helpers({
   entityName() {
     return 'contracts';
   },
+  community() {
+    return Communities.findOne(this.communityId);
+  },
   partner() {
     if (this.partnerId) return Partners.findOne(this.partnerId);
     if (this.leadParcelId) {
@@ -151,6 +155,7 @@ Contracts.helpers({
     if (this.leadParcelId) return Contracts.findOneActive({ parcelId: this.leadParcelId });
     else return this;
   },
+  // --- Same for partmers and contracts ---
   balance(account) {
     const Balances = Mongo.Collection.get('balances');
     // if no account is given, result is the entire balance
@@ -160,6 +165,22 @@ Contracts.helpers({
   outstanding(account) {
     return this.balance(account) * Relations.sign(this.relation) * (-1);
   },
+  outstandingBills() {
+    const Transactions = Mongo.Collection.get('transactions');
+    return Transactions.find({ contractId: this._id, category: 'bill', outstanding: { $ne: 0 } });
+  },
+  mostOverdueDays() {
+    if (this.balance() >= 0) return 0; // we do not check suppliers, otherwise outstanding() with proper relation should be used
+    const daysOfExpiring = this.outstandingBills().map(bill => bill.overdueDays());
+    return daysOfExpiring.length > 0 ? Math.max.apply(Math, daysOfExpiring) : 0;
+  },
+  mostOverdueDaysColor() {
+    const days = this.mostOverdueDays();
+    if (days > 30 && days < 90) return 'warning';
+    if (days > 90) return 'danger';
+    return 'info';
+  },
+  // --- END ---
   openingBalance(tag) {
     const Balances = Mongo.Collection.get('balances');
     return Balances.get({ communityId: this.communityId, partner: this.code(), tag }, 'opening').total() * (-1);
@@ -185,11 +206,26 @@ Contracts.helpers({
     return this.partnerName() + ': ' + this.toString();
   },
   toString() {
-    if (this.relation === 'member') return `${__('schemaParcels.category.options.property')} ${this.parcel()?.ref}`;
+    if (this.relation === 'member') return /*`${__('schemaParcels.category.options.property')} ${*/ this.parcel()?.ref;
     else return this.displayTitle();
   },
   asOption() {
     return { label: this.toString(), value: this._id };
+  },
+  emailsToNotify() {
+    const emails = {
+      to: this.partner().primaryEmail(),
+      cc: this.ccPartners()?.map(partner => partner.primaryEmail()),
+    };
+    if (!emails.to) {
+      if (emails.cc) {
+        emails.to = emails.cc;
+        emails.cc = undefined;
+      } else {
+        Log.warning(`Missing email address for contract ${this.displayFull()} [${this._id}]. Unable to send bill.`);
+      }
+    }
+    return emails;
   },
 });
 

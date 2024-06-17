@@ -3,19 +3,22 @@
         <tbody>    
             <tr>
                 <td class="project-title">
-                    <p><strong>{{_ 'email.Dear'}} {{partner.displayName}}{{_ 'email.glyphAfterDear'}}</strong></p>
+                    <p><strong>{{_ 'email.Dear'}} {{contract.partner.displayName}}{{_ 'email.glyphAfterDear'}}</strong></p>
                     <br>
                     <p>{{_ 'email.OutstandingsPretext'}}</p>
-                    <p><strong>{{_ 'email.OutstandingsTotal'}}: {{displayMoney (partner.outstanding undefined 'member')}}</strong>,
-                        {{_ 'email.OutstandingsDetails' quantity=partner.outstandingBills.count}}</p>
+                    <p>
+                        <strong>{{_ 'email.OutstandingsContract'}}: {{contract.toString}}</strong><br>
+                        <strong>{{_ 'email.OutstandingsTotal'}}: {{displayMoney (contract.outstanding undefined 'member')}}</strong>,
+                        {{_ 'email.OutstandingsDetails' quantity=contract.outstandingBills.count}}
+                    </p>
                     <div class='content-block aligncenter'>
                         <a href="{{urlFor 'Parcels finances'}}" class="btn btn-primary btn-sm">{{_ 'View my bills'}}</a>
                     </div>
                     <p>{{_ 'email.OutstandingsCallToAction'}}</p>
-                    <p>{{_ 'email.PaymentMethods'}}:
+                    <p>{{_ 'email.PaymentMethods'}}:<br>
                         <strong>{{_ 'schemaPartners.BAN.label'}}: {{community.primaryBankAccount.BAN}}</strong>
                     </p>
-                    <p>{{_ 'email.OutstandingsContact'}}: 
+                    <p>{{_ 'email.OutstandingsContact'}}:
                       <a href="mailto:{{community.treasurer.getPrimaryEmail}}">{{community.treasurer.getPrimaryEmail}}</a>
                     </p>
                 </td>

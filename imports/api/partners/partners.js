@@ -157,10 +157,7 @@ Partners.helpers({
       }
     }
   },
-  outstandingBills() {
-    const Transactions = Mongo.Collection.get('transactions');
-    return Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $ne: 0 } });
-  },
+  // --- Same for partmers and contracts ---
   balance(account) {
     // The balance of the partner from the perspective of the contra party
     // Positive means we owe him, negative means he owes us.
@@ -180,6 +177,10 @@ Partners.helpers({
     //                or he has to return this amount to us, if he is supplier 
     return this.balance(account) * Relations.sign(relation) * (-1);
   },
+  outstandingBills() {
+    const Transactions = Mongo.Collection.get('transactions');
+    return Transactions.find({ partnerId: this._id, category: 'bill', outstanding: { $ne: 0 } });
+  },
   mostOverdueDays() {
     if (this.balance() >= 0) return 0; // we do not check suppliers, otherwise outstanding() with proper relation should be used
     const daysOfExpiring = this.outstandingBills().map(bill => bill.overdueDays());
@@ -191,6 +192,7 @@ Partners.helpers({
     if (days > 90) return 'danger';
     return 'info';
   },
+  // --- END ---
   toString() {
     return this.displayName();
   },

@@ -26,7 +26,6 @@ export const Permissions = [
   { name: 'partners.insert',        roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'partners.update',        roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'partners.remove',        roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'partners.remindOutstandings', roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'partners.upsert',        roles: ['manager'] },
   { name: 'parcels.inCommunity',    roles: exceptGuest },
   { name: 'parcels.codes',          roles: everyRole },

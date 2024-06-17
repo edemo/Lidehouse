@@ -11,10 +11,9 @@ import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { validDateOrUndefined } from '/imports/api/utils';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { Partners } from '/imports/api/partners/partners.js';
-import '/imports/api/partners/actions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
-import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
+import { contractsFinancesColumns } from '/imports/api/contracts/tables.js';
+import '/imports/api/contracts/actions.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/actions.js';
@@ -79,8 +78,8 @@ Template.Accounting_bills.viewmodel({
     return txs.count();
   },
   countOverduePartners(color) {
-    const partners = Partners.find({ communityId: this.communityId(), relation: this.activePartnerRelation() });
-    const overdues = partners.fetch().filter(partner => partner.balance() !== 0 && partner.mostOverdueDaysColor() === color);
+    const contracts = Contracts.findActive(this.contractsFilterSelector()).fetch();
+    const overdues = contracts.filter(c => c.balance() !== 0 && c.mostOverdueDaysColor() === color);
     return overdues.length;
   },
   txTableDataFn(category) {
@@ -138,7 +137,7 @@ Template.Accounting_bills.viewmodel({
       ...DatatablesSelectButtons(Transactions),
     });
   },
-  partnersFilterSelector() {
+  contractsFilterSelector() {
     const selector = { communityId: this.communityId() };
     selector.relation = this.activePartnerRelation();
     return selector;
@@ -149,17 +148,17 @@ Template.Accounting_bills.viewmodel({
       instance.subscribe('balances.inCommunity', { communityId: self.communityId(), partners: [], tags: ['T'] });
     };
   }, */
-  partnersTableDataFn() {
+  contractsTableDataFn() {
     const self = this;
     return () => {
-      let partners = Partners.find(self.partnersFilterSelector()).fetch();
+      let partners = Contracts.findActive(self.contractsFilterSelector()).fetch();
       if (self.unreconciledOnly()) partners = partners.filter(p => p.balance());
       return partners;
     };
   },
-  partnersOptionsFn() {
+  contractsOptionsFn() {
     return () => Object.create({
-      columns: partnersFinancesColumns(),
+      columns: contractsFinancesColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
     });

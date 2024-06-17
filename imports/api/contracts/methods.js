@@ -8,6 +8,7 @@ import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { sanityCheckOnlyOneActiveAtAllTimes } from '/imports/api/behaviours/active-period.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
+import { sendOutstandingsEmail } from '/imports/email/outstandings-send.js';
 
 function leadParcelCheck(collection, doc) {
   if (doc.leadParcelId) {
@@ -91,6 +92,21 @@ export const remove = new ValidatedMethod({
   },
 });
 
+export const remindOutstandings = new ValidatedMethod({
+  name: 'contracts.remindOutstandings',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ _id }) {
+    const doc = checkExists(Contracts, _id);
+    checkPermissions(this.userId, 'transactions.post', doc);
+    if (Meteor.isServer) {
+      if (sendOutstandingsEmail(_id) === false) throw new Meteor.Error('err_email');
+    }
+  },
+});
+
 Contracts.methods = Contracts.methods || {};
-_.extend(Contracts.methods, { insert, update, remove });
+_.extend(Contracts.methods, { insert, update, remove, remindOutstandings });
 _.extend(Contracts.methods, crudBatchOps(Contracts));

@@ -182,7 +182,7 @@
 
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "Reconnecting user": "This person will be sent a new enrollment email to the same email address, as the previous one was sent to. As soon as the new email is sent, the old one becomes expired.",
-  "Sending outstandings reminder": "To the following partner: <strong>'%s'</strong> you are about to send out an outstandings reminder email.",
+  "Sending outstandings reminder": "To the following partner: <strong>'__partner__'</strong> you are about to send out an outstandings reminder email, with regard to contract: <strong>'__contract__'</strong>.",
 
   "delete user": "delete your account permanently",
   "deletedUser": "Deleted user",

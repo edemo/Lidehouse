@@ -20,16 +20,3 @@ export function partnersColumns() {
 
   return columns;
 }
-
-export function partnersFinancesColumns() {
-  const columns = [
-    { data: 'toString()', title: __('schemaTransactions.partnerId.label') },
-    { data: 'outstanding()', title: __('schemaBills.outstanding.label'), render: Render.formatNumber(0) },
-    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'partners', actions: '', size: 'sm' }, cell),
-    },
-  ];
-
-  return columns;
-}

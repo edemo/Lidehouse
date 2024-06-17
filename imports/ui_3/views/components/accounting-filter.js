@@ -16,7 +16,6 @@ import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
-import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';

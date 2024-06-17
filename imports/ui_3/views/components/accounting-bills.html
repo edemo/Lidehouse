@@ -55,8 +55,9 @@
                     {{> Badge value=(count 'receipt' 'unposted') color='warning' title=(_ 'Unposted') align='right'}}
                     </h3></a></li>
                     <li class=""><a data-toggle="tab" href="#tab-partner"><h3>{{_ 'partners'}}&nbsp;
-                    {{> Badge value=(countOverduePartners 'warning') color='warning' title=(_ 'Overdue') align='right'}}
-                    {{> Badge value=(countOverduePartners 'info') color='info' title=(_ 'Overdue') align='right'}}
+                      {{> Badge value=(countOverduePartners 'danger') color='danger' title=(_ 'Overdue') align='right'}}
+                      {{> Badge value=(countOverduePartners 'warning') color='warning' title=(_ 'Overdue') align='right'}}
+                      {{> Badge value=(countOverduePartners 'info') color='info' title=(_ 'Overdue') align='right'}}
                     </h3></a></li>
                 </ul>
                 <div class="tab-content">
@@ -83,8 +84,8 @@
                     </div>
                     <div id="tab-partner" class="tab-pane">
                       {{#LazyTab}}
-                        <div class="table-responsive partners">
-                            {{> ReactiveDatatable tableData=partnersTableDataFn options=partnersOptionsFn }}
+                        <div class="table-responsive contracts">
+                            {{> ReactiveDatatable tableData=contractsTableDataFn options=contractsOptionsFn }}
                         </div>
                         <div class="row">
                           <div class="col-xs-12 text-center">

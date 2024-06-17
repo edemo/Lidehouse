@@ -9,7 +9,6 @@ import { defaultBeginDate, defaultEndDate } from '/imports/ui_3/helpers/utils.js
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
-import { displayMessage } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { userUnlinkNeeded } from './methods.js';
@@ -114,24 +113,6 @@ Partners.actions = {
       },
     };
   },
-  remindOutstandings: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'remindOutstandings',
-    label: 'remindOutstandings',
-    color: doc.mostOverdueDaysColor(),
-    icon: 'fa fa-exclamation',
-    visible: user.hasPermission('partners.remindOutstandings', doc) && (ModalStack.getVar('relation') !== 'supplier') && doc.mostOverdueDays(),
-    run() {
-      if ((!doc.contact || !doc.contact.email) && !doc.userId) {
-        displayMessage('warning', 'No contact email set for this partner');
-      } else {
-        Modal.confirmAndCall(Partners.methods.remindOutstandings, { _id: doc._id }, {
-          action: 'send',
-          entity: 'outstandings reminder',
-          message: __('Sending outstandings reminder', doc.displayName() || __('undefined')),
-        });
-      }
-    },
-  }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',
