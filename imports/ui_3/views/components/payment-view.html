@@ -36,7 +36,7 @@
                       <strong>{{displayBill bp}}</strong>
                       {{> Action_buttons_group collection='transactions' actions='view' doc=bp.id size='sm'}}
                     </td>
-                    <td class="nowrap">{{displayMoney bp.amount}}</td>
+                    <td class="nowrap">{{displayCurrency bp.amount}}</td>
                 </tr>
                 {{/if}}
                 {{/each}}
@@ -60,7 +60,7 @@
                 <tr>
                     <td>{{{displayAccount line.account}}}</td>
                     <td>{{{displayLocalizer line.localizer}}}</td>
-                    <td class="nowrap">{{displayMoney line.amount}}</td>
+                    <td class="nowrap">{{displayCurrency line.amount}}</td>
                 </tr>
                 {{/if}}
                 {{/each}}
@@ -74,18 +74,18 @@
         {{#if rDoc.rounding}}
         <tr>
             <td><strong>{{_ 'schemaTransactions.rounding.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney rDoc.rounding}}</td>
+            <td class="nowrap">{{displayCurrency rDoc.rounding}}</td>
         </tr>
         {{/if}}
         {{#if rDoc.outstanding}}
         <tr>
             <td><strong>{{_ 'Unidentified'}} :</strong></td>
-            <td class="nowrap">{{displayMoney rDoc.outstanding}}</td>
+            <td class="nowrap">{{displayCurrency rDoc.outstanding}}</td>
         </tr>
         {{/if}}
         <tr>
             <td><strong>{{_ 'schemaTransactions.amount.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney rDoc.amount}}</td>
+            <td class="nowrap">{{displayCurrency rDoc.amount}}</td>
         </tr>
         </tbody>
     </table>

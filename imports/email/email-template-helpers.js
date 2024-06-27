@@ -21,7 +21,7 @@ export const EmailTemplateHelpers = {
   displayTime(time) {
     return moment(time).format('L LT');
   },
-  displayMoney(number) {
+  displayCurrency(number) {
     const lang = this.community.settings.language;
     numeral.language(lang);
     const formatString = TAPi18n.__('currencyFormat', {}, lang);

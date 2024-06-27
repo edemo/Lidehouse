@@ -56,7 +56,7 @@
                     <div><span style="font-weight:600">{{_ 'schemaContracts.billingPeriod.label'}}:</span> {{this.billingPeriod}}</div>
                     {{/if}}
                     {{#if this.billingAmount}}
-                    <div><span style="font-weight:600">{{_ 'schemaContracts.billingAmount.label'}}:</span> {{displayMoney this.billingAmount}}</div>
+                    <div><span style="font-weight:600">{{_ 'schemaContracts.billingAmount.label'}}:</span> {{displayCurrency this.billingAmount}}</div>
                     {{/if}}
                     {{#if this.activeTime.begin}}
                     <div><span style="font-weight:600">{{_ 'Begin date'}}:</span> {{displayDate this.activeTime.begin}}</div>

@@ -77,14 +77,14 @@
                   <td>{{entry.tx.serialId}}</td>
                   <td>{{{displayPartner entry.partner}}} {{{displayLocalizer entry.localizer}}}</td>
                   <!--td>{{entry.notes}}</td-->
-                  <!--td class="{{negativeClass entry}}">{{displayMoney (entryAmount sign)}}</td-->
-                  <td>{{displayMoney (entry.debitAmount)}}</td>
-                  <td>{{displayMoney (entry.creditAmount)}}</td>
+                  <!--td class="{{negativeClass entry}}">{{displayCurrency (entryAmount sign)}}</td-->
+                  <td>{{displayCurrency (entry.debitAmount)}}</td>
+                  <td>{{displayCurrency (entry.creditAmount)}}</td>
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
                   <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
-                  <!--td><strong>{{displayMoney entry.total}}</strong></td-->
-                  <td><strong>{{displayMoney entry.debitTotal}}</strong></td>
-                  <td><strong>{{displayMoney entry.creditTotal}}</strong></td>
+                  <!--td><strong>{{displayCurrency entry.total}}</strong></td-->
+                  <td><strong>{{displayCurrency entry.debitTotal}}</strong></td>
+                  <td><strong>{{displayCurrency entry.creditTotal}}</strong></td>
                   <td>{{>Action_buttons_group collection='transactions' actions='view,post' doc=entry.txId size='sm'}}</td>
                   <td>{{{checkmarkBoolean entry.transaction.reconciled}}}</td>
               </tr>
@@ -92,5 +92,5 @@
             </tbody>
         </table>
     </div>
-    <!--p class="text-center">{{_ 'Total change in this period'}}: <strong>{{displayMoney journalEntries.pop.total}}</strong></p-->
+    <!--p class="text-center">{{_ 'Total change in this period'}}: <strong>{{displayCurrency journalEntries.pop.total}}</strong></p-->
 </template>

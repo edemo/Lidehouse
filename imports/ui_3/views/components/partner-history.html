@@ -50,19 +50,19 @@
                   <td class="text-capitalize"><!--a href="{{pathFor 'Transaction show' _txid=tx._id}}"-->{{tx.displayInHistory}}<!--/a--></td>
                   <td>{{>Action_buttons_group collection='transactions' actions='view' doc=tx size='sm'}}</td>
                   <td><span class="text-navy">{{tx.serialId}}</span></td>
-                  <td class="{{negativeClass tx.effectiveAmount}}">{{displayMoney tx.effectiveAmount}}</td>
+                  <td class="{{negativeClass tx.effectiveAmount}}">{{displayCurrency tx.effectiveAmount}}</td>
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
                   <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
-                  <td class="{{negativeClass tx.total}}"><strong>{{displayMoney tx.total}}</strong></td>
+                  <td class="{{negativeClass tx.total}}"><strong>{{displayCurrency tx.total}}</strong></td>
                   <!--td>{{{checkmarkBoolean entry.transaction.reconciled}}}</td-->
               </tr>
               {{/each}}
             </tbody>
         </table>
     </div>
-    <p class="text-center">{{_ 'Balance at the beginning of period'}}: <strong>{{displayMoney history.beginBalance}}</strong></p>
+    <p class="text-center">{{_ 'Balance at the beginning of period'}}: <strong>{{displayCurrency history.beginBalance}}</strong></p>
     {{#if (not (not history.predecessor))}}
-    <a class="btn btn-block btn-default js-predecessor" data-id={{history.predecessor._id}}>{{_ 'Balance from predecessor'}}: <strong>{{displayMoney history.predecessor.balance}}</strong>
+    <a class="btn btn-block btn-default js-predecessor" data-id={{history.predecessor._id}}>{{_ 'Balance from predecessor'}}: <strong>{{displayCurrency history.predecessor.balance}}</strong>
         {{>Help_icon name="predecessor-balance" title=(_ 'predecessorBalanceHelp')}}
     </a>
     {{/if}}

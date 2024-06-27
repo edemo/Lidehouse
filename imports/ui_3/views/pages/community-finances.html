@@ -13,7 +13,7 @@
                     <div class= "row">
 
                         <div class="col-md-3">
-                            <h1 class="m-b-xs">{{displayMoney getStatusBalance}}</h1>
+                            <h1 class="m-b-xs">{{displayCurrency getStatusBalance}}</h1>
                             <h3 class="font-bold no-margins"> {{_ 'community'}}{{_ "'s status report"}}</h3>
                         </div>
 
@@ -23,7 +23,7 @@
                             <tr>
                                 <td>{{_ account}}</td>
                                 <td class="text-right text-bold"> 
-                                    {{displayMoney (getBalance account)}}
+                                    {{displayCurrency (getBalance account)}}
                                 </td>
                             </tr>
                             {{/each}}
@@ -51,12 +51,12 @@
                         <div class="col-md-6 text-right pull-right">
                             <!--span class="pull-right text-right"-->
                                 <small>A behajtás alatt álló ügyeket az alábbi adat nem tartalmazza</small><br/>
-                                    {{_ 'Money outstanding'}}: <strong>{{displayMoney moneyOutstanding }}</strong>
+                                    {{_ 'Money outstanding'}}: <strong>{{displayCurrency moneyOutstanding }}</strong>
                             <!--/span-->
                         </div>
     
                         <div class="col-md-3">
-                            <h1 class="m-b-xs">{{displayMoney (getBalance 'Money accounts' 'C')}}</h1>
+                            <h1 class="m-b-xs">{{displayCurrency (getBalance 'Money accounts' 'C')}}</h1>
                             <h3 class="font-bold no-margins"> {{_ 'Money accounts total'}}</h3>
                         </div>
 
@@ -67,7 +67,7 @@
                                 <td>{{_ account.name}}</td>
                                 <td class="text-right text-bold"> 
                                     <!--a href="#account-history" class="js-view" data-id={{account.code}}-->
-                                    {{displayMoney (getBalance account.code 'C')}}
+                                    {{displayCurrency (getBalance account.code 'C')}}
                                     <!--/a-->
                                 </td>
                             </tr>
@@ -94,11 +94,11 @@
                     <div class= "row">
 
                         <div class="col-md-6 text-right pull-right">
-                                    {{_ 'Overpayments'}}: <strong>{{displayMoney moneyOverpaid }}</strong>
+                                    {{_ 'Overpayments'}}: <strong>{{displayCurrency moneyOverpaid }}</strong>
                         </div>
 
                         <div class="col-md-3">
-                            <h1 class="m-b-xs">{{displayMoney (add (getBalance 'Long-term liabilities' 'C') (getBalance 'Short-term liabilities' 'C'))}}</h1>
+                            <h1 class="m-b-xs">{{displayCurrency (add (getBalance 'Long-term liabilities' 'C') (getBalance 'Short-term liabilities' 'C'))}}</h1>
                             <h3 class="font-bold no-margins"> {{_ 'Commitments total'}}</h3>
                         </div>
 
@@ -107,7 +107,7 @@
                             {{#each account in commitmentAccounts}}
                             <tr>
                                 <td>{{_ account}}</td>
-                                <td class="text-right text-bold"> {{displayMoney (getBalance account 'C')}}</td>
+                                <td class="text-right text-bold"> {{displayCurrency (getBalance account 'C')}}</td>
                             </tr>
                             {{/each}}
                         </table>

@@ -88,7 +88,7 @@
                         {{/if}}
                     </td>
                     <td>{{_ line.uom}}</td>
-                    <td>{{displayMoney line.unitPrice}}</td>
+                    <td>{{displayCurrency line.unitPrice}}</td>
                     <td>{{displayNumber line.quantity 3 false}}</td>
                     {{#if rDoc.disco}}
                         <td>{{displayNumber line.discoPct 2 false}}</td>
@@ -96,7 +96,7 @@
                     {{#if rDoc.community.settings.subjectToVat}}
                         <td>{{line.taxPct}}</td>
                     {{/if}}
-                    <td class="nowrap">{{displayMoney line.amount}}</td>
+                    <td class="nowrap">{{displayCurrency line.amount}}</td>
                 </tr>
                 {{/if}}
                 {{/each}}
@@ -109,28 +109,28 @@
         {{#if rDoc.community.settings.subjectToVat}}
         <tr>
             <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney rDoc.amount}}</td>
+            <td class="nowrap">{{displayCurrency rDoc.amount}}</td>
         </tr>
         <tr>
             <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney rDoc.tax}}</td>
+            <td class="nowrap">{{displayCurrency rDoc.tax}}</td>
         </tr>
         {{/if}}
         {{#if rDoc.disco}}
         <tr>
             <td><strong>{{_ 'schemaBills.disco.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney rDoc.disco}} </td>
+            <td class="nowrap">{{displayCurrency rDoc.disco}} </td>
         </tr>
         {{/if}}
         {{#if rDoc.rounding}}
         <tr>
             <td><strong>{{_ 'schemaTransactions.rounding.label'}} :</strong></td>
-            <td class="js-autofill">{{displayMoney rDoc.rounding}} </td>
+            <td class="js-autofill">{{displayCurrency rDoc.rounding}} </td>
         </tr>
         {{/if}}  
         <tr>
             <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney rDoc.amount}}</td>
+            <td class="nowrap">{{displayCurrency rDoc.amount}}</td>
         </tr>
         </tbody>
     </table>
@@ -147,14 +147,14 @@
             {{displayDate paymentTx.valueDate}}
             {{>Action_buttons_group collection='transactions' doc=paymentTx actions='view' size='sm'}}
           </td>
-          <td class="nowrap">{{displayMoney billPayment.amount}}</td>
+          <td class="nowrap">{{displayCurrency billPayment.amount}}</td>
       </tr>
       {{/let}}
       {{/if}}      
       {{/each}}
       <tr>
           <td><strong>{{_ 'schemaBills.outstanding.label'}} :</strong></td>
-          <td class="nowrap">{{displayMoney rDoc.outstanding}}</td>
+          <td class="nowrap">{{displayCurrency rDoc.outstanding}}</td>
       </tr>
       </tbody>
     </table>

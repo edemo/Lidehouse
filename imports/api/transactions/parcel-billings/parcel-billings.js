@@ -20,7 +20,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
-import { displayMoney } from '/imports/ui_3/helpers/utils.js';
+import { displayCurrency } from '/imports/ui_3/helpers/utils.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
@@ -219,9 +219,9 @@ ParcelBillings.helpers({
   },
   toString() {
     debugAssert(Meteor.isClient, 'Needs the active locale to display');
-    const consumptionPart = this.consumption ? `${displayMoney(this.consumption.charges[0].unitPrice)}/${__('consumed')} ${this.consumption.charges[0].uom}` : '';
+    const consumptionPart = this.consumption ? `${displayCurrency(this.consumption.charges[0].unitPrice)}/${__('consumed')} ${this.consumption.charges[0].uom}` : '';
     const connectionPart = (this.consumption && this.projection) ? ` ${__('or')} ` : '';
-    const projectionPart = this.projection ? `${displayMoney(this.projection.unitPrice)}/${__(this.projectionUom())})` : '';
+    const projectionPart = this.projection ? `${displayCurrency(this.projection.unitPrice)}/${__(this.projectionUom())})` : '';
     return `${this.title} (${consumptionPart}${connectionPart}${projectionPart})`;
   },
 });

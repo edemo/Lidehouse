@@ -37,12 +37,12 @@
                                                 {{#if line.parcelId}} - {{parcelRef line.parcelId}}{{/if}}
                                             {{/if}}
                                             </td>
-                                            <td class="alignright nowrap">{{displayMoney line.amount}}</td>
+                                            <td class="alignright nowrap">{{displayCurrency line.amount}}</td>
                                         </tr>
                                         {{/each}}
                                         <tr class="total">
                                             <td class="alignright" width="80%">{{_ 'schemaBills.amount.label'}}: </td>
-                                            <td class="alignright nowrap">{{displayMoney bill.amount}}</td>
+                                            <td class="alignright nowrap">{{displayCurrency bill.amount}}</td>
                                         </tr>
                                         </tbody>
                                     </table>

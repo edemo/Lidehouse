@@ -12,7 +12,7 @@ export function negativeClass(number) {
   return number < 0 && 'negative';
 }
 
-export function displayMoney(number) {
+export function displayCurrency(number) {
   const lang = getActiveCommunity().settings.language;
 //  const decimals = Locales[lang].currencyDecimals;
 //  const decis = '0'.repeat(decimals);
@@ -94,7 +94,7 @@ if (Meteor.isClient) {
     return numeral(number).format('0') + '%';
   });
 
-  Template.registerHelper('displayMoney', displayMoney);
+  Template.registerHelper('displayCurrency', displayCurrency);
 
   Template.registerHelper('negativeClass', negativeClass);
 

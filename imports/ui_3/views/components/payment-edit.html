@@ -121,24 +121,24 @@
         {{#if billsView}}
         <tr>
             <td><strong>{{_ 'Allocated to bills'}} :</strong></td>
-            <td class="nowrap">{{displayMoney afDoc.allocatedToBills}}</td>
+            <td class="nowrap">{{displayCurrency afDoc.allocatedToBills}}</td>
         </tr>
         {{/if}}
         {{#if linesView}}
         <tr>
             <td><strong>{{_ 'schemaPayments.lines.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney afDoc.allocatedToNonBills}}</td>
+            <td class="nowrap">{{displayCurrency afDoc.allocatedToNonBills}}</td>
         </tr>
         {{/if}}
         {{#if cashPayAccount}}
         <tr>
             <td><strong>{{_ 'schemaTransactions.rounding.label'}} :</strong></td>
-            <td class="nowrap">{{displayMoney afDoc.rounding}}</td>
+            <td class="nowrap">{{displayCurrency afDoc.rounding}}</td>
         </tr>
         {{/if}}
         <tr>
             <td><strong>{{{displayAccount afDoc.txdef.unidentifiedAccount}}}:</strong></td>
-            <td class="nowrap">{{displayMoney afDoc.outstanding}}</td>
+            <td class="nowrap">{{displayCurrency afDoc.outstanding}}</td>
         </tr>
         </tbody>
     </table>
