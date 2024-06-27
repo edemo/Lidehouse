@@ -38,12 +38,6 @@ export function dateSelector(begin, end) {
   return valueDate;
 }
 
-const smallestCurrencyUnit = 5;
-
-export function equalWithinRounding(amount1, amount2) {
-  return Math.abs(amount1 - amount2) < smallestCurrencyUnit / 2;
-}
-
 export function objectKeyCompatibleString(dottedString, newChar = '\\u002e') {
   const withoutDots = dottedString.replace(/\./g, newChar);
   if (/^\+?(0|[1-9]\d*)$/.test(withoutDots)) return '#' + withoutDots;  // Integer numbers are interpreted as array indexes if used in $set mongo operators, so in order to be able to use them as Object keys, they have to be made non-integers

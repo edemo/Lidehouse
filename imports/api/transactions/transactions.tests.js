@@ -28,6 +28,7 @@ if (Meteor.isServer) {
     before(function () {
       FixtureA = freshFixture();
       Communities.update(FixtureA.demoCommunityId, { $set: { 'settings.accountingMethod': 'accrual' } });
+      Communities.update(FixtureA.demoCommunityId, { $set: { 'settings.language': 'hu' } });  // smallest coin is the 5
       // Need to apply, so the member contracts get created
       FixtureA.builder.execute(ParcelBillings.methods.apply, { communityId: FixtureA.demoCommunityId, ids: [FixtureA.parcelBilling], date: new Date() });
     });

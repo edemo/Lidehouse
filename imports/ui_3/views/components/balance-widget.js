@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
-import { equalWithinRounding } from '/imports/api/utils.js';
+import { equalWithinUnit } from '/imports/localization/localization.js';
 
 import { Partners } from '/imports/api/partners/partners.js';
 import { Balances } from '/imports/api/transactions/balances/balances';
@@ -35,9 +35,12 @@ Template.Balance_widget.viewmodel({
     const signPrefix = balance > 0 ? '+' : '';
     return signPrefix + numeral(balance).format();
   },
+  isZeroWithinUnit(balance) {
+    return equalWithinUnit(balance, 0, getActiveCommunity()?.settings.language, 'bank');
+  },
   message(balance) {
     const partner = this.partner();
-    if (equalWithinRounding(balance, 0)) return __('Your Parcel Balance');
+    if (this.isZeroWithinUnit(balance)) return __('Your Parcel Balance');
     if (balance > 0) return __('You have overpayment');
     else if (balance < 0) {
       if (partner && partner.mostOverdueDays()) return __('You have overdue payments');
@@ -47,14 +50,14 @@ Template.Balance_widget.viewmodel({
   },
   colorClass(balance) {
     const partner = this.partner();
-    if (equalWithinRounding(balance, 0)) return 'navy-bg';
+    if (this.isZeroWithinUnit(balance)) return 'navy-bg';
     if (balance < 0) {
       return 'bg-' + (partner && partner.mostOverdueDaysColor());
     }
     return 'navy-bg';
   },
   icon(balance) {
-    if (equalWithinRounding(balance, 0)) return 'fa fa-thumbs-up';
+    if (this.isZeroWithinUnit(balance)) return 'fa fa-thumbs-up';
     if (balance < 0) return 'glyphicon glyphicon-exclamation-sign';
     return 'fa fa-thumbs-up';
   },

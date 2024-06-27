@@ -9,7 +9,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
-import { equalWithinRounding } from '/imports/api/utils.js';
+import { equalWithinUnit } from '/imports/localization/localization.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -70,7 +70,7 @@ function checkReconcileMatch(entry, transaction) {
        || (resultAmount < 0 && resultAmount < (transaction.relationSign() * entry.amount))) {
         throwMatchError('amount', entry.amount, resultAmount);
       } */
-    //  if (!equalWithinRounding(transaction.amount, transaction.relationSign() * entry.amount)) throwMatchError('amount', entry.amount, transaction.amount);
+    //  if (!equalWithinUnit(transaction.amount, transaction.relationSign() * entry.amount, lang, accountCategory)) throwMatchError('amount', entry.amount, transaction.amount);
       if (transaction.payAccount !== entry.account) throwMatchError('account', entry.account, transaction.payAccount);
   //  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
       break;
@@ -188,6 +188,7 @@ export const recognize = new ValidatedMethod({
     checkPermissions(this.userId, 'statements.reconcile', entry);
     const communityId = entry.communityId;
     const community = Communities.findOne(communityId);
+    const payAccountCategory = Accounts.getByCode(entry.account, communityId)?.category;
     Log.info('Trying to recognize statement entry:', _id);
     let serialId;
     let matchingBill;
@@ -247,7 +248,7 @@ export const recognize = new ValidatedMethod({
     if (serialId) {
       if (matchingBill) {
         const adjustedEntryAmount = matchingBill.relationSign() * entry.amount;
-        if (equalWithinRounding(matchingBill.outstanding, adjustedEntryAmount)) {
+        if (equalWithinUnit(matchingBill.outstanding, adjustedEntryAmount, community.settings.language, payAccountCategory)) {
           const tx = {
             communityId,
             category: 'payment',

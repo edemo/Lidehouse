@@ -11,7 +11,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { equalWithinRounding } from '/imports/api/utils.js';
+import { equalWithinUnit } from '/imports/localization/localization.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -233,8 +233,9 @@ Transactions.categoryHelpers('payment', {
       amountToAllocate -= pb.amount;
       if (amountToAllocate === 0) break;
     }
-    if (Accounts.getByCode(this.payAccount, this.communityId)?.category === 'cash'
-      && amountToAllocate && equalWithinRounding(0, amountToAllocate)) {
+    const lang = this.community().settings.language;
+    const payAccountCategory = Accounts.getByCode(this.payAccount, this.communityId)?.category;
+    if (amountToAllocate && equalWithinUnit(0, amountToAllocate, lang, payAccountCategory)) {
       this.rounding = amountToAllocate;
       amountToAllocate -= this.rounding;
     } else if (this.rounding) this.rounding = 0;
