@@ -22,8 +22,10 @@ export const EmailTemplateHelpers = {
     return moment(time).format('L LT');
   },
   displayMoney(number) {
-    numeral.language(this.community.settings.language);
-    return numeral(number).format('0,0$');
+    const lang = this.community.settings.language;
+    numeral.language(lang);
+    const formatString = TAPi18n.__('currencyFormat', {}, lang);
+    return numeral(number).format(formatString);
   },
   _(text, kw) {
     const lang = this.user ? this.user.settings.language : this.community.settings.language;

@@ -279,10 +279,10 @@ Topics.categoryHelpers('vote', {
       return {
         choice,
         adderId,
-        votingUnits: votingUnits.round(0),
+        votingUnits: Math.round(votingUnits),
         votingShare,
-        percentOfTotal: percentOfTotal.round(2),
-        percentOfVotes: percentOfVotes.round(2),
+        percentOfTotal: percentOfTotal.toFixed(2),
+        percentOfVotes: percentOfVotes.toFixed(2),
       };
     });
     if (this.vote.type === 'yesno') return voteSummarydata;

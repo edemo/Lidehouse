@@ -21,7 +21,7 @@ StatementEntries.schema = new SimpleSchema({
   refType: { type: String, max: 50, optional: true }, // type info to the ref
   time: { type: Date, optional: true, autoform: { type: 'datetime-local' } }, // http://khaidoan.wikidot.com/meteor-autoform-date
   valueDate: { type: Date },
-  amount: { type: Number },
+  amount: { type: Number, decimal: true },
   name: { type: String, max: 100, optional: true },
   contraBAN: { type: String, max: 100, optional: true },
   note: { type: String, max: 250, optional: true },

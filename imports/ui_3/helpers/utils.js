@@ -6,16 +6,22 @@ import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
+import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 
 export function negativeClass(number) {
   return number < 0 && 'negative';
 }
 
 export function displayMoney(number) {
-  return numeral(number).format('0,0$');
+  const lang = getActiveCommunity().settings.language;
+//  const decimals = Locales[lang].currencyDecimals;
+//  const decis = '0'.repeat(decimals);
+//  const formatString = showZeros ? `0,0.${decis}` : `0,0.[${decis}]`;
+  const formatString = __('currencyFormat', {}, lang);
+  return numeral(number).format(formatString);
 }
 
-export function displayNumber(number, decimals = 0, showZeros = true) {
+export function displayNumber(number, decimals = 2, showZeros = true) {
   const decis = '0'.repeat(decimals);
   const formatString = showZeros ? `0,0.${decis}` : `0,0.[${decis}]`;
   return numeral(number).format(formatString);

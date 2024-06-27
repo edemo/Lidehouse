@@ -31,8 +31,8 @@ Balances.defSchema = new SimpleSchema([{
 // Definition + values of a balance
 Balances.schema = new SimpleSchema([
   Balances.defSchema, {
-    debit: { type: Number, defaultValue: 0 }, // debit sum
-    credit: { type: Number, defaultValue: 0 }, // credit sum
+    debit: { type: Number, decimal: true, defaultValue: 0 }, // debit sum
+    credit: { type: Number, decimal: true, defaultValue: 0 }, // credit sum
   },
 ]);
 

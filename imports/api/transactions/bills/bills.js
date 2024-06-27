@@ -7,10 +7,10 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
-import { productionAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
+import { roundCurrency } from '/imports/localization/localization';
 import { Clock } from '/imports/utils/clock.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { debugAssert } from '/imports/utils/assert.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
@@ -150,6 +150,13 @@ export const BillAndReceiptHelpers = {
   otherTxSide() {
     return Transactions.oppositeSide(this.matchingTxSide());
   },
+  currencyRoundingFunction() {
+    const relation = this.relation;
+    if (relation === 'member' || relation === 'customer') { // if we issue the bill
+      const lang = this.community().settings.lang;
+      return val => roundCurrency(val, lang);
+    } else return val => val; // but if we did not issue this bill, don't touch the numbers
+  },
   validate() {
     if (this.partnerId && !this.contractId) { // Auto default to default contract, and create it if not yet exists
       const selector = { communityId: this.communityId, relation: this.relation, partnerId: this.partnerId, title: { $exists: false } };
@@ -172,15 +179,16 @@ export const BillAndReceiptHelpers = {
     let totalAmount = 0;
     let totalTax = 0;
     let totalDisco = 0;
+    const round = this.currencyRoundingFunction();
     this.getLines().forEach(line => {
-      line.amount = Math.round(line.unitPrice * line.quantity);
+      line.amount = round(line.unitPrice * line.quantity);
       if (line.discoPct) {
-        line.disco = Math.round((line.amount * line.discoPct) / 100);
+        line.disco = round((line.amount * line.discoPct) / 100);
         line.amount -= line.disco;
         totalDisco += line.disco;
       }
       if (line.taxPct) {
-        line.tax = Math.round((line.amount * line.taxPct) / 100);
+        line.tax = round((line.amount * line.taxPct) / 100);
         line.amount += line.tax;
         totalTax += line.tax;
       }

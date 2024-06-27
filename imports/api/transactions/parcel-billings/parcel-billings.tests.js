@@ -78,7 +78,7 @@ if (Meteor.isServer) {
           chai.assert.equal(line.uom, expected.uom);
           chai.assert.equal(line.unitPrice, expected.unitPrice);
           chai.assert.equal(line.quantity, expected.quantity);
-          chai.assert.equal(line.amount, Math.round(expected.unitPrice * expected.quantity));
+          chai.assert.equal(line.amount, Math.roundToDecimals(expected.unitPrice * expected.quantity, 2));
           chai.assert.equal(line.localizer, expected.localizer);
           if (expected.lineTitle) chai.assert.equal(line.title, expected.lineTitle);
           if (expected.linePeriod) chai.assert.equal(line.billing.period, expected.linePeriod);
@@ -700,7 +700,7 @@ if (Meteor.isServer) {
 
       it('Can bill based on reading and estimation at the same time', function () {
         const days = daysWoEstimation ? daysWoEstimation + 1 : 5;
-        const consumption = ((0.33333 * days) + 3.684).round(3);
+        const consumption = Math.roundToDecimals((0.33333 * days) + 3.684, 3);
         const dd = days < 10 ? `0${days}` : days;
         applyParcelBillings(`2018-04-${dd}`); postParcelBillings(`2018-04-${dd}`);
         assertBilled(`2018-04-${dd}`, 'consumption', consumption);
@@ -708,7 +708,7 @@ if (Meteor.isServer) {
 
       it('Can do refund (bill a negative amount)', function () {
         const billedDays = daysWoEstimation ? daysWoEstimation + 1 : 5;
-        const consumption = (0.3333 * billedDays).round(3);
+        const consumption = Math.roundToDecimals(0.3333 * billedDays, 3);
         registerReading('2018-04-25', 20);  // same reading as before - no consumption
         applyParcelBillings('2018-04-25'); postParcelBillings('2018-04-25');
         assertBilled('2018-04-25', 'consumption', -1 * consumption);

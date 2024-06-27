@@ -25,7 +25,7 @@ export const BILLING_MONTH_OF_THE_YEAR = 3;
 export const BILLING_DUE_DAYS = 8;
 
 function display(reading) {
-  return `${reading.value.round(3)} (${displayDate(reading.date)})`; /* parcelBilling.consumption.decimals */
+  return `${reading.value.toFixed(3)} (${displayDate(reading.date)})`; /* parcelBilling.consumption.decimals */
 }
 
 function lineDetails(meter, currentBilling, lastBilling, lastReading) {
@@ -113,7 +113,7 @@ export const apply = new ValidatedMethod({
               const currentBilling = { date, value };
               // Log.debug(`Consumption billing of meter ${activeMeter._id}`, 'currentBilling', JSON.stringify(currentBilling), 'lastBilling', JSON.stringify(lastBilling), 'lastReading', JSON.stringify(lastReading));
               line.metering = { id: activeMeter._id, start: lastBilling, end: currentBilling };
-              line.quantity = (currentBilling.value - lastBilling.value).round(3); /* parcelBilling.consumption.decimals */
+              line.quantity = Math.roundToDecimals(currentBilling.value - lastBilling.value, 3); /* parcelBilling.consumption.decimals */
               line.details = lineDetails(activeMeter, currentBilling, lastBilling, lastReading);
               addLineToBill(line);
             });

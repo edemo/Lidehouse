@@ -83,12 +83,15 @@ String.prototype.deaccent = function deaccent() {
   return this.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 };
 
-Number.prototype.round = function round(places) {
-  if (!places) {
-    return Math.round(this);
-  } else {
-    return Number(this.toFixed(places));
-  }
+
+Number.prototype.round = function round(decimals) {
+  return Math.roundToDecimals(this, decimals);
+};
+
+Math.roundToDecimals = function roundToDecimals(number, decimals) {
+  if (decimals === undefined) return number;
+  if (decimals === 0) return Math.round(this);
+  else return Number(number.toFixed(decimals));
 };
 
 Math.smallerInAbs = function smallerInAbs(a, b) {

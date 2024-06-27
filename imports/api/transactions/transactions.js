@@ -43,7 +43,7 @@ Transactions.statusValues = Object.keys(Transactions.statuses);
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
-  { amount: { type: Number, optional: true } },
+  { amount: { type: Number, decimal: true, optional: true } },
   LocationTagsSchema,
   { subTx: { type: Number, optional: true, autoform: { type: 'hidden' } } }, // used in case there are more than one subTx within the tx
   // A tx leg can be directly associated with a bill, for its full amount (if a tx is associated to multiple bills, use legs for each association, one leg can belong to one bill)

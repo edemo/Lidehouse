@@ -88,10 +88,10 @@
                         {{/if}}
                     </td>
                     <td>{{_ line.uom}}</td>
-                    <td>{{line.unitPrice}}</td>
+                    <td>{{displayMoney line.unitPrice}}</td>
                     <td>{{displayNumber line.quantity 3 false}}</td>
                     {{#if rDoc.disco}}
-                        <td>{{displayNumber line.discoPct 3 false}}</td>
+                        <td>{{displayNumber line.discoPct 2 false}}</td>
                     {{/if}}
                     {{#if rDoc.community.settings.subjectToVat}}
                         <td>{{line.taxPct}}</td>
