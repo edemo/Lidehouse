@@ -153,7 +153,7 @@ export const BillAndReceiptHelpers = {
   currencyRoundingFunction() {
     const relation = this.relation;
     if (relation === 'member' || relation === 'customer') { // if we issue the bill
-      const lang = this.community().settings.lang;
+      const lang = this.community().settings.language;
       return val => roundCurrency(val, lang);
     } else return val => val; // but if we did not issue this bill, don't touch the numbers
   },

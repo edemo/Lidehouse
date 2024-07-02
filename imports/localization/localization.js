@@ -21,7 +21,7 @@ export const Locales = {
 };
 
 export function roundCurrency(number, locale) {
-  const decimals = Locales[locale]?.currencyDecimals || 2;
+  const decimals = Locales[locale].currencyDecimals;
   return Math.roundToDecimals(number, decimals);
 }
 
