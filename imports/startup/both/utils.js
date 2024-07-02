@@ -90,7 +90,7 @@ Number.prototype.round = function round(decimals) {
 
 Math.roundToDecimals = function roundToDecimals(number, decimals) {
   if (decimals === undefined) return number;
-  if (decimals === 0) return Math.round(this);
+  if (decimals === 0) return Math.round(number);
   else return Number(number.toFixed(decimals));
 };
 
