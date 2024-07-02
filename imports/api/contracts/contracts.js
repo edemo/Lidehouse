@@ -222,7 +222,7 @@ Contracts.helpers({
         emails.to = emails.cc;
         emails.cc = undefined;
       } else {
-        Log.warning(`Missing email address for contract ${this.displayFull()} [${this._id}]. Unable to send bill.`);
+        throw new Meteor.Error('err_notExists', 'Unable to send notification due to missing email address', { contract: this.displayFull(), id: this._id });
       }
     }
     return emails;

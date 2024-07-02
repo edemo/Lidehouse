@@ -757,6 +757,7 @@
   "Supplier bill is not from a supplier": "Ez a számla nem szállítótól származik",
   "Customer bill is not from a customer/owner": "Ez a számla nem vevőhöz/tulajdonoshoz tartozik",
   "You are now editing a transaction that is already posted": "Egy olyan tranzakciót szerkeszt most, ami már könyvelésbe van küldve",
+  "Unable to send notification due to missing email address": "Értesítő kiküldése sikertelen email cím hiánya miatt",
   "err_invalidData": "Nem megfelelő adat",
   "The meter has to match the same uom, that the billing applies to": "A mérőórának ugyanaz kell legyen a fogyasztási egysége, mint amire az előírás vonatkozik",
   "The meter was already billed at a later date": "Egy későbbi időponttal már került számla kiállításra ehhez a mérőórához",

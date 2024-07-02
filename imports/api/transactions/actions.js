@@ -360,6 +360,7 @@ Transactions.dummyDoc = {
 
 Transactions.batchActions = {
   post: new BatchAction(Transactions.actions.post, Transactions.methods.batch.post, {}, Transactions.dummyDoc),
+  resend: new BatchAction(Transactions.actions.resend, Transactions.methods.batch.resend, {}, Transactions.dummyDoc),
   delete: new BatchAction(Transactions.actions.delete, Transactions.methods.batch.remove, {}, Transactions.dummyDoc),
 };
 

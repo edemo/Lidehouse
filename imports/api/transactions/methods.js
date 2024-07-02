@@ -304,3 +304,4 @@ Transactions.methods = Transactions.methods || {};
 _.extend(Transactions.methods, { insert, update, post, reallocate, resend, remove, setAccountingTemplate });
 _.extend(Transactions.methods, crudBatchOps(Transactions));
 Transactions.methods.batch.post = new BatchMethod(Transactions.methods.post);
+Transactions.methods.batch.resend = new BatchMethod(Transactions.methods.resend);
