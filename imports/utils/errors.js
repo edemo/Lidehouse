@@ -1,8 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 function bundle(array, fieldName) {
-  let result = '';
-  array.forEach((elem, index) => { result += `[${index}] ${JSON.stringify(elem[fieldName])} `; });
+  const result = array.map(elem => elem[fieldName]);
   return result;
 }
 

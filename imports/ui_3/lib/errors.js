@@ -19,13 +19,21 @@ import { Log } from '/imports/utils/log.js';
 // error.stack (err.message + stacktrace)
 //-----------------------------------------
 
+function ___(bundle) {
+  if (typeof bundle === 'string') {
+    return __(bundle);
+  } else if (typeof bundle === 'object') {
+    return bundle.map((elem, index) => `${index}:${__(elem)})`);
+  } else return undefined;
+}
+
 export const displayError = (error) => {
   if (error) {
     Log.error(error);
     let message;
     if (error instanceof Meteor.Error) {
       // For server side errors, on the client side we always get a Meteor.Error, that is what gets channeled over DDP.
-      message = __(error.error) + '\n' + __(error.reason) + '\n' + JSON.stringify(error.details);
+      message = ___(error.error) + '\n' + ___(error.reason) + '\n' + JSON.stringify(error.details);
     } else {
       message = (error.message);
     }
