@@ -152,7 +152,7 @@ export const BillAndReceiptHelpers = {
   },
   currencyRoundingFunction() {
     const relation = this.relation;
-    if (relation === 'member' || relation === 'customer') { // if we issue the bill
+    if (relation === 'member') { // || relation === 'customer' ? , it should be: if (we issue the bill) as opposed to if we just record a bill that was issued by someone else
       const lang = this.community().settings.language;
       return val => roundCurrency(val, lang);
     } else return val => val; // but if we did not issue this bill, don't touch the numbers
