@@ -175,6 +175,7 @@ export const update = new ValidatedMethod({
     if (!ensurePeriodResult) return ensurePeriodResult;
 
     const result = Transactions.update({ _id }, modifier, { selector: doc });
+
     if (doc.isPosted()) { // If doc was posted already, resposting is needed, because the accounting might have changed
       post._execute({ userId: this.userId }, { _id });
       if (doc.category === 'bill' && doc.hasPayments()) {

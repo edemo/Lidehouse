@@ -78,7 +78,7 @@ StatementEntries.helpers({
     const Transactions = Mongo.Collection.get('transactions');
     this.reconciledTransactions()?.forEach(tx => {
       if (tx) {
-        if (tx.status === 'draft') tx.makeJournalEntries();
+        tx.makeJournalEntries();
         const correspondingJe = tx.journalEntries(true).find(j => j.account === this.account);
         debugAssert(correspondingJe, `No corresponding je found in tx. \n se: ${JSON.stringify(this)}, tx: ${JSON.stringify(tx)}, tx.journalEntries: ${JSON.stringify(tx.journalEntries())} `);
         reconciledAmount += correspondingJe.amount * Transactions.signOfPartnerSide(correspondingJe.side);

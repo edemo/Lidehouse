@@ -238,6 +238,7 @@ Transactions.helpers({
     else return undefined;
   },
   makeEntry(side, entry) {
+    if (!entry.amount || !entry.account) return;
     let writeSide = side;
     if (entry.amount < 0) {
       // if we swap sides for negative entries
