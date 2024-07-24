@@ -21,6 +21,17 @@ export const ParcelRefFormat = {
         ref += doc.floor;
         ref += doc.door;
         break;
+      case '[fPT]dd':
+        switch (doc.type) {
+          case 'Parkoló': ref = 'P' + doc.door; break;
+          case 'Tároló': ref = 'T' + doc.door; break;
+          case 'Lakás':
+            ref += doc.floor;
+            ref += doc.door;
+            break;
+          default: break;
+        }
+        break;
       case '[bPT]fdd':
         switch (doc.type) {
           case 'Parkoló': ref = 'P' + doc.door; break;
@@ -54,6 +65,17 @@ export const ParcelRefFormat = {
         extract.building = ref[0];
         extract.floor = ref[1];
         extract.door = ref[2] + ref[3];
+        break;
+      case '[fPT]dd':
+        switch (ref[0]) {
+          case 'P': extract.type = 'Parkoló'; extract.door = ref.substring(1); break;
+          case 'T': extract.type = 'Tároló'; extract.door = ref.substring(1); break;
+          default: extract.type = 'Lakás';
+        }
+        if (extract.type === 'Lakás') {
+          extract.floor = ref[0];
+          extract.door = ref.substring(1);
+        }
         break;
       case '[bPT]fdd': // K704 means K building, 7th floor, 04 door -- P235 means parking space no. 235
         switch (ref[0]) {
