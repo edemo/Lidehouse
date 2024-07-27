@@ -11,7 +11,7 @@ import { chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const transferSchema = new SimpleSchema({
-  amount: { type: Number, decimal: true, autoform: { readonly() { return !!ModalStack.getVar('statementEntry'); } } }, // same as Tx, but we need the readonly added
+//  amount: { type: Number, decimal: true, autoform: { readonly() { return !!ModalStack.getVar('statementEntry'); } } }, // same as Tx, but we need the readonly added
   toAccount: { type: String, optional: true, autoform: chooseConteerAccount('debit') },
   fromAccount: { type: String, optional: true, autoform: chooseConteerAccount('credit') },
 });
