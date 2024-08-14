@@ -6,10 +6,10 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
 
+import { Log } from '/imports/utils/log.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { AddressSchema } from '/imports/localization/localization.js';
+import { AddressSchema, displayAddress } from '/imports/localization/localization.js';
 import { allowedOptions, imageUpload } from '/imports/utils/autoform.js';
-import { displayAddress } from '/imports/localization/localization.js';
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Relations } from '/imports/api/core/relations.js';
@@ -172,7 +172,7 @@ Communities.helpers({
   },
   admin() {
     const user = this.userWithRole('admin');
-    productionAssert(user, 'Community was found without an admin', { id: this._id });
+    if (!user && !this.isTemplate) Log.warning(`Community was found without an admin. id: ${this._id}`);
     return user;
   },
   treasurer() {

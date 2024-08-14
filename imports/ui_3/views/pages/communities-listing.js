@@ -10,6 +10,7 @@ import './communities-listing.html';
 
 Template.Communities_listing.onCreated(function onCreated() {
   this.subscribe('communities.listing');
+  this.subscribe('templates.listing');
 });
 
 Template.Communities_listing.helpers({
