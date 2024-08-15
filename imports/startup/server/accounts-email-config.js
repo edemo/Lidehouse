@@ -42,7 +42,7 @@ Accounts.emailTemplates.enrollAccount = {
     const partner = Partners.findOne({ 'contact.email': user.emails[0].address });
     const community = partner.community();
     const membership = Memberships.find({ partnerId: partner._id }, { sort: { createdAt: -1 } }).fetch()[0];
-    const adminEmail = community.admin().getPrimaryEmail();
+    const adminEmail = community.admin()?.getPrimaryEmail();
     return dualTranslate('email.EnrollAccount', {
       name: community.name,
       communityType: community.displayType(),

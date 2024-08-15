@@ -12,7 +12,7 @@ export function sendAddedToRoleInfoEmail(user, communityId, role) {
   const community = Communities.findOne(communityId);
   const name = community.name;
   const link = FlowRouterHelpers.urlFor('Community show', { _cid: communityId });
-  const email = community.admin().getPrimaryEmail();
+  const email = community.admin()?.getPrimaryEmail();
   const language = user.settings.language;
   role = TAPi18n.__(role, {}, language);
 

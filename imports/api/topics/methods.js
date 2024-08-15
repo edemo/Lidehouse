@@ -137,12 +137,12 @@ export const remove = new ValidatedMethod({
 });
 
 export function closeInactiveTopics() {
-  const exceptCategories = ['ticket'];
+  const categories = ['forum'];
   Communities.find({ isTemplate: { $ne: true } }).forEach(community => {
-    const localAdminId = community.admin()._id;
+    const localAdminId = community.admin()?._id;
     const topicAgeDays = community.settings.topicAgeDays;
     const archiveTime = moment().subtract(topicAgeDays, 'days').toDate();
-    const closableTopics = Topics.find({ communityId: community._id, category: { $nin: exceptCategories }, status: { $ne: 'closed' }, updatedAt: { $lt: archiveTime } });
+    const closableTopics = Topics.find({ communityId: community._id, category: { $in: categories }, status: { $ne: 'closed' }, updatedAt: { $lt: archiveTime } });
     closableTopics.forEach((topic) => {
       Topics.methods.update._execute({ userId: localAdminId }, { _id: topic._id, modifier: { $set: { category: topic.category, status: 'closed' } } });
     });
