@@ -79,11 +79,13 @@ export const remove = new ValidatedMethod({
     const doc = checkExists(Parcels, _id);
     checkPermissions(this.userId, 'parcels.remove', doc);
     const localizer = doc.code || Localizer.parcelRef2code(doc.ref);
-    Balances.checkNullBalance({ communityId: doc.communityId, localizer });
+    const balance = Balances.findOne({ communityId: doc.communityId, localizer });
+    if (balance) {
+      throw new Meteor.Error('err_unableToRemove', 'Parcel cannot be deleted if it has financial balances', `Balance: ${balance}`);
+    }
     const activeOwners = Memberships.findActive({ parcelId: _id, role: 'owner' });
     if (activeOwners.count() > 0) {
-      throw new Meteor.Error('err_unableToRemove', 'Parcel cannot be deleted while it has active owners',
-       `Found: {${activeOwners.count()}}`);
+      throw new Meteor.Error('err_unableToRemove', 'Parcel cannot be deleted while it has active owners',`Found: {${activeOwners.count()}}`);
     }
     Parcels.remove(_id);
     Memberships.remove({ parcelId: _id });
