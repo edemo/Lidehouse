@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
 
 import { Log } from '/imports/utils/log.js';
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
@@ -101,6 +101,7 @@ export const reconcile = new ValidatedMethod({
       if (reconciledTx.category === 'payment') {
         // Machine learning the accounting
         const entryName = entry.nameOrType();
+        productionAssert(reconciledTx.partner().idCard.name, 'Reconciled partner has no registered name');
         if (reconciledTx.partnerId && entryName && entryName !== reconciledTx.partner().idCard.name) {
           Recognitions.set('name', entryName, reconciledTx.partner().idCard.name, { communityId });
         }
