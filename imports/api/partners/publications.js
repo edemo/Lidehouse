@@ -5,7 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Partners } from './partners.js';
 
-Meteor.publish('partners.inCommunity', function partnersInCommunity(params) {
+Meteor.publishComposite('partners.inCommunity', function partnersInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
@@ -16,5 +16,14 @@ Meteor.publish('partners.inCommunity', function partnersInCommunity(params) {
     return this.ready();
   }
   const fields = user.hasPermission('partners.details', { communityId }) ? {} : Partners.publicFields;
-  return Partners.find({ communityId }, { fields });
+  return {
+    find() {
+      return Partners.find({ communityId }, { fields });
+    },
+    children: [{
+      find(partner) {
+        return Meteor.users.find(partner.userId);
+      },
+    }],
+  };
 });
