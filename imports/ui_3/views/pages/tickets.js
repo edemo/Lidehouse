@@ -14,7 +14,7 @@ import '/imports/ui_3/views/components/ticket-list.js';
 import './tickets.html';
 
 Template.Tickets.viewmodel({
-  activesOnly: false,
+  activesOnly: true,
   filterCreatedBy: null,
   searchText: '',
   communityId() {
@@ -28,7 +28,6 @@ Template.Tickets.viewmodel({
         instance.subscribe('topics.list', { communityId, category: 'ticket', status: { $in: ['closed', 'deleted'] } });
       }
       instance.subscribe('contracts.inCommunity', { communityId });
-      instance.subscribe('partners.inCommunity', { communityId });
     });
   },
   statusColor(value) {
