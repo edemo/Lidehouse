@@ -9,7 +9,6 @@ import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Parcels } from './parcels.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
 
 Meteor.publish('parcels.codes', function parcelsCodes(params) {
   new SimpleSchema({
@@ -52,62 +51,6 @@ Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(param
       },
     }],
   };
-});
-
-Meteor.publishComposite('parcels.outstanding', function parcelsOutstanding(params) {
-  new SimpleSchema({
-    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    selector: { type: String, allowedValues: ['localizer', 'partner'] },
-    debtorsOnly: { type: Boolean, optional: true },
-  }).validate(params);
-  const { communityId, selector, debtorsOnly } = params;
-
-  const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
-    return this.ready();
-  }
-
-  const finderSelector = { communityId, [selector]: { $exists: true } };
-  if (debtorsOnly) _.extend(finderSelector, { $expr: { $ne: ['$debit', '$credit'] } });
-
-  if (selector === 'partner') {
-    return {
-      find() {
-        return Balances.find(finderSelector);
-      },
-      children: [{
-        find(balance) {
-          return Contracts.find({ partnerId: balance.partner.substring(0, 17), parcelId: { $exists: true } });
-        },
-        children: [{
-          find(contract) {
-            return Parcels.find(contract.parcelId);
-          },
-          children: [{
-            find(parcel) {
-              return Meters.find({ parcelId: parcel._id });
-            },
-          }],
-        }],
-      }],
-    };
-  } else if (selector === 'localizer') {
-    return {
-      find() {
-        return Balances.find(finderSelector);
-      },
-      children: [{
-        find(balance) {
-          return Parcels.find({ communityId, code: balance.localizer });
-        },
-        children: [{
-          find(parcel) {
-            return Meters.find({ parcelId: parcel._id });
-          },
-        }],
-      }],
-    };
-  }
 });
 
 Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
