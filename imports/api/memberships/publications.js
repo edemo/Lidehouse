@@ -56,3 +56,19 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
     }],
   };
 });
+
+Meteor.publish('memberships.byUserId', function membershipsByUserId(params) {
+  new SimpleSchema({
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validate(params);
+
+  const { communityId, userId } = params;
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('memberships.inCommunity', { communityId })) {
+    this.ready();
+    return undefined;
+  }
+
+  return Memberships.find({ communityId, userId }, { fields: Memberships.publicFields });
+});

@@ -9,6 +9,7 @@ import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
 
@@ -73,6 +74,10 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
       return Topics.find(selector, { fields: visibleFields() });
     },
     children: [{
+      find(topic) {
+        return Memberships.find({ userId: topic.creatorId }, { fields: Memberships.publicFields });
+      },
+    }, {
       // Publish the author of the Topic (for flagging status)
       find(topic) {
         return Meteor.users.find({ _id: topic.creatorId }, { fields: Meteor.users.publicFields });
@@ -131,6 +136,10 @@ Meteor.publishComposite('topics.board', function topicsBoard(params) {
     },
     children: [{
       find(topic) {
+        return Memberships.find({ userId: topic.creatorId }, { fields: Memberships.publicFields });
+      },
+    }, {
+      find(topic) {
         return Meteor.users.find({ _id: topic.creatorId }, { fields: Meteor.users.publicFields });
       },
     }, {
@@ -173,6 +182,10 @@ Meteor.publishComposite('topics.list', function topicsList(params) {
       return Topics.find(selector, { fields: Topics.publicFields });
     },
     children: [{
+      find(topic) {
+        return Memberships.find({ userId: topic.creatorId }, { fields: Memberships.publicFields });
+      },
+    }, {
       // Publish the author of the Topic (for users with deleted membership)
       find(topic) {
         return Meteor.users.find({ _id: topic.creatorId }, { fields: Meteor.users.publicFields });
@@ -220,6 +233,10 @@ Meteor.publishComposite('topics.roomsOfUser', function roomsOfUser(params) {
       return Topics.find(selector, { fields: publicFields });
     },
     children: [{
+      find(topic) {
+        return Memberships.find({ userId: { $in: topic.participantIds } }, { fields: Memberships.publicFields });
+      },
+    }, {
       find(topic) {
         return Comments.find({ topicId: topic._id }, { sort: { createdAt: -1 } });
       },

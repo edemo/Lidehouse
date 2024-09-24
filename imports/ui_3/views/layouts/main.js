@@ -36,8 +36,6 @@ Template.Main_layout.onCreated(function() {
       this.subscribe('sharedfolders.ofCommunity', { communityId });
       this.subscribe('agendas.inCommunity', { communityId });
       this.subscribe('parcels.codes', { communityId });
-      this.subscribe('memberships.inCommunity', { communityId });
-      this.subscribe('contracts.inCommunity', { communityId });
       this.subscribe('partners.inCommunity', { communityId });
     }
   });

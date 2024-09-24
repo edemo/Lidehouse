@@ -30,7 +30,6 @@ Template.Navigation.viewmodel({
     const communityId = getActiveCommunityId();
     if (communityId) {
       this.templateInstance.subscribe('communities.byId', { _id: communityId });
-      this.templateInstance.subscribe('memberships.inCommunity', { communityId });
       this.templateInstance.subscribe('topics.board', { communityId }); // for the badges
     }
   },

@@ -19,25 +19,24 @@ Meteor.publishComposite(null, function self() {
   };
 });
 
-// Subscribes to the public fields of users in the same community
-Meteor.publish('users.inCommunitybyId', function userInCommunitybyId(params) {
+Meteor.publish('users.byId', function usersbyId(params) {
   new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    userId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validate(params);
 
-  const { _id } = params;
-  const communityId = _id;
+  const { communityId, userId } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('memberships.inCommunity', { communityId })) {
-    this.ready(); 
-    return; 
+    this.ready();
+    return undefined;
   }
 
-  const userInCommunity = Memberships.findOneActive({ communityId, userId: _id });
+  const userInCommunity = Memberships.findOneActive({ communityId, userId });
   if (!userInCommunity) {
     this.ready();
-    return; 
+    return undefined;
   }
 
-  return Meteor.users.find({ _id }, { fields: Meteor.users.publicFields });
+  return Meteor.users.find({ _id: userId }, { fields: Meteor.users.publicFields });
 });

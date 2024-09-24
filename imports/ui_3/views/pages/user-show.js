@@ -14,7 +14,9 @@ Template.User_show.onCreated(function usersShowPageOnCreated() {
 
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
-    this.subscribe('users.inCommunitybyId', { _id: this.getUserId(), communityId });
+    const userId = this.getUserId();
+    this.subscribe('users.byId', { communityId, userId });
+    this.subscribe('memberships.byUserId', { communityId, userId });
   });
 });
 
