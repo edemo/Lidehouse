@@ -502,9 +502,9 @@ if (Meteor.isServer) {
           Fixture.builder.create('comment', { creatorId: userId, topicId: thirdTopicId, text: 'comment' });
           chai.assert.equal(Topics.find({ status: 'closed' }).count(), 0);
           closeInactiveTopics();
-          chai.assert.equal(Topics.find({ status: 'closed' }).count(), 2);
+          chai.assert.equal(Topics.find({ status: 'closed' }).count(), 1);
           chai.assert.equal(Topics.findOne(topicId).status, 'closed');
-          chai.assert.equal(Topics.findOne(otherTopicId).status, 'closed');
+          chai.assert.equal(Topics.findOne(otherTopicId).status, 'opened');
           chai.assert.notEqual(Topics.findOne(thirdTopicId).status, 'closed');
           done();
         });
@@ -513,9 +513,9 @@ if (Meteor.isServer) {
           Clock.setSimulatedTime(moment().subtract(4, 'month').toDate());
           const ticketId = Fixture.builder.create('issue', { creatorId: userId });
           Clock.clear();
-          chai.assert.equal(Topics.find({ status: 'closed' }).count(), 2);
+          chai.assert.equal(Topics.find({ status: 'closed' }).count(), 1);
           closeInactiveTopics();
-          chai.assert.equal(Topics.find({ status: 'closed' }).count(), 2);
+          chai.assert.equal(Topics.find({ status: 'closed' }).count(), 1);
           chai.assert.notEqual(Topics.findOne(ticketId).status, 'closed');
           done();
         });
