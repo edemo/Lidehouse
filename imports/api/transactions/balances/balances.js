@@ -165,7 +165,7 @@ Balances.get = function get(def, balanceType) {
   const accountingPeriods = AccountingPeriods.findOne({ communityId: def.communityId });
   if (!balanceType) balanceType = getTypeOfTag(def.tag);
   const _def = _.extend(def, { tag: setTypeOfTag(def.tag, balanceType) });
-  const lastCBalance = Balances.find({ communityId: def.communityId, tag: new RegExp('^C-') }, { limit: 1, sort: { tag: 1 } })?.fetch()[0];
+  const lastCBalance = Balances.find({ communityId: def.communityId, tag: new RegExp('^C-') }, { limit: 1, sort: { tag: -1 } })?.fetch()[0];
   //const balancesUploaded = !!lastCBalance; // community.settings.balancesUploaded;
 //    console.log("Has uploaded C balances:", balancesUploaded);
   if (balanceType === 'T') {
