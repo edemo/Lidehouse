@@ -12,7 +12,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Period } from '/imports/api/transactions/periods/period.js';
 import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
 
@@ -161,13 +161,16 @@ Balances.get = function get(def, balanceType) {
 //  console.log("Lookin for Balance", def, balanceType);
   Balances.defSchema.validate(def);
   const defPeriod = Period.fromTag(def.tag);
+  const community = Communities.findOne(def.communityId);
   const accountingPeriods = AccountingPeriods.findOne({ communityId: def.communityId });
   if (!balanceType) balanceType = getTypeOfTag(def.tag);
   const _def = _.extend(def, { tag: setTypeOfTag(def.tag, balanceType) });
+  const lastCBalance = Balances.find({ communityId: def.communityId, tag: new RegExp('^C-') }, { limit: 1, sort: { tag: 1 } })?.fetch()[0];
+  //const balancesUploaded = !!lastCBalance; // community.settings.balancesUploaded;
+//    console.log("Has uploaded C balances:", balancesUploaded);
   if (balanceType === 'T') {
-    const result = Balances._aggregateSubResults(_def);
-//    console.log('T result:', result);
-    return result;
+    if (lastCBalance) return Balances.nullValue(_def); // TODO: Can calculate from subtracting 2 C-balances
+    else return Balances._aggregateSubResults(_def);
   } else if (balanceType === 'O') {
     if (defPeriod.type() === 'entire') return Balances.nullValue(_def);
     const prevPeriod = accountingPeriods.previous(defPeriod);
@@ -183,21 +186,24 @@ Balances.get = function get(def, balanceType) {
       return Balances.get(prevTagDef, 'C');
     }
   } else if (balanceType === 'C') {
-    if (defPeriod.type() === 'entire') return Balances.get(def, 'T');  // Entire period closing C is the same as entire traffic T;
-    const hasUploadedCBals = Balances.findOne(subdefSelector(_def));
-//    console.log("Has uploaded C balances:", hasUploadedCBals);
-    if (hasUploadedCBals) return Balances._aggregateSubResults(_def);
-//    if (def.partner) debugAssert(defPeriod.endsOnYearEnd(), 'closing partner balance works only for end of year');
-    /*if (defPeriod.endsOnYearEnd() && accountingPeriods.isClosed(defPeriod)) {
+    const hasCBalance = Balances.findOne(subdefSelector(_def));
+    if (defPeriod.type() === 'entire') {
+      if (lastCBalance) { // Find the last uploaded C-bal
+        const newDef = _.extend({}, def, { tag: lastCBalance.tag });
+        return Balances._aggregateSubResults(newDef);
+      } else return Balances.get(def, 'T');  // Entire period closing C is the same as entire traffic T;
+    } else {
+      if (hasCBalance) return Balances._aggregateSubResults(_def);
+      else return Balances.add(Balances.get(def, 'T'), Balances.get(def, 'O')); // console.log("Just adding current T and O");  
+    }
+    // if (def.partner) debugAssert(defPeriod.endsOnYearEnd(), 'closing partner balance works only for end of year');
+    /* if (defPeriod.endsOnYearEnd() && accountingPeriods.isClosed(defPeriod)) {
       const nextPeriod = accountingPeriods.next(defPeriod);
       debugAssert(nextPeriod, 'A closed period should gave a next period'); // Because the closing should create it
       console.log("Next period is", nextPeriod);
       const nextTagDef = _.extend({}, def, { tag: nextPeriod.toTag() });
       return Balances.get(nextTagDef, 'O');
-    } else {*/
-//      console.log("Just adding current T and O");
-      return Balances.add(Balances.get(def, 'T'), Balances.get(def, 'O'));
-    //}
+    } else { */
   } else {
     debugAssert(false, `Unknown balance type ${balanceType}`);
     return undefined;
@@ -205,7 +211,7 @@ Balances.get = function get(def, balanceType) {
 };
 
 Balances._aggregateSubResults = function _aggregateSubResults(def) {
-  let result = _.extend({ debit: 0, credit: 0 }, def);
+  let result = _.extend({}, def, { debit: 0, credit: 0 });
   Balances.find(subdefSelector(def)).forEach((b) => {
 //    console.log("Adding balance", b);
     result.debit += b.debit;
