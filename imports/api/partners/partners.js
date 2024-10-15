@@ -137,7 +137,7 @@ Partners.helpers({
   contracts(relation) {
     const Contracts = Mongo.Collection.get('contracts');
     const selector = { communityId: this.communityId, relation, partnerId: this._id };
-    return Contracts.findActive(Object.cleanUndefined(selector));
+    return Contracts.find(Object.cleanUndefined(selector));
   },
   hasActiveContract() {
     return !!this.contracts().count();

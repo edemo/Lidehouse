@@ -25,7 +25,7 @@ const exchangeSchema = new SimpleSchema({
 
 Transactions.categoryHelpers('exchange', {
   validate() {
-    const accountSelector = {
+/*    const accountSelector = {
       communityId: this.communityId,
       account: this.account,
       tag: 'T',
@@ -35,13 +35,14 @@ Transactions.categoryHelpers('exchange', {
     if (this.fromPartner) {
       availableAmount = Balances.get(_.extend({ partner: this.fromPartner }, accountSelector)).total();
     } else {
-      availableAmount = Balances.get(/* no partner means full account balance */ accountSelector).total()
+      availableAmount = Balances.get( accountSelector).total() // no partner means full account balance
                       - Balances.get(_.extend({ partner: 'All' }, accountSelector)).total();
     }
     availableAmount *= (-1);
     if (amount > availableAmount) {
       throw new Meteor.Error('err_notAllowed', 'Amount is larger than what is available on the given account for this partner/contract', { amount, availableAmount });
     }
+      */
   },
   makeJournalEntries(accountingMethod) {
     this.debit = [{ amount: this.amount, account: this.account, partner: this.fromPartner }];
