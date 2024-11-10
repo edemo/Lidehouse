@@ -29,7 +29,7 @@
                               <!--span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.options.' ticket.urgency)}}</span-->
                             </p>
                             <p class="m-b-xs">
-                              {{>Chopped text=text chars=150 markdown=true}}
+                              {{>ChoppedChars text=text chars=150 markdown=true}}
                             </p>
                             <a href="{{pathFor 'Topic show' _tid=_id}}" class="btn btn-white btn-xs">
                                 <i class="fa fa-comments"></i>

@@ -17,7 +17,7 @@
             <div class="media-body">
                 <textarea  class="form-control js-send-enter" {{b "value: commentText"}} placeholder="{{_ 'newCommentPlaceholder'}}"></textarea>
                 <div {{b "if: commentText"}} class="text-right">
-                    <span class="btn btn-xs btn-default m-t-xs js-attach"><i class="glyphicon glyphicon-paperclip"></i> {{_ 'Attachments'}}</span>
+                    <span class="btn btn-xs btn-default m-t-xs js-attach"><i class="glyphicon glyphicon-paperclip"></i> {{_ 'Editor'}}</span>
                     <span class="btn btn-xs btn-primary m-t-xs text-capitalize js-send">{{_ 'send'}}</span>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                 <textarea class="form-control" data-id="{{_id}}" value={{text}}></textarea>
                 <div class="text-right">
                     <span class="btn btn-xs btn-default m-t-xs js-edit">
-                        <i class="glyphicon glyphicon-paperclip"></i>  {{_ 'Attachments'}}
+                        <i class="glyphicon glyphicon-paperclip"></i>  {{_ 'Editor'}}
                     </span>
                     <span class="btn btn-xs btn-default m-t-xs text-capitalize js-cancel">{{_ 'cancel'}}</span>
                     <span class="btn btn-xs btn-primary m-t-xs text-capitalize js-save">{{_ 'save'}}</span>
@@ -56,7 +56,7 @@
                 {{> Attachments doc=this}}
             {{else}}
                 {{#hideable}}
-                    <span class="text-dark newlines" data-id="{{_id}}" style="font-weight:{{this.likeStrength}}">{{>Chopped text=text}}</span>
+                    <span class="text-dark newlines" data-id="{{_id}}" style="font-weight:{{this.likeStrength}}">{{>ChoppedHeight text=text height=200 markdown=true}}</span>
                     {{#if (includes this.entityName "statusChange")}} {{> StatusChangeData this}} {{/if}}
                     {{> Attachments doc=this}}
                     <div>

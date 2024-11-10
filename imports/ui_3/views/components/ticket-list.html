@@ -10,7 +10,7 @@
                 <td class="issue-info">
                     <a href="{{pathFor 'Topic show' _tid=_id}}">{{title}}</a>
                     {{> Badge color='info' value=(this.blueBadgeCount currentUser._id Meteor.users.SEEN_BY.EYES)}}
-                    <small>{{>Chopped text=text chars=150 markdown=true}}</small>
+                    <small>{{>ChoppedChars text=text chars=150 markdown=true}}</small>
                 </td>
                 <td>
                     {{{displayLocalizer this.ticket.localizer activeCommunityId}}}

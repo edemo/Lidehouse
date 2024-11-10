@@ -55,7 +55,7 @@
         <div class="news-elem" data-id="{{doc._id}}">
             <small class="pull-right text-navy" title={{displayTime doc.createdAt}}>{{displayTimeFrom doc.createdAt}}</small>
             <strong>{{doc.title}}</strong>
-            <div>{{>Chopped text=doc.text chars=600 markdown=true}}</div>
+            <div>{{>ChoppedHeight text=doc.text height=400 markdown=true}}</div>
             <!-- {{#if photo}}<img src="{{absoluteUrl photo}}" class="img-embed">{{/if}} -->
             {{>Attachments doc=doc}}
             {{#if currentUserHasPermission 'news.update'}}

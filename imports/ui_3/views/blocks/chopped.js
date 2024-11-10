@@ -4,7 +4,7 @@ import './chopped.html';
 
 const CHOP_AT_CHARS = 600;
 
-Template.Chopped.viewmodel({
+Template.ChoppedChars.viewmodel({
   showmore: false,
   chars() {
     const chars = this.templateInstance.data.chars;
@@ -24,7 +24,59 @@ Template.Chopped.viewmodel({
   },
 });
 
-Template.Chopped.events({
+Template.ChoppedChars.events({
+  'click .js-showmore'(event, instance) {
+    instance.viewmodel.showmore(true);
+  },
+});
+
+//-------------------------------------------------------------------------
+
+const CHOP_AT_HEIGHT = 400;
+
+Template.ChoppedHeight.viewmodel({
+  showmore: undefined,
+  cssHeight: undefined,
+  onRendered() {
+    this.showmore(false);
+  },
+  autorun() {
+    if (this.showmore() === false) {
+      const block = this.templateInstance.find('div');
+      if (block.clientHeight > this.maxHeight()) {
+        const maxHeight = this.maxHeight();
+        this.cssHeight(maxHeight);
+      }
+    } else this.cssHeight(undefined);
+  },
+  cssStyle() {
+    return ({
+      style: this.cssHeight() && `{ max-height: ${this.cssHeight()}px; overflow: hidden; position: relative }`,
+    });
+  },
+  maxHeight() {
+    const height = this.templateInstance.data.height;
+    if (!height || Number.isNaN(height)) return CHOP_AT_HEIGHT; // Bypassing Blaze auto last params in helper if chars is not set
+    else return height;
+  },
+//  currentHeight() {
+//    if (!this.showmore()) return this.maxHeight();
+//    else return undefined;
+//  },
+  isChopped() {
+    if (this.showmore() === undefined) return false;
+    const block = this.templateInstance.find('div');
+    const cssHeight = this.cssHeight();
+    const isChopped = !this.showmore() && cssHeight && block.scrollHeight > cssHeight;
+    return isChopped;
+  },
+  sanitizedText() {
+    const td = this.templateInstance.data;
+    return marked.inlineLexer(sanitizeHtml(td.text), []);
+  },
+});
+
+Template.ChoppedHeight.events({
   'click .js-showmore'(event, instance) {
     instance.viewmodel.showmore(true);
   },

@@ -51,7 +51,7 @@
                 {{/if}}
                 <div class="contracts">
                     <div><span style="font-weight:600">{{_ 'schemaContracts.partnerId.label'}}:</span> {{this.partner}}</div>
-                    <div><span style="font-weight:600">{{_ 'schemaContracts.text.label'}}:</span> {{>Chopped text=this.text chars=1000 markdown=true}}</div>
+                    <div><span style="font-weight:600">{{_ 'schemaContracts.text.label'}}:</span> {{>ChoppedHeight text=this.text height=600 markdown=true}}</div>
                     {{#if this.billingPeriod}}
                     <div><span style="font-weight:600">{{_ 'schemaContracts.billingPeriod.label'}}:</span> {{this.billingPeriod}}</div>
                     {{/if}}

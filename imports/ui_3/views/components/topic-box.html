@@ -56,7 +56,7 @@
     <a class="text-primary" href="{{pathFor 'Topic show' _tid=_id}}">
         <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
     </a>
-    <div class="text-dark" style="font-weight:{{this.likeStrength}}">{{>Chopped text=text chars=600 markdown=true}}</div>
+    <div class="text-dark" style="font-weight:{{this.likeStrength}}">{{>ChoppedHeight text=text height=400 markdown=true}}</div>
     <!-- {{>Attached_shareddocs shareddocs=this.getShareddocs}} -->
     {{>Attachments doc=this}}
     <br>

@@ -318,7 +318,7 @@
   "header row": "fejléc sora",
 
   "Start new topic": "Új téma indítása",
-  "Show more": "Tovább",
+  "Show more": "Teljes szöveg",
   "Show less": "Kevesebb",
 
   "statusChange": "Státusz váltás",
@@ -451,6 +451,7 @@
   "Please select voters": "Válassza ki kiknek a nevében szeretné ezt a szavazatot leadni",
   "Attachments" : "Csatolmányok",
   "Amendments": "Módosítások",
+  "Editor": "Szerkesztő",
   "All votings": "Aktív és lezárt szavazások teljes listája",
   "This is a voting type": "Ez egy <i>%s</i> szavazás",
   "votingInstructions": {

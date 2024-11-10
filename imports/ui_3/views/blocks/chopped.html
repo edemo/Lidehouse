@@ -1,3 +1,11 @@
-<template name="Chopped">
+<template name="ChoppedChars">
     {{#if markdown}}{{{choppedText}}}{{else}}{{choppedText}}{{/if}}{{#if isChopped}}<a href="" class="js-showmore">[{{_ 'Show more'}}]</a>{{/if}}
+</template>
+
+<template name="ChoppedHeight">
+    <div {{cssStyle}}>{{#if this.markdown}}{{{sanitizedText}}}{{else}}{{this.text}}{{/if}}
+    {{#if isChopped}}
+    <div role="button" class="showmore-btn js-showmore">
+        <a class="showmore-label">[>> {{_ 'Show more'}}]</a>
+    </div>{{/if}}</div>
 </template>

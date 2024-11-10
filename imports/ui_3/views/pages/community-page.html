@@ -249,7 +249,7 @@
                             {{>Action_buttons_group collection='communities' actions='edit' doc=communityId size='lg'}}
                         </div>
                         <h2>{{_ 'schemaCommunities.management.label'}}</h2>
-                        <p>{{>Chopped text=community.management chars=600 markdown=true}}</p>
+                        <p>{{>ChoppedHeight text=community.management height=400 markdown=true}}</p>
                     </div>
                 </div>
                 {{/if}}
