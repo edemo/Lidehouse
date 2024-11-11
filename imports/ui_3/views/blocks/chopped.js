@@ -72,6 +72,7 @@ Template.ChoppedHeight.viewmodel({
   },
   sanitizedText() {
     const td = this.templateInstance.data;
+    if (!td.text) return;
     return marked.inlineLexer(sanitizeHtml(td.text), []);
   },
 });
