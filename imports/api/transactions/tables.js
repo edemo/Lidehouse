@@ -24,7 +24,7 @@ Render.txdefName = function (cellData, renderType, currentRow) {
 
 export function transactionColumns() {
   const columns = [
-    { data: 'createdAt', title: __('schemaTimestamped.createdAt.label'), render: Render.formatDate },
+    { data: 'createdAt', title: __('schemaTimestamped.createdAt.label'), render: Render.formatTime },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'serialId', title: __('schemaSerialId.serialId.label') },
     { data: 'defId', title: __('schemaTransactions.defId.label'), render: Render.txdefName },
