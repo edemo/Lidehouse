@@ -151,7 +151,7 @@ export const revert = new ValidatedMethod({
     const doc = checkExists(ParcelBillings, _id);
     const communityId = doc.communityId;
     checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
-    const txs = Transactions.find({ deliveryDate: date, 'lines.billing.id': _id }).fetch();
+    const txs = Transactions.find({ deliveryDate: date, 'lines.billing.id': _id, status: { $ne: 'void' } }).fetch();
     txs.forEach(tx => {
       Transactions.methods.remove._execute({ userId: this.userId }, { _id: tx._id });
                     // This will result in a STORNO tx, when the tx is already posted

@@ -698,6 +698,12 @@ if (Meteor.isServer) {
         done();
       });
 
+      it('Cannot storno a bill for which newer billings are already registered', function () {
+        chai.assert.throws(() => {
+          revertParcelBillings('2018-03-01');
+        }, 'err_unableToRemove');
+      });
+
       it('Can bill based on reading and estimation at the same time', function () {
         const days = daysWoEstimation ? daysWoEstimation + 1 : 5;
         const consumption = Math.roundToDecimals((0.33333 * days) + 3.684, 3);

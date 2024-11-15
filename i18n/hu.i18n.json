@@ -716,6 +716,7 @@
   "Partner may not be removed, until transaction is using it": "A partner nem törölhető, amíg tranzakcióhoz kapcsolódik",
   "Partner may not be removed, until contract is using it": "A partner nem törölhető, amíg szerződéshez kapcsolódik",
   "Not possible to remove bill, while it has payments, remove the payments first": "A számla nem törölhető, amíg fizetés kapcsolódik hozzá. Előbb a fizetést törölje.",
+  "Not possible to remove bill, because the meter reading has newer bills affecting it, remove the newer bills first":  "A számla nem törölhető, mert vannak nála újabb számlák, amik érintik ezt a mérőórát. Előbb az újabb számlákat törölje.",
   "Not possible to remove voided transaction": "Az érvénytelenített tranzakció nem törölhető",
   "Not possible to remove billing, if it was already applied, archive it instead": "Az előírás minta nem törölhető, ha már ki lett vetve. Archiváljon a törlés művelet helyett.",
   "Accounting location cannot be deleted while it has outstanding balance": "A könyvelési hely nem törölhető, amíg az egyenlege tartozást mutat",
