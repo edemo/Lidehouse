@@ -95,7 +95,7 @@ const PersonProfileSchema = new SimpleSchema({
   publicEmail: _.extend({ optional: true }, SimpleSchema.Types.Email()),
   address: { type: String, optional: true },
   phone: { type: String, max: 20, optional: true },
-  bio: { type: String, optional: true },
+  bio: { type: String, optional: true, autoform: { rows: 3 } },
 });
 
 const frequencyValues = ['never', 'weekly', 'daily', 'frequent'];
