@@ -36,8 +36,8 @@
   "occupant": "birtokos",
   "occupants": "Birtokosok",
   "Modifiable by": "Módosíthatja",
-  "List of officers": "A ház tisztségviselőinek listája",
-  "List of parcels": "A házhoz tartozó albetétek listája",
+  "List of officers": "A közösség tisztségviselőinek listája",
+  "List of parcels": "A közösséghez tartozó albetétek listája",
 
   "all": "összes",
   "undefined": "nincs megadva",
@@ -679,7 +679,7 @@
   // errors
   "err_notImplemented": "Nem elérhető funkció",
   "Not implemented yet": "Ez a funkció még nem elérhető",
-  "Demo house not available on this server": "Ezen a szerveren nincsen demo ház funkció. Látogasson el a központi szerverre! (honline.hu)",
+  "Demo house not available on this server": "Ezen a szerveren nincsen demo funkció. Látogasson el a központi szerverre! (honline.hu)",
   "err_notExists": "Nincs ilyen objektum",
   "No such object": "Ilyen objektum nem létezik a rendszerben",
   "No such parcel": "Nincs ilyen hely",
