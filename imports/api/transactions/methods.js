@@ -242,17 +242,6 @@ export const remove = new ValidatedMethod({
       Transactions.remove(_id);
       result = null;
     } else if (doc.status === 'posted') {
-      if (doc.category === 'bill') {
-        doc.lines?.forEach(line => {
-          if (line.metering) {
-            const meter = Meters.findOne(line.metering.id);
-            if (line.metering.end.value !== meter.lastBilling().value) {
-              console.log('ERROR', 'line', line, 'meter', meter);
-              throw new Meteor.Error('err_unableToRemove', 'Not possible to remove bill, because the meter reading has newer bills affecting it, remove the newer bills first', { line, meter });
-            }
-          }
-        });
-      }
         // This block should happen all or none
       const negatorTx = _.extend(doc.negator(), { issueDate: Clock.currentDate(), status: 'void', seId: [] });
       result = Transactions.insert(negatorTx);
