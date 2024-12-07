@@ -71,7 +71,17 @@ export const post = new ValidatedMethod({
 // Allowing repost action
 //   if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
     doc.validateForPost?.();
-
+    if (doc.category === 'bill') {
+      doc.lines?.forEach(line => {
+        if (line.metering) {
+          const meter = Meters.findOne(line.metering.id);
+          if (line.metering.start.value !== meter.lastBilling().value) {
+//            console.log('ERROR', 'line', line, 'meter', meter);
+            throw new Meteor.Error('err_notAllowed', 'Not possible to post bill, because the meter reading doesnt move from the latest reading', { line, meter });
+          }
+        }
+      });
+    }
     const modifier = { $set: { postedAt: new Date() } };
     if (doc.postedAt) modifier.$set.postedAt = doc.postedAt;
     if (doc.status !== 'void') { // voided already has the accounting data on it
@@ -246,9 +256,13 @@ export const remove = new ValidatedMethod({
       const negatorTx = _.extend(doc.negator(), { issueDate: Clock.currentDate(), status: 'void', seId: [] });
       result = Transactions.insert(negatorTx);
       Transactions.update(doc._id, { $set: { status: 'void', seId: [] } });
-      const resultTx = Transactions.findOne(result);
-      if (resultTx.isAutoPosting()) post._execute({ userId: this.userId }, { _id: result });
-      //
+      // Auto-posting the storno transaction
+      try {
+        post._execute({ userId: this.userId }, { _id: result });
+      } catch (error) {
+        Transactions.remove(result);
+        throw error;
+      }
     } else if (doc.status === 'void') {
       throw new Meteor.Error('err_permissionDenied', 'Not possible to remove voided transaction');
     } else debugAssert(false, `No such tx status: ${doc.status}`);

@@ -701,7 +701,7 @@ if (Meteor.isServer) {
       it('Cannot storno a bill for which newer billings are already registered', function () {
         chai.assert.throws(() => {
           revertParcelBillings('2018-03-01');
-        }, 'err_unableToRemove');
+        }, 'err_notAllowed');
       });
 
       it('Can bill based on reading and estimation at the same time', function () {
