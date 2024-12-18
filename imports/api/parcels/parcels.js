@@ -8,6 +8,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
+import { modifierChangesField } from '/imports/api/mongo-utils.js';
 import { Log } from '/imports/utils/log.js';
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
@@ -343,6 +344,44 @@ if (Meteor.isServer) {
 
   Parcels.after.update(function (userId, doc, fieldNames, modifier, options) {
     updateCommunity(doc, 1);
+    const tdoc = this.transform();
+    const oldDoc = Parcels._transform(this.previous);
+    const newDoc = tdoc;
+    // Parcel code ripple effects
+    if (modifierChangesField(oldDoc, newDoc, ['code'])) {
+      const Topics = Mongo.Collection.get('topics');
+      Topics.find({ communityId: doc.communityId }).forEach(topic => {
+        if (topic.notiLocalizer === oldDoc.code) {
+          Topics.direct.update(topic._id, { $set: { notiLocalizer: newDoc.code } });
+        }
+        if (topic.category === 'ticket' && topic.ticket?.localizer === oldDoc.code) {
+          Topics.direct.update(topic._id, { $set: { 'ticket.localizer': newDoc.code } }, { selector: { category: 'ticket' } });
+        }
+      });
+      const Comments = Mongo.Collection.get('comments');
+      Comments.find({ communityId: doc.communityId, category: 'statusChange' }).forEach(comment => {
+        if (comment.category === 'statusChange' && comment.dataUpdate?.localizer === oldDoc.code) {
+          Comments.direct.update(comment._id, { $set: { 'dataUpdate.localizer': newDoc.code } }, { selector: { category: 'statusChange' } });
+        }
+      });
+      const Contracts = Mongo.Collection.get('contracts');
+      Contracts.direct.update({ communityId: doc.communityId, 'accounting.localizer': oldDoc.code }, { $set: { 'accounting.localizer': newDoc.code } }, { multi: true });
+      const Transactions = Mongo.Collection.get('transactions');
+      Transactions.find({ communityId: doc.communityId, category: 'bill' }).forEach(bill => {
+        let needsUpdate = false;
+        bill.lines?.forEach(line => {
+          if (line.localizer === oldDoc.code) {
+            needsUpdate = true;
+            line.localizer = newDoc.code;
+          }
+        });
+        if (needsUpdate) {
+          Transactions.direct.update(bill._id, { $set: { lines: bill.lines } }, { selector: { category: 'bill' } });
+        }
+      });
+      const Balances = Mongo.Collection.get('balances');
+      Balances.direct.update({ communityId: doc.communityId, localizer: oldDoc.code }, { $set: { localizer: newDoc.code } }, { multi: true });
+    }
   });
 
   Parcels.after.remove(function (userId, doc) {
