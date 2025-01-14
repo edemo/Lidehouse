@@ -30,7 +30,7 @@ export function parcelColumns(community) {
     community?.hasPhysicalLocations() && 
       { data: 'area', title: __('schemaParcels.area.label'), render: Render.formatNumber(2) },
     community?.hasVotingUnits() && 
-      { data: 'units', title: __('schemaParcels.units.label') },
+      { data: 'units', title: __('schemaParcels.units.label'), render: Render.formatNumber(2) },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
