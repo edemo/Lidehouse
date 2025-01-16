@@ -73,7 +73,7 @@ export const post = new ValidatedMethod({
     doc.validateForPost?.();
     if (doc.category === 'bill') {
       doc.lines?.forEach(line => {
-        if (line.metering) {
+        if (line?.metering) {
           const meter = Meters.findOne(line.metering.id);
           if (line.metering.start.value !== meter.lastBilling().value) {
 //            console.log('ERROR', 'line', line, 'meter', meter);
@@ -98,7 +98,7 @@ export const post = new ValidatedMethod({
 
     if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {
       doc.getLines().forEach((line) => {
-        if (line.metering) {
+        if (line?.metering) {
           Meters.methods.registerBilling._execute({ userId: this.userId }, { _id: line.metering.id,
             billing: { date: line.metering.end.date, value: line.metering.end.value, billId: doc._id },
           });
