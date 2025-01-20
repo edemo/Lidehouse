@@ -71,7 +71,7 @@ export const post = new ValidatedMethod({
 // Allowing repost action
 //   if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
     doc.validateForPost?.();
-    if (doc.category === 'bill') {
+    if (!doc.isPosted() && doc.category === 'bill') {
       doc.lines?.forEach(line => {
         if (line?.metering) {
           const meter = Meters.findOne(line.metering.id);
@@ -121,7 +121,7 @@ export const resend = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc);
-    if (Meteor.isServer && doc.category === 'bill' && doc.relation === 'member') {
+    if (doc.isPosted() && Meteor.isServer && doc.category === 'bill' && doc.relation === 'member') {
       if (sendBillEmail(doc) === false) throw new Meteor.Error('err_email');
     }
   },
