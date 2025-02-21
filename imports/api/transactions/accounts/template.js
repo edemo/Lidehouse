@@ -188,6 +188,7 @@ export function defineAccountTemplates() {
     { code: '`5532', name: 'Klíma rendszer', category: 'expense' },
     { code: '`55321', name: 'Klíma rendszer karbantartás', category: 'expense' },
     { code: '`55322', name: 'Klíma rendszer javítás', category: 'expense' },
+    { code: '`55323', name: 'Klíma szivárgás vizsgálat', category: 'expense' },
     { code: '`5533', name: 'Kamerarendszer', category: 'expense' },
     { code: '`55331', name: 'Kamerarendszer karbantartás', category: 'expense' },
     { code: '`55332', name: 'Kamerarendszer javítás', category: 'expense' },
