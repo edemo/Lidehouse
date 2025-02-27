@@ -3,8 +3,10 @@ import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { __ } from '/imports/localization/i18n.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
@@ -14,7 +16,7 @@ import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Parcels } from '/imports/api/parcels/parcels';
-import { displayNumber } from './utils.js';
+import { displayNumber, displayCurrency } from './utils.js';
 
 export function label(value, color, icon) {
   if (value === undefined) return undefined;
@@ -143,6 +145,18 @@ export function displayChargeType(name) {
   return label(__('schemaTickets.ticket.chargeType.options.' + name), 'default');
 }
 
+export function displayTxIdentifiers(name) {
+  if (!name) return '';
+  var result = '';
+  name.split(',').forEach((identifier, index) => {
+    const tx = Transactions.findOne({ communityId: getActiveCommunityId(), serialId: identifier.trim() });
+    if (!tx) return;
+    if (index > 0) result += '</br>+ ';
+    result += `<a href=${FlowRouter.path('Transaction show', { _txid: tx._id })}>${displayCurrency(tx?.amount)} <span class="text-navy">(${identifier})</span></a>`;
+  });
+  return result;
+}
+
 const Renderers = {
   'Topics.status': displayStatus,
   'Topics.notiLocalizer': displayLocalizer,
@@ -152,6 +166,7 @@ const Renderers = {
   'Tickets.ticket.chargeType': displayChargeType,
   'Tickets.ticket.partnerId': id => Partners.findOne(id)?.getName(),
   'Tickets.ticket.contractId': id => Contracts.findOne(id)?.title,
+  'Tickets.ticket.txIdentifiers': displayTxIdentifiers,
   //'ticket.txId'
   'Votings.agendaId': id => (Agendas.findOne(id) ? Agendas.findOne(id).title : undefined),
 };

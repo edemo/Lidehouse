@@ -916,9 +916,6 @@
       "contractId" : {
         "label": "Szerződés"
       },
-      "txId": {
-        "label": "Pénzügyi tranzakció"
-      },
       "expectedCost": { 
         "label": "Várható költség"
       },
@@ -935,7 +932,12 @@
         "label": "Mire várakozik"
       },
       "actualCost": { 
-        "label": "Tényleges költség"
+        "label": "Tényleges költség",
+        "help": "A költségek összege (ha nem szeretné a számlákat behivatkozni, hanem csak összegszerűen magadni a költséget, akkor ezt a mezőt használja)"
+      },
+      "txIdentifiers": {
+        "label": "Tényleges költség (számla)",
+        "help": "A költség számla azonosítója, vagy a számlák azonosítói vesszővel elválasztva, ha több is van"
       },
       "actualStart": { 
         "label": "Tényleges kezdés"

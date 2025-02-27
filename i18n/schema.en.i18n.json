@@ -934,7 +934,12 @@
         "label": "Waiting for"
       },
       "actualCost": { 
-        "label": "Actual cost"
+        "label": "Actual cost",
+        "help": "Actual costs sum (use this field, if you do not wish to link the cost bills, only present the sum cost amount)"
+      },
+      "txIdentifiers": {
+        "label": "Actual cost (bill)",
+        "help": "The cost bill identifier or the bill identifiers spearated by comma, in case there are multiple bills"
       },
       "actualStart": { 
         "label": "Actual start"

@@ -28,7 +28,6 @@ Tickets.extensionRawSchema = {
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseContract }, optional: true },
   chargeType: { type: String, allowedValues: Tickets.chargeTypeValues, autoform: allowedOptions(), optional: true },
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true /* TODO: Select from tx list */ },
 
   expectedCost: { type: Number, decimal: true, optional: true },
   expectedStart: { type: Date, optional: true, autoform: { defaultValue: () => ModalStack.getVar('expectedStart') } },
@@ -36,6 +35,7 @@ Tickets.extensionRawSchema = {
   expectedContinue: { type: Date, optional: true },
   waitingFor: { type: String, optional: true },
   actualCost: { type: Number, decimal: true, optional: true },
+  txIdentifiers: { type: String, optional: true },
   actualStart: { type: Date, optional: true },
   actualFinish: { type: Date, optional: true },
   actualContinue: { type: Date, optional: true },
@@ -129,8 +129,8 @@ const finished = {
   color: 'primary',
   colorCode: '#18A689',
   data: [
-    'txId',
     'actualCost',
+    'txIdentifiers',
     'actualStart',
     'actualFinish',
   ],

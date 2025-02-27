@@ -4,14 +4,32 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
+
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/users/users.js';
+
+function displayCurrency(value) {
+  return numeral(value).format('0,0$');
+}
 
 function displayLocalizer(localizer, community) {
   return localizer.substring(1);
+}
+
+function displayTxIdentifiers(identifiers, community) {
+  if (!identifiers) return '';
+  var result = '';
+  identifiers.split(',').forEach((identifier, index) => {
+    const tx = Transactions.findOne({ communityId: community._id, serialId: identifier.trim() });
+    if (!tx) return;
+    if (index > 0) result += '\n+ ';
+    result += `${displayCurrency(tx?.amount)} (${identifier})`;
+  });
+  return result;
 }
 
 export const Notifications_Email = {
@@ -46,11 +64,12 @@ export const Notifications_Email = {
     },
     displayStatusChangeDataUpdate(key, value) {
       numeral.language(this.community.settings.language);
-      if (key.includes('Cost')) return numeral(value).format('0,0$');
+      if (key.includes('Cost')) return displayCurrency(value);
       if (key === 'localizer') return displayLocalizer(value, this.community);
       if (key === 'partnerId') return Partners.findOne(value) ? Partners.findOne(value).getName() : '';
       if (key === 'contractId') return Contracts.findOne(value) ? Contracts.findOne(value).title : '';
       if (key === 'chargeType') return TAPi18n.__('schemaTickets.ticket.chargeType.options.' + value, {}, this.user.settings.language);
+      if (key === 'txIdentifiers') return displayTxIdentifiers(value, this.community);
       if (_.isDate(value)) return moment(value).format('L');
       if (_.isString(value)) return TAPi18n.__(value, {}, this.user.settings.language);
       return value;
