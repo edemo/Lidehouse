@@ -107,7 +107,11 @@ const progressing = {
   name: 'progressing',
   color: 'info',
   colorCode: '#1FAEB0',
-  data: ['expectedFinish'],
+  data: [
+    'actualStart',
+    'expectedCost',
+    'expectedFinish',
+  ],
 };
 
 const suspended = {
