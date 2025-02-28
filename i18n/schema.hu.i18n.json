@@ -937,6 +937,7 @@
       },
       "txIdentifiers": {
         "label": "Tényleges költség (számla)",
+        "placeholder": "(pl. SZ/SZAL/62/2024)",
         "help": "A költség számla azonosítója, vagy a számlák azonosítói vesszővel elválasztva, ha több is van"
       },
       "actualStart": { 

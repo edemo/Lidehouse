@@ -939,6 +939,7 @@
       },
       "txIdentifiers": {
         "label": "Actual cost (bill)",
+        "placeholder": "(eg. BIL/SUP/64/2024)",
         "help": "The cost bill identifier or the bill identifiers spearated by comma, in case there are multiple bills"
       },
       "actualStart": { 
