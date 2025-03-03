@@ -13,7 +13,7 @@ Template.Meters_widget.viewmodel({
   relevantParcels() {
     const user = Meteor.user();
     const community = getActiveCommunity();
-    const communityId = community._id;
+    const communityId = community?._id;
     if (!user || !communityId) return [];
     return Parcels.find({ communityId, category: community.propertyCategory() }).fetch().filter(p => user.hasPermission('parcels.finances', p));
   },

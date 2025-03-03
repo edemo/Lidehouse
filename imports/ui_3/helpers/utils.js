@@ -13,7 +13,7 @@ export function negativeClass(number) {
 }
 
 export function displayCurrency(number) {
-  const lang = getActiveCommunity().settings.language;
+  const lang = getActiveCommunity()?.settings.language;
 //  const decimals = Locales[lang].currencyDecimals;
 //  const decis = '0'.repeat(decimals);
 //  const formatString = showZeros ? `0,0.${decis}` : `0,0.[${decis}]`;

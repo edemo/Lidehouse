@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Contracts } from './contracts.js';
@@ -121,6 +122,10 @@ Meteor.publishComposite('contracts.outstanding', function contractsOutstanding(p
           children: [{
             find(parcel) {
               return Meters.find({ parcelId: parcel._id });
+            }, 
+          }, { 
+            find(parcel) {
+              return Memberships.find({ communityId, parcelId: parcel._id });
             },
           }],
         }, {
