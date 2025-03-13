@@ -16,6 +16,7 @@ export function defineSharedFoldersTemplates() {
     { content: 'contract', name: 'Contracts' },
     { content: 'voting', name: 'Voting attachments' },
     { content: 'agenda', name: 'Agenda records' },
+    { content: 'transaction', name: 'Transaction records' },
   ],
   });
 }

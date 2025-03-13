@@ -166,6 +166,21 @@
     </div>
     {{/if}}
 
+    {{#if attachments.count}}
+    <div class="left-padded">
+        <label>{{_ "Attachments"}}</label>
+    </div>
+    <div class="form-group">
+        <ul class="file-list list-unstyled">
+            {{#each attachment in attachments}}
+                <li>
+                {{> Shareddoc_inline attachment}}
+                </li>
+            {{/each}}
+        </ul>
+    </div>
+    {{/if}}
+
     <div class="text-right" data-id="{{rDoc._id}}">
         {{>Action_buttons_group collection='transactions' doc=rDoc actions='post,edit,delete,registerRemission,registerPayment,registerIdentification' size='xl'}}
     </div>

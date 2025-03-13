@@ -28,6 +28,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import { AttachmentField } from '/imports/api/behaviours/attachment-field.js';
 
 export const Transactions = new Mongo.Collection('transactions');
 
@@ -423,6 +424,7 @@ Transactions.attachBaseSchema(Transactions.baseSchema);
 Transactions.attachBehaviour(Noted);
 Transactions.attachBehaviour(Timestamped);
 Transactions.attachBehaviour(SerialId(['category', 'relation', 'side']));
+Transactions.attachBehaviour(AttachmentField());
 
 // --- Before/after actions ---
 

@@ -10,6 +10,10 @@ import { Log } from '/imports/utils/log.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
+import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
+import '/imports/ui_3/views/components/shareddoc-display.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
 // The autoform needs to see these, to handle new events on it
 import '/imports/api/partners/actions.js';
@@ -20,6 +24,11 @@ Template.Bill_edit.viewmodel({
   detailedView: false,
   onCreated() {
     this.detailedView(!this.templateInstance.data.doc.isSimple());
+  },
+  autorun() {
+    const communityId = ModalStack.getVar('communityId');
+    const topicId = this.templateInstance.data.doc._id;
+    this.templateInstance.subscribe('shareddocs.ofTopic', { communityId, topicId });
   },
   afDoc(formId) {
     const doc = Transactions._transform(AutoForm.getDoc(formId));
@@ -68,6 +77,10 @@ Template.Bill_edit.viewmodel({
   hiddenWhenReconciling() {
     return this.reconciling() && 'hidden';
   },
+  attachments() {
+    const topicId = this.templateInstance.data.doc._id;
+    return Shareddocs.find({ topicId });
+  },  
 });
 
 function autoFill(formId) {
@@ -88,5 +101,12 @@ Template.Bill_edit.events({
   'click .js-view-mode'(event, instance) {
     autoFill();
     instance.viewmodel.detailedView(true);
+  },
+  'click .js-upload'(event) {
+    const communityId = ModalStack.getVar('communityId');
+    const community = Communities.findOne(communityId);
+    const folder = Sharedfolders.findOne({ communityId: community.settings.templateId, content: 'transaction' });
+    const topicId = Template.instance().data.doc?._id || Meteor.userId();
+    Shareddocs.upload({ communityId, folderId: folder._id, topicId });
   },
 });

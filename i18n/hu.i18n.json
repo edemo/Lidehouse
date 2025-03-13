@@ -660,9 +660,10 @@
   "sharedfolder": "mappa",
   "Sharedfolders": "Mappák",
   "Main folder": "Főmappa",
-  "Founding documents": "Alapító iratok / SZMSZ / Házirend",
+  "Founding documents": "Alapító iratok, SZMSZ, Házirend",
   "Voting attachments": "Szavazás mellékletek",
   "Agenda records": "Közgyűlési anyagok",
+  "Transaction records": "Számlák, Bizonylatok",
 
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",

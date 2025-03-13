@@ -27,6 +27,7 @@ Shareddocs.hasPermissionToUpload = function hasPermissionToUpload(userId, doc) {
     voting: 'poll.insert',
     agenda: 'agendas.insert',
     default: 'shareddocs.upload',
+    transaction: 'transactions.insert',
   };
   return permissionsByFolders(userId, doc, permissions);
 };
@@ -37,6 +38,7 @@ Shareddocs.hasPermissionToUpdate = function hasPermissionToUpdate(userId, doc) {
     voting: 'poll.update',
     agenda: 'agendas.update',
     default: 'shareddocs.upload',
+    transaction: 'transactions.update',
   };
   return permissionsByFolders(userId, doc, permissions);
 };
@@ -47,6 +49,7 @@ Shareddocs.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploade
     voting: 'poll.remove',
     agenda: 'agendas.remove',
     default: 'shareddocs.remove',
+    transaction: 'transactions.remove',
   };
   return permissionsByFolders(userId, doc, permissions);
 };
