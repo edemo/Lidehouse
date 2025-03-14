@@ -153,12 +153,12 @@ Transactions.categoryHelpers('payment', {
   correspondingBillTxdef() {
     return Txdefs.findOneT({ communityId: this.communityId, category: 'bill', 'data.relation': this.relation });
   },
-  validate() {
+  validate(oldDoc) {
     let billSum = 0;
     const payment = this;
     const partnerOrContract = this.contractId ? this.contract() : this.partner();
     const availableAmount = partnerOrContract.outstanding(this.payAccount, this.relation) * -1;
-    if (this.subType() === 'identification' && this.amount > availableAmount) {
+    if (this.subType() === 'identification' && this.amount - (oldDoc?.amount || 0) > availableAmount) {
       throw new Meteor.Error('err_notAllowed', 'Amount is larger than what is available on the given account for this partner/contract', `${availableAmount} - ${this.amount}`);
     }
     this.getBills().forEach(pb => {

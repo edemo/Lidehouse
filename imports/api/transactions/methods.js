@@ -173,7 +173,7 @@ export const update = new ValidatedMethod({
     let newDoc = rusdiff.clone(doc);
     rusdiff.apply(newDoc, modifier);
     newDoc = Transactions._transform(newDoc);
-    newDoc.validate?.();
+    newDoc.validate?.(doc);
     modifier.$set?.lines?.forEach((line, i) => {
       if (line?.localizer) {
         const parcel = Localizer.parcelFromCode(line.localizer, doc.communityId);
@@ -183,6 +183,8 @@ export const update = new ValidatedMethod({
 
     const ensurePeriodResult = ensurePeriod(this.userId, doc);
     if (!ensurePeriodResult) return ensurePeriodResult;
+    const ensureNewPeriodResult = ensurePeriod(this.userId, newDoc);
+    if (!ensureNewPeriodResult) return ensureNewPeriodResult;
 
     const result = Transactions.update({ _id }, modifier, { selector: doc });
 
