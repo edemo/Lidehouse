@@ -159,7 +159,7 @@ Transactions.categoryHelpers('payment', {
     const partnerOrContract = this.contractId ? this.contract() : this.partner();
     const availableAmount = partnerOrContract.outstanding(this.payAccount, this.relation) * -1;
     if (this.subType() === 'identification' && this.amount - (oldDoc?.amount || 0) > availableAmount) {
-      throw new Meteor.Error('err_notAllowed', 'Amount is larger than what is available on the given account for this partner/contract', `${availableAmount} - ${this.amount}`);
+      throw new Meteor.Error('err_notAllowed', 'Amount is larger than what is available on the given account for this partner/contract', { availableAmount, amount, oldAmount: oldDoc?.amount });
     }
     this.getBills().forEach(pb => {
       const bill = Transactions.findOne(pb.id);
