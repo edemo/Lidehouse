@@ -45,6 +45,7 @@ Communities.settingsSchema = new SimpleSchema({
   paymentsToBills: { type: [String], allowedValues: Relations.values, defaultValue: Relations.mainValues, autoform: { type: 'select-checkbox-inline' } },
   paymentsWoStatement: { type: Boolean, optional: true },
   allowPostToGroupAccounts: { type: Boolean, optional: true },
+  allowUnbilledParcels: { type: Boolean, optional: true },
   balancesUploaded: { type: Boolean, optional: true },
   subjectToVat: { type: Boolean, optional: true },
   sendBillEmail: { type: [String], optional: true, allowedValues: ['member', 'customer'], defaultValue: [], autoform: { type: 'select-checkbox-inline' } },

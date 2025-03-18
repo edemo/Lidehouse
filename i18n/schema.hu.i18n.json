@@ -197,6 +197,10 @@
         "label": "Lehessen a gyűjtőszámlákra könyvelni",
         "help": "Ha nincs bekapcsolva, akkor a gyűjtő számlákra nem enged könyvelni a rendszer, csak azok alszámláira"
       },
+      "allowUnbilledParcels": {
+        "label": "Lehessenek tulajdonos nélküli albetétek",
+        "help": "Ha nincs bekapcsolva, akkor a rendszer nem ír elő költségeket (hanem hibát jelez), ha van olyan albetét, amin még nincs beállítva tulajdonos, akinek a számlát ki lehetne állítani"
+      },
       "balancesUploaded": {
         "label": "Egyenlegek feltölthetők",
         "help": "Ha be van kapcsolva, akkor a főkönyvi egyenlegeket külső fájlból is be lehet importálni. Ha ki van kapcsolva, akkor az egyenlegek a zárt rendszeren belül kerülnek kiszámításra, a tranzakciókból."

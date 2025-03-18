@@ -178,7 +178,9 @@ Parcels.helpers({
       Log.debug('Did not find', contractSelector);
       if (Meteor.isServer) { // will be called from parcelbillings.apply
         const payerMembership = this._payerMembership();
-        productionAssert(payerMembership, 'Unable to pay for parcel - no owner found', { parcel: this.ref });
+        if (!this.community().settings.allowUnbilledParcels) {
+          productionAssert(payerMembership, 'Unable to pay for parcel - no owner found', { parcel: this.ref });
+        }
         contractSelector.partnerId = payerMembership.partnerId;
         contractSelector.activeTime = payerMembership.activeTime;
         const contractId = Contracts.insert(contractSelector);
