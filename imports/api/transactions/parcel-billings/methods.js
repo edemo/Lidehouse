@@ -9,6 +9,7 @@ import { Log } from '/imports/utils/log.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
@@ -47,6 +48,7 @@ export const apply = new ValidatedMethod({
 
   run({ communityId, date, ids, localizer, withFollowers }) {
     if (Meteor.isClient) return;
+    const community = Communities.findOne(communityId);
     checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
     if (Date.now() < date) throw new Meteor.Error('err_invalidData', 'Not possible to bill with future date', date);
     const relationAccount = Accounts.getByName('Members', communityId).code;
@@ -78,14 +80,22 @@ export const apply = new ValidatedMethod({
             // Creating the bill - adding line to the bill
             const leadParcel = parcel.leadParcel();
             const issueDate = Clock.currentDate();
+            const payerContract = leadParcel.payerContract();
+            if (!payerContract) {
+              if (!community.settings.allowUnbilledParcels) {
+                productionAssert(payerContract, 'Unable to pay for parcel - no contract found', { parcel: parcel.ref });
+              } else return;
+            }
+            const payerPartner = payerContract.partner();
+    
             billsToSend[leadParcel._id] = billsToSend[leadParcel._id] || {
               communityId: parcelBilling.communityId,
               category: 'bill',
               relation: 'member',
               defId: Txdefs.findOneT({ communityId, category: 'bill', 'data.relation': 'member' })._id,
     //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
-              partnerId: leadParcel.payerPartner()._id,
-              contractId: leadParcel.payerContract()._id,
+              partnerId: payerPartner._id,
+              contractId: payerContract._id,
               relationAccount,
               issueDate,
               deliveryDate: date,

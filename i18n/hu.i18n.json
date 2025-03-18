@@ -777,7 +777,7 @@
   "Community was found without an admin": "Van egy adminisztrátor nélküli közösség!",
   "Meter has no reading before the date, looks like it did not exist at that time": "Nincs érték a mérőórán ebben az időpontban. Lehet, hogy akkor még nem létezett a mérőóra.",
   "Cannot estimate before any reading data is available": "Nem lehet becslést számítani, amíg nincs leolvasott érték",
-  "Unable to pay for parcel - no owner found": "Nem lehet az albetétre fizetni - nincs tulajdonos",
+  "Unable to pay for parcel - no contract found": "Nem lehet az albetétre előírni, mert nincs hozzá kapcsolva szerződött partner",
   "Opening tx has cannot have multiple choices for the opposite account": "A nyitó tranzakció ellenoldali számláján nem lehet egynél több tétel",
   "Could not find parcel - Please check if parcel ref matches the building+floor+door exactly": "Nem található az albetét - Kérjük ellenőrizze, hogy az azonosító egyezezik-e az épület+emelet+ajtó számmal",
   "A billing needs at least one of consumption or projection": "Az előírásnak legalább egy fogyasztási vagy vetítési előírást tartalmaznia kell",
