@@ -52,6 +52,8 @@
     "BillText": "Önnek új elektronikus számlája érkezett, amelyet az <a href=\"__link__\">online felületre belépve</a> részleteiben is megtekinthet vagy kinyomtathat. Ugyanitt a korábbi számláit is átnézheti.",
     "PaymentMethods": "A bankszámlaszám, amire átutalhatja az összeget",
     "PaymentInstructions": "A közlemény rovatba kérjük írja be a díjbekérő azonosító számát.",
+    "PaymentInstructionsWoBillMatching": "A közlemény rovatban kérjük a tulajdonos nevét és az ingatlanok azonosítóját (lakás, parkoló, tároló) feltüntetni.",
+    "PaymentInstructionsWoBillMatching2": "Az átutalást lehet egy összegben, egy tranzakcióban küldeni.",
     "BillFooter" : ["Ön azért kapta ezt a levelet, mert beállításaiban az szerepel, hogy az Ön részére kiállított számlákról értesítőt kér.<br>",
       "Az email értesítést a felhasználó profil beállításaiban tudja kikapcsolni <a href=\"__link__\">ezen a linken</a>.<br>",
       "Ha bármi egyéb kérdése lenne, lépjen kapcsolatba a __communityType__ <a href=\"mailto:__adminEmail__\">adminisztrátorával</a>."],

@@ -62,12 +62,19 @@
                     <br>
                     <p>{{_ 'email.PaymentMethods'}}:<br>
                         {{#let account=community.primaryBankAccount}}
-                        <strong>{{_ 'schemaPartners.BAN.label'}}: {{account.BAN}}{{#if account.bank}} ({{account.bank}}){{/if}}</strong>
+                        {{#if account.accountHolder}}
+                        <strong>{{_ 'schemaAccounts.accountHolder.label'}}: {{account.accountHolder}}</strong><br>
+                        {{/if}}
+                        <strong>{{_ 'schemaAccounts.BAN.label'}}: {{account.BAN}}{{#if account.bank}} ({{account.bank}}){{/if}}</strong>
                         {{/let}}
                     </p>
                     {{#if (contains community.settings.paymentsToBills bill.relation)}}
                     <p>{{_ 'email.PaymentInstructions'}}:<br>
                         <strong>{{_ 'schemaStatementEntries.note.label'}}: {{bill.serialId}}</strong>
+                    </p>
+                    {{else}}
+                    <p>{{_ 'email.PaymentInstructionsWoBillMatching'}}<br>
+                        {{_ 'email.PaymentInstructionsWoBillMatching2'}}
                     </p>
                     {{/if}}
                 </td>

@@ -46,6 +46,8 @@
     "BillText": "You have a new electronic bill, which can be viewed in detail and printed by <a href=\"__link__\">logging into the system</a>. Here you can also view your bill and payment history.",
     "PaymentMethods": "You may transfer the amount to this bank account",
     "PaymentInstructions": "Please provide the bill ID at the remarks.",
+    "PaymentInstructionsWoBillMatching": "Please provide owner's name and the parcel identifiers at the remarks.",
+    "PaymentInstructionsWoBillMatching2": "You may make it in one single payment for the total.",
     "BillFooter" : ["You received this email, because in your settings you agreed to get notifications about your invoices in the community.<br>",
     "You can change your settings in your user profile <a href=\"__link__\">at this link</a>.<br>",
     "Should you have any questions, feel free to contact the community's <a href=\"mailto:__adminEmail__\">administrator<br>."],

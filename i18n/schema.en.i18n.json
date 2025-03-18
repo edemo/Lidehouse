@@ -371,6 +371,10 @@
       "label": "Bank name",
       "placeholder": "(pl. HSBC)"
     },
+    "accountHolder": {
+      "label": "Account holder",
+      "placeholder": "(pl. Lavender condominium Holding LLC)"
+    },
     "BAN": {
       "label": "Bank account number",
       "placeholder": "(eg 12345678-00000000-00000525)"

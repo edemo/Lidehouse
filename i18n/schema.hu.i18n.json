@@ -372,6 +372,10 @@
       "label": "Bank neve",
       "placeholder": "(pl. OTP)"
     },
+    "accountHolder": {
+      "label": "Számlatulajdonos neve",
+      "placeholder": "(pl. Levendula Társasház beszedési szla)"
+    },
     "BAN": {
       "label": "Bankszámlaszám",
       "placeholder": "(pl. 12345678-00000000-00000525)"

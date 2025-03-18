@@ -42,6 +42,7 @@ Accounts.bankExtensionSchema = new SimpleSchema({
   category: { type: String, defaultValue: 'bank', autoform: { type: 'hidden', defaultValue: 'bank' } },
   primary: { type: Boolean, optional: true },
   bank: { type: String, max: 100, optional: true },
+  accountHolder: { type: String, max: 100, optional: true },
   BAN: { type: String, max: 100, optional: true },  // Bank Account Number
 //  sync: { type: String, defaultValue: 'none', allowedValues: Accounts.syncValues, autoform: _.extend({ value: 'none' }, autoformOptions) },
 //  protocol: { type: String, optional: true },
