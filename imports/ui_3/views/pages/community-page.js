@@ -307,5 +307,6 @@ Template.Community_page.events({
       Communities.actions.join({}, community).run(event, instance);
     });
   },
+  ...(actionHandlers(Communities, 'close')),
   ...(actionHandlers(Communities, 'delete')),
 });

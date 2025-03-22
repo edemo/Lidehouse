@@ -104,6 +104,18 @@ Communities.actions = {
       }
     },
   }),
+  close: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'close',
+    icon: 'fa fa-archive',
+    visible: user.hasPermission('communities.update', doc),
+    run() {
+      Modal.confirmAndCall(Communities.methods.close, { _id: doc._id }, {
+        action: 'close',
+        entity: 'community',
+        message: 'It will become read only',
+      });
+    },
+  }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',

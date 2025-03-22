@@ -307,7 +307,7 @@ Meteor.users.helpers({
   },
   communities() {
     const communityIds = this.communityIds();
-    const communities = Communities.find({ _id: { $in: communityIds } });
+    const communities = Communities.find({ _id: { $in: communityIds }, status: { $ne: 'closed' } });
     // Log.debug(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },

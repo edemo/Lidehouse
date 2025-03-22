@@ -212,6 +212,7 @@
   "delete": "törlés",
   "storno": "sztornózás",
   "Delete user account": "Felhasználói fiók törlése",
+  "Close community": "Közösség archiválása",
   "Delete community": "Közösség törlése",
   "remove": "eltávolítás",
   "video call": "közvetítés indítása",
@@ -851,6 +852,7 @@
   "Are you sure you want to": "Biztos benne, hogy",
 
   "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",
+  "It will become read only": "Ezzel archivált állapotba kerül, és nem lesz többé aktív!",
   "It will be taken off the page": "Ezzel lekerül az oldalról.",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
   "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást.",

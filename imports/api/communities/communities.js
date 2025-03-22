@@ -18,7 +18,7 @@ export const Communities = new Mongo.Collection('communities');
 
 const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
-Communities.statusValues = ['sandbox', 'live', 'official'];
+Communities.statusValues = ['sandbox', 'live', 'official', 'closed'];
 Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'documents'];
 Communities.ownershipSchemeValues = ['condominium', 'corporation', 'foundation', 'cooperative', 'condo-coop', 'basket-coop']; //  'meritocracy' coming soon
 

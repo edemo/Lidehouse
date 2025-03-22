@@ -144,6 +144,20 @@ export const update = new ValidatedMethod({
   },
 });
 
+export const close = new ValidatedMethod({
+  name: 'communities.close',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ _id }) {
+    const doc = checkExists(Communities, _id);
+    checkPermissions(this.userId, 'communities.update', doc);
+    const modifier = { $set: { status: 'closed' } };
+    Communities.update({ _id }, modifier);
+  },
+});
+
 export const remove = new ValidatedMethod({
   name: 'communities.remove',
   validate: new SimpleSchema({
@@ -186,4 +200,4 @@ export const remove = new ValidatedMethod({
 });
 
 Communities.methods = Communities.methods || {};
-_.extend(Communities.methods, { create, launch, update, remove });
+_.extend(Communities.methods, { create, launch, update, close, remove });
