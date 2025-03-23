@@ -114,6 +114,15 @@
       "placeholder": "(pl. 123456-2-42)",
       "help": "Nem szükséges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
     },
+    "status": {
+      "label": "Állapot",
+      "options": {
+        "sandbox": "Kezdemény",
+        "live": "Aktív",
+        "official": "Hivatalos",
+        "closed": "Archivált"
+      }
+    },
     "settings": {
       "label": "Beállítások",
       "modules": {

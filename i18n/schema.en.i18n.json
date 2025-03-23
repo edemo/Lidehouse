@@ -114,6 +114,15 @@
       "label": "Registered ownership units",
       "placeholder": "(eg. 10000)"
     },
+    "status": {
+      "label": "Status",
+      "options": {
+        "sandbox": "Sandbox",
+        "live": "Live",
+        "official": "Official",
+        "closed": "Archived"
+      }
+    },
     "settings": {
       "label": "Settings",
       "modules": {

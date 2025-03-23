@@ -300,6 +300,11 @@ Template.Community_page.events({
       size: 'lg',
     });
   },
+  'click .js-activate'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    const community = Communities.findOne(communityId);
+    ModalStack.setVar('communityId', communityId, true);
+  },
   'click .js-join'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     const community = Communities.findOne(communityId);

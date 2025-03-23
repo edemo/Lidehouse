@@ -297,8 +297,20 @@
                                 {{/each}}
                             </tr>
                             </table>
-                            {{#if community.settings.joinable}}
-                                {{#unless (currentUser.isInCommunity communityId) }}
+                            {{#if or (currentUser.isInCommunity communityId) currentUser.super }}
+                            <br>
+                                {{#if (not (equals activeCommunityId communityId)) }}
+                                    <button type="button" class="btn btn-primary btn-sm btn-block js-activate">
+                                        <i class="fa fa-sign-in"></i>
+                                        {{_ 'Set active community'}}
+                                    </button>
+                                {{else}}
+                                    <button type="button" class="btn btn-default btn-outline btn-sm btn-block">
+                                        {{_ (concat "schemaCommunities.status.options." community.status)}}
+                                    </button>
+                                {{/if}}
+                            {{else}}
+                                {{#if community.settings.joinable}}
                                     <br>
                                     <p>{{_ 'joinRequestInstructions'}}</p>
                                     {{#if (currentUser.isUnapprovedInCommunity communityId)}}
@@ -312,14 +324,14 @@
                                         {{_ 'Submit join request'}}
                                     </button>
                                     {{/if}}
-                                {{/unless}}
+                                {{/if}}
                             {{/if}}
                             {{#if currentUserHasPermission 'communities.remove' community}}
                             <br>
                                 {{#if (equals community.status 'closed')}}
-                                <button class="btn btn-danger btn-block btn-outline js-delete"><!--i class="fa fa-trash"></i--> {{_ 'Delete community'}}</button>
+                                <button class="btn btn-danger btn-sm btn-block btn-outline js-delete"><!--i class="fa fa-trash"></i--> {{_ 'Delete community'}}</button>
                                 {{else}}
-                                <button class="btn btn-danger btn-block btn-outline js-close"> {{_ 'Close community'}}</button>
+                                <button class="btn btn-danger btn-sm btn-block btn-outline js-close"> {{_ 'Close community'}}</button>
                                 {{/if}}
                             {{/if}}
                             </div>
