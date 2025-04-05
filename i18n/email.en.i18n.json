@@ -73,6 +73,8 @@
     "NotificationsFooter": ["You are receiving these notifications, because you have asked us to send you email notifications about the activities in your community __frequency__.<br>",
       "You can change your email notification settings or turn it off completely <a href=\"__link__\"> at this link</a>.<br>",
       "Should you have any questions, feel free to contact the community's <a href=\"mailto:__adminEmail__\">administrator<br>."],
+    "ImmediateNotificationsFooter": ["You are receiving these notifications, because you have asked us to send you email notifications about the important activities in your community.<br>",
+      "If you wish to no longer receive these notifications, please contact the community's <a href=\"mailto:__adminEmail__\">administrator<br>."],
     "VoteClosesTitle": "Attention! The following voting(s) below will be closing soon, and you have not yet voted on these issues. By clicking on the green button you may still do so for a couple of days. You may also set up a delegation and let someone else vote for you on this and on similar issues in the future.",
     "ConfirmVoteSubject": "Your vote is registered in __community__",
     "ConfirmVoteText": ["Dear __personName__,\n",

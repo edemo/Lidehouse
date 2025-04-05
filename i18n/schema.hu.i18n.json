@@ -785,6 +785,14 @@
       "label": "Kifejtés",
       "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
     },
+    "notiUrgency": {
+      "label": "Értesítési sürgősség",
+      "help": "Ha azonnali-t választ, akkor a téma létrehozásakor azonnali értesítő megy ki róla mindenkinek, ha normál-t választ, akkor az értesítőt erről mindenki a saját beállításaiban megadott gyakorisággal kapja meg, a többi értesítésével együtt",
+      "options": {
+        "normal": "normál",
+        "immediate": "azonnali"
+      }
+    },    
     "notiLocalizer": {
       "label": "Értesítési hely",
       "help": "Megjelölhet egy vagy több helyet (épület, emeletek, albetétek) amiket érint ez a téma, hogy kapjanak róla értesítőt. Hagyja üresen, ha nem kívánja helyileg korlátozni az értesítéseket."

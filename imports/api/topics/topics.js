@@ -6,7 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { imageUpload, documentUpload, attachmentUpload } from '/imports/utils/autoform.js';
+import { allowedOptions, imageUpload, documentUpload, attachmentUpload } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Revisioned } from '/imports/api/behaviours/revisioned.js';
@@ -30,6 +30,8 @@ Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
 Topics.categories = {};
 Topics.categoryValues.forEach(cat => Topics.categories[cat] = {}); // Specific categories will add their own specs
 
+Topics.notiUrgencyValues = ['normal', 'immediate'];
+
 Topics.extensionSchemas = {};
 
 Topics.baseSchema = new SimpleSchema({
@@ -51,7 +53,8 @@ Topics.categoryChangeSchema = new SimpleSchema({
 
 Topics.extensionSchemas.news = new SimpleSchema({
   category: { type: String, defaultValue: 'news', autoform: { type: 'hidden', defaultValue: 'news' } },
-  sticky: { type: Boolean, optional: true, defaultValue: false },
+  sticky: { type: Boolean, optional: true, defaultValue: false, autoform: { type: 'hidden' } },
+  notiUrgency: { type: String, optional: true, allowedValues: Topics.notiUrgencyValues, autoform: allowedOptions() },
 });
 
 Topics.extensionSchemas.forum = new SimpleSchema({
@@ -63,6 +66,7 @@ Topics.publicFields = {
   category: 1,
   title: 1,
   text: 1,
+  notiUrgency: 1,
   notiLocalizer: 1,
   agendaId: 1,
   createdAt: 1,
@@ -234,8 +238,11 @@ Topics.helpers({
       case 'ticket':
         if (this.ticket?.urgency === 'high') return this.community().ticketHandlers();
         else return [];
+      case 'news':
+        if (this.notiUrgency === 'immediate') return this.community().users();
+        else return [];
       default:
-        return [];
+      return [];
     }
   },
   modifiableFields() {
@@ -285,7 +292,7 @@ Topics.categoryValues.forEach(category => {
 });
 //  Topics.schema.i18n('schemaTopics');
 
-Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'notiLocalizer'];
+Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'notiUrgency', 'notiLocalizer'];
 
 Topics.categoryValues.forEach((category) => {
   Factory.define(category, Topics, {

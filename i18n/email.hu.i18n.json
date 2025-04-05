@@ -102,6 +102,8 @@
     "NotificationsFooter": ["Ön azért kapja ezeket az értesítéseket, mert beállításaiban az szerepel, hogy a közösségben történő eseményekről email értesítőt küldjünk __frequency__.<br>",
       "Az email értesítések gyakoriságát átállíthatja vagy teljesen ki is kapcsolhatja <a href=\"__link__\"> ezen a linken</a>.<br>",
       "Ha bármi egyéb kérdése lenne, lépjen kapcsolatba a __communityType__ <a href=\"mailto:__adminEmail__\">adminisztrátorával</a>."],
+    "ImmediateNotificationsFooter": ["Ön azért kapta ezt az értesítőt, mert hozzájárult hogy email-ben értesíthessük önt a közösséget érintő fontos ügyekben.<br>",
+      "Ha nem szeretne a jövőben értesítéseket kapni, lépjen kapcsolatba a __communityType__ <a href=\"mailto:__adminEmail__\">adminisztrátorával</a>."],
     "VoteClosesTitle": "Felhívjuk figyelmét, hogy az alábbi szavazás(ok) hamarosan lezárul(nak), és Ön még nem adott le szavazatot ezekben a kérdésekben. A zöld gombra kattintva ezt még pár napig megteheti. Vagy ha gondolja beállíthat egy meghatalmazást, hogy most és a jövőben a hasonló kérdésekben valaki szavazhasson Ön helyett.",
     "ConfirmVoteSubject": "Szavazata rögzítve a __community__ közösségében",
     "ConfirmVoteText": ["Tisztelt __personName__!\n",

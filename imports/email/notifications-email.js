@@ -86,3 +86,12 @@ export const Notifications_Email = {
     }),
   },
 };
+
+export const Immediate_Notifications_Email = _.extend({}, Notifications_Email, {
+  layoutData: {
+    type: 'Notifications',
+    header: 'NotificationsHeader',
+    footer: 'ImmediateNotificationsFooter',
+    alert: 'warning',
+  },
+});

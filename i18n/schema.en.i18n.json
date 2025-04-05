@@ -784,6 +784,14 @@
       "label": "Description",
       "placeholder": "Longer description (if needed)..."
     },
+    "notiUrgency": {
+      "label": "Notification urgency",
+      "help": "If set to immediate, email notification is sent immediately, if set to normal, email notification is sent according to the user's self set notification frequency",
+      "options": {
+        "normal": "normal",
+        "immediate": "immediate"
+      }
+    },    
     "notiLocalizer": {
       "label": "Notification place",
       "help": "You may specify one or more places (building, floors, units) where the notifications should go to. Leave it blank if you do not wish to localize the notifications"

@@ -7,7 +7,7 @@ import { Communities } from '/imports/api/communities/communities';
 import { Topics } from '/imports/api/topics/topics.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { EmailTemplateHelpers } from './email-template-helpers.js';
-import { Notifications_Email } from './notifications-email.js';
+import { Notifications_Email, Immediate_Notifications_Email } from './notifications-email.js';
 import { Vote_closes_Email } from './vote-closes-email.js';
 
 export function sendSingleTopicNotification(user, community, topicToDisplay) {
@@ -16,12 +16,12 @@ export function sendSingleTopicNotification(user, community, topicToDisplay) {
   EmailSender.send({
     to: user.getPrimaryEmail(),
     subject: EmailTemplateHelpers.subject('Notifications', user, community),
-    template: 'Notifications_Email',
+    template: 'Immediate_Notifications_Email',
     data: {
       user,
       community,
       topicsToDisplay: [topicToDisplay],
-      ...Notifications_Email.layoutData,
+      ...Immediate_Notifications_Email.layoutData,
     },
   });
   const lastSeenInfo = { timestamp: new Date() };
