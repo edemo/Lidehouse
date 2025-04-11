@@ -53,7 +53,7 @@ Topics.categoryChangeSchema = new SimpleSchema({
 
 Topics.extensionSchemas.news = new SimpleSchema({
   category: { type: String, defaultValue: 'news', autoform: { type: 'hidden', defaultValue: 'news' } },
-  sticky: { type: Boolean, optional: true, defaultValue: false, autoform: { type: 'hidden' } },
+  sticky: { type: Boolean, optional: true, defaultValue: false },
   notiUrgency: { type: String, optional: true, allowedValues: Topics.notiUrgencyValues, autoform: allowedOptions() },
 });
 
