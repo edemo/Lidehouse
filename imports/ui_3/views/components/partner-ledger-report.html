@@ -10,6 +10,7 @@
               <td><strong>{{_ 'schemaContracts.debitTotal.label'}}</strong></td>
               <td><strong>{{_ 'schemaContracts.creditTotal.label'}}</strong></td>
               <td><strong>{{_ 'Closing balance'}}</strong></td>
+              <td><strong>{{_ 'Unidentified'}}</strong></td>
           </tr>
       </thead>
         <tbody>
@@ -45,6 +46,11 @@
                 </td>
                 {{/let}}
                 {{#let cellValue=(add (balance contract relationAccount tag 'total' 'C') (balance contract unidentifiedAccount tag 'total' 'C'))}}
+                <td class="cell nowrap {{negativeClass cellValue}}" data-contract="{{contract._id}}" data-tag="{{tag}}" style="cursor: pointer">
+                    {{displayNumber cellValue}}
+                </td>
+                {{/let}}
+                {{#let cellValue=(balance contract unidentifiedAccount tag 'total' 'C')}}
                 <td class="cell nowrap {{negativeClass cellValue}}" data-contract="{{contract._id}}" data-tag="{{tag}}" style="cursor: pointer">
                     {{displayNumber cellValue}}
                 </td>
