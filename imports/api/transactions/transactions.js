@@ -401,7 +401,9 @@ Transactions.helpers({
     // NOP -- will be overwritten in the categories
   },
   validate() {
-    // NOP -- will be overwritten in the categories
+    if (this.contractId) {
+      if (this.partnerId != this.contract()?.partnerId) throw new Meteor.Error('err_invalidData', 'Contract and Partner does not match');
+    }
   },
   displayInSelect() {
     return this.serialId;

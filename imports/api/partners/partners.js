@@ -145,7 +145,7 @@ Partners.helpers({
   hasActiveMemberContract() {
     return !!this.contracts('member').count();
   },
-  ensureContract(relation) { // Creates one if doesn't exist
+/*  ensureContract(relation) { // Creates one if doesn't exist
     const contracts = this.contracts(relation).fetch();
     if (contracts.length) return contracts[0];
     else {
@@ -156,7 +156,7 @@ Partners.helpers({
         return Contracts.findOne(id);
       }
     }
-  },
+  },*/
   // --- Same for partmers and contracts ---
   balance(account) {
     // The balance of the partner from the perspective of the contra party

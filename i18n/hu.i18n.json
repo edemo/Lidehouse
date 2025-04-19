@@ -749,6 +749,7 @@
   "There is already a higher reading": "Van már ennél magasabb értékű leolvasás rögzítve",
   "Cannot have two documents active at the same time": "Nem lehet egyszerre két ilyen dokumentum aktív. A jelenlegit előbb archiválnia kell.",
   "Lead parcel will be in effect": "A vezető albetét lesz a mérvadó",
+  "Contract and Partner does not match": "A megadott szerződés nem a megadott partnerhez tartozik",
   "Payment has to be fully allocated": "Kifizetés teljes összege allokálva kell legyen.",
   "Payment accounting can only be done, when all amount is allocated": "Kifizetés csak úgy kerülhet könyvelésbe, ha a teljes összege allokálva van.",
   "Same bill may not be selected multiple times": "Ugyanazt a számlát nem lehet többször is kiválasztani.",

@@ -140,7 +140,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Communities, _id);
     // checkModifier(doc, modifier, ['lot'], true);     // all fields are modifiable except lot
     checkPermissions(this.userId, 'communities.update', doc);
-    Communities.update({ _id }, modifier);
+    return Communities.update({ _id }, modifier);
   },
 });
 
@@ -154,7 +154,7 @@ export const close = new ValidatedMethod({
     const doc = checkExists(Communities, _id);
     checkPermissions(this.userId, 'communities.update', doc);
     const modifier = { $set: { status: 'closed' } };
-    Communities.update({ _id }, modifier);
+    return Communities.update({ _id }, modifier);
   },
 });
 
@@ -195,7 +195,7 @@ export const remove = new ValidatedMethod({
     Breakdowns.remove({ communityId });
     AccountingPeriods.remove({ communityId });
     Sharedfolders.remove({ communityId });
-    Communities.remove(communityId);
+    return Communities.remove(communityId);
   },
 });
 

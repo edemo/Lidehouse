@@ -140,10 +140,25 @@ export const insert = new ValidatedMethod({
         doc.contractId = bill.contractId;
       }
     }
+    // Fill in missing line parcelIds
     doc.getLines?.()?.forEach((line) => {
       const parcel = Localizer.parcelFromCode(line.localizer, communityId);
       if (!line.parcelId && parcel) line.parcelId = parcel._id;
     });
+    // Auto default to default contract, and create it if not yet exists
+    if (doc.partnerId && !doc.contractId && doc.category === 'bill' && doc.relation !== 'member') {
+      const selector = { communityId: doc.communityId, relation: doc.relation, partnerId: doc.partnerId, title: { $exists: false } };
+      doc.contractId = Contracts.findOne(selector)?._id;
+      if (!doc.contractId) {
+        delete selector.title;
+        selector.accounting = {
+          account: doc.lines[0]?.account,
+          localizer: doc.lines[0]?.localizer,
+        };
+        doc.contractId = Contracts.insert(selector);
+      }
+    }
+
     doc.validate?.();
     const ensurePeriodResult = ensurePeriod(this.userId, doc);
     if (!ensurePeriodResult) return ensurePeriodResult;
