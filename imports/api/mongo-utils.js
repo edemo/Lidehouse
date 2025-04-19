@@ -35,7 +35,7 @@ function convertPushToSet(doc, modifier) {
         modifier.$set = modifier.$set || {};
         modifier.$set[arrayName] = newValue;
       } else {
-        modifier.$unset = modifier.$sunset || {};
+        modifier.$unset = modifier.$unset || {};
         modifier.$unset[arrayName] = '';
       }
     });
@@ -51,7 +51,7 @@ export function autoValueUpdate(collection, doc, modifier, fieldName, autoValue)
   newDoc = collection._transform(newDoc);
   const calculatedValue = autoValue(newDoc);
   if (calculatedValue === undefined || calculatedValue === '') {
-    modifier.$unset = modifier.$sunset || {};
+    modifier.$unset = modifier.$unset || {};
     modifier.$unset[fieldName] = '';
   } else {
     modifier.$set = modifier.$set || {};
