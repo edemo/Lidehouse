@@ -159,7 +159,7 @@ Transactions.categoryHelpers('payment', {
     const partnerOrContract = this.contractId ? this.contract() : this.partner();
     const availableAmount = partnerOrContract.outstanding(this.payAccount, this.relation) * -1;
     if (this.subType() === 'identification' && this.amount - (oldDoc?.amount || 0) > availableAmount) {
-      throw new Meteor.Error('err_notAllowed', 'Amount is larger than what is available on the given account for this partner/contract', { availableAmount, amount, oldAmount: oldDoc?.amount });
+      throw new Meteor.Error('err_notAllowed', 'Amount is larger than what is available on the given account for this partner/contract', { availableAmount, amount: this.amount, oldAmount: oldDoc?.amount });
     }
     this.getBills().forEach(pb => {
       const bill = Transactions.findOne(pb.id);
@@ -260,7 +260,8 @@ Transactions.categoryHelpers('payment', {
   makeJournalEntries(accountingMethod) {
     this.debit = [];
     this.credit = [];
-    let unallocatedAmount = this.amountWoRounding();
+    const round = this.currencyRoundingFunction();
+    let unallocatedAmount = round(this.amountWoRounding());
     const subTxEntry = (accountingMethod === 'cash') ? { subTx: 1 } : {};
     if (this.subType() !== 'remission') {
       const payEntry = { amount: this.amount, account: this.payAccount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined };
@@ -357,6 +358,7 @@ Transactions.categoryHelpers('payment', {
       }
       unallocatedAmount -= line.amount;
     }
+    unallocatedAmount = round(unallocatedAmount);
     if (unallocatedAmount) { // still has remainder, that goes as unidentified
       const unidentifiedAccount = this.txdef().unidentifiedAccount();
       const newEntry = { account: unidentifiedAccount, amount: unallocatedAmount, partner: this.partnerContractCode(), localizer: undefined, parcelId: undefined };

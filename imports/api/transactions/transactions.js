@@ -8,6 +8,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import faker from 'faker';
 
 import { __ } from '/imports/localization/i18n.js';
+import { roundCurrency } from '/imports/localization/localization';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { dateSelector } from '/imports/api/utils';
@@ -215,6 +216,13 @@ Transactions.helpers({
   isAutoPosting() {
     return this.status === 'void' || this.txdef().isAutoPosting();
   },
+  currencyRoundingFunction() {
+    const relation = this.relation;
+    if (relation === 'member') { // || relation === 'customer' ? , it should be: if (we issue the bill) as opposed to if we just record a bill that was issued by someone else
+      const lang = this.community().settings.language;
+      return val => roundCurrency(val, lang);
+    } else return val => val; // but if we did not issue this bill, don't touch the numbers
+  },
   calculateComplete() {
     let total = 0;
     if (!this.debit || !this.credit) return false;
@@ -371,6 +379,7 @@ Transactions.helpers({
   validateJournalEntries() {
     const creditAmount = [];
     const debitAmount = [];
+    const round = this.currencyRoundingFunction();
     this.journalEntries(true).forEach(je => {
       let accountCode;
       debugAssert(je.account, `No account on je. Je: ${JSON.stringify(je)}, Tx: ${JSON.stringify(this)}`);
@@ -389,7 +398,7 @@ Transactions.helpers({
       if (je.side === 'debit') debitAmount[je.subTx] = debitAmount[je.subTx] ? (debitAmount[je.subTx] + je.amount) : je.amount;
     });
     for (let i = 0; i < creditAmount.length; i++) {
-      if (creditAmount[i] !== debitAmount[i]) {
+      if (round(creditAmount[i]) !== round(debitAmount[i])) {
         throw new Meteor.Error('err_notAllowed', 'Transaction sides have to have same amount', this);
       }
     }

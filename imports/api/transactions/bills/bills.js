@@ -8,7 +8,6 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
-import { roundCurrency } from '/imports/localization/localization';
 import { Clock } from '/imports/utils/clock.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Txdefs, chooseConteerAccount } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -150,13 +149,6 @@ export const BillAndReceiptHelpers = {
   otherTxSide() {
     return Transactions.oppositeSide(this.matchingTxSide());
   },
-  currencyRoundingFunction() {
-    const relation = this.relation;
-    if (relation === 'member') { // || relation === 'customer' ? , it should be: if (we issue the bill) as opposed to if we just record a bill that was issued by someone else
-      const lang = this.community().settings.language;
-      return val => roundCurrency(val, lang);
-    } else return val => val; // but if we did not issue this bill, don't touch the numbers
-  },
   validateForPost() {
     if (!this.hasConteerData()) throw new Meteor.Error('err_notAllowed', 'Transaction has to be account assigned first');
   },
@@ -181,7 +173,7 @@ export const BillAndReceiptHelpers = {
       totalAmount += line.amount;
     });
     if (this.rounding) totalAmount += this.rounding;
-    this.amount = totalAmount;
+    this.amount = round(totalAmount);
     this.tax = totalTax;
     this.disco = totalDisco;
   },
