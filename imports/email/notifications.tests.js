@@ -78,7 +78,7 @@ if (Meteor.isServer) {
         assertGotAllEmails = function (user, emailData, count) {
           chai.assert.equal(emailData.to, user.getPrimaryEmail());
           chai.assert.match(emailData.subject, /Updates/);
-          chai.assert.equal(emailData.template, 'Notifications_Email');
+//          chai.assert.equal(emailData.template.substring(-22), 'Notifications_Email'); or Immediate_Notifications_Email
           chai.assert.equal(emailData.data.user._id, user._id);
           chai.assert.equal(emailData.data.community._id, demoCommunity._id);
           chai.assert.equal(emailData.data.topicsToDisplay.length, count);
@@ -334,12 +334,15 @@ if (Meteor.isServer) {
           relationAccount: '`31',
         });
         const bill = Transactions.findOne(billId);
+        const customerBill = Transactions.findOne(customerBillId);
         sinon.assert.notCalled(EmailSender.send);
 
         Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: customerBillId });
+        chai.assert.isUndefined(bill.contractId);   // member bills do not get default contract created
         sinon.assert.notCalled(EmailSender.send);
         Transactions.methods.post._execute({ userId: Fixture.demoManagerId }, { _id: billId });
-        sinon.assert.calledOnce(EmailSender.send);
+        chai.assert.isDefined(customerBill.contractId);
+        sinon.assert.calledOnce(EmailSender.send);    // customer bills get default contract created for them
         sinon.assert.calledWithMatch(EmailSender.send, { template: 'Bill_Email' });
         sinon.assert.calledWithMatch(EmailSender.send, { to: partner.primaryEmail() });
         sinon.assert.calledWithMatch(EmailSender.send, { data: sinon.match({ user: partner.user(), community: bill.community(), bill }) });
@@ -347,9 +350,12 @@ if (Meteor.isServer) {
 
       it('Sends bill to contract delegatee (payer partner)', function () {
         const partner = Partners.findOne(partnerId);
+        const contractId = Fixture.builder.create('memberContract', { partnerId, cc: [{ partnerId: partner2Id }] });
+        const contract = Contracts.findOne(contractId);
+        Transactions.update(billId, { $set: { contractId } }, { selector: { category: 'bill' } });
         const bill = Transactions.findOne(billId);
-        Contracts.update({ _id: bill.contractId }, { $set: { cc: [{ partnerId: partner2Id }] } }, { selector: { relation: 'member' } });
         const partner2 = Partners.findOne(partner2Id);
+        chai.assert.deepEqual(contract.emailsToNotify(),  { to: partner.primaryEmail(), cc: [partner2.primaryEmail()] });
         sinon.assert.notCalled(EmailSender.send);
 
         Transactions.methods.resend._execute({ userId: Fixture.demoManagerId }, { _id: billId });

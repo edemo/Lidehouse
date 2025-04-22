@@ -10,7 +10,7 @@ export function sendBillEmail(bill) {
   const community = bill.community();
   const partner = bill.partner();
   const contract = bill.contract();
-  const emailsToNotify = contract.emailsToNotify();
+  const emailsToNotify = contract ? contract.emailsToNotify() : { to: partner.primaryEmail() };
   const user = partner.user();
 
   if (!user || user.settings.getBillEmail) {
