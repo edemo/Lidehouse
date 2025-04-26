@@ -234,16 +234,22 @@ Topics.helpers({
     return 0;
   },
   immediateNotifiees() {
+    let users = [];
     switch (this.category) {
       case 'ticket':
-        if (this.ticket?.urgency === 'high') return this.community().ticketHandlers();
-        else return [];
+        if (this.ticket?.urgency === 'high') users = this.community().ticketHandlers();
+        break;
       case 'news':
-        if (this.notiUrgency === 'immediate') return this.community().users();
-        else return [];
+        if (this.notiUrgency === 'immediate') users = this.community().users();  // should be called .members()
+        break;
       default:
-      return [];
+        break;
     }
+    return users.filter(user => (
+      (!this.participantIds || _.contains(this.participantIds, user._id)) 
+      && user.hasPermission('topics.inCommunity', this)
+      && this.creatorId !== user._id
+    ));
   },
   modifiableFields() {
     return Topics.modifiableFields;
@@ -262,12 +268,14 @@ Topics.topicsWithUnseenEvents = function topicsWithUnseenEvents(userId, communit
   debugAssert(userId);
   debugAssert(communityId);
   debugAssert(seenType);
+  const user = Meteor.users.findOne(userId);
   return Topics.find({ communityId, status: { $ne: 'closed' },
     $or: [
       { participantIds: { $exists: false } },
       { participantIds: userId },
     ],
   }).fetch()
+    .filter(t => (t.category === 'room' || user.hasPermission('topics.inCommunity', t)))
     .filter(t => t.isRelevantTo(userId))
     .map(topic => topic.unseenEventsBy(userId, seenType))
     .filter(t => t.hasUnseenThings())
@@ -293,6 +301,18 @@ Topics.categoryValues.forEach(category => {
 //  Topics.schema.i18n('schemaTopics');
 
 Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'notiUrgency', 'notiLocalizer'];
+
+
+if (Meteor.isServer) {
+  import { sendSingleTopicNotification } from '/imports/email/notifications-send.js';
+  Topics.after.insert(function (userId, doc) {
+    const tdoc = this.transform();
+    tdoc.immediateNotifiees().forEach(user => {
+      const topicToDisplay = tdoc.unseenEventsBy(user._id, Meteor.users.SEEN_BY.NOTI);
+      sendSingleTopicNotification(user, tdoc.community(), topicToDisplay);
+    });
+  });
+}
 
 Topics.categoryValues.forEach((category) => {
   Factory.define(category, Topics, {

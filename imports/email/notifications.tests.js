@@ -156,10 +156,10 @@ if (Meteor.isServer) {
         chai.assert.equal(ticketHandlers.length, 3);
 
         const urgentTicketId = Fixture.builder.create('issue', { creatorId: Fixture.demoManagerId, 'ticket.localizer': '@', 'ticket.urgency': 'high' });
-        sinon.assert.calledThrice(EmailSender.send);
+        sinon.assert.calledTwice(EmailSender.send);
         assertGotAllEmails(demoAdmin, EmailSender.send.getCall(0).args[0], 1);
         assertGotAllEmails(demoMaintainer, EmailSender.send.getCall(1).args[0], 1);
-//        assertGotAllEmails(demoManager, EmailSender.send.getCall(2).args[0], 1);
+//        assertGotAllEmails(demoManager, EmailSender.send.getCall(2).args[0], 1); // He created it
         sinon.resetHistory();
 
         processNotifications('frequent');
@@ -167,6 +167,27 @@ if (Meteor.isServer) {
         processNotifications('daily');
         sinon.assert.calledThrice(EmailSender.send);
         processNotifications('weekly');
+      });
+
+      it('Immediate notification on news topics', function () {
+        chai.assert.equal(demoCommunity.users().length, 11);
+
+        const urgentNewsId = Fixture.builder.create('news', { creatorId: Fixture.demoManagerId, 'notiUrgency': 'immediate' });
+        chai.assert.equal(EmailSender.send.callCount, 10);
+        sinon.resetHistory();
+
+        processNotifications('frequent');
+        processNotifications('daily');
+        processNotifications('weekly');
+        sinon.assert.notCalled(EmailSender.send);
+
+        const normalNewsId = Fixture.builder.create('news', { creatorId: Fixture.demoManagerId, 'notiUrgency': 'normal' });
+        sinon.assert.notCalled(EmailSender.send);
+
+        processNotifications('frequent');
+        processNotifications('daily');
+        processNotifications('weekly');
+        sinon.resetHistory();
       });
 
       it('Doesnt email closed group content outside the group', function () {
