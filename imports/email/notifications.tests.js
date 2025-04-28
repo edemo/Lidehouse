@@ -57,6 +57,7 @@ if (Meteor.isServer) {
       Meteor.users.update(Fixture.demoManagerId, { $set: { 'settings.notiFrequency': 'weekly' } });
       Meteor.users.update(Fixture.dummyUsers[2], { $set: { 'settings.notiFrequency': 'weekly' } });
       Meteor.users.update(Fixture.dummyUsers[5], { $set: { 'settings.notiFrequency': 'weekly' } });
+      Meteor.users.update(Fixture.otherUserId, { $set: { 'settings.notiFrequency': 'frequent' } });
       ownerWithNotiFrequent = Meteor.users.findOne(Fixture.demoUserId);
       ownerWithNotiDaily = Meteor.users.findOne(Fixture.dummyUsers[3]);
       ownerWithNotiWeekly = Meteor.users.findOne(Fixture.dummyUsers[2]);

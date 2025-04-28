@@ -32,13 +32,15 @@ export function insertUnittestFixture(lang) {
     name: 'Another community',
   })._id;
 
-  const demoBuilder = new CommunityBuilder(demoCommunityId, 'test', lang);
+  const demoBuilder = new CommunityBuilder(demoCommunityId, 'demo', lang);
   const otherBuilder = new CommunityBuilder(otherCommunityId, 'test', lang);
 
   const com = { en: 'com', hu: 'hu' }[lang];
   const demoAdminId = demoBuilder.createLoginableUser('admin');
   const demoManagerId = demoBuilder.createLoginableUser('manager');
   const demoAccountantId = demoBuilder.createLoginableUser('accountant');
+  const otherAdminId = otherBuilder.createLoginableUser('admin');
+  const otherManagerId = otherBuilder.createLoginableUser('manager');
 
 // ===== Parcels =====
 
@@ -79,6 +81,13 @@ const dummyParcels = [];
     type: 'flat',
     area: 40,
   });
+  const otherParcelId = otherBuilder.createProperty({
+    units: 40,
+    floor: '1',
+    door: '04',
+    type: 'flat',
+    area: 40,
+  });
 
   demoBuilder.create('meter', {
     parcelId: dummyParcels[3],
@@ -93,6 +102,7 @@ const dummyParcels = [];
 
   const demoUserId = demoBuilder.createLoginableUser('owner', undefined, { parcelId: dummyParcels[0], ownership: { share: new Fraction(1, 10) } });
   const demoBenefactorId = demoBuilder.createLoginableUser('benefactor', undefined, { parcelId: dummyParcels[0], benefactorship: { type: 'rental' } });
+  const otherUserId = otherBuilder.createLoginableUser('owner', undefined, { parcelId: otherParcelId, ownership: { share: new Fraction(1, 10) } });
 
   // ===== Dummy Users =====
 
@@ -326,6 +336,9 @@ const dummyParcels = [];
     demoAdminId,
     demoManagerId,
     demoAccountantId,
+    otherAdminId,
+    otherManagerId,
+    otherUserId,
     dummyUsers,
     dummyParcels,
     supplier,
