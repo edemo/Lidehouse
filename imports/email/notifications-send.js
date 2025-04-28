@@ -1,8 +1,10 @@
 
 import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
+
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
+import { EmailSender } from '/imports/startup/server/email-sender.js';
 import { Communities } from '/imports/api/communities/communities';
 import { Topics } from '/imports/api/topics/topics.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
@@ -12,7 +14,6 @@ import { Vote_closes_Email } from './vote-closes-email.js';
 
 export function sendSingleTopicNotification(user, community, topicToDisplay) {
   debugAssert(Meteor.isServer);
-  import { EmailSender } from '/imports/startup/server/email-sender.js';
   EmailSender.send({
     to: user.getPrimaryEmail(),
     subject: EmailTemplateHelpers.subject('Notifications', user, community),
@@ -30,7 +31,6 @@ export function sendSingleTopicNotification(user, community, topicToDisplay) {
 
 function sendNotifications(user) {
   debugAssert(Meteor.isServer);
-  import { EmailSender } from '/imports/startup/server/email-sender.js';
   user.communities().forEach((community) => {
     const topicsWithEvents = Topics.topicsWithUnseenEvents(user._id, community._id, Meteor.users.SEEN_BY.NOTI);
     const topicsToDisplay = topicsWithEvents.filter(t => t.hasThingsToDisplay());
@@ -66,7 +66,6 @@ export const EXPIRY_NOTI_DAYS = 3;
 
 export function notifyExpiringVotings() {
   debugAssert(Meteor.isServer);
-  import { EmailSender } from '/imports/startup/server/email-sender.js';
   Communities.find().forEach((community) => {
     const expiringVotings = Topics.find({
       communityId: community._id,
