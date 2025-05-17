@@ -25,6 +25,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/communities-listing.js';
   import '/imports/ui_3/views/pages/community-launch.js';
   import '/imports/ui_3/views/pages/community-join.js';
+  import '/imports/ui_3/views/pages/community-name-redirector.js';
   import '/imports/ui_3/views/pages/vote-topics.js';
   import '/imports/ui_3/views/pages/agendas.js';
   import '/imports/ui_3/views/pages/delegations.js';
@@ -157,6 +158,13 @@ defineRoute('/community/:_cid', {
   title(params) {
     const community = Communities.findOne({ _id: params._cid });
     return community && `${community.name}`;
+  },
+});
+
+defineRoute('/c/:_cname', {
+  name: 'Community name redirector',
+  action() {
+    BlazeLayout.render('Blank_layout', { content: 'Community_name_redirector' });
   },
 });
 
@@ -341,6 +349,7 @@ CommunityRelatedRoutes.push('User show');
 // the App_notFound template is used for unknown routes and missing topics
 
 FlowRouter.notFound = {
+  name: 'Not found',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'App_notFound' });
   },
