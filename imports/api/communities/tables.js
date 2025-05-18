@@ -18,6 +18,6 @@ export function communityColumns() {
     { data: 'street', title: __('schemaCommunities.street.label') },
     { data: 'number', title: __('schemaCommunities.number.label') },
     { data: 'lot', title: __('schemaCommunities.lot.label') },
-    { data: 'admin().displayProfileName()', title: __('admin') },
+    { data: 'admin()', title: __('admin') },
   ];
 }

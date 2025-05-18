@@ -238,7 +238,7 @@ Meteor.users.helpers({
     return this.displayProfileName(lang);
   },
   toString() {
-    return this.username;
+    return this.displayProfileName();
   },
   personNameMismatch(communityId = getActiveCommunityId()) {
     const partner = Partners.findOne({ communityId, userId: this._id, 'idCard.name': { $exists: true } });
