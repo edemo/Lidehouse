@@ -14,10 +14,12 @@ export function defineAccountTemplates() {
     { code: '23', name: 'Csatornadíj előírás' },
     { code: '24', name: 'Fűtési díj előírás' },
     { code: '25', name: 'Légkondícionáló előírás' },
-    { code: '26', name: 'Egyéb fogyasztás előírás' },
+    { code: '26', name: 'Villany előírás' },
+    { code: '29', name: 'Egyéb fogyasztás előírás' },
     { code: '3', name: 'Fejlesztési alap előírás' },
     { code: '4', name: 'Egyéb előírás' },
     { code: '5', name: 'Rendkivüli befizetés előírás' },
+    { code: '6', name: 'Late payment fees' }, // Késedelmi kamat előírás
   ],
   });
 
@@ -49,6 +51,7 @@ export function defineAccountTemplates() {
     { code: '`333', name: 'Fejlesztési alap előírás', category: 'receivable' },
     { code: '`334', name: 'Egyéb előírás', category: 'receivable' },
     { code: '`335', name: 'Rendkivüli befizetés előírás', category: 'receivable' },
+    { code: '`336', name: 'Late payment fees', category: 'receivable' },  // Késedelmi kamat előírás
     { code: '`34', name: 'Hátralékok', category: 'asset' },
     { code: '`341', name: 'Jelzáloggal nem terhelt hátralék', category: 'asset' },
     { code: '`342', name: 'Jelzáloggal terhelt hátralék', category: 'asset' },
@@ -259,6 +262,7 @@ export function defineAccountTemplates() {
     { code: '`953', name: 'Fejlesztési alap befizetés', category: 'income' },
     { code: '`954', name: 'Egyéb befizetés', category: 'income' },
     { code: '`955', name: 'Rendkivüli befizetés', category: 'income' },
+    { code: '`956', name: 'Late payment income', category: 'income' },  // Késedelmi kamat befizetés
     { code: '`96', name: 'Egyéb bevételek', category: 'income' },
     { code: '`966', name: 'Támogatások', category: 'income' },
     { code: '`967', name: 'Biztosítói kártérítés', category: 'income' },

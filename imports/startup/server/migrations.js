@@ -1372,6 +1372,26 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 77,
+  name: 'Bill payments cache the payment date',
+  up() {
+    Transactions.find({ category: 'bill' }).forEach(bill => {
+      const pids = bill.getPayments();
+      pids.forEach(p => {
+        if (p.amount === 0) return;
+        const payment = Transactions.findOne(p.id);
+        if (!payment) {
+          console.log("Payment", p.id, "does not exist anymore. Referenced on bill ",  bill._id, bill.serialId);
+          return;
+        }
+        p.valueDate = payment.valueDate;
+      });
+      Transactions.direct.update(bill._id, { $set: { payments: bill.payments } }, { selector: { category: 'bill' } });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes

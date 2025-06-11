@@ -20,6 +20,8 @@ import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel
 import { Relations } from '/imports/api/core/relations.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 
+export const DEFAULT_INTEREST = 10;
+
 export const Bills = {};
 
 export const choosePayment = {
@@ -50,6 +52,11 @@ const billingSchema = new SimpleSchema({
   period: { type: String, optional: true },
 });
 
+const lateFeeBillingSchema = new SimpleSchema({
+  id: { type: String, regEx: SimpleSchema.RegEx.Id }, // id of late Bill
+  value: { type: Number, decimal: true, optional: true }, // lateValue billed for Bill
+});
+
 const lineSchema = {
   title: { type: String },
   details: { type: String, optional: true },
@@ -66,6 +73,7 @@ const lineSchema = {
   //} },
   billing: { type: billingSchema, optional: true, autoform: { type: 'hidden' } },
   metering: { type: meteringSchema, optional: true, autoform: { type: 'hidden' } },
+  lateFeeBilling: { type: lateFeeBillingSchema, optional: true, autoform: { type: 'hidden' } },
   account: { type: String, optional: true, autoform: chooseConteerAccount() },
   localizer: { type: String, optional: true, autoform: chooseLocalizer() },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
@@ -95,6 +103,7 @@ Bills.receiptSchema = new SimpleSchema({
 Bills.paymentSchema = new SimpleSchema({
   id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePayment } },
   amount: { type: Number, decimal: true },
+  valueDate: { type: Date },
 });
 
 Bills.extensionSchema = new SimpleSchema([
@@ -109,6 +118,8 @@ Bills.extensionSchema = new SimpleSchema([
     payments: { type: [Bills.paymentSchema], defaultValue: [] },
     outstanding: { type: Number, decimal: true, optional: true },
   //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
+    lateValueBilled: { type: Number, decimal: true, optional: true },   // Lateness of payment measured in (amount * days)
+    lateValueOutstanding: { type: Number, decimal: true, optional: true },  // Only updated when payments are made, so not neccesarily up-to-date
   },
 ]);
 
@@ -118,6 +129,7 @@ Meteor.startup(function indexBills() {
   if (Meteor.isClient && MinimongoIndexing) {
   } else if (Meteor.isServer) {
     Transactions._ensureIndex({ communityId: 1, relation: 1, outstanding: -1 });
+    Transactions._ensureIndex({ communityId: 1, relation: 1, lateValueOutstanding: -1 }, { sparse: true });
   }
 });
 
@@ -127,7 +139,7 @@ export const BillAndReceiptHelpers = {
   },
   isSimple() {
     return !this.lines?.length ||
-      (this.lines?.length === 1 && this.lines[0].quantity === 1 && !this.lines[0].taxPct);
+      (this.lines?.length === 1 && this.lines[0].quantity === 1 && !this.lines[0].details && !this.lines[0].taxPct && !this.lines[0].dicsoPct);
   },
   issuer() {
     if (this.relation === 'supplier') return { partner: this.partner(), contract: this.contract() };
@@ -198,8 +210,7 @@ Transactions.categoryHelpers('bill', {
   },
   paymentDate() {
     const payment = _.last(this.getPayments());
-    const paymentTx = payment && Transactions.findOne(payment.id);
-    return paymentTx && paymentTx.valueDate;
+    return payment?.valueDate;
   },
   net() {
     return this.amount - this.tax;
@@ -298,12 +309,88 @@ Transactions.categoryHelpers('bill', {
   },
   availableAmountFromOverPayment() {
     let result = 0;
+    const contract = this.contract();
     const def = this.correspondingIdentificationTxdef();
-    def[def.relationSide()].forEach(account => {
-      result += this.contract().outstanding(account);
-    });
+    if (contract) {
+      def[def.relationSide()].forEach(account => {
+        result += this.contract().outstanding(account);
+      });
+    }
     result *= (-1); // Outstanding means underpayment, so Overpayment is the opposite of it
     return result;
+  },
+  currentLateness(currentDate = moment.utc().toDate()) {
+    const lateDays = moment.utc(currentDate).diff(this.dueDate, 'days');
+    if (lateDays <= 0) return { lateValue: 0, lateValueBilled: this.lateValueBilled || 0, details: '' };
+    let lateValue = 0;
+    let lateValueBilled = 0;
+    let details = __('lateFeeBillDetails', { serialId: this.serialId }) + ' ';
+    let outstanding = this.outstanding;
+    this.getPayments().forEach((payment) => {
+      const paymentLateDays =  moment.utc(payment.valueDate).diff(this.dueDate, 'days');
+      if (currentDate >= payment.valueDate) {
+        if (paymentLateDays >= 0) {
+          lateValue += paymentLateDays * payment.amount;
+          details += __('lateFeeDetails', { amount: payment.amount, lateDays: paymentLateDays, yearAdjusted: (payment.amount * paymentLateDays / 365).round(2) });
+        }
+      } else {
+        outstanding += payment.amount;
+      }
+    });
+    if (outstanding > 0) {
+      if (lateDays > 0) {
+        lateValue += lateDays * outstanding;
+        details += __('lateFeeDetails', { amount: outstanding, lateDays, yearAdjusted: (outstanding * lateDays / 365).round(2) });
+      }   
+    }
+    if (this.lateValueBilled > 0) {
+      lateValueBilled = this.lateValueBilled;
+      details += ' ' + __('lateFeeBilledtDetails', { yearAdjusted: (this.lateValueBilled / 365).round(2) });
+    }
+    return { lateValue, lateValueBilled, details };
+  },
+  calculateLateValueOutstanding(date = moment.utc().toDate()) {
+//    if (!this.community().settings.latePaymentFees) return undefined;
+//    if (this.outstanding === 0) debugAssert('Should not call late value calculation on a bill where all lateValue have been already billed.');
+    const lateness = this.currentLateness(date);
+    return lateness.lateValue - lateness.lateValueBilled;
+//    if (result === 0 && !this.outstanding) return null;  // null means its 0 and will never be positive again (all lateness is billed already, sp the passing of time does not change the lateValue)
+  },
+  hasPotentialLateValueOutstanding() { // return a boolean, but does not calculate how much - for that calculateLateValueOutstanding() should be called
+    return !!((this.dueDate < moment.utc().toDate())); // && (this.lateValueOutstanding > this.lateValueBilled) || ( (this.outstanding * 30 > this.lateValueBilled)));
+  },
+  createLateFeeBill() {
+    return {
+      category: 'bill',
+      defId: this.defId,
+      valueDate: moment.utc().toDate(),
+      relation: this.relation,
+      partnerId: this.partnerId,
+      contractId: this.contractId,
+      relationAccount: this.relationAccount,
+      lines: [],
+    }
+  },
+  createLateFeeLine(date = Date.now(), parcelBilling = ParcelBillings.findOneActive({ 'projection.base': 'YAL' })) {
+    const account = Accounts.getByName('Late payment income', this.communityId).code;
+    const interest = parcelBilling ? parcelBilling.projection.unitPrice : DEFAULT_INTEREST;
+    const lateness = this.currentLateness(date);
+    const lateValueBilledNow = lateness.lateValue - (this.lateValueBilled || 0);
+    const lateValueYA = (lateValueBilledNow / 365 / 100).round(2);  // Year Adjusted
+
+    return {
+      title: __('Late payment fees') + ' ' + this.serialId,
+      details: lateness.details,
+      quantity: lateValueYA,
+      uom: parcelBilling?.projectionUom() || '%',
+      unitPrice: interest,
+      amount: lateValueYA * interest,
+      account,
+      lateFeeBilling: {
+        id: this._id,
+        value: lateValueBilledNow,
+      },
+    }
   },
 });
 

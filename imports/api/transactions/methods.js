@@ -103,6 +103,9 @@ export const post = new ValidatedMethod({
             billing: { date: line.metering.end.date, value: line.metering.end.value, billId: doc._id },
           });
         }
+        if (line?.lateFeeBilling) {
+          Transactions.update(line.lateFeeBilling.id, { $inc: { lateValueBilled: line.lateFeeBilling.value } }, { selector: { category: 'bill' } });
+        }
       });
       if (doc.community().settings.sendBillEmail?.includes(doc.relation)) {
         sendBillEmail(doc);

@@ -70,6 +70,10 @@
   "Close period warning": "You will no longer be able to record transactions that belong to this period",
   "Open period warning": "You will allow new transactions for this period AGAIN",
   
+  "lateFeeBillDetails": "Overdue bill serial id: __serialId__\n",
+  "lateFeeDetails": "Amount paid late: __amount__, Days overdue: __lateDays__, Year adjusted amount: __yearAdjusted__\n",
+  "lateFeeBilledDetails": "Of this already billed: __yearAdjusted__",
+
   // feedback
   "FeedbackPaneCallout": "Tell us your opinion about the app!",
   "FeedbackPaneTitle": "Your feedback can help the app develepment a lot. </br> If you notice technical errors, or you have a suggestion for a new feature, please let us know.",

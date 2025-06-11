@@ -224,6 +224,9 @@
       "enableMeterEstimationDays": {
         "label": "Enable meter estimation after (days)",
         "help": "If there was no reading registered with meter within this many days, before a billing takes place, then the system will estimate the reading for the bill. Eg. if you put 30 here, then any meters that have not been read within a month will estimate their reading, and those that have reading will use the reading. Use 0 to always use estimation, use a very large number if you never wish to use an estimation."
+      },
+      "latePaymentFees": {
+        "label": "Late payment fees"
       }
     }
   },
@@ -1464,6 +1467,12 @@
       "label": "Payment date",
       "placeholder": "(eg. 2017-05-06)"
     },
+    "lateValueBilled": {
+      "label": "Late value billed"
+    },
+    "lateValueOutstanding": {
+      "label": "Late value unbilled"
+    },
     "net": {
       "label": "Net Total"
     },
@@ -1652,7 +1661,8 @@
           "area2": "area 1/2 weighted(/m2)",
           "area3": "area 1/3 weighted(/m2)",
           "volume": "volume (/m3)",
-          "habitants": "habitants (/person)"
+          "habitants": "habitants (/person)",
+          "YAL": "lateness (year adjusted)"
         }
       },
       "unitPrice": {

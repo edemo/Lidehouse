@@ -81,7 +81,7 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>{{_ 'schemaBills.lines.$.title.label'}}</th>
+                    <th width="200px">{{_ 'schemaBills.lines.$.title.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
                     <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
@@ -115,6 +115,7 @@
                 {{#if currentUserHasPermission 'transactions.post'}}
                 <tr>
                     <td></td>
+                    <td>{{> afFormGroup name=this.current.details}}</td>
                     <td>{{> afFormGroup name=this.current.account}}</td>
                     <td>{{> afFormGroup name=this.current.localizer}}</td>
                     <!-- hidden, needed for autoform doc data -->
@@ -126,7 +127,7 @@
                             {{> afQuickFields name=(concat "lines." this.index ".metering.start") type="hidden"}}
                             {{> afQuickFields name=(concat "lines." this.index ".metering.end") type="hidden"}}
                         {{/if}}
-                        {{> afQuickField name=this.current.details type="hidden"}}
+                        {{> afQuickFields name=this.current.lateFeeBilling type="hidden"}}
                     </td>
                     <!-- hidden, needed for autoform doc data -->
                 </tr>

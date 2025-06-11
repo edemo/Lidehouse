@@ -328,8 +328,7 @@ const dummyParcels = [];
 //  otherBuilder.insertLoadsOfFakeMembers(10);
 
   // ===== Returning a bunch of pointers, for easy direct access
-
-  return {
+  const wholeFixture = {
     demoCommunityId,
     otherCommunityId,
     demoUserId,
@@ -349,4 +348,6 @@ const dummyParcels = [];
     builder: demoBuilder,
     partnerId(userId) { return Meteor.users.findOne(userId).partnerId(this.demoCommunityId); },
   };
+//  console.log("Whole Fixture", wholeFixture);
+  return wholeFixture;
 }

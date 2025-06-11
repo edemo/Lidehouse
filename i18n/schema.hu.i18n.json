@@ -225,6 +225,9 @@
       "enableMeterEstimationDays": {
         "label": "Becsült óraállás használata ennyi nap után",
         "help": "Ha az előírás napjához képest ennyi napon belül, nem volt előtte leolvasás, akkor a rendszer becsült értékkel fog dolgozni. Például ha itt 30 van megadva, akkor minden mérőóra ami az elmúlt 30 napban le volt olvasva, az a leolvasott állással számlázódik, amik pedig nem voltak leolvasva, azok megbecsült óraállással számlázódnak. Írjon ide 0-t ha mindig szeretne becsülni, ha pedig soha, akkor egy nagyon nagy számot"
+      },
+      "latePaymentFees": {
+        "label": "Késedelmi kamat számítás"
       }
     }
   },
@@ -1467,6 +1470,12 @@
       "label": "Kifizetés ideje",
       "placeholder": "(pl. 2017-05-06)"
     },
+    "lateValueBilled": {
+      "label": "Kiszámlázott késedelem"
+    },
+    "lateValueOutstanding": {
+      "label": "Kiszámlázatlan késedelem"
+    },
     "net": {
       "label": "Nettó összeg"
     },
@@ -1494,7 +1503,7 @@
         },
         "details": { 
           "label": "Részletezés",
-          "placeholder": "(amennyiben szükséges)"
+          "placeholder": "(részletek, amennyiben szükséges)"
         },
         "uom": {
           "label": "Mennyiségi egység",
@@ -1657,7 +1666,8 @@
           "area2": "terület 1/2 súlyú(/m2)",
           "area3": "terület 1/3 súlyú(/m2)",
           "volume": "légköbméter (/m3)",
-          "habitants": "lakók száma (/fő)"
+          "habitants": "lakók száma (/fő)",
+          "YAL": "késedelem (év arányosított)"
         }
       },
       "unitPrice": {

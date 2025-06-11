@@ -65,6 +65,12 @@
       "doing": "megnyitása",
       "done": "megnyitva"
     },
+    "issueLateFee": {
+      "label": "késedelmi kamat kivetés",
+      "do": "késedelmi kamatot kiveti",
+      "doing": "késedelmi kamat kivetése",
+      "done": "késedelmi kamat kivetve"
+    },
     "close": {
       "label": "lezárás",
       "do": "lezárja",

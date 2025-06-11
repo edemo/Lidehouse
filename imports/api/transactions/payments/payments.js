@@ -387,6 +387,7 @@ Transactions.categoryHelpers('payment', {
     if (!bill) return; // When removing multiple transactions and bills are removed first, don't get stuck in after hook
     const paymentOnBill = _.extend({}, billPaid);
     paymentOnBill.id = this._id; // replacing the bill._id with the payment._id
+    paymentOnBill.valueDate = this.valueDate;
 
     const oldPayments = bill.getPayments();
     const found = _.find(oldPayments, p => p.id === this._id);
@@ -395,14 +396,17 @@ Transactions.categoryHelpers('payment', {
     if (direction === +1) {
       if (found) {
         found.amount = paymentOnBill.amount;
+        found.valueDate = paymentOnBill.valueDate;
         newPayments = oldPayments;
       } else newPayments = oldPayments.concat([paymentOnBill]);
     } else if (direction === -1) {
-      if (found) found.amount = 0;  // We do not remove the record, so that the records indexes remain stable
+      if (found) {
+        found.amount = 0;  // We do not remove the record, so that the records indexes remain stable
+      }
       newPayments = oldPayments;
     }
     Transactions.update(bill._id,
-      { $set: { payments: newPayments } },
+      { $set: { payments: newPayments } }, // We look for $set.payments in the hooks, so cannot use $push here
       { selector: { category: 'bill' } },
     );
   },

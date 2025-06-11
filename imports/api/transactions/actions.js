@@ -12,6 +12,7 @@ import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-co
 import { getActivePartnerId } from '/imports/ui_3/lib/active-partner.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { BatchAction } from '/imports/api/batch-action.js';
+import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
 import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -337,6 +338,20 @@ Transactions.actions = {
       Transactions.actions.create(paymentOptions, paymentTx).run();
     },
   }),
+  issueLateFee: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'issueLateFee',
+    label: 'issueLateFee',
+    icon: 'fa fa-line-chart',
+    color: (doc?._id && doc.lateValueOutstanding) ? 'warning' : 'info',
+    visible: doc?._id && doc.community()?.settings?.latePaymentFees && user.hasPermission('transactions.update', doc) && doc.isPosted() && doc.category === 'bill' && doc.relation === 'member' && doc.hasPotentialLateValueOutstanding(),
+    run() {
+      ModalStack.setVar('billId', doc._id);
+      const billOptions = _.extend({}, options, { entity: Transactions.entities.bill, txdef: doc.defId });
+      const billTx = doc.createLateFeeBill();
+      billTx.lines = [doc.createLateFeeLine()];
+      Transactions.actions.create(billOptions, billTx).run();
+    },
+  }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     label: doc?._id && doc.isPosted() ? 'storno' : 'delete',
@@ -352,6 +367,26 @@ Transactions.actions = {
     },
   }),
 };
+class BatchIssueLateFeeAction extends BatchAction {
+  visible(docs) {
+    const allSameContract = _.uniq(_.pluck(docs, 'defId')).length === 1
+                          && _.uniq(_.pluck(docs, 'relation')).length === 1
+                          && _.uniq(_.pluck(docs, 'partnerId')).length === 1
+                          && _.uniq(_.pluck(docs, 'contractId')).length <= 1;
+    return allSameContract && _.every(docs, doc => this.action(this.options, doc).visible);
+  }
+  run(docs) {
+    let billOptions, billTx, account, interest;
+    _.each(docs, (doc, index) => {
+      if (index === 0) {
+        billOptions = _.extend({}, { entity: Transactions.entities.bill, txdef: doc.defId });
+        billTx = doc.createLateFeeBill();
+      }
+      billTx.lines.push(doc.createLateFeeLine());
+    });
+    Transactions.actions.create(billOptions, billTx).run();
+  }
+}
 
 Transactions.dummyDoc = {
   communityId: getActiveCommunityId,
@@ -361,6 +396,7 @@ Transactions.dummyDoc = {
 Transactions.batchActions = {
   post: new BatchAction(Transactions.actions.post, Transactions.methods.batch.post, {}, Transactions.dummyDoc),
   resend: new BatchAction(Transactions.actions.resend, Transactions.methods.batch.resend, {}, Transactions.dummyDoc),
+  issueLateFee: new BatchIssueLateFeeAction(Transactions.actions.issueLateFee, undefined, {}, Transactions.dummyDoc),
   delete: new BatchAction(Transactions.actions.delete, Transactions.methods.batch.remove, {}, Transactions.dummyDoc),
 };
 

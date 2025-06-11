@@ -50,6 +50,7 @@ Communities.settingsSchema = new SimpleSchema({
   subjectToVat: { type: Boolean, optional: true },
   sendBillEmail: { type: [String], optional: true, allowedValues: ['member', 'customer'], defaultValue: [], autoform: { type: 'select-checkbox-inline' } },
   enableMeterEstimationDays: { type: Number, defaultValue: 30 },
+  latePaymentFees: { type: Boolean, optional: true },
 });
 
 Communities.schema = new SimpleSchema([{

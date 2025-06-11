@@ -329,6 +329,7 @@ Transactions.helpers({
         if (l.metering) {
           const temp = l.metering.end; l.metering.end = l.metering.start; l.metering.start = temp;
         }
+        if (l.lateFeeBilling) l.lateFeeBilling.value *= -1;
       });
     }
     if (tx.bills) tx.bills.forEach(l => l.amount *= -1);  // 'payment' have bills
@@ -496,6 +497,9 @@ if (Meteor.isServer) {
         || (doc.category === 'payment' && (newDoc.bills || newDoc.amount || newDoc.status === 'void'))) {
         autoValueUpdate(Transactions, doc, modifier, 'outstanding', d => d.calculateOutstanding());
       }
+      if (doc.category === 'bill' && (newDoc.payments || newDoc.lateValueBilled || newDoc.status === 'void')) {
+        autoValueUpdate(Transactions, doc, modifier, 'lateValueOutstanding', d => d.calculateLateValueOutstanding());
+      }
     }
   });
 
@@ -518,7 +522,7 @@ if (Meteor.isServer) {
       if (oldDoc.postedAt) oldDoc.updateBalances(-1);
       if (newDoc.postedAt) newDoc.updateBalances(+1);
     }
-  });
+});
 
   Transactions.after.remove(function (userId, doc) {
     const tdoc = this.transform();

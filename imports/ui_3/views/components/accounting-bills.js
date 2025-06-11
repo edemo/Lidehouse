@@ -14,6 +14,10 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { contractsFinancesColumns } from '/imports/api/contracts/tables.js';
 import '/imports/api/contracts/actions.js';
+import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import '/imports/api/partners/actions.js';
+import { partnersFinancesColumns } from '/imports/api/partners/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/actions.js';
@@ -101,7 +105,7 @@ Template.Accounting_bills.viewmodel({
   },
   billsOptionsFn() {
     return () => Object.create({
-      columns: billColumns(),
+      columns: billColumns(getActiveCommunity()),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],

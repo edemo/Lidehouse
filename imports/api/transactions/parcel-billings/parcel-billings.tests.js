@@ -5,6 +5,7 @@ import { Fraction } from 'fractional';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { moment } from 'meteor/momentjs:moment';
 import { Clock } from '/imports/utils/clock.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -26,6 +27,8 @@ if (Meteor.isServer) {
 
   describe('parcel billings', function () {
     this.timeout(25000);
+    let assertBillDetails;
+    let assertLineDetails;
     let applyParcelBillings;
     let postParcelBillings;
     let revertParcelBillings;
@@ -41,11 +44,28 @@ if (Meteor.isServer) {
       payerPartner3Id = Meteor.users.findOne(Fixture.dummyUsers[3]).partnerId(Fixture.demoCommunityId);
       payerPartner4Id = Meteor.users.findOne(Fixture.dummyUsers[4]).partnerId(Fixture.demoCommunityId);
       const accountant = Fixture.builder.getUserWithRole('accountant');
+      assertBillDetails = function(bill, expected) {
+        chai.assert.equal(bill.partnerId, expected.payerPartnerId);
+        chai.assert.equal(bill.lines.length, expected.linesLength);
+        bill.lines.forEach((line) => {
+          if (expected.lineTitle) chai.assert.equal(line.title, expected.lineTitle);
+          if (expected.linePeriod) chai.assert.equal(line.billing.period, expected.linePeriod);
+        });
+      };
+      assertLineDetails = function(line, expected) {
+        chai.assert.equal(line.uom, expected.uom);
+        chai.assert.equal(line.unitPrice, expected.unitPrice);
+        chai.assert.equal(line.quantity, expected.quantity);
+        chai.assert.equal(line.amount, Math.roundToDecimals(expected.unitPrice * expected.quantity, 2));
+        chai.assert.equal(line.localizer, expected.localizer);
+        if (expected.lineTitle) chai.assert.equal(line.title, expected.lineTitle);
+        if (expected.linePeriod) chai.assert.equal(line.billing.period, expected.linePeriod);
+      };
       applyParcelBillings = function (date) {
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date(date) }, accountant);
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: moment.utc(date).toDate() }, accountant);
       };
       postParcelBillings = function (date) {
-        const txs = Transactions.find({ communityId, category: 'bill', deliveryDate: new Date(date) });
+        const txs = Transactions.find({ communityId, category: 'bill', deliveryDate: moment.utc(date).toDate() });
         txs.forEach(tx => {
           if (!tx.isPosted())
             Fixture.builder.execute(Transactions.methods.post, { _id: tx._id }, accountant);
@@ -54,35 +74,19 @@ if (Meteor.isServer) {
       revertParcelBillings = function (date) {
         const parcelBillings = ParcelBillings.find({ communityId });
         parcelBillings.forEach(billing => {
-          Fixture.builder.execute(ParcelBillings.methods.revert, { _id: billing._id, date: new Date(date) }, accountant);
+          Fixture.builder.execute(ParcelBillings.methods.revert, { _id: billing._id, date: moment.utc(date).toDate() }, accountant);
         });
       };
     });
+
     after(function () {
     });
 
     describe('api', function () {
-      let assertBillDetails;
-      let assertLineDetails;
+      let formerMembershipId;
+      let laterMembershipId;
 
       before(function() {
-        assertBillDetails = function(bill, expected) {
-          chai.assert.equal(bill.partnerId, expected.payerPartnerId);
-          chai.assert.equal(bill.lines.length, expected.linesLength);
-          bill.lines.forEach((line) => {
-            if (expected.lineTitle) chai.assert.equal(line.title, expected.lineTitle);
-            if (expected.linePeriod) chai.assert.equal(line.billing.period, expected.linePeriod);
-          });
-        };
-        assertLineDetails = function(line, expected) {
-          chai.assert.equal(line.uom, expected.uom);
-          chai.assert.equal(line.unitPrice, expected.unitPrice);
-          chai.assert.equal(line.quantity, expected.quantity);
-          chai.assert.equal(line.amount, Math.roundToDecimals(expected.unitPrice * expected.quantity, 2));
-          chai.assert.equal(line.localizer, expected.localizer);
-          if (expected.lineTitle) chai.assert.equal(line.title, expected.lineTitle);
-          if (expected.linePeriod) chai.assert.equal(line.billing.period, expected.linePeriod);
-        };
       });
 
       beforeEach(function () {
@@ -425,7 +429,7 @@ if (Meteor.isServer) {
       });
 
       it('bills the then owner for given apply date', function () {
-        const formerMembershipId = Memberships.findOne({ parcelId: Fixture.dummyParcels[3] })._id;
+        formerMembershipId = Memberships.findOne({ parcelId: Fixture.dummyParcels[3] })._id;
         Memberships.methods.update._execute({ userId: Fixture.demoAdminId },
           { _id: formerMembershipId,
             modifier: { $set: {
@@ -433,7 +437,7 @@ if (Meteor.isServer) {
               'activeTime.end': new Date('2018-02-01') },
             },
           });
-        const laterMembershipId = Fixture.builder.createMembership(Fixture.dummyUsers[2], 'owner', {
+        laterMembershipId = Fixture.builder.createMembership(Fixture.dummyUsers[2], 'owner', {
           parcelId: Fixture.dummyParcels[3],
           ownership: { share: new Fraction(1, 1) },
         });
@@ -572,6 +576,16 @@ if (Meteor.isServer) {
         chai.assert.throws(() => applyParcelBillings('2018-01-15'), 'err_alreadyExists');
         // but can apply for a different period
         applyParcelBillings('2018-02-10');
+      });
+
+      it('Reset original ownership', function () {
+        Memberships.methods.remove._execute({ userId: Fixture.demoAdminId }, { _id: laterMembershipId });
+        Memberships.methods.update._execute({ userId: Fixture.demoAdminId }, {
+          _id: formerMembershipId, modifier: { $unset: {
+            'activeTime.begin': '',
+            'activeTime.end': '',
+          } },
+        });
       });
     });
 
@@ -776,7 +790,200 @@ if (Meteor.isServer) {
           'err_unableToRemove');
       });
     });
-/*
+
+    describe('late fee calculation', function () {
+      let parcelBillingId, parcelBillingIdForAll;
+      let lateFeeBillingId0, lateFeeBillingId6, lateFeeBillingId12;
+      let getLateFeeLine;
+
+      before(function () {
+        ParcelBillings.remove({});
+        Transactions.remove({});
+        Communities.update(Fixture.demoCommunityId, { $set: { 'settings.latePaymentFees': true } });
+  
+        parcelBillingIdForAll = Fixture.builder.create('parcelBilling', {
+          title: 'Common cost for all',
+          projection: {
+            base: 'absolute',
+            unitPrice: 1000,
+          },
+          digit: '4',
+          localizer: '@',
+          activeTime: {
+            begin: moment('2018-01-01').toDate(),
+            end: moment('2018-03-30').toDate(),
+          },
+        });
+        parcelBillingId = Fixture.builder.create('parcelBilling', {
+          title: 'Common cost',
+          projection: {
+            base: 'absolute',
+            unitPrice: 1000,
+          },
+          digit: '4',
+          localizer: '@A104',
+          activeTime: {
+            begin: moment('2018-04-01').toDate(),
+            end: moment('2019-06-30').toDate(),
+          },
+        });
+        // There is no Late Fee defined until 2018-06-31. Then we gradually increase every 6 months
+        lateFeeBillingId0 = Fixture.builder.create('parcelBilling', {
+          title: 'Late Fee 0',
+          projection: {
+            base: 'YAL',
+            unitPrice: 0,
+          },
+          digit: '6',
+          localizer: '@',
+          activeTime: {
+            begin: moment('2018-06-01').toDate(),
+            end: moment('2018-12-31').toDate(),
+          },
+        });
+        lateFeeBillingId6 = Fixture.builder.create('parcelBilling', {
+          title: 'Late Fee 6',
+          projection: {
+            base: 'YAL',
+            unitPrice: 6,
+          },
+          digit: '6',
+          localizer: '@A104',
+          activeTime: {
+            begin: moment('2019-01-01').toDate(),
+            end: moment('2019-06-30').toDate(),
+          },
+        });
+        lateFeeBillingId12 = Fixture.builder.create('parcelBilling', {
+          title: 'Late Fee 12',
+          projection: {
+            base: 'YAL',
+            unitPrice: 12,
+          },
+          digit: '6',
+          localizer: '@A104',
+          activeTime: {
+            begin: moment('2019-07-01').toDate(),
+            end: moment('2019-12-31').toDate(),
+          },
+        });
+      });
+
+      afterEach(function () {
+      });
+
+      it('No bills mean no late fees', function () {
+        applyParcelBillings('2018-03-01'); postParcelBillings('2018-03-01');
+        const billsNoLP = Transactions.find({ category: 'bill', partnerId: payerPartner2Id }).fetch();
+        chai.assert.equal(billsNoLP.count(), 1);
+        assertBillDetails(billsNoLP[0], { payerPartnerId: payerPartner2Id, linesLength: 1, linePeriod: '2018-03' });
+        assertLineDetails(billsNoLP[0].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@AP02' });
+        chai.assert.equal(billsNoLP[0].lateValueBilled, undefined);
+        chai.assert.equal(billsNoLP[0].lateValueOutstanding, undefined);
+        const bills = Transactions.find({ category: 'bill' , partnerId: payerPartner4Id }).fetch();
+        chai.assert.equal(bills.count(), 1);
+        assertBillDetails(bills[0], { payerPartnerId: payerPartner4Id, linesLength: 1, linePeriod: '2018-03' });
+        assertLineDetails(bills[0].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@A104' });
+        chai.assert.equal(bills[0].lateValueBilled, undefined);
+        chai.assert.equal(bills[0].lateValueOutstanding, undefined);
+      });
+
+      it('Without active Late Fee Billing, no late fees', function () {
+        applyParcelBillings('2018-05-01'); postParcelBillings('2018-05-01');
+        const billsNoLP = Transactions.find({ category: 'bill', partnerId: payerPartner2Id }).fetch();
+        chai.assert.equal(billsNoLP.count(), 1);  // no change
+        const bills = Transactions.find({ category: 'bill',  partnerId: payerPartner4Id }).fetch();
+        chai.assert.equal(bills.count(), 2);
+        assertBillDetails(bills[0], { payerPartnerId: payerPartner4Id, linesLength: 1, linePeriod: '2018-03' });
+        assertLineDetails(bills[0].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@A104' });
+        assertBillDetails(bills[1], { payerPartnerId: payerPartner4Id, linesLength: 1, linePeriod: '2018-05'  });
+        assertLineDetails(bills[1].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@A104' });
+        chai.assert.equal(bills[0].lateValueBilled, undefined);
+        chai.assert.equal(bills[0].lateValueOutstanding, undefined);
+        chai.assert.equal(bills[1].lateValueBilled, undefined);
+        chai.assert.equal(bills[1].lateValueOutstanding, undefined);
+      });
+
+      it('ZERO Late Fee Billing induces ZERO late fee lines', function () {
+        applyParcelBillings('2018-07-01'); postParcelBillings('2018-07-01');
+        const billsNoLP = Transactions.find({ category: 'bill', partnerId: payerPartner2Id }).fetch();
+        chai.assert.equal(billsNoLP.count(), 2); 
+        assertBillDetails(billsNoLP[0], { payerPartnerId: payerPartner2Id, linesLength: 1, linePeriod: '2018-03' });
+        assertLineDetails(billsNoLP[0].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@AP02' });
+        chai.assert.equal(billsNoLP[0].lateValueBilled, 1000 * 108);
+        chai.assert.equal(billsNoLP[0].lateValueOutstanding, undefined);
+        assertBillDetails(billsNoLP[1], { payerPartnerId: payerPartner2Id, linesLength: 1, linePeriod: '2018-07' });
+        assertLineDetails(billsNoLP[1].lines[0], { uom: '%', unitPrice: 0, quantity: 2.96, localizer: undefined });
+        chai.assert.equal(billsNoLP[1].lateValueBilled, undefined);
+        chai.assert.equal(billsNoLP[1].lateValueOutstanding, undefined);
+        const bills = Transactions.find({ category: 'bill', partnerId: payerPartner4Id }).fetch();
+        chai.assert.equal(bills.count(), 3);
+        assertBillDetails(bills[0], { payerPartnerId: payerPartner4Id, linesLength: 1, linePeriod: '2018-03' });
+        assertLineDetails(bills[0].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@A104' });
+        assertBillDetails(bills[1], { payerPartnerId: payerPartner4Id, linesLength: 1, linePeriod: '2018-05'  });
+        assertLineDetails(bills[1].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@A104' });
+        assertBillDetails(bills[2], { payerPartnerId: payerPartner4Id, linesLength: 3, linePeriod: '2018-07' });
+        assertLineDetails(bills[2].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@A104' });
+        assertLineDetails(bills[2].lines[1], { uom: '%', unitPrice: 0, quantity: 2.96, localizer: undefined });
+        assertLineDetails(bills[2].lines[2], { uom: '%', unitPrice: 0, quantity: 1.29, localizer: undefined });
+        chai.assert.equal(bills[0].lateValueBilled, 1000 * 108);
+        chai.assert.equal(bills[0].calculateLateValueOutstanding('2018-07-01'), 0);
+        chai.assert.equal(bills[0].calculateLateValueOutstanding('2018-07-02'), 1000);
+        chai.assert.equal(bills[1].lateValueBilled, 1000 * 47);
+        chai.assert.equal(bills[1].calculateLateValueOutstanding('2018-07-01'), 0);
+        chai.assert.equal(bills[1].calculateLateValueOutstanding('2018-07-02'), 1000);
+        chai.assert.equal(bills[2].lateValueBilled, undefined);
+        chai.assert.equal(bills[2].lateValueOutstanding, undefined);
+
+        const lateFeeBilling0 = ParcelBillings.findOne(lateFeeBillingId0);
+        chai.assert.equalDate(lateFeeBilling0.lastAppliedAt().date, new Date('2018-07-01'));
+      });
+
+      it('6% Late Fee Billing induces 6% late fee lines', function () {
+        applyParcelBillings('2019-02-01'); postParcelBillings('2019-02-01');
+        const nextDay = '2019-02-02';
+
+        const billsNoLP = Transactions.find({ category: 'bill', partnerId: payerPartner2Id }).fetch();
+        chai.assert.equal(billsNoLP.count(), 2); // no change, because 6% Late Fees are only applied to '@A104'
+        const bills = Transactions.find({ category: 'bill', partnerId: payerPartner4Id }).fetch();
+        chai.assert.equal(bills.count(), 4);
+        assertBillDetails(bills[0], { payerPartnerId: payerPartner4Id, linesLength: 1, linePeriod: '2018-03' });
+        assertLineDetails(bills[0].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@A104' });
+        assertBillDetails(bills[1], { payerPartnerId: payerPartner4Id, linesLength: 1, linePeriod: '2018-05'  });
+        assertLineDetails(bills[1].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@A104' });
+        assertBillDetails(bills[2], { payerPartnerId: payerPartner4Id, linesLength: 3, linePeriod: '2018-07' });
+        assertLineDetails(bills[2].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@A104' });
+        assertLineDetails(bills[2].lines[1], { uom: '%', unitPrice: 0, quantity: 2.96, localizer: undefined });
+        assertLineDetails(bills[2].lines[2], { uom: '%', unitPrice: 0, quantity: 1.29, localizer: undefined });
+        assertBillDetails(bills[3], { payerPartnerId: payerPartner4Id, linesLength: 4, linePeriod: '2019-02' });
+        assertLineDetails(bills[3].lines[0], { uom: 'piece', unitPrice: 1000, quantity: 1, localizer: '@A104' });
+        assertLineDetails(bills[3].lines[1], { uom: '%', unitPrice: 6, quantity: 8.85 - 2.96, localizer: undefined });
+        assertLineDetails(bills[3].lines[2], { uom: '%', unitPrice: 6, quantity: 7.18 - 1.29, localizer: undefined });
+        assertLineDetails(bills[3].lines[3], { uom: '%', unitPrice: 6, quantity: 5.51, localizer: undefined });
+        chai.assert.equal(bills[3].amount, 1103.74);
+        chai.assert.equal(bills[0].lateValueBilled, 1000 * 323);
+        chai.assert.equal(bills[0].currentLateness(nextDay).lateValue, 1000 * (323 + 1));
+        chai.assert.equal(bills[0].currentLateness(nextDay).lateValueBilled, 1000 * 323);
+        chai.assert.equal(bills[0].calculateLateValueOutstanding(nextDay), 1000 * 1);
+        chai.assert.equal(bills[0].lateValueOutstanding, undefined);
+        chai.assert.equal(bills[1].lateValueBilled, 1000 * 262);
+        chai.assert.equal(bills[1].currentLateness(nextDay).lateValue, 1000 * (262 + 1));
+        chai.assert.equal(bills[1].currentLateness(nextDay).lateValueBilled, 1000 * 262);
+        chai.assert.equal(bills[1].calculateLateValueOutstanding(nextDay), 1000 * 1);
+        chai.assert.equal(bills[1].lateValueOutstanding, undefined);
+        chai.assert.equal(bills[2].lateValueBilled, 1000 * 201);
+        chai.assert.equal(bills[2].calculateLateValueOutstanding(nextDay), 1000 * 1);
+        chai.assert.equal(bills[2].lateValueOutstanding, undefined);
+        chai.assert.equal(bills[3].lateValueBilled, undefined);
+        chai.assert.equal(bills[3].lateValueOutstanding, undefined);
+
+        const lateFeeBilling6 = ParcelBillings.findOne(lateFeeBillingId6);
+        chai.assert.equalDate(lateFeeBilling6.lastAppliedAt().date, new Date('2019-02-01'));
+      });
+
+    });
+
+    /*
     xdescribe('apply', function () {
       before(function () {
       });

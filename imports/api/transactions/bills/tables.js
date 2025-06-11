@@ -9,7 +9,7 @@ import './actions.js';
 import { Transactions } from '../transactions.js';
 import '../entities.js';
 
-export function billColumns() {
+export function billColumns(community) {
   const columns = [
 //    { data: 'serial', title: __('schemaTransactions.serial.label') },
     { data: 'serialId', title: __('schemaSerialId.serialId.label') },
@@ -21,6 +21,8 @@ export function billColumns() {
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber(0) },
     { data: 'outstanding', title: __('schemaBills.outstanding.label'), render: Render.formatNumber(0) },
     { data: 'paymentDate()', title: __('schemaBills.paymentDate.label'), render: Render.formatDate },
+      community?.settings?.latePaymentFees &&
+    { data: 'lateValueOutstanding', title: __('schemaBills.lateValueOutstanding.label'), render: Render.formatNumber(0) },
     { data: 'choppedNotes()', title: __('schemaNoted.notes.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,

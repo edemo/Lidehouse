@@ -256,6 +256,7 @@
   "registerIdentification": "Túlfizetésből rendezés",
   "registerRemission": "Elengedés",
   "remindOutstandings": "Hátralék emlékeztető küldés",
+  "issueLateFee": "Késedelmi kamat kivetése",
   "repost": "Újrakönyvelés",
   "reallocate": "Átkönyvelés",
   "resend": "Újraküldés",
@@ -654,6 +655,10 @@
   "Some accounting transactions might be connected to it": "Egyes tranzakciók kapcsolódhatnak hozzá.",
   "Select a period for general ledger data": "Válasszon időszakot, amire a naplófőkönyvet megtekinti.",
   "Clicking on a cell, you can view the relating bill history": "Az egyes cellákra kattintva, az ahhoz az értékhez tartozó számlatörténetet tekintheti meg.",
+  "Late payment fee": "Késedelmi kamat ",
+  "lateFeeBillDetails": "Késedelmes számla azonosítója: __serialId__\n",
+  "lateFeeDetails": "Késedelmes összeg: __amount__ Késedelem napokban: __lateDays__ Évarányosított késedelmes összeg: __yearAdjusted__\n",
+  "lateFeeBilledDetails": "Ebből már korábban kiszámlázva: __yearAdjusted__",
 
   // docstore
   "Show": "Listázva",

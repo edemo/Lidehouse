@@ -24,7 +24,8 @@ import { displayCurrency } from '/imports/ui_3/helpers/utils.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
-ParcelBillings.projectionBaseValues = ['absolute', 'units', 'area', 'area1', 'area2', 'area3', 'volume', 'habitants'];
+ParcelBillings.projectionBaseValues = ['absolute', 'units', 'area', 'area1', 'area2', 'area3', 'volume', 'habitants', 'YAL'];
+// YAL = Year Adjusted Lateness (Late amount * Late days / 365)
 //ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
 ParcelBillings.projectionBaseOptions = function() {
@@ -35,6 +36,7 @@ ParcelBillings.projectionBaseOptions = function() {
       const values = ['absolute'];
       if (community.hasVotingUnits()) values.push('units');
       if (community.hasPhysicalLocations()) values.push('area', 'area1', 'area2', 'area3', 'volume', 'habitants');
+      if (community.settings.latePaymentFees) values.push('YAL');
       const i18Path = 'schemaParcelBillings.projection.base.options.';
       return values.map(function option(t) { return { label: __(i18Path + t), value: t }; });
     },
@@ -86,7 +88,12 @@ ParcelBillings.projectionSchema = new SimpleSchema({
   base: { type: String, allowedValues: ParcelBillings.projectionBaseValues, autoform: { ...ParcelBillings.projectionBaseOptions() } },
   unitPrice: { type: Number, decimal: true },
 });
-
+/*
+ParcelBillings.lateFeeSchema = new SimpleSchema({
+  base: { type: String, allowedValues: ['YAL'], autoform: { options() { return[{ label: __('schemaParcelBillings.lateFee.base.options.YAL'), value: 'YAL' }]; } } },
+  unitPrice: { type: Number, decimal: true },
+});
+*/
 ParcelBillings.appliedAtSchema = new SimpleSchema({
   date: { type: Date },
   period: { type: String, max: 7 /* TODO: check period format */ },
@@ -97,6 +104,7 @@ ParcelBillings.schema = new SimpleSchema({
   title: { type: String, max: 100 },
   consumption: { type: ParcelBillings.consumptionSchema, optional: true }, // if consumption based
   projection: { type: ParcelBillings.projectionSchema, optional: true },  // if projection based
+//  lateFee: { type: ParcelBillings.lateFeeSchema, optional: true },  // if it is a late fee
   digit: { type: String, autoform: { ...Accounts.choosePayinType } },
   localizer: { type: String, optional: true, autoform: { ...Parcels.choosePhysical } },
   type: { type: [String], optional: true, autoform: { ...chooseFromExistingParcelTypes } },
@@ -183,6 +191,7 @@ ParcelBillings.helpers({
       case 'area3': return 'm2';
       case 'volume': return 'm3';
       case 'habitants': return 'person';
+      case 'YAL': return '%';
       default: debugAssert(false, 'No such projection base'); return undefined;
     }
   },
