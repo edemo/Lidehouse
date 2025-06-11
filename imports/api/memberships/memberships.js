@@ -241,6 +241,9 @@ if (Meteor.isServer) {
   });
 
   Memberships.after.remove(function (userId, doc) {
+    const tdoc = this.transform(doc);
+    const contract = tdoc.contract();
+    if (contract) Contracts.remove(contract._id);
   });
 }
 
