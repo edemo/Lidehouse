@@ -20,28 +20,10 @@ import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Bills } from '/imports/api/transactions/bills/bills';
 import { Period } from '/imports/api/transactions/periods/period.js';
 import { ActiveTimeMachine } from '/imports/api/behaviours/active-time-machine';
-import { displayDate } from '/imports/ui_3/helpers/utils.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
 export const BILLING_DUE_DAYS = 14;
-
-function display(reading) {
-  return `${reading.value.toFixed(3)} (${displayDate(reading.date)})`; /* parcelBilling.consumption.decimals */
-}
-
-function meterBilllingDetails(meter, currentBilling, lastBilling, lastReading) {
-  let result = '';
-  result += `  Legutóbbi számlázott óraállás: ${display(lastBilling)}`;
-  result += `  Most számlázott óraállás: ${display(currentBilling)}`;
-  if (lastBilling.date < lastReading.date) {
-    result += `  Aktuális leolvasás: ${display(lastReading)}`;
-  } else {
-    result += `  Utolsó leolvasás: ${display(lastReading)}`;
-  }
-  result += ` Mérőóra: ${meter.identifier}`;
-  return result;
-}
 
 export const apply = new ValidatedMethod({
   name: 'parcelBillings.apply',
@@ -112,7 +94,7 @@ export const apply = new ValidatedMethod({
         const parcelIds = _.pluck(parcels, '_id');
         if (parcelBilling.projection?.base === 'YAL') { // YAL = Year Adjusted Lateness
           productionAssert(!parcelBilling.consumption, 'Cannot have consumption charge set for a late fee');
-          const lateBills = Transactions.find({ communityId, category: 'bill', relation: 'member', status: 'posted', outstanding: { $gt: 0 } }, { sort: { 'valueDate': 1 } }).fetch();
+          const lateBills = Transactions.find({ communityId, category: 'bill', relation: 'member', status: 'posted', outstanding: { $gt: 0 } }, { sort: { 'valueDate': 1 } }).fetch().filter(bill => bill.dueDate < date);
           lateBills.forEach((lateBill) => {
             const leadParcel = lateBill.contract()?.parcel();
             if (!leadParcel || !_.contains(parcelIds, leadParcel._id)) return;
@@ -142,7 +124,7 @@ export const apply = new ValidatedMethod({
                 // Log.debug(`Consumption billing of meter ${activeMeter._id}`, 'currentBilling', JSON.stringify(currentBilling), 'lastBilling', JSON.stringify(lastBilling), 'lastReading', JSON.stringify(lastReading));
                 line.metering = { id: activeMeter._id, start: lastBilling, end: currentBilling };
                 line.quantity = Math.roundToDecimals(currentBilling.value - lastBilling.value, 3); /* parcelBilling.consumption.decimals */
-                line.details = meterBilllingDetails(activeMeter, currentBilling, lastBilling, lastReading);
+                line.details = activeMeter.billlingDetails(currentBilling, lastBilling, lastReading, 3); /* parcelBilling.consumption.decimals */
                 addLineToBill(leadParcel, line, parcel);
               });
             }

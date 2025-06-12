@@ -320,18 +320,19 @@ Transactions.categoryHelpers('bill', {
     return result;
   },
   currentLateness(currentDate = moment.utc().toDate()) {
+    const lang = this.community().settings.language;
     const lateDays = moment.utc(currentDate).diff(this.dueDate, 'days');
-    if (lateDays <= 0) return { lateValue: 0, lateValueBilled: this.lateValueBilled || 0, details: '' };
     let lateValue = 0;
-    let lateValueBilled = 0;
-    let details = __('lateFeeBillDetails', { serialId: this.serialId }) + ' ';
+    let lateValueBilled = this.lateValueBilled || 0;
+    let details = __('lateFeeBillDetails', { serialId: this.serialId }, lang);
     let outstanding = this.outstanding;
+    if (lateDays <= 0) return { lateValue, lateValueBilled, details };
     this.getPayments().forEach((payment) => {
       const paymentLateDays =  moment.utc(payment.valueDate).diff(this.dueDate, 'days');
       if (currentDate >= payment.valueDate) {
         if (paymentLateDays >= 0) {
           lateValue += paymentLateDays * payment.amount;
-          details += __('lateFeeDetails', { amount: payment.amount, lateDays: paymentLateDays, yearAdjusted: (payment.amount * paymentLateDays / 365).round(2) });
+          details += ', ' + __('lateFeeDetails', { amount: payment.amount, lateDays: paymentLateDays, yearAdjusted: (payment.amount * paymentLateDays / 365).round(2) }, lang);
         }
       } else {
         outstanding += payment.amount;
@@ -340,12 +341,11 @@ Transactions.categoryHelpers('bill', {
     if (outstanding > 0) {
       if (lateDays > 0) {
         lateValue += lateDays * outstanding;
-        details += __('lateFeeDetails', { amount: outstanding, lateDays, yearAdjusted: (outstanding * lateDays / 365).round(2) });
+        details += ', ' + __('lateFeeDetails', { amount: outstanding, lateDays, yearAdjusted: (outstanding * lateDays / 365).round(2) }, lang);
       }   
     }
-    if (this.lateValueBilled > 0) {
-      lateValueBilled = this.lateValueBilled;
-      details += ' ' + __('lateFeeBilledtDetails', { yearAdjusted: (this.lateValueBilled / 365).round(2) });
+    if (lateValueBilled > 0) {
+      details += ', ' + __('lateFeeBilledDetails', { yearAdjusted: (lateValueBilled / 365).round(2) }, lang);
     }
     return { lateValue, lateValueBilled, details };
   },
@@ -372,6 +372,7 @@ Transactions.categoryHelpers('bill', {
     }
   },
   createLateFeeLine(date = Date.now(), parcelBilling = ParcelBillings.findOneActive({ 'projection.base': 'YAL' })) {
+    const lang = this.community().settings.language;
     const account = Accounts.getByName('Late payment income', this.communityId).code;
     const interest = parcelBilling ? parcelBilling.projection.unitPrice : DEFAULT_INTEREST;
     const lateness = this.currentLateness(date);
@@ -379,7 +380,7 @@ Transactions.categoryHelpers('bill', {
     const lateValueYA = (lateValueBilledNow / 365 / 100).round(2);  // Year Adjusted
 
     return {
-      title: __('Late payment fees') + ' ' + this.serialId,
+      title: __('Late payment fees', {}, lang) + ' ' + this.serialId,
       details: lateness.details,
       quantity: lateValueYA,
       uom: parcelBilling?.projectionUom() || '%',

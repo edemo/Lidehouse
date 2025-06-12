@@ -6,6 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
+import { __ } from '/imports/localization/i18n.js';
 import { Clock, datePartOnly } from '/imports/utils/clock.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { allowedOptions, imageUpload, noUpdate } from '/imports/utils/autoform.js';
@@ -139,6 +140,22 @@ Meters.helpers({
     }
     return lastReading.value + estimatedConsumption;
   },
+  displayReading(reading) {
+    return `${reading.value.toFixed(this.decimals)} (${moment.utc(reading.date).format('L')})`;
+  },
+  billlingDetails(currentBilling, lastBilling, lastReading) {
+    let result = '';
+    const lang = this.community().settings.language;
+    result += '  ' + __('Last billed value', {}, lang) + ': ' + this.displayReading(lastBilling);
+    result += '  ' + __('Currently billed value', {}, lang) + ': ' + this.displayReading(currentBilling);
+    if (lastBilling.date < lastReading.date) {
+      result += '  ' + __('Actual reading', {}, lang) + ': ' + this.displayReading(lastReading);
+    } else {
+      result += '  ' + __('Last reading', {}, lang) +  ': ' + this.displayReading(lastReading);
+    }
+    result += ' - ' + __('meter', {}, lang) +  ': ' + this.identifier;
+    return result;
+  },  
   toString() {
     return `${this.idenfitier}(${this.parcel()})`;
   },

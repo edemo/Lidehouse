@@ -71,7 +71,7 @@
   "Open period warning": "You will allow new transactions for this period AGAIN",
   
   "lateFeeBillDetails": "Overdue bill serial id: __serialId__\n",
-  "lateFeeDetails": "Amount paid late: __amount__, Days overdue: __lateDays__, Year adjusted amount: __yearAdjusted__\n",
+  "lateFeeDetails": "Amount paid late: __amount__ , Days overdue: __lateDays__ , Year adjusted amount: __yearAdjusted__\n",
   "lateFeeBilledDetails": "Of this already billed: __yearAdjusted__",
 
   // feedback
