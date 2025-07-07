@@ -24,7 +24,7 @@ StatementEntries.schema = new SimpleSchema({
   amount: { type: Number, decimal: true },
   name: { type: String, max: 100, optional: true },
   contraBAN: { type: String, max: 100, optional: true },
-  note: { type: String, max: 250, optional: true },
+  note: { type: String, max: 1000, optional: true },
   statementId: { type: String, /* regEx: SimpleSchema.RegEx.Id, */ optional: true, autoform: { omit: true } },
   row: { type: Number, optional: true }, // Row number within the statement
   original: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
