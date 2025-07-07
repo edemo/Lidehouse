@@ -117,7 +117,7 @@ Topics.actions = {
     name: 'move',
     label: __('move under other topic'),
     icon: 'fa fa-arrow-right',
-    visible: doc && doc.entityName() === 'forum' && user.hasPermission('comment.move', doc),
+    visible: doc && (doc.entityName() === 'forum' || doc.entityName() === 'ticket') && user.hasPermission('comment.move', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.topic.move',
