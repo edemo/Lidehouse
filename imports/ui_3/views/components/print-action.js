@@ -32,16 +32,12 @@ Template.registerHelper('print', function print() {
 
 Template.registerHelper('pageIsPrintable', function pageIsPrintable() {
   const routeName = FlowRouter.getRouteName();
-  if (routeName === 'Transaction show') {
-    const _txid = FlowRouter.getParam('_txid');
-    const tx = Transactions.findOne(_txid);
-    return tx && tx.category === 'bill';
-  }
+  if (routeName === 'Transaction show') return true;
   return false;
 });
 
 Template.registerHelper('modalIsPrintable', function modalIsPrintable(id) {
   const details = afId2details(id);
-  if (details.entity === 'bill' && details.action === 'view') return true;
+  if (details.action === 'view') return true;
   return false;
 });
