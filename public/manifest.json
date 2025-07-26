@@ -1,0 +1,11 @@
+{
+    "name": "Honline Közösségi Platform",
+    "short_name": "Honline",
+    "start_url": "/",
+    "display": "standalone",
+    "icons": [{
+      "src": "images/logo-320x320.png",
+      "sizes": "320x320",
+      "type": "image/png"
+    }]
+}
