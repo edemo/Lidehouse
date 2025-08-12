@@ -4,8 +4,8 @@
     "start_url": "/",
     "display": "standalone",
     "icons": [{
-      "src": "images/logo-320x320.png",
-      "sizes": "320x320",
+      "src": "apple-touch-icon-precomposed.png",
+      "sizes": "120x120",
       "type": "image/png"
     }]
 }
