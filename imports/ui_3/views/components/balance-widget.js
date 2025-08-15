@@ -7,7 +7,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { equalWithinUnit } from '/imports/localization/localization.js';
 
 import { Partners } from '/imports/api/partners/partners.js';
-import { Balances } from '/imports/api/transactions/balances/balances';
+import { Balances } from '/imports/api/accounting/balances/balances';
 import '/imports/api/users/users.js';
 import './balance-widget.html';
 

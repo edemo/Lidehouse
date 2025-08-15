@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
-import { Templates } from '/imports/api/transactions/templates/templates.js';
+import { Templates } from '/imports/api/accounting/templates/templates.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 
 export function defineLocalizerTemplates() {

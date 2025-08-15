@@ -6,7 +6,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
 import { Clock } from '/imports/utils/clock';
-import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
 import './transfer-edit.html';
 
 Template.Transfer_edit.viewmodel({

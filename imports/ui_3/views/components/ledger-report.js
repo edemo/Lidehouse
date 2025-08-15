@@ -6,8 +6,8 @@ import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { Period } from '/imports/api/transactions/periods/period.js';
+import { Balances } from '/imports/api/accounting/balances/balances.js';
+import { Period } from '/imports/api/accounting/periods/period.js';
 import './ledger-report.html';
 
 /*

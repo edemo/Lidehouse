@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
 import { __ } from '/imports/localization/i18n.js';
 import '/imports/api/users/users.js';
 import { Parcels } from '../api/parcels/parcels';

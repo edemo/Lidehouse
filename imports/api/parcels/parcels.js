@@ -23,7 +23,7 @@ import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/acti
 import { ParcelRefFormat } from '/imports/api/communities/parcelref-format.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { ActiveTimeMachine } from '../behaviours/active-time-machine';
-import { TemplatedMongoCollection } from '/imports/api/transactions/templates/templated-collection';
+import { TemplatedMongoCollection } from '/imports/api/accounting/templates/templated-collection';
 
 export const Parcels = new TemplatedMongoCollection('parcels', 'code');
 

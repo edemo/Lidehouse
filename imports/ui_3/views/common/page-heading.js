@@ -1,5 +1,5 @@
 import { Template } from 'meteor/templating';
-import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import './page-heading.html';
 

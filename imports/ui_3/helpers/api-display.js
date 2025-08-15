@@ -13,8 +13,8 @@ import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
-import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
 import { Parcels } from '/imports/api/parcels/parcels';
 import { displayNumber, displayCurrency } from './utils.js';
 

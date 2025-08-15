@@ -13,8 +13,8 @@ import { Email } from 'meteor/email';   // We will be mocking it over
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/methods.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import '/imports/api/transactions/methods.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import '/imports/api/accounting/methods.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import '/imports/api/users/users.js';

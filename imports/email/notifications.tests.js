@@ -21,7 +21,7 @@ import { castVote } from '/imports/api/topics/votings/methods.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 
 import { EmailSender } from '/imports/startup/server/email-sender.js';   // We will be mocking it over
-import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
 
 if (Meteor.isServer) {
   import '/imports/api/comments/methods.js';

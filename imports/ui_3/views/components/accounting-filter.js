@@ -16,13 +16,13 @@ import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/actions.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import '/imports/api/transactions/actions.js';
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import '/imports/api/accounting/actions.js';
+import { Txdefs } from '/imports/api/accounting/txdefs/txdefs.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import '/imports/ui_3/views/blocks/help-icon.js';
-import '/imports/api/transactions/parcel-billings/actions.js';
+import '/imports/api/accounting/parcel-billings/actions.js';
 
 import './accounting-filter.html';
 

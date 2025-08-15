@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 
 import { Sharedfolders } from './sharedfolders.js';
-import { Templates } from '/imports/api/transactions/templates/templates.js';
+import { Templates } from '/imports/api/accounting/templates/templates.js';
 
 Sharedfolders.insertTemplateDoc = function insertTemplateDoc(templateId, doc) {
   const docToInsert = _.extend({ communityId: templateId }, doc);

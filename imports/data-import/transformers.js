@@ -5,9 +5,9 @@ import { __ } from '/imports/localization/i18n.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Period } from '/imports/api/transactions/periods/period.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
+import { Period } from '/imports/api/accounting/periods/period.js';
 import { Parser } from './parser.js';
 
 function singlify(jsons) {

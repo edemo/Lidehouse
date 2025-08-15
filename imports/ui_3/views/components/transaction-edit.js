@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
 
 import './transaction-edit.html';
 

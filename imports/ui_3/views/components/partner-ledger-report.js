@@ -8,9 +8,9 @@ import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { Period } from '/imports/api/transactions/periods/period.js';
+import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
+import { Balances } from '/imports/api/accounting/balances/balances.js';
+import { Period } from '/imports/api/accounting/periods/period.js';
 import './partner-ledger-report.html';
 
 Template.Partner_ledger_report.viewmodel({

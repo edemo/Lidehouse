@@ -7,7 +7,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { displayError } from '/imports/ui_3/lib/errors.js';
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';  // TODO get rid of
+import { Txdefs } from '/imports/api/accounting/txdefs/txdefs.js';  // TODO get rid of
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import './menu-overflow-guard.js';
 import './action-buttons.html';

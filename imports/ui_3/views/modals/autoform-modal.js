@@ -11,8 +11,8 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { getCurrentUserLang } from '/imports/api/users/users.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import { Txdefs } from '/imports/api/accounting/txdefs/txdefs.js';
 import './autoform-modal.html';
 
 // How to instantiate an Autoform_modal window: Modal.show('Autoform_modal', afOptions)

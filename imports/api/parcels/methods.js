@@ -5,8 +5,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkUnique, checkModifier, checkPermissions, checkConstraint } from '/imports/api/method-checks.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Balances } from '/imports/api/accounting/balances/balances.js';
+import { Localizer } from '/imports/api/accounting/breakdowns/localizer.js';
 import { ParcelRefFormat } from '/imports/api/communities/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';

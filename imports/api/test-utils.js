@@ -11,9 +11,9 @@ import '/imports/startup/server/validated-method.js';
 
 import { initializePermissions } from '/imports/api/permissions/config.js';
 import { insertUnittestFixture } from '/imports/fixture/fixtures.js';
-import { defineAccountTemplates } from '/imports/api/transactions/accounts/template.js';
+import { defineAccountTemplates } from '/imports/api/accounting/accounts/template.js';
 import { defineLocalizerTemplates } from '/imports/api/parcels/template.js';
-import { defineTxdefTemplates } from '/imports/api/transactions/txdefs/template.js';
+import { defineTxdefTemplates } from '/imports/api/accounting/txdefs/template.js';
 import { defineSharedFoldersTemplates } from '/imports/api/shareddocs/sharedfolders/template.js';
 
 chai.config.truncateThreshold = Infinity;

@@ -8,7 +8,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from './memberships.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Balances } from '/imports/api/accounting/balances/balances.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 
 Meteor.publishComposite('memberships.ofSelf', function membershipsOfSelf() {

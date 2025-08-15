@@ -18,7 +18,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { Partners, choosePartner, choosePartnerOfParcel } from '/imports/api/partners/partners.js';
 import { Parcels, chooseLocalizer, chooseProperty } from '/imports/api/parcels/parcels.js';
-import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
 
 export const Contracts = new Mongo.Collection('contracts');
 

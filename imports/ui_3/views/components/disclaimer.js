@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
-import { Balances } from '/imports/api/transactions/balances/balances';
+import { Balances } from '/imports/api/accounting/balances/balances';
 import './disclaimer.html';
 
 Template.Disclaimer.helpers({

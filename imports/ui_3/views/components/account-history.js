@@ -5,8 +5,8 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { validDateOrUndefined } from '/imports/api/utils';
-import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { JournalEntries } from '/imports/api/accounting/journal-entries/journal-entries.js';
+import { Balances } from '/imports/api/accounting/balances/balances.js';
 import './account-history.html';
 
 Template.Account_history.viewmodel({
