@@ -132,6 +132,7 @@
           "voting": "Döntéshozás",
           "maintenance": "Üzemeltetés",
           "finances": "Pénzügyek",
+          "marketplace": "Piactér",
           "documents": "Dokumentumtár"
         }
       },
@@ -1717,6 +1718,72 @@
         "label": "Időpontig",
         "placeholder": "éééé-hh-nn"
       }
+    }
+  },
+  "schemaBuckets": {
+    "_": {
+      "label": "Kategória"
+    },
+    "name": {
+      "label": "Név"
+    },
+    "code": {
+      "label": "Kód"
+    }
+  },
+  "schemaListings": {
+    "_": {
+      "label": "Hirdetés"
+    },
+    "relation": {
+      "label": "Hirdetés típus",
+      "options": {
+        "supplier": "Felajánláso",
+        "customer": "Szükséglete"
+      }
+    },
+    "creatorId": {
+      "label": "Hirdető"
+    },
+    "title": {
+      "label": "Cím",
+      "placeholder": "(pl. Friss tulipán)"
+    },
+    "text": {
+      "label": "Leírás",
+      "placeholder": "(pl. Tulipánok különböző választható színekben, a kertemből szedhető.)"
+    },
+    "location": {
+      "label": "Lokáció",
+      "placeholder": "(pl. Budapest)"
+    },
+    "price": {
+      "label": "Érték (Ft-ban)"
+    },
+    "delivery": {
+      "label": "Átvételi mód",
+      "options": {
+        "pickup": "Személyes átvétel",
+        "send": "Postázás/Futár",
+        "digital": "Digitális formában"
+      }
+    },
+    "bucket": {
+      "label": "Kategória"
+    },
+    "keywords": {
+      "label": "Kulcsszavak",
+      "help": "Más néven hashtag-ek. Akár többet is megadhat, szóközökkel elválasztva."
+    }
+  },
+  "schemaDeals": {
+    "_": {
+      "label": "Ügylet"
+    }
+  },
+  "schemaReviews": {
+    "_": {
+      "label": "Értékelés"
     }
   },
   "schemaSharedfolders": {

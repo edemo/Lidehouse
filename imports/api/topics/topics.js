@@ -36,7 +36,6 @@ Topics.extensionSchemas = {};
 
 Topics.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { type: 'hidden' } },

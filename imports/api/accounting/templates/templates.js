@@ -31,7 +31,7 @@ Templates.define = function define(doc) {
     },
   });
 
-  ['accounts', 'parcels', 'txdefs', 'sharedfolders'].forEach(collectionName => {
+  ['accounts', 'parcels', 'txdefs', 'sharedfolders', 'buckets'].forEach(collectionName => {
     const collection = Mongo.Collection.get(collectionName);
     doc[collectionName]?.forEach(elem => collection.insertTemplateDoc(templateId, elem));
   });

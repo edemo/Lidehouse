@@ -17,6 +17,7 @@ import { Templates } from '/imports/api/accounting/templates/templates.js';
 import { Communities } from '/imports/api/communities/communities.js';
 
 export const Accounts = new TemplatedMongoCollection('accounts', 'code');
+Accounts.rootCode = '`';
 
 Accounts.mainCategoryValues = ['asset', 'liability', 'equity', 'income', 'expense', 'balance', 'technical'];
 Accounts.simpleCategoryValues = Accounts.mainCategoryValues.concat(['payable', 'receivable']);
@@ -129,11 +130,11 @@ Accounts.helpers({
   parents() {
     // TODO
   },
-  displayAccount() {
+  displayFull() {
     return `${this.code}: ${__(this.label || this.name)}`;
   },
   asOption() {
-    return { label: this.displayAccount(), value: this.code };
+    return { label: this.displayFull(), value: this.code };
   },
   nodeOptions(communityId, leafsOnly) {
     const nodes = this.nodes(communityId, leafsOnly);
@@ -224,7 +225,7 @@ Accounts.moveTemplate = function move(templateId, codeFrom, codeTo) {
 
 _.extend(Accounts, {
   coa(communityId = getActiveCommunityId()) {
-    return Accounts.findOneT({ communityId, code: '`' });
+    return Accounts.findOneT({ communityId, code: Accounts.rootCode });
   },
   all(communityId) {
     return Accounts.findTfetch({ communityId }, { sort: { code: 1 } });

@@ -393,7 +393,7 @@ Transactions.helpers({
       if (!this.community().settings.allowPostToGroupAccounts && account?.isGroup) {
         console.log('Account', account);
         console.log('Accounts', Accounts.findTfetch({ communityId: this.communityId, code: account.code }));
-        throw new Meteor.Error('err_notAllowed', 'Not allowed to post to group accounts', account.displayAccount());
+        throw new Meteor.Error('err_notAllowed', 'Not allowed to post to group accounts', account.displayFull());
       }
       if (je.side === 'credit') creditAmount[je.subTx] = creditAmount[je.subTx] ? (creditAmount[je.subTx] + je.amount) : je.amount;
       if (je.side === 'debit') debitAmount[je.subTx] = debitAmount[je.subTx] ? (debitAmount[je.subTx] + je.amount) : je.amount;

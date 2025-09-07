@@ -192,6 +192,15 @@ Partners.helpers({
     if (days > 90) return 'danger';
     return 'info';
   },
+  marketActivity() {
+    return this.displayName().length; // TODO
+  },
+  marketRating() {
+    return this.displayName().length % 4 + 0.5; // TODO
+  },
+  marketBalance() {
+    return this.displayName().length * 1500; // TODO
+  },
   // --- END ---
   toString() {
     return this.displayName();

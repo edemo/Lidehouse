@@ -6,6 +6,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Transactions } from '/imports/api/accounting/transactions.js';
+import { Listings } from '/imports/api/marketplace/listings/listings.js';
 import { getActiveCommunity } from '/imports/ui_3/lib/active-community';
 
 // Import UI pages only on the client!
@@ -40,9 +41,11 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/community-finances.js';
   import '/imports/ui_3/views/pages/inventory-page.js';
   import '/imports/ui_3/views/pages/accounting-page.js';
+  import '/imports/ui_3/views/pages/marketplace-page.js';
   import '/imports/ui_3/views/pages/shareddoc-store.js';
   import '/imports/ui_3/views/pages/topic-show.js';
   import '/imports/ui_3/views/pages/transaction-show.js';
+  import '/imports/ui_3/views/pages/listing-show.js';
 
   import '/imports/ui_3/views/layouts/main.js';
   import '/imports/ui_3/views/layouts/blank.js';
@@ -324,6 +327,26 @@ defineRoute('/community', {
   },
 });
 CommunityRelatedRoutes.push('Community page default');
+
+defineRoute('/marketplace', {
+  name: 'Marketplace',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Marketplace_page' });
+  },
+});
+CommunityRelatedRoutes.push('Marketplace');
+
+defineRoute('/listing/:_lid', {
+  name: 'Listing show',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Listing_show' });
+  },
+  title(params) {
+    const listing = Listings.findOne(params._lid);
+    return listing && `${listing.title}`;
+  },
+});
+CommunityRelatedRoutes.push('Listing show');
 
 defineRoute('/documents', {
   name: 'Documentstore',

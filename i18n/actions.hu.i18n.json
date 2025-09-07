@@ -362,6 +362,14 @@
       "label": "hátralék emlékeztető",
       "it": "a hátralék emlékeztetőt"
     },
+    "bucket": {
+      "label": "kategória",
+      "it": "a kategóriát"
+    },
+    "listing": {
+      "label": "hirdetés",
+      "it": "a hirdetést"
+    },
     "sharedfolder": {
       "label": "mappa",
       "it": "a mappát"

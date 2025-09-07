@@ -87,6 +87,16 @@
                         {{/with}}
                     </a>                    
                 </li>
+                {{#if community.isActiveModule 'marketplace'}}
+                <li>
+                    <a id="marketchat" class="right-sidebar-toggle count-info" href="">
+                        <i class="fa fa-gift"></i>  
+                        {{#with (unseenEventsCount 'market chat')}}
+                        {{> Badge color='danger' title=correspondents value=count class="label"}}
+                        {{/with}}
+                    </a>                    
+                </li>   
+                {{/if}}
                 {{#if currentUserHasPermission 'do.techsupport'}}
                 <li>
                     <a id="techsupport" class="right-sidebar-toggle count-info" href="">

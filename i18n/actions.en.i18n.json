@@ -350,6 +350,14 @@
       "label": "outstandings reminder",
       "it": "outstandings reminder"
     },
+    "bucket": {
+      "label": "category",
+      "it": "the category"
+    },
+    "listing": {
+      "label": "listing",
+      "it": "the listing"
+    },
     "sharedfolder": {
       "label": "folder",
       "it": "the folder"

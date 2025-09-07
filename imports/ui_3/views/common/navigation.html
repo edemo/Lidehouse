@@ -156,6 +156,15 @@
                         {{/if}}
                     </a>
                 </li>
+                {{#if community.isActiveModule 'marketplace'}}
+                <li class="{{isActivePath regex='marketplace'}}">
+                    <a href="{{pathFor 'Marketplace'}}">
+                        <i class="fa fa-gift" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Marketplace'}}</span>
+                        {{> Badge color='danger' title=(_ 'Unread') value=(unseenEventsCount 'room') align='right'}}
+                    </a>
+                </li>
+                {{/if}}
                 {{#if community.isActiveModule 'documents'}}
                 <li class="{{isActivePath regex='documents'}}">
                     <a href="{{pathFor 'Documentstore'}}">

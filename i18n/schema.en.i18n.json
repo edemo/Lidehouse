@@ -132,6 +132,7 @@
           "voting": "Decsion making",
           "maintenance": "Maintenance",
           "finances": "Finaces",
+          "marketplace": "Marketplace",
           "documents": "Documentstore"
         }
       },
@@ -1036,7 +1037,7 @@
       "label": "Include"
     },
     "children": {
-      "label": "Cathegory account",
+      "label": "Category account",
       "$": {
         "digit": {
           "label": "Code"
@@ -1701,6 +1702,72 @@
     },
     "applyCount": {
       "label": "Apply count"
+    }
+  },
+  "schemaBuckets": {
+    "_": {
+      "label": "Category"
+    },
+    "name": {
+      "label": "Name"
+    },
+    "code": {
+      "label": "Code"
+    }
+  },
+  "schemaListings": {
+    "_": {
+      "label": "Listing"
+    },
+    "relation": {
+      "label": "Listing type",
+      "options": {
+        "supplier": "Offer",
+        "customer": "Need"
+      }
+    },
+    "creatorId": {
+      "label": "Lister"
+    },
+    "title": {
+      "label": "Title",
+      "placeholder": "(eg. Fresh tulips)"
+    },
+    "text": {
+      "label": "Description",
+      "placeholder": "(eg. Various colored tulips, you can pick and choose them in my garden)"
+    },
+    "location": {
+      "label": "Location",
+      "placeholder": "(eg. London)"
+    },
+    "price": {
+      "label": "Value"
+    },
+    "delivery": {
+      "label": "Delivery",
+      "options": {
+        "pickup": "Pick up in person",
+        "send": "Post/Courier",
+        "digital": "Digital"
+      }
+    },
+    "bucket": {
+      "label": "Category"
+    },
+    "keywords": {
+      "label": "Keywords",
+      "help": "Also called hashtags. You can specify more than one, seperated with space."
+    }
+  },
+  "schemaDeals": {
+    "_": {
+      "label": "Deal"
+    }
+  },
+  "schemaReviews": {
+    "_": {
+      "label": "Review"
     }
   },
   "schemaSharedfolders": {

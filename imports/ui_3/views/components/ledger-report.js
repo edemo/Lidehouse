@@ -60,7 +60,7 @@ Template.Ledger_report.helpers({
     return 'header-level' + (account.code.length - 1).toString();
   },
   displayAccount(account) {
-    return account.displayAccount();
+    return account.displayFull();
   },
 });
 

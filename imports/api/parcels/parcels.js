@@ -208,7 +208,7 @@ Parcels.helpers({
   displayName() {
     return this.location() || __(this.ref);
   },
-  displayAccount() {
+  displayFull() {
     return `${this.code}: ${this.displayName()}`;
   },
   toString() {
@@ -235,7 +235,7 @@ Parcels.helpers({
     return this.category !== '@group';
   },
   asOption() {
-    return { label: this.displayAccount(), value: this.code };
+    return { label: this.displayFull(), value: this.code };
   },
 });
 
@@ -441,7 +441,7 @@ export const chooseLocalizer = function (code = '') {
       const communityId = ModalStack.getVar('communityId');
       const parcels = Parcels.nodesOf(communityId, code);
       const options = parcels.map(function option(p) {
-        return { label: p.displayAccount(), value: p.code };
+        return { label: p.displayFull(), value: p.code };
       });
       const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
       return sortedOptions;
@@ -471,7 +471,7 @@ export const chooseLocalizer = {
     const physicalPlaces = new RegExp('^@');
     const parcels = Parcels.find({ communityId, category: physicalPlaces }, { sort: { ref: 1 } });
     const options = parcels.map(function option(p) {
-      return { label: p.displayAccount(), value: p._id };
+      return { label: p.displayFull(), value: p._id };
     });
     return options;
   },

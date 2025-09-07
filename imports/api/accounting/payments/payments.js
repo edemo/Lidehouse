@@ -62,7 +62,7 @@ export const chooseLocalizerOfPartner = {
     } else {
       localizers = Parcels.find({ communityId });
     }
-    const options = localizers.map(p => ({ label: p.displayAccount(), value: p.code }));
+    const options = localizers.map(p => ({ label: p.displayFull(), value: p.code }));
     const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
     return sortedOptions;
   },

@@ -94,6 +94,7 @@
   "Accounting": "Könyvelés",
   "community page": "Közösség lap",
   "condo page": "Házlap",
+  "Marketplace": "Piactér",
   "Documentstore": "Dokumentumtár",
   "User data page": "Felhasználói adatlap",
   "Online assembly": "Online közgyűlés",
@@ -202,6 +203,14 @@
 
   "topic": "bejegyzés",
   "forum": "fórum téma",
+
+  "listing": "hirdetés",
+  "listings": "hirdetések",
+  "browse": "nézelődés",
+  "favorites": "kedvencek",
+  "my listings": "saját hirdetéseim",
+  "gift value": "értékű ajándék",
+  "Max value": "Max érték",
 
   // commands
   "important": "Fontos",
@@ -521,6 +530,7 @@
   "Create upgrade": "Felújítás létrehozása",
   "Change status": "Állapot váltás",
   "Change status to": "%s állapotra váltás",
+  "filter": "szűrő",
   "Filter settings": "Szűrő beállítás",
   "Clear filters": "Szűrők törlése",
   "Title": "Cím",
