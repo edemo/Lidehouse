@@ -80,33 +80,13 @@
                     </ul>
                 </li>
                 <li>
-                    <a id="privatechat" class="right-sidebar-toggle count-info" href="">
+                    <a id="messages" class="right-sidebar-toggle count-info" href="">
                         <i class="fa fa-envelope"></i>  
-                        {{#with (unseenEventsCount 'private chat')}}
-                        {{> Badge color='danger' title=correspondents value=count class="label"}}
+                        {{#with unseenEventsCount}}
+                        {{> Badge color='danger' value=count class="label"}}
                         {{/with}}
                     </a>                    
                 </li>
-                {{#if community.isActiveModule 'marketplace'}}
-                <li>
-                    <a id="marketchat" class="right-sidebar-toggle count-info" href="">
-                        <i class="fa fa-gift"></i>  
-                        {{#with (unseenEventsCount 'market chat')}}
-                        {{> Badge color='danger' title=correspondents value=count class="label"}}
-                        {{/with}}
-                    </a>                    
-                </li>   
-                {{/if}}
-                {{#if currentUserHasPermission 'do.techsupport'}}
-                <li>
-                    <a id="techsupport" class="right-sidebar-toggle count-info" href="">
-                        <i class="fa fa-lg fa-question-circle"></i>
-                        {{#with (unseenEventsCount 'tech support')}}
-                        {{> Badge color='danger' title=correspondents value=count class="label"}}
-                        {{/with}}
-                    </a>                    
-                </li>   
-                {{/if}}
                 {{/if}}
             </ul>
         </nav>

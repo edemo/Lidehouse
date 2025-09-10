@@ -157,9 +157,17 @@
   "votedViaDelegationHint" : "casting a vote can override this",
 
   // rooms
+  "Send messages title": "Send messages",
   "Send messages subtitle": "to your manager or your condo mates",
   "Send messages instructions": "If you haven't talked with the person yet, use the search bar to find them",
   "noSelectedPerson": "Please select a person on right panel.",
+  "Group messages title": "Group chat",
+  "Group messages subtitle": "for commitees and group discussions",
+  "Deal messages title": "Marketplace",
+  "Deal messages subtitle": "inquiries and delivery discussions",
+  "Tech support title": "Tech support",
+  "Tech support subtitle": "questions about the system",
+
 
   // tickets
   "Please dont report twice": "To help our maintenance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",

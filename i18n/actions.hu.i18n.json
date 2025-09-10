@@ -178,6 +178,17 @@
     "disable": {
       "do": "visszautasítja",
       "done": "visszautasítva"
+    },
+    "inquireDeal": {
+      "label": "üzenet a hirdetőnek",
+      "do": "üzenetet küld a hirdetőnek",
+      "doing": "üzenet küldése a hirdetőnek"
+    },
+    "requestDeal": {
+      "label": "kérelmezés",
+      "do": "kérelmezi",
+      "doing": "kérelmez",
+      "done": "kérelmezte"
     }
   },
 

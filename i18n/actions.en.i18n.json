@@ -166,6 +166,17 @@
     "disable": {
       "do": "disable",
       "done": "disabled"
+    },
+    "inquireDeal": {
+      "label": "message the lister",
+      "do": "message the lister",
+      "doing": "messaging the lister"
+    },
+    "requestDeal": {
+      "label": "request listing",
+      "do": "request listing",
+      "doing": "requesting the listing",
+      "done": "listing requested"
     }
   },
 

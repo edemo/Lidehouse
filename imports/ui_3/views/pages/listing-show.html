@@ -31,7 +31,11 @@
                                         {{/each}}
                                     </div>
                                 </div>
-                                <div class="col-md-7">                
+                                <div class="col-md-7"> 
+                                    <!-- create time before the right corner -->
+                                    <div class="pull-right">
+                                        <small class="text-muted" title="{{displayTime this.createdAt}}">{{displayTimeFrom this.createdAt}}</small>
+                                    </div>
                                     <h2 class="font-bold m-b-xs">
                                         {{this.title}}
                                     </h2>
@@ -54,33 +58,20 @@
                                         <dt>{{_ 'schemaListings.keywords.label'}}</dt>
                                         <dd>{{this.keywords}}</dd>
                                     </dl>
-                                    <hr>   
-
-                                    <div><a href="" class="pull-left">
-                                        <img alt="avatar" class="message-avatar" src={{absoluteUrl this.creator.avatar}}>
-                                    </a> </div>
-                                    <a href="">{{this.creator.displayOfficialName}}</a>
-                                    <div class="m-t text-righ">{{this.creator.partner.marketRating}}
-                                             <i class="fa fa-star active"></i> 
-                                             <!--i class="fa fa-star"></i> 
-                                             <i class="fa fa-star"></i> 
-                                             <i class="fa fa-star-half-empty"></i> 
-                                             <i class="fa fa-star-o"></i--> - {{this.creator.partner.marketActivity}} {{_ 'activity'}}
-                                    </div>    
-                                    <a href=# class="btn btn-xs btn-outline btn-danger">
-                                            <!--i class="fa fa-large fa-plus-square"></i> 12 780 -->
-                                            <i class="fa fa-large fa-minus-square"></i> {{displayCurrency this.creator.partner.marketBalance}}
-                                    </a>
-                                    <hr>   
-
+                                    {{#unless mine}}
+                                        <hr>   
+                                        {{> Partner_rating this.creator }}
+                                    {{/unless}}
+                                    <hr>
                                     <div class="text-right" data-id="{{this._id}}">
                                         <div class="btn-group">
                                             {{#if mine}}
                                                 {{>Action_buttons_group collection='listings' doc=this actions='edit,delete' size='xl'}}
                                             {{else}}
-                                                <button class="btn btn-primary btn-sm"><i class="fa fa-handshake-o"></i> Kérelmezem</button>
+                                                {{>Action_buttons_group collection='listings' doc=this actions='requestDeal,like,inquireDeal' size='xl'}}
+                                                <!--button class="btn btn-primary btn-sm"><i class="fa fa-handshake-o"></i> Kérelmezem</button>
                                                 <button class="btn btn-white btn-sm"><i class="fa fa-heart"></i> Kedvencek közé </button>
-                                                <button class="btn btn-white btn-sm"><i class="fa fa-envelope"></i> Üzenet a hírdetőnek </button>
+                                                <button class="btn btn-white btn-sm"><i class="fa fa-envelope"></i> Üzenet a hírdetőnek </button-->
                                             {{/if}}
                                         </div>
                                     </div>

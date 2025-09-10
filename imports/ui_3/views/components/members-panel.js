@@ -5,12 +5,49 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { _ } from 'meteor/underscore';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { leaderRoles } from '/imports/api/permissions/roles.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import { Rooms } from '/imports/api/topics/rooms/rooms.js';
+import { Deals } from '/imports/api/marketplace/deals/deals.js';
 
 import './members-panel.html';
 
+const tabs = {
+  'private chat': {
+    index: 1,
+    name: 'private chat',
+    icon: 'fa-comments-o',
+    title: 'Send messages title',
+    subtitle: 'Send messages subtitle',
+    active: () => true,
+  },
+  'group chat': {
+    index: 2,
+    name: 'group chat',
+    icon: 'fa-group',
+    title: 'Group messages title',
+    subtitle: 'Group messages subtitle',
+    active: () => true,
+  },
+  'deal chat': {
+    index: 3,
+    name: 'deal chat',
+    icon: 'fa-handshake-o',
+    title: 'Deal messages title',
+    subtitle: 'Deal messages subtitle',
+    active: () => getActiveCommunity()?.isActiveModule('marketplace'),
+  },
+  'tech support': {
+    index: 4,
+    name: 'tech support',
+    icon: 'fa-question-circle',
+    title: 'Tech support title',
+    subtitle: 'Tech support subtitle',
+    active: () => Meteor.user()?.hasPermission('do.techsupport'),
+  },
+}
 const MEMBERS_TO_SHOW = 10;
 
 Template.Members_panel.onCreated(function onCreated() {
@@ -19,15 +56,27 @@ Template.Members_panel.onCreated(function onCreated() {
     const userId = Meteor.userId();
     if (communityId && userId) {
       this.subscribe('topics.roomsOfUser', { communityId, userId });
+      this.subscribe('deals.ofUser', { communityId, userId });
     }
   });
 });
 
 Template.Members_panel.onRendered(function onRendered() {
+  Session.set('roomMode', 'private chat');
 });
 
 Template.Members_panel.viewmodel({
   tooManyMembers: false,
+  tabsActive() {
+    const activeTabs = [];
+    _.each(tabs, tab => {
+      if (tab.active()) activeTabs.push(tab);
+    });
+    return activeTabs;
+  },
+  activeClass(tabName) {
+    return (Session.get('roomMode') === tabName) && 'active';
+  },
   leaders() {
     const communityId = ModalStack.getVar('communityId');
     const partnerSearch = Session.get('messengerPartnerSearch');
@@ -47,14 +96,57 @@ Template.Members_panel.viewmodel({
     if (partnerSearch) nonManagers = nonManagers.filter(m => m.partner() && m.partner().displayName().toLowerCase().search(partnerSearch.toLowerCase()) >= 0);
     else if (this.tooManyMembers()) nonManagers = nonManagers.filter(m => Rooms.getRoom(Session.get('roomMode'), m.userId));
     nonManagers = _.sortBy(nonManagers, m => {
-      const room = Rooms.getRoom(Session.get('roomMode'), m.userId);
+      const room = Rooms.getRoom(this.roomMode, m.userId);
       return room ? -1 * room.updatedAt : 0;
     });
     return nonManagers;
   },
+  existingRooms(roomMode) {
+    const communityId = ModalStack.getVar('communityId');
+    const rooms = Topics.find({ communityId, category: 'room', title: roomMode });
+    console.log('existingRooms', rooms.fetch());
+    return rooms;
+  },
+  existingRoomMembers(roomMode) {
+    const communityId = ModalStack.getVar('communityId');
+    const currentUserId = Meteor.userId();
+    const rooms = this.existingRooms(roomMode);
+    return rooms.map(room => {
+      const otherUserId = room.participantIds.find(id => id !== currentUserId);
+      const membership = Memberships.findOne({ communityId, userId: otherUserId });
+      return membership;
+    });
+  },
+  existingDeals() {
+    const communityId = ModalStack.getVar('communityId');
+    const deals = Deals.find({ communityId, participantIds: Meteor.userId() });
+    console.log('existingDeals', deals.fetch());
+    return deals;
+  },
+  unseenEventsCount(roomMode) {
+    const communityId = ModalStack.getVar('communityId');
+    const userId = Meteor.userId();
+    const rooms = Topics.find({ communityId, category: 'room', title: roomMode });
+    let count = 0;
+    const correspondents = [];
+    rooms.map(room => {
+      const unseenCommentsCount = room.hasThingsToDisplayFor(userId, Meteor.users.SEEN_BY.EYES);
+      count += unseenCommentsCount;
+      if (unseenCommentsCount > 0) {
+        const otherUserId = room.participantIds.find(id => id !== userId);
+        const otherUserName = Meteor.users.findOne(otherUserId)?.displayOfficialName();
+        correspondents.push(`${otherUserName} [${otherUserId}]`);
+      }
+    });
+    return { count, correspondents };
+  },
 });
 
 Template.Members_panel.events({
+  'click .js-tab-select'(event, instance) {
+    const tabName = $(event.target).closest('[data-value]').data('value');
+    Session.set('roomMode', tabName);
+  },
   'keyup #search'(event) {
     Session.set('messengerPartnerSearch', event.target.value);
   },
@@ -65,10 +157,20 @@ Template.Members_panel.events({
 Template.Member_slot.onCreated(function onMsgPartnerCreated() {
 });
 
-Template.Member_slot.helpers({
+Template.Member_slot.viewmodel({
+  partner() {
+    if (this.templateInstance.data.membership) return this.templateInstance.data.membership.partner();
+    if (this.templateInstance.data.deal) return this.templateInstance.data.deal.otherPartner(Meteor.user());
+    debugAssert(false);
+  },
+  existingRoom(){
+    if (this.templateInstance.data.membership) return Rooms.getRoom(this.templateInstance.data.roomMode, this.templateInstance.data.membership.userId);
+    else if (this.templateInstance.data.deal) return Topics.findOne(this.templateInstance.data.deal.roomId);
+    else { debugAssert(false); return undefined; }
+  },
   selectedClass() {
-    const room = Rooms.getRoom(Session.get('roomMode'), this.userId);
-    if (room && room._id === FlowRouter.getParam('_rid')) return 'selected';
+    const roomId = this.existingRoomId();
+    if (roomId && roomId === FlowRouter.getParam('_rid')) return 'selected';
     return '';
   },
   /* statusCircleColor(status) {
@@ -95,7 +197,7 @@ Template.Member_slot.helpers({
     return params;
   },
   hasThingsToDisplay() {
-    const room = Rooms.getRoom(Session.get('roomMode'), this.userId);
+    const room = this.existingRoom();
     if (!room) return undefined;
     return room.hasThingsToDisplayFor(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
   },
@@ -103,7 +205,9 @@ Template.Member_slot.helpers({
 
 Template.Member_slot.events({
   'click .member-slot'(event, instance) {
-    Rooms.goToRoom(Session.get('roomMode'), instance.data.userId);
+    const room = instance.viewmodel.existingRoom();
+    if (room) Rooms.goToExistingRoom(room._id);
+    else if (instance.data.roomMode === 'private chat') Rooms.goToPrivateChatRoom(instance.data.roomMode, instance.data.membership.userId);  // creates the chat room
     $('#right-sidebar').toggleClass('sidebar-open');
     if ($(window).width() > 768) $('.js-focused').focus();
   },

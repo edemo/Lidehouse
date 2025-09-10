@@ -80,22 +80,16 @@ Template.Top_navbar.helpers({
     });
     return { count, titles };
   },
-  unseenEventsCount(roomTitle) {
+  unseenEventsCount() {
     const communityId = ModalStack.getVar('communityId');
-    const userId = Meteor.userId();
-    const rooms = Topics.find({ communityId, category: 'room', title: roomTitle });
+    const rooms = Topics.find({ communityId, category: 'room' }); // On the client you will only see the rooms, in which you are a participant
     let count = 0;
-    const correspondents = [];
     rooms.map(room => {
-      const unseenCommentsCount = room.hasThingsToDisplayFor(userId, Meteor.users.SEEN_BY.EYES);
+      if (room.title === 'tech support' && !Meteor.user().hasPermission('do.techsupport')) return;  // Your message will show up down in the footer at the help box, where you submitted it
+      const unseenCommentsCount = room.hasThingsToDisplayFor(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
       count += unseenCommentsCount;
-      if (unseenCommentsCount > 0) {
-        const otherUserId = room.participantIds.find(id => id !== userId);
-        const otherUserName = Meteor.users.findOne(otherUserId)?.displayOfficialName();
-        correspondents.push(`${otherUserName} [${otherUserId}]`);
-      }
     });
-    return { count, correspondents };
+    return { count };
   },
   nameMismatchCounter() {
     return Meteor.user().personNameMismatch() ? 1 : 0;
@@ -147,12 +141,6 @@ Template.Top_navbar.events({
     if (window.matchMedia('(max-width: 768px)').matches) {
       $('.navbar-static-side').removeClass('navigation-open');
     }
-  },
-  'click #privatechat'() {
-    Session.set('roomMode', 'private chat');
-  },
-  'click #techsupport'() {
-    Session.set('roomMode', 'tech support');
   },
   'click .js-switch-community'() {
     const newCommunityId = this._id;

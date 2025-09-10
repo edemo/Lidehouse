@@ -12,6 +12,12 @@ if (Meteor.isClient) {
   import { FlowRouter } from 'meteor/kadira:flow-router';
   import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 
+  // Client side call
+  Rooms.goToExistingRoom = function goToExistingRoom(roomId) {
+    FlowRouter.go('Room show', { _rid: roomId });
+  };
+
+  // Client side call, that will get the room if exists
   Rooms.getRoom = function getRoom(roomType, otherUserId) {
     if (!roomType || !otherUserId) return undefined;
     const userId = Meteor.userId();
@@ -19,14 +25,16 @@ if (Meteor.isClient) {
     if (roomType === 'private chat') {
       return Topics.findOne({ communityId, category: 'room', title: 'private chat', participantIds: { $size: 2, $all: [userId, otherUserId] } });
     } else if (roomType === 'tech support') {
-      return Topics.findOne({ communityId, category: 'room', title: 'tech support', participantIds: { $all: [userId, otherUserId] } });
+      return Topics.findOne({ communityId, category: 'room', title: 'tech support', participantIds: { $size: 2, $all: [userId, otherUserId] } });
     } else {
       debugAssert(false);
       return null;
     }
   };
 
-  Rooms.goToRoom = function goToRoom(roomType, otherUserId) {
+  // Client side call, that will go to the room page, and will create the room if not yet exists
+  Rooms.goToPrivateChatRoom = function goToPrivateChatRoom(roomType, otherUserId) {
+    if (!roomType || !otherUserId) return;
     const room = Rooms.getRoom(roomType, otherUserId);
     if (room) {
       FlowRouter.go('Room show', { _rid: room._id });

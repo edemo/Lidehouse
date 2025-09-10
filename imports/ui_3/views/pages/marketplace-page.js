@@ -11,6 +11,7 @@ import { Listings } from '/imports/api/marketplace/listings/listings.js';
 import '/imports/api/marketplace/listings/actions.js';
 import { actionHandlers, ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
+import '/imports/ui_3/views/components/listing-box.js';
 import './marketplace-page.html';
 
 const listingShows = { 'browse': { icon: 'shopping-cart' }, 'favorites': { icon: 'heart-o' }, 'my listings' : { icon: 'user-circle' }};

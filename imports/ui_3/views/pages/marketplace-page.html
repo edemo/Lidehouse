@@ -1,3 +1,28 @@
+<template name="Partner_rating">
+    <div>
+        <a href="" class="pull-left">
+        <img alt="avatar" class="message-avatar" src={{absoluteUrl this.avatar}}>
+        </a> 
+    </div>
+    <i class="fa fa-user m-l"></i> <span>{{this.displayOfficialName}}</span> 
+    <span class="pull-right"><!--{{_ 'schemaMemberships._.label'}}-->
+        <i class="fa fa-clock-o"></i> {{displayTimeFrom this.createdAt}}
+    </span>
+    <div class="m-t">
+        <span class="m-l"> {{this.partner.marketRating}}
+            <i class="fa fa-star active"></i> 
+            <!--i class="fa fa-star"></i> 
+            <i class="fa fa-star"></i> 
+            <i class="fa fa-star-half-empty"></i> 
+            <i class="fa fa-star-o"></i--> ({{this.partner.marketActivity}})
+        </span>
+        <a href=# class="btn btn-xs btn-outline btn-danger pull-right">
+            <!--i class="fa fa-large fa-plus-square"></i> 12 780 -->
+            <i class="fa fa-large fa-minus-square"></i> {{displayCurrency this.partner.marketBalance}}
+        </a>
+    </div>  
+</template>
+
 <template name="Marketplace_page">
     <!-- Page heading -->
     {{> Page_heading title=(_ 'Marketplace') }}
@@ -136,58 +161,8 @@
 <template name="Products_grid">
         <div class="row">
             {{#each listings}}
-            <div class="col-md-3">
-                <div class="ibox">
-                    <div class="ibox-content product-box">
-                        <a href={{pathFor 'Listing show' _lid=this._id}}>
-                        {{#if isImage this.firstAttachment}}
-                           <img class="img-embed js-show-image" src="{{absoluteUrl this.firstAttachment}}"/>
-                        {{else}}
-                            <div class="product-imitation">
-                                [ INFO ]
-                            </div>
-                        {{/if}}
-                        </a>
-                       <div class="product-desc">
-                                <span class="product-price">
-                                    {{displayCurrency this.price}}
-                                </span>
-                            <small class="text-muted">{{this.category}}</small>
-                            <a href={{pathFor 'Listing show' _lid=this._id}} class="product-name"> {{this.title}}</a>
-
-
-
-                            <div class="small m-t-xs">
-                               {{this.text}}
-                            </div>
-                            <hr>
-                            <div><a href="" class="pull-left">
-                                <img alt="avatar" class="message-avatar" src={{absoluteUrl this.creator.avatar}}>
-                            </a> </div>
-                            <i class="fa fa-user"></i> <span href="">{{this.creator.displayOfficialName}}</span>  <span class="pull-right"><i class="fa fa-clock-o"></i> {{displayTimeFrom this.createdAt}}</span>
-                            <div class="m-t text-righ"> {{this.creator.partner.marketRating}}
-                                     <i class="fa fa-star active"></i> 
-                                     <!--i class="fa fa-star"></i> 
-                                     <i class="fa fa-star"></i> 
-                                     <i class="fa fa-star-half-empty"></i> 
-                                     <i class="fa fa-star-o"></i--> - {{this.creator.partner.marketActivity}} {{_ 'activity'}}
-
-                                <a href=# class="btn btn-xs btn-outline btn-danger pull-right">
-                                     <!--i class="fa fa-large fa-plus-square"></i> 12 780 -->
-                                     <i class="fa fa-large fa-minus-square"></i> {{displayCurrency this.creator.partner.marketBalance}}
-                                </a>
-                            </div>  
-                            <hr>
-                            <div class="m-t text-righ">
-                                <a href={{pathFor 'Listing show' _lid=this._id}} class="btn btn-xs btn-outline btn-primary">
-                                    <!--span class="label label-warning label-xs">12</span-->
-                                    {{this.activeDeals.count}} <i class="fa fa-envelope"></i>
-                                    {{_ 'érdeklődő'}} <i class="fa fa-long-arrow-right"></i> 
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                {{> Listing_box this}}
             </div>
             {{/each}}
         </div>

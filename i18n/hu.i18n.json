@@ -204,14 +204,6 @@
   "topic": "bejegyzés",
   "forum": "fórum téma",
 
-  "listing": "hirdetés",
-  "listings": "hirdetések",
-  "browse": "nézelődés",
-  "favorites": "kedvencek",
-  "my listings": "saját hirdetéseim",
-  "gift value": "értékű ajándék",
-  "Max value": "Max érték",
-
   // commands
   "important": "Fontos",
   "unimportant": "Nem fontos",
@@ -411,6 +403,8 @@
   "you": "ön",
   "Do show content": "Én azért megnézem",
   "private chat": "privát üzenet",
+  "group chat": "csoport beszélgetés",
+  "deal chat": "piactér beszélgetés",
   "tech support": "technikai segítség",
   "see full text with View button": "teljes szöveg a Megtekintés gombbal",
   "View previous comments": "Korábbi %s hozzászólás megtekintése",
@@ -510,10 +504,17 @@
   "matters": "ügyek",
 
   // rooms
-  "Send messages": "Küldjön üzenetet",
+  "Send messages title": "Küldjön üzenetet",
   "Send messages subtitle": "közös képviselőjének vagy lakótársának",
   "Send messages instructions": "Ha ezidáig még nem beszélt az illetővel, a kereső segítségével megtalálhatja",
   "noSelectedPerson": "Válasszon címzettet a jobb oldali panelen!",
+  "Group messages title": "Csoport beszélgetés",
+  "Group messages subtitle": "például bizottsági megbeszélések",
+  "Deal messages title": "Piactér",
+  "Deal messages subtitle": "átadás-átvétellel kapcsolatos egyezetetés",
+  "Tech support title": "Segítség vonal",
+  "Tech support subtitle": "technikai kérdések megválaszolása",
+
 
   // tickets
   "Active tickets": "Aktív bejelentett hibák",
@@ -673,6 +674,18 @@
   "lateFeeBillDetails": "Késedelmes számla azonosítója: __serialId__\n",
   "lateFeeDetails": "Késedelmes összeg: __amount__ , Késedelem napokban: __lateDays__ , Évarányosított késedelmes összeg: __yearAdjusted__\n",
   "lateFeeBilledDetails": "Ebből már korábban kiszámlázva: __yearAdjusted__",
+
+  // marketplace
+  "listing": "hirdetés",
+  "listings": "hirdetések",
+  "browse": "nézelődés",
+  "favorites": "kedvencek",
+  "my listings": "saját hirdetéseim",
+  "gift value": "értékű ajándék",
+  "Max value": "Max érték",
+  "activity": "aktivitás",
+  "user interested": "érdeklődő",
+  "users interested": "érdeklődők listája",
 
   // docstore
   "Show": "Listázva",
@@ -893,6 +906,7 @@
   "This will send the bill again": "Ezzel ismételten elküldi a számlát a tranzakciós partnernek",
   "The reading is much higher than expected": "A leolvasott érték jelentősen nagyobb a vártnál. Elképzelhető, hogy rossz helyre tette a tizedes vesszőt. Biztos hogy rögzíti ezt az állást?",
   "editMeterReadingsWarning": "Ön most közvetlenül szerkeszti a(z) [__identifier__](__service__) mérőóra korábbi leolvasásait.\nNem javasoljuk hogy változtasson vagy töröljön már kiszámlázott óraállást, ugyanis ezzel a már kiállított számlákra nem fog hatni, és így a leolvasások nem lesznek többé összhangban a kiállított számlákkal.",
+  "You are obligated to go through with the deal": "A kérelmezéssel a hirdetésben megadott feltételeket és értéket elfogadja. Ha elküldi a kérelmezést, és a hirdető ezt jóváhagyja, akkor az ügylettől már senki nem léphet vissza. Amennyiben szeretne egyeztetni előtte az ügylet pontos feltételeiről, akkor nyomjon a Mégse gombra és válassza inkább az Üzenet a hirdetőnek funkciót. ", 
 
   "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",

@@ -5,9 +5,12 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
 import { __ } from '/imports/localization/i18n.js';
+import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { BatchAction } from '/imports/api/batch-action.js';
-import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
+import { Deals } from '/imports/api/marketplace/deals/deals.js';
+import '/imports/api/marketplace/deals/methods.js';
 import { Listings } from './listings.js';
 import './methods.js';
 
@@ -55,6 +58,40 @@ Listings.actions = {
         type: 'method-update',
         meteormethod: 'listings.update',
         singleMethodArgument: true,
+      });
+    },
+  }),
+  like: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'like',
+    label: 'kedvencek közé',
+    icon: 'fa fa-heart',
+    visible: doc.creatorId !== user._id && user.hasPermission('like.toggle', doc),
+    run() {
+      // Topics.methods.like.call({ id: doc._id }, handleError);
+    },
+  }),
+  inquireDeal: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'inquireDeal',
+    icon: 'fa fa-envelope',
+    visible: user.hasPermission('listings.inCommunity', doc),
+    run() {
+      const communityId = getActiveCommunityId();
+      const dealId = Deals.methods.initiate.call({ communityId, listingId: doc._id, partner2Status: 'interested' }, 
+        onSuccess(res => FlowRouter.go('Room show', { _rid: res }))
+      );
+    },
+  }),
+  requestDeal: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'requestDeal',
+    icon: 'fa fa-handshake-o',
+    color: 'primary',
+    visible: user.hasPermission('listings.inCommunity', doc),
+    run() {
+      const communityId = getActiveCommunityId();
+      Modal.confirmAndCall(Deals.methods.initiate, { communityId, listingId: doc._id, partner2Status: 'confirmed' }, {
+        action: 'requestDeal',
+        entity: 'listing',
+        message: 'You are obligated to go through with the deal',
       });
     },
   }),

@@ -1,33 +1,61 @@
 <template name="Members_panel">
-    <div class="sidebar-title">
-        <h3> <i class="fa fa-comments-o"></i> {{_'Send messages'}}</h3>
-        <small><i class="fa fa-tim"></i> {{_ 'Send messages subtitle'}}.</small>
-        {{#if tooManyMembers}}<small> {{_ 'Send messages instructions'}}.</small>{{/if}}
-    </div>
-    <div class="form-group">
-        <div class="input-group">
-            <input id="search" type="text" class="form-control" placeholder="{{_ 'search'}}">
-            <div class="input-group-addon">
-                <span class="glyphicon glyphicon-search js-search" aria-hidden="true"></span>
+
+    <ul class="nav nav-tabs navs-{{tabsActive.length}}">
+        {{#each tab in tabsActive}}
+        <li class={{activeClass tab.name}}><a data-toggle="tab" href="#tab-{{tab.index}}" class="js-tab-select" data-value={{tab.name}}>
+            <i class="fa {{tab.icon}}"></i>
+            {{#with (unseenEventsCount tab.name)}}
+            {{> Badge color='danger' title=correspondents value=count class="label"}}
+            {{/with}}
+        </a></li>
+        {{/each}}
+    </ul>
+    <div class="tab-content">
+        {{#each tab in tabsActive}}
+        <div id="tab-{{tab.index}}" class="tab-pane {{activeClass tab.name}}">
+            <div class="sidebar-title">
+                <h3> <i class="fa {{tab.icon}}"></i> {{_ tab.title}}</h3>
+                <small><i class="fa fa-tim"></i> {{_ tab.subtitle}}.</small>
+                {{#if tooManyMembers}}<small> {{_ 'Send messages instructions'}}.</small>{{/if}}
             </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <input id="search" type="text" class="form-control" placeholder="{{_ 'search'}}">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-search js-search" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
+            {{#if Template.subscriptionsReady}}
+                <div>
+                {{#if (equals tab.name 'private chat')}}
+                    {{#each membership in leaders}}   <!-- normally there is exactly 1 manager (kk) -->
+                        {{> Member_slot roomMode=tab.name membership=membership}}
+                    {{/each}}
+                    <div class="line">
+                        <hr class="m-t-none"/>
+                    </div>
+                    {{#each membership in members}}
+                        {{> Member_slot roomMode=tab.name membership=membership}}
+                    {{/each}}
+                {{else if (equals tab.name 'tech support')}}
+                    {{#each membership in (existingRoomMembers tab.name)}}
+                      {{> Member_slot roomMode=tab.name membership=membership}}
+                    {{/each}}
+                {{else if (equals tab.name 'group chat')}}
+                {{else if (equals tab.name 'deal chat')}}
+                    {{#each deal in existingDeals}}
+                        {{> Member_slot roomMode=tab.name deal=deal}}
+                    {{/each}}
+                 {{else}}
+                {{/if}}
+                </div>
+            {{else}}
+                &nbsp;{{_ 'Loading'}}...
+            {{/if}}
         </div>
-    </div>
-    <!-- normally there is exactly 1 manager (kk) -->
-    {{#if Template.subscriptionsReady}}
-    <div>
-        {{#each leaders}}
-          {{> Member_slot}}
-        {{/each}}
-        <div class="line">
-            <hr class="m-t-none"/>
-        </div>
-        {{#each members}}
-          {{> Member_slot}}
         {{/each}}
     </div>
-    {{else}}
-        &nbsp;{{_ 'Loading'}}...
-    {{/if}}
 </template>
 
 <template name="Member_slot">
@@ -36,17 +64,29 @@
             <a href="">
                 <div class="pull-left text-center">
                     <img alt="avatar" class="img-circle message-avatar" src="{{absoluteUrl partner.avatar}}">
+                    {{#if deal}}
+                    <div class="m-t-xs">
+                        4.6
+                        <i class="fa fa-star text-warning"></i>
+                    </div>
+                    {{/if}}
                 </div>
                 <div class="media-body">
                     <strong>{{partner.displayName}}</strong><br>
-                    <small class="text-muted">({{this.displayRole}})</small>
+                    {{#if membership}}
+                    <small class="text-muted">({{membership.displayRole}})</small>
+                    {{/if}}
+                    {{#if deal}}
+                    <strong>{{deal.listing.title}}</strong><br>
+                    <small class="text-muted">status: {{deal.dealStatus}}</small>
+                    {{/if}}
                 </div>
                 <div class="media-body pull-right">
                     <div class="text-right">
                         <!-- online/offline status icon -->
-                        <svg height="10" width="10" data-tooltip="{{user/status}}">
+                        <svg height="10" width="10" data-tooltip="{{partner/user/status}}">
                         <!--circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="{{statusCircleColor user/status}}" /-->
-                        <circle {{statusCircleParameters user/status}} />
+                        <circle {{statusCircleParameters partner/user/status}} />
                         </svg>
                         <br>
                         {{#if hasThingsToDisplay}}
@@ -56,5 +96,7 @@
                 </div>
             </a>
         </div>
+    {{else}}
+    <div class="member-slot sidebar-message">BAJ VAN</div>
     {{/if}}
 </template>

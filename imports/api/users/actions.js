@@ -31,7 +31,7 @@ Meteor.users.actions = {
     icon: 'fa fa-envelope',
     visible: true,
     run() {
-      Rooms.goToRoom('private chat', doc._id);
+      Rooms.goToPrivateChatRoom('private chat', doc._id);
       Modal.hideAll();
     },
   }),
@@ -48,8 +48,8 @@ Meteor.users.actions = {
   }),
   block: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'block',
-    label: doc.isFlaggedBy(user._id) ? __('Unblock user') : __('Block user'),
-    icon: doc.isFlaggedBy(user._id) ? 'fa fa-check' : 'fa fa-ban',
+    label: doc && doc.isFlaggedBy(user._id) ? __('Unblock user') : __('Block user'),
+    icon: doc && doc.isFlaggedBy(user._id) ? 'fa fa-check' : 'fa fa-ban',
     visible: true,
     run() {
       Meteor.users.methods.flag.call({ id: doc._id }, handleError);

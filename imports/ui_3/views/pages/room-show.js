@@ -10,9 +10,11 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
+import { Deals } from '/imports/api/marketplace/deals/deals.js';
 
 import '../components/members-panel.js';
 import '../components/contact-long.js';
+import '../components/listing-box.js';
 import './room-show.html';
 
 function messageFooterToBottom() {
@@ -48,7 +50,7 @@ Template.Room_show.onRendered(function() {
   });
 });
 
-Template.Room_show.helpers({
+Template.Room_show.viewmodel({
   selectedRoomId() {
     return FlowRouter.getParam('_rid');
   },
@@ -67,6 +69,18 @@ Template.Room_show.helpers({
     // const participantList = room.participantIds.map(pid => Meteor.users.findOne(pid).displayOfficialName()).join(' ');
     const otherPersonId = room.participantIds.filter(pid => pid !== Meteor.userId())[0];
     return Meteor.users.findOne(otherPersonId);
+  },
+  selectedDeal() {
+    const roomId = FlowRouter.getParam('_rid');
+    const deal = Deals.findOne({ roomId });
+    console.log('selectedDeal', deal);
+    return deal;
+  },
+  selectedListing() {
+    const deal = this.selectedDeal();
+    const listing = deal?.listing();
+    console.log('selectedListing', listing);
+    return listing;
   },
 });
 

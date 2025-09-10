@@ -37,7 +37,6 @@ Listings.helpers({
     return Communities.findOne(this.communityId);
   },
   activeDeals() {
-    return []; // TODO
     const Deals = Mongo.Collection.get('deals');
     return Deals.find({ listingId: this._id, active: true });
   },

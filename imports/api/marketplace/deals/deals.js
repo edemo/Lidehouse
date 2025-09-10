@@ -4,6 +4,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
+import { debugAssert } from '/imports/utils/assert.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Listings } from '/imports/api/marketplace/listings/listings.js';
@@ -12,27 +14,48 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 export const Deals = new Mongo.Collection('deals');
 
-Deals.statusValues = ['interested', 'confirmed', 'canceled', 'reviewed'];
+Deals.statusValues = ['interested', 'confirmed', 'canceled'];
 
 Deals.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   listingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  participantIds: { type: Array, optional: true, autoform: { omit: true } },
+  'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   partner1Id: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
   partner2Id: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
-  partner1Status: { type: String, optional: true, allowedValues: Deals.statusValues },
-  partner2Status: { type: String, optional: true, allowedValues: Deals.statusValues },
+  partner1Status: { type: String, optional: true, allowedValues: Deals.statusValues, defaultValue: 'interested' },
+  partner2Status: { type: String, optional: true, allowedValues: Deals.statusValues, defaultValue: 'interested' },
+  partner1ReviewId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  partner2ReviewId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   roomId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   active: { type: Boolean, defaultValue: true },
 });
 
 Meteor.startup(function indexDeals() {
-  //  Deals.ensureIndex({ communityId: 1 });
-  Deals.ensureIndex({ listing: 1, active: 1 });
+  Deals.ensureIndex({ roomId: 1, });
+  Deals.ensureIndex({ listingId: 1, active: 1 });
   Deals.ensureIndex({ partner1Id: 1, partner1Status: 1 });
   Deals.ensureIndex({ partner2Id: 1, partner2Status: 1 });
+  if (Meteor.isClient && MinimongoIndexing) {
+    Deals._collection._ensureIndex(['participantIds']);
+  } else if (Meteor.isServer) {
+    Deals._ensureIndex({ communityId: 1, participantIds: 1 });
+  }
 });
 
 Deals.helpers({
+  partner1() {
+    return Partners.findOne(this.partner1Id);
+  },
+  partner2() {
+    return Partners.findOne(this.partner2Id);
+  },
+  otherPartner(user) {
+    const userPartnerId = user.partnerId(this.communityId);
+    if (userPartnerId === this.partner1Id) return this.partner2();
+    else if (userPartnerId === this.partner2Id) return this.partner1();
+    else { debugAssert(false); return undefined; }
+  },
   community() {
     return Communities.findOne(this.communityId);
   },
@@ -46,7 +69,16 @@ Deals.helpers({
     return Partners.findOne(this.partner2Id);
   },
   dealStatus() {
-    return 'inquiry', 'preapproved', 'requested', 'confirmed', 'executed', 'reviewed';
+    // statusValues: 'inquiry', 'preapproved', 'requested', 'confirmed', 'canceled', 'executed';
+    if (this.partner1Status === 'canceled' || this.partner2Status === 'canceled') return 'canceled';
+    if (this.partner1Status === 'interested') {
+      if (this.partner2Status === 'interested') return 'inquiry';
+      if (this.partner2Status === 'confirmed') return 'requested';
+    } else if (this.partner1Status === 'conrimed') {
+      if (this.partner2Status === 'interested') return 'preapproved';
+      if (this.partner2Status === 'confirmed') return 'confirmed';
+    }
+    debugAssert(false, `No such combo: ${this.partner1Status} ${this.partner2Status}`);
   },
   getRoom() {
     if (this.roomId) return Topics.findOne(roomId);
