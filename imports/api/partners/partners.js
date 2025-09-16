@@ -192,14 +192,29 @@ Partners.helpers({
     if (days > 90) return 'danger';
     return 'info';
   },
+  reviews() {
+    const Reviews = Mongo.Collection.get('reviews');
+    return Reviews.find({ revieweeId: this._id });
+  },
   marketActivity() {
-    return this.displayName().length; // TODO
+//    return this.displayName().length; // TODO
+    return this.reviews().count();
   },
   marketRating() {
-    return this.displayName().length % 4 + 0.5; // TODO
+//    return this.displayName().length % 4 + 0.5; // TODO
+    let sum = 0, count = 0;
+    this.reviews().map(r => { sum += r.rating; count += 1 });
+    return sum / count;
   },
   marketBalance() {
-    return this.displayName().length * 1500; // TODO
+//    return this.displayName().length * 1500; // TODO
+    let result = 0;
+    const Deals = Mongo.Collection.get('deals');
+    Deals.find({ partner1Status: 'confirmed', partner2Status: 'confirmed', participantIds: this.userId }).forEach(deal => {
+      const sign = deal.signOf(this);
+      result += sign * deal.price;
+    });
+    return result;
   },
   // --- END ---
   toString() {

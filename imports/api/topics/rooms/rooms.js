@@ -6,8 +6,16 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Topics } from '../topics.js';
 
-export const Rooms = {};    // a bunch of static helpers
+export const Rooms = {};
 
+Topics.categoryHelpers('room', {
+  deal() {
+    const Deals = Mongo.Collection.get('deals');
+    return Deals.findOne({ roomId: this._id });
+  },
+});
+
+ // a bunch of static helpers
 if (Meteor.isClient) {
   import { FlowRouter } from 'meteor/kadira:flow-router';
   import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';

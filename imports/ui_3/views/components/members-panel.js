@@ -56,7 +56,10 @@ Template.Members_panel.onCreated(function onCreated() {
     const userId = Meteor.userId();
     if (communityId && userId) {
       this.subscribe('topics.roomsOfUser', { communityId, userId });
-      this.subscribe('deals.ofUser', { communityId, userId });
+      this.subscribe('buckets.inCommunity', { communityId });
+      this.subscribe('listings.inCommunity', { communityId });
+      this.subscribe('deals.inCommunity', { communityId });
+      this.subscribe('reviews.inCommunity', { communityId });
     }
   });
 });
@@ -104,7 +107,6 @@ Template.Members_panel.viewmodel({
   existingRooms(roomMode) {
     const communityId = ModalStack.getVar('communityId');
     const rooms = Topics.find({ communityId, category: 'room', title: roomMode });
-    console.log('existingRooms', rooms.fetch());
     return rooms;
   },
   existingRoomMembers(roomMode) {
@@ -120,7 +122,6 @@ Template.Members_panel.viewmodel({
   existingDeals() {
     const communityId = ModalStack.getVar('communityId');
     const deals = Deals.find({ communityId, participantIds: Meteor.userId() });
-    console.log('existingDeals', deals.fetch());
     return deals;
   },
   unseenEventsCount(roomMode) {

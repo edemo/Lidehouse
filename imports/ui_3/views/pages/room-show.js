@@ -11,6 +11,7 @@ import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { Deals } from '/imports/api/marketplace/deals/deals.js';
+import '/imports/api/marketplace/deals/actions.js';
 
 import '../components/members-panel.js';
 import '../components/contact-long.js';
@@ -73,15 +74,14 @@ Template.Room_show.viewmodel({
   selectedDeal() {
     const roomId = FlowRouter.getParam('_rid');
     const deal = Deals.findOne({ roomId });
-    console.log('selectedDeal', deal);
     return deal;
   },
   selectedListing() {
     const deal = this.selectedDeal();
     const listing = deal?.listing();
-    console.log('selectedListing', listing);
     return listing;
   },
+
 });
 
 // -------------------- Msg_box ---------------------------
@@ -109,13 +109,16 @@ Template.Message_subscriber.onRendered(function tmplMsgBoxOnRendered() {
   });*/
 });
 
-Template.Message_history.helpers({
+Template.Message_history.viewmodel({
   messages() {
     const roomId = FlowRouter.getParam('_rid');
     return Comments.find({ topicId: roomId }, { sort: { createdAt: 1 } });
   },
   ownMessage(comment) {
     return comment.creatorId === Meteor.userId();
+  },
+  leftOrRight(comment) {
+    return this.ownMessage(comment) ? 'right' : 'left';
   },
 });
 

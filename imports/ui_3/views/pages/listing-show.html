@@ -5,7 +5,7 @@
         <!-- Page heading -->
         {{> Page_heading title=pageTitle smallTitle=smallTitle crumbs=pageCrumbs }}
     
-        <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
     
             <div class="row">
                 <div class="col-lg-12">
@@ -55,6 +55,10 @@
                                         <dd>{{this.location}}</dd>
                                         <dt>{{_ 'schemaListings.delivery.label'}}</dt>
                                         <dd>{{displayStringArray this.delivery 'schemaListings.delivery.options.'}}</dd>
+                                        <dt>{{_ 'schemaListings.uom.label'}}</dt>
+                                        <dd>{{this.uom}}</dd>
+                                        <dt>{{_ 'schemaListings.quantity.label'}}</dt>
+                                        <dd>{{this.quantity}}</dd>
                                         <dt>{{_ 'schemaListings.keywords.label'}}</dt>
                                         <dd>{{this.keywords}}</dd>
                                     </dl>

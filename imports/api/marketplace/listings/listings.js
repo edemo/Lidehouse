@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
+import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
 import { Relations } from '/imports/api/core/relations.js';
@@ -24,6 +25,8 @@ Listings.schema = new SimpleSchema({
   bucket: { type: String, max: 500, autoform: { ...chooseBucket } },
   keywords: { type: String, max: 1000, optional: true },
   price: { type: Number, optional: true },
+  uom: { type: String, max: 25, optional: true },
+  quantity: { type: Number, optional: true },
 });
 
 Meteor.startup(function indexListings() {
@@ -47,6 +50,17 @@ Listings.attachBehaviour(Timestamped);
 Listings.attachBehaviour(AttachmentField());
 
 Listings.simpleSchema().i18n('schemaListings');
+
+// -----------------
+
+export const chooseListing = {
+  options() {
+    return Listings.find({}).map(function option(v) {
+      return { label: v.title, value: v._id };
+    });
+  },
+  firstOption: () => __('(Select one)'),
+};
 
 // --- Factory ---
 

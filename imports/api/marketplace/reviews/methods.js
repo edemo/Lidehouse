@@ -3,8 +3,10 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkNotExists, checkModifier, checkPermissions, checkPermissionsWithApprove } from '/imports/api/method-checks.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
+import { Deals } from '/imports/api/marketplace/deals/deals.js';
 import { Reviews } from './reviews.js';
 
 export const insert = new ValidatedMethod({
@@ -12,8 +14,29 @@ export const insert = new ValidatedMethod({
   validate: Reviews.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    checkPermissions(this.userId, 'reviews.insert', doc);
-    return Reviews.insert(doc);
+    const deal = checkExists(Deals, doc.dealId);
+    if (!_.contains(deal.participantIds, this.userId)) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `${this.userId}, ${JSON.stringify(doc)}`);
+    }
+    if (deal.dealStatus() !== 'confirmed') {
+      throw new Meteor.Error('err_constraint', 'Deal needs to be confirmed before reviewing');
+    }
+    const user = Meteor.users.findOne(this.userId);
+    const partnerId = user.partnerId(doc.communityId);
+    let partnerNo;
+    if (partnerId === deal.partner1Id) partnerNo = 'partner1';
+    else if (partnerId === deal.partner2Id) partnerNo = 'partner2';
+    else debugAssert(false);
+    const reviewIdField = `${partnerNo}ReviewId`;
+    let _id;
+    if (deal[reviewIdField]) {
+      throw new Meteor.Error('err_constraint', 'Deal already reviewed by this party');
+    } else {
+      _id = Reviews.insert(doc);
+      Deals.direct.update(deal._id, { $set: { [reviewIdField]: _id } });
+    }
+    return _id;
   },
 });
 

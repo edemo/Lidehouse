@@ -907,7 +907,7 @@
   "The reading is much higher than expected": "A leolvasott érték jelentősen nagyobb a vártnál. Elképzelhető, hogy rossz helyre tette a tizedes vesszőt. Biztos hogy rögzíti ezt az állást?",
   "editMeterReadingsWarning": "Ön most közvetlenül szerkeszti a(z) [__identifier__](__service__) mérőóra korábbi leolvasásait.\nNem javasoljuk hogy változtasson vagy töröljön már kiszámlázott óraállást, ugyanis ezzel a már kiállított számlákra nem fog hatni, és így a leolvasások nem lesznek többé összhangban a kiállított számlákkal.",
   "You are obligated to go through with the deal": "A kérelmezéssel a hirdetésben megadott feltételeket és értéket elfogadja. Ha elküldi a kérelmezést, és a hirdető ezt jóváhagyja, akkor az ügylettől már senki nem léphet vissza. Amennyiben szeretne egyeztetni előtte az ügylet pontos feltételeiről, akkor nyomjon a Mégse gombra és válassza inkább az Üzenet a hirdetőnek funkciót. ", 
-
+  "You are cancelling the deal": "A visszavonással visszalép az ügylettől.",
   "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",
   "deletedUser": "Törölt felhasználó",

@@ -1,6 +1,6 @@
 <template name="Action_button">
     {{#if action.visible}}
-    <a {{dataObject}} href="{{action.href}}" class="btn btn-{{btnSize}} btn-{{btnColor}} js-{{action.name}}" title="{{#unless long}}{{title}}{{/unless}}">
+    <a {{dataObject}} href="{{action.href}}" class="{{class}} btn btn-{{btnSize}} btn-{{btnColor}} js-{{action.name}}" title="{{#unless long}}{{title}}{{/unless}}">
       <i class="{{action.icon}}"></i>
       {{#if long}}
           {{#if equals size 'md'}}<strong>{{title}}</strong>{{else}}{{title}}{{/if}}
@@ -36,7 +36,7 @@
         {{#if action.subActions}}
             {{>Action_sub_actions_button action=action size=size}}
         {{else}}
-            {{>Action_button action=action size=size}}
+            {{>Action_button action=action size=size class=class}}
         {{/if}}
     {{/each}}
   </div>

@@ -1744,6 +1744,15 @@
     "price": {
       "label": "Value"
     },
+    "uom": {
+      "label": "Unit of measurment",
+      "help": "Should correspond with the price",
+      "placeholder": "(eg. piece, kilogramm, bundle, ...)"
+    },
+    "quantity": {
+      "label": "Available quantity",
+      "help": "If it set, the system will reduce the quantity with each succesful deal, and will send out an Out of Stock message to every other requestor when the quantity reaches zero. You can set a very high number, like 999, if you have infinite amount available."
+    },
     "delivery": {
       "label": "Delivery",
       "options": {
@@ -1763,11 +1772,39 @@
   "schemaDeals": {
     "_": {
       "label": "Deal"
+    },
+    "status": {
+      "label": "Status",
+      "options": {
+        "inquiry": "Inquiry",
+        "requested": "Requested",
+        "confirmed": "Confirmed",
+        "canceled": "Canceled",
+        "preapproved": "Preapproved"
+      }
     }
   },
   "schemaReviews": {
     "_": {
       "label": "Review"
+    },
+    "listingId": {
+      "label": "Reviewed listing"
+    },
+    "reviewerId": {
+      "label": "Reviewer"
+    },
+    "revieweeId": {
+      "label": "Reviewee"
+    },
+    "rating": {
+      "label": "Rating",
+      "help": "Please rate based on the following: Did I receive exactly what was described in the listing. If the listing described a 20 year old used item, it should not be rated down because of its quality. But if it was adverstised to be better than it is, then the low rating is justified.",
+      "placeholder": "(eg. 4.9)"
+    },
+    "text": {
+      "label": "Description (if you wish to add)",
+      "placeholder": "(eg. I was very pleased with the product, exactly as described)"
     }
   },
   "schemaSharedfolders": {

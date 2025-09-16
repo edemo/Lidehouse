@@ -1,3 +1,10 @@
+<template name="Market_balance">
+    <a href=# class="btn btn-xs btn-outline btn-{{color}} pull-right">
+        <!--i class="fa fa-large fa-plus-square"></i> 12 780 -->
+        <i class="fa fa-large {{icon}}"></i> {{displayCurrency absValue}}
+    </a>
+</template>
+
 <template name="Partner_rating">
     <div>
         <a href="" class="pull-left">
@@ -16,11 +23,8 @@
             <i class="fa fa-star-half-empty"></i> 
             <i class="fa fa-star-o"></i--> ({{this.partner.marketActivity}})
         </span>
-        <a href=# class="btn btn-xs btn-outline btn-danger pull-right">
-            <!--i class="fa fa-large fa-plus-square"></i> 12 780 -->
-            <i class="fa fa-large fa-minus-square"></i> {{displayCurrency this.partner.marketBalance}}
-        </a>
-    </div>  
+        {{> Market_balance value=this.partner.marketBalance }}
+    </div>
 </template>
 
 <template name="Marketplace_page">

@@ -7,6 +7,7 @@ import { Factory } from 'meteor/dburles:factory';
 import { debugAssert } from '/imports/utils/assert.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
+import { modifierChangesField, autoValueUpdate } from '/imports/api/mongo-utils.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Listings } from '/imports/api/marketplace/listings/listings.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
@@ -19,6 +20,8 @@ Deals.statusValues = ['interested', 'confirmed', 'canceled'];
 Deals.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   listingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  text: { type: String, max: 5000,  optional: true, autoform: { type: 'markdown' } },
+  price: { type: Number, optional: true },
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   partner1Id: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
@@ -74,13 +77,19 @@ Deals.helpers({
     if (this.partner1Status === 'interested') {
       if (this.partner2Status === 'interested') return 'inquiry';
       if (this.partner2Status === 'confirmed') return 'requested';
-    } else if (this.partner1Status === 'conrimed') {
+    } else if (this.partner1Status === 'confirmed') {
       if (this.partner2Status === 'interested') return 'preapproved';
       if (this.partner2Status === 'confirmed') return 'confirmed';
     }
     debugAssert(false, `No such combo: ${this.partner1Status} ${this.partner2Status}`);
   },
-  getRoom() {
+  isReviewed() {
+    return (this.partner1ReviewId && this.partner2ReviewId);
+  },
+  calculateActive() {
+    return !(this.dealStatus() === 'canceled' || this.isReviewed());
+  },
+  getRoom() { // Client side call
     if (this.roomId) return Topics.findOne(roomId);
     else if (this.partner1Id && this.partner2Id && Meteor.isClient()) {
       Meteor.call('topics.insert', {
@@ -95,11 +104,33 @@ Deals.helpers({
       }));
     }
   },
+  signOf(partner) {
+    let result = 1;
+    const listing = this.listing();
+    if (listing.relation === 'customer') result *= -1;
+    else debugAssert(listing.relation === 'supplier');
+    if (partner._id === this.partner2Id) result *= -1;
+    else debugAssert(partner._id === this.partner1Id);
+    return result;
+  },
 });
 
 Deals.attachSchema(Deals.schema);
 Deals.attachBehaviour(Timestamped);
 Deals.simpleSchema().i18n('schemaDeals');
+
+if (Meteor.isServer) {
+  Deals.before.insert(function (userId, doc) {
+    const tdoc = this.transform();
+    tdoc.active = tdoc.calculateActive();
+  });
+
+  Deals.before.update(function (userId, doc, fieldNames, modifier, options) {
+    const tdoc = this.transform();
+    autoValueUpdate(Deals, doc, modifier, 'active', d => d.calculateActive());
+  });
+}
+
 
 // --- Factory ---
 

@@ -66,8 +66,7 @@
                     <img alt="avatar" class="img-circle message-avatar" src="{{absoluteUrl partner.avatar}}">
                     {{#if deal}}
                     <div class="m-t-xs">
-                        4.6
-                        <i class="fa fa-star text-warning"></i>
+                        {{partner.marketRating}} <i class="fa fa-star text-warning"></i>
                     </div>
                     {{/if}}
                 </div>
@@ -78,7 +77,8 @@
                     {{/if}}
                     {{#if deal}}
                     <strong>{{deal.listing.title}}</strong><br>
-                    <small class="text-muted">status: {{deal.dealStatus}}</small>
+                    <small class="text-muted">{{_ 'status'}}: {{_ (concat 'schemaDeals.status.options.' deal.dealStatus)}}</small><br>
+                    {{>Action_buttons_group collection='deals' doc=deal actions='confirmDeal,reviewDeal' size='lg'}}
                     {{/if}}
                 </div>
                 <div class="media-body pull-right">
@@ -97,6 +97,6 @@
             </a>
         </div>
     {{else}}
-    <div class="member-slot sidebar-message">BAJ VAN</div>
+    <div class="member-slot sidebar-message">ERROR</div>
     {{/if}}
 </template>

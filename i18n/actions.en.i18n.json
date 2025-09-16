@@ -177,6 +177,26 @@
       "do": "request listing",
       "doing": "requesting the listing",
       "done": "listing requested"
+    },
+    "confirmDeal": {
+      "label": "confirm",
+      "do": "confirm",
+      "done": "confirmed"
+    },
+    "cancelDeal": {
+      "label": "cancel",
+      "do": "cancel",
+      "done": "canceled"
+    },
+    "proposeDeal": {
+      "label": "propose deal",
+      "do": "propose deal",
+      "done": "proposed a deal"
+    },
+    "reviewDeal": {
+      "label": "review",
+      "do": "review",
+      "done": "reviewed"
     }
   },
 
@@ -368,6 +388,14 @@
     "listing": {
       "label": "listing",
       "it": "the listing"
+    },
+    "deal": {
+      "label": "deal",
+      "it": "the deal"
+    },
+    "review": {
+      "label": "review",
+      "it": "the review"
     },
     "sharedfolder": {
       "label": "folder",

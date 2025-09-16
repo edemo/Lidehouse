@@ -189,6 +189,26 @@
       "do": "kérelmezi",
       "doing": "kérelmez",
       "done": "kérelmezte"
+    },
+    "confirmDeal": {
+      "label": "jóváhagyás",
+      "do": "jóváhagyja",
+      "done": "jóváhagyja"
+    },
+    "cancelDeal": {
+      "label": "visszavonás",
+      "do": "visszavonja",
+      "done": "visszalépett"
+    },
+    "proposeDeal": {
+      "label": "ajánlat tétel",
+      "do": "ajánlatot tesz",
+      "done": "ajánlatott tett"
+    },
+    "reviewDeal": {
+      "label": "értékelés",
+      "do": "értékeli",
+      "done": "értékelve"
     }
   },
 
@@ -380,6 +400,14 @@
     "listing": {
       "label": "hirdetés",
       "it": "a hirdetést"
+    },
+    "deal": {
+      "label": "ügylet",
+      "it": "az ügyletet"
+    },
+    "review": {
+      "label": "értékelés",
+      "it": "az értékelést"
     },
     "sharedfolder": {
       "label": "mappa",

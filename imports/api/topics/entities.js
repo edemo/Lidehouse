@@ -67,4 +67,8 @@ Topics.entities = {
         // TODO: if modalContext has contract, here we could launch this issue in scheduled state
     },
   },
+  room: {
+    name: 'room',
+    schema: Topics.simpleSchema({ category: 'room' }),
+  },
 };

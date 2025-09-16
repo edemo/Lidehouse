@@ -145,7 +145,7 @@ export const Permissions = [
   { name: 'listings.remove',        roles: nobody, allowAuthor: true },
   { name: 'deals.inCommunity',      roles: exceptGuest },
   { name: 'deals.insert',           roles: exceptGuest },
-  { name: 'deals.update',           roles: ['manager'], allowAuthor: true },
+  { name: 'deals.update',           roles: nobody, allowAuthor: true },
   { name: 'deals.remove',           roles: nobody, allowAuthor: true },
   { name: 'reviews.inCommunity',    roles: exceptGuest },
   { name: 'reviews.insert',         roles: exceptGuest },

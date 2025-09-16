@@ -17,6 +17,22 @@ import './marketplace-page.html';
 const listingShows = { 'browse': { icon: 'shopping-cart' }, 'favorites': { icon: 'heart-o' }, 'my listings' : { icon: 'user-circle' }};
 const displayModes = { 'grid': { icon: 'th' }, 'list' : { icon: 'bars' }};
 
+Template.Market_balance.helpers({
+  absValue() {
+    return Math.abs(this.value);
+  },
+  color() {
+    if (this.value < -50000) return 'danger';
+    else if (this.value < -25000) return 'warning';
+    else if (this.value < 0) return 'info';
+    else return 'primary';
+  },
+  icon() {
+    if (this.value < 0) return 'fa-minus-square';
+    else return 'fa-plus-square'
+  },
+});
+
 Template.Marketplace_page.viewmodel({
   activeRelation: 'supplier',
   activeListingShow: 'browse',

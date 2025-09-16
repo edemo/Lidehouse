@@ -4,8 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
-import { allowedOptions } from '/imports/utils/autoform.js';
-import { Listings } from '/imports/api/marketplace/listings/listings.js';
+import { Listings, chooseListing } from '/imports/api/marketplace/listings/listings.js';
 import { Deals } from '/imports/api/marketplace/deals/deals.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -14,12 +13,14 @@ export const Reviews = new Mongo.Collection('reviews');
 
 Reviews.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  listingId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  dealId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  reviwerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
-  reviweeId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
-  rating: { type: Number, decimal: true },
-  text: { type: String, max: 5000, autoform: { type: 'markdown' } },
+  listingId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseListing, disabled: true} },
+  dealId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  reviewerUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  revieweeUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  reviewerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  revieweeId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden'} },
+  rating: { type: Number, decimal: true, min: 0, max: 5 },
+  text: { type: String, optional: true, max: 5000 },
 });
 
 Meteor.startup(function indexReviews() {
@@ -50,11 +51,19 @@ Reviews.helpers({
 
 Reviews.attachSchema(Reviews.schema);
 Reviews.attachBehaviour(Timestamped);
+
 Reviews.simpleSchema().i18n('schemaReviews');
+
+if (Meteor.isServer) {
+  Reviews.after.insert(function (userId, doc) {
+ //   const Deals = Mongo.Collection.get('deals');
+ //   Deals.direct.update(doc.dealId, partner1)
+  });
+}
 
 // --- Factory ---
 
-Factory.define('listing', Listings, {
+Factory.define('review', Reviews, {
   rating: '5',
-  text: 'Great',
+  text: 'Great stuff!',
 });
