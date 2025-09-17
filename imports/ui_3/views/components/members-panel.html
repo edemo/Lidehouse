@@ -26,7 +26,7 @@
                     </div>
                 </div>
             </div>
-            {{#if Template.subscriptionsReady}}
+            {{#if (and activeCommunityId Template.subscriptionsReady)}}
                 <div>
                 {{#if (equals tab.name 'private chat')}}
                     {{#each membership in leaders}}   <!-- normally there is exactly 1 manager (kk) -->
@@ -62,7 +62,7 @@
     {{#if partner.user}}
         <div class="member-slot sidebar-message">
             <a href="">
-                <div class="pull-left text-center">
+                <div class="pull-left text-center js-room-link">
                     <img alt="avatar" class="img-circle message-avatar" src="{{absoluteUrl partner.avatar}}">
                     {{#if deal}}
                     <div class="m-t-xs">
@@ -71,13 +71,13 @@
                     {{/if}}
                 </div>
                 <div class="media-body">
-                    <strong>{{partner.displayName}}</strong><br>
+                    <strong class="js-room-link">{{partner.displayName}}</strong><br>
                     {{#if membership}}
-                    <small class="text-muted">({{membership.displayRole}})</small>
+                    <small class="text-muted js-room-link">({{membership.displayRole}})</small>
                     {{/if}}
                     {{#if deal}}
-                    <strong>{{deal.listing.title}}</strong><br>
-                    <small class="text-muted">{{_ 'status'}}: {{_ (concat 'schemaDeals.status.options.' deal.dealStatus)}}</small><br>
+                    <strong class="js-room-link">{{deal.listing.title}}</strong><br>
+                    <small class="text-muted js-room-link">{{_ 'status'}}: {{_ (concat 'schemaDeals.status.options.' deal.dealStatus)}}</small><br>
                     {{>Action_buttons_group collection='deals' doc=deal actions='confirmDeal,reviewDeal' size='lg'}}
                     {{/if}}
                 </div>

@@ -5,6 +5,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
+import { allSubscriptionsReady } from '/imports/utils/all-subscriptions-ready.js';
 import { isImage } from 'meteor/droka:autoform-ufs/lib/client/af-file-upload.js';
 import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
@@ -206,6 +207,7 @@ export function displayValue(key, value) {
 }
 
 if (Meteor.isClient) {
+  Template.registerHelper('allSubscriptionsReady', allSubscriptionsReady);
   Template.registerHelper('isImage', isImage);
   Template.registerHelper('checkBoolean', checkBoolean);
   Template.registerHelper('checkmarkBoolean', checkmarkBoolean);

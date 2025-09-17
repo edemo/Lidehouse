@@ -57,7 +57,11 @@ Deals.helpers({
     const userPartnerId = user.partnerId(this.communityId);
     if (userPartnerId === this.partner1Id) return this.partner2();
     else if (userPartnerId === this.partner2Id) return this.partner1();
-    else { debugAssert(false); return undefined; }
+    else { 
+      console.log('ERROR Partners count', Partners.find({}).count());
+      debugAssert(userPartnerId === undefined); 
+      return undefined;
+    }
   },
   community() {
     return Communities.findOne(this.communityId);
@@ -89,20 +93,8 @@ Deals.helpers({
   calculateActive() {
     return !(this.dealStatus() === 'canceled' || this.isReviewed());
   },
-  getRoom() { // Client side call
-    if (this.roomId) return Topics.findOne(roomId);
-    else if (this.partner1Id && this.partner2Id && Meteor.isClient()) {
-      Meteor.call('topics.insert', {
-        communityId: ModalStack.getVar('communityId'),
-        participantIds: [this.partner1Id, this.partner2Id],
-        category: 'room',
-        title: this.listing().title,
-        text: 'market chat',
-        status: 'opened',
-      }, onSuccess((res) => {
-        FlowRouter.go('Room show', { _rid: res });
-      }));
-    }
+  room() {
+    if (this.roomId) return Topics.findOne(this.roomId);
   },
   signOf(partner) {
     let result = 1;

@@ -54,12 +54,15 @@ Template.Members_panel.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = ModalStack.getVar('communityId');
     const userId = Meteor.userId();
-    if (communityId && userId) {
-      this.subscribe('topics.roomsOfUser', { communityId, userId });
+    if (communityId) {
+      this.subscribe('partners.inCommunity', { communityId });
       this.subscribe('buckets.inCommunity', { communityId });
       this.subscribe('listings.inCommunity', { communityId });
       this.subscribe('deals.inCommunity', { communityId });
       this.subscribe('reviews.inCommunity', { communityId });
+    }
+    if (communityId && userId) {
+      this.subscribe('topics.roomsOfUser', { communityId, userId });
     }
   });
 });
@@ -121,8 +124,11 @@ Template.Members_panel.viewmodel({
   },
   existingDeals() {
     const communityId = ModalStack.getVar('communityId');
-    const deals = Deals.find({ communityId, participantIds: Meteor.userId() });
-    return deals;
+    const deals = Deals.find({ communityId, participantIds: Meteor.userId() }).fetch();
+    return _.sortBy(deals, d => {
+      const room = d.room();
+      return room ? -1 * room.updatedAt : 0;
+    });;
   },
   unseenEventsCount(roomMode) {
     const communityId = ModalStack.getVar('communityId');
@@ -205,7 +211,7 @@ Template.Member_slot.viewmodel({
 });
 
 Template.Member_slot.events({
-  'click .member-slot'(event, instance) {
+  'click .js-room-link'(event, instance) {
     const room = instance.viewmodel.existingRoom();
     if (room) Rooms.goToExistingRoom(room._id);
     else if (instance.data.roomMode === 'private chat') Rooms.goToPrivateChatRoom(instance.data.roomMode, instance.data.membership.userId);  // creates the chat room

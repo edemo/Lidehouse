@@ -204,7 +204,8 @@ Partners.helpers({
 //    return this.displayName().length % 4 + 0.5; // TODO
     let sum = 0, count = 0;
     this.reviews().map(r => { sum += r.rating; count += 1 });
-    return sum / count;
+    const avg = sum / count;
+    return avg.toFixed(2);
   },
   marketBalance() {
 //    return this.displayName().length * 1500; // TODO
