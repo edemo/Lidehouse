@@ -1777,7 +1777,7 @@
       "label": "Status",
       "options": {
         "inquiry": "Inquiry",
-        "requested": "Requested",
+        "requested": "Submitted",
         "confirmed": "Confirmed",
         "canceled": "Canceled",
         "preapproved": "Preapproved"

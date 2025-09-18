@@ -173,10 +173,18 @@
       "doing": "messaging the lister"
     },
     "requestDeal": {
-      "label": "request listing",
-      "do": "request listing",
-      "doing": "requesting the listing",
-      "done": "listing requested"
+      "requestDeal": {
+        "customer": {
+          "label": "request",
+          "do": "request",
+          "done": "requested"
+        },
+        "supplier": {
+          "label": "offer",
+          "do": "offer",
+          "done": "offered"
+        }
+      }
     },
     "confirmDeal": {
       "label": "confirm",

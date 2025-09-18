@@ -5,6 +5,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
 import { __ } from '/imports/localization/i18n.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { BatchAction } from '/imports/api/batch-action.js';
@@ -82,14 +83,14 @@ Listings.actions = {
     },
   }),
   requestDeal: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'requestDeal',
+    name: 'requestDeal.' + Relations.opposite(doc.relation),
     icon: 'fa fa-handshake-o',
     color: 'primary',
     visible: user.hasPermission('listings.inCommunity', doc),
     run() {
       const communityId = getActiveCommunityId();
       Modal.confirmAndCall(Deals.methods.initiate, { communityId, listingId: doc._id, partner2Status: 'confirmed' }, {
-        action: 'requestDeal',
+        action: 'requestDeal.' + Relations.opposite(doc.relation),
         entity: 'listing',
         message: 'You are obligated to go through with the deal',
       });

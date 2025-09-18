@@ -79,7 +79,7 @@ export function displayStringArray(array, translatePath = '') {
   return text;
 }
   
-export function displayAccountText(code) {
+export function displayAccountText(code, longForm = true) {
   if (!code) return '';
 //  const collection = [Accounts, Parcels, Buckets].find(coll => coll.rootCode === code.charAt(0));
   let collection;
@@ -95,8 +95,8 @@ export function displayAccountText(code) {
     account = collection.getByCode(nonTechnicalCode);
     if (isTechnical) account = Accounts.toTechnical(account);  
   } else account = collection.getByCode(code);
-  
-  return account?.displayFull() || code;
+  const text = longForm ? account?.displayFull() : __(account?.name);
+  return text || code;
 }
 
 export function displayAccount(code) {

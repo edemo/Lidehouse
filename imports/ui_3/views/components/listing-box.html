@@ -11,17 +11,15 @@
             {{/if}}
             </a>
            <div class="product-desc">
-                    <span class="product-price">
-                        {{displayCurrency this.price}}
-                    </span>
-                <small class="text-muted">{{this.category}}</small>
-                <a href={{pathFor 'Listing show' _lid=this._id}} class="product-name"> {{this.title}}</a>
-
-
-
-                <div class="small m-t-xs">
-                   {{this.text}}
-                </div>
+                <span class="product-price">
+                    {{displayCurrency this.price}}
+                </span>
+                <span class="label label-xs pull-right">{{_ (concat 'schemaListings.relation.options.' this.relation)}}</span>
+                <small class="text-muted">{{displayAccountText this.bucket false}}</small>
+                <span>
+                    <a href={{pathFor 'Listing show' _lid=this._id}} class="product-name"> {{this.title}}</a>
+                </span>
+                <div class="small m-t-xs">{{this.text}}</div>
                 <hr>
                 {{#if equals currentUser._id this.creatorId}}
                     {{#let interestedDeals=this.activeDeals}}

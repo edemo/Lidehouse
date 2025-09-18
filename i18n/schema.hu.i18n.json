@@ -1738,8 +1738,8 @@
     "relation": {
       "label": "Hirdetés típus",
       "options": {
-        "supplier": "Felajánláso",
-        "customer": "Szükséglete"
+        "supplier": "Felajánlás",
+        "customer": "Szükséglet"
       }
     },
     "creatorId": {
@@ -1793,7 +1793,7 @@
       "label": "Státusz",
       "options": {
         "inquiry": "Érdeklődés",
-        "requested": "Kérelmezve",
+        "requested": "Jelentkezve",
         "confirmed": "Véglegesítve",
         "canceled": "Visszavonva",
         "preapproved": "Jóváhagyva"

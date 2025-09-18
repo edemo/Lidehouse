@@ -185,10 +185,16 @@
       "doing": "üzenet küldése a hirdetőnek"
     },
     "requestDeal": {
-      "label": "kérelmezés",
-      "do": "kérelmezi",
-      "doing": "kérelmez",
-      "done": "kérelmezte"
+      "customer": {
+        "label": "kérelmezés",
+        "do": "kérelmezi",
+        "done": "kérelmezve"
+      },
+      "supplier": {
+        "label": "felajánlás",
+        "do": "felajánlja",
+        "done": "felajánlva"
+      }
     },
     "confirmDeal": {
       "label": "jóváhagyás",

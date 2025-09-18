@@ -906,7 +906,7 @@
   "This will send the bill again": "Ezzel ismételten elküldi a számlát a tranzakciós partnernek",
   "The reading is much higher than expected": "A leolvasott érték jelentősen nagyobb a vártnál. Elképzelhető, hogy rossz helyre tette a tizedes vesszőt. Biztos hogy rögzíti ezt az állást?",
   "editMeterReadingsWarning": "Ön most közvetlenül szerkeszti a(z) [__identifier__](__service__) mérőóra korábbi leolvasásait.\nNem javasoljuk hogy változtasson vagy töröljön már kiszámlázott óraállást, ugyanis ezzel a már kiállított számlákra nem fog hatni, és így a leolvasások nem lesznek többé összhangban a kiállított számlákkal.",
-  "You are obligated to go through with the deal": "A kérelmezéssel a hirdetésben megadott feltételeket és értéket elfogadja. Ha elküldi a kérelmezést, és a hirdető ezt jóváhagyja, akkor az ügylettől már senki nem léphet vissza. Amennyiben szeretne egyeztetni előtte az ügylet pontos feltételeiről, akkor nyomjon a Mégse gombra és válassza inkább az Üzenet a hirdetőnek funkciót. ", 
+  "You are obligated to go through with the deal": "A hirdetésre való jelentkezéssel a hirdetésben megadott feltételeket és értéket elfogadja. Ha elküldi a jelentkezést, és a hirdető ezt jóváhagyja, akkor az ügylettől már senki nem léphet vissza. Ha szeretne előtte még egyeztetni az ügylet pontos feltételeiről, és értékéről, akkor nyomjon a Mégse gombra és válassza inkább az Üzenet a hirdetőnek funkciót.", 
   "You are cancelling the deal": "A visszavonással visszalép az ügylettől.",
   "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",
@@ -925,7 +925,7 @@
     "Kérjük, ha itt a profil oldalon adta meg rosszul adatait, akkor javítsa itt azokat, ha viszont a képviselet tudja rosszul, és önt nem úgy hívják hogy __personName__, akkor kérje közös képviselőjét, hogy ő ezt javítsa.",
     "Addig a __communityName__ közösségben az ön hozzászólásai és szavazatai mellett a többi tulajdonos hivatalos névként azt fogja látni: __personName__."],
 
-  "s": "k",
+  "s": "_k",
   "":"",
 
   // Months (in charts) 
