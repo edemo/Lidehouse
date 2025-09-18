@@ -12,6 +12,8 @@ import { Buckets, chooseBucket } from '/imports/api/marketplace/buckets/buckets.
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { AttachmentField } from '/imports/api/behaviours/attachment-field.js';
+import { Likeable } from '/imports/api/behaviours/likeable.js';
+import { Flagable } from '/imports/api/behaviours/flagable.js';
 
 export const Listings = new Mongo.Collection('listings');
 
@@ -33,6 +35,7 @@ Meteor.startup(function indexListings() {
   Listings.ensureIndex({ communityId: 1, bucket: 1 });
   Listings.ensureIndex({ communityId: 1, location: 1 });
   Listings.ensureIndex({ creatorId: 1 });
+  Listings.ensureIndex({ likes: 1 });
 });
 
 Listings.helpers({
@@ -48,6 +51,8 @@ Listings.helpers({
 Listings.attachSchema(Listings.schema);
 Listings.attachBehaviour(Timestamped);
 Listings.attachBehaviour(AttachmentField());
+Listings.attachBehaviour(Likeable);
+Listings.attachBehaviour(Flagable);
 
 Listings.simpleSchema().i18n('schemaListings');
 

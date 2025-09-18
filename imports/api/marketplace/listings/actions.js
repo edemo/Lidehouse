@@ -64,11 +64,11 @@ Listings.actions = {
   }),
   like: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'like',
-    label: 'kedvencek közé',
-    icon: 'fa fa-heart',
+    label: doc && doc.isLikedBy(user._id) ? 'cancel favorite' : 'add to favorites',
+    icon: doc && doc.isLikedBy(user._id) ? 'fa fa-heart-o' : 'fa fa-heart',
     visible: doc.creatorId !== user._id && user.hasPermission('like.toggle', doc),
     run() {
-      // Topics.methods.like.call({ id: doc._id }, handleError);
+       Listings.methods.like.call({ id: doc._id }, handleError);
     },
   }),
   inquireDeal: (options, doc, user = Meteor.userOrNull()) => ({

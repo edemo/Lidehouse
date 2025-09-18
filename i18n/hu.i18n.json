@@ -686,7 +686,9 @@
   "activity": "aktivitás",
   "user interested": "érdeklődő",
   "users interested": "érdeklődők listája",
-
+  "add to favorites": "kedvencek közé",
+  "cancel favorite": "kedvenc visszavonás",
+  
   // docstore
   "Show": "Listázva",
   "All": "Minden",

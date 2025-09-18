@@ -14,7 +14,7 @@ import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/acti
 import '/imports/ui_3/views/components/listing-box.js';
 import './marketplace-page.html';
 
-const listingShows = { 'browse': { icon: 'shopping-cart' }, 'favorites': { icon: 'heart-o' }, 'my listings' : { icon: 'user-circle' }};
+const listingShows = { 'browse': { icon: 'shopping-cart' }, 'favorites': { icon: 'heart' }, 'my listings' : { icon: 'user-circle' }};
 const displayModes = { 'grid': { icon: 'th' }, 'list' : { icon: 'bars' }};
 
 Template.Market_balance.helpers({
@@ -88,7 +88,9 @@ Template.Marketplace_page.viewmodel({
     const show = this.activeListingShow();
     if (show === 'my listings') selector.creatorId = Meteor.userId();
     else selector.creatorId = { $ne: Meteor.userId() };
-//    if (show === 'favorites') TODO
+    if (show === 'favorites') {
+      selector.likes = Meteor.userId();
+    }
     let listings = Listings.find(selector).fetch();
     if (this.searchText()) {
       listings = listings.filter(t =>
