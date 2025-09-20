@@ -162,21 +162,22 @@ Deals.actions = {
     },
     run() {
       const options = {};
-      const partnerId = user.partnerId(doc.communityId);
+      const partner = user.partner(doc.communityId);
       const otherPartner = doc.otherPartner(user);
+      const relation = doc.relationOf(partner);
       const reviewDoc = {
         communityId: doc.communityId,
         listingId: doc.listingId,
         dealId: doc._id,
         reviewerUserId: user._id,
         revieweeUserId: otherPartner.userId,
-        reviewerId: partnerId,
+        reviewerId: partner._id,
         revieweeId: otherPartner._id,
       };
 //    Reviews.actions.create(options, doc).run();
       Modal.show('Autoform_modal', {
         id: 'af.review.create',
-        description: "schemaReviews.rating.help",
+        description: relation + 'ReviewInstructions',
         collection: Reviews,
         doc: reviewDoc,
         type: 'method',

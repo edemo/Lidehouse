@@ -16,12 +16,12 @@
                 </tr-->
                 {{#each deal in partner.marketHistory.deals}}
                 <tr>
-                {{#let effectiveAmount=(deal.amountOf partner) }}
+                {{#let dealRelation=(deal.relationOf partner)}}
                     <td class="text-capitalize">{{deal.listing.title}}</td>
                     {{#let otherPartner=(deal.otherPartner partner.user)}}
                     <td class="text-right">
                         <img class="m-l-sm m-r-sm" alt="avatar" src={{absoluteUrl partner.avatar}} width="24">
-                        <button class="btn btn-xs btn-{{color effectiveAmount}}"><i class="fa fa-large fa-{{directionIcon effectiveAmount}}"></i></button>
+                        <button class="btn btn-xs btn-{{color dealRelation}}"><i class="fa fa-large {{directionIcon dealRelation}}"></i></button>
                         <img class="m-l-sm m-r-sm" alt="avatar" src={{absoluteUrl otherPartner.avatar}} width="24">  
                     </td>
                     <td class="text-capitalize">{{otherPartner}}</td>
@@ -31,7 +31,8 @@
                     {{/let}}
                     <td class="text-right"><i class="fa fa-clock-o"></i> {{displayTimeFrom deal.updatedAt}}</td>
                     <td class="text-right">
-                        <i class="fa fa-large btn-{{color effectiveAmount}} {{icon effectiveAmount}}"></i> {{displayCurrency (abs effectiveAmount)}}
+                        <span class="btn btn-outline btn-xs btn-{{color dealRelation}}" style="padding: 1px 1px; border: none"><i class="fa {{signIcon dealRelation}}"></i></span> 
+                        {{displayCurrency (abs deal.price)}}
                     </td>
                 {{/let}}
                 </tr>

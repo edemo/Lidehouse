@@ -1826,12 +1826,12 @@
     },
     "rating": {
       "label": "Értékelés",
-      "help": "0 és 5 közötti skálán értékelje azt hogy mennyire felelt meg a leszállított termék vagy szolgáltatás annak ami a leírásában szerepelt. Pédául ha a leírásban egy 20 éves rozoga használt termék szerepelt, akkor nem érdemel alacsony értékelést azért mert rozoga, de ha a terméket jobban írták le, mint ami, akkor jogos az alacsonyabb értékelés. Ha semmit nem szállított le az illető, akkor 0-ás értékelés az indokolt.",
+      "help": "Értékelje 0 és 5 között. Ahol az 5-ös a legjobb, a 0 a legalacsonyabb értékelés.",
       "placeholder": "(pl. 4.9)"
     },
     "text": {
-      "label": "Leírás (ha szeretne hozzáfűzni)",
-      "placeholder": "(pl. Nagyon meg voltam elégedve a termékkel, teljesen megfelelt a leírásnak.)"
+      "label": "Szöveges megjegyzés",
+      "placeholder": "Ha szeretne hozzáfűzni..."
     }
   },
   "schemaSharedfolders": {

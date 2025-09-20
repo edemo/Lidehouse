@@ -5,7 +5,7 @@ Reviews.actions = {
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: user.hasPermission('reviews.inCommunity', doc),
+    visible: user.hasPermission('reviews.inCommunity', doc) && doc.text,
     run() {
       Modal.show('Autoform_modal', {
         id: `af.review.view`,

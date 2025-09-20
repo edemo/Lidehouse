@@ -4,10 +4,11 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
 import { modifierChangesField, autoValueUpdate } from '/imports/api/mongo-utils.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Listings } from '/imports/api/marketplace/listings/listings.js';
@@ -126,6 +127,13 @@ Deals.helpers({
   },
   amountOf(partner) {
     return this.signOf(partner) * this.price;
+  },
+  relationOf(partner) {
+    const listing = this.listing();
+    let result = listing.relation;
+    if (partner._id === this.partner2Id) result = Relations.opposite(result);
+    else productionAssert(partner._id === this.partner1Id);
+    return result;
   },
 });
 

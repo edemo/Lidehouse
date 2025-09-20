@@ -20,7 +20,7 @@ Reviews.schema = new SimpleSchema({
   reviewerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   revieweeId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden'} },
   rating: { type: Number, decimal: true, min: 0, max: 5 },
-  text: { type: String, optional: true, max: 5000 },
+  text: { type: String, optional: true, max: 2000,  autoform: { rows: 5 } },
 });
 
 Meteor.startup(function indexReviews() {
@@ -54,12 +54,6 @@ Reviews.attachBehaviour(Timestamped);
 
 Reviews.simpleSchema().i18n('schemaReviews');
 
-if (Meteor.isServer) {
-  Reviews.after.insert(function (userId, doc) {
- //   const Deals = Mongo.Collection.get('deals');
- //   Deals.direct.update(doc.dealId, partner1)
-  });
-}
 
 // --- Factory ---
 

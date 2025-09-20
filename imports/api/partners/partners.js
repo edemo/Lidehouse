@@ -9,7 +9,6 @@ import rusdiff from 'rus-diff';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { debugAssert } from '/imports/utils/assert.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';

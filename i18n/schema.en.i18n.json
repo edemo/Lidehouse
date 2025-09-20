@@ -1810,12 +1810,12 @@
     },
     "rating": {
       "label": "Rating",
-      "help": "Please rate based on the following: Did I receive exactly what was described in the listing. If the listing described a 20 year old used item, it should not be rated down because of its quality. But if it was adverstised to be better than it is, then the low rating is justified.",
+      "help": "Please rate between 0 and 5, where 5 is the best score.",
       "placeholder": "(eg. 4.9)"
     },
     "text": {
-      "label": "Description (if you wish to add)",
-      "placeholder": "(eg. I was very pleased with the product, exactly as described)"
+      "label": "Comments",
+      "placeholder": "If you wish to add..."
     }
   },
   "schemaSharedfolders": {

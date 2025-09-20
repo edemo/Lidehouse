@@ -4,6 +4,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { $ } from 'meteor/jquery';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import './marketplace-history.html';
 
 Template.Marketplace_history.viewmodel({
@@ -17,20 +18,20 @@ Template.Marketplace_history.viewmodel({
   communityId() {
     return ModalStack.getVar('communityId');
   },
-  color(amount) {
-    if (amount < -50000) return 'danger';
-    else if (amount < -25000) return 'warning';
-    else if (amount < 0) return 'info';
-    else return 'primary';
+  color(relation) {
+//    if (amount < -50000) return 'danger';
+//    else if (amount < -25000) return 'warning';
+//    else
+    if (relation === 'customer') return 'info';
+    else { debugAssert(relation === 'supplier'); return 'primary'; }
   },
-  icon(amount) {
-    if (amount < 0) return 'fa-minus-square';
-    else return 'fa-plus-square'
+  signIcon(relation) {
+    if (relation === 'customer') return 'fa-minus-square';
+    else { debugAssert(relation === 'supplier'); return 'fa-plus-square'; }
   },
-  directionIcon(amount) {
-    if (amount < 0) return 'arrow-left';
-    else if (amount > 0) return 'arrow-right';
-    else return 'question-mark'
+  directionIcon(relation) {
+    if (relation === 'customer') return 'fa-arrow-left';
+    else { debugAssert(relation === 'supplier'); return 'fa-arrow-right'; }
   },
   abs(amount) {
     return Math.abs(amount);

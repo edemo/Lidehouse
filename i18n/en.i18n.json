@@ -180,7 +180,10 @@
 
   // marketplace
   "warningProposal": "Sending the proposal becomes binding, if the other party also accepts it.",
-  
+  "reviewInstructions": "Review instructions",
+  "customerReviewInstructions": "Rating should be between 0 and 5, based on how much the received product or service matched the listing details. Ask yourself, Did I receive exactly what was described in the listing. If the listing described a 20 year old used item, it should not be rated low because of its quality, because that was clear from the listing. But if the item was adverstised to be better than it is in reality, then a low rating is justified. Zero rating is justified, if nothing was delivered.",
+  "supplierReviewInstructions": "Please rate, how well the taking of the product or service went comapred to what was discussed.",
+
   // import
   "importing data": "importing %s data",
 
