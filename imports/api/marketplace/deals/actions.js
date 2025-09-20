@@ -110,7 +110,7 @@ Deals.actions = {
       Modal.confirmAndCall(Deals.methods.confirm, { _id: doc._id }, {
         action: 'confirmDeal',
         entity: 'deal',
-        message: 'You are obligated to go through with the deal',
+        message: __('warningConfirmation', doc),
       });
     },
   }),
@@ -141,12 +141,13 @@ Deals.actions = {
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.deal.edit',
-//        description: "schemaReviews.rating.help",
+        description: 'warningProposal',
         collection: Deals,
         fields: ['text', 'price'],
         doc,
-        type: 'method',
+        type: 'method-update',
         meteormethod: 'deals.update',
+        singleMethodArgument: true,
       });
     },
   }),

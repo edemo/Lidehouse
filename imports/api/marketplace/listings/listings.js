@@ -20,7 +20,7 @@ export const Listings = new Mongo.Collection('listings');
 Listings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   relation: { type: String, allowedValues: Relations.mainValues, autoform: _.extend({}, allowedOptions, { value: () => ModalStack.getVar('relation') }) },
-  title: { type: String, max: 100 },
+  title: { type: String, max: 50 },
   text: { type: String, max: 5000, autoform: { type: 'markdown' } },
   location: { type: String, max: 100, optional: true },
   delivery: { type: [String], max: 100, optional: true, autoform: { type: 'select-checkbox' } },

@@ -8,20 +8,25 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { allowedOptions } from '/imports/utils/autoform.js';
 import { modifierChangesField, autoValueUpdate } from '/imports/api/mongo-utils.js';
+import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Listings } from '/imports/api/marketplace/listings/listings.js';
-import { Partners, choosePartner } from '/imports/api/partners/partners.js';
+import { Reviews } from '/imports/api/marketplace/reviews/reviews.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 export const Deals = new Mongo.Collection('deals');
 
 Deals.statusValues = ['interested', 'confirmed', 'canceled'];
 
+Deals.proposalSchema = new SimpleSchema({
+  title: { type: String, max: 100,  optional: true },
+  text: { type: String, max: 5000,  optional: true },
+  price: { type: Number, optional: true },
+});
+
 Deals.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   listingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  text: { type: String, max: 5000,  optional: true, autoform: { type: 'markdown' } },
-  price: { type: Number, optional: true },
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   partner1Id: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...choosePartner } },
@@ -53,6 +58,12 @@ Deals.helpers({
   partner2() {
     return Partners.findOne(this.partner2Id);
   },
+  partner1Review() {
+    return this.partner1ReviewId && Reviews.findOne(this.partner1ReviewId);
+  },
+  partner2Review() {
+    return this.partner2ReviewId && Reviews.findOne(this.partner2ReviewId);
+  },
   otherPartner(user) {
     const userPartnerId = user.partnerId(this.communityId);
     if (userPartnerId === this.partner1Id) return this.partner2();
@@ -62,6 +73,12 @@ Deals.helpers({
       debugAssert(userPartnerId === undefined); 
       return undefined;
     }
+  },
+  otherPartnerReview(user) {
+    const userPartnerId = user.partnerId(this.communityId);
+    if (userPartnerId === this.partner1Id) return this.partner2Review();
+    else if (userPartnerId === this.partner2Id) return this.partner1Review();
+    else { debugAssert(userPartnerId === undefined); return undefined; }
   },
   community() {
     return Communities.findOne(this.communityId);
@@ -77,6 +94,7 @@ Deals.helpers({
   },
   dealStatus() {
     // statusValues: 'inquiry', 'preapproved', 'requested', 'confirmed', 'canceled', 'executed';
+    if (this.isReviewed()) return 'reviewed';
     if (this.partner1Status === 'canceled' || this.partner2Status === 'canceled') return 'canceled';
     if (this.partner1Status === 'interested') {
       if (this.partner2Status === 'interested') return 'inquiry';
@@ -91,7 +109,8 @@ Deals.helpers({
     return (this.partner1ReviewId && this.partner2ReviewId);
   },
   calculateActive() {
-    return !(this.dealStatus() === 'canceled' || this.isReviewed());
+    const status = this.dealStatus();
+    return status !== 'canceled' && status !== 'reviewed';
   },
   room() {
     if (this.roomId) return Topics.findOne(this.roomId);
@@ -105,9 +124,13 @@ Deals.helpers({
     else debugAssert(partner._id === this.partner1Id);
     return result;
   },
+  amountOf(partner) {
+    return this.signOf(partner) * this.price;
+  },
 });
 
 Deals.attachSchema(Deals.schema);
+Deals.attachSchema(Deals.proposalSchema);
 Deals.attachBehaviour(Timestamped);
 Deals.simpleSchema().i18n('schemaDeals');
 

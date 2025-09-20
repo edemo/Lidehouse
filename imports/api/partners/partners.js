@@ -207,13 +207,16 @@ Partners.helpers({
     const avg = sum / count;
     return avg.toFixed(2);
   },
-  marketBalance() {
+  marketHistory() {
 //    return this.displayName().length * 1500; // TODO
-    let result = 0;
+    const result = { debit: 0, credit: 0, amount: 0, deals: [] };
     const Deals = Mongo.Collection.get('deals');
-    Deals.find({ partner1Status: 'confirmed', partner2Status: 'confirmed', participantIds: this.userId }).forEach(deal => {
-      const sign = deal.signOf(this);
-      result += sign * deal.price;
+    Deals.find({ partner1Status: 'confirmed', partner2Status: 'confirmed', participantIds: this.userId }).fetch().reverse().forEach(deal => {
+      const effectiveAmount = deal.amountOf(this);
+      result.amount += effectiveAmount;
+      if (effectiveAmount > 0) result.debit += effectiveAmount;
+      else if (effectiveAmount < 0) result.credit -= effectiveAmount;
+      result.deals.push(deal);
     });
     return result;
   },

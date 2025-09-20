@@ -15,8 +15,7 @@
     
                             <div class="row">
                                 <div class="col-md-5">
-    
-    
+
                                     <div class="product-images">
                                         {{#each path in this.attachments}}
                                         <div>
@@ -32,6 +31,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-7"> 
+                                    {{> Partner_rating this.creator.partner activeCommunityId }}
+                                    <hr>
                                     <!-- create time before the right corner -->
                                     <div class="pull-right">
                                         <span class="label label-xs">{{_ (concat 'schemaListings.relation.options.' this.relation)}}</span>
@@ -63,10 +64,6 @@
                                         <dt>{{_ 'schemaListings.keywords.label'}}</dt>
                                         <dd>{{this.keywords}}</dd>
                                     </dl>
-                                    {{#unless mine}}
-                                        <hr>   
-                                        {{> Partner_rating this.creator }}
-                                    {{/unless}}
                                     <hr>
                                     <div class="text-right" data-id="{{this._id}}">
                                         <div class="btn-group">

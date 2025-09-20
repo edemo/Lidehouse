@@ -18,6 +18,7 @@ export const initiate = new ValidatedMethod({
   run(doc) {
     checkPermissions(this.userId, 'deals.insert', doc);
     const listing = checkExists(Listings, doc.listingId);
+    doc.title = listing.title;
     doc.text = listing.text;
     doc.price = listing.price;
     doc.participantIds = [listing.creatorId, this.userId];
@@ -56,7 +57,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Deals, _id);
-    checkModifier(doc, modifier, ['text, price']);
+    checkModifier(doc, modifier, ['text', 'price']);
 //    checkPermissions(this.userId, 'deals.update', doc);
     if (doc.partner1().userId !== this.userId) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',

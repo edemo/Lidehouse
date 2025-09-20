@@ -179,6 +179,9 @@ export function displayTxIdentifiers(name) {
   return result;
 }
 
+export function displayReview(review) {  
+}
+
 const Renderers = {
   'Topics.status': displayStatus,
   'Topics.notiLocalizer': displayLocalizer,

@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Buckets } from '/imports/api/marketplace/buckets/buckets.js';
@@ -12,6 +13,7 @@ import '/imports/api/marketplace/listings/actions.js';
 import { actionHandlers, ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import '/imports/ui_3/views/components/listing-box.js';
+import '/imports/ui_3/views/components/marketplace-history.js';
 import './marketplace-page.html';
 
 const listingShows = { 'browse': { icon: 'shopping-cart' }, 'favorites': { icon: 'heart' }, 'my listings' : { icon: 'user-circle' }};
@@ -19,19 +21,33 @@ const displayModes = { 'grid': { icon: 'th' }, 'list' : { icon: 'bars' }};
 
 Template.Market_balance.helpers({
   absValue() {
-    return Math.abs(this.value);
+    return Math.abs(this.amount);
   },
   color() {
-    if (this.value < -50000) return 'danger';
-    else if (this.value < -25000) return 'warning';
-    else if (this.value < 0) return 'info';
+    if (this.amount < -50000) return 'danger';
+    else if (this.amount < -25000) return 'warning';
+    else if (this.amount < 0) return 'info';
     else return 'primary';
   },
   icon() {
-    if (this.value < 0) return 'fa-minus-square';
+    if (this.amount < 0) return 'fa-minus-square';
     else return 'fa-plus-square'
   },
 });
+
+Template.Partner_rating.events({
+  'click .js-market-history'(event, instance) {
+    Modal.show('Modal', {
+      id: 'marketplacehistory.view',
+      title: __('Marketplace history'),
+      body: 'Marketplace_history',
+      bodyContext: instance.data,
+      size: 'lg',
+    });
+  },
+});
+
+// -------------------------------------------
 
 Template.Marketplace_page.viewmodel({
   activeRelation: 'supplier',

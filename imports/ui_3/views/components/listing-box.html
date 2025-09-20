@@ -1,6 +1,9 @@
 <template name="Listing_box">
     <div class="ibox">
         <div class="ibox-content product-box">
+            <div class="product-desc">
+                {{> Partner_rating this.creator.partner activeCommunityId }}
+            </div>
             <a href={{pathFor 'Listing show' _lid=this._id}}>
             {{#if isImage this.firstAttachment}}
                <img class="img-embed js-show-image" src="{{absoluteUrl this.firstAttachment}}"/>
@@ -20,8 +23,8 @@
                     <a href={{pathFor 'Listing show' _lid=this._id}} class="product-name"> {{this.title}}</a>
                 </span>
                 <div class="small m-t-xs">{{this.text}}</div>
-                <hr>
                 {{#if equals currentUser._id this.creatorId}}
+                    <hr>
                     {{#let interestedDeals=this.activeDeals}}
                     {{#if showInterestedDeals}}
                         <div class="m-b">
@@ -29,7 +32,7 @@
                         </div>
                         {{#each deal in interestedDeals}}
                             {{#let otherPartner=(deal.otherPartner currentUser)}}
-                            {{> Partner_rating otherPartner.user }}
+                            {{> Partner_rating otherPartner }}
                             {{/let}}
                             <hr>
                         {{/each}}                  
@@ -45,8 +48,6 @@
                         {{/if}}
                     {{/if}}
                     {{/let}}
-                {{else}}
-                    {{> Partner_rating this.creator }}
                 {{/if}}
             </div>
         </div>

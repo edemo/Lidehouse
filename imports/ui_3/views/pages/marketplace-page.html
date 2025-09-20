@@ -1,5 +1,5 @@
 <template name="Market_balance">
-    <a href=# class="btn btn-xs btn-outline btn-{{color}} pull-right">
+    <a class="btn btn-xs btn-outline btn-{{color}} pull-right">
         <!--i class="fa fa-large fa-plus-square"></i> 12 780 -->
         <i class="fa fa-large {{icon}}"></i> {{displayCurrency absValue}}
     </a>
@@ -7,23 +7,26 @@
 
 <template name="Partner_rating">
     <div>
-        <a href="" class="pull-left">
-        <img alt="avatar" class="message-avatar" src={{absoluteUrl this.avatar}}>
+        <a href="" class="pull-left js-market-history">
+        <img alt="avatar" class="message-avatar" src={{absoluteUrl this.user.avatar}}>
         </a> 
     </div>
-    <i class="fa fa-user m-l"></i> <span>{{this.displayOfficialName}}</span> 
+    <i class="fa fa-user m-l"></i> <span>{{this.user.displayOfficialName}}</span> 
     <span class="pull-right"><!--{{_ 'schemaMemberships._.label'}}-->
         <i class="fa fa-clock-o"></i> {{displayTimeFrom this.createdAt}}
     </span>
     <div class="m-t">
-        <span class="m-l"> {{this.partner.marketRating}}
+        <span class="m-l"> {{this.marketRating}}
             <i class="fa fa-star active"></i> 
             <!--i class="fa fa-star"></i> 
             <i class="fa fa-star"></i> 
             <i class="fa fa-star-half-empty"></i> 
-            <i class="fa fa-star-o"></i--> ({{this.partner.marketActivity}})
+            <i class="fa fa-star-o"></i--> 
+            (<a href="" class="js-market-history">{{this.marketActivity}}</a>)
         </span>
-        {{> Market_balance value=this.partner.marketBalance }}
+        <span class="js-market-history">
+            {{> Market_balance this.marketHistory }}
+        </span>
     </div>
 </template>
 
@@ -46,7 +49,7 @@
              <div class="col-sm-3">
                   <div class="btn-group">
                       {{#each relation in relationValues}}
-                      <button type="button" class="btn {{activeRelationClass relation}} js-relation-filter" data-value="{{relation}}">{{_ (concat 'schemaListings.relation.options.' relation)}}{{_ 's'}}</button>
+                      <button type="button" class="btn {{activeRelationClass relation}} js-relation-filter" data-value="{{relation}}">{{_ (concat 'schemaListings.relation.optionsMulti.' relation)}}</button>
                       {{/each}}
                   </div>   
               </div>
@@ -137,12 +140,12 @@
                                     <!--{{> Badge color='info' value=(this.blueBadgeCount currentUser._id Meteor.users.SEEN_BY.EYES)}}-->
                                     <small>{{>ChoppedChars text=this.text chars=150 markdown=true}}</small>
                                 </td>                
-                                <td>{{{displayAccount this.bucket}}}</td>
+                                <td>{{displayAccount this.bucket}}</td>
                                 <td>{{displayCurrency this.price}}</td>
                                 <td>{{this.creator}}</td>
                                 <td>{{this.location}}</td>
                                 <td class="text-right">
-                                    {{>Action_buttons_dropdown collection='listings' doc=this actions='view,edit,delete' size='lg'}}
+                                    {{>Action_buttons_dropdown collection='listings' doc=this size='lg'}}
                                 </td>
                             </tr>
                             {{/each}}

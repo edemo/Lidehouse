@@ -1724,6 +1724,10 @@
       "options": {
         "supplier": "Offer",
         "customer": "Need"
+      },
+      "optionsMulti": {
+        "supplier": "Offers",
+        "customer": "Needs"
       }
     },
     "creatorId": {
@@ -1780,8 +1784,15 @@
         "requested": "Submitted",
         "confirmed": "Confirmed",
         "canceled": "Canceled",
-        "preapproved": "Preapproved"
+        "preapproved": "Preapproved",
+        "reviewed": "Reviewed"
       }
+    },
+    "text": {
+      "label": "Proposed description"
+    },
+    "price": {
+      "label": "Proposed value"
     }
   },
   "schemaReviews": {

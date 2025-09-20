@@ -1740,6 +1740,10 @@
       "options": {
         "supplier": "Felajánlás",
         "customer": "Szükséglet"
+      },
+      "optionsMulti": {
+        "supplier": "Felajánlások",
+        "customer": "Szükségletek"
       }
     },
     "creatorId": {
@@ -1796,10 +1800,17 @@
         "requested": "Jelentkezve",
         "confirmed": "Véglegesítve",
         "canceled": "Visszavonva",
-        "preapproved": "Jóváhagyva"
+        "preapproved": "Jóváhagyva",
+        "reviewed": "Lebonyolítva"
       }
-    }
-  },
+    },
+    "text": {
+       "label": "Ajánlat leírása"
+    },
+    "price": {
+      "label": "Megjánlott ár/érték"
+   }
+ },
   "schemaReviews": {
     "_": {
       "label": "Értékelés"

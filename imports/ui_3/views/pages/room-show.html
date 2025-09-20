@@ -18,7 +18,7 @@
             <div class="message">
                 <a class="message-author" href=""> {{creator.displayOfficialName}} </a>
                 <span class="message-date"> {{displayTimeFrom createdAt}} </span>
-                <span class="message-content newlines">{{_ 'actions.statusChange.did'}}: <strong>{{_ (concat 'schemaDeals.status.options.' this.status)}}</strong></span>
+                <span class="message-content newlines text-muted">{{_ 'actions.statusChange.did'}}: <strong>{{_ (concat 'schemaDeals.status.options.' this.status)}}</strong></span>
             </div>
             <div>
                 {{>Action_buttons_group collection='deals' doc=this.topic.deal actions='cancelDeal,confirmDeal,proposeDeal,reviewDeal' size='md'}}

@@ -178,6 +178,9 @@
   // account
   "Localizer": "Accounting location",
 
+  // marketplace
+  "warningProposal": "Sending the proposal becomes binding, if the other party also accepts it.",
+  
   // import
   "importing data": "importing %s data",
 
