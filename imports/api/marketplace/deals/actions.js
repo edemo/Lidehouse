@@ -95,6 +95,22 @@ Deals.actions = {
       });
     },
   }),*/
+  cancelDeal: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'cancelDeal',
+    icon: 'fa fa-times',
+    visible() {
+      if (!doc?.listingId) return false;
+      const partnerId = user.partnerId(doc.communityId);
+      return (partnerId === doc.partner1Id || partnerId === doc.partner2Id) && doc.dealStatus() !== 'confirmed' && doc.dealStatus() !== 'canceled';
+    },
+    run() {
+      Modal.confirmAndCall(Deals.methods.cancel, { _id: doc._id }, {
+        action: 'cancelDeal',
+        entity: 'deal',
+        message: 'You are cancelling the deal',
+      });
+    },
+  }),
   confirmDeal: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'confirmDeal',
     icon: 'fa fa-check',
@@ -111,22 +127,6 @@ Deals.actions = {
         action: 'confirmDeal',
         entity: 'deal',
         message: __('warningConfirmation', doc),
-      });
-    },
-  }),
-  cancelDeal: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'cancelDeal',
-    icon: 'fa fa-times',
-    visible() {
-      if (!doc?.listingId) return false;
-      const partnerId = user.partnerId(doc.communityId);
-      return (partnerId === doc.partner1Id || partnerId === doc.partner2Id) && doc.dealStatus() !== 'confirmed' && doc.dealStatus() !== 'canceled';
-    },
-    run() {
-      Modal.confirmAndCall(Deals.methods.cancel, { _id: doc._id }, {
-        action: 'cancelDeal',
-        entity: 'deal',
-        message: 'You are cancelling the deal',
       });
     },
   }),
