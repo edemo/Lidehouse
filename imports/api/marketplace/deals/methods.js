@@ -59,12 +59,21 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Deals, _id);
     checkModifier(doc, modifier, ['text', 'price']);
 //    checkPermissions(this.userId, 'deals.update', doc);
-    if (doc.partner1().userId !== this.userId) {
+    if (doc.offeringPartner().userId !== this.userId) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
         `deals.update', ${this.userId}, ${JSON.stringify(doc)}`
       );  
     }
-    return Deals.update(_id, modifier);
+    const result = Deals.update(_id, modifier);
+    const statusChangeId = Comments.insert({
+      communityId: doc.communityId,
+      topicId: doc.roomId,
+      category: 'statusChange',
+      text: doc.text,
+      status: 'proposed',
+      dataUpdate: modifier.$set,
+    });
+    return result;
   },
 });
 

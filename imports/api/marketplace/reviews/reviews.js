@@ -20,7 +20,7 @@ Reviews.schema = new SimpleSchema({
   reviewerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   revieweeId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden'} },
   rating: { type: Number, decimal: true, min: 0, max: 5 },
-  text: { type: String, optional: true, max: 2000,  autoform: { rows: 5 } },
+  text: { type: String, optional: true, max: 2000,  autoform: { rows: 6 } },
 });
 
 Meteor.startup(function indexReviews() {

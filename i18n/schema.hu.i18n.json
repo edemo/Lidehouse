@@ -1801,15 +1801,21 @@
         "confirmed": "Véglegesítve",
         "canceled": "Visszavonva",
         "preapproved": "Jóváhagyva",
+        "proposed": "Ajánlat benyújtva",
         "reviewed": "Lebonyolítva"
       }
     },
+    "title": {
+      "label": "Hirdetés cím"
+    },
     "text": {
-       "label": "Ajánlat leírása"
+       "label": "Ajánlat leírása",
+       "help": "A speciális ajánlatban módosíthatja, vagy akár teljesen átírhatja az eredeti hírdetés tartalmát."
     },
     "price": {
-      "label": "Megjánlott ár/érték"
-   }
+      "label": "Megjánlott ár/érték",
+      "help": "Adja meg a megajánlott összértéket, a fent megajánlott leíráshoz."
+    }
  },
   "schemaReviews": {
     "_": {

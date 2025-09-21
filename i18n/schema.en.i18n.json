@@ -1785,14 +1785,20 @@
         "confirmed": "Confirmed",
         "canceled": "Canceled",
         "preapproved": "Preapproved",
+        "proposed": "Proposed",
         "reviewed": "Reviewed"
       }
     },
+    "title": {
+      "label": "Listing title"
+    },
     "text": {
-      "label": "Proposed description"
+      "label": "Proposed description",
+      "help": "In the propsed description you may change the original listing content partially or completely."
     },
     "price": {
-      "label": "Proposed value"
+      "label": "Proposed value",
+      "help": "Propose a sum value for the proposed content described above."
     }
   },
   "schemaReviews": {

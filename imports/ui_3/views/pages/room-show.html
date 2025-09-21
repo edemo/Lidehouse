@@ -19,6 +19,10 @@
                 <a class="message-author" href=""> {{creator.displayOfficialName}} </a>
                 <span class="message-date"> {{displayTimeFrom createdAt}} </span>
                 <span class="message-content newlines text-muted">{{_ 'actions.statusChange.did'}}: <strong>{{_ (concat 'schemaDeals.status.options.' this.status)}}</strong></span>
+                {{#if (equals this.status 'proposed')}}
+                <span class="message-content newlines text-muted"><strong>{{_ 'schemaDeals.text.label'}}</strong>: {{this.dataUpdate.text}}</span>
+                <span class="message-content newlines text-muted"><strong>{{_ 'schemaDeals.price.label'}}</strong>: {{this.dataUpdate.price}}</span>
+                {{/if}}
             </div>
             <div class="text-center">
                 {{>Action_buttons_group collection='deals' doc=this.topic.deal size='md'}}

@@ -136,14 +136,14 @@ Deals.actions = {
     visible() {
       if (!doc?.listingId) return false;
       const partnerId = user.partnerId(doc.communityId);
-      return partnerId === doc.partner1Id && doc.dealStatus() !== 'confirmed' && doc.dealStatus() !== 'canceled';
+      return partnerId === doc.offeringPartnerId() && doc.dealStatus() !== 'confirmed' && doc.dealStatus() !== 'canceled';
     },
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.deal.edit',
         description: 'warningProposal',
         collection: Deals,
-        fields: ['text', 'price'],
+        fields: ['title', 'text', 'price'],
         doc,
         type: 'method-update',
         meteormethod: 'deals.update',

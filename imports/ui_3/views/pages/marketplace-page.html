@@ -140,7 +140,7 @@
                                     <!--{{> Badge color='info' value=(this.blueBadgeCount currentUser._id Meteor.users.SEEN_BY.EYES)}}-->
                                     <small>{{>ChoppedChars text=this.text chars=150 markdown=true}}</small>
                                 </td>                
-                                <td>{{displayAccount this.bucket}}</td>
+                                <td>{{{displayAccount this.bucket}}}</td>
                                 <td>{{displayCurrency this.price}}</td>
                                 <td>{{this.creator}}</td>
                                 <td>{{this.location}}</td>

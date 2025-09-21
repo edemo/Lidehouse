@@ -20,8 +20,8 @@ export const Deals = new Mongo.Collection('deals');
 Deals.statusValues = ['interested', 'confirmed', 'canceled'];
 
 Deals.proposalSchema = new SimpleSchema({
-  title: { type: String, max: 100,  optional: true },
-  text: { type: String, max: 5000,  optional: true },
+  title: { type: String, max: 100,  optional: true, autoform: { readonly: true } },
+  text: { type: String, max: 5000,  optional: true, autoform: { rows: 6 } },
   price: { type: Number, optional: true },
 });
 
@@ -92,6 +92,15 @@ Deals.helpers({
   },
   inquiringPartner() {
     return Partners.findOne(this.partner2Id);
+  },
+  offeringPartnerId() {
+    const relation = this.listing().relation;
+    if (relation === 'supplier') return this.partner1Id;
+    else if (relation === 'customer') return this.partner2Id;
+    else { debugAssert(false); return undefined; }
+  },
+  offeringPartner() {
+    return Partners.findOne(this.offeringPartnerId());
   },
   dealStatus() {
     // statusValues: 'inquiry', 'preapproved', 'requested', 'confirmed', 'canceled', 'executed';
