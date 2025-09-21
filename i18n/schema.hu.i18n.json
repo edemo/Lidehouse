@@ -1740,10 +1740,6 @@
       "options": {
         "supplier": "Felajánlás",
         "customer": "Szükséglet"
-      },
-      "optionsMulti": {
-        "supplier": "Felajánlások",
-        "customer": "Szükségletek"
       }
     },
     "creatorId": {
@@ -1759,7 +1755,7 @@
     },
     "location": {
       "label": "Lokáció",
-      "placeholder": "(pl. Budapest)"
+      "placeholder": "(pl. Budapest)" 
     },
     "price": {
       "label": "Érték (Ft-ban)"

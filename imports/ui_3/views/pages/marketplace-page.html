@@ -49,7 +49,7 @@
              <div class="col-sm-3">
                   <div class="btn-group">
                       {{#each relation in relationValues}}
-                      <button type="button" class="btn {{activeRelationClass relation}} js-relation-filter" data-value="{{relation}}">{{_ (concat 'schemaListings.relation.optionsMulti.' relation)}}</button>
+                      <button type="button" class="btn {{activeRelationClass relation}} js-relation-filter" data-value="{{relation}}">{{_ (concat relation 'Listings')}}</button>
                       {{/each}}
                   </div>   
               </div>

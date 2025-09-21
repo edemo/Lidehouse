@@ -689,6 +689,8 @@
   "add to favorites": "kedvencek közé",
   "cancel favorite": "kedvenc visszavonás",
   "Marketplace history": "Ügylet lista",
+  "supplierListings": "Felajánlások",
+  "customerListings": "Szükségletek",
   "reviewInstructions": "Értékelési útmutató",
   "customerReviewInstructions": "Kérjük, értékelje 0 és 5 között, hogy a termék illetve szolgáltatás amit kapott mennyire felelt meg annak ami a hirdetés leírásában szerepelt. Az objektív értékelés érdekében ne azt osztályozza, hogy a termék mennyire jó, hanem azt hogy mennyire felel meg a leírásnak. Pédául ha a leírásban egy 20 éves életkorú rozoga varrógép szerepelt, akkor nem érdemel alacsony értékelést csak azért mert rozoga, hiszen ez volt meghírdetve. Viszont ha a terméket jobbnak írták le, mint ami valójában, akkor jogos ha alacsonyabb értékelést kap. Ha semmit nem adott át végül a hirdető, akkor a 0 értékelés az indokolt.",
   "supplierReviewInstructions": "Kérjük, értékelje 0 és 5 között, hogy a termék illetve szolgáltatás átvétele a megbeszélteknek megfelelően történt-e.",

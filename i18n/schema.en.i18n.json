@@ -1724,10 +1724,6 @@
       "options": {
         "supplier": "Offer",
         "customer": "Need"
-      },
-      "optionsMulti": {
-        "supplier": "Offers",
-        "customer": "Needs"
       }
     },
     "creatorId": {
