@@ -38,6 +38,6 @@ Template.registerHelper('pageIsPrintable', function pageIsPrintable() {
 
 Template.registerHelper('modalIsPrintable', function modalIsPrintable(id) {
   const details = afId2details(id);
-  if (details.action === 'view') return true;
+  if (_.contains(['bill', 'payment', 'receipt'], details.entity) && details.action === 'view') return true;
   return false;
 });
