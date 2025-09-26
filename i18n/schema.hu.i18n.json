@@ -1814,7 +1814,7 @@
     },
     "quantity": {
       "label": "Kérelmezett mennyiség",
-      "help": "A kérelmezett mennyiség nem lehet több, mint amennyi a hirdetésben rendelkezésre áll készkleten"
+      "help": "A kérelmezett mennyiség nem lehet több, mint amennyi a hirdetésben rendelkezésre áll készleten"
     },
     "price": {
       "label": "Összérték",

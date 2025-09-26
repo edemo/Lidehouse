@@ -916,10 +916,10 @@
   "This will send the bill again": "Ezzel ismételten elküldi a számlát a tranzakciós partnernek",
   "The reading is much higher than expected": "A leolvasott érték jelentősen nagyobb a vártnál. Elképzelhető, hogy rossz helyre tette a tizedes vesszőt. Biztos hogy rögzíti ezt az állást?",
   "editMeterReadingsWarning": "Ön most közvetlenül szerkeszti a(z) [__identifier__](__service__) mérőóra korábbi leolvasásait.\nNem javasoljuk hogy változtasson vagy töröljön már kiszámlázott óraállást, ugyanis ezzel a már kiállított számlákra nem fog hatni, és így a leolvasások nem lesznek többé összhangban a kiállított számlákkal.",
-  "You are obligated to go through with the deal": "A hirdetésre való jelentkezéssel a hirdetésben megadott feltételeket és értéket elfogadja. Ha elküldi a jelentkezést, és a hirdető ezt jóváhagyja, akkor az ügylettől már senki nem léphet vissza. Ha szeretne előtte még egyeztetni az ügylet pontos feltételeiről, és értékéről, akkor nyomjon a Mégse gombra és válassza inkább az Üzenet a hirdetőnek funkciót.", 
+  "warningInitiation": "A kérelmezett mennyiséget megadhatja ön, de a tartalmat és értéket a Kérelmezés elküldésével ön elfopgadja. Ha további információra lenne szüksége mielőtt az ügylethöz köti magát, vagy az értékkel vagy a tartalommal kapcsolatosan szeretne előtte egyezkedni, akkor a Mégse opciót válassza és Kérelmezés előtt kérje meg üzenetben a hirdetőt, hogy adjon további információt illetve küldjön önnek speciális ajánlatot, a kívánt feltételekkel.",
   "You are cancelling the deal": "A visszavonással visszalép az ügylettől.",
-  "warningProposal": "Adja meg a megajánlott feltételeket, és megajánlott összértéket. A szöveges részben leírhatja a speciális ajánlatot, ami eltérhet részben vagy egészben az eredeti hirdetés tartalmától, mennyiségétől és értékétől. FIGYELEM: Az ajánlat elküldése után, ha ezt a másik fél is elfogadja, az ügylettől már egyik fél sem léphet vissza.",
-  "warningConfirmation": "Kattintson az OK gombra, ha az alábbi feltételeket jóváhagyja az ügyletet. (A jóváhagyás után, ha ezt a másik fél is elfogadta, az ügylettől már egyik fél sem léphet vissza.)<br /><br /><strong>Leírás</strong><br />__text__<br /><strong>Ár/érték </strong><br /> __price__<br />",
+  "warningProposal": "A speciális ajánlat tartalmi leírása és értéke eltérhet részben vagy teljesen az eredeti hirdetés tartalmától és értékétől. Az ajánlat elküldésével ön köti magát ahhoz, hogy ezen feltételekkel az ügylet megvalósulhat, amennyiben ezt a másik fél is jóváhagyjha",
+  "warningConfirmation": "Amennyiben a hirdetést az alábbi feltételekkel megfelelőnek tartja, a Jóváhagyás gombbal hozzájárul, hogy az ügylet ezekkel a feltétlekkel megtörténjen.",
 
   "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",

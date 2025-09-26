@@ -12,7 +12,7 @@ import '/imports/api/topics/rooms/rooms.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { Deals } from '/imports/api/marketplace/deals/deals.js';
 import '/imports/api/marketplace/deals/actions.js';
-
+import '../blocks/chopped.js';
 import '../components/members-panel.js';
 import '../components/contact-long.js';
 import '../components/listing-box.js';

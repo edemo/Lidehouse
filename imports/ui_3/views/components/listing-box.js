@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 
+import '../blocks/chopped.js';
 import './listing-box.html';
 
 Template.Listing_box.viewmodel({
@@ -16,4 +17,3 @@ Template.Listing_box.events({
     instance.viewmodel.showInterestedDeals(true);
   },
 });
-

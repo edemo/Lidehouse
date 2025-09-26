@@ -28,9 +28,9 @@ Deals.actions = {
         id: 'af.deal.initiate',
         description: options.message,
         collection: Deals,
+        schema: Deals.initiateSchema,
         fields: ['communityId', 'listingId', 'partnerStatuses',
           'title', 'text', 'uom', 'quantity', 'price'],
-      //  schema: Deals.detailsSchema,
         doc,
         type: 'method',
         meteormethod: 'deals.initiate',
@@ -98,7 +98,7 @@ Deals.actions = {
       Modal.confirmAndCall(Deals.methods.initiate, { communityId, listingId: doc._id, partner2Status: 'confirmed' }, {
         action: 'requestDeal',
         entity: 'deal',
-        message: 'You are obligated to go through with the deal',
+        message: 'warningInitiation',
       });
     },
   }),*/

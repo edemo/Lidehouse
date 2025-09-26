@@ -92,7 +92,7 @@ Listings.actions = {
     visible: user.hasPermission('listings.inCommunity', doc),
     run() {
       const communityId = getActiveCommunityId();
-      const dealOptions = { message: 'You are obligated to go through with the deal' };
+      const dealOptions = { message: 'warningInitiation' };
       const dealDoc = {
         communityId,
         listingId: doc._id,

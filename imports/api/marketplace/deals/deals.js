@@ -23,7 +23,7 @@ Deals.detailsSchema = new SimpleSchema({
   title: { type: String, max: 100,  optional: true, autoform: { readonly: true } },
   text: { type: String, max: 2000,  optional: true, autoform: { rows: 6, readonly: true } },
   uom: { type: String, max: 25, optional: true, autoform: { readonly: true } },
-  quantity: { type: Number, optional: true },
+  quantity: { type: Number, optional: true,  autoform: { readonly: true } },
   price: { type: Number, optional: true, autoform: { readonly: true } },
 });
 
@@ -163,10 +163,12 @@ Deals.simpleSchema().i18n('schemaDeals');
 
 Deals.detailsSchema.i18n('schemaDeals');
 
+Deals.initiateSchema = new SimpleSchema(Deals.simpleSchema());
+Deals.initiateSchema._schema.quantity.autoform = { readonly: false };
 Deals.confirmSchema = new SimpleSchema(Deals.simpleSchema());
-Deals.confirmSchema._schema.quantity.autoform = { readonly: true };
 Deals.proposeSchema = new SimpleSchema(Deals.simpleSchema());
-Deals.proposeSchema._schema.text.autoform = { readonly: false };
+Deals.proposeSchema._schema.text.autoform = { rows: 6, readonly: false };
+Deals.proposeSchema._schema.quantity.autoform = { readonly: false };
 Deals.proposeSchema._schema.price.autoform = { readonly: false };
 
 if (Meteor.isServer) {
