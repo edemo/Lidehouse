@@ -19,24 +19,20 @@ export const insert = new ValidatedMethod({
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
         `${this.userId}, ${JSON.stringify(doc)}`);
     }
-    if (deal.dealStatus() !== 'confirmed') {
+    if (deal.dealStatus !== 'confirmed') {
       throw new Meteor.Error('err_constraint', 'Deal needs to be confirmed before reviewing');
     }
     const user = Meteor.users.findOne(this.userId);
     const partnerId = user.partnerId(doc.communityId);
-    let partnerNo;
-    if (partnerId === deal.partner1Id) partnerNo = 'partner1';
-    else if (partnerId === deal.partner2Id) partnerNo = 'partner2';
-    else debugAssert(false);
-    const reviewIdField = `${partnerNo}ReviewId`;
-    let _id;
-    if (deal[reviewIdField]) {
+    const partnerIndex = deal.indexOf(partnerId);
+    if (deal.reviewIds[partnerIndex]) {
       throw new Meteor.Error('err_constraint', 'Deal already reviewed by this party');
     } else {
-      _id = Reviews.insert(doc);
-      Deals.direct.update(deal._id, { $set: { [reviewIdField]: _id } });
+      const _id = Reviews.insert(doc);
+      deal.reviewIds[partnerIndex] = _id;
+      Deals.update(deal._id, { $set: { reviewIds: deal.reviewIds } });
+      return _id;
     }
-    return _id;
   },
 });
 

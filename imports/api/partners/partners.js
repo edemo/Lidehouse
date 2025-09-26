@@ -202,7 +202,7 @@ Partners.helpers({
   marketRating() {
 //    return this.displayName().length % 4 + 0.5; // TODO
     let sum = 0, count = 0;
-    this.reviews().map(r => { sum += r.rating; count += 1 });
+    this.reviews().map(r => { sum += r.rating; count += 1; });
     const avg = sum / count;
     return avg.toFixed(2);
   },
@@ -210,8 +210,8 @@ Partners.helpers({
 //    return this.displayName().length * 1500; // TODO
     const result = { debit: 0, credit: 0, amount: 0, deals: [] };
     const Deals = Mongo.Collection.get('deals');
-    Deals.find({ partner1Status: 'confirmed', partner2Status: 'confirmed', participantIds: this.userId }).fetch().reverse().forEach(deal => {
-      const effectiveAmount = deal.amountOf(this);
+    Deals.find({ dealStatus: 'reviewed', participantIds: this.userId }).fetch().reverse().forEach(deal => {
+      const effectiveAmount = deal.amountOf(this._id);
       result.amount += effectiveAmount;
       if (effectiveAmount > 0) result.debit += effectiveAmount;
       else if (effectiveAmount < 0) result.credit -= effectiveAmount;

@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
+import { Relations } from '/imports/api/core/relations.js';
 import { Listings, chooseListing } from '/imports/api/marketplace/listings/listings.js';
 import { Deals } from '/imports/api/marketplace/deals/deals.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
@@ -13,14 +14,16 @@ export const Reviews = new Mongo.Collection('reviews');
 
 Reviews.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  relation: { type: String, allowedValues: Relations.mainValues, autoform: { type: 'hidden' } },
   listingId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseListing, disabled: true} },
   dealId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   reviewerUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   revieweeUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   reviewerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  revieweeId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden'} },
+  revieweeId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   rating: { type: Number, decimal: true, min: 0, max: 5 },
   text: { type: String, optional: true, max: 2000,  autoform: { rows: 6 } },
+//  privateText: { type: String, optional: true, max: 2000,  autoform: { rows: 6 } },
 });
 
 Meteor.startup(function indexReviews() {
@@ -53,7 +56,6 @@ Reviews.attachSchema(Reviews.schema);
 Reviews.attachBehaviour(Timestamped);
 
 Reviews.simpleSchema().i18n('schemaReviews');
-
 
 // --- Factory ---
 

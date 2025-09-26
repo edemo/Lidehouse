@@ -4,6 +4,7 @@ import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { _ } from 'meteor/underscore';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { leaderRoles } from '/imports/api/permissions/roles.js';
@@ -166,11 +167,14 @@ Template.Member_slot.onCreated(function onMsgPartnerCreated() {
 
 Template.Member_slot.viewmodel({
   partner() {
-    if (this.templateInstance.data.membership) return this.templateInstance.data.membership.partner();
-    if (this.templateInstance.data.deal) return this.templateInstance.data.deal.otherPartner(Meteor.user());
-    debugAssert(false);
+    if (this.templateInstance.data.membership) {
+      return this.templateInstance.data.membership.partner();
+    } else if (this.templateInstance.data.deal) {
+      const userPartner = Meteor.user().partner();
+      return this.templateInstance.data.deal.otherPartner(userPartner._id);
+    } else { debugAssert(false); return undefined; }
   },
-  existingRoom(){
+  existingRoom() {
     if (this.templateInstance.data.membership) return Rooms.getRoom(this.templateInstance.data.roomMode, this.templateInstance.data.membership.userId);
     else if (this.templateInstance.data.deal) return Topics.findOne(this.templateInstance.data.deal.roomId);
     else { debugAssert(false); return undefined; }

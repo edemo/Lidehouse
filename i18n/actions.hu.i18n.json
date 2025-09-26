@@ -199,22 +199,31 @@
     "confirmDeal": {
       "label": "jóváhagyás",
       "do": "jóváhagyja",
+      "doing": "jóváhagyása",
       "done": "jóváhagyja"
     },
     "cancelDeal": {
       "label": "visszavonás",
       "do": "visszavonja",
-      "done": "visszalépett"
+      "doing": "visszavonása",
+      "done": "visszavonva"
     },
     "proposeDeal": {
       "label": "ajánlat tétel",
       "do": "ajánlatot tesz",
+      "doing": "ajánlat tétele",
       "done": "ajánlatott tett"
     },
     "reviewDeal": {
       "label": "értékelés",
       "do": "értékeli",
       "done": "értékelve"
+    },
+    "initiate": {
+      "label": "kezdeményezés",
+      "do": "kezdeményezi",
+      "doing": "kezdeményezése",
+      "done": "kezdeményezve"
     }
   },
 
@@ -408,8 +417,8 @@
       "it": "a hirdetést"
     },
     "deal": {
-      "label": "ajánlat",
-      "it": "az ajánlatot"
+      "label": "ügylet",
+      "it": "az ügyletet"
     },
     "review": {
       "label": "értékelés",

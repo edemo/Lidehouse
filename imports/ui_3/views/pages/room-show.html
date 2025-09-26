@@ -2,6 +2,7 @@
 </template>
 
 <template name="Message_history">
+    {{#let lastStatusChangeId=lastStatusChange._id}}
     {{#each messages}}
         {{#if equals this.category 'comment'}}
             <div class="chat-message {{leftOrRight this}}">
@@ -19,17 +20,22 @@
                 <a class="message-author" href=""> {{creator.displayOfficialName}} </a>
                 <span class="message-date"> {{displayTimeFrom createdAt}} </span>
                 <span class="message-content newlines text-muted">{{_ 'actions.statusChange.did'}}: <strong>{{_ (concat 'schemaDeals.status.options.' this.status)}}</strong></span>
-                {{#if (equals this.status 'proposed')}}
+                {{#if (or (includes this.dataUpdate.partnerStatuses 'confirmed') (includes this.dataUpdate.partnerStatuses 'proposed')) }}
                 <span class="message-content newlines text-muted"><strong>{{_ 'schemaDeals.text.label'}}</strong>: {{this.dataUpdate.text}}</span>
+                <span class="message-content newlines text-muted"><strong>{{_ 'schemaDeals.uom.label'}}</strong>: {{this.dataUpdate.uom}}</span>
+                <span class="message-content newlines text-muted"><strong>{{_ 'schemaDeals.quantity.label'}}</strong>: {{this.dataUpdate.quantity}}</span>
                 <span class="message-content newlines text-muted"><strong>{{_ 'schemaDeals.price.label'}}</strong>: {{this.dataUpdate.price}}</span>
                 {{/if}}
             </div>
+            {{#if (equals this._id lastStatusChangeId) }}
             <div class="text-center">
                 {{>Action_buttons_group collection='deals' doc=this.topic.deal size='md'}}
             </div>
+            {{/if}}
         </div>
         {{/if}}
     {{/each}}
+    {{/let}}
 </template>
 
 <template name="Message_send">

@@ -110,9 +110,17 @@ Template.Message_subscriber.onRendered(function tmplMsgBoxOnRendered() {
 });
 
 Template.Message_history.viewmodel({
-  messages() {
+  messages: [],
+  lastStatusChange: undefined,
+  autorun() {
     const roomId = FlowRouter.getParam('_rid');
-    return Comments.find({ topicId: roomId }, { sort: { createdAt: 1 } });
+    const comments = Comments.find({ topicId: roomId }, { sort: { createdAt: 1 } });
+    let lastStatusChange;
+    comments.forEach(comment => {
+      if (comment.category === 'statusChange') lastStatusChange = comment;
+    });
+    this.messages(comments.fetch());
+    this.lastStatusChange(lastStatusChange);
   },
   ownMessage(comment) {
     return comment.creatorId === Meteor.userId();

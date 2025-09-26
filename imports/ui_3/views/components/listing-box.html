@@ -1,8 +1,9 @@
 <template name="Listing_box">
     <div class="ibox ecommerce">
+        {{#let partner=(this.creator.partner activeCommunityId)}}
         <div class="ibox-content product-box">
             <div class="product-desc">
-                {{> Partner_rating this.creator.partner activeCommunityId }}
+                {{> Partner_rating partner }}
             </div>
             <a href={{pathFor 'Listing show' _lid=this._id}}>
             {{#if isImage this.firstAttachment}}
@@ -31,7 +32,7 @@
                             <strong class="text-capitalize">{{_ 'users interested'}}:</strong>
                         </div>
                         {{#each deal in interestedDeals}}
-                            {{#let otherPartner=(deal.otherPartner currentUser)}}
+                            {{#let otherPartner=(deal.otherPartner partner._id)}}
                             {{> Partner_rating otherPartner }}
                             {{/let}}
                             <hr>
@@ -51,5 +52,6 @@
                 {{/if}}
             </div>
         </div>
+        {{/let}}
     </div>
 </template>

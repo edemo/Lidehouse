@@ -1750,24 +1750,24 @@
       "placeholder": "(pl. Friss tulipán)"
     },
     "text": {
-      "label": "Leírás",
+      "label": "Tartalmi leírás",
       "placeholder": "(pl. Tulipánok különböző választható színekben, a kertemből szedhető.)"
+    },
+    "uom": {
+      "label": "Mennyiségi egység",
+      "help": "Azt az egységet szerepeltesse itt, amire vonatkozóan az értéket megadja",
+      "placeholder": "(pl. darab, kiló, göngyöleg, ...)"
+    },
+    "price": {
+      "label": "Egységár/érték (Ft-ban)"
+    },
+    "available": {
+      "label": "Mennyiség készleten",
+      "help": "Ha megadja, akkor a rendszer automatikusan csökkenteni fogja a mennyiséget minden sikeres átadás után. És amikor a készlet nullára redukálódik, akkor minden maradék érdeklődőnek aztomatikusab küld egy Sajnos Elkelt értesítést. Ha végtelen sok van belőle, beállíthat ide egy jó nagy számot, mint pl 1000"
     },
     "location": {
       "label": "Lokáció",
       "placeholder": "(pl. Budapest)" 
-    },
-    "price": {
-      "label": "Érték (Ft-ban)"
-    },
-    "uom": {
-      "label": "Mennyiségi egység",
-      "help": "Azt az egységet szerepeltesse itt, amire vonatkozóan az értéket megadta",
-      "placeholder": "(pl. darab, kiló, göngyöleg, ...)"
-    },
-    "quantity": {
-      "label": "Mennyiség készleten",
-      "help": "Ha megadja, akkor a rendszer automatikusan csökkenteni fogja a mennyiséget minden lezárt ügylet után. És amikor nullára redukálódik, akkor minden maradék érdeklődőnek küld egy Elkelt értesítést. Ha végtelen sok van belőle, beállíthat egy nagy számot, mint pl 999"
     },
     "delivery": {
       "label": "Átvételi mód",
@@ -1793,7 +1793,8 @@
       "label": "Státusz",
       "options": {
         "inquiry": "Érdeklődés",
-        "requested": "Jelentkezve",
+        "requested": "Kérelmezve",
+        "offered": "Felajánlva",
         "confirmed": "Véglegesítve",
         "canceled": "Visszavonva",
         "preapproved": "Jóváhagyva",
@@ -1805,12 +1806,19 @@
       "label": "Hirdetés cím"
     },
     "text": {
-       "label": "Ajánlat leírása",
-       "help": "A speciális ajánlatban módosíthatja, vagy akár teljesen átírhatja az eredeti hírdetés tartalmát."
+       "label": "Hirdetés tartalmi leírása",
+       "help": "Speciális ajánlatban módosítható, vagy akár teljesen átírható az eredeti hírdetés tartalma."
+    },   
+    "uom": {
+      "label": "Mennyiségi egység"
+    },
+    "quantity": {
+      "label": "Kérelmezett mennyiség",
+      "help": "A kérelmezett mennyiség nem lehet több, mint amennyi a hirdetésben rendelkezésre áll készkleten"
     },
     "price": {
-      "label": "Megjánlott ár/érték",
-      "help": "Adja meg a megajánlott összértéket, a fent megajánlott leíráshoz."
+      "label": "Összérték",
+      "help": "Az ügylet összértéke. Ez az összeg lesz jóváírva a feleknek."
     }
  },
   "schemaReviews": {
@@ -1832,8 +1840,14 @@
       "placeholder": "(pl. 4.9)"
     },
     "text": {
-      "label": "Szöveges megjegyzés",
+      "label": "Nyilvános megjegyzés",
+      "help": "Ezt mindenki számára látható",
       "placeholder": "Ha szeretne hozzáfűzni..."
+    },
+    "privateText": {
+      "label": "Privát megjegyzés",
+      "help": "Ezt csak az partner értékelt látja",
+      "placeholder": "..."
     }
   },
   "schemaSharedfolders": {

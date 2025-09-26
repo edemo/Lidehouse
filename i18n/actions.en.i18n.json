@@ -173,22 +173,21 @@
       "doing": "messaging the lister"
     },
     "requestDeal": {
-      "requestDeal": {
-        "customer": {
-          "label": "request",
-          "do": "request",
-          "done": "requested"
-        },
-        "supplier": {
-          "label": "offer",
-          "do": "offer",
-          "done": "offered"
-        }
+      "customer": {
+        "label": "request",
+        "do": "request",
+        "done": "requested"
+      },
+      "supplier": {
+        "label": "offer",
+        "do": "offer",
+        "done": "offered"
       }
     },
     "confirmDeal": {
       "label": "confirm",
       "do": "confirm",
+      "doing": "confirming",
       "done": "confirmed"
     },
     "cancelDeal": {
@@ -197,14 +196,21 @@
       "done": "canceled"
     },
     "proposeDeal": {
-      "label": "propose deal",
-      "do": "propose deal",
-      "done": "proposed a deal"
+      "label": "propose",
+      "do": "propose",
+      "doing": "proposing",
+      "done": "proposed"
     },
     "reviewDeal": {
       "label": "review",
       "do": "review",
       "done": "reviewed"
+    },
+    "initiate": {
+      "label": "initiate",
+      "do": "initiate",
+      "doing": "initiating",
+      "done": "initiated"
     }
   },
 

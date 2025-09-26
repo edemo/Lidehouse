@@ -2,8 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
@@ -68,7 +69,7 @@ Listings.actions = {
     icon: doc && doc.isLikedBy(user._id) ? 'fa fa-heart-o' : 'fa fa-heart',
     visible: doc.creatorId !== user._id && user.hasPermission('like.toggle', doc),
     run() {
-       Listings.methods.like.call({ id: doc._id }, handleError);
+      Listings.methods.like.call({ id: doc._id }, handleError);
     },
   }),
   inquireDeal: (options, doc, user = Meteor.userOrNull()) => ({
@@ -77,9 +78,11 @@ Listings.actions = {
     visible: user.hasPermission('listings.inCommunity', doc),
     run() {
       const communityId = getActiveCommunityId();
-      const dealId = Deals.methods.initiate.call({ communityId, listingId: doc._id, partner2Status: 'interested' }, 
-        onSuccess(res => FlowRouter.go('Room show', { _rid: res }))
-      );
+      Deals.methods.initiate.call({
+        communityId,
+        listingId: doc._id,
+        partnerStatuses: ['interested', 'interested'],
+      }, onSuccess(res => FlowRouter.go('Room show', { _rid: res })));
     },
   }),
   requestDeal: (options, doc, user = Meteor.userOrNull()) => ({
@@ -89,11 +92,18 @@ Listings.actions = {
     visible: user.hasPermission('listings.inCommunity', doc),
     run() {
       const communityId = getActiveCommunityId();
-      Modal.confirmAndCall(Deals.methods.initiate, { communityId, listingId: doc._id, partner2Status: 'confirmed' }, {
-        action: 'requestDeal.' + Relations.opposite(doc.relation),
-        entity: 'listing',
-        message: 'You are obligated to go through with the deal',
-      });
+      const dealOptions = { message: 'You are obligated to go through with the deal' };
+      const dealDoc = {
+        communityId,
+        listingId: doc._id,
+        partnerStatuses: ['interested', 'confirmed'],
+        title: doc.title,
+        text: doc.text,
+        uom: doc.uom,
+        quantity: 1,
+        price: doc.price,
+      };
+      Deals.actions.create(dealOptions, dealDoc, user).run();
     },
   }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
