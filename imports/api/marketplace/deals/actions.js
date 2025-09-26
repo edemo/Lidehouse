@@ -135,7 +135,8 @@ Deals.actions = {
       const partnerIndex = doc.indexOf(partnerId);
       return _.contains(doc.partnerIds, partnerId)
         && doc.partnerStatuses[partnerIndex] === 'interested'
-        && !doc.isConfirmedAlready();
+        && !doc.isConfirmedAlready()
+        && doc.price;
     },
     run() {
       Modal.show('Autoform_modal', {

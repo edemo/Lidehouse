@@ -43,7 +43,15 @@
                                     </h2>
                                     <small>{{displayAccountText this.bucket}}</small>
                                     <div class="m-t-md">
-                                        <h2 class="product-main-price">{{displayCurrency this.price}} <small class="text-muted">{{_ 'gift value'}}</small> </h2>
+                                        {{#if this.price}}
+                                        <h2 class="product-main-price">{{displayCurrency this.price}} 
+                                            <small class="text-muted">{{_ 'gift value'}}</small> 
+                                        </h2>
+                                        {{else}}
+                                        <h2 class="product-main-price">? 
+                                            <small class="text-muted">{{_ 'No value is set, send message for a special offer'}}</small> 
+                                        </h2>
+                                        {{/if}}
                                     </div>
                                     <hr>
     

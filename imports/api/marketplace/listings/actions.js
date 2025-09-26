@@ -89,7 +89,7 @@ Listings.actions = {
     name: 'requestDeal.' + Relations.opposite(doc.relation),
     icon: 'fa fa-handshake-o',
     color: 'primary',
-    visible: user.hasPermission('listings.inCommunity', doc),
+    visible: () => user.hasPermission('listings.inCommunity', doc) && doc.price,
     run() {
       const communityId = getActiveCommunityId();
       const dealOptions = { message: 'warningInitiation' };
