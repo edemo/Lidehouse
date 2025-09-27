@@ -108,7 +108,7 @@ Deals.actions = {
     visible() {
       if (!doc.partnerIds) return false; // subscription not ready
       const partnerId = user.partnerId(doc.communityId);
-      return _.contains(doc.partnerIds, partnerId) && !doc.isConfirmedAlready();
+      return _.contains(doc.partnerIds, partnerId) && !doc.isAgreedAlready();
     },
     run() {
       Modal.confirmAndCall(Deals.methods.cancel, { _id: doc._id }, {
@@ -135,7 +135,7 @@ Deals.actions = {
       const partnerIndex = doc.indexOf(partnerId);
       return _.contains(doc.partnerIds, partnerId)
         && doc.partnerStatuses[partnerIndex] === 'interested'
-        && !doc.isConfirmedAlready()
+        && !doc.isAgreedAlready()
         && doc.price;
     },
     run() {
@@ -159,7 +159,7 @@ Deals.actions = {
     visible() {
       if (!doc.partnerIds) return false; // subscription not ready
       const partnerId = user.partnerId(doc.communityId);
-      return partnerId === doc.supplierPartnerId() && !doc.isConfirmedAlready();
+      return partnerId === doc.supplierPartnerId() && !doc.isAgreedAlready();
     },
     run() {
       Modal.show('Autoform_modal', {
@@ -183,7 +183,7 @@ Deals.actions = {
       if (!doc.partnerIds) return false; // subscription not ready
       const partnerId = user.partnerId(doc.communityId);
       const partnerIndex = doc.indexOf(partnerId);
-      return doc.dealStatus === 'confirmed' && !(doc.reviewIds[partnerIndex]);
+      return doc.dealStatus === 'agreed' && !(doc.reviewIds[partnerIndex]);
     },
     run() {
       const reviewOptions = {};

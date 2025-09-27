@@ -6,12 +6,12 @@
             <tr>
                 <td class="project-status">
                     {{#if votingClosed}}
-                        <span class="label label-default">{{_ 'schemaTopics.status.options.closed'}}</span>
+                        <span class="label label-default">{{_ 'schemaWorkflow.status.options.closed'}}</span>
                     {{else}}
                         {{#if (equals status 'announced')}}
-                            <span class="label label-info">{{_ 'schemaTopics.status.options.announced'}}</span>
+                            <span class="label label-info">{{_ 'schemaWorkflow.status.options.announced'}}</span>
                         {{else}}
-                            <span class="label label-primary">{{_ 'schemaTopics.status.options.opened'}}</span>
+                            <span class="label label-primary">{{_ 'schemaWorkflow.status.options.opened'}}</span>
                             {{#unless hasVoted activePartnerId}}
                                 <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" title={{_ "You have not yet voted"}}></i>
                             {{/unless}}

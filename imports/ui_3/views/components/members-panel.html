@@ -77,7 +77,7 @@
                     {{/if}}
                     {{#if deal}}
                     <strong class="js-room-link">{{deal.listing.title}}</strong><br>
-                    <small class="text-muted js-room-link">{{_ 'status'}}: {{_ (concat 'schemaDeals.status.options.' deal.dealStatus)}}</small><br>
+                    <small class="text-muted js-room-link">{{_ 'status'}}: {{_ (concat 'schemaWorkflow.status.options.' deal.dealStatus)}}</small><br>
                     {{>Action_buttons_group collection='deals' doc=deal actions='confirmDeal,reviewDeal' size='lg'}}
                     {{/if}}
                 </div>

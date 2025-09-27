@@ -326,15 +326,6 @@
 
   "statusChange": "Státusz váltás",
   "statusUpdate": "Státusz frissítés",
-  "scheduled": "Ütemezve",
-  "reported": "Bejelentve",
-  "confirmed": "Betervezve",
-  "toApprove": "Jóváhagyásra",
-  "toVote": "Megszavazásra",
-  "progressing": "Folyamatban",
-  "suspended": "Felfüggesztve",
-  "finished": "Elvégezve",
-  "deleted": "Törölt",
 
   "Conteer": "Kontírozás",
   "Bill conteer": "Számla kontírozás",

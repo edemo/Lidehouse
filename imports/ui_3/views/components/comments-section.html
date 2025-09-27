@@ -37,7 +37,7 @@
             {{#if (includes this.entityName "statusChange")}}
                 {{#if this.status}}
                     {{#let eventStatusObject = (this.topic.statusObject this.status)}}
-                    {{_ 'actions.statusChange.did'}}: <span class="label label-{{eventStatusObject.color}}">{{_ (concat 'schemaTopics.status.options.' this.status)}}</span><!--<strong>{{_ this.status}}</strong>--><br>
+                    {{_ 'actions.statusChange.did'}}: <span class="label label-{{eventStatusObject.color}}">{{_ (concat 'schemaWorkflow.status.options.' this.status)}}</span><!--<strong>{{_ this.status}}</strong>--><br>
                     {{/let}}
                 {{else}}
                     {{_ 'actions.statusUpdate.did'}}<br>

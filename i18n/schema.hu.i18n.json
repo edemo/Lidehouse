@@ -58,6 +58,40 @@
       }
     }
   },
+  "schemaWorkflow": {
+    "status": {
+      "label": "Státusz",
+      "options": {
+        "announced": "Kitűzve",
+        "opened": "Nyitott",
+        "scheduled": "Ütemezve",
+        "reported": "Bejelentve",
+        "confirmed": "Betervezve",
+        "toApprove": "Jóváhagyásra",
+        "toVote": "Megszavazásra",
+        "progressing": "Folyamatban",
+        "suspended": "Felfüggesztve",
+        "finished": "Elvégezve",
+        "votingFinished": "Szavazás lezárva",
+        "closed": "Lezárt",
+        "deleted": "Törölt",
+        "inquiry": "Érdeklődés",
+        "requested": "Kérelmezve",
+        "offered": "Felajánlva",
+        "agreed": "Véglegesítve",
+        "canceled": "Visszavonva",
+        "preapproved": "Jóváhagyva",
+        "proposed": "Ajánlat benyújtva",
+        "reviewed": "Lebonyolítva"
+      }
+    },
+    "closed": {
+      "label": "Lezárt"
+    },
+    "closesAt": {
+      "label": "Lezárulás ideje"
+    }
+  },
   "schemaCommunities": {
     "_": {
       "label": "Közösség"
@@ -811,28 +845,7 @@
       "label": "Rögzített"
     },
     "status": {
-      "label": "Státusz",
-      "options": {
-        "announced": "Kitűzve",
-        "opened": "Nyitott",
-        "scheduled": "Ütemezve",
-        "reported": "Bejelentve",
-        "confirmed": "Betervezve",
-        "toApprove": "Jóváhagyásra",
-        "toVote": "Megszavazásra",
-        "progressing": "Folyamatban",
-        "suspended": "Felfüggesztve",
-        "finished": "Elvégezve",
-        "votingFinished": "Szavazás lezárva",
-        "closed": "Lezárt",
-        "deleted": "Törölt"
-      }
-    },
-    "closed": {
-      "label": "Lezárt"
-    },
-    "closesAt": {
-      "label": "Lezárulás ideje"
+      "label": "Státusz"
     }
   },
   "schemaVotings": {
@@ -1790,17 +1803,7 @@
       "label": "Ügylet"
     },
     "status": {
-      "label": "Státusz",
-      "options": {
-        "inquiry": "Érdeklődés",
-        "requested": "Kérelmezve",
-        "offered": "Felajánlva",
-        "confirmed": "Véglegesítve",
-        "canceled": "Visszavonva",
-        "preapproved": "Jóváhagyva",
-        "proposed": "Ajánlat benyújtva",
-        "reviewed": "Lebonyolítva"
-      }
+      "label": "Státusz"
     },
     "title": {
       "label": "Hirdetés cím"
@@ -1813,7 +1816,7 @@
       "label": "Mennyiségi egység"
     },
     "quantity": {
-      "label": "Kérelmezett mennyiség",
+      "label": "Mennyiség",
       "help": "A kérelmezett mennyiség nem lehet több, mint amennyi a hirdetésben rendelkezésre áll készleten"
     },
     "price": {

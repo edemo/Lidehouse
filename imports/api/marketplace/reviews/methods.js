@@ -19,8 +19,8 @@ export const insert = new ValidatedMethod({
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
         `${this.userId}, ${JSON.stringify(doc)}`);
     }
-    if (deal.dealStatus !== 'confirmed') {
-      throw new Meteor.Error('err_constraint', 'Deal needs to be confirmed before reviewing');
+    if (deal.dealStatus !== 'agreed') {
+      throw new Meteor.Error('err_constraint', 'Deal needs to be agreed before reviewing');
     }
     const user = Meteor.users.findOne(this.userId);
     const partnerId = user.partnerId(doc.communityId);

@@ -14,9 +14,9 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="input-group">
-              <label class="control-label text-capitalize">{{_ 'work'}} {{_ 'schemaTopics.status.label'}}</label><br>
+              <label class="control-label text-capitalize">{{_ 'work'}} {{_ 'schemaWorkflow.status.label'}}</label><br>
               {{#each ticketStatus in ticketStatuses}}
-              <button type="button" class="btn btn-xs btn-outline btn-{{ticketStatus.color}} js-toggle-filter {{activeButton 'ticketStatus' ticketStatus.name}}" data-field="ticketStatus" data-value="{{ticketStatus.name}}">{{_ (concat 'schemaTopics.status.options.' ticketStatus.name)}}</button>
+              <button type="button" class="btn btn-xs btn-outline btn-{{ticketStatus.color}} js-toggle-filter {{activeButton 'ticketStatus' ticketStatus.name}}" data-field="ticketStatus" data-value="{{ticketStatus.name}}">{{_ (concat 'schemaWorkflow.status.options.' ticketStatus.name)}}</button>
               {{/each}}
             </div>
           </div>

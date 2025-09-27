@@ -81,7 +81,6 @@ Template.Room_show.viewmodel({
     const listing = deal?.listing();
     return listing;
   },
-
 });
 
 // -------------------- Msg_box ---------------------------
@@ -121,6 +120,9 @@ Template.Message_history.viewmodel({
     });
     this.messages(comments.fetch());
     this.lastStatusChange(lastStatusChange);
+  },
+  statusesWithDataUpdate() {
+    return ['requested', 'offered', 'preapproved', 'proposed', 'agreed'];
   },
   ownMessage(comment) {
     return comment.creatorId === Meteor.userId();

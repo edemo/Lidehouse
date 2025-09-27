@@ -58,6 +58,40 @@
       }
     }
   },
+  "schemaWorkflow": {
+    "status": {
+      "label": "Status",
+      "options": {
+        "announced": "Announced",
+        "opened": "Opened",
+        "scheduled": "Scheduled",
+        "reported": "Reported",
+        "confirmed": "Planned",
+        "toApprove": "To approve",
+        "toVote": "To vote on",
+        "progressing": "Progressing",
+        "suspended": "Suspended",
+        "finished": "Done",
+        "votingFinished": "Voting finished",
+        "closed": "Closed",
+        "deleted": "Deleted",
+        "inquiry": "Inquiry",
+        "requested": "Requested",
+        "offered": "Offered",
+        "agreed": "Confirmed",
+        "canceled": "Canceled",
+        "preapproved": "Preapproved",
+        "proposed": "Proposed",
+        "reviewed": "Reviewed"
+      }
+    },
+    "closed": {
+      "label": "Closed"
+    },
+    "closesAt": {
+      "label": "Closes At"
+    }
+  },
   "schemaCommunities": {
     "_": {
       "label": "Community"
@@ -809,28 +843,7 @@
       "label": "Sticky"
     },
     "status": {
-      "label": "Status",
-      "options": {
-        "announced": "Announced",
-        "opened": "Opened",
-        "scheduled": "Scheduled",
-        "reported": "Reported",
-        "confirmed": "Planned",
-        "toApprove": "To approve",
-        "toVote": "To vote on",
-        "progressing": "Progressing",
-        "suspended": "Suspended",
-        "finished": "Done",
-        "votingFinished": "Voting finished",
-        "closed": "Closed",
-        "deleted": "Deleted"
-      }
-    },
-    "closed": {
-      "label": "Closed"
-    },
-    "closesAt": {
-      "label": "Closes At"
+      "label": "Status"
     }
   },
   "schemaVotings": {
@@ -1773,17 +1786,7 @@
       "label": "Deal"
     },
     "status": {
-      "label": "Status",
-      "options": {
-        "inquiry": "Inquiry",
-        "requested": "Requested",
-        "offered": "Offered",
-        "confirmed": "Confirmed",
-        "canceled": "Canceled",
-        "preapproved": "Preapproved",
-        "proposed": "Proposed",
-        "reviewed": "Reviewed"
-      }
+      "label": "Status"
     },
     "title": {
       "label": "Listing title"
@@ -1796,7 +1799,7 @@
       "label": "Unit of measurment"
     },
     "quantity": {
-      "label": "Requested quantity",
+      "label": "Quantity",
       "help": "Requested quantity cannot be higher than what is available on stock according to the listing."
     },
     "price": {

@@ -8,6 +8,7 @@ import { checkExists, checkNotExists, checkModifier, checkPermissions, checkPerm
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { Listings } from '/imports/api/marketplace/listings/listings.js';
 import { Deals } from './deals.js';
 
@@ -41,10 +42,10 @@ export const initiate = new ValidatedMethod({
     const dealId = Deals.insert(doc);
     const updatedDoc = Deals.findOne(dealId);
 
-    const dataUpdate = { partnerStatuses: doc.partnerStatuses };
+    let dataUpdate; // { partnerStatuses: doc.partnerStatuses };
     if (doc.partnerStatuses[1] === 'confirmed') {
+      dataUpdate = {};
       dataUpdate.text = doc.text;
-      dataUpdate.uom = doc.uom;
       dataUpdate.quantity = doc.quantity;
       dataUpdate.price = doc.price;
     }
@@ -56,7 +57,11 @@ export const initiate = new ValidatedMethod({
       status: updatedDoc.calculateDealStatus(),
       dataUpdate,
     });
-
+    const statusChange = Comments.findOne(statusChangeId);
+    updateMyLastSeen._execute({ userId: this._id },
+      { topicId: doc.roomId, lastSeenInfo: { timestamp: statusChange.createdAt } },
+    );
+  
     return doc.roomId;
   },
 });
@@ -75,8 +80,16 @@ function statusChange(doc, user, modifier, partnerStatus, otherPartnerStatus) {
     category: 'statusChange',
     text: '',
     status: updatedDoc.calculateDealStatus(),
-    dataUpdate: modifier.$set,
+    dataUpdate: {
+      text: modifier.$set.text,
+      quantity: modifier.$set.quantity,
+      price: modifier.$set.price,
+    }
   });
+  const statusChange = Comments.findOne(statusChangeId);
+  updateMyLastSeen._execute({ userId: user._id },
+    { topicId: doc.roomId, lastSeenInfo: { timestamp: statusChange.createdAt } },
+  );
   return result;
 }
 
@@ -115,7 +128,7 @@ export const confirm = new ValidatedMethod({
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
         `${this.userId}, ${JSON.stringify(doc)}`);
     }
-    if (doc.isConfirmedAlready()) {
+    if (doc.isAgreedAlready()) {
       throw new Meteor.Error('err_constraint', 'Deal already confirmed by both sides');
     }
     const user = Meteor.users.findOne(this.userId);
@@ -135,7 +148,7 @@ export const cancel = new ValidatedMethod({
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
         `${this.userId}, ${JSON.stringify(doc)}`);
     }
-    if (doc.isConfirmedAlready()) {
+    if (doc.isAgreedAlready()) {
       throw new Meteor.Error('err_constraint', 'Deal already confirmed by both sides');
     }
     const user = Meteor.users.findOne(this.userId);

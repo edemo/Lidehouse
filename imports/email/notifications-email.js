@@ -62,6 +62,11 @@ export const Notifications_Email = {
     oldTopic(t) {
       return t.isUnseen ? '' : 'oldTopic';
     },
+    schemaRoot(category) {
+      if (category === 'ticket') return 'schemaTickets.ticket.';
+      else if (category === 'room') return 'schemaDeals.';
+      else return undefined;
+    },
     displayStatusChangeDataUpdate(key, value) {
       numeral.language(this.community.settings.language);
       if (key.includes('Cost')) return displayCurrency(value);
@@ -72,6 +77,7 @@ export const Notifications_Email = {
       if (key === 'txIdentifiers') return displayTxIdentifiers(value, this.community);
       if (_.isDate(value)) return moment(value).format('L');
       if (_.isString(value)) return TAPi18n.__(value, {}, this.user.settings.language);
+      if (key.includes('Price')) return displayCurrency(value);
       return value;
     },
   },

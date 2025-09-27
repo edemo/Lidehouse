@@ -11,6 +11,9 @@
                 {{#if equals te.topic.category 'room'}}
                 <td class="project-title">
                     <h3 class = "topicTitle">{{_ te.topic.title}}</h3>
+                      {{#unless equals te.topic.title te.topic.text }}
+                        <strong>{{te.topic.text}}</strong>
+                      {{/unless}}
                     <div class='btn-container'>
                         <a href="{{topicUrlFor te.topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
                     </div>
@@ -59,7 +62,7 @@
                         {{#if comment.status}}
                           {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
                           {{_ 'actions.statusChange.did'}}: <span class="label {{eventStatusObject.color}}">
-                              {{_ (concat 'schemaTopics.status.options.' comment.status)}}</span><br>
+                              {{_ (concat 'schemaWorkflow.status.options.' comment.status)}}</span><br>
                           {{/let}}
                         {{else}}
                           {{_ 'actions.statusUpdate.did'}}<br>
@@ -68,15 +71,13 @@
                     {{#if comment.text}}
                         <span>{{curb comment.text 500 }}</span><br>
                     {{/if}}
-                    {{#if (equals comment.topic.category 'ticket')}}
                     {{#if comment.dataUpdate }}
                         {{#each dataEntry in entriesOf comment.dataUpdate}}
                         <span>
-                            {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
+                            {{_ (concat (schemaRoot te.topic.category) dataEntry.[0] '.label')}}:
                             {{displayStatusChangeDataUpdate dataEntry.[0] dataEntry.[1]}}
                         </span><br>
                         {{/each}}
-                    {{/if}}
                     {{/if}}
                   {{/if}}
                   <small class="text-muted" >{{displayTime comment.createdAt}}</small>

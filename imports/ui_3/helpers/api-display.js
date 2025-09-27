@@ -146,7 +146,7 @@ export function displayStatus(name) {
     const statusObject = Topics.categories[cat].statuses[name];
     if (statusObject) color = statusObject.color;
   });
-  return label(__('schemaTopics.status.options.' + name), color);
+  return label(__('schemaWorkflow.status.options.' + name), color);
 }
 
 export function displayTxStatus(name, doc) {

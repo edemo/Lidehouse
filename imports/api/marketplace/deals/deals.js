@@ -17,7 +17,9 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 export const Deals = new Mongo.Collection('deals');
 
 Deals.partnerStatusValues = ['interested', 'proposed', 'confirmed', 'canceled'];
-Deals.dealStatusValues = ['interested', 'inquiry', 'requested', 'offered', 'preapproved', 'proposed', 'confirmed', 'canceled', 'reviewed'];
+Deals.dealStatusValues = ['interested', 'inquiry', 'requested', 'offered', 'preapproved', 'proposed', 'agreed', 'canceled', 'reviewed'];
+Deals.statuses = {}; 
+Deals.dealStatusValues.forEach(name => Deals.statuses[name] = { name, color: 'info' });
 
 Deals.detailsSchema = new SimpleSchema({
   title: { type: String, max: 100,  optional: true, autoform: { readonly: true } },
@@ -106,28 +108,28 @@ Deals.helpers({
     const partnerId = this.customerPartnerId();
     return partnerId && Partners.findOne(partnerId);
   },
-  isConfirmedAlready() {
-    return Deals.dealStatusValues.indexOf(this.dealStatus) >= Deals.dealStatusValues.indexOf('confirmed');
+  isAgreedAlready() {
+    return Deals.dealStatusValues.indexOf(this.dealStatus) >= Deals.dealStatusValues.indexOf('agreed');
   },
   isReviewed() {
     return (this.reviewIds[0] && this.reviewIds[1]);
   },
   calculateDealStatus() {
-    // statusValues: 'inquiry', 'preapproved', 'requested', 'confirmed', 'canceled', 'executed';
+    // statusValues: 'inquiry', 'preapproved', 'requested', 'agreed', 'canceled', 'executed';
     if (this.isReviewed()) return 'reviewed';
     if (this.partnerStatuses[0] === 'canceled' || this.partnerStatuses[1] === 'canceled') return 'canceled';
     const s = this.partnerIndex('supplier');
     const c = 1 - s;
     if (this.partnerStatuses[s] === 'proposed') {
       if (this.partnerStatuses[c] === 'interested') return 'proposed';
-      if (this.partnerStatuses[c] === 'confirmed') return 'confirmed';
+      if (this.partnerStatuses[c] === 'confirmed') return 'agreed';
     }
     if (this.partnerStatuses[0] === 'interested') {
       if (this.partnerStatuses[1] === 'interested') return 'inquiry';
       if (this.partnerStatuses[1] === 'confirmed') return this.listing().relation === 'supplier' ? 'requested' : 'offered';
     } else if (this.partnerStatuses[0] === 'confirmed') {
       if (this.partnerStatuses[1] === 'interested') return 'preapproved';
-      if (this.partnerStatuses[1] === 'confirmed') return 'confirmed';
+      if (this.partnerStatuses[1] === 'confirmed') return 'agreed';
     }
     debugAssert(false, `No such combo: ${this.partnerStatuses}`); return undefined;
   },
@@ -187,7 +189,7 @@ if (Meteor.isServer) {
   Deals.after.update(function (userId, doc, fieldNames, modifier, options) {
     const newDoc = Deals._transform(doc);
     const oldDoc = Deals._transform(this.previous);
-    if (oldDoc.dealStatus !== 'confirmed' && doc.dealStatus === 'confirmed' && newDoc.listing().available) {
+    if (oldDoc.dealStatus !== 'agreed' && doc.dealStatus === 'agreed' && newDoc.listing().available) {
       Listings.update(doc.listingId, { $inc: { available: -1 * (doc.quantity || 1) } });
     }
   });

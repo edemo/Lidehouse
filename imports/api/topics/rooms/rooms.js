@@ -9,9 +9,14 @@ import { Topics } from '../topics.js';
 export const Rooms = {};
 
 Topics.categoryHelpers('room', {
+  // If the room is a deal's room, we need these helpers
   deal() {
     const Deals = Mongo.Collection.get('deals');
     return Deals.findOne({ roomId: this._id });
+  },
+  statusObject(statusName) {
+    const Deals = Mongo.Collection.get('deals');
+    return Deals.statuses[statusName];
   },
 });
 
