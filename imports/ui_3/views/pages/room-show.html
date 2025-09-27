@@ -23,7 +23,7 @@
                 {{#if includes statusesWithDataUpdate this.status }}
                 <span class="message-content newlines text-muted"><strong>{{_ 'schemaDeals.text.label'}}</strong>: {{>ChoppedHeight text=this.dataUpdate.text height=100 markdown=true}}</span>
                 <span class="message-content newlines text-muted"><strong>{{_ 'schemaDeals.quantity.label'}}</strong>: {{this.dataUpdate.quantity}} {{this.dataUpdate.uom}}</span>
-                <span class="message-content newlines text-muted"><strong>{{_ 'schemaDeals.price.label'}}</strong>: {{displayCurrency this.dataUpdate.price}}</span>
+                <span class="message-content newlines text-muted"><strong>{{_ 'schemaDeals.price.label'}}</strong>: {{displayMarketplaceCurrency this.dataUpdate.price}}</span>
                 {{/if}}
             </div>
             {{#if (equals this._id lastStatusChangeId) }}

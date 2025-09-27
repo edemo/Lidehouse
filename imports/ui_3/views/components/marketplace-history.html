@@ -32,7 +32,7 @@
                     <td class="text-right"><i class="fa fa-clock-o"></i> {{displayTimeFrom deal.updatedAt}}</td>
                     <td class="text-right">
                         <span class="btn btn-outline btn-xs btn-{{color dealRelation}}" style="padding: 1px 1px; border: none"><i class="fa {{signIcon dealRelation}}"></i></span> 
-                        {{displayCurrency (abs deal.price)}}
+                        {{displayMarketplaceCurrency (abs deal.price)}}
                     </td>
                 {{/let}}
                 </tr>

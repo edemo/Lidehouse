@@ -262,6 +262,14 @@
       },
       "latePaymentFees": {
         "label": "Late payment fees"
+      },
+      "marketplaceCurrency": {
+        "label": "Marketplace currency",
+        "help": "If you are using the standard local currency, you can leave this field empty. If you use your own currency, specify that here."
+      },
+      "giftEconomy": {
+        "label": "Gift economy",
+        "help": "Set it, if the marketplace is a gift economy, and the prices are just indicative."
       }
     }
   },

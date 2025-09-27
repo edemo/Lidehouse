@@ -44,8 +44,10 @@
                                     <small>{{displayAccountText this.bucket}}</small>
                                     <div class="m-t-md">
                                         {{#if this.price}}
-                                        <h2 class="product-main-price">{{displayCurrency this.price}} 
+                                        <h2 class="product-main-price">{{displayMarketplaceCurrency this.price}} 
+                                            {{#if this.community.settings.giftEconomy}}
                                             <small class="text-muted">{{_ 'gift value'}}</small> 
+                                            {{/if}}
                                         </h2>
                                         {{else}}
                                         <h2 class="product-main-price">? 

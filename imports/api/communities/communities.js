@@ -51,6 +51,8 @@ Communities.settingsSchema = new SimpleSchema({
   sendBillEmail: { type: [String], optional: true, allowedValues: ['member', 'customer'], defaultValue: [], autoform: { type: 'select-checkbox-inline' } },
   enableMeterEstimationDays: { type: Number, defaultValue: 30 },
   latePaymentFees: { type: Boolean, optional: true },
+  marketplaceCurrency: { type: String, optional: true, max: 10 }, // If not specified the local currency will be used
+  giftEconomy: { type: Boolean,  optional: true },
 });
 
 Communities.schema = new SimpleSchema([{

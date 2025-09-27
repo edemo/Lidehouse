@@ -17,7 +17,7 @@
            <div class="product-desc">
                 {{#if this.price}}
                 <span class="product-price">
-                    {{displayCurrency this.price}}
+                    {{displayMarketplaceCurrency this.price}}
                 </span>
                 {{/if}}
                 <span class="label label-xs pull-right">{{_ (concat 'schemaListings.relation.options.' this.relation)}}</span>

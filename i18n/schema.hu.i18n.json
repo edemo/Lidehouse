@@ -263,6 +263,14 @@
       },
       "latePaymentFees": {
         "label": "Késedelmi kamat számítás"
+      },
+      "marketplaceCurrency": {
+        "label": "Piactér valuta",
+        "help": "Hagyja üresen ha a helyi állami fizetőeszközben történik az elszámolás, csak akkor töltse ki ha egy saját elszámolási egységet használnak."
+      },
+      "giftEconomy": {
+        "label": "Ajándék alapú Piactér",
+        "help": "Akkor válassza ki, ha a Piactéren ajándék alapú az elszámolás, és az árak csak tájékoztató jellegűek."
       }
     }
   },

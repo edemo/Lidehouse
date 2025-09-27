@@ -14,40 +14,11 @@ import { actionHandlers, ActionOptions } from '/imports/ui_3/views/blocks/action
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import '/imports/ui_3/views/components/listing-box.js';
 import '/imports/ui_3/views/components/marketplace-history.js';
+import '/imports/ui_3/views/components/partner-rating.js';
 import './marketplace-page.html';
 
 const listingShows = { 'browse': { icon: 'shopping-cart' }, 'favorites': { icon: 'heart' }, 'my listings' : { icon: 'user-circle' }};
 const displayModes = { 'grid': { icon: 'th' }, 'list' : { icon: 'bars' }};
-
-Template.Market_balance.helpers({
-  absValue() {
-    return Math.abs(this.amount);
-  },
-  color() {
-    if (this.amount < -50000) return 'danger';
-    else if (this.amount < -25000) return 'warning';
-    else if (this.amount < 0) return 'info';
-    else return 'primary';
-  },
-  icon() {
-    if (this.amount < 0) return 'fa-minus-square';
-    else return 'fa-plus-square'
-  },
-});
-
-Template.Partner_rating.events({
-  'click .js-market-history'(event, instance) {
-    Modal.show('Modal', {
-      id: 'marketplacehistory.view',
-      title: __('Marketplace history'),
-      body: 'Marketplace_history',
-      bodyContext: instance.data,
-      size: 'lg',
-    });
-  },
-});
-
-// -------------------------------------------
 
 Template.Marketplace_page.viewmodel({
   activeRelation: 'supplier',
