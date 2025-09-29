@@ -66,8 +66,8 @@ export const Render = Meteor.isServer ? {} : {
     return `<img alt="avatar" src=${absoluteUrl(cellData.avatar)} width="24">`;
   },
   userBio(cellData, renderType, currentRow) {
-    if (!cellData || !cellData.profile) return '';
-    const bio = cellData.profile.bio;
+    const bio = cellData?.profile?.bio;
+    if (!bio) return '';
     return bio.substring(0, 200) + (bio.lenght > 200 ? '...' : '');
   },
   actionButtons(cellData, renderType, currentRow) {
