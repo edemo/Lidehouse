@@ -59,7 +59,7 @@ Communities.settingsSchema = new SimpleSchema({
 Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
   isTemplate: { type: Boolean, optional: true, autoform: { omit: true } },
-  description: { type: String, optional: true, autoform: { type: 'textarea' } },
+  description: { type: String, max: 5000, optional: true, autoform: { type: 'textarea' } },
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
 }, AddressSchema, {
   lot: { type: String, max: 100, optional: true },

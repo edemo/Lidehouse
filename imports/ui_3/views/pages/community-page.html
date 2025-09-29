@@ -298,7 +298,7 @@
                             {{#if community.description}}
                             <div class="m-t-md">
                                 <h5>{{_ 'schemaCommunities.description.label'}}</h5>
-                                <p> {{community.description}}</p>
+                                <p>{{> ChoppedHeight text=community.description height=200 markdown=true}}</p>
                             </div>
                             {{/if}}
                             {{#if community.hasVotingUnits }}
