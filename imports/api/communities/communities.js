@@ -208,17 +208,17 @@ Communities.helpers({
     return _.uniq(voters, false, u => u._id);
   },
   joinable() {
-    return this.settings.joinable !== 'inviteOnly';
+    return this.settings?.joinable !== 'inviteOnly';
   },
   needsJoinApproval() {
-    return this.settings.joinable !== 'withLink';
+    return this.settings?.joinable !== 'withLink';
   },
   hasLiveAssembly() {
     const Agendas = Mongo.Collection.get('agendas');
     return !!Agendas.findOne({ communityId: this._id, live: true });
   },
   isActiveModule(moduleName) {
-    return !this?.settings.modules || _.contains(this.settings.modules, moduleName);
+    return !this.settings?.modules || _.contains(this.settings.modules, moduleName);
   },
   toString() {
     return this.name;

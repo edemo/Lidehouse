@@ -75,7 +75,7 @@ Communities.actions = {
   join: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'join',
     icon: 'fa fa-suitcase',
-    label: doc.settings.joinable === 'withLink' ? 'join' : 'submit join request',
+//    label: doc.settings?.joinable === 'withLink' ? 'join' : 'submit join request',
     visible: doc.settings && doc.joinable?.(),
     run() {
       const communityId = doc._id;
