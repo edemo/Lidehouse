@@ -20,7 +20,7 @@ export const Listings = new Mongo.Collection('listings');
 
 Listings.detailsSchema = new SimpleSchema({
   title: { type: String, max: 50 },
-  text: { type: String, max: 2000, autoform: { type: 'markdown' } },
+  text: { type: String, max: 5000, autoform: { type: 'markdown' } },
   uom: { type: String, max: 25, optional: true },
   price: { type: Number, optional: true },
 });

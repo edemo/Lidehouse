@@ -140,8 +140,7 @@ Memberships.helpers({
     return Contracts.findOneActive({ partnerId: this.partnerId, parcelId: this.parcelId });
   },
   user() {
-    debugAssert(this.userId);
-    return Meteor.users.findOne(this.userId);
+    return this.userId && Meteor.users.findOne(this.userId);
   },
   parcel() {
     if (!this.parcelId) return undefined;

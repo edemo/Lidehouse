@@ -1785,7 +1785,8 @@
       "placeholder": "(pl. darab, kiló, göngyöleg, ...)"
     },
     "price": {
-      "label": "Egységár/érték (Ft-ban)"
+      "label": "Egységár/érték",
+      "help": "A termék vagy szolgáltatás egységnyi mennyiségének ára a közösség által meghatározott fizetőeszközben mérve."
     },
     "available": {
       "label": "Mennyiség készleten",

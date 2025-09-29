@@ -1768,7 +1768,8 @@
       "placeholder": "(eg. piece, kilogramm, bundle, ...)"
     },
     "price": {
-      "label": "Pricew/Value of a unit"
+      "label": "Unit Price/Value",
+      "help": "Price of one unit of the product or service measured in the community's marketplace currency"
     },
     "available": {
       "label": "Available quantity",
