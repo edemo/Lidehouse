@@ -35,6 +35,10 @@
       "doing": "import",
       "done": "imported"
     },
+    "join": {
+      "label": "join",
+      "done": "joined"
+    },
     "move": {
       "label": "move",
       "do": "move",

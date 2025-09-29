@@ -1392,6 +1392,17 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 78,
+  name: 'Joinable options extended',
+  up() {
+    Communities.find({}).forEach(community => {
+      const newValue = community.settings.joinable ? 'withApproval' : 'inviteOnly';
+      Communities.direct.update(community._id, { $set: { 'settings.joinable': newValue } }, { selector: community });
+    });
+  },
+});
+
 // Use only direct db operations to avoid unnecessary hooks!
 
 // Iterate on fetched cursors, if it runs a long time, because cursors get garbage collected after 10 minutes

@@ -22,6 +22,7 @@ import '/imports/api/parcels/actions.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/actions.js';
+import { ownershipColumns } from '/imports/api/memberships/tables.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import '/imports/api/meters/actions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -169,6 +170,42 @@ Template.Parcels_box.viewmodel({
     };
   },
 });
+
+Template.Ownerships_box.viewmodel({
+  autorun() {
+    const communityId = this.templateInstance.data.communityId();
+    this.templateInstance.subscribe('memberships.inCommunity', { communityId });
+    this.templateInstance.subscribe('parcels.inCommunity', { communityId });
+    this.templateInstance.subscribe('contracts.inCommunity', { communityId });
+  },
+  owners() {
+    const communityId = this.templateInstance.data.communityId();
+    return Memberships.find({ communityId, role: 'owner' });
+  },
+  ownersTableContent() {
+    const communityId = this.templateInstance.data.communityId();
+    const community = Communities.findOne(communityId);
+    return {
+      collection: 'memberships',
+      selector: { communityId, role: 'owner' },
+      options() {
+        return () => {
+          return {
+            columns: ownershipColumns(community),
+            tableClasses: 'display',
+            language: datatables_i18n[TAPi18n.getLanguage()],
+            lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+            pageLength: 25,
+            ...DatatablesExportButtons,
+            ...DatatablesSelectButtons(Memberships),
+          };
+        };
+      },
+    };
+  },
+});
+
+//-------------------------------------
 
 Template.Community_page.viewmodel({
   onCreated() {

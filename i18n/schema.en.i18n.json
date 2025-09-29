@@ -171,8 +171,13 @@
         }
       },
       "joinable": {
-        "label": "Accepts join requests",
-        "help": "If you are not providing all parcel owner's data yourself, and you'd like them to be able to join the community, providing their own data, allow this option. Before approving a join request, you can still edit the submitted data."
+        "label": "Joining options",
+        "help": "If you are not registering all parcel owner's yourself, and you'd like the users to be able to join the community themselves, providing their own data, then you can allow this. Before approving a join request, you can still edit their submitted data, if you chosse the 'With approval' option. If 'No approval needed' then anybody can join and then they will immediately access the community when pressing the Join button.",
+        "options": {
+          "inviteOnly": "Invitation only",
+          "withApproval": "With approval",
+          "withLink": "Anyone without approval"
+        }
       },
       "language": {
         "label": "Language",

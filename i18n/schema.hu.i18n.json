@@ -171,8 +171,13 @@
         }
       },
       "joinable": {
-        "label": "Csatlakozási kérelmeket fogad",
-        "help": "Ha nem ön viszi fel az összes tulajdonosi adatot, hanem szeretné engedni hogy a tulajdonosok maguktól, adataik megadásával csatlakozzanak, akkor engedélyezze. A csatlakozási kérelemben megadott albetét adatokat ön tudja még módosítani, mielőtt jóváhagyja azokat."
+        "label": "Csatlakozási lehetőségek",
+        "help": "Ha nem ön viszi fel az összes tulajdonost, hanem szeretné engedni hogy a tulajdonosok maguktól, adataik megadásával csatlakozzanak, akkor engedélyezheti ezt. Ha azt választja hogy 'Jóváhagyással', akkor a csatlakozási kérelemben megadott adatokat ön tudja még módosítani, mielőtt jóváhagyja azokat. Ha azt jelöli, hogy 'Bárki' csatlakozhat, akkor a csatlakozók azonnal bekerülnek a közösségbe, amikor a Csatlakozás gombra kattintanak, az ön Jóváhagyása nélkül is.",
+        "options": {
+          "inviteOnly": "Csak meghívottak",
+          "withApproval": "Jóváhagyással",
+          "withLink": "Bárki, jóváhagyás nélkül"
+        }
       },
       "language": {
         "label": "Nyelv",
@@ -293,7 +298,7 @@
       "help": "Egyedi sorszám, mely segít sorba rendezni a helyeinket. A helyrajzi szám utolsó száma például kíválóan alkalmas erre."
     },
     "ref": {
-      "label": "Azonosító név",
+      "label": "Azonosító",
       "placeholder": "(pl. B405 vagy II/4 vagy Földszint)",
       "help": "Egyedi azonosító név, mellyel hivatkozni lehet rá"
     },

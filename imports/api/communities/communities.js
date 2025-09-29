@@ -32,7 +32,7 @@ const chooseTemplate = {
 
 Communities.settingsSchema = new SimpleSchema({
   modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', defaultValue: Communities.availableModules } },
-  joinable: { type: Boolean, defaultValue: true },
+  joinable: { type: String, allowedValues: ['inviteOnly', 'withApproval', 'withLink'], defaultValue: 'withApproval', autoform: allowedOptions() },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   ownershipScheme: { type: String, allowedValues: Communities.ownershipSchemeValues, autoform: { defaultValue: 'condominium' } },
   totalUnits: { type: Number, optional: true }, // If it is a fixed value, it is provided here
@@ -51,6 +51,7 @@ Communities.settingsSchema = new SimpleSchema({
   sendBillEmail: { type: [String], optional: true, allowedValues: ['member', 'customer'], defaultValue: [], autoform: { type: 'select-checkbox-inline' } },
   enableMeterEstimationDays: { type: Number, defaultValue: 30 },
   latePaymentFees: { type: Boolean, optional: true },
+  // marketplace
   marketplaceCurrency: { type: String, optional: true, max: 10 }, // If not specified the local currency will be used
   giftEconomy: { type: Boolean,  optional: true },
 });
@@ -58,7 +59,7 @@ Communities.settingsSchema = new SimpleSchema({
 Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
   isTemplate: { type: Boolean, optional: true, autoform: { omit: true } },
-  description: { type: String, max: 1200, optional: true },
+  description: { type: String, optional: true, autoform: { type: 'textarea' } },
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
 }, AddressSchema, {
   lot: { type: String, max: 100, optional: true },
@@ -126,6 +127,9 @@ Communities.helpers({
       default:
         debugAssert(false, `No such ownershipScheme: ${scheme}`);
     }
+  },
+  usesBlankParcels() {
+    return !this.hasVotingUnits() && !this.hasPhysicalLocations();
   },
   nextAvailableSerial() {
     const Parcels = Mongo.Collection.get('parcels');
@@ -203,8 +207,11 @@ Communities.helpers({
     const voters = this.voterships().map(v => v.partner());
     return _.uniq(voters, false, u => u._id);
   },
+  joinable() {
+    return this.settings.joinable !== 'inviteOnly';
+  },
   needsJoinApproval() {
-    return this.status !== 'sandbox';
+    return this.settings.joinable !== 'withLink';
   },
   hasLiveAssembly() {
     const Agendas = Mongo.Collection.get('agendas');

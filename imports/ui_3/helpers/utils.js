@@ -50,6 +50,11 @@ export function defaultEndDate() {
   return moment().format('YYYY-MM-DD');
 }
 
+export function absoluteUrl(path) {
+  if (path?.charAt(0) === '/') return Meteor.absoluteUrl(path);
+  return path;
+}
+
 if (Meteor.isClient) {
   Template.registerHelper('Meteor', function meteor() {
     return Meteor;
@@ -136,10 +141,7 @@ if (Meteor.isClient) {
     return time ? moment(time).from(serverTimeNow) : __('never');
   });
 
-  Template.registerHelper('absoluteUrl', function absoluteUrl(path) {
-    if (path?.charAt(0) === '/') return Meteor.absoluteUrl(path);
-    return path;
-  });
+  Template.registerHelper('absoluteUrl', absoluteUrl);
 
   // Takes any number of arguments and returns them concatenated.
   Template.registerHelper('concat', function concat() {

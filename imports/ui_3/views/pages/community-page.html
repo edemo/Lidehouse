@@ -233,6 +233,25 @@
     </div>
 </template>
 
+<template name='Ownerships_box'>
+    <div class="memberships">
+        <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
+        <h2 class="text-capitalize">{{_ (concat 'properties.' community.settings.ownershipScheme) }}</h2>
+        <div class="btn-group pull-right">
+            {{>Action_buttons_group collection='memberships' actions='create,import' options=(obj '{"entity": "ownership"}') size='md'}}
+        </div>
+        <p>
+            {{_ 'List of ownerships'}} - <i class="fa fa-user"></i> {{owners.count}} <br>
+        </p>
+         {{#if Template.subscriptionsReady}}
+            {{> Active_archive_tabs name='ownership' tabs='active,unapproved' icon='fa-building' iconUnapproved='fa-building-o'
+                template='SimpleReactiveDatatable' content=ownersTableContent }}
+        {{else}}
+            {{_ 'Loading'}}...
+        {{/if}}
+    </div>
+</template>
+
 <template name="Community_page">
     {{#if community}}
     <!-- Page heading -->
@@ -282,21 +301,25 @@
                                 <p> {{community.description}}</p>
                             </div>
                             {{/if}}
+                            {{#if community.hasVotingUnits }}
                             <div class="m-t-md">
                                 <p>{{_ 'schemaCommunities.settings.totalUnits.label'}}: {{community.totalUnits}}</p>
                                 {{#if (not (equals community.totalUnits.toFixed community.registeredUnits.toFixed)) }}
                                 <span class="label label-warning">{{_ 'schemaCommunities.registeredUnits.label'}}: {{community.registeredUnits.toFixed}}</span>
                                 {{/if}}
                             </div>
+                            {{/if}}
+                            {{#unless community.usesBlankParcels }}
                             <table class="m-t-md" width="100%">
                             <tr>
-                                {{#each parcelTypesWithCount}}
+                                {{#each parcelTypesWithCount }}
                                 <td>
                                     <h5><strong>{{this.count}}</strong> {{this.type}}</h5>
                                 </td>
                                 {{/each}}
                             </tr>
                             </table>
+                            {{/unless}}
                             {{#if or (currentUser.isInCommunity communityId) currentUser.super }}
                             <br>
                                 {{#if (not (equals activeCommunityId communityId)) }}
@@ -310,7 +333,7 @@
                                     </button>
                                 {{/if}}
                             {{else}}
-                                {{#if community.settings.joinable}}
+                                {{#if community.joinable}}
                                     <br>
                                     <p>{{_ 'joinRequestInstructions'}}</p>
                                     {{#if (currentUser.isUnapprovedInCommunity communityId)}}
@@ -321,7 +344,11 @@
                                     {{else}}
                                     <button type="button" class="btn btn-primary btn-sm btn-block js-join">
                                         <i class="fa fa-suitcase"></i>
+                                        {{#if community.needsJoinApproval}}
                                         {{_ 'Submit join request'}}
+                                        {{else}}
+                                        {{_ 'Join the community'}}
+                                        {{/if}}
                                     </button>
                                     {{/if}}
                                 {{/if}}
@@ -346,7 +373,11 @@
         <div class="col-lg-12">
             <div class="ibox parcels">
             <div class="ibox-content">
-                {{>Parcels_box reactiveContext}}
+                {{#if (or community.hasVotingUnits community.hasPhysicalLocations) }}
+                {{> Parcels_box reactiveContext}}
+                {{else}}
+                {{> Ownerships_box reactiveContext}}
+                {{/if}}
             </div>
             </div>
         </div>
@@ -359,11 +390,15 @@
                 {{#if currentUserHasPermission 'partners.inCommunity' communityIdObject}}
                 <button class="btn btn-default text-capitalize js-partners-list"><i class="fa fa-list"></i> {{_ 'partner'}} {{_ 'list'}}</button>
                 {{/if}}
+                {{#if community.hasPhysicalLocations }}
                 {{#if currentUserHasPermission 'meters.inCommunity' communityIdObject}}
                 <button class="btn btn-default text-capitalize js-meters-list"><i class="fa fa-list"></i> {{_ 'meter'}} {{_ 'list'}}</button>
                 {{/if}}
-                {{#if currentUserHasPermission 'contracts.insert'}}
+                {{/if}}
+                {{#if community.isActiveModule 'finances'}}
+                {{#if currentUserHasPermission 'contracts.insert' communityIdObject}}
                 <button class="btn btn-default text-capitalize js-contracts-list"><i class="fa fa-list"></i> {{_ 'contract'}} {{_ 'list'}}</button>
+                {{/if}}
                 {{/if}}
             </div>
         </div>

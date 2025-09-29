@@ -25,7 +25,7 @@ export const insert = new ValidatedMethod({
       if (_.isUndefined(doc.serial)) doc.serial = community.nextAvailableSerial();
       if (doc.ref === 'auto') doc.ref = 'A' + doc.serial.toString().padStart(3, '0');
     }
-    if (doc.ref) {
+    if (doc.ref && community.settings.parcelRefFormat) {
       doc = ParcelRefFormat.extractFieldsFromRef(community.settings.parcelRefFormat, doc);
     }
     checkUnique(Parcels, doc);

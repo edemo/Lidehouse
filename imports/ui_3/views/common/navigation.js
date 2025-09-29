@@ -37,7 +37,7 @@ Template.Navigation.viewmodel({
     return getActiveCommunityId();
   },
   community() {
-    return getActiveCommunity() || { displayType: () => 'community' };
+    return getActiveCommunity() || { displayType: () => 'community', settings: { modules: [] } };
   },
   unseenEventsCount(category) {
     const communityId = this.communityId();

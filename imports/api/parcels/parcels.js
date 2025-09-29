@@ -334,6 +334,15 @@ function updateCommunity(parcel, revertSign = 1) {
 }
 
 if (Meteor.isServer) {
+/*  Parcels.before.insert(function (userId, doc) {
+    if (!doc.serial && ['%property', '@property'].includes(doc.category)) { // keep it, if already exists
+      const selector = { communityId: doc.communityId, category: { $in: ['%property', '@property'] } };
+      const last = Parcels.findOne(selector, { sort: { serial: -1 } });
+      const nextSerial = last ? last.serial + 1 : 1;
+      doc.serial = nextSerial;
+    }
+  });*/
+
   Parcels.after.insert(function (userId, doc) {
     updateCommunity(doc, 1);
   });

@@ -30,6 +30,7 @@ Template.Community_launch.onRendered(function onRendered() {
       status: 'sandbox',
       settings: {
         language: FlowRouter.getQueryParam('lang'),
+        joinable: 'withLink',
         ownershipScheme: 'condominium',
         totalUnits: 100 * FlowRouter.getQueryParam('count'),  // new joiners will get 100 voting units
         accountingMethod: 'cash',

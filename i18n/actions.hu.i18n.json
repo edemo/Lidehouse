@@ -35,6 +35,10 @@
       "doing": "importálása",
       "done": "importálva"
     },
+    "join": {
+      "label": "csatlakozás",
+      "done": "csatlakozva"
+    },
     "move": {
       "label": "áthelyezés",
       "do": "áthelyezi",

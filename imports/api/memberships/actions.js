@@ -3,14 +3,18 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
+import { displayError, handleError } from '/imports/ui_3/lib/errors.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { displayMessage } from '/imports/ui_3/lib/errors.js';
+import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from './memberships';
 import './entities.js';
 import './methods.js';
@@ -126,6 +130,10 @@ Memberships.actions = {
   }),
 };
 
+Memberships.batchActions = {
+  delete: new BatchAction(Memberships.actions.delete, Memberships.methods.batch.remove),
+};
+
 //-------------------------------------------------------
 
 AutoForm.addModalHooks('af.membership.period');
@@ -136,6 +144,12 @@ _.each(Memberships.entities, (entity, entityName) => {
 
   AutoForm.addHooks(`af.${entityName}.create`, {
     formToDoc(doc) {
+      if (!doc.parcelId) { 
+        const community = Communities.findOne(doc.communityId);
+        if (community.usesBlankParcels()) {
+          doc.parcelId = Parcels.methods.insert.call({ communityId: doc.communityId, category: community.propertyCategory(), ref: 'auto' }, handleError);
+        }
+      }
       return doc;
     },
   });

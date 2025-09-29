@@ -75,19 +75,24 @@ Communities.actions = {
   join: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'join',
     icon: 'fa fa-suitcase',
-    visible: doc.settings && doc.settings.joinable,
+    label: doc.settings.joinable === 'withLink' ? 'join' : 'submit join request',
+    visible: doc.settings && doc.joinable?.(),
     run() {
       const communityId = doc._id;
       const community = Communities.findOne(communityId);
-      const language = doc.settings.language;
-      const type = TAPi18n.__('schemaParcels.type.flat', {}, language);
       if (user.hasJoinedCommunity(communityId)) {  // should not let same person join twice
         FlowRouter.go('App home');
         return;
       }
-      if (doc.status === 'sandbox') {   // Sandboxes have immediate (no questions asked) joining, with a fixed ownership share
-        Meteor.call('parcels.insert',
-          { communityId, category: community.propertyCategory(), approved: false, serial: 0, ref: 'auto', units: 100, type },
+      if (doc.status === 'sandbox' || doc.usesBlankParcels()) {   // Sandboxes have immediate (no questions asked) joining, with a fixed ownership share
+        let units, type;
+        if (doc.status === 'sandbox') {
+          const language = doc.settings.language;
+          type = TAPi18n.__('schemaParcels.type.flat', {}, language);
+          units = 100;
+        }
+        Meteor.call('parcels.insert', 
+          { communityId, category: community.propertyCategory(), approved: false, ref: 'auto' , units, type },
           onSuccess(res => setMeAsParcelOwner(res, communityId, onSuccess(r => FlowRouter.go('App home')),
           )),
         );

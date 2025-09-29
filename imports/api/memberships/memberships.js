@@ -182,6 +182,13 @@ Memberships.helpers({
     if (parcel) result += ` ${parcel.toString()}`;
     return result;
   },
+  displayPartner() {
+    return this.partner()?.displayName();
+  },
+  displayParcel() {
+    const parcel = this.parcel();
+    return parcel && `${parcel.ref}`;
+  },
   toString() {
     const partner = this.partner();
     const display = `${partner && partner.displayName('hu')}, ${this.displayRole()}`;
