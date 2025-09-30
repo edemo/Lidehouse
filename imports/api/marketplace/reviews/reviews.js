@@ -17,10 +17,10 @@ Reviews.schema = new SimpleSchema({
   relation: { type: String, allowedValues: Relations.mainValues, autoform: { type: 'hidden' } },
   listingId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseListing, disabled: true} },
   dealId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  reviewerUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  revieweeUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   reviewerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   revieweeId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  reviewerPartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  revieweePartnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
   rating: { type: Number, decimal: true, min: 0, max: 5 },
   text: { type: String, optional: true, max: 2000,  autoform: { rows: 6 } },
 //  privateText: { type: String, optional: true, max: 2000,  autoform: { rows: 6 } },
@@ -28,10 +28,10 @@ Reviews.schema = new SimpleSchema({
 
 Meteor.startup(function indexReviews() {
   Reviews.ensureIndex({ communityId: 1 });
-  Reviews.ensureIndex({ reviewerUserId: 1 });
-  Reviews.ensureIndex({ revieweeUserId: 1 });
   Reviews.ensureIndex({ reviewerId: 1 });
   Reviews.ensureIndex({ revieweeId: 1 });
+  Reviews.ensureIndex({ reviewerPartnerId: 1 });
+  Reviews.ensureIndex({ revieweePartnerId: 1 });
   Reviews.ensureIndex({ listingId: 1 });
   Reviews.ensureIndex({ dealId: 1 });
 });
@@ -47,9 +47,15 @@ Reviews.helpers({
     return Deals.findOne(this.dealId);
   },
   reviewer() {
-    return Partners.findOne(this.reviwerId);
+    return Meteor.users().findOne(this.reviwerId);
   },
   reviewee() {
+    return Meteor.users().findOne(this.reviweeId);
+  },
+  reviewerPartner() {
+    return Partners.findOne(this.reviwerId);
+  },
+  revieweePartner() {
     return Partners.findOne(this.reviweeId);
   },
 });

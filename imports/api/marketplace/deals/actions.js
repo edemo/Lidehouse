@@ -195,10 +195,10 @@ Deals.actions = {
         relation,
         listingId: doc.listingId,
         dealId: doc._id,
-        reviewerUserId: user._id,
-        revieweeUserId: otherPartner.userId,
-        reviewerId: partner._id,
-        revieweeId: otherPartner._id,
+        reviewerId: user._id,
+        revieweeId: otherPartner.userId,
+        reviewerPartnerId: partner._id,
+        revieweePartnerId: otherPartner._id,
       };
       Reviews.actions.create(reviewOptions, reviewDoc, user).run();
     },

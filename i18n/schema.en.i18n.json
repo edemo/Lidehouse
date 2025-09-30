@@ -1828,10 +1828,10 @@
     "listingId": {
       "label": "Reviewed listing"
     },
-    "reviewerId": {
+    "reviewerPartnerId": {
       "label": "Reviewer"
     },
-    "revieweeId": {
+    "revieweePartnerId": {
       "label": "Reviewee"
     },
     "rating": {

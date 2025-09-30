@@ -193,7 +193,7 @@ Partners.helpers({
   },
   reviews() {
     const Reviews = Mongo.Collection.get('reviews');
-    return Reviews.find({ revieweeId: this._id });
+    return Reviews.find({ revieweePartnerId: this._id });
   },
   marketActivity() {
 //    return this.displayName().length; // TODO

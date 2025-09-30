@@ -1845,10 +1845,10 @@
     "listingId": {
       "label": "Értékelt hirdetés"
     },
-    "reviewerId": {
+    "reviewerPartnerId": {
       "label": "Értékelő partner"
     },
-    "revieweeId": {
+    "revieweePartnerId": {
       "label": "Értékelt partner"
     },
     "rating": {
