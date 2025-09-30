@@ -1846,10 +1846,10 @@
       "label": "Értékelt hirdetés"
     },
     "reviewerId": {
-      "label": "Értékelő személy"
+      "label": "Értékelő partner"
     },
     "revieweeId": {
-      "label": "Értékelt személy"
+      "label": "Értékelt partner"
     },
     "rating": {
       "label": "Értékelés",

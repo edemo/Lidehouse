@@ -28,8 +28,10 @@ Reviews.schema = new SimpleSchema({
 
 Meteor.startup(function indexReviews() {
   Reviews.ensureIndex({ communityId: 1 });
-  Reviews.ensureIndex({ reviwerId: 1 });
-  Reviews.ensureIndex({ reviweeId: 1 });
+  Reviews.ensureIndex({ reviewerUserId: 1 });
+  Reviews.ensureIndex({ revieweeUserId: 1 });
+  Reviews.ensureIndex({ reviewerId: 1 });
+  Reviews.ensureIndex({ revieweeId: 1 });
   Reviews.ensureIndex({ listingId: 1 });
   Reviews.ensureIndex({ dealId: 1 });
 });
@@ -44,10 +46,10 @@ Reviews.helpers({
   deal() {
     return Deals.findOne(this.dealId);
   },
-  reviwer() {
+  reviewer() {
     return Partners.findOne(this.reviwerId);
   },
-  reviwee() {
+  reviewee() {
     return Partners.findOne(this.reviweeId);
   },
 });
