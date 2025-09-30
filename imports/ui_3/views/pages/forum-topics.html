@@ -59,7 +59,9 @@
         </div>
         {{#if (not show.archived) }}
         <div class="text-center">
-            <button type="button" class="btn btn-block btn-outline btn-info js-filter" data-value="archived">{{_ 'Older topics'}} ({{_ 'archived'}})</button>
+            <button type="button" class="btn btn-outline btn-primary js-filter" data-value="archived">
+                {{_ 'Older topics'}} ({{_ 'archived'}}) <i class="fa fa-long-arrow-right"></i>
+            </button>
         </div>
         {{/if}}
     </div>
