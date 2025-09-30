@@ -25,7 +25,8 @@
                 <span>
                     <a href={{pathFor 'Listing show' _lid=this._id}} class="product-name"> {{this.title}}</a>
                 </span>
-                <div class="small m-t-xs">{{> ChoppedHeight text=this.text height=200 markdown=true }}</div>
+                <div class="small m-t-xs m-b-xs">{{> ChoppedHeight text=this.text height=200 markdown=true }}</div>
+                <small class="text-muted">{{this.keywords }}</small>
                 {{#if equals currentUser._id this.creatorId}}
                     <hr>
                     {{#let interestedDeals=this.activeDeals}}

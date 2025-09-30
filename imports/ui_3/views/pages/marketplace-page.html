@@ -107,6 +107,7 @@
                                     <a href="{{pathFor 'Listing show' _lid=this._id}}">{{this.title}}</a>
                                     <!--{{> Badge color='info' value=(this.blueBadgeCount currentUser._id Meteor.users.SEEN_BY.EYES)}}-->
                                     <small>{{>ChoppedChars text=this.text chars=150 markdown=true}}</small>
+                                    <small>{{this.keywords}}</small>
                                 </td>                
                                 <td>{{{displayAccount this.bucket}}}</td>
                                 <td>{{displayMarketplaceCurrency this.price}}</td>

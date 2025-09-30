@@ -80,9 +80,10 @@ Template.Marketplace_page.viewmodel({
     }
     let listings = Listings.find(selector).fetch();
     if (this.searchText()) {
-      listings = listings.filter(t =>
-        t.title.toLowerCase().search(this.searchText().toLowerCase()) >= 0
-        || t.text.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+      listings = listings.filter(l =>
+        l.title.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+        || l.text?.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+        || l.keywords?.toLowerCase().search(this.searchText().toLowerCase()) >= 0
       );
     }
     if (this.activeLocation()) { // Search style location filtering allows "Budapest, VII." location to be found both as "Budapest" and "VII"
