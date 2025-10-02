@@ -13,6 +13,10 @@ export function paymentsColumns() {
   const columns = [
 //    { data: 'serial', title: __('schemaTransactions.serial.label') },
     { data: 'serialId', title: __('schemaSerialId.serialId.label') },
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.payment }, actions: '', size: 'sm' }, cell),
+    },
     { data: 'partner().displayName()', title: 'Partner' },
 //    { data: 'createdAt', title: __('schemaTimestamped.createdAt.label'), render: Render.formatDate },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
@@ -20,10 +24,6 @@ export function paymentsColumns() {
     { data: 'outstanding', title: __('schemaPayments.outstanding.label'), render: Render.formatNumber(0) },
     { data: 'payAccount', title: __('schemaTransactions.payAccount.label'), render: displayAccount },
     { data: 'choppedNotes()', title: __('schemaNoted.notes.label') },
-    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.payment }, actions: '', size: 'sm' }, cell),
-    },
     { data: 'reconciled', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
   ];
 
