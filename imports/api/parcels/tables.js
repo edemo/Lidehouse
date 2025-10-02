@@ -29,7 +29,8 @@ export function parcelColumns(community) {
     community?.hasPhysicalLocations() && 
       { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label') },
-    { data: 'group', title: __('schemaParcels.group.label') },
+    Meteor.user().hasPermission('parcels.insert') &&
+      { data: 'group', title: __('schemaParcels.group.label') },
     community?.hasPhysicalLocations() && 
       { data: 'lot', title: __('schemaParcels.lot.label') },
     community?.hasPhysicalLocations() && 
