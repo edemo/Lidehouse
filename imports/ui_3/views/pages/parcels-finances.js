@@ -36,8 +36,14 @@ Template.Parcels_finances.viewmodel({
       instance.subscribe('contracts.ofEntitledOnes', { communityId });
       if (Meteor.userOrNull().hasPermission('transactions.inCommunity', { communityId })) {
         if (self.showAllParcels()) {
-          instance.subscribe('contracts.outstanding', { communityId, selector: 'partner' });
+          instance.subscribe('contracts.inCommunity', { communityId, relation: 'member' });
+          instance.subscribe('parcels.inCommunity', { communityId });
+          instance.subscribe('memberships.inCommunity', { communityId });
+          instance.subscribe('meters.inCommunity', { communityId });
+          instance.subscribe('balances.inCommunity', { communityId, tag: 'T', partners: [] });
+          instance.subscribe('transactions.inCommunity', { communityId, category: 'bill', begin: moment().subtract(90, 'days').toDate() });
         } else {
+          // TODO: 'contracts.outstanding' does not provide the leadParcel contracts, so they don't show up
           instance.subscribe('contracts.outstanding', { communityId, selector: 'partner', debtorsOnly: true });
         }
       }
