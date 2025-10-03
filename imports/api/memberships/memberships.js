@@ -176,7 +176,7 @@ Memberships.helpers({
     return votingShare;
   },
   displayRole() {
-    let result = __(this.role);
+    let result = this.community()?._(this.role);
     const parcel = this.parcel(); // TODO Cannot always retrive parcel, needs to subscribe to parcel data
     if (parcel) result += ` ${parcel.toString()}`;
     return result;

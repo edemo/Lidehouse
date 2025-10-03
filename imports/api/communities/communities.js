@@ -4,8 +4,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
-import { TAPi18n } from 'meteor/tap:i18n';
 
+import { __ } from '/imports/localization/i18n.js';
 import { Log } from '/imports/utils/log.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { AddressSchema, displayAddress } from '/imports/localization/localization.js';
@@ -21,6 +21,16 @@ Communities.accountingMethods = ['cash', 'accrual'];
 Communities.statusValues = ['sandbox', 'live', 'official', 'closed'];
 Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'marketplace', 'documents'];
 Communities.ownershipSchemeValues = ['condominium', 'corporation', 'foundation', 'cooperative', 'condo-coop', 'basket-coop']; //  'meritocracy' coming soon
+
+Communities.specificTerms = {};
+Communities.ownershipSchemeValues.forEach(val => Communities.specificTerms[val] = {});
+['condominium', 'condo-coop'].forEach(val => {
+  Communities.specificTerms[val]['community'] = 'condo';
+  Communities.specificTerms[val]['community finances'] = 'condo finances';
+});
+['cooperative'].forEach(val => {
+  Communities.specificTerms[val]['owner'] = 'voting member';
+});
 
 const chooseTemplate = {
   options() {
@@ -98,10 +108,14 @@ Communities.helpers({
   parcelTypeValues() {
     return Object.keys(this.parcels);
   },
+  specificTermFor(text) {
+    return Communities.specificTerms[this.settings.ownershipScheme][text] || text;
+  },
+  _(text) {
+    return __(this.specificTermFor(text));
+  },
   displayType() {
-    const scheme = this.settings?.ownershipScheme;
-    if (scheme === 'condominium' || scheme === 'condo-coop') return 'condo';
-    return 'community';
+   return this.specificTermFor('community');
   },
   hasPhysicalLocations() {
     const scheme = this.settings?.ownershipScheme;

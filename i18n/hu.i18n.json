@@ -67,8 +67,8 @@
   "overseer": "számvizsgáló",
   "delegate": "meghatalmazott",
   "maintainer": "gondnok",
-  "guest": "vendég",
-  
+  "guest": "vendég",  
+  "voting member" : "teljes jogú tag",
   "Leaders": "Vezetők",
   "Other roles": "Egyéb tisztségek",
 

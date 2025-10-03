@@ -46,7 +46,7 @@ Accounts.emailTemplates.enrollAccount = {
     return dualTranslate('email.EnrollAccount', {
       name: community.name,
       communityType: community.displayType(),
-      role: membership.role,
+      role: community.specificTermFor(membership.role),
       email: adminEmail,
       url,
     },

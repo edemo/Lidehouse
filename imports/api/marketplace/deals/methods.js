@@ -58,7 +58,7 @@ export const initiate = new ValidatedMethod({
       dataUpdate,
     });
     const statusChange = Comments.findOne(statusChangeId);
-    updateMyLastSeen._execute({ userId: this._id },
+    updateMyLastSeen._execute({ userId: this.userId },
       { topicId: doc.roomId, lastSeenInfo: { timestamp: statusChange.createdAt } },
     );
   

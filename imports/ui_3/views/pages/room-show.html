@@ -64,14 +64,14 @@
         {{#if selectedRoom}} 
         <div class="row">
             <div class="col-md-3 visible-md visible-lg pull-right">
-                {{#if equals selectedRoom.title 'deal chat'}}
-                <div>
-                    {{> Listing_box selectedListing}}
-                </div>
-                {{/if}}
                 {{#if selectedPerson}}
                 <div>
                     {{> Contact_long selectedPerson}}
+                </div>
+                {{/if}}
+                {{#if equals selectedRoom.title 'deal chat'}}
+                <div>
+                    {{> Listing_box selectedListing}}
                 </div>
                 {{/if}}
             </div>
