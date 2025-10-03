@@ -151,9 +151,25 @@ AutoForm.addHooks('af.meter.create', {
     return doc;
   },
 });
+AutoForm.addHooks('af.meter.view', {
+  docToForm(doc) {
+    doc.readings.reverse();
+    return doc;
+  },
+});
 AutoForm.addHooks('af.meter.edit', {
   formToModifier(modifier) {
     //    modifier.$set.approved = true;
+    return modifier;
+  },
+});
+AutoForm.addHooks('af.meter.editReadings', {
+  docToForm(doc) {
+    doc.readings.reverse();
+    return doc;
+  },
+  formToModifier(modifier) {
+    modifier.$set.readings.reverse();
     return modifier;
   },
 });
