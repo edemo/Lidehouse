@@ -33,14 +33,14 @@
     "attachments": {
       "label": "Fénykép vagy fájl (ha csatolni szeretne)",
       "$": {
-        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+        "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
       },
       "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
     },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
       "$": {
-        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+        "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
       },
       "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
     }
@@ -106,7 +106,7 @@
     },
     "avatar": {
       "label": "Fénykép",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kajol-lak.jpg)"
+      "placeholder": "Link megadás (pl. https://imgbb.com/kajol-lak.jpg)"
     },
     "zip": {
       "label": "Irányító szám",
@@ -479,7 +479,7 @@
     },
     "avatar": {
       "label": "Profilkép",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
     },
     "profile": {
       "label": "Profil [Az itt megadott adatokat a közösség többi tagjai is látják]",
@@ -588,7 +588,7 @@
         },
         "photo": {
           "label": "Fénykép (ha csatolni szeretne)",
-          "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+          "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
         }
       }
     },
@@ -644,7 +644,7 @@
       },
       "photo": {
         "label": "Fénykép (ha csatolni szeretne)",
-        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+        "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
       }
     }
   },
@@ -851,7 +851,7 @@
     "shareddocs": {
       "label": "Dokumentumok (ha csatolni szeretne)",
       "$": {
-        "placeholder": "Link megadása (pl. /uploads/document.pdf)"
+        "placeholder": "Link megadás (pl. /uploads/document.pdf)"
       }
     },
     "sticky" : {
@@ -1034,7 +1034,7 @@
     },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
     },
     "destinationId": {
       "label": "Áthelyezés ehhez a témához:"

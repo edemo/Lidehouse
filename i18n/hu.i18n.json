@@ -714,6 +714,9 @@
 
   // placeholders
   "Make your comment": "Hozzászólás",
+  "messengerMessagePlaceholder": "Üzenet… (pl. Epertortát sütöttem. Van kedved átugrani megkóstolni?)",
+  "messengerHistoryPlaceholder": "Még nincsenek üzenetek. <br /> Üzenetváltás indítása!",
+  "marketplaceHistoryPlaceholder": "Nincsenek még ügyletek. Ön lehet az első aki ügyletet köt ezzel a felhasználóval.",
 
   // errors
   "err_notImplemented": "Nem elérhető funkció",
@@ -853,8 +856,6 @@
   "newCommentPlaceholder": "Hozzászólás…",
   "messengerPeopleMenu": "Lakók",
   "Last message": "Utolsó üzenet",
-  "messengerMessagePlaceholder": "Üzenet… (pl. Epertortát sütöttem. Van kedved átugrani megkóstolni?)",
-  "messengerHistoryPlaceholder": "Még nincsenek üzenetek. <br /> Üzenetváltás indítása!",
   "commentEditInstruction": "Mentéshez nyomja meg az enter, elvetéshez az escape billentyűt.",
   "Page not found": "A keresett tartalom nem található",
   "pageNotFoundMessage": "A %s nem található a rendszerben.\nEnnek lehet oka, hogy időközben már törölték.\nDe az is lehet hogy önnek nincs megfelelő jogosultsága hogy megtekintse.",
