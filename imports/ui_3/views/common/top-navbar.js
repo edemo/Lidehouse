@@ -59,8 +59,10 @@ Template.Top_navbar.helpers({
     return getActiveCommunity() || { displayType: () => 'community' };
   },
   userCommunities() {
-    if (!Meteor.user()) { return []; }
-    return Meteor.user().communities();
+    const user = Meteor.user();
+    if (!user) { return []; }
+    const communities = user.communities().fetch();
+    return communities.sort((a, b) => a.name.localeCompare(b.name, user.settings.language, { sensitivity: 'accent' }));
   },
   superCommunities() {
     if (!Meteor.user()?.super) { return undefined; }
