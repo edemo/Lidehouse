@@ -13,6 +13,10 @@ export function billColumns(community) {
   const columns = [
 //    { data: 'serial', title: __('schemaTransactions.serial.label') },
     { data: 'serialId', title: __('schemaSerialId.serialId.label') },
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.bill }, actions: '', size: 'sm' }, cell),
+    },
     { data: 'partner()', title: 'Partner' },
 //    { data: 'createdAt', title: __('schemaTimestamped.createdAt.label'), render: Render.formatDate },
     { data: 'issueDate', title: __('schemaBills.issueDate.label'), render: Render.formatDate },
@@ -24,10 +28,6 @@ export function billColumns(community) {
       community?.settings?.latePaymentFees &&
     { data: 'lateValueOutstanding', title: __('schemaBills.lateValueOutstanding.label'), render: Render.formatNumber(0) },
     { data: 'choppedNotes()', title: __('schemaNoted.notes.label') },
-    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.bill }, actions: '', size: 'sm' }, cell),
-    },
   ];
   return columns;
 }
@@ -36,15 +36,15 @@ export function receiptColumns() {
   const columns = [
 //    { data: 'serial', title: __('schemaTransactions.serial.label') },
     { data: 'serialId', title: __('schemaSerialId.serialId.label') },
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.receipt }, actions: '', size: 'sm' }, cell),
+    },
     { data: 'partner()', title: 'Partner' },
 //    { data: 'createdAt', title: __('schemaTimestamped.createdAt.label'), render: Render.formatDate },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber() },
     { data: 'choppedNotes()', title: __('schemaNoted.notes.label') },
-    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.receipt }, actions: '', size: 'sm' }, cell),
-    },
     { data: 'reconciled', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
   ];
 

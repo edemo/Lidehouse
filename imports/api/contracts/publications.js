@@ -2,7 +2,9 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
+import { Relations } from '/imports/api/core/relations.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/accounting/transactions.js';
@@ -14,13 +16,14 @@ import { Meters } from '/imports/api/meters/meters.js';
 Meteor.publish('contracts.inCommunity', function contractsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
+    relation: { type: String, allowedValues: Relations.values, optional: true },
   }).validate(params);
-  const { communityId } = params;
+  const { communityId, relation } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (user.hasPermission('contracts.inCommunity', { communityId })) {
     const fields = user.hasPermission('partners.details', { communityId }) ? {} : Contracts.publicFields;
-    return Contracts.find({ communityId }, { fields });
+    return Contracts.find(params, { fields });
   } // Otherwise, only the active leaders of the community can be seen
   return this.ready();
 });

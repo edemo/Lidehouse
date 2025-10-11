@@ -198,10 +198,10 @@ StatementEntries.actions = {
     name: 'post',
     icon: 'fa fa-check-square-o',
     color: 'warning',
-    visible: doc.isReconciled() && _.any(doc.reconciledTransactions(), tx => !tx.isPosted()) && user.hasPermission('transactions.post', doc),
+    visible: doc.isReconciled() && _.any(doc.reconciledTransactions(), tx => !tx?.isPosted()) && user.hasPermission('transactions.post', doc),
     run() {
       doc.reconciledTransactions()?.forEach(tx => {
-        if (!tx.isPosted()) Transactions.actions.post(options, tx).run();
+        if (!tx?.isPosted()) Transactions.actions.post(options, tx).run();
       });
     },
   }),

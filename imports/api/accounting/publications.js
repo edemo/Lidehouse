@@ -12,6 +12,7 @@ import { Transactions } from './transactions.js';
 Meteor.publish('transactions.inCommunity', function transactionsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
+    category: { type: String, allowedValues: Transactions.categoryValues, optional: true },
     begin: { type: Date, optional: true },
     end: { type: Date, optional: true },
   }).validate(params);

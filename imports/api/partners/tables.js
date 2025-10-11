@@ -9,13 +9,13 @@ import './actions.js';
 export function partnersColumns() {
   const columns = [
     { data: 'toString()', title: __('schemaTransactions.partnerId.label') },
-    { data: 'idCard.type', title: __('schemaPartners.idCard.type.label'), render: Render.translateWithScope('schemaPartners.idCard.type') },
-    { data: 'relation', title: __('schemaPartners.relation.label'), render: Render.translateWithScope('schemaPartners.relation') },
-    { data: 'contact.email', title: __('schemaPartners.contact.email.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'partners', actions: 'view,edit,merge,delete', size: 'sm' }, cell),
     },
+    { data: 'idCard.type', title: __('schemaPartners.idCard.type.label'), render: Render.translateWithScope('schemaPartners.idCard.type') },
+    { data: 'relation', title: __('schemaPartners.relation.label'), render: Render.translateWithScope('schemaPartners.relation') },
+    { data: 'contact.email', title: __('schemaPartners.contact.email.label') },
   ];
 
   return columns;

@@ -29,7 +29,10 @@ Template.Contracts.viewmodel({
     ModalStack.setVar('relation', this.activePartnerRelation(), true);
     instance.autorun(() => {
       const communityId = getActiveCommunityId();
-      instance.subscribe('contracts.inCommunity', { communityId });
+      instance.subscribe('contracts.inCommunity', { communityId, relation: this.activePartnerRelation() });
+    });
+    instance.autorun(() => {
+      const communityId = getActiveCommunityId();
       instance.subscribe('accounts.inCommunity', { communityId });
       instance.subscribe('accountingPeriods.inCommunity', { communityId });
     });

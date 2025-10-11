@@ -10,24 +10,24 @@ import './actions.js';
 export function contractsColumns() {
   return [
     { data: 'title', title: __('schemaContracts.title.label') },
-    { data: 'partnerName()', title: __('schemaContracts.partnerId.label') },
-    { data: 'relation', title: __('schemaPartners.relation.label'), render: Render.translateWithScope('schemaPartners.relation') },
-//    { data: 'topics()', title: __('schemaAgendas.topicIds.label'), render: cellData => _.pluck(cellData, 'title') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'contracts', actions: '', size: 'sm' }, cell),
     },
+    { data: 'partnerName()', title: __('schemaContracts.partnerId.label') },
+    { data: 'relation', title: __('schemaPartners.relation.label'), render: Render.translateWithScope('schemaPartners.relation') },
+//    { data: 'topics()', title: __('schemaAgendas.topicIds.label'), render: cellData => _.pluck(cellData, 'title') },
   ];
 }
 
 export function contractsFinancesColumns() {
   const columns = [
     { data: 'displayFull()', title: __('schemaTransactions.partnerId.label') + ' / ' + __('schemaTransactions.contractId.label') },
-    { data: 'outstanding()', title: __('schemaBills.outstanding.label'), render: Render.formatNumber(0) },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'contracts', actions: 'view,edit,history,remindOutstandings', size: 'sm' }, cell),
     },
+    { data: 'outstanding()', title: __('schemaBills.outstanding.label'), render: Render.formatNumber(0) },
   ];
 
   return columns;
@@ -36,13 +36,13 @@ export function contractsFinancesColumns() {
 export function contractsPeriodFinancesColumns(period) {
   const columns = [
     { data: 'displayFull()', title: __('schemaTransactions.partnerId.label') + ' / ' + __('schemaTransactions.contractId.label') },
-    { data: 'openingBalance(period)', title: __('Opening balance'), render: Render.formatNumber(0) },
-    { data: 'periodTraffic(period)', title: __('Change during period'), render: Render.formatNumber(0) },
-    { data: 'closingBalance(period)', title: __('Closing balance'), render: Render.formatNumber(0) },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'contracts', actions: '', size: 'sm' }, cell),
     },
+    { data: 'openingBalance(period)', title: __('Opening balance'), render: Render.formatNumber(0) },
+    { data: 'periodTraffic(period)', title: __('Change during period'), render: Render.formatNumber(0) },
+    { data: 'closingBalance(period)', title: __('Closing balance'), render: Render.formatNumber(0) },
   ];
 
   return columns;
