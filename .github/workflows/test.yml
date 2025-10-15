@@ -23,7 +23,8 @@ jobs:
         run: npm install -g meteor
 
       - name: Run meteor npm install
-        run: ~/.meteor/meteor npm install
+        run: |
+            ~/.meteor/meteor npm install
 
       - name: Run Mocha tests
         run: ~/.meteor/meteor test --once --driver-package meteortesting:mocha --port 3100

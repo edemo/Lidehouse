@@ -24,9 +24,9 @@
     "fractional": "^1.0.0",
     "meteor-node-stubs": "^1.2.24",
     "nestable": "^0.2.0",
+    "postcss": "^8.1.0",
     "rus-diff": "^1.1.0",
-    "xlsx": "^0.17.0",
-    "postcss": "^8.1.0"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.28.4",
