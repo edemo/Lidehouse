@@ -15,21 +15,22 @@
   "dependencies": {
     "@antoineschaller/kadira": "^1.0.1",
     "@babel/runtime": "^7.9.6",
-    "autoprefixer": "^6.4.1",
-    "bcrypt": "^4.0.1",
+    "autoprefixer": "^10.4.21",
+    "bcrypt": "^6.0.0",
     "compress.js": "^1.1.2",
     "deep-extend": "^0.6.0",
     "faker": "^3.1.0",
-    "flat": "^4.1.0",
+    "flat": "^6.0.1",
     "fractional": "^1.0.0",
-    "meteor-node-stubs": "^0.4.1",
+    "meteor-node-stubs": "^1.2.24",
     "nestable": "^0.2.0",
     "rus-diff": "^1.1.0",
-    "xlsx": "^0.15.6"
+    "xlsx": "^0.15.6",
+    "postcss": "^8.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.8.0",
+    "eslint": "^9.37.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-import": "^2.20.2",
