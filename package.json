@@ -25,11 +25,11 @@
     "meteor-node-stubs": "^1.2.24",
     "nestable": "^0.2.0",
     "rus-diff": "^1.1.0",
-    "xlsx": "^0.15.6",
+    "xlsx": "^0.17.0",
     "postcss": "^8.1.0"
   },
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
+    "@babel/eslint-parser": "^7.28.4",
     "eslint": "^9.37.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-import-resolver-meteor": "^0.4.0",
