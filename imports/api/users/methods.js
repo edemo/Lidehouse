@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import { Notifications } from '/imports/api/notifications/notifications.js';
 import './users.js';
 

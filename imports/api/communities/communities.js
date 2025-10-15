@@ -261,7 +261,7 @@ Factory.define('community', Communities, {
   avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
   taxNo: () => faker.finance.account(6) + '-2-42',
   settings: {
-    joinable: true,
+    joinable: 'inviteOnly',
     language: 'en',
     ownershipScheme: 'condominium',
     parcelRefFormat: 'bfdd',
