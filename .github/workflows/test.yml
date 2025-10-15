@@ -1,0 +1,29 @@
+name: Meteor Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: "**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a Node.js version compatible with your Meteor version
+
+      - name: Install Meteor
+        run: npm install -g meteor
+
+      - name: Run meteor npm install
+        run: ~/.meteor/meteor npm install
+
+      - name: Run Mocha tests
+        run: ~/.meteor/meteor test --once --driver-package meteortesting:mocha --port 3100

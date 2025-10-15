@@ -79,3 +79,4 @@ mobile-settings.json
 mobile-config.js
 build.sh
 .vscode
+package-lock.json
