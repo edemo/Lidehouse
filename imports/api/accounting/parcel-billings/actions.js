@@ -9,6 +9,7 @@ import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { ParcelBillings } from './parcel-billings.js';
+import '/imports/ui_3/views/components/parcel-billings-last-applies.js';
 import './methods.js';
 
 ParcelBillings.actions = {
@@ -66,6 +67,21 @@ ParcelBillings.actions = {
         type: 'method-update',
         meteormethod: 'parcelBillings.update',
         singleMethodArgument: true,
+      });
+    },
+  }),
+  getLastApplies: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'getLastApplies',
+    icon: 'fa fa-list',
+    visible: user.hasPermission('parcelBillings.inCommunity', doc),
+    run() {
+      Modal.show('Modal', {
+        id: 'parcelBillingLastApplies.view',
+        title: 'Parcel billing last applications',
+        description: 'parcelBillingLastApplications_Message',
+        body: 'ParcelBillings_lastApplies',
+        bodyContext: doc,
+        size: 'lg',
       });
     },
   }),

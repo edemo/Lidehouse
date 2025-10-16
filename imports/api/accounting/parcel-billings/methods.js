@@ -165,8 +165,27 @@ export const revert = new ValidatedMethod({
     const txs = Transactions.find({ deliveryDate: date, 'lines.billing.id': _id, status: { $ne: 'void' } }).fetch();
     txs.forEach(tx => {
       Transactions.methods.remove._execute({ userId: this.userId }, { _id: tx._id });
+                    // TODO: This now reverts the whole Bill, not just the one line caused by this billing.
                     // This will result in a STORNO tx, when the tx is already posted
     });
+  },
+});
+
+export const getLastApplies = new ValidatedMethod({
+  name: 'parcelBillings.getLastApplies',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id }
+  }).validator({ clean: true }),
+
+  run({ _id }) {
+    if (Meteor.isClient) return;
+    const parcelBilling = checkExists(ParcelBillings, _id);
+    const parcels = parcelBilling.parcelsToBill();
+    const result = parcels.map(parcel => {
+      const lastTx = Transactions.findOne({ category: 'bill', 'lines.billing.id': _id, 'lines.parcelId': parcel._id, status: { $ne: 'void' } }, { sort: { deliveryDate: -1 } });
+      return _.extend(parcel, { lastAppliedAt: lastTx?.deliveryDate });
+    });
+    return result;
   },
 });
 
@@ -213,4 +232,4 @@ export const remove = new ValidatedMethod({
 });
 
 ParcelBillings.methods = ParcelBillings.methods || {};
-_.extend(ParcelBillings.methods, { insert, update, remove, apply, revert });
+_.extend(ParcelBillings.methods, { insert, update, remove, apply, revert, getLastApplies });

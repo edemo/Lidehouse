@@ -73,6 +73,7 @@
   "lateFeeBillDetails": "Overdue bill serial id: __serialId__\n",
   "lateFeeDetails": "Amount paid late: __amount__ , Days overdue: __lateDays__ , Year adjusted amount: __yearAdjusted__\n",
   "lateFeeBilledDetails": "Of this already billed: __yearAdjusted__",
+  "parcelBillingLastApplications_Message": "Only those parcels show up in this list, which the parcel billing should be applied to (based on the type and group)",
 
   // feedback
   "FeedbackPaneCallout": "Tell us your opinion about the app!",

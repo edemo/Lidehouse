@@ -667,6 +667,8 @@
   "lateFeeBillDetails": "Késedelmes számla azonosítója: __serialId__\n",
   "lateFeeDetails": "Késedelmes összeg: __amount__ , Késedelem napokban: __lateDays__ , Évarányosított késedelmes összeg: __yearAdjusted__\n",
   "lateFeeBilledDetails": "Ebből már korábban kiszámlázva: __yearAdjusted__",
+  "Parcel billing last applications": "Előírás legutóbbi kivetésének ideje albetétenként",
+  "parcelBillingLastApplications_Message": "A listában csak azok az albetétek szerepelnek, amire az adott előírás kivetendő lenne (típus és csoport alapján)",
 
   // marketplace
   "listing": "hirdetés",

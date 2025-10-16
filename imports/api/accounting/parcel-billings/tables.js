@@ -23,8 +23,19 @@ export function parcelBillingColumns() {
     { data: 'lastAppliedAt().date', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'parcelBillings', actions: 'view,edit,period,apply,delete', size: 'sm' }, cell),
+        { doc: cellData, collection: 'parcelBillings', size: 'sm' }, cell),
     },
   ];
   return columns;
 }
+
+export function parcelBillingsAppliesColumns() {
+  const columns = [
+    { data: 'ref', title: __('schemaParcels.ref.label') },
+    { data: 'type', title: __('schemaParcels.type.label') },
+    { data: 'group', title: __('schemaParcels.group.label') },
+    { data: 'lastAppliedAt', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
+  ];
+  return columns;
+}
+
