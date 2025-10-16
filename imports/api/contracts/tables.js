@@ -22,11 +22,11 @@ export function contractsColumns() {
 
 export function contractsFinancesColumns() {
   const columns = [
-    { data: 'displayFull()', title: __('schemaTransactions.partnerId.label') + ' / ' + __('schemaTransactions.contractId.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
         { doc: cellData, collection: 'contracts', actions: 'view,edit,history,remindOutstandings', size: 'sm' }, cell),
     },
+    { data: 'displayFull()', title: __('schemaTransactions.partnerId.label') + ' / ' + __('schemaTransactions.contractId.label') },
     { data: 'outstanding()', title: __('schemaBills.outstanding.label'), render: Render.formatNumber(0) },
   ];
 

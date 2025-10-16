@@ -29,7 +29,7 @@ export function billColumns(community) {
     { data: 'lateValueOutstanding', title: __('schemaBills.lateValueOutstanding.label'), render: Render.formatNumber(0) },
     { data: 'choppedNotes()', title: __('schemaNoted.notes.label') },
   ];
-  return columns;
+  return columns.filter(c => c);
 }
 
 export function receiptColumns() {
