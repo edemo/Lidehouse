@@ -86,6 +86,7 @@ const scheduled = {
     'partnerId',
     'chargeType',
     'contractId',
+    'expectedCost',
     'expectedStart',
     'expectedFinish',
   ],
