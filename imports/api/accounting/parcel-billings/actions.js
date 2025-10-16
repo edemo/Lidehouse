@@ -70,8 +70,8 @@ ParcelBillings.actions = {
       });
     },
   }),
-  getLastApplies: (options, doc, user = Meteor.userOrNull()) => ({
-    name: 'getLastApplies',
+  viewLastApplies: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'viewLastApplies',
     icon: 'fa fa-list',
     visible: user.hasPermission('parcelBillings.inCommunity', doc),
     run() {

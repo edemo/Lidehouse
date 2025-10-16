@@ -57,6 +57,9 @@
       "doing": "apply",
       "done": "applied"
     },
+    "viewLastApplies": {
+      "label": "view last applications"
+    },
     "post": {
       "label": "post",
       "do": "post",

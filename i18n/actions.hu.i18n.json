@@ -57,6 +57,9 @@
       "doing": "kivetése",
       "done": "kivetve"
     },
+    "viewLastApplies": {
+      "label": "utolsó kivetések megtekintése"
+    },
     "post": {
       "label": "könyvelésbe küldés",
       "do": "könyvelésbe küldi",
