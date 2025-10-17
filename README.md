@@ -9,7 +9,7 @@ It also provides a transparent solution to doing the official accounting of the 
 
 UPDATE: We are currently adding an internal marketplace. So community members can exchange goods and services with each other.
 
-### Live DEMO: https://demo.honline.hu
+### Live DEMO: https://demo.honline.hu/demo?lang=en
 
 ### Running the app
 
