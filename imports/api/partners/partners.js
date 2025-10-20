@@ -271,7 +271,7 @@ Factory.define('customer', Partners, {
   relation: ['customer'],
   idCard: {
     type: 'legal',
-    name: () => faker.random.word(),
+    name: () => 'anonymous',
   },
   contact: {
     address: () => faker.address.streetAddress('###'),

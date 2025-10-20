@@ -217,6 +217,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     if (_.contains([0, 2, 3, 5, 6, 8, 9, 10, 11, 12], i)) {
       builder.create('meter', {
         parcelId,
+        identifier: 'CW-000' + i,
         service: __('schemaMeters.service.coldWater'),
         uom: 'm3',
       });
@@ -224,6 +225,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     if (i <= 10) {
       builder.create('meter', {
         parcelId,
+        identifier: 'H-000' + i,
         service: __('schemaMeters.service.heating'),
         uom: 'kJ',
       });

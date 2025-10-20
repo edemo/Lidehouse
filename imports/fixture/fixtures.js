@@ -93,7 +93,7 @@ const dummyParcels = [];
     parcelId: dummyParcels[3],
     service: 'coldWater',
     uom: 'm3',
-    identifier: 'CW-01010101',
+    identifier: 'CW-00000001',
     activeTime: { begin: new Date('2018-01-01') },
   });
 
