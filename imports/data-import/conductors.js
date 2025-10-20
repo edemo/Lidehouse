@@ -7,7 +7,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Txdefs } from '/imports/api/accounting/txdefs/txdefs.js';
 import { Translator } from './translator.js';
 import { Parser } from './parser.js';
 import { Transformers } from './transformers.js';

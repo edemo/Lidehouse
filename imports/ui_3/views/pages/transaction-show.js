@@ -6,9 +6,9 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import '/imports/api/transactions/entities.js';
-import '/imports/api/transactions/actions.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import '/imports/api/accounting/entities.js';
+import '/imports/api/accounting/actions.js';
 import '/imports/ui_3/views/components/bill-view.js';
 import './transaction-show.html';
 

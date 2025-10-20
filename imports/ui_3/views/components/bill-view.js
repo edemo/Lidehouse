@@ -3,11 +3,11 @@ import { Template } from 'meteor/templating';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Parcels } from '/imports/api/parcels/parcels';
-import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
 import { displayAccount, displayLocalizer } from '/imports/ui_3/helpers/api-display.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import '/imports/ui_3/views/components/shareddoc-display.js';
-import '/imports/api/transactions/actions.js';
+import '/imports/api/accounting/actions.js';
 
 import './bill-view.html';
 

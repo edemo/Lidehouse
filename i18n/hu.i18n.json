@@ -37,6 +37,7 @@
   "occupants": "Birtokosok",
   "Modifiable by": "Módosíthatja",
   "List of officers": "A közösség tisztségviselőinek listája",
+  "List of ownerships": "A szavazati joggal rendelkező tagok listája",
   "List of parcels": "A közösséghez tartozó albetétek listája",
 
   "all": "összes",
@@ -66,8 +67,8 @@
   "overseer": "számvizsgáló",
   "delegate": "meghatalmazott",
   "maintainer": "gondnok",
-  "guest": "vendég",
-  
+  "guest": "vendég",  
+  "voting member" : "teljes jogú tag",
   "Leaders": "Vezetők",
   "Other roles": "Egyéb tisztségek",
 
@@ -94,6 +95,7 @@
   "Accounting": "Könyvelés",
   "community page": "Közösség lap",
   "condo page": "Házlap",
+  "Marketplace": "Piactér",
   "Documentstore": "Dokumentumtár",
   "User data page": "Felhasználói adatlap",
   "Online assembly": "Online közgyűlés",
@@ -325,15 +327,6 @@
 
   "statusChange": "Státusz váltás",
   "statusUpdate": "Státusz frissítés",
-  "scheduled": "Ütemezve",
-  "reported": "Bejelentve",
-  "confirmed": "Betervezve",
-  "toApprove": "Jóváhagyásra",
-  "toVote": "Megszavazásra",
-  "progressing": "Folyamatban",
-  "suspended": "Felfüggesztve",
-  "finished": "Elvégezve",
-  "deleted": "Törölt",
 
   "Conteer": "Kontírozás",
   "Bill conteer": "Számla kontírozás",
@@ -377,8 +370,9 @@
   "Acknowledge save effects": "Tudomásul veszem, hogy az elmentett módosítás azonnal láthatóvá válik a közösség nyilvános oldalán.",
   "pleaseSupplyParcelData": "Kérjük adjon meg minél több adatot az albetétjéről, hogy csatlakozási kérelme minél előbb elfogadásra kerülhessen!",
   "Create your own community": "Nem találta meg a keresett közösséget? Talán itt az ideje létrehozni! ",
-  "joinRequestInstructions": "Ha ön albetét tulajdonos a házban, csatlakozási kérelmet tud beadni a lenti gomb megnyomásával.",
+  "joinRequestInstructions": "Ha csatlakozni szeretne a közösséghez, cssatlakozási kérelmet tud beadni a zöld gomb megnyomásával.",
   "Submit join request": "Csatlakozási kérelem beadása",
+  "Join the community": "Csatlakozás a közösséghez",
   "Submitted join request": "Csatlakozási kérelem beadva",
   "Set active community": "Belépés",
   "Show all parcels": "Összes albetét mutatása",
@@ -402,6 +396,8 @@
   "you": "ön",
   "Do show content": "Én azért megnézem",
   "private chat": "privát üzenet",
+  "group chat": "csoport beszélgetés",
+  "deal chat": "piactér beszélgetés",
   "tech support": "technikai segítség",
   "see full text with View button": "teljes szöveg a Megtekintés gombbal",
   "View previous comments": "Korábbi %s hozzászólás megtekintése",
@@ -501,10 +497,17 @@
   "matters": "ügyek",
 
   // rooms
-  "Send messages": "Küldjön üzenetet",
+  "Send messages title": "Küldjön üzenetet",
   "Send messages subtitle": "közös képviselőjének vagy lakótársának",
   "Send messages instructions": "Ha ezidáig még nem beszélt az illetővel, a kereső segítségével megtalálhatja",
   "noSelectedPerson": "Válasszon címzettet a jobb oldali panelen!",
+  "Group messages title": "Csoport beszélgetés",
+  "Group messages subtitle": "például bizottsági megbeszélések",
+  "Deal messages title": "Piactér",
+  "Deal messages subtitle": "átadás-átvétellel kapcsolatos egyezetetés",
+  "Tech support title": "Segítség vonal",
+  "Tech support subtitle": "technikai kérdések megválaszolása",
+
 
   // tickets
   "Active tickets": "Aktív bejelentett hibák",
@@ -521,6 +524,7 @@
   "Create upgrade": "Felújítás létrehozása",
   "Change status": "Állapot váltás",
   "Change status to": "%s állapotra váltás",
+  "filter": "szűrő",
   "Filter settings": "Szűrő beállítás",
   "Clear filters": "Szűrők törlése",
   "Title": "Cím",
@@ -663,6 +667,31 @@
   "lateFeeBillDetails": "Késedelmes számla azonosítója: __serialId__\n",
   "lateFeeDetails": "Késedelmes összeg: __amount__ , Késedelem napokban: __lateDays__ , Évarányosított késedelmes összeg: __yearAdjusted__\n",
   "lateFeeBilledDetails": "Ebből már korábban kiszámlázva: __yearAdjusted__",
+  "Parcel billing last applications": "Előírás legutóbbi kivetésének ideje albetétenként",
+  "parcelBillingLastApplications_Message": "A listában csak azok az albetétek szerepelnek, amire az adott előírás kivetendő lenne (típus és csoport alapján)",
+
+  // marketplace
+  "listing": "hirdetés",
+  "listings": "hirdetések",
+  "browse": "nézelődés",
+  "favorites": "kedvencek",
+  "my listings": "saját hirdetéseim",
+  "gift value": "értékű ajándék",
+  "No value is set, send message for a special offer": "Nincs érték megadva, üzenetben egyeztessenek egy ajánlatot.",
+  "Max value": "Max érték",
+  "activity": "aktivitás",
+  "user interested": "érdeklődő",
+  "users interested": "érdeklődők listája",
+  "add to favorites": "kedvencek közé",
+  "cancel favorite": "kedvenc visszavonás",
+  "Marketplace history": "Ügylet lista",
+  "supplierListings": "Felajánlások",
+  "customerListings": "Szükségletek",
+  "reviewInstructions": {
+    "label": "Értékelési útmutató",
+    "customer": "Kérjük, értékelje 0 és 5 között, hogy a termék illetve szolgáltatás amit kapott mennyire felelt meg annak ami a hirdetés leírásában szerepelt. Az objektív értékelés érdekében ne azt osztályozza, hogy a termék mennyire jó, hanem azt hogy mennyire felel meg a leírásnak. Pédául ha a leírásban egy 20 éves életkorú rozoga varrógép szerepelt, akkor nem érdemel alacsony értékelést csak azért mert rozoga, hiszen ez volt meghírdetve. Viszont ha a terméket jobbnak írták le, mint ami valójában, akkor jogos ha alacsonyabb értékelést kap. Ha semmit nem adott át végül a hirdető, akkor a 0 értékelés az indokolt.",
+    "supplier": "Kérjük, értékelje 0 és 5 között, hogy a termék illetve szolgáltatás átvétele a megbeszélteknek megfelelően történt-e."
+  },
 
   // docstore
   "Show": "Listázva",
@@ -687,6 +716,9 @@
 
   // placeholders
   "Make your comment": "Hozzászólás",
+  "messengerMessagePlaceholder": "Üzenet… (pl. Epertortát sütöttem. Van kedved átugrani megkóstolni?)",
+  "messengerHistoryPlaceholder": "Még nincsenek üzenetek. <br /> Üzenetváltás indítása!",
+  "marketplaceHistoryPlaceholder": "Nincsenek még ügyletek. Ön lehet az első aki ügyletet köt ezzel a felhasználóval.",
 
   // errors
   "err_notImplemented": "Nem elérhető funkció",
@@ -826,8 +858,6 @@
   "newCommentPlaceholder": "Hozzászólás…",
   "messengerPeopleMenu": "Lakók",
   "Last message": "Utolsó üzenet",
-  "messengerMessagePlaceholder": "Üzenet… (pl. Epertortát sütöttem. Van kedved átugrani megkóstolni?)",
-  "messengerHistoryPlaceholder": "Még nincsenek üzenetek. <br /> Üzenetváltás indítása!",
   "commentEditInstruction": "Mentéshez nyomja meg az enter, elvetéshez az escape billentyűt.",
   "Page not found": "A keresett tartalom nem található",
   "pageNotFoundMessage": "A %s nem található a rendszerben.\nEnnek lehet oka, hogy időközben már törölték.\nDe az is lehet hogy önnek nincs megfelelő jogosultsága hogy megtekintse.",
@@ -883,6 +913,10 @@
   "This will send the bill again": "Ezzel ismételten elküldi a számlát a tranzakciós partnernek",
   "The reading is much higher than expected": "A leolvasott érték jelentősen nagyobb a vártnál. Elképzelhető, hogy rossz helyre tette a tizedes vesszőt. Biztos hogy rögzíti ezt az állást?",
   "editMeterReadingsWarning": "Ön most közvetlenül szerkeszti a(z) [__identifier__](__service__) mérőóra korábbi leolvasásait.\nNem javasoljuk hogy változtasson vagy töröljön már kiszámlázott óraállást, ugyanis ezzel a már kiállított számlákra nem fog hatni, és így a leolvasások nem lesznek többé összhangban a kiállított számlákkal.",
+  "warningInitiation": "A kérelmezett mennyiséget megadhatja ön, de a tartalmat és értéket a Kérelmezés elküldésével ön elfopgadja. Ha további információra lenne szüksége mielőtt az ügylethöz köti magát, vagy az értékkel vagy a tartalommal kapcsolatosan szeretne előtte egyezkedni, akkor a Mégse opciót válassza és Kérelmezés előtt kérje meg üzenetben a hirdetőt, hogy adjon további információt illetve küldjön önnek speciális ajánlatot, a kívánt feltételekkel.",
+  "You are cancelling the deal": "A visszavonással visszalép az ügylettől.",
+  "warningProposal": "A speciális ajánlat tartalmi leírása és értéke eltérhet részben vagy teljesen az eredeti hirdetés tartalmától és értékétől. Az ajánlat elküldésével ön köti magát ahhoz, hogy ezen feltételekkel az ügylet megvalósulhat, amennyiben ezt a másik fél is jóváhagyjha",
+  "warningConfirmation": "Amennyiben a hirdetést az alábbi feltételekkel megfelelőnek tartja, a Jóváhagyás gombbal hozzájárul, hogy az ügylet ezekkel a feltétlekkel megtörténjen.",
 
   "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",

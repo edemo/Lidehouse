@@ -24,7 +24,7 @@ export function ticketColumns() {
         { color: 'info', value: cellData }, cell),
     },
 //    { data: 'hasAttachment()', render: Render.paperclip },
-    { data: 'status', title: __('schemaTopics.status.label'), render: displayStatus },
+    { data: 'status', title: __('schemaWorkflow.status.label'), render: displayStatus },
     { data: 'ticket.localizer', title: __('schemaTickets.ticket.localizer.label'), render: l => displayLocalizer(l, communityId) },
     { data: 'creator().displayOfficialName()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },

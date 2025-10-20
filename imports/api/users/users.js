@@ -271,10 +271,13 @@ Meteor.users.helpers({
     return this.getPrimaryEmail() && this.getPrimaryEmail().includes('demouser@demo');
   },
   // Memberships
-  partnerId(communityId) {
+  partnerId(communityId = getActiveCommunityId()) {
     const partnerIds = Partners.find({ communityId, userId: this._id }).map(p => p._id);
     debugAssert(partnerIds.length <= 1, `A user cannot have more partners in one community. Please merge these partners: ${partnerIds}`);
     return partnerIds[0] || undefined;
+  },
+  partner(communityId = getActiveCommunityId()) {
+    return Partners.findOne({ communityId, userId: this._id });
   },
   partnerIds() {
     const partnerIds = Partners.find({ userId: this._id }).map(p => p._id);

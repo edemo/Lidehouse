@@ -9,7 +9,6 @@ import rusdiff from 'rus-diff';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { debugAssert } from '/imports/utils/assert.js';
 import { Relations } from '/imports/api/core/relations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
@@ -191,6 +190,34 @@ Partners.helpers({
     if (days > 30 && days < 90) return 'warning';
     if (days > 90) return 'danger';
     return 'info';
+  },
+  reviews() {
+    const Reviews = Mongo.Collection.get('reviews');
+    return Reviews.find({ revieweePartnerId: this._id });
+  },
+  marketActivity() {
+//    return this.displayName().length; // TODO
+    return this.reviews().count();
+  },
+  marketRating() {
+//    return this.displayName().length % 4 + 0.5; // TODO
+    let sum = 0, count = 0;
+    this.reviews().map(r => { sum += r.rating; count += 1; });
+    const avg = sum / count;
+    return avg.toFixed(2);
+  },
+  marketHistory() {
+//    return this.displayName().length * 1500; // TODO
+    const result = { debit: 0, credit: 0, amount: 0, deals: [] };
+    const Deals = Mongo.Collection.get('deals');
+    Deals.find({ dealStatus: 'reviewed', participantIds: this.userId }).fetch().reverse().forEach(deal => {
+      const effectiveAmount = deal.amountOf(this._id);
+      result.amount += effectiveAmount;
+      if (effectiveAmount > 0) result.debit += effectiveAmount;
+      else if (effectiveAmount < 0) result.credit -= effectiveAmount;
+      result.deals.push(deal);
+    });
+    return result;
   },
   // --- END ---
   toString() {

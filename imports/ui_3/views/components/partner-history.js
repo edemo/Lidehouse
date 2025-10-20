@@ -5,12 +5,12 @@ import { moment } from 'meteor/momentjs:moment';
 import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Period } from '/imports/api/transactions/periods/period.js';
+import { Period } from '/imports/api/accounting/periods/period.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { validDateOrUndefined } from '/imports/api/utils';
-import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { JournalEntries } from '/imports/api/accounting/journal-entries/journal-entries.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import { Balances } from '/imports/api/accounting/balances/balances.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import '/imports/ui_3/views/blocks/help-icon.js';
 

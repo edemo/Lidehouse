@@ -19,11 +19,11 @@ import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import '/imports/api/transactions/categories';
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
-import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import '/imports/api/accounting/categories';
+import { Txdefs } from '/imports/api/accounting/txdefs/txdefs.js';
+import { StatementEntries } from '/imports/api/accounting/statement-entries/statement-entries.js';
+import { ParcelBillings } from '/imports/api/accounting/parcel-billings/parcel-billings.js';
 import '/imports/startup/server/register-api';  // brings all methods
 import { runWithFakeUserId, uploadFileSimulation } from './demo-upload';
 

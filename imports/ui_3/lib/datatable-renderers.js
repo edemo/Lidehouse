@@ -6,6 +6,7 @@ import { $ } from 'meteor/jquery';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkmarkBoolean } from '/imports/ui_3/helpers/api-display.js';
+import { absoluteUrl } from '/imports/ui_3/helpers/utils.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
 export const Render = Meteor.isServer ? {} : {
@@ -59,6 +60,15 @@ export const Render = Meteor.isServer ? {} : {
       result += `${partner ? partner.displayName() : 'NO PARTNER'} ${occupancyDetail} ${repBadge}<br>`;
     });
     return result;
+  },
+  userAvatar(cellData, renderType, currentRow) {
+    if (!cellData) return '';
+    return `<img alt="avatar" src=${absoluteUrl(cellData.avatar)} width="24">`;
+  },
+  userBio(cellData, renderType, currentRow) {
+    const bio = cellData?.profile?.bio;
+    if (!bio) return '';
+    return bio.substring(0, 200) + (bio.lenght > 200 ? '...' : '');
   },
   actionButtons(cellData, renderType, currentRow) {
     if (renderType === 'display') return '';

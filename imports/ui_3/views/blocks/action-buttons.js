@@ -7,7 +7,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Log } from '/imports/utils/log.js';
 import { displayError } from '/imports/ui_3/lib/errors.js';
-import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';  // TODO get rid of
+import { Txdefs } from '/imports/api/accounting/txdefs/txdefs.js';  // TODO get rid of
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import './menu-overflow-guard.js';
 import './action-buttons.html';
@@ -148,7 +148,7 @@ const buttonHelpers = {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);
     const actionFuncs = this.templateInstance.data.actions
       ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
-      : _.omit(collection.actions, 'create', 'import', 'like');
+      : _.omit(collection.actions, 'create', 'import');
     const actions = _.map(actionFuncs, a => a(this.getOptions(), this.getDoc(), Meteor.userOrNull()));
     return actions;
   },

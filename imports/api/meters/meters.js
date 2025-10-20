@@ -55,7 +55,7 @@ Meters.schema = new SimpleSchema({
 
 Meters.idSet = [['communityId', 'identifier']];
 
-Meteor.startup(function indexParcels() {
+Meteor.startup(function indexMeters() {
   Meters.ensureIndex({ communityId: 1, active: 1 });
   Meters.ensureIndex({ parcelId: 1 });
   Meters.ensureIndex({ identifier: 1 });

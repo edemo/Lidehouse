@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
@@ -86,6 +87,7 @@ if (Meteor.isClient) {
       // The lastseen info needs to be updated on the server, only if some notifications are due to this client
       // Otherwise we should not bother the server constantly with requests, that we saw this thing.
       const seenType = Meteor.users.SEEN_BY.EYES;
+      const Topics = Mongo.Collection.get('topics');
       const topic = Topics.findOne(topicId);
       const oldLastSeenInfo = this.lastSeens()[seenType][topic._id];
       const comments = topic.comments().fetch(); // returns newest-first order

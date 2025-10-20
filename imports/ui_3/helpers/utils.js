@@ -21,6 +21,15 @@ export function displayCurrency(number) {
   return numeral(number).format(formatString);
 }
 
+export function displayMarketplaceCurrency(number) {
+  const currency = getActiveCommunity()?.settings.marketplaceCurrency;
+  if (!currency) return displayCurrency(number);  // Use the local currency as default
+  else {
+    const formatString = '0,0.[00]';
+    return `${numeral(number).format(formatString)} ${currency}`;  
+  }
+}
+
 export function displayNumber(number, decimals = 2, showZeros = true) {
   const decis = '0'.repeat(decimals);
   const formatString = showZeros ? `0,0.${decis}` : `0,0.[${decis}]`;
@@ -39,6 +48,11 @@ export function defaultBeginDate() {
 
 export function defaultEndDate() {
   return moment().format('YYYY-MM-DD');
+}
+
+export function absoluteUrl(path) {
+  if (path?.charAt(0) === '/') return Meteor.absoluteUrl(path);
+  return path;
 }
 
 if (Meteor.isClient) {
@@ -96,6 +110,8 @@ if (Meteor.isClient) {
 
   Template.registerHelper('displayCurrency', displayCurrency);
 
+  Template.registerHelper('displayMarketplaceCurrency', displayMarketplaceCurrency);
+
   Template.registerHelper('negativeClass', negativeClass);
 
   Template.registerHelper('displayNumber', displayNumber);
@@ -125,10 +141,7 @@ if (Meteor.isClient) {
     return time ? moment(time).from(serverTimeNow) : __('never');
   });
 
-  Template.registerHelper('absoluteUrl', function absoluteUrl(path) {
-    if (path?.charAt(0) === '/') return Meteor.absoluteUrl(path);
-    return path;
-  });
+  Template.registerHelper('absoluteUrl', absoluteUrl);
 
   // Takes any number of arguments and returns them concatenated.
   Template.registerHelper('concat', function concat() {

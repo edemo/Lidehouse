@@ -5,8 +5,8 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
-import { journalEntriesColumns } from '/imports/api/transactions/journal-entries/tables.js';
-import { JournalEntries } from '/imports/api/transactions/journal-entries/journal-entries.js';
+import { journalEntriesColumns } from '/imports/api/accounting/journal-entries/tables.js';
+import { JournalEntries } from '/imports/api/accounting/journal-entries/journal-entries.js';
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 
 import './journals-table.html';

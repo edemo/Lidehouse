@@ -13,7 +13,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
 import { insertDemoHouse, schedulePurgeExpiringDemoUsers } from '/imports/fixture/demohouse.js';
 import { emptyFixture } from '../api/test-utils';
 

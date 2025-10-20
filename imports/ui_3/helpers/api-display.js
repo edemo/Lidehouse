@@ -5,6 +5,8 @@ import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
+import { allSubscriptionsReady } from '/imports/utils/all-subscriptions-ready.js';
+import { isImage } from 'meteor/droka:autoform-ufs/lib/client/af-file-upload.js';
 import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
@@ -13,9 +15,10 @@ import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
-import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Parcels } from '/imports/api/parcels/parcels';
+import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Buckets } from '/imports/api/marketplace/buckets/buckets.js';
 import { displayNumber, displayCurrency } from './utils.js';
 
 export function label(value, color, icon) {
@@ -68,14 +71,32 @@ export function displayPartnerContract(code) {
   return label(text, 'primary', 'user');
 }
 
-export function displayAccountText(code) {
+export function displayStringArray(array, translatePath = '') {
+  let text = '';
+  if (typeof array == "object") array.forEach((elem, index) => {
+    text += __(translatePath + elem) + (index < array.length - 1 ? ', ' : '');
+  });
+  return text;
+}
+  
+export function displayAccountText(code, longForm = true) {
   if (!code) return '';
-  const collection = code.charAt(0) === '`' ? Accounts : Parcels;
-  const isTechnical = Accounts.isTechnicalCode(code);
-  const nonTechnicalCode = isTechnical ? Accounts.fromTechnicalCode(code) : code;
-  let account = collection.getByCode(nonTechnicalCode);
-  if (isTechnical) account = Accounts.toTechnical(account);
-  return account?.displayAccount() || code;
+//  const collection = [Accounts, Parcels, Buckets].find(coll => coll.rootCode === code.charAt(0));
+  let collection;
+  switch(code.charAt(0)) {
+    case '>': collection = Buckets; break;
+    case '`': collection = Accounts; break;
+    default: collection = Parcels; break;
+  }
+  let account;
+  if (collection === Accounts) {
+    const isTechnical = Accounts.isTechnicalCode(code);
+    const nonTechnicalCode = isTechnical ? Accounts.fromTechnicalCode(code) : code;
+    account = collection.getByCode(nonTechnicalCode);
+    if (isTechnical) account = Accounts.toTechnical(account);  
+  } else account = collection.getByCode(code);
+  const text = longForm ? account?.displayFull() : __(account?.name);
+  return text || code;
 }
 
 export function displayAccount(code) {
@@ -84,6 +105,7 @@ export function displayAccount(code) {
   if (!text) return '';
   let icon;
   switch (text.charAt(0)) {
+    case '>': icon = 'gift'; break;
     case '`': icon = 'tag'; break;
     case '%': 
     case '&': // physical place - common area
@@ -124,7 +146,7 @@ export function displayStatus(name) {
     const statusObject = Topics.categories[cat].statuses[name];
     if (statusObject) color = statusObject.color;
   });
-  return label(__('schemaTopics.status.options.' + name), color);
+  return label(__('schemaWorkflow.status.options.' + name), color);
 }
 
 export function displayTxStatus(name, doc) {
@@ -157,6 +179,9 @@ export function displayTxIdentifiers(name) {
   return result;
 }
 
+export function displayReview(review) {  
+}
+
 const Renderers = {
   'Topics.status': displayStatus,
   'Topics.notiLocalizer': displayLocalizer,
@@ -185,12 +210,15 @@ export function displayValue(key, value) {
 }
 
 if (Meteor.isClient) {
+  Template.registerHelper('allSubscriptionsReady', allSubscriptionsReady);
+  Template.registerHelper('isImage', isImage);
   Template.registerHelper('checkBoolean', checkBoolean);
   Template.registerHelper('checkmarkBoolean', checkmarkBoolean);
   Template.registerHelper('displayMeterService', displayMeterService);
   Template.registerHelper('displayReading', displayReading);
   Template.registerHelper('displayPartner', displayPartner);
   Template.registerHelper('displayPartnerContract', displayPartnerContract);
+  Template.registerHelper('displayStringArray', displayStringArray);
   Template.registerHelper('displayAccountText', displayAccountText);
   Template.registerHelper('displayAccount', displayAccount);
   Template.registerHelper('displayAccountSet', displayAccountSet);

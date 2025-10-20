@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { checkExists, checkNotExists, checkModifier, checkPermissions, checkPermissionsWithApprove } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkUnique, checkModifier, checkPermissions, checkPermissionsWithApprove } from '/imports/api/method-checks.js';
 import { sanityCheckOnlyOneActiveAtAllTimes } from '/imports/api/behaviours/active-period.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Meters } from './meters.js';
@@ -14,6 +14,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkPermissionsWithApprove(this.userId, 'meters.insert', doc);
+    checkUnique(Meters, doc, ['communityId', 'identifier', 'service']);
 
 //    const MetersStage = Meters.Stage();
 //    const _id = MetersStage.insert(doc);

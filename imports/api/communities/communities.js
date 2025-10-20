@@ -4,8 +4,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
-import { TAPi18n } from 'meteor/tap:i18n';
 
+import { __ } from '/imports/localization/i18n.js';
 import { Log } from '/imports/utils/log.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { AddressSchema, displayAddress } from '/imports/localization/localization.js';
@@ -19,8 +19,18 @@ export const Communities = new Mongo.Collection('communities');
 const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
 Communities.statusValues = ['sandbox', 'live', 'official', 'closed'];
-Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'documents'];
+Communities.availableModules = ['forum', 'voting', 'maintenance', 'finances', 'marketplace', 'documents'];
 Communities.ownershipSchemeValues = ['condominium', 'corporation', 'foundation', 'cooperative', 'condo-coop', 'basket-coop']; //  'meritocracy' coming soon
+
+Communities.specificTerms = {};
+Communities.ownershipSchemeValues.forEach(val => Communities.specificTerms[val] = {});
+['condominium', 'condo-coop'].forEach(val => {
+  Communities.specificTerms[val]['community'] = 'condo';
+  Communities.specificTerms[val]['community finances'] = 'condo finances';
+});
+['cooperative'].forEach(val => {
+  Communities.specificTerms[val]['owner'] = 'voting member';
+});
 
 const chooseTemplate = {
   options() {
@@ -32,7 +42,7 @@ const chooseTemplate = {
 
 Communities.settingsSchema = new SimpleSchema({
   modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', defaultValue: Communities.availableModules } },
-  joinable: { type: Boolean, defaultValue: true },
+  joinable: { type: String, allowedValues: ['inviteOnly', 'withApproval', 'withLink'], defaultValue: 'withApproval', autoform: allowedOptions() },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   ownershipScheme: { type: String, allowedValues: Communities.ownershipSchemeValues, autoform: { defaultValue: 'condominium' } },
   totalUnits: { type: Number, optional: true }, // If it is a fixed value, it is provided here
@@ -51,12 +61,15 @@ Communities.settingsSchema = new SimpleSchema({
   sendBillEmail: { type: [String], optional: true, allowedValues: ['member', 'customer'], defaultValue: [], autoform: { type: 'select-checkbox-inline' } },
   enableMeterEstimationDays: { type: Number, defaultValue: 30 },
   latePaymentFees: { type: Boolean, optional: true },
+  // marketplace
+  marketplaceCurrency: { type: String, optional: true, max: 10 }, // If not specified the local currency will be used
+  giftEconomy: { type: Boolean,  optional: true },
 });
 
 Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
   isTemplate: { type: Boolean, optional: true, autoform: { omit: true } },
-  description: { type: String, max: 1200, optional: true },
+  description: { type: String, max: 5000, optional: true, autoform: { type: 'textarea' } },
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
 }, AddressSchema, {
   lot: { type: String, max: 100, optional: true },
@@ -95,10 +108,14 @@ Communities.helpers({
   parcelTypeValues() {
     return Object.keys(this.parcels);
   },
+  specificTermFor(text) {
+    return Communities.specificTerms[this.settings.ownershipScheme][text] || text;
+  },
+  _(text) {
+    return __(this.specificTermFor(text));
+  },
   displayType() {
-    const scheme = this.settings?.ownershipScheme;
-    if (scheme === 'condominium' || scheme === 'condo-coop') return 'condo';
-    return 'community';
+   return this.specificTermFor('community');
   },
   hasPhysicalLocations() {
     const scheme = this.settings?.ownershipScheme;
@@ -124,6 +141,9 @@ Communities.helpers({
       default:
         debugAssert(false, `No such ownershipScheme: ${scheme}`);
     }
+  },
+  usesBlankParcels() {
+    return !this.hasVotingUnits() && !this.hasPhysicalLocations();
   },
   nextAvailableSerial() {
     const Parcels = Mongo.Collection.get('parcels');
@@ -201,15 +221,18 @@ Communities.helpers({
     const voters = this.voterships().map(v => v.partner());
     return _.uniq(voters, false, u => u._id);
   },
+  joinable() {
+    return this.settings?.joinable !== 'inviteOnly';
+  },
   needsJoinApproval() {
-    return this.status !== 'sandbox';
+    return this.settings?.joinable !== 'withLink';
   },
   hasLiveAssembly() {
     const Agendas = Mongo.Collection.get('agendas');
     return !!Agendas.findOne({ communityId: this._id, live: true });
   },
   isActiveModule(moduleName) {
-    return !this?.settings.modules || _.contains(this.settings.modules, moduleName);
+    return !this.settings?.modules || _.contains(this.settings.modules, moduleName);
   },
   toString() {
     return this.name;
@@ -238,7 +261,7 @@ Factory.define('community', Communities, {
   avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
   taxNo: () => faker.finance.account(6) + '-2-42',
   settings: {
-    joinable: true,
+    joinable: 'inviteOnly',
     language: 'en',
     ownershipScheme: 'condominium',
     parcelRefFormat: 'bfdd',

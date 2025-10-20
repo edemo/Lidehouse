@@ -16,3 +16,9 @@ Relations.sign = function relationSign(relation) {
   else if (relation === 'customer' || relation === 'member') return +1;
   debugAssert(false, 'No such relation ' + relation); return undefined;
 };
+
+Relations.opposite = function opposite(relation) {
+  if (relation === 'supplier') return 'customer';
+  else if (relation === 'customer') return 'supplier';
+  debugAssert(false, 'No opposite relation for ' + relation); return undefined;
+};

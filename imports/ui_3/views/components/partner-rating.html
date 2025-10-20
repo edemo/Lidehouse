@@ -1,0 +1,31 @@
+<template name="Market_balance">
+    <a class="btn btn-xs btn-outline btn-{{color}} pull-right">
+        <!--i class="fa fa-large fa-plus-square"></i> 12 780 -->
+        <i class="fa fa-large {{icon}}"></i> {{displayMarketplaceCurrency absValue}}
+    </a>
+</template>
+
+<template name="Partner_rating">
+    <div>
+        <a href="" class="pull-left js-market-history">
+        <img alt="avatar" class="message-avatar" src={{absoluteUrl this.user.avatar}}>
+        </a> 
+    </div>
+    <i class="fa fa-user m-l"></i> <span>{{this.user.displayOfficialName}}</span> 
+    <span class="pull-right"><!--{{_ 'schemaMemberships._.label'}}-->
+        <i class="fa fa-clock-o"></i> {{displayTimeFrom this.createdAt}}
+    </span>
+    <div class="m-t">
+        <span class="m-l"> {{this.marketRating}}
+            <i class="fa fa-star active"></i> 
+            <!--i class="fa fa-star"></i> 
+            <i class="fa fa-star"></i> 
+            <i class="fa fa-star-half-empty"></i> 
+            <i class="fa fa-star-o"></i--> 
+            (<a href="" class="js-market-history">{{this.marketActivity}}</a>)
+        </span>
+        <span class="js-market-history">
+            {{> Market_balance this.marketHistory }}
+        </span>
+    </div>
+</template>

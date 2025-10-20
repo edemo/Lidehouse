@@ -1,0 +1,60 @@
+<template name="Listing_box">
+    <div class="ibox ecommerce">
+        {{#let partner=(this.creator.partner activeCommunityId)}}
+        <div class="ibox-content product-box">
+            <div class="product-desc">
+                {{> Partner_rating partner }}
+            </div>
+            <a href={{pathFor 'Listing show' _lid=this._id}}>
+            {{#if isImage this.firstAttachment}}
+               <img class="img-embed js-show-image" src="{{absoluteUrl this.firstAttachment}}"/>
+            {{else}}
+                <div class="product-imitation">
+                    [ INFO ]
+                </div>
+            {{/if}}
+            </a>
+           <div class="product-desc">
+                {{#if this.price}}
+                <span class="product-price">
+                    {{displayMarketplaceCurrency this.price}}
+                </span>
+                {{/if}}
+                <span class="label label-xs pull-right">{{_ (concat 'schemaListings.relation.options.' this.relation)}}</span>
+                <small class="text-muted">{{displayAccountText this.bucket false}}</small>
+                <span>
+                    <a href={{pathFor 'Listing show' _lid=this._id}} class="product-name"> {{this.title}}</a>
+                </span>
+                <div class="small m-t-xs m-b-xs">{{> ChoppedHeight text=this.text height=200 markdown=true }}</div>
+                <small class="text-muted">{{this.keywords }}</small>
+                {{#if equals currentUser._id this.creatorId}}
+                    <hr>
+                    {{#let interestedDeals=this.activeDeals}}
+                    {{#if showInterestedDeals}}
+                        <div class="m-b">
+                            <strong class="text-capitalize">{{_ 'users interested'}}:</strong>
+                        </div>
+                        {{#each deal in interestedDeals}}
+                            {{#let otherPartner=(deal.otherPartner partner._id)}}
+                            {{> Partner_rating otherPartner }}
+                            {{/let}}
+                            <hr>
+                        {{/each}}                  
+                    {{else}}
+                        {{#if interestedDeals.count}}
+                        <div class="m-t text-righ">
+                            <div class="btn btn-xs btn-outline btn-primary js-show-active-deals">
+                                <!--span class="label label-warning label-xs">12</span-->
+                                {{interestedDeals.count}} <i class="fa fa-envelope"></i>
+                                {{_ 'user interested'}} <i class="fa fa-long-arrow-right"></i> 
+                            </div>
+                        </div>
+                        {{/if}}
+                    {{/if}}
+                    {{/let}}
+                {{/if}}
+            </div>
+        </div>
+        {{/let}}
+    </div>
+</template>

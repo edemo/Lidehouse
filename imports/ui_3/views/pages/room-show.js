@@ -10,9 +10,12 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
-
+import { Deals } from '/imports/api/marketplace/deals/deals.js';
+import '/imports/api/marketplace/deals/actions.js';
+import '../blocks/chopped.js';
 import '../components/members-panel.js';
 import '../components/contact-long.js';
+import '../components/listing-box.js';
 import './room-show.html';
 
 function messageFooterToBottom() {
@@ -48,7 +51,7 @@ Template.Room_show.onRendered(function() {
   });
 });
 
-Template.Room_show.helpers({
+Template.Room_show.viewmodel({
   selectedRoomId() {
     return FlowRouter.getParam('_rid');
   },
@@ -67,6 +70,16 @@ Template.Room_show.helpers({
     // const participantList = room.participantIds.map(pid => Meteor.users.findOne(pid).displayOfficialName()).join(' ');
     const otherPersonId = room.participantIds.filter(pid => pid !== Meteor.userId())[0];
     return Meteor.users.findOne(otherPersonId);
+  },
+  selectedDeal() {
+    const roomId = FlowRouter.getParam('_rid');
+    const deal = Deals.findOne({ roomId });
+    return deal;
+  },
+  selectedListing() {
+    const deal = this.selectedDeal();
+    const listing = deal?.listing();
+    return listing;
   },
 });
 
@@ -95,13 +108,27 @@ Template.Message_subscriber.onRendered(function tmplMsgBoxOnRendered() {
   });*/
 });
 
-Template.Message_history.helpers({
-  messages() {
+Template.Message_history.viewmodel({
+  messages: [],
+  lastStatusChange: undefined,
+  autorun() {
     const roomId = FlowRouter.getParam('_rid');
-    return Comments.find({ topicId: roomId }, { sort: { createdAt: 1 } });
+    const comments = Comments.find({ topicId: roomId }, { sort: { createdAt: 1 } });
+    let lastStatusChange;
+    comments.forEach(comment => {
+      if (comment.category === 'statusChange') lastStatusChange = comment;
+    });
+    this.messages(comments.fetch());
+    this.lastStatusChange(lastStatusChange);
+  },
+  statusesWithDataUpdate() {
+    return ['requested', 'offered', 'preapproved', 'proposed', 'agreed'];
   },
   ownMessage(comment) {
     return comment.creatorId === Meteor.userId();
+  },
+  leftOrRight(comment) {
+    return this.ownMessage(comment) ? 'right' : 'left';
   },
 });
 

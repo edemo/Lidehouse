@@ -73,6 +73,7 @@
   "lateFeeBillDetails": "Overdue bill serial id: __serialId__\n",
   "lateFeeDetails": "Amount paid late: __amount__ , Days overdue: __lateDays__ , Year adjusted amount: __yearAdjusted__\n",
   "lateFeeBilledDetails": "Of this already billed: __yearAdjusted__",
+  "parcelBillingLastApplications_Message": "Only those parcels show up in this list, which the parcel billing should be applied to (based on the type and group)",
 
   // feedback
   "FeedbackPaneCallout": "Tell us your opinion about the app!",
@@ -80,6 +81,11 @@
   "opinion": "Opinion",
   "bug": "Technical problem report",
   "feature": "New feature recommendation",
+
+  // placeholders
+  "messengerMessagePlaceholder": "Your message here... (eg. I just baked a strawberry cake. Want to come over and taste it?)",
+  "messengerHistoryPlaceholder": "No messages yet between you. <br> Start chatting today!",
+  "marketplaceHistoryPlaceholder": "No deals yet. Maybe you can make a deal with this user to break the ice.",
 
   // errors and messages
   "err_notImplemented": "This feature is not available",
@@ -109,8 +115,6 @@
   "newForumTextPlaceholder": "New topic text…",
   "newCommentPlaceholder": "Make your comment...",
   "messengerPeopleMenu": "People",
-  "messengerMessagePlaceholder": "Your message here... (eg. I just baked a strawberry cake. Want to come over and taste it?)",
-  "messengerHistoryPlaceholder": "No messages yet between you. <br> Start chatting today!",
   "commentEditInstruction": "Press enter to save, escape to cancel.",
   "userAccountsSubtitle": {
     "signIn": "Please log in to use the app",
@@ -136,7 +140,7 @@
   // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
   "Create your own community": "Couldn't find your community? Why not create it yourself?",
-  "joinRequestInstructions": "If you own a parcel in this building, you can apply to join by pressing the button below.",
+  "joinRequestInstructions": "If you wish to become a member of this community, you can apply to join by pressing the button below.",
   "Parcel owners list": "Owners of parcel %s",
   "Parcel benefactors list": "Benefactors of parcel %s",
 
@@ -157,9 +161,17 @@
   "votedViaDelegationHint" : "casting a vote can override this",
 
   // rooms
+  "Send messages title": "Send messages",
   "Send messages subtitle": "to your manager or your condo mates",
   "Send messages instructions": "If you haven't talked with the person yet, use the search bar to find them",
   "noSelectedPerson": "Please select a person on right panel.",
+  "Group messages title": "Group chat",
+  "Group messages subtitle": "for commitees and group discussions",
+  "Deal messages title": "Marketplace",
+  "Deal messages subtitle": "inquiries and delivery discussions",
+  "Tech support title": "Tech support",
+  "Tech support subtitle": "questions about the system",
+
 
   // tickets
   "Please dont report twice": "To help our maintenance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
@@ -169,6 +181,16 @@
 
   // account
   "Localizer": "Accounting location",
+
+  // marketplace
+  "warningProposal": "Sending the proposal becomes binding, if the other party also accepts it.",
+  "supplierListings": "Offers",
+  "customerListings": "Needs",
+  "reviewInstructions": {
+    "label": "Review instructions",
+    "customer": "Rating should be between 0 and 5, based on how much the received product or service matched the listing details. Ask yourself, Did I receive exactly what was described in the listing. If the listing described a 20 year old used item, it should not be rated low because of its quality, because that was clear from the listing. But if the item was adverstised to be better than it is in reality, then a low rating is justified. Zero rating is justified, if nothing was delivered.",
+    "supplier": "Please rate, how well the taking of the product or service went comapred to what was discussed."
+  },
 
   // import
   "importing data": "importing %s data",

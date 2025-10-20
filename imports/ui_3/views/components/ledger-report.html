@@ -15,7 +15,7 @@
             {{#if hasActivity account}}
             <tr class="table-row {{headerLevelClass account}}">
                 <td class="row-header nowrap" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
-                    {{account.displayAccount}}
+                    {{account.displayFull}}
                 </td>
                 {{#let balance=(getBalance account tag tagtype) }}
                 <td class="cell nowrap {{negativeClass balance.debitSum}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">

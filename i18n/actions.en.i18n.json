@@ -35,6 +35,10 @@
       "doing": "import",
       "done": "imported"
     },
+    "join": {
+      "label": "join",
+      "done": "joined"
+    },
     "move": {
       "label": "move",
       "do": "move",
@@ -52,6 +56,9 @@
       "do": "apply",
       "doing": "apply",
       "done": "applied"
+    },
+    "viewLastApplies": {
+      "label": "view last applications"
     },
     "post": {
       "label": "post",
@@ -166,6 +173,51 @@
     "disable": {
       "do": "disable",
       "done": "disabled"
+    },
+    "inquireDeal": {
+      "label": "message the lister",
+      "do": "message the lister",
+      "doing": "messaging the lister"
+    },
+    "requestDeal": {
+      "customer": {
+        "label": "request",
+        "do": "request",
+        "done": "requested"
+      },
+      "supplier": {
+        "label": "offer",
+        "do": "offer",
+        "done": "offered"
+      }
+    },
+    "confirmDeal": {
+      "label": "confirm",
+      "do": "confirm",
+      "doing": "confirming",
+      "done": "confirmed"
+    },
+    "cancelDeal": {
+      "label": "cancel",
+      "do": "cancel",
+      "done": "canceled"
+    },
+    "proposeDeal": {
+      "label": "propose",
+      "do": "propose",
+      "doing": "proposing",
+      "done": "proposed"
+    },
+    "reviewDeal": {
+      "label": "review",
+      "do": "review",
+      "done": "reviewed"
+    },
+    "initiate": {
+      "label": "initiate",
+      "do": "initiate",
+      "doing": "initiating",
+      "done": "initiated"
     }
   },
 
@@ -349,6 +401,22 @@
     "outstandings reminder": {
       "label": "outstandings reminder",
       "it": "outstandings reminder"
+    },
+    "bucket": {
+      "label": "category",
+      "it": "the category"
+    },
+    "listing": {
+      "label": "listing",
+      "it": "the listing"
+    },
+    "deal": {
+      "label": "deal",
+      "it": "the deal"
+    },
+    "review": {
+      "label": "review",
+      "it": "the review"
     },
     "sharedfolder": {
       "label": "folder",

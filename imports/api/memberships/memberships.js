@@ -140,8 +140,7 @@ Memberships.helpers({
     return Contracts.findOneActive({ partnerId: this.partnerId, parcelId: this.parcelId });
   },
   user() {
-    debugAssert(this.userId);
-    return Meteor.users.findOne(this.userId);
+    return this.userId && Meteor.users.findOne(this.userId);
   },
   parcel() {
     if (!this.parcelId) return undefined;
@@ -177,10 +176,17 @@ Memberships.helpers({
     return votingShare;
   },
   displayRole() {
-    let result = __(this.role);
+    let result = this.community()?._(this.role);
     const parcel = this.parcel(); // TODO Cannot always retrive parcel, needs to subscribe to parcel data
     if (parcel) result += ` ${parcel.toString()}`;
     return result;
+  },
+  displayPartner() {
+    return this.partner()?.displayName();
+  },
+  displayParcel() {
+    const parcel = this.parcel();
+    return parcel && `${parcel.ref}`;
   },
   toString() {
     const partner = this.partner();

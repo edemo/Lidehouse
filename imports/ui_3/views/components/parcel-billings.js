@@ -5,9 +5,9 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
-import '/imports/api/transactions/parcel-billings/methods.js';
-import { parcelBillingColumns } from '/imports/api/transactions/parcel-billings/tables.js';
+import { ParcelBillings } from '/imports/api/accounting/parcel-billings/parcel-billings.js';
+import '/imports/api/accounting/parcel-billings/methods.js';
+import { parcelBillingColumns } from '/imports/api/accounting/parcel-billings/tables.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/active-archive-tabs.js';
 import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';

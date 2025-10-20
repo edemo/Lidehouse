@@ -24,6 +24,9 @@ export const AttachmentField = function (photoOnly) {
   const modifiableFields = [fieldName];
 
   const helpers = {
+    firstAttachment() {
+      return this.attachments?.[0];
+    }
   };
 
   function hooks(collection) {

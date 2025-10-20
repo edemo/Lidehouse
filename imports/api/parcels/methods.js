@@ -5,8 +5,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkUnique, checkModifier, checkPermissions, checkConstraint } from '/imports/api/method-checks.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Balances } from '/imports/api/accounting/balances/balances.js';
+import { Localizer } from '/imports/api/accounting/breakdowns/localizer.js';
 import { ParcelRefFormat } from '/imports/api/communities/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -25,7 +25,7 @@ export const insert = new ValidatedMethod({
       if (_.isUndefined(doc.serial)) doc.serial = community.nextAvailableSerial();
       if (doc.ref === 'auto') doc.ref = 'A' + doc.serial.toString().padStart(3, '0');
     }
-    if (doc.ref) {
+    if (doc.ref && community.settings.parcelRefFormat) {
       doc = ParcelRefFormat.extractFieldsFromRef(community.settings.parcelRefFormat, doc);
     }
     checkUnique(Parcels, doc);

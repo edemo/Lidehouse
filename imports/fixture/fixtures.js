@@ -11,9 +11,9 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
-import { Templates } from '/imports/api/transactions/templates/templates.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import { AccountingPeriods } from '/imports/api/accounting/periods/accounting-periods.js';
+import { Templates } from '/imports/api/accounting/templates/templates.js';
 import { CommunityBuilder } from './community-builder.js';
 
 export function insertUnittestFixture(lang) {

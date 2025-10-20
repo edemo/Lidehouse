@@ -22,23 +22,23 @@ import '/imports/api/contracts/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/comments/methods.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
-import '/imports/api/transactions/balances/methods.js';
-import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
-import '/imports/api/transactions/parcel-billings/methods.js';
-import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
-import '/imports/api/transactions/statement-entries/methods.js';
-import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
-import { AccountingPeriods } from '/imports/api/transactions/periods/accounting-periods.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import { Bills } from '/imports/api/accounting/bills/bills.js';
+import { Balances } from '/imports/api/accounting/balances/balances.js';
+import '/imports/api/accounting/balances/methods.js';
+import { ParcelBillings } from '/imports/api/accounting/parcel-billings/parcel-billings.js';
+import '/imports/api/accounting/parcel-billings/methods.js';
+import { StatementEntries } from '/imports/api/accounting/statement-entries/statement-entries.js';
+import '/imports/api/accounting/statement-entries/methods.js';
+import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
+import { AccountingPeriods } from '/imports/api/accounting/periods/accounting-periods.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Clock } from '/imports/utils/clock';
 import { CommunityBuilder, DemoCommunityBuilder } from './community-builder.js';
-import { Txdefs } from '../api/transactions/txdefs/txdefs.js';
+import { Txdefs } from '../api/accounting/txdefs/txdefs.js';
 
 const statusChange = Topics.methods.statusChange;
 

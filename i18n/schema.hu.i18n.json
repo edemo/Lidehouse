@@ -33,14 +33,14 @@
     "attachments": {
       "label": "Fénykép vagy fájl (ha csatolni szeretne)",
       "$": {
-        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+        "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
       },
       "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
     },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
       "$": {
-        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+        "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
       },
       "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
     }
@@ -58,6 +58,40 @@
       }
     }
   },
+  "schemaWorkflow": {
+    "status": {
+      "label": "Státusz",
+      "options": {
+        "announced": "Kitűzve",
+        "opened": "Nyitott",
+        "scheduled": "Ütemezve",
+        "reported": "Bejelentve",
+        "confirmed": "Betervezve",
+        "toApprove": "Jóváhagyásra",
+        "toVote": "Megszavazásra",
+        "progressing": "Folyamatban",
+        "suspended": "Felfüggesztve",
+        "finished": "Elvégezve",
+        "votingFinished": "Szavazás lezárva",
+        "closed": "Lezárt",
+        "deleted": "Törölt",
+        "inquiry": "Érdeklődés",
+        "requested": "Kérelmezve",
+        "offered": "Felajánlva",
+        "agreed": "Véglegesítve",
+        "canceled": "Visszavonva",
+        "preapproved": "Jóváhagyva",
+        "proposed": "Ajánlat benyújtva",
+        "reviewed": "Lebonyolítva"
+      }
+    },
+    "closed": {
+      "label": "Lezárt"
+    },
+    "closesAt": {
+      "label": "Lezárulás ideje"
+    }
+  },
   "schemaCommunities": {
     "_": {
       "label": "Közösség"
@@ -72,7 +106,7 @@
     },
     "avatar": {
       "label": "Fénykép",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kajol-lak.jpg)"
+      "placeholder": "Link megadás (pl. https://imgbb.com/kajol-lak.jpg)"
     },
     "zip": {
       "label": "Irányító szám",
@@ -132,12 +166,18 @@
           "voting": "Döntéshozás",
           "maintenance": "Üzemeltetés",
           "finances": "Pénzügyek",
+          "marketplace": "Piactér",
           "documents": "Dokumentumtár"
         }
       },
       "joinable": {
-        "label": "Csatlakozási kérelmeket fogad",
-        "help": "Ha nem ön viszi fel az összes tulajdonosi adatot, hanem szeretné engedni hogy a tulajdonosok maguktól, adataik megadásával csatlakozzanak, akkor engedélyezze. A csatlakozási kérelemben megadott albetét adatokat ön tudja még módosítani, mielőtt jóváhagyja azokat."
+        "label": "Csatlakozási lehetőségek",
+        "help": "Ha nem ön viszi fel az összes tulajdonost, hanem szeretné engedni hogy a tulajdonosok maguktól, adataik megadásával csatlakozzanak, akkor engedélyezheti ezt. Ha azt választja hogy 'Jóváhagyással', akkor a csatlakozási kérelemben megadott adatokat ön tudja még módosítani, mielőtt jóváhagyja azokat. Ha azt jelöli, hogy 'Bárki' csatlakozhat, akkor a csatlakozók azonnal bekerülnek a közösségbe, amikor a Csatlakozás gombra kattintanak, az ön Jóváhagyása nélkül is.",
+        "options": {
+          "inviteOnly": "Csak meghívottak",
+          "withApproval": "Jóváhagyással",
+          "withLink": "Bárki, jóváhagyás nélkül"
+        }
       },
       "language": {
         "label": "Nyelv",
@@ -228,6 +268,14 @@
       },
       "latePaymentFees": {
         "label": "Késedelmi kamat számítás"
+      },
+      "marketplaceCurrency": {
+        "label": "Piactér valuta",
+        "help": "Hagyja üresen ha a helyi állami fizetőeszközben történik az elszámolás, csak akkor töltse ki ha egy saját elszámolási egységet használnak."
+      },
+      "giftEconomy": {
+        "label": "Ajándék alapú Piactér",
+        "help": "Akkor válassza ki, ha a Piactéren ajándék alapú az elszámolás, és az árak csak tájékoztató jellegűek."
       }
     }
   },
@@ -250,7 +298,7 @@
       "help": "Egyedi sorszám, mely segít sorba rendezni a helyeinket. A helyrajzi szám utolsó száma például kíválóan alkalmas erre."
     },
     "ref": {
-      "label": "Azonosító név",
+      "label": "Azonosító",
       "placeholder": "(pl. B405 vagy II/4 vagy Földszint)",
       "help": "Egyedi azonosító név, mellyel hivatkozni lehet rá"
     },
@@ -431,7 +479,7 @@
     },
     "avatar": {
       "label": "Profilkép",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
     },
     "profile": {
       "label": "Profil [Az itt megadott adatokat a közösség többi tagjai is látják]",
@@ -540,7 +588,7 @@
         },
         "photo": {
           "label": "Fénykép (ha csatolni szeretne)",
-          "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+          "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
         }
       }
     },
@@ -596,7 +644,7 @@
       },
       "photo": {
         "label": "Fénykép (ha csatolni szeretne)",
-        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+        "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
       }
     }
   },
@@ -803,35 +851,14 @@
     "shareddocs": {
       "label": "Dokumentumok (ha csatolni szeretne)",
       "$": {
-        "placeholder": "Link megadása (pl. /uploads/document.pdf)"
+        "placeholder": "Link megadás (pl. /uploads/document.pdf)"
       }
     },
     "sticky" : {
       "label": "Rögzített"
     },
     "status": {
-      "label": "Státusz",
-      "options": {
-        "announced": "Kitűzve",
-        "opened": "Nyitott",
-        "scheduled": "Ütemezve",
-        "reported": "Bejelentve",
-        "confirmed": "Betervezve",
-        "toApprove": "Jóváhagyásra",
-        "toVote": "Megszavazásra",
-        "progressing": "Folyamatban",
-        "suspended": "Felfüggesztve",
-        "finished": "Elvégezve",
-        "votingFinished": "Szavazás lezárva",
-        "closed": "Lezárt",
-        "deleted": "Törölt"
-      }
-    },
-    "closed": {
-      "label": "Lezárt"
-    },
-    "closesAt": {
-      "label": "Lezárulás ideje"
+      "label": "Státusz"
     }
   },
   "schemaVotings": {
@@ -1007,7 +1034,7 @@
     },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
     },
     "destinationId": {
       "label": "Áthelyezés ehhez a témához:"
@@ -1717,6 +1744,127 @@
         "label": "Időpontig",
         "placeholder": "éééé-hh-nn"
       }
+    }
+  },
+  "schemaBuckets": {
+    "_": {
+      "label": "Kategória"
+    },
+    "name": {
+      "label": "Név"
+    },
+    "code": {
+      "label": "Kód"
+    }
+  },
+  "schemaListings": {
+    "_": {
+      "label": "Hirdetés"
+    },
+    "relation": {
+      "label": "Hirdetés típus",
+      "options": {
+        "supplier": "Felajánlás",
+        "customer": "Szükséglet"
+      }
+    },
+    "creatorId": {
+      "label": "Hirdető"
+    },
+    "title": {
+      "label": "Cím",
+      "placeholder": "(pl. Friss tulipán)"
+    },
+    "text": {
+      "label": "Tartalmi leírás",
+      "placeholder": "(pl. Tulipánok különböző választható színekben, a kertemből szedhető.)"
+    },
+    "uom": {
+      "label": "Mennyiségi egység",
+      "help": "Azt az egységet szerepeltesse itt, amire vonatkozóan az értéket megadja",
+      "placeholder": "(pl. darab, kiló, göngyöleg, ...)"
+    },
+    "price": {
+      "label": "Egységár/érték",
+      "help": "A termék vagy szolgáltatás egységnyi mennyiségének ára a közösség által meghatározott fizetőeszközben mérve."
+    },
+    "available": {
+      "label": "Mennyiség készleten",
+      "help": "Ha megadja, akkor a rendszer automatikusan csökkenteni fogja a mennyiséget minden sikeres átadás után. És amikor a készlet nullára redukálódik, akkor minden maradék érdeklődőnek aztomatikusab küld egy Sajnos Elkelt értesítést. Ha végtelen sok van belőle, beállíthat ide egy jó nagy számot, mint pl 1000"
+    },
+    "location": {
+      "label": "Lokáció",
+      "placeholder": "(pl. Budapest)" 
+    },
+    "delivery": {
+      "label": "Átvételi mód",
+      "options": {
+        "pickup": "Személyes átvétel",
+        "send": "Postázás/Futár",
+        "digital": "Digitális formában"
+      }
+    },
+    "bucket": {
+      "label": "Kategória"
+    },
+    "keywords": {
+      "label": "Kulcsszavak",
+      "help": "Más néven hashtag-ek. Akár többet is megadhat, szóközökkel elválasztva."
+    }
+  },
+  "schemaDeals": {
+    "_": {
+      "label": "Ügylet"
+    },
+    "status": {
+      "label": "Státusz"
+    },
+    "title": {
+      "label": "Hirdetés cím"
+    },
+    "text": {
+       "label": "Hirdetés tartalmi leírása",
+       "help": "Speciális ajánlatban módosítható, vagy akár teljesen átírható az eredeti hírdetés tartalma."
+    },   
+    "uom": {
+      "label": "Mennyiségi egység"
+    },
+    "quantity": {
+      "label": "Mennyiség",
+      "help": "A kérelmezett mennyiség nem lehet több, mint amennyi a hirdetésben rendelkezésre áll készleten"
+    },
+    "price": {
+      "label": "Összérték",
+      "help": "Az ügylet összértéke. Ez az összeg lesz jóváírva a feleknek."
+    }
+ },
+  "schemaReviews": {
+    "_": {
+      "label": "Értékelés"
+    },
+    "listingId": {
+      "label": "Értékelt hirdetés"
+    },
+    "reviewerPartnerId": {
+      "label": "Értékelő partner"
+    },
+    "revieweePartnerId": {
+      "label": "Értékelt partner"
+    },
+    "rating": {
+      "label": "Értékelés",
+      "help": "Értékelje 0 és 5 között. Ahol az 5-ös a legjobb, a 0 a legalacsonyabb értékelés.",
+      "placeholder": "(pl. 4.9)"
+    },
+    "text": {
+      "label": "Nyilvános megjegyzés",
+      "help": "Ezt mindenki számára látható",
+      "placeholder": "Ha szeretne hozzáfűzni..."
+    },
+    "privateText": {
+      "label": "Privát megjegyzés",
+      "help": "Ezt csak az partner értékelt látja",
+      "placeholder": "..."
     }
   },
   "schemaSharedfolders": {

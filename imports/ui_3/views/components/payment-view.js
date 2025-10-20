@@ -3,8 +3,8 @@ import { Template } from 'meteor/templating';
 
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Contracts } from '/imports/api/contracts/contracts';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import '/imports/api/transactions/actions.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import '/imports/api/accounting/actions.js';
 
 import './payment-view.html';
 

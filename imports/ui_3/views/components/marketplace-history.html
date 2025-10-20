@@ -1,0 +1,52 @@
+<template name="Marketplace_history">
+    <div class="ibox ecommerce">
+        {{#let partner=this }}
+        <div class="product-desc">
+            {{> Partner_rating partner }}
+        </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tbody>
+                    {{#let deals=partner.marketHistory.deals }}
+                    {{#if deals.count }}
+                        <!--tr style="font-weight: bold">
+                            <td>{{_ 'schemaTransactions.valueDate.label'}}</td>
+                            <td>{{_ 'schemaListings.title.label'}}</td>
+                            <td>{{_ 'Partner'}}</td>
+                            <td>{{_ 'Review'}}</td>
+                            <td class="text-right">{{_ 'schemaDeals.price.label'}}</td>
+                        </tr-->
+
+                        {{#each deal in deals}}
+                        <tr>
+                        {{#let dealRelation=(deal.relationOf partner._id)}}
+                            <td class="text-capitalize">{{deal.listing.title}}</td>
+                            {{#let otherPartner=(deal.otherPartner partner._id)}}
+                            <td class="text-right">
+                                <img class="m-l-sm m-r-sm" alt="avatar" src={{absoluteUrl partner.avatar}} width="24">
+                                <button class="btn btn-xs btn-{{color dealRelation}}"><i class="fa fa-large {{directionIcon dealRelation}}"></i></button>
+                                <img class="m-l-sm m-r-sm" alt="avatar" src={{absoluteUrl otherPartner.avatar}} width="24">  
+                            </td>
+                            <td class="text-capitalize">{{otherPartner}}</td>
+                            {{/let}}
+                            {{#let review=(deal.otherPartnerReview partner._id) }}
+                            <td>{{#if review}}{{review.rating}} <i class="fa fa-star active"></i> {{>Action_buttons_group collection='reviews' doc=review actions='view' size='sm'}}{{/if}}</td>
+                            {{/let}}
+                            <td class="text-right"><i class="fa fa-clock-o"></i> {{displayTimeFrom deal.updatedAt}}</td>
+                            <td class="text-right">
+                                <span class="btn btn-outline btn-xs btn-{{color dealRelation}}" style="padding: 1px 1px; border: none"><i class="fa {{signIcon dealRelation}}"></i></span> 
+                                {{displayMarketplaceCurrency (abs deal.price)}}
+                            </td>
+                        {{/let}}
+                        </tr>
+                        {{/each}}
+                    {{else}}
+                        <tr class="text-center m-t-lg"> {{_ 'marketplaceHistoryPlaceholder'}}</tr>
+                    {{/if}}
+                    {{/let}}
+                </tbody>
+                </table>
+            </div>
+        {{/let}}
+        </div>
+</template>

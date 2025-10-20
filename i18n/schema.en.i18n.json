@@ -36,7 +36,7 @@
         "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
       },
       "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
-    }, 
+    },
     "photo": {
       "label": "Photo (if applicable)",
       "$": {
@@ -56,6 +56,40 @@
         "label": "Until",
         "placeholder": "yyyy-mm-dd"
       }
+    }
+  },
+  "schemaWorkflow": {
+    "status": {
+      "label": "Status",
+      "options": {
+        "announced": "Announced",
+        "opened": "Opened",
+        "scheduled": "Scheduled",
+        "reported": "Reported",
+        "confirmed": "Planned",
+        "toApprove": "To approve",
+        "toVote": "To vote on",
+        "progressing": "Progressing",
+        "suspended": "Suspended",
+        "finished": "Done",
+        "votingFinished": "Voting finished",
+        "closed": "Closed",
+        "deleted": "Deleted",
+        "inquiry": "Inquiry",
+        "requested": "Requested",
+        "offered": "Offered",
+        "agreed": "Confirmed",
+        "canceled": "Canceled",
+        "preapproved": "Preapproved",
+        "proposed": "Proposed",
+        "reviewed": "Reviewed"
+      }
+    },
+    "closed": {
+      "label": "Closed"
+    },
+    "closesAt": {
+      "label": "Closes At"
     }
   },
   "schemaCommunities": {
@@ -132,12 +166,18 @@
           "voting": "Decsion making",
           "maintenance": "Maintenance",
           "finances": "Finaces",
+          "marketplace": "Marketplace",
           "documents": "Documentstore"
         }
       },
       "joinable": {
-        "label": "Accepts join requests",
-        "help": "If you are not providing all parcel owner's data yourself, and you'd like them to be able to join the community, providing their own data, allow this option. Before approving a join request, you can still edit the submitted data."
+        "label": "Joining options",
+        "help": "If you are not registering all parcel owner's yourself, and you'd like the users to be able to join the community themselves, providing their own data, then you can allow this. Before approving a join request, you can still edit their submitted data, if you chosse the 'With approval' option. If 'No approval needed' then anybody can join and then they will immediately access the community when pressing the Join button.",
+        "options": {
+          "inviteOnly": "Invitation only",
+          "withApproval": "With approval",
+          "withLink": "Anyone without approval"
+        }
       },
       "language": {
         "label": "Language",
@@ -227,6 +267,14 @@
       },
       "latePaymentFees": {
         "label": "Late payment fees"
+      },
+      "marketplaceCurrency": {
+        "label": "Marketplace currency",
+        "help": "If you are using the standard local currency, you can leave this field empty. If you use your own currency, specify that here."
+      },
+      "giftEconomy": {
+        "label": "Gift economy",
+        "help": "Set it, if the marketplace is a gift economy, and the prices are just indicative."
       }
     }
   },
@@ -282,14 +330,14 @@
       "label": "Type",
       "placeholder": "(eg. Apartment or Parking space)",
       "help": "We can create the parcel billings by type.",
-        "flat": "Apartment",
-        "parking": "Parking",
-        "storage": "Storage",
-        "cellar": "Cellar",
-        "attic": "Attic",
-        "shop": "Shop",
-        "office": "Office",
-        "other": "Other"
+      "flat": "Apartment",
+      "parking": "Parking",
+      "storage": "Storage",
+      "cellar": "Cellar",
+      "attic": "Attic",
+      "shop": "Shop",
+      "office": "Office",
+      "other": "Other"
     },
     "group": {
       "label": "Group",
@@ -369,7 +417,7 @@
     },
     "code": {
       "label": "Code",
-      "placeholder": "(pl. 2)", 
+      "placeholder": "(pl. 2)",
       "help": "It needs to be unique. If there is already a transaction under this code, it is not modifiable."
     },
     "allowPost": {
@@ -435,7 +483,6 @@
     "profile": {
       "label": "Profile [This data is publicly shown to the members of your community]",
       "help": "This data is publicly shown to the members of your community",
-
       "firstName": {
         "label": "First name",
         "placeholder": "(eg. Michael)"
@@ -499,7 +546,7 @@
       }
     }
   },
-  "schemaMeters" : {
+  "schemaMeters": {
     "service": {
       "label": "Service",
       "placeholder": "(eg. Cold water or Heating)",
@@ -599,7 +646,7 @@
       }
     }
   },
-  "schemaMemberships" : {
+  "schemaMemberships": {
     "_": {
       "label": "Membership"
     },
@@ -731,7 +778,7 @@
         "partnerId": {
           "label": "Partner",
           "help": "Fill this if the bill is not to be paid by the owner, but by other persons. These partners will also get a copy of all bills."
-        }  
+        }
       }
     },
     "topicIds": {
@@ -794,43 +841,22 @@
         "normal": "normal",
         "immediate": "immediate"
       }
-    },    
+    },
     "notiLocalizer": {
       "label": "Notification place",
       "help": "You may specify one or more places (building, floors, units) where the notifications should go to. Leave it blank if you do not wish to localize the notifications"
-    },    
+    },
     "shareddocs": {
       "label": "Documents (if applicable)",
       "$": {
         "placeholder": "File link (eg. /uploads/document.pdf)"
       }
     },
-    "sticky" : {
+    "sticky": {
       "label": "Sticky"
     },
     "status": {
-      "label": "Status",
-      "options": {
-        "announced": "Announced",
-        "opened": "Opened",
-        "scheduled": "Scheduled",
-        "reported": "Reported",
-        "confirmed": "Planned",
-        "toApprove": "To approve",
-        "toVote": "To vote on",
-        "progressing": "Progressing",
-        "suspended": "Suspended",
-        "finished": "Done",
-        "votingFinished": "Voting finished",
-        "closed": "Closed",
-        "deleted": "Deleted"
-      }
-    },
-    "closed": {
-      "label": "Closed"
-    },
-    "closesAt": {
-      "label": "Closes At"
+      "label": "Status"
     }
   },
   "schemaVotings": {
@@ -862,7 +888,7 @@
       },
       "procedure": {
         "label": "Voting procedure",
-         "help": "There is no owner's meeting at the end of online voting.",
+        "help": "There is no owner's meeting at the end of online voting.",
         "options": {
           "online": "Online",
           "meeting": "Owner's meeting"
@@ -940,28 +966,28 @@
           "insurance": "Covered by insurance"
         }
       },
-      "contractId" : {
+      "contractId": {
         "label": "Contract"
       },
       "txId": {
         "label": "Payment transaction"
       },
-      "expectedCost": { 
+      "expectedCost": {
         "label": "Expected cost"
       },
-      "expectedStart": { 
+      "expectedStart": {
         "label": "Expected start"
       },
-      "expectedFinish": { 
+      "expectedFinish": {
         "label": "Expected finish"
       },
-      "expectedContinue": { 
+      "expectedContinue": {
         "label": "Expected continuation"
       },
       "waitingFor": {
         "label": "Waiting for"
       },
-      "actualCost": { 
+      "actualCost": {
         "label": "Actual cost",
         "help": "Actual costs sum (use this field, if you do not wish to link the cost bills, only present the sum cost amount)"
       },
@@ -970,13 +996,13 @@
         "placeholder": "(eg. BIL/SUP/64/2024)",
         "help": "The cost bill identifier or the bill identifiers spearated by comma, in case there are multiple bills"
       },
-      "actualStart": { 
+      "actualStart": {
         "label": "Actual start"
       },
       "actualFinish": {
         "label": "Actual finish"
       },
-      "actualContinue": { 
+      "actualContinue": {
         "label": "Actual continuation"
       }
     },
@@ -1036,7 +1062,7 @@
       "label": "Include"
     },
     "children": {
-      "label": "Cathegory account",
+      "label": "Category account",
       "$": {
         "digit": {
           "label": "Code"
@@ -1184,7 +1210,7 @@
         "subTx": {
           "label": "Accounting operation",
           "help": "If trasaction consists of multiple accounting operations, provide here the index of which this belongs to"
-        }         
+        }
       }
     },
     // Following lines are for the different txdefs
@@ -1375,7 +1401,7 @@
       "label": "Linked user account (if already registered)"
     },
     "idCard": {
-      "label" : "Person's official data",
+      "label": "Person's official data",
       "type": {
         "label": "Person type",
         "options": {
@@ -1405,7 +1431,7 @@
       }
     },
     "contact": {
-      "label" : "Person's contact",
+      "label": "Person's contact",
       "address": {
         "label": "Mailing address",
         "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
@@ -1419,11 +1445,11 @@
         "placeholder": "(eg. jsmith45@dmail.com)"
       }
     },
-    "BAN": { 
+    "BAN": {
       "label": "Bank account number",
       "placeholder": "(eg. 12345678-00000000-00000078)"
     },
-    "taxNo": { 
+    "taxNo": {
       "label": "Tax number",
       "placeholder": "(eg. international VAT number)",
       "help": "Not mandatory, but you can set this, if you'd like it to appear on invoices and bills."
@@ -1438,7 +1464,7 @@
       "options": {
         "supplier": "Bill",
         "customer": "Invoice",
-        "member": "Contribution"      
+        "member": "Contribution"
       }
     },
     "issueDate": {
@@ -1487,18 +1513,18 @@
       "label": "Outstanding",
       "placeholder": "(eg. 14560)"
     },
-    "title": { 
+    "title": {
       "label": "Name of product or service",
       "placeholder": "(eg. Garden chair)"
     },
-    "lines" : {
+    "lines": {
       "label": "Line items",
-      "$" : {
-        "title": { 
+      "$": {
+        "title": {
           "label": "Name of product or service",
           "placeholder": "(eg. Garden chair)"
         },
-        "details": { 
+        "details": {
           "label": "Description",
           "placeholder": "(if needed)"
         },
@@ -1701,6 +1727,127 @@
     },
     "applyCount": {
       "label": "Apply count"
+    }
+  },
+  "schemaBuckets": {
+    "_": {
+      "label": "Category"
+    },
+    "name": {
+      "label": "Name"
+    },
+    "code": {
+      "label": "Code"
+    }
+  },
+  "schemaListings": {
+    "_": {
+      "label": "Listing"
+    },
+    "relation": {
+      "label": "Listing type",
+      "options": {
+        "supplier": "Offer",
+        "customer": "Need"
+      }
+    },
+    "creatorId": {
+      "label": "Lister"
+    },
+    "title": {
+      "label": "Title",
+      "placeholder": "(eg. Fresh tulips)"
+    },
+    "text": {
+      "label": "Description",
+      "placeholder": "(eg. Various colored tulips, you can pick and choose them in my garden)"
+    },
+    "uom": {
+      "label": "Unit of measurment",
+      "help": "Should correspond with the price",
+      "placeholder": "(eg. piece, kilogramm, bundle, ...)"
+    },
+    "price": {
+      "label": "Unit Price/Value",
+      "help": "Price of one unit of the product or service measured in the community's marketplace currency"
+    },
+    "available": {
+      "label": "Available quantity",
+      "help": "If it set, the system will reduce the quantity with each succesful deal, and will send out an Out of Stock message to every other requestor when the quantity reaches zero. You can set a very high number, like 999, if you have infinite amount available."
+    },
+    "location": {
+      "label": "Location",
+      "placeholder": "(eg. London)"
+    },
+    "delivery": {
+      "label": "Delivery",
+      "options": {
+        "pickup": "Pick up in person",
+        "send": "Post/Courier",
+        "digital": "Digital"
+      }
+    },
+    "bucket": {
+      "label": "Category"
+    },
+    "keywords": {
+      "label": "Keywords",
+      "help": "Also called hashtags. You can specify more than one, seperated with space."
+    }
+  },
+  "schemaDeals": {
+    "_": {
+      "label": "Deal"
+    },
+    "status": {
+      "label": "Status"
+    },
+    "title": {
+      "label": "Listing title"
+    },
+    "text": {
+      "label": "Proposed description",
+      "help": "In the propsed description you may change the original listing content partially or completely."
+    },
+    "uom": {
+      "label": "Unit of measurment"
+    },
+    "quantity": {
+      "label": "Quantity",
+      "help": "Requested quantity cannot be higher than what is available on stock according to the listing."
+    },
+    "price": {
+      "label": "Total value",
+      "help": "The total value of the deal. This is the amount that will effect the balance of the parties."
+    }
+  },
+  "schemaReviews": {
+    "_": {
+      "label": "Review"
+    },
+    "listingId": {
+      "label": "Reviewed listing"
+    },
+    "reviewerPartnerId": {
+      "label": "Reviewer"
+    },
+    "revieweePartnerId": {
+      "label": "Reviewee"
+    },
+    "rating": {
+      "label": "Rating",
+      "help": "Please rate between 0 and 5, where 5 is the best score.",
+      "placeholder": "(eg. 4.9)"
+    },
+    "text": {
+      "label": "Public comments",
+      "help": "Publicly visible by everyone",
+      "placeholder": "If you wish to add..."
+    },
+    "privateText": {
+      "label": "Private message",
+      "help": "This is only seen by the reviewed party",
+      "placeholder": "..."
     }
   },
   "schemaSharedfolders": {

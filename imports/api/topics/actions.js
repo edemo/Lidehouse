@@ -24,7 +24,7 @@ import './methods.js';
 
 function fixedStatusValue(value) {
   return {
-    options() { return [{ label: __('schemaTopics.status.options.' + value), value }]; },
+    options() { return [{ label: __('schemaWorkflow.status.options.' + value), value }]; },
     firstOption: false,
     disabled: true,
   };
@@ -149,7 +149,7 @@ Topics.actions = {
   statusChange: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'statusChange',
     label: (!options.status && 'statusChange') || (options.status.label)
-      || (__('Change status to', __('schemaTopics.status.options.' + options.status.name))),
+      || (__('Change status to', __('schemaWorkflow.status.options.' + options.status.name))),
     icon: (options.status && options.status.icon) || 'fa fa-cogs',
     visible: (!options.status && doc.possibleNextStatuses().length > 0
       && doc.possibleNextStatuses().some(status => user.hasPermission(`${doc.category}.statusChange.${status.name}.enter`, doc)))

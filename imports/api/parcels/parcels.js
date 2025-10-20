@@ -23,7 +23,7 @@ import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/acti
 import { ParcelRefFormat } from '/imports/api/communities/parcelref-format.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { ActiveTimeMachine } from '../behaviours/active-time-machine';
-import { TemplatedMongoCollection } from '/imports/api/transactions/templates/templated-collection';
+import { TemplatedMongoCollection } from '/imports/api/accounting/templates/templated-collection';
 
 export const Parcels = new TemplatedMongoCollection('parcels', 'code');
 
@@ -208,7 +208,7 @@ Parcels.helpers({
   displayName() {
     return this.location() || __(this.ref);
   },
-  displayAccount() {
+  displayFull() {
     return `${this.code}: ${this.displayName()}`;
   },
   toString() {
@@ -235,7 +235,7 @@ Parcels.helpers({
     return this.category !== '@group';
   },
   asOption() {
-    return { label: this.displayAccount(), value: this.code };
+    return { label: this.displayFull(), value: this.code };
   },
 });
 
@@ -334,6 +334,15 @@ function updateCommunity(parcel, revertSign = 1) {
 }
 
 if (Meteor.isServer) {
+/*  Parcels.before.insert(function (userId, doc) {
+    if (!doc.serial && ['%property', '@property'].includes(doc.category)) { // keep it, if already exists
+      const selector = { communityId: doc.communityId, category: { $in: ['%property', '@property'] } };
+      const last = Parcels.findOne(selector, { sort: { serial: -1 } });
+      const nextSerial = last ? last.serial + 1 : 1;
+      doc.serial = nextSerial;
+    }
+  });*/
+
   Parcels.after.insert(function (userId, doc) {
     updateCommunity(doc, 1);
   });
@@ -441,7 +450,7 @@ export const chooseLocalizer = function (code = '') {
       const communityId = ModalStack.getVar('communityId');
       const parcels = Parcels.nodesOf(communityId, code);
       const options = parcels.map(function option(p) {
-        return { label: p.displayAccount(), value: p.code };
+        return { label: p.displayFull(), value: p.code };
       });
       const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
       return sortedOptions;
@@ -471,7 +480,7 @@ export const chooseLocalizer = {
     const physicalPlaces = new RegExp('^@');
     const parcels = Parcels.find({ communityId, category: physicalPlaces }, { sort: { ref: 1 } });
     const options = parcels.map(function option(p) {
-      return { label: p.displayAccount(), value: p._id };
+      return { label: p.displayFull(), value: p._id };
     });
     return options;
   },

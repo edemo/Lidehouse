@@ -6,10 +6,10 @@ import { _ } from 'meteor/underscore';
 import rusdiff from 'rus-diff';
 
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Balances } from '/imports/api/accounting/balances/balances.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Topics } from '/imports/api/topics/topics.js';

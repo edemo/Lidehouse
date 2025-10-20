@@ -35,6 +35,10 @@
       "doing": "importálása",
       "done": "importálva"
     },
+    "join": {
+      "label": "csatlakozás",
+      "done": "csatlakozva"
+    },
     "move": {
       "label": "áthelyezés",
       "do": "áthelyezi",
@@ -52,6 +56,9 @@
       "do": "kiveti",
       "doing": "kivetése",
       "done": "kivetve"
+    },
+    "viewLastApplies": {
+      "label": "utolsó kivetések megtekintése"
     },
     "post": {
       "label": "könyvelésbe küldés",
@@ -178,6 +185,52 @@
     "disable": {
       "do": "visszautasítja",
       "done": "visszautasítva"
+    },
+    "inquireDeal": {
+      "label": "üzenet a hirdetőnek",
+      "do": "üzenetet küld a hirdetőnek",
+      "doing": "üzenet küldése a hirdetőnek"
+    },
+    "requestDeal": {
+      "customer": {
+        "label": "kérelmezés",
+        "do": "kérelmezi",
+        "done": "kérelmezve"
+      },
+      "supplier": {
+        "label": "felajánlás",
+        "do": "felajánlja",
+        "done": "felajánlva"
+      }
+    },
+    "confirmDeal": {
+      "label": "jóváhagyás",
+      "do": "jóváhagyja",
+      "doing": "jóváhagyása",
+      "done": "jóváhagyja"
+    },
+    "cancelDeal": {
+      "label": "visszavonás",
+      "do": "visszavonja",
+      "doing": "visszavonása",
+      "done": "visszavonva"
+    },
+    "proposeDeal": {
+      "label": "ajánlat tétel",
+      "do": "ajánlatot tesz",
+      "doing": "ajánlat tétele",
+      "done": "ajánlatott tett"
+    },
+    "reviewDeal": {
+      "label": "értékelés",
+      "do": "értékeli",
+      "done": "értékelve"
+    },
+    "initiate": {
+      "label": "kezdeményezés",
+      "do": "kezdeményezi",
+      "doing": "kezdeményezése",
+      "done": "kezdeményezve"
     }
   },
 
@@ -361,6 +414,22 @@
     "outstandings reminder": {
       "label": "hátralék emlékeztető",
       "it": "a hátralék emlékeztetőt"
+    },
+    "bucket": {
+      "label": "kategória",
+      "it": "a kategóriát"
+    },
+    "listing": {
+      "label": "hirdetés",
+      "it": "a hirdetést"
+    },
+    "deal": {
+      "label": "ügylet",
+      "it": "az ügyletet"
+    },
+    "review": {
+      "label": "értékelés",
+      "it": "az értékelést"
     },
     "sharedfolder": {
       "label": "mappa",

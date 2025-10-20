@@ -2,11 +2,11 @@
 import { Template } from 'meteor/templating';
 
 import { Communities } from '/imports/api/communities/communities.js';
-import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { validDateOrUndefined } from '/imports/api/utils';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import { StatementEntries } from '/imports/api/accounting/statement-entries/statement-entries';
 import '/imports/ui_3/views/components/accounting-bills.js';
 import '/imports/ui_3/views/components/accounting-ledger.js';
 import '/imports/ui_3/views/components/accounting-transactions.js';

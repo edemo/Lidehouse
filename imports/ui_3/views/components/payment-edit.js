@@ -11,10 +11,10 @@ import { Clock } from '/imports/utils/clock';
 // The autoform needs to see these, to handle new events on it
 import '/imports/api/partners/actions.js';
 import '/imports/api/contracts/actions.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Accounts } from '/imports/api/transactions/accounts/accounts.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
+import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
-import '/imports/api/transactions/actions.js';
+import '/imports/api/accounting/actions.js';
 import './payment-edit.html';
 
 Template.Payment_edit.viewmodel({
