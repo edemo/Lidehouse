@@ -1405,8 +1405,8 @@ Meteor.methods({
         const demoMembership = Memberships.findOne(demoMembershipId);
 
         Clock.starts(2, 'year', 'ago');
-        const waterMeterId = builder.create('meter', { parcelId: demoParcelId, service: __('schemaMeters.service.coldWater'), uom: 'm3' });
-        const heatingMeterId = builder.create('meter', { parcelId: demoParcelId, service: __('schemaMeters.service.heating'), uom: 'kJ' });
+        const waterMeterId = builder.create('meter', { identifier: 'W-' + demoParcelId, parcelId: demoParcelId, service: __('schemaMeters.service.coldWater'), uom: 'm3' });
+        const heatingMeterId = builder.create('meter', { identifier: 'H-' + demoParcelId, parcelId: demoParcelId, service: __('schemaMeters.service.heating'), uom: 'kJ' });
         Clock.starts(14, 'month', 'ago');
         builder.execute(Meters.methods.registerReading, { _id: waterMeterId,
           reading: { date: Clock.currentTime(), value: 5 } });
