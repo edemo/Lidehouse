@@ -205,6 +205,7 @@
   "registerReading": "register reading",
   "registerReading meter": "register meter reading",
   "editMeterReadingsWarning": "You are now editing the readings of meter [__identifier__](__service__) directly.\nIt is not recommended to edit or remove readings that were already billed, since those bills will not be changed by this operation, and therefore the billing and readings data would become inconsistent.",
+  "The reading is much higher than expected": "The reading you are trying to enter is much much higher than expected. Maybe you have misplaced the decimal point. Are you sure you want to record this reading?",
 
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "Reconnecting user": "This person will be sent a new enrollment email to the same email address, as the previous one was sent to. As soon as the new email is sent, the old one becomes expired.",
