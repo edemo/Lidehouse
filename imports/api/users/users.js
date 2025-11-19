@@ -204,6 +204,10 @@ Meteor.users.helpers({
     const noti = Notifications.findOne({ userId: this._id });
     return noti?.lastSeens;
   },
+  lastTimeSeenAll() {
+    const noti = Notifications.findOne({ userId: this._id });
+    return noti?.lastTimeSeenAll;
+  },
   isVerified() {
 //    debugAssert(Meteor.isServer, 'Email addresses of users are not sent to the clients');
     if (this.emails) return this.emails[0].verified;

@@ -12,6 +12,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import '/imports/api/communities/actions.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Notifications } from '/imports/api/notifications/notifications.js';
 import { resetSession } from '/imports/startup/client/session.js';
 import '/imports/api/users/users.js';
 import '/imports/ui_3/views/components/badge.js';
@@ -155,6 +156,13 @@ Template.Top_navbar.events({
   },
   'click .js-create.community'() {
     Communities.actions.create().run();
+  },
+  'click .js-mark-all-read'() {
+    const userId = Meteor.userId();
+    if (!userId) return;
+    const myNoti =  Notifications.findOne({ userId });
+    if (!myNoti) return;
+    Notifications.update(myNoti._id, { $set: { lastTimeSeenAll: new Date() } });
   },
   'click .js-logout'() {
     Meteor.logout(function onLogout(err) {

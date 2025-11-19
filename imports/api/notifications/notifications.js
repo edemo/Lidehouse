@@ -7,7 +7,8 @@ export const Notifications = new Mongo.Collection('notifications');
 Notifications.schema = new SimpleSchema({
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   lastSeens: { type: Array, autoform: { omit: true } },
-  'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
+  'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },  // topicId -> { timestamp: ... }
+  lastTimeSeenAll: { type: Date, optional: true },
 });
 
 Notifications.attachSchema(Notifications.schema);

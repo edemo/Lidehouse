@@ -128,8 +128,10 @@ Topics.helpers({
   },
   isUnseenBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
-    const lastSeenInfo = user && user.lastSeens()[seenType][this._id];
-    return lastSeenInfo ? false : true;
+    const lastSeenInfo = user && user.lastSeens()[seenType][this._id]; 
+    if (lastSeenInfo) return false;
+    else if (user?.lastTimeSeenAll()) return this.createdAt > user.lastTimeSeenAll;
+    else return true;
   },
   commentsSince(timestamp) {
     const Comments = Mongo.Collection.get('comments');
@@ -142,7 +144,9 @@ Topics.helpers({
   unseenCommentsBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
     const lastSeenTimestamp = user?.lastSeens()[seenType][this._id]?.timestamp;
-    return this.commentsSince(lastSeenTimestamp);
+    const lastSeenAllTimestamp = user?.lastTimeSeenAll();
+    const sinceTimestamp = new Date(Math.max(lastSeenTimestamp?.getTime() || 0, lastSeenAllTimestamp?.getTime() || 0))
+    return this.commentsSince(sinceTimestamp);
   },
   unseenCommentCountBy(userId, seenType) {
     return this.unseenCommentsBy(userId, seenType).count();
