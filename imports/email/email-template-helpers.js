@@ -15,6 +15,9 @@ export const EmailTemplateHelpers = {
   equals(a, b) {
     return a == b;
   },
+  and(a, b) {
+    return a && b;
+  },
   or(a, b) {
     return a || b;
   },
@@ -44,6 +47,7 @@ export const EmailTemplateHelpers = {
   },
   goodOrBad(color) {
     switch (color) {
+      case 'default':
       case 'info': return 'good';
       case 'warning': return 'warning';
       case 'danger': return 'bad';

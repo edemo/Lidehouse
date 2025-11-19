@@ -5,9 +5,11 @@ import { Log } from '/imports/utils/log.js';
 
 export function debugAssert(expr, msg, details) {
   if (!expr) {
+    const error = new Meteor.Error('Debug assertion failed', msg, JSON.stringify(details));
     Log.error('Debug assertion failed:', msg, JSON.stringify(details));
+    Log.error(error.stack);
     debugger;
-    throw new Meteor.Error('Debug assertion failed', msg, JSON.stringify(details));
+    throw error;
   }
 }
 

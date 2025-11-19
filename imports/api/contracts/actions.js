@@ -112,7 +112,7 @@ Contracts.actions = {
     label: 'remindOutstandings',
     color: doc.mostOverdueDaysColor(),
     icon: 'fa fa-exclamation',
-    visible: user.hasPermission('transactions.post', doc) && (ModalStack.getVar('relation') !== 'supplier') && doc.mostOverdueDays(),
+    visible: user.hasPermission('transactions.post', doc) && (ModalStack.getVar('relation') !== 'supplier') && doc.outstanding(),
     run() {
       Modal.confirmAndCall(Contracts.methods.remindOutstandings, { _id: doc._id }, {
         action: 'send',

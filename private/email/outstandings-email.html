@@ -8,8 +8,12 @@
                     <p>{{_ 'email.OutstandingsPretext'}}</p>
                     <p>
                         <strong>{{_ 'email.OutstandingsContract'}}: {{contract.toString}}</strong><br>
-                        <strong>{{_ 'email.OutstandingsTotal'}}: {{displayCurrency (contract.outstanding undefined 'member')}}</strong>,
-                        {{_ 'email.OutstandingsDetails' quantity=contract.outstandingBills.count}}
+                        <strong>{{_ 'email.OutstandingsTotal'}}: {{displayCurrency (contract.outstanding undefined 'member')}}</strong>
+                        {{#let billsCount=contract.outstandingBills.count}}
+                        {{#if (and (community.settings.paymentsToBills.includes contract.relation) billsCount)}}
+                            , {{_ 'email.OutstandingsDetails' quantity=billsCount}}
+                        {{/if}}
+                        {{/let}}
                     </p>
                     <div class='content-block aligncenter'>
                         <a href="{{urlFor 'Parcels finances'}}" class="btn btn-primary btn-sm">{{_ 'View my bills'}}</a>

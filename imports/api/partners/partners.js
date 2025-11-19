@@ -187,9 +187,10 @@ Partners.helpers({
   },
   mostOverdueDaysColor() {
     const days = this.mostOverdueDays();
-    if (days > 30 && days < 90) return 'warning';
     if (days > 90) return 'danger';
-    return 'info';
+    if (days > 30) return 'warning';
+    if (days > 0) return 'info';
+    return 'default';
   },
   reviews() {
     const Reviews = Mongo.Collection.get('reviews');
