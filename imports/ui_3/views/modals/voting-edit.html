@@ -11,7 +11,6 @@
             {{> afQuickField name="category" type="hidden"}} <!-- hidden, needed for autoform doc data -->
             {{> afQuickField name="title"}}
             {{> afQuickField name="text"}}
-            {{> afQuickField name="agendaId" options=agendaOptions firstOption=(_ '(Select one)') }}
             <div class="left-padded">
                 <label>{{_ "Attachments"}}</label>
             </div>
@@ -25,19 +24,19 @@
                 </ul>
             </div>
             <div>
-                <div class="col-xs-12 text-center">
+                <div class="col-xs-12 text-center m-b-md">
                 <button type="button" name="upload" class="btn btn-info js-upload" >
                   <i class="fa fa-upload"></i> {{_ 'Upload file'}}</button>
                 </div>
             </div>
+            {{> afQuickField name="vote.procedure"}}
+            {{> afQuickField name="agendaId" options=agendaOptions firstOption=(_ '(Select one)') }}
         </div>
 
         <!-- right side -->
         <div class="col-xs-12 col-md-6 col-lg-6">
-            {{> afQuickField name="vote.procedure"}}
             {{> afQuickField name="vote.effect"}}
             {{> afQuickField name="vote.type"}}
-            {{> afQuickField name="vote.allowAddChoices"}}
             <div class="form-group">
                 <label>{{_ 'schemaVotings.vote.choices.label'}}</label>
                 {{> Help_icon title=(_ 'schemaVotings.vote.choices.help')}}
@@ -62,11 +61,14 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12 text-center">
+                <div class="col-xs-12 text-center m-b-md">
                 <button type="button" class="btn btn-info js-add-choice {{#if updateForm}}disabled{{/if}}">
                   <i class="fa fa-plus"></i> {{_ "new"}} {{_ "choice"}}</button>
                 </div>
             </div>
+            {{> afQuickField name="vote.allowAddChoices"}}
+            {{> afQuickField name="vote.successPct"}}
+            {{> afQuickField name="vote.clearPctRequired" type="boolean-checkbox"}}
         </div>
 
         <div class="row">

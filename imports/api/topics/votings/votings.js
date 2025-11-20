@@ -28,9 +28,15 @@ Votings.voteTypes = {
   yesno: {
     name: 'yesno',
     fixedChoices: ['yes', 'no', 'abstain'],
+    successPct: 50,
   },
   choose: {
     name: 'choose',
+    successPct: 50,
+  },
+  multiChoose: {
+    name: 'multiChoose',
+    successPct: 50,
   },
   preferential: {
     name: 'preferential',
@@ -38,9 +44,8 @@ Votings.voteTypes = {
   petition: {
     name: 'petition',
     fixedChoices: ['support'],
-  },
-  multiChoose: {
-    name: 'multiChoose',
+    successPct: 10,
+    clearPctRequired: true,
   },
 };
 Votings.voteTypeValues = Object.keys(Votings.voteTypes);
@@ -52,25 +57,28 @@ function possibleEffectValues() {
 }
 
 Votings.voteSchema = new SimpleSchema({
-  procedure: { type: String, allowedValues: Votings.voteProcedureValues, autoform: { ...allowedOptions(), ...noUpdate } },
-  effect: { type: String, allowedValues: Votings.voteEffectValues, autoform: { ...autoformOptions(possibleEffectValues, 'schemaVotings.vote.effect.options.'), ...noUpdate } },
+  procedure: { type: String, allowedValues: Votings.voteProcedureValues, autoform: { defaultValue: 'online', ...allowedOptions(), ...noUpdate } },
+  effect: { type: String, allowedValues: Votings.voteEffectValues, autoform: { defaultValue: 'poll', ...autoformOptions(possibleEffectValues, 'schemaVotings.vote.effect.options.'), ...noUpdate } },
   type: { type: String, allowedValues: Votings.voteTypeValues, autoform: { ...allowedOptions(), ...noUpdate } },
-  allowAddChoices: { type: Boolean, optional: true, autoform: {
-    disabled: () => {
-      const type = AutoForm.getFieldValue('vote.type');
-      return !type || !!Votings.voteTypes[type].fixedChoices;
-    },
-  } },
   choices: {
     type: Array,
-    autoValue() {
-      if (this.field('vote.type').value) return Votings.voteTypes[this.field('vote.type').value].fixedChoices;
+    autoValue() { // we also use an autorun to dynamically set this in the voting-edit window
+      const voteType = this.field('vote.type').value;
+      if (voteType) return Votings.voteTypes[voteType].fixedChoices;
       return undefined;
     },
   },
   'choices.$': { type: String, autoform: { disabled: true } },
   choicesAddedBy: { type: Array, optional: true, autoform: { omit: true, disabled: true } },
   'choicesAddedBy.$': { type: String, regEx: SimpleSchema.RegEx.Id /* userId */ },
+  allowAddChoices: { type: Boolean, optional: true, autoform: {
+    disabled: () => {
+      const type = AutoForm.getFieldValue('vote.type');
+      return !type || !!Votings.voteTypes[type].fixedChoices;
+    },
+  } },
+  successPct: { type: Number, decimal: true, min: 0, max: 100, optional: true, autoform: { defaultValue: 50 } },
+  clearPctRequired: { type: Boolean, optional: true },
 });
 
 Votings.voteParticipationSchema = new SimpleSchema({
@@ -125,10 +133,8 @@ Topics.categoryHelpers('vote', {
     return votingShare;
   },
   voteSuccessLimit() {
-    // TODO: voteSuccessLimit as a data field, and default values can be 10 for petition, and 50 for other vote types, but can be set when creating a new vote
-    if (this.vote.type === 'petition') return 10;
-    if (this.vote.effect === 'poll') return 0;
-    return 50;
+    if (this.vote.clearPctRequired) return this.vote.successPct;
+    else return 0;
   },
   eligibleVoterCount() {
 //    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
@@ -143,9 +149,11 @@ Topics.categoryHelpers('vote', {
     return voteParticipationPercent;
   },
   isVoteSuccessful() {
-    if (this.vote.procedure === 'meeting') return true;
-    debugAssert(this.vote.procedure === 'online');
-    return this.votedPercent() >= this.voteSuccessLimit();
+    const highestVoteUnit = Math.max(...Object.values(this.voteSummary));
+    const successLimit = this.vote.clearPctRequired
+      ? this.community().totalUnits() * (this.vote.successPct || 0) / 100
+      : this.voteParticipation.units * (this.vote.successPct || 0) / 100;
+    return highestVoteUnit >= successLimit;
   },
   notVotedUnits() {
     return this.community().totalUnits() - this.voteParticipation.units;

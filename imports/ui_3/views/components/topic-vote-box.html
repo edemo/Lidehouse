@@ -37,15 +37,15 @@
             <p>{{_ 'Participation'}}: <strong>{{displayPercent votedPercent}}</strong></p>
           </div>
           <div class="col-sm-6 text-right">
-          {{#if (equals vote.effect 'legal')}}
-            {{#if votingClosed}}
-              {{#if isVoteSuccessful}}
-              <strong>{{_ 'Successful voting'}}</strong>
-              {{else}}
-              <strong>{{_ 'Unsuccessful voting'}}</strong>
-              {{/if}}
+          {{#if votingClosed}}
+            {{#if isVoteSuccessful}}
+            <strong>{{_ 'Successful voting'}}</strong>
             {{else}}
-            <p>{{_ 'Participation necessary'}}: <strong>{{displayRoundPercent voteSuccessLimit}}</strong></p>
+            <strong>{{_ 'Unsuccessful voting'}}</strong>
+            {{/if}}
+          {{else}}
+            {{#if voteSuccessLimit}}
+              <p>{{_ 'Participation necessary'}}: <strong>{{displayRoundPercent voteSuccessLimit}}</strong></p>
             {{/if}}
           {{/if}}
           </div>

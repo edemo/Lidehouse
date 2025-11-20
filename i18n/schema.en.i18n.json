@@ -869,7 +869,8 @@
       "placeholder": "Longer description (if needed)..."
     },
     "agendaId": {
-      "label": "Agenda (of which it is part of)"
+      "label": "Agenda (of which it is part of)",
+      "help": "You can select the meeting this voting is part of. Only relevant if is a meeting vote. Otherwise leave it blank."
     },
     "opensAt": {
       "label": "Voting starts at"
@@ -906,12 +907,20 @@
         "label": "Voting type",
         "help": "Choose the optimal type for the decision.",
         "options": {
-          "yesno": "Yes-no",
+          "yesno": "Yes-no-abstain",
           "choose": "Simple selection",
+          "multiChoose": "Multiple choice",
           "preferential": "Rank choices by preference",
-          "petition": "Petition",
-          "multiChoose": "Multiple choice"
+          "petition": "Petition"
         }
+      },
+      "successPct": {
+        "label": "Needed votes (%)",
+        "help": "The voting is deemed succesful if this percentage of votes is received for a particular choice."
+      },
+      "clearPctRequired": {
+        "label": "Clear participation needed",
+        "help": "If this is turned on, the clear majority (or clear participation %) is required for the evaluation. Non participation in this case is evaluated as opposing the vote proposal."
       },
       "voters": {
         "label": "Voters"

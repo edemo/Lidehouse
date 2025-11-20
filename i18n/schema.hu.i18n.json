@@ -871,7 +871,8 @@
       "placeholder": "A szavazás kérdésének bővebb kifejtése ..."
     },
     "agendaId": {
-      "label": "Közgyűlés (aminek része)"
+      "label": "Közgyűlés (aminek része)",
+      "help": "Ha közgyűléses szavazásról van szó, akkor itt tudja kiválasztani hogy melyik közgyűlésnek a része. Ha nem, akkor hagyja üresen."
     },
     "opensAt": {
       "label": "Szavazás kezdete"
@@ -890,9 +891,9 @@
       },
       "procedure": {
         "label": "Szavazás menete",
-        "help": "Az írásos szavazás esetén nincs közgyűlés a szavazás végén.",
+        "help": "Az írásos (online) szavazás esetén a szavazatokat az adott határidőig lehet leadni, és a végén az eredmény kiértékelésre kerül. A közgyűléses szavazás esetén a közgyűlés időtartama alatt lehet végleges szavazatot leadni (előtte is le lehet adni előzetesen, ha már előre tudja valaki mire fog szavazni), és a kirétkelést a közgyűlés levezetője végzi.",
         "options": {
-          "online": "Írásos",
+          "online": "Írásos (online)",
           "meeting": "Közgyűlési"
         }
       },
@@ -906,14 +907,28 @@
       },
       "type": {
         "label": "Szavazás típusa",
-        "help": "A szavazás típusát célszerű jól megválasztani, hogy a közösség számára optimális döntés születhessen.",
+        "help": ["A szavazás típusát célszerű jól megválasztani, hogy a közösség számára optimális döntés születhessen.",
+          "[Igen-nem-tartózkodom]: Szavazás egy javaslat elfogadásáról, Igen, Nem, Tartózkodom opciókkal.",
+          "[Egyszerű választásos]: Egy lehetőséget kell kiválasztani, ön adja meg a lehetőségeket.",
+          "[Több választási lehetőséges]: Több lehetőséget is lehet kiválasztani, ön adja meg a lehetőségeket.",
+          "[Preferencia szerint sorba rendező]: Több lehetőséget kell preferencia szerint sorba rendezni.",
+          "[Támogatásgyűjtő]: Egy javaslatot lehet támogatni. És azt nézzük, hogy a támogatottság elér-e egy adott %-ot."
+        ],
         "options": {
-          "yesno": "Igen-nem",
+          "yesno": "Igen-nem-tartózkodom",
           "choose": "Egyszerű választásos",
+          "multiChoose": "Több választási lehetőséges",
           "preferential": "Preferencia szerint sorba rendező",
-          "petition": "Támogatásgyűjtő",
-          "multiChoose": "Több választási lehetőséges"
+          "petition": "Támogatásgyűjtő"
         }
+      },
+      "successPct": {
+        "label": "Szükséges szavazatok (%)",
+        "help": "A szavazás eredményességének feltétele, hogy ennyi % szavazat érkezzen be egy adott opcióra. Egyszerű többséghez 50%-ot állítson, minősített többséghez 66% vagy 80% szükséges a helyi szabályok függvényében, teljes konszenzushoz 100% szükséges."
+      },
+      "clearPctRequired": {
+        "label": "Abszolút részvétel szükséges",
+        "help": "Ha bekapcsolja, akkor az eredményességhez nem csupán a leadott szavazatok megadott %-a szükséges, hanem az összes szavazati jog megadott %-a szükséges. Aki nem ad le szavazatot, az ilyenkor olyan mintha ellene szavazott volna. Péládul abszolút többséghez, 50% részvételt állítson be abszolút részvétellel, abszolút konszenzushoz pedig 100%-ot állítson be abszolút részvétellel."
       },
       "voters": {
         "label": "Szavazatot leadók"
