@@ -19,10 +19,6 @@ export function parcelColumns(community) {
   return [
     { data: 'createdAt.getTime()', title: '', render: Render.noDisplay },
     { data: 'serial', title: __('schemaParcels.serial.label') },
-    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'parcels', actions: 'view,edit,delete,occupants,meters,contracts', size: 'sm' }, cell),
-    },
     { data: 'ref', title: __('schemaParcels.ref.label') },
     community?.hasLeadParcels() &&
       { data: 'leadParcelRef()', title: __('schemaParcels.leadRef.label') },
@@ -37,6 +33,10 @@ export function parcelColumns(community) {
       { data: 'area', title: __('schemaParcels.area.label'), render: Render.formatNumber(2) },
     community?.hasVotingUnits() && 
       { data: 'units', title: __('schemaParcels.units.label'), render: Render.formatNumber(2) },
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
+      { doc: cellData, collection: 'parcels', actions: 'view,edit,delete,occupants,meters,contracts', size: 'sm' }, cell),
+    },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
   ].filter(c => c);
 }
