@@ -35,7 +35,7 @@ Meters.billingSchema = new SimpleSchema({
 
 Meters.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden', relation: 'property' } },
   identifier: { type: String },
   service: { type: String, max: 25 },
   uom: { type: String, max: 15 },
@@ -70,7 +70,7 @@ Meters.helpers({
     return Parcels.findOne(this.parcelId);
   },
   entityName() {
-    return 'meters';
+    return 'meter';
   },
   startReading() {
     return _.first(this.readings);

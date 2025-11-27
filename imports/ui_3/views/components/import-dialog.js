@@ -120,6 +120,7 @@ ViewModel.share({
     getEditedSheet() {
       const instance = this.templateInstance;
       instance.$('tr:first-child select').remove(); // Need to strip the select boxes from the header row
+      instance.$('tr:first-child br').remove();
       const editedTable = instance.$('.import-table')[0];
       const editedSheet = XLSX.utils.table_to_sheet(editedTable, { range: this.headerRow /* ,cellDates: true */ });
       return editedSheet;
