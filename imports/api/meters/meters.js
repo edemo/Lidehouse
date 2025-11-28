@@ -56,9 +56,9 @@ Meters.schema = new SimpleSchema({
 Meters.idSet = [['communityId', 'identifier', 'service']];
 
 Meteor.startup(function indexMeters() {
+  Meters.ensureIndex({ communityId: 1, identifier: 1, service: 1 });
   Meters.ensureIndex({ communityId: 1, active: 1 });
   Meters.ensureIndex({ parcelId: 1 });
-  Meters.ensureIndex({ identifier: 1 });
 });
 
 Meters.helpers({
