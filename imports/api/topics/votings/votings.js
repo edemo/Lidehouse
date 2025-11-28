@@ -133,7 +133,7 @@ Topics.categoryHelpers('vote', {
     return votingShare;
   },
   voteSuccessLimit() {
-    if (this.vote.clearPctRequired) return this.vote.successPct;
+    if (this.vote?.clearPctRequired) return this.vote?.successPct || 0;
     else return 0;
   },
   eligibleVoterCount() {
@@ -149,6 +149,7 @@ Topics.categoryHelpers('vote', {
     return voteParticipationPercent;
   },
   isVoteSuccessful() {
+    if (!this.voteSummary) return false;
     const highestVoteUnit = Math.max(...Object.values(this.voteSummary));
     const successLimit = this.vote.clearPctRequired
       ? this.community().totalUnits() * (this.vote.successPct || 0) / 100
