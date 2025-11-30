@@ -8,6 +8,7 @@ import faker from 'faker';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 
@@ -45,9 +46,12 @@ Agendas.helpers({
 //    return Topics.find({ _id: { $in: this.topicIds } }).fetch();
     return Topics.find({ communityId: this.communityId, agendaId: this._id }).fetch();
   },
-  closed() {
+  getStatus() {
     if (!this.topics().length) return 'empty';
-    return _.all(this.topics(), topic => topic.status === 'closed');
+    return _.all(this.topics(), topic => topic.status === 'closed') ? 'closed' : 'active';
+  },
+  participationSheet() {
+    return Votings.participationSheet(this.community(), this);
   },
 });
 

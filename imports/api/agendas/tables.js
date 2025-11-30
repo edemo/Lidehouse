@@ -16,3 +16,13 @@ export function agendaColumns() {
     },
   ];
 }
+
+export function participationSheetColumns() {
+  return [
+      { data: 'voter()', title: __('voter') },
+      { data: 'parcels', title: __('follower parcels') },
+      { data: 'votingUnits', title: __('votingShare'), render: Render.formatNumber(0) },
+      { data: 'votePathDisplay()', title: __('vote path'), render: Render.translate },
+      { data: '""', title: __('Signature') },
+  ];
+}

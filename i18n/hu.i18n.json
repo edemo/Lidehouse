@@ -409,6 +409,7 @@
   "Mark all notifications read": "Értesítők olvasottra állítása",
 
   // voting
+  "Participation sheet": "Jelenléti ív",
   "choice": "választási lehetőség",
   "yes": "igen",
   "no": "nem",
@@ -441,7 +442,8 @@
   "voter": "Szavazó",
   "casted vote": "Szavazat",
   "Casted votes": "Szavazatok",
-  "vote path": "Meghatalmazás lánc",
+  "vote path": "Meghatalmazás",
+  "Signature": "Aláírás",
   "direct": "Közvetlen",
   "No active votes": "Jelenleg nincs aktív szavazás!",
   "Latest votes": "Korábbi szavazások",

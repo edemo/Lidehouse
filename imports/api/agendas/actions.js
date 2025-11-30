@@ -7,8 +7,9 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Agendas } from './agendas.js';
-import './methods.js';
 import { joinLiveChat } from '/imports/ui_3/views/common/live-chat.js';
+import '/imports/ui_3/views/modals/participation-sheet.js'
+import './methods.js';
 
 Agendas.actions = {
   create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
@@ -65,11 +66,29 @@ Agendas.actions = {
       });
     },
   }),
+  participationSheet: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'participationSheet',
+    label: 'Participation sheet',
+    icon: 'fa fa-list',
+    visible: (doc.getStatus() !== 'closed') && user.hasPermission('agendas.insert', doc),
+    run() {
+      Modal.show('Modal', {
+        id: 'participationSheet.view',
+        title: 'Participation sheet',
+        body: 'Participation_sheet',
+        bodyContext: {
+          community: doc.community(),
+          agenda: doc,
+        },
+        size: 'lg',
+      });
+    },
+  }),
   videoCall: (options, doc, user = Meteor.userOrNull()) => ({
     name: doc.live ? 'video end' : 'video call',
     label: doc.live ? 'video end' : 'video call',
     icon: 'fa fa-video-camera',
-    visible: !doc.closed() && user.hasPermission('agendas.insert', doc),
+    visible: (doc.getStatus() === 'active') && user.hasPermission('agendas.insert', doc),
     run() {
       $('iframe[id*="jitsiConferenceFrame"]').remove();
       const modifier = {};

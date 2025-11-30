@@ -10,7 +10,7 @@ ReactiveDatatable = function(options) {
 		lengthMenu: [10, 25, 100, 250, 1000],
 		columnDefs: [{ // Global default blank value to avoid popup on missing data
 			targets: '_all',
-			defaultContent: '–––'
+			defaultContent: '-'
 		}],
 //		stateLoadParams: function(settings, data) {
 			// Make it easy to change to the stored page on .update()

@@ -6,24 +6,31 @@
     <div class="wrapper wrapper-content animated fadeInUp agendas">
 
         {{#if currentUserHasPermission 'agendas.insert' }}
-            <button class="btn btn-primary btn-sm pull-right m-md js-create"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'agenda'}}</button>
+        <div class="btn-group pull-right m-md">
+            {{#if (equals agendas.count 0)}}
+            <button class="btn btn-default btn-sm js-participation-sheet"><i class="fa fa-list"></i> {{_ 'Participation sheet'}}</button>
+            {{/if}}
+            <button class="btn btn-primary btn-sm js-create"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'agenda'}}</button>
+        </div>
         {{/if}}
 
         {{#each agendas}}
         <div class="ibox collapsed">
             <div class="ibox-title">
                 <h3>{{title}}</h3>
-                {{#if (equals closed 'empty')}}
+                {{#let status=getStatus}}
+                {{#if (equals status 'empty')}}
                     <span></span>
-                {{else if closed}}
+                {{else if (equals status 'closed')}}
                     <span class="label label-xs label-default">{{_ 'closed'}}</span>
-                {{else}}
+                {{else if (equals status 'active')}}
                     <span class="label label-xs label-primary">{{_ 'active'}}</span>
                 {{/if}}
+                {{/let}}
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
-                {{>Action_buttons_group collection='agendas' doc=this actions='edit,delete,videoCall,videoJoin' size='lg'}}
+                {{>Action_buttons_group collection='agendas' doc=this actions='edit,delete,participationSheet,videoCall,videoJoin' size='lg'}}
                 {{>Voting_list items=topics}}
             </div>
         </div>

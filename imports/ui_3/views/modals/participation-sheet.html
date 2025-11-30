@@ -1,0 +1,13 @@
+<template name="Participation_sheet">
+    <div class="row">
+        {{#if agenda}}
+        <h2 class="">{{_ 'Participation sheet'}} - {{agenda.title}}</h2>
+        {{/if}}
+        <br>
+        {{#if Template.subscriptionsReady}}
+        {{> ReactiveDatatable tableData=participationSheetTableDataFn options=participationSheetOptionsFn }}
+        {{else}}
+        {{_ 'Loading'}}...
+        {{/if}}
+    </div>
+</template>

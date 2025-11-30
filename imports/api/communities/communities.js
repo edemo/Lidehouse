@@ -76,7 +76,6 @@ Communities.schema = new SimpleSchema([{
   regNo: { type: String, max: 100, optional: true },
   management: { type: String, optional: true, autoform: { type: 'textarea' } },
   taxNo: { type: String, max: 50, optional: true },
-  totalunits: { type: Number, optional: true, autoform: { omit: true } }, // DEPRICATED (removed in migration 65)
   status: { type: String, allowedValues: Communities.statusValues, defaultValue: 'live', autoform: { type: 'hidden' } },
   settings: { type: Communities.settingsSchema },
   // cached fields:

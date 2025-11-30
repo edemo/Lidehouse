@@ -304,6 +304,60 @@ Topics.categoryHelpers('vote', {
   },
 });
 
+Votings.participationSheet = function participationSheet(community, agenda) {
+  const sheet = [];
+  let totalUnits = 0;
+  community.voterships().forEach((votership) => {
+    const partnerId = votership.partnerId;
+    debugAssert(partnerId);
+    const votePath = [partnerId];
+
+    function trackPath(voterId) {
+      const selector = agenda
+      ? { sourceId: voterId,
+          $or: [
+            { scope: 'agenda', scopeObjectId: agenda._id },
+            { scope: 'community', scopeObjectId: community._id },
+          ],
+        }
+      : { sourceId: voterId, 
+              scope: 'community', scopeObjectId: community._id }
+      const delegations = Delegations.find(selector);
+      for (const delegation of delegations.fetch()) {
+        if (!_.contains(votePath, delegation.targetId)) {
+          votePath.push(delegation.targetId);
+          if (trackPath(delegation.targetId)) return true;
+          votePath.pop();
+        }
+      }
+      return false;
+    }
+    trackPath(partnerId);
+    const parcels = votership.parcel().withFollowers();
+    const votingUnits = votership.votingUnits();
+    totalUnits += votingUnits;
+    sheet.push({ partnerId, parcels, votingUnits, votePath,
+      voter() {
+        return Partners.findOne(this.votePath[0]);
+      },
+      votePathDisplay() {
+        if (this.votePath.length === 1) return 'direct';
+        let path = '';
+        this.votePath.forEach((pid, ind) => {
+          const partner = Partners.findOne(pid);
+          if (ind > 0 && partner) path += (' -> ' + partner.toString());
+        });
+        return path;
+      },
+    });
+  });
+  sheet.push({ voter: () => '_ ' + __('Participation sheet') + ' ' + __('total') , parcels: ' ', votingUnits: totalUnits, votePathDisplay: () => ' ' });
+  if (totalUnits !== community.totalUnits()) {
+    sheet.push({ voter: () => '_ ' + __('community') + ' ' + __('total') , parcels: ' ', votingUnits: community.totalUnits(), votePathDisplay: () => ' ' });
+  }
+  return sheet;
+};
+
 Topics.attachVariantSchema(Votings.extensionSchema, { selector: { category: 'vote' } });
 
 Topics.simpleSchema({ category: 'vote' }).i18n('schemaVotings');
