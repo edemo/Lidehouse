@@ -227,14 +227,18 @@ Topics.categoryHelpers('vote', {
           voteParticipation.units += votingUnits;
           return true;
         }
-        const delegations = Delegations.find({ sourceId: voterId,
-          $or: [
-            { scope: 'topic', scopeObjectId: self._id },
-            { scope: 'agenda', scopeObjectId: self.agendaId },
-            { scope: 'community', scopeObjectId: self.communityId },
-          ],
-        });
-        for (const delegation of delegations.fetch()) {
+        // Delegation priority is topic scoped, agenda scoped, community scoped, ordered by creation time
+        let delegations = 
+            Delegations.find({ sourceId: voterId, scope: 'topic', scopeObjectId: self._id }).fetch();
+        if (self.agendaId) {
+          delegations = delegations.concat(
+            Delegations.find({ sourceId: voterId, scope: 'agenda', scopeObjectId: self.agendaId }).fetch()
+          );
+        }
+        delegations = delegations.concat(
+            Delegations.find({ sourceId: voterId, scope: 'community', scopeObjectId: self.communityId }).fetch()
+        );
+        for (const delegation of delegations) {
           if (!_.contains(votePath, delegation.targetId)) {
             votePath.push(delegation.targetId);
             if (getVoteResult(delegation.targetId)) return true;
