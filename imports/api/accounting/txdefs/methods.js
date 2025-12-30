@@ -5,6 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkPermissions, checkModifier, checkConstraint } from '/imports/api/method-checks.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/accounting/transactions.js';
 import { Txdefs } from '/imports/api/accounting/txdefs/txdefs.js';
@@ -90,3 +91,4 @@ export const remove = new ValidatedMethod({
 
 Txdefs.methods = Txdefs.methods || {};
 _.extend(Txdefs.methods, { insert, update, remove });
+_.extend(Txdefs.methods, crudBatchOps(Txdefs));

@@ -10,21 +10,21 @@ import { checkBoolean } from '/imports/ui_3/helpers/api-display.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
 import './actions.js';
 
-export function accountColumns(moneyOnly = undefined) {
+export function accountColumns(moneyOnly) {
   return [
     { data: 'code', title: __('schemaAccounts.code.label') },
-    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
-      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-        { doc: cellData, collection: 'accounts', actions: '', size: 'sm' }, cell),
-    },
     { data: 'name', title: __('schemaAccounts.name.label'), render: Render.translate },
     { data: 'category', title: __('schemaAccounts.category.label'), render: Render.translateWithScope('schemaAccounts.category') },
     { data: 'isGroup', title: __('schemaAccounts.isGroup.label'), render: Render.checkmarkBoolean },
     moneyOnly &&
-    { data: 'BAN', title: __('schemaAccounts.BAN.label') },
+      { data: 'BAN', title: __('schemaAccounts.BAN.label') },
     moneyOnly &&
-    { data: 'primary', title: __('schemaAccounts.primary.label'), render: checkBoolean },
-  ];
+      { data: 'primary', title: __('schemaAccounts.primary.label'), render: checkBoolean },
+    { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
+      createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
+        { doc: cellData, collection: 'accounts', actions: '', size: 'sm' }, cell),
+    },
+  ].filter(c => c);
 }
 
 export function highlightTemplateOverrides(row, data, index) {
