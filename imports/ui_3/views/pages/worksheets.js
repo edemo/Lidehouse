@@ -8,6 +8,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { defaultBeginDate, defaultEndDate } from '/imports/ui_3/helpers/utils.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
@@ -15,7 +16,7 @@ import { _ } from 'meteor/underscore';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { currentUserLanguage } from '/imports/startup/client/language.js';
-import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesSelectAndExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/actions.js';
 import '/imports/api/topics/tickets/actions.js';
@@ -45,6 +46,9 @@ Template.Worksheets.viewmodel({
   reportedByCurrentUser: false,
   communityId() {
     return getActiveCommunityId();
+  },
+  community() {
+    return Communities.findOne(this.communityId());
   },
   onCreated(instance) {
     this.setDefaultFilter();
@@ -225,6 +229,7 @@ Template.Worksheets.viewmodel({
     const self = this;
     return () => {
       const communityId = self.communityId();
+      const community = self.community();
       const permissions = {
         view: true,
         edit: Meteor.userOrNull().hasPermission('ticket.update', { communityId }),
@@ -239,8 +244,7 @@ Template.Worksheets.viewmodel({
         language: datatables_i18n[TAPi18n.getLanguage()],
         lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
         pageLength: 25,
-        ...DatatablesExportButtons,
-        ...DatatablesSelectButtons(Topics),
+        ...DatatablesSelectAndExportButtons(community, Topics, 'worksheets'),
       };
     };
   },

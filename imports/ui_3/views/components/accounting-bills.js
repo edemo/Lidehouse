@@ -27,7 +27,7 @@ import { paymentsColumns } from '/imports/api/accounting/payments/tables.js';
 import { ParcelBillings } from '/imports/api/accounting/parcel-billings/parcel-billings.js';
 import '/imports/api/accounting/parcel-billings/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
-import { DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesSelectAndExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import '/imports/ui_3/views/components/print-action.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
@@ -104,13 +104,14 @@ Template.Accounting_bills.viewmodel({
     return () => Transactions.find(self.filterSelector('bill')).fetch();
   },
   billsOptionsFn() {
+    const self = this;
     return () => Object.create({
       columns: billColumns(getActiveCommunity()),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesSelectButtons(Transactions),
+      ...DatatablesSelectAndExportButtons(self.community(), Transactions, 'bills'),
     });
   },
   paymentsTableDataFn() {
@@ -118,13 +119,14 @@ Template.Accounting_bills.viewmodel({
     return () => Transactions.find(self.filterSelector('payment')).fetch();
   },
   paymentsOptionsFn() {
+    const self = this;
     return () => Object.create({
       columns: paymentsColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesSelectButtons(Transactions),
+      ...DatatablesSelectAndExportButtons(self.community(), Transactions, 'payments'),
     });
   },
   receiptsTableDataFn() {
@@ -132,13 +134,14 @@ Template.Accounting_bills.viewmodel({
     return () => Transactions.find(self.filterSelector('receipt')).fetch();
   },
   receiptsOptionsFn() {
+    const self = this;
     return () => Object.create({
       columns: receiptColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesSelectButtons(Transactions),
+      ...DatatablesSelectAndExportButtons(self.community(), Transactions, 'receipts'),
     });
   },
   contractsFilterSelector() {

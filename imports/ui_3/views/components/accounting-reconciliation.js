@@ -5,10 +5,11 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
-import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { dateSelector } from '/imports/api/utils.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
 import { Statements } from '/imports/api/accounting/statements/statements.js';
 import { StatementEntries } from '/imports/api/accounting/statement-entries/statement-entries.js';
@@ -66,6 +67,9 @@ Template.Accounting_reconciliation.viewmodel({
   communityIdObject() {
     return { communityId: this.communityId() };
   },
+  community() {
+    return Communities.findOne(this.communityId());
+  },
   statementEntriesFilterSelector() {
     const selector = {
       communityId: getActiveCommunityId(),
@@ -87,11 +91,11 @@ Template.Accounting_reconciliation.viewmodel({
     };
   },
   statementEntriesOptionsFn() {
+    const self = this;
     return () => Object.create({
       columns: statementEntriesWithJournalEntriesColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
-      ...DatatablesExportButtons,
       ...DatatablesSelectButtons(StatementEntries),
     });
   },

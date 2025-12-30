@@ -11,7 +11,7 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Fraction } from 'fractional';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesSelectAndExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { __ } from '/imports/localization/i18n.js';
 import { leaderRoles, nonLeaderRoles, officerRoles, rolesPriorities } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -162,8 +162,7 @@ Template.Parcels_box.viewmodel({
             language: datatables_i18n[TAPi18n.getLanguage()],
             lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
             pageLength: 25,
-            ...DatatablesExportButtons,
-            ...DatatablesSelectButtons(Parcels),
+            ...DatatablesSelectAndExportButtons(community, Parcels, 'parcels'),
           };
         };
       },
@@ -196,8 +195,7 @@ Template.Ownerships_box.viewmodel({
             language: datatables_i18n[TAPi18n.getLanguage()],
             lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
             pageLength: 25,
-            ...DatatablesExportButtons,
-            ...DatatablesSelectButtons(Memberships),
+            ...DatatablesSelectAndExportButtons(community, Memberships, 'memberships'),
           };
         };
       },

@@ -18,20 +18,15 @@
             <div><label><input type="checkbox" id="technicalCheckbox" name="technicalCheckbox" {{b "check: showTechnicalAccounts"}}> {{_ 'Show technical accounts'}}</label></div>
         </div>
     </div>
-        {{> Ledger_report accounts=accounts tag=periodSelected tagtype=tagtypeSelected }}
-        <div class="row">
-            <div class="col-xs-12 text-center">
-                {{#if currentUserHasPermission 'transactions.inCommunity'}}
-                <button class="btn btn-default js-journals"><i class="fa fa-list"></i> {{_ 'Full journal list'}}</button>
-                <!--button class="btn btn-default js-income-statement"><i class="fa fa-list"></i> {{_ 'Income statement'}}</button-->
-                {{/if}}
-            </div>
-        </div>    
-    {{/if}}
-
     {{#if currentUserHasPermission 'transactions.inCommunity'}}
-    <div class="row">
-        <div class="col-xs-12 text-center">
+    <div class="row m-b-sm">
+        {{#if currentUser.super}}
+        <div class="col-sm-6">
+            <button class="btn btn-danger js-check-journals"><i class="fa fa-list"></i> {{_ 'Check journals'}}</button>
+            <button class="btn btn-danger js-fix-balances"><i class="fa fa-wrench"></i> {{_ 'Fix balances'}}</button>
+        </div>
+        {{/if}}
+        <div class="col-sm-6 btn-group pull-right">
             {{#if selectedPeriodIsOpen}}
             <button class="btn btn-default js-close" title="{{_ 'Closed at'}}: {{accountingClosedAt}}"><i class="fa fa-lock"></i> {{_ 'Close period'}}</button>
             {{else}}
@@ -40,15 +35,15 @@
             {{#if community.settings.balancesUploaded}}
             <button class="btn btn-default js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i> {{_ 'Upload balances'}}</button>
             {{/if}}
+            {{#if currentUserHasPermission 'transactions.inCommunity'}}
+            <button class="btn btn-default js-copy"><i class="fa fa-copy"></i> {{_ 'Copy'}}</button>
+            <button class="btn btn-default js-excel"><i class="fa fa-file-excel-o"></i> {{_ 'Excel'}}</button>
+            <button class="btn btn-default js-journals"><i class="fa fa-list"></i> {{_ 'Full journal list'}}</button>
+            <!--button class="btn btn-default js-income-statement"><i class="fa fa-list"></i> {{_ 'Income statement'}}</button-->
+            {{/if}}
         </div>
     </div>
     {{/if}}
-    {{#if currentUser.super}}
-    <div class="row">
-        <div class="col-xs-12 text-center">
-            <button class="btn btn-danger js-check-journals"><i class="fa fa-list"></i> {{_ 'Check journals'}}</button>
-            <button class="btn btn-danger js-fix-balances"><i class="fa fa-wrench"></i> {{_ 'Fix balances'}}</button>
-        </div>
-    </div>
+        {{> Ledger_report accounts=accounts tag=periodSelected tagtype=tagtypeSelected }}
     {{/if}}
 </template>

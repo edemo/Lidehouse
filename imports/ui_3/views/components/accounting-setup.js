@@ -10,7 +10,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesSelectAndExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { AccountingPeriods } from '../../../api/accounting/periods/accounting-periods';
 import { Transactions } from '/imports/api/accounting/transactions.js';
@@ -64,6 +64,7 @@ Template.Accounting_setup.viewmodel({
     return getTableData;
   },
   moneyAccountsOptionsFn() {
+    const self = this;
     return () => Object.create({
       columns: accountColumns(true),
       createdRow: highlightTemplateOverrides,
@@ -72,8 +73,7 @@ Template.Accounting_setup.viewmodel({
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
       info: false,
-      ...DatatablesExportButtons,
-      ...DatatablesSelectButtons(Accounts),
+      ...DatatablesSelectAndExportButtons(self.community(), Accounts, 'moneyAccounts'),
     });
   },
   accountsTableDataFn() {
@@ -87,16 +87,16 @@ Template.Accounting_setup.viewmodel({
     return getTableData;
   },
   accountsOptionsFn() {
+    const self = this;
     return () => Object.create({
-      columns: accountColumns(),
+      columns: accountColumns(false),
       createdRow: highlightTemplateOverrides,
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
       info: false,
-      ...DatatablesExportButtons,
-      ...DatatablesSelectButtons(Accounts),
+      ...DatatablesSelectAndExportButtons(self.community(), Accounts, 'ChartOfAccounts'),
     });
   },
   localizersTableDataFn() {
@@ -110,6 +110,7 @@ Template.Accounting_setup.viewmodel({
     return getTableData;
   },
   localizersOptionsFn() {
+    const self = this;
     return () => Object.create({
       columns: localizerColumns(),
       createdRow: highlightTemplateOverrides,
@@ -118,8 +119,7 @@ Template.Accounting_setup.viewmodel({
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
       info: false,
-      ...DatatablesExportButtons,
-      ...DatatablesSelectButtons(Parcels),
+      ...DatatablesSelectAndExportButtons(self.community(), Parcels, 'Localizers'),
     });
   },
   txdefsTableDataFn() {
@@ -133,6 +133,7 @@ Template.Accounting_setup.viewmodel({
     return getTableData;
   },
   txdefsOptionsFn() {
+    const self = this;
     return () => Object.create({
       columns: txdefColumns(),
       createdRow: highlightTemplateOverrides,
@@ -141,6 +142,7 @@ Template.Accounting_setup.viewmodel({
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
       info: false,
+      ...DatatablesSelectAndExportButtons(self.community(), Txdefs, 'txdefs'),
     });
   },
   optionsOf(accountCode) {

@@ -5,9 +5,10 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
+import { Communities } from '/imports/api/communities/communities.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import { partnersColumns } from '/imports/api/partners/tables.js';
-import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesSelectAndExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 
 import './partners-datatable.html';
 
@@ -21,14 +22,15 @@ Template.Partners_datatable.viewmodel({
     return () => Partners.find({ communityId }).fetch();
   },
   optionsFn() {
+    const communityId = this.templateInstance.data.communityId;
+    const community = Communities.findOne(communityId);
     return () => ({
       columns: partnersColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesExportButtons,
-      ...DatatablesSelectButtons(Partners),
+      ...DatatablesSelectAndExportButtons(community, Partners, 'partners'),
     });
   },
 });

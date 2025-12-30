@@ -5,6 +5,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
+import { Period } from '/imports/api/accounting/periods/period.js';
 import { journalEntriesColumns } from '/imports/api/accounting/journal-entries/tables.js';
 import { JournalEntries } from '/imports/api/accounting/journal-entries/journal-entries.js';
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
@@ -18,7 +19,11 @@ Template.Journals_table.viewmodel({
   },
   tableDataFn() {
     const communityId = this.templateInstance.data.communityId;
-    return () => JournalEntries.find({ communityId }).fetch();
+    const tag = this.templateInstance.data.tag;
+    const period = Period.fromTag(tag);
+    const beginDate = period.beginDate();    
+    const endDate = period.endDate();
+    return () => JournalEntries.find({ communityId, valueDate: { $gte: beginDate, $lte: endDate } }).fetch();
   },
   optionsFn() {
     return () => ({

@@ -8,7 +8,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Votings } from '/imports/api/topics/votings/votings.js';
 import { participationSheetColumns } from '/imports/api/agendas/tables.js';
-import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 
 import './participation-sheet.html';

@@ -8,7 +8,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
-import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesSelectAndExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Transactions } from '/imports/api/accounting/transactions.js';
@@ -103,12 +103,12 @@ Template.Accounting_transactions.viewmodel({
     };
   },
   transactionsOptionsFn() {
+    const community = this.community();
     return () => Object.create({
       columns: transactionColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
-      ...DatatablesExportButtons,
-      ...DatatablesSelectButtons(Transactions),
+      ...DatatablesSelectAndExportButtons(community, Transactions, 'transactions'),
     });
   },
 });
