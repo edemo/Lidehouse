@@ -53,5 +53,36 @@ Template.Accounting_partner_ledger.viewmodel({
   },
 });
 
+function createDatatableAndPushButton(communityId, tag, index) {
+  const table = $('#partner-ledger');
+  const community = Communities.findOne(communityId);
+  table.DataTable({ // Temporarily initialize as DataTable with only the Buttons extension
+      dom: 'B',                     // only show buttons
+      destroy: true,             // allow reinitialization
+      ordering: false,
+      buttons: [
+        { extend: 'copy' },
+        {
+          extend: 'excelHtml5',
+          text: 'excel',
+          filename: `${__('Partner ledger')}-${community.name}-${moment().format('YYYY-MM-DD')}`,
+          sheetName: tag,
+        },
+      ],
+  });
+  table.DataTable().buttons(0,index).trigger();
+  table.DataTable().destroy();
+}
+
 Template.Accounting_partner_ledger.events({
+  'click .js-copy'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    const tag = instance.viewmodel.periodSelected();
+    createDatatableAndPushButton(communityId, tag, 0);
+  },
+  'click .js-excel'(event, instance) {
+    const communityId = instance.viewmodel.communityId();
+    const tag = instance.viewmodel.periodSelected();
+    createDatatableAndPushButton(communityId, tag, 1);
+  },
 });
