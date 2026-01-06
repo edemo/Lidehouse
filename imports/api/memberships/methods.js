@@ -13,6 +13,7 @@ import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Memberships, entityOf } from './memberships.js';
 import { sendAddedToRoleInfoEmail } from '/imports/email/added-to-role.js';
 
@@ -159,8 +160,10 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    if (doc.contract()) {
-      throw new Meteor.Error('err_unableToRemove', 'Membership cannot be deleted while it has a corresponding contract, please delete the contract first');
+    const contract = doc.contract();
+    if (contract) {
+      Contracts.methods.remove._execute({ userId: this.userId }, { _id: contract._id }); // This will possibly throw, if contract still has balance
+//      throw new Meteor.Error('err_unableToRemove', 'Membership cannot be deleted while it has a corresponding contract, please delete the contract first');
     }
     const MembershipsStage = Memberships.Stage();
     const result = MembershipsStage.remove(_id);
