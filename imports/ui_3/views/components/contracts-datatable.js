@@ -15,6 +15,8 @@ import './contracts-datatable.html';
 Template.Contracts_datatable.viewmodel({
   onCreated(instance) {
     const communityId = this.templateInstance.data.communityId;
+    instance.subscribe('accounts.inCommunity', { communityId });
+    instance.subscribe('accountingPeriods.inCommunity', { communityId });
     instance.subscribe('contracts.inCommunity', { communityId });
   },
   tableDataFn() {
