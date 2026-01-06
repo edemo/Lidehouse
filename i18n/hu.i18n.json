@@ -755,6 +755,7 @@
   "Community cannot be deleted while it has active officers": "A közösség nem törölhető amíg még vannak aktív tisztségviselői. Először törölnie kell ezeket",
   "Parcel cannot be deleted while it has active owners": "Az albetét nem törölhető, amíg aktív tulajdonosai vannak. Előszőr a tulajdonosokat kell törölnie",
   "Lead parcel cannot be led": "A vezető albetét nem lehet egyben vezetett is.",
+  "Membership cannot be deleted while it has a corresponding contract, please delete the contract first": "A tagviszony nem törölhető, mert van hozzárendelve szerződés. Először a szerződést kell törölni.",
   "Admin cannot be deleted if no other admin is appointed": "Az adminisztrátor nem törölhető, amíg nincs másik kijelölve",
   "Agenda cannot be deleted while it contains topics": "A közgyűlés nem törölhető, ha vannak benne szavazások. Először törölnie kell ezeket a szavazásokat vagy ki kell vennie őket a közgyűlésből",
   "Contract cannot be deleted while it contains worksheets": "A szerződés nem törölhető, amíg kapcsolódik hozzá munkalap",

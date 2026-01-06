@@ -159,6 +159,9 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
+    if (doc.contract()) {
+      throw new Meteor.Error('err_unableToRemove', 'Membership cannot be deleted while it has a corresponding contract, please delete the contract first');
+    }
     const MembershipsStage = Memberships.Stage();
     const result = MembershipsStage.remove(_id);
     if (doc.role === 'admin') {
