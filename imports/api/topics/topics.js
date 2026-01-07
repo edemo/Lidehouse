@@ -128,9 +128,10 @@ Topics.helpers({
   },
   isUnseenBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
-    const lastSeenInfo = user && user.lastSeens()[seenType][this._id]; 
+    const lastSeenInfo = user?.lastSeens()[seenType][this._id];
+    const lastTimeSeenAll = user?.lastTimeSeenAll();
     if (lastSeenInfo) return false;
-    else if (user?.lastTimeSeenAll()) return this.createdAt > user.lastTimeSeenAll;
+    else if (lastTimeSeenAll) return this.createdAt > lastTimeSeenAll;
     else return true;
   },
   commentsSince(timestamp) {
