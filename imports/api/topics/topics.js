@@ -121,6 +121,9 @@ Topics.helpers({
   hasAttachment() {
     return !!this.attachments?.length;
   },
+  validate() {
+    // override in category helper, if needed
+  },
   hiddenBy(userId) {
     const author = this.creator();
     if (this.creatorId === userId) return undefined;

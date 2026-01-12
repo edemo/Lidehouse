@@ -30,6 +30,7 @@ export const insert = new ValidatedMethod({
     doc = Topics._transform(doc);
     // readableId(Topics, doc);
     checkTopicPermissions(this.userId, 'insert', doc);
+    doc.validate();
     const topicId = Topics.insert(doc);
     const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
     updateMyLastSeen._execute({ userId: this.userId }, { topicId, lastSeenInfo: { timestamp: newTopic.createdAt } });

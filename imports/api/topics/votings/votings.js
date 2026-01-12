@@ -113,6 +113,11 @@ Votings.extensionSchema = new SimpleSchema({
 });
 
 Topics.categoryHelpers('vote', {
+  validate() {
+    if (!this.vote.choices.length && !this.vote.allowAddChoices) {
+      throw new Meteor.Error('err_invalidData', 'A voting needs at least one voting choice');
+    }
+  },
   attachments() {
     return this.getShareddocs()?.map(doc => doc.path).filter(path => !!path); // during upload doc is inserted but path is not yet set
   },

@@ -740,6 +740,7 @@
   "No permission to perform this activity in this status": "Ebben a státuszban nem végrehajtható művelet",  
   "No permission to add membership": "Önnek nincs megfelelő jogosultsága a tagság hozzáadásához",
   "Only forum topic may be moved": "Csak a fórum téma mozgatható át",
+  "A voting needs at least one voting choice": "Egy szavazásnak kell legyen legalább egy választható opciója",
   "No permission to modify transaction after posting": "A tranzakció nem módosítható könyvelésbe kerülés után",
   "No permission to modify bill when its already paid, disconnect the payment first": "A számla nem módosítható, amikor már ki van fizetve. Először válaszza le a Fizetést a számláról, majd a változtatások után egyeztesse hozzá újra.",
   "Reallocation only available after posting": "Az átkönyvelés csak könyvelésbe küldés után lehetséges",
