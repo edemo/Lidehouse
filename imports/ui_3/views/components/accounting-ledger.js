@@ -4,6 +4,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { moment } from 'meteor/momentjs:moment';
 
 import '/imports/ui_3/views/modals/modal.js';
+import { displayError, handleError } from '/imports/ui_3/lib/errors.js';
 import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -11,12 +12,14 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
 import { Balances } from '/imports/api/accounting/balances/balances.js';
+import { Transactions } from '/imports/api/accounting/transactions.js';
 import { ensureAllCorrect } from '/imports/api/accounting/balances/methods.js';
 import { Period } from '/imports/api/accounting/periods/period.js';
 import { AccountingPeriods } from '/imports/api/accounting/periods/accounting-periods.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import '/imports/api/accounting/periods/methods.js';
+import '/imports/api/accounting/periods/accounting-period-closing.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/components/ledger-report.js';
 import '/imports/ui_3/views/components/partner-ledger-report.js';
@@ -24,6 +27,7 @@ import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/journals-table.js';
 import '/imports/ui_3/views/components/journals-check.js';
 import '/imports/ui_3/views/components/income-statement.js';
+import '/imports/ui_3/views/modals/transaction-multi-confirm.js';
 import './accounting-ledger.html';
 
 Template.Accounting_ledger.viewmodel({
@@ -165,8 +169,26 @@ Template.Accounting_ledger.events({
   'click .js-close'(event, instance) {
     const communityId = instance.viewmodel.communityId();
     const tag = instance.viewmodel.periodSelected();
-    Modal.confirmAndCall(AccountingPeriods.methods.close, { communityId, tag },
-      { entity: 'period', action: 'close', message: 'Close period warning' });
+    const closingTxs = AccountingPeriods.necessaryClosingTxs(communityId, tag);
+    if (closingTxs.length > 0) {
+      const previewTxs = closingTxs.map(tx => Transactions.withJournalEntries(Transactions._transform(_.extend({}, tx))));
+      Modal.show('Modal', {
+        id: 'closing.view',
+        title: 'Period closing transactions',
+        description: 'warningPeriodClosingTxsNeeded',
+        body: 'Transaction_multi_confirm',
+        bodyContext: { txs: previewTxs },
+        size: 'lg',
+        btnClose: 'cancel',
+        btnOK: 'save',    
+        onOK() {
+          closingTxs.forEach(tx => Transactions.methods.insert.call(tx, handleError) );
+        },
+      });
+    } else {
+      Modal.confirmAndCall(AccountingPeriods.methods.close, { communityId, tag },
+        { entity: 'period', action: 'close', message: 'Close period warning' });  
+    }
   },
   'click .js-open'(event, instance) {
     const communityId = instance.viewmodel.communityId();

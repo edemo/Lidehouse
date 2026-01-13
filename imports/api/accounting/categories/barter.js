@@ -31,7 +31,7 @@ Transactions.categoryHelpers('barter', {
   customerBill() {
     return Transactions.findOne(this.customerBillId);
   },
-  makeJournalEntries(accountingMethod) {
+  makeJournalEntries(accountingMethod = this.community().settings.accountingMethod) {
     const supplierBill = Transactions.findOne(this.supplierBillId);
     const customerBill = Transactions.findOne(this.customerBillId);
     function copyLinesInto(txSide, bill) {

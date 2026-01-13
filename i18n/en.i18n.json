@@ -137,6 +137,8 @@
   "warningPartnerMerge": "This operation deletes the partner you invoked it on, and merges his balance into the below selected partner. Data of the below selected partner will overwrite data from the partner to be removed.",
   "warningAccountWillBeMoved": "If you change the account number, all accounting transactions that used the old number will be moved to the new account number",
   "warningAccountRemoval": "Make sure you don't delete accounts that have been already used to account to in thte past. Rathter modify these accounts, and then the past transacions will be moved.",
+  "warningPeriodClosingTxsNeeded": "Period cannot be closed until the period closing operations are not done. Click save to accept the proposed closing transactions, and post them. And then try again.",
+ 
   // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
   "Create your own community": "Couldn't find your community? Why not create it yourself?",

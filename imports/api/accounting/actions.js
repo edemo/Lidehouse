@@ -145,7 +145,7 @@ Transactions.actions = {
 //          })
 //          );
 //        } else {
-        doc.makeJournalEntries(doc.community().settings.accountingMethod);
+        doc = Transactions.withJournalEntries(doc);
         Modal.confirmAndCall(Transactions.methods.post, { _id: doc._id }, {
           action: 'post',
           entity: 'transaction',

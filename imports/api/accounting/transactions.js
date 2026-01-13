@@ -432,6 +432,11 @@ Transactions.helpers({
   },
 });
 
+Transactions.withJournalEntries = function(tx) {
+  tx.makeJournalEntries();
+  return tx;
+}
+
 Transactions.attachBaseSchema(Transactions.baseSchema);
 Transactions.attachBehaviour(Noted);
 Transactions.attachBehaviour(Timestamped);

@@ -19,12 +19,10 @@ Template.Ledger_report.viewmodel({
   },
   autorun: [
     function subscribe() {
-      debugger;
       const communityId = ModalStack.getVar('communityId');
       const tags =  [this.tag()];
       console.log(' this.tagType()',  this.tagType());
       if (this.tagType() === 'C') {
-        debugger;
         tags.push('O' + this.tag().substring(1, 6), 'C' + this.tag().substr(1, 6));
       }
       console.log('tags', tags);

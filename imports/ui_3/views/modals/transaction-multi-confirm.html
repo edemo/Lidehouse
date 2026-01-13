@@ -1,0 +1,6 @@
+<template name="Transaction_multi_confirm">
+    {{#each tx in this.txs}}
+        {{>Transaction_view doc=tx}}
+        <div class="divider"></div>
+    {{/each}}
+</template>

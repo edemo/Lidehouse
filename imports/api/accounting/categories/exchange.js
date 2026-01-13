@@ -43,7 +43,7 @@ Transactions.categoryHelpers('exchange', {
       throw new Meteor.Error('err_notAllowed', 'Amount is larger than what is available on the given account for this partner/contract', { availableAmount, amount, oldAmount: oldDoc?.amount });
     }
   },
-  makeJournalEntries(accountingMethod) {
+  makeJournalEntries() {
     this.debit = [{ amount: this.amount, account: this.account, partner: this.fromPartner }];
     this.credit = [{ amount: this.amount, account: this.account, partner: this.toPartner }];
     return { debit: this.debit, credit: this.credit };

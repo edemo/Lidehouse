@@ -86,8 +86,17 @@ Accounts.toTechnical = function toTechnical(account) {
 };
 
 // TODO: Get these special accounts from configuration
+Accounts.carriedBaseAccounts = function carriedBaseAccounts(communityId) { 
+  return ['`1', '`2', '`3', '`4'];  // These carry their balance to the next period
+};
+
+Accounts.nonCarriedBaseAccounts = function nonCarriedBaseAccounts(communityId) { 
+  return ['`5', '`6', '`7', '`8', '`9'];  // These need to be closed out to zero at the period end
+};
+
 Accounts.isCarriedOver = function isCarriedOver(code, communityId) {
   if (code === '`491' || code === '`492') return false; // Opening and closing accounts not carried over
+  // return Accounts.carriedAccounts.contain(code.subtring[0, 2]
   return (code.startsWith('`1') || code.startsWith('`2') || code.startsWith('`3') || code.startsWith('`4'));
 };
 

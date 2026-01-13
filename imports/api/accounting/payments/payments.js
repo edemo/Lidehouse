@@ -257,7 +257,7 @@ Transactions.categoryHelpers('payment', {
     this.payAccount = entry.account;
     if (!this.bills && !this.lines && !_.contains(this.community().settings.paymentsToBills, this.relation)) this.lines = [{ amount: this.amount }];
   },
-  makeJournalEntries(accountingMethod) {
+  makeJournalEntries(accountingMethod = this.community().settings.accountingMethod) {
     this.debit = [];
     this.credit = [];
     const round = this.currencyRoundingFunction();

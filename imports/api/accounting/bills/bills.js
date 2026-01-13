@@ -252,7 +252,7 @@ Transactions.categoryHelpers('bill', {
   correspondingRemissionTxdef() {
     return Txdefs.findOneT({ communityId: this.communityId, category: 'payment', 'data.relation': this.relation, 'data.paymentSubType': 'remission' });
   },
-  makeJournalEntries(accountingMethod) {
+  makeJournalEntries(accountingMethod = this.community().settings.accountingMethod) {
     this.debit = [];
     this.credit = [];
     this.getLines().forEach(line => {
