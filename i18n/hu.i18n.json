@@ -923,7 +923,7 @@
   "warningProposal": "A speciális ajánlat tartalmi leírása és értéke eltérhet részben vagy teljesen az eredeti hirdetés tartalmától és értékétől. Az ajánlat elküldésével ön köti magát ahhoz, hogy ezen feltételekkel az ügylet megvalósulhat, amennyiben ezt a másik fél is jóváhagyjha",
   "warningConfirmation": "Amennyiben a hirdetést az alábbi feltételekkel megfelelőnek tartja, a Jóváhagyás gombbal hozzájárul, hogy az ügylet ezekkel a feltétlekkel megtörténjen.",
   "Period closing transactions": "Időszak záró műveletek",
-  "warningPeriodClosingTxsNeeded": "Az időszak nem zárható le amíg az 5-9 számlaosztályok időszak végi egyenlege nem nulla. Ha elfogadja az alábbi záró műveleteket, kattintson a Mentés gombra, és utána küldje könyvelésbe őket. Majdpróbálja újra az időszak lezáráasát.",
+  "warningPeriodClosingTxsNeeded": "Az időszak nem zárható le amíg az 5-9 számlaosztályok időszak végi egyenlege nem nulla. Ha elfogadja az alábbi záró műveleteket, kattintson a Mentés gombra, és utána küldje könyvelésbe őket. Majd próbálja újra az időszak lezárását.",
 
   "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",
