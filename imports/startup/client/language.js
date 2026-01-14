@@ -62,13 +62,15 @@ Meteor.startup(function setupLanguage() {
 
   // moment, numeral package is not reactive, need to localize it reactively
   Tracker.autorun(() => {
-    moment.locale(TAPi18n.getLanguage());
-  });
-  Tracker.autorun(() => {
-    const community = getActiveCommunity();
-    const language = community ? community.settings.language : TAPi18n.getLanguage();
+    const language = TAPi18n.getLanguage();
+    moment.locale(language);
     numeral.language(language);
   });
+//  Tracker.autorun(() => {
+//    const community = getActiveCommunity();
+//    const language = community ? community.settings.language : TAPi18n.getLanguage();
+//    numeral.language(language);
+//  });
 });
 
 // In numeral locales replacing the ' ' with a '.' in the hu locale
