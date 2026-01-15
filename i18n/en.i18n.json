@@ -62,7 +62,7 @@
 
   // finances
   "Breakdowns": "Accounting breakdowns",
-  "Accounting configuration": "Configuration",
+  "Accounting setup": "Configuration",
   "customer_bill": "invoice",
   "supplier_bill": "bill",
   "parcel_bill": "parcel invoice",

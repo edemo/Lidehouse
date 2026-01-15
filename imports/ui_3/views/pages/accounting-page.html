@@ -7,7 +7,7 @@
     <div class="tabs-container">
         <ul class="nav nav-tabs m-b-md" role="tablist">
             {{#unless noAccountsDefined}}
-            <li class="nav-link active show"><a data-toggle="tab" href="#tab-bills">
+            <li class="nav-link"><a data-toggle="tab" href="#tab-bills">
               <h3>{{_ 'Bill registry'}}&nbsp;
               {{> Badge value=countUnreconciledTxs color='danger' title=(_ 'Unreconciled') align='right'}} 
               {{> Badge value=countUnpostedTxs color='warning' title=(_ 'Unposted') align='right'}} 
@@ -24,13 +24,13 @@
               {{> Badge value=countUnreconciledEntries color='danger' title=(concat (_ 'Unreconciled') ' ' (_ 'statementEntries') align='right')}}
             </h3></a></li>
             {{/unless}}
-            <li class="nav-link {{#if noAccountsDefined}}active{{/if}}"><a data-toggle="tab" href="#tab-breakdowns">
-              <h3>{{_ 'Accounting configuration'}} <i class="fa fa-cog"></i></h3>
+            <li class="nav-link"><a data-toggle="tab" href="#tab-setup">
+              <h3>{{_ 'Accounting setup'}} <i class="fa fa-cog"></i></h3>
             </a></li>
         </ul>
         <div class="tab-content">
             {{#unless noAccountsDefined}}
-            <div role="tabpanel" id="tab-bills" class="tab-pane active">
+            <div role="tabpanel" id="tab-bills" class="tab-pane">
               {{#LazyTab}}
                 <div class="ibox-content">
                     {{> Accounting_bills}}
@@ -59,7 +59,7 @@
               {{/LazyTab}}
             </div>
             {{/unless}}
-            <div role="tabpanel" id="tab-breakdowns" class="tab-pane {{#if noAccountsDefined}}active{{/if}}">
+            <div role="tabpanel" id="tab-setup" class="tab-pane {{#if noAccountsDefined}}active{{/if}}">
               {{#LazyTab}}
                 <div class="ibox-content">
                     {{> Accounting_setup}}

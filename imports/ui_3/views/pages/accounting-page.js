@@ -2,6 +2,7 @@
 import { Template } from 'meteor/templating';
 
 import { Communities } from '/imports/api/communities/communities.js';
+import { AccountingPeriods } from '/imports/api/accounting/periods/accounting-periods';
 import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { validDateOrUndefined } from '/imports/api/utils';
@@ -18,6 +19,7 @@ import './accounting-page.html';
 
 Template.Accounting_page.viewmodel({
   share: 'accountingFilter',
+  defaultTabActivated: undefined,
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
@@ -35,15 +37,36 @@ Template.Accounting_page.viewmodel({
       }
     });
   },
+  onRendered(instance) {
+    instance.autorun(() => {
+      if (instance.subscriptionsReady()) {
+        // Only do this once, from that onward the 'active' class is set by bootstrap
+        if (!this.defaultTabActivated()) {
+          const tabName = this.defaultActiveTab();
+          if (instance.$(`div.active`).length === 0) {
+            const li = instance.$(`a[href="#tab-${tabName}"]`).parent();
+            const pane = instance.$(`#tab-${tabName}`);
+            li.addClass('active');
+            pane.addClass('active');  
+          }
+          this.defaultTabActivated(tabName);
+        }
+      }
+    });
+  },
   communityId() {
     return getActiveCommunityId();
   },
   community() {
     return Communities.findOne(this.communityId());
   },
-  noAccountsDefined() {
-    if (!Template.instance().subscriptionsReady()) return false;
-    return !Accounts.findOneT({ communityId: this.communityId() });
+  defaultActiveTab() {
+    let result = '';
+    if (!Accounts.findOneT({ communityId: this.communityId() })) debugAssert(false, 'A template should be already selected');
+    else if (!AccountingPeriods.findOne({ communityId: this.communityId() })) result = 'setup';
+    else if (Meteor.user().hasPermission('transactions.inCommunity')) result = 'bills';
+    else result = 'ledger';    
+    return result;
   },
   countUnpostedTxs() {
     const communityId = this.communityId();
