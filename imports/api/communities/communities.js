@@ -41,7 +41,7 @@ const chooseTemplate = {
 };
 
 Communities.settingsSchema = new SimpleSchema({
-  modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', defaultValue: Communities.availableModules } },
+  modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', defaultValue: _.without(Communities.availableModules, 'marketplace') } },
   joinable: { type: String, allowedValues: ['inviteOnly', 'withApproval', 'withLink'], defaultValue: 'withApproval', autoform: allowedOptions() },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   ownershipScheme: { type: String, allowedValues: Communities.ownershipSchemeValues, autoform: { defaultValue: 'condominium' } },

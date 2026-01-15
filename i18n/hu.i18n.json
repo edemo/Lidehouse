@@ -661,7 +661,7 @@
   "unreconciledOnlyHelp": "Számlák közül csak azok, amik pénzügyileg rendezetlenek. Fizetések közül csak azok, amik nincsenek számlákhoz egyeztetve vagy nincsenek bankkivonathoz egyeztetve. Partnerek közül csak azok, akiknek kinnlevősége van. Egyszóval csak azok a tételek, amikkel még teendő van.",
   "Some accounting transactions might be connected to it": "Egyes tranzakciók kapcsolódhatnak hozzá.",
   "Select a period for general ledger data": "Válasszon időszakot, amire a naplófőkönyvet megtekinti.",
-  "Clicking on a cell, you can view the relating bill history": "Az egyes cellákra kattintva, az ahhoz az értékhez tartozó számlatörténetet tekintheti meg.",
+  "Clicking on a cell, you can view the relating bill history": "Az egyes cellákra kattintva, az ahhoz az értékhez tartozó számlatörténetet tekintheti meg, amennyiben van online számlabetekintési jogosultsága. Online számlabetekintési jogosultságért keresse a számvizsgálókat vagy a közös képviselőt.",
   "Last billed value": "Legutóbbi számlázott óraállás",
   "Currently billed value": "Most számlázott óraállás",
   "Actual reading": "Aktuális leolvasás",

@@ -74,6 +74,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     taxNo: '128686-1-41',
     settings: {
       language: lang,
+      modules: _.without(Communities.availableModules, 'marketplace'),
       ownershipScheme: 'condominium',
       parcelRefFormat: 'bfdd',
       templateId,
@@ -1364,6 +1365,7 @@ function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   Transactions.remove({ partnerId, category: 'payment' }); // needs the bills
   Transactions.remove({ partnerId });
   // Purge parcel/membership/partner
+  Memberships.remove({ partnerId });
   Memberships.remove({ parcelId }); // removing added benefactors as well
   Contracts.remove({ partnerId });
   Parcels.remove({ _id: parcelId });
@@ -1402,6 +1404,7 @@ Meteor.methods({
           parcelId: demoParcelId,
           ownership: { share: new Fraction(1, 1) },
         });
+        builder.createMembership(demoUserId, 'overseer');
         const demoMembership = Memberships.findOne(demoMembershipId);
 
         Clock.starts(2, 'year', 'ago');
