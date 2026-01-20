@@ -625,6 +625,7 @@ JournalEntries.makeFilterSelector = function makeFilterSelector(params) {
   delete selector.begin; delete selector.end;
   delete selector.localizer;
   if (params.account) selector.account = withSubs(params.account);
+  if (params.partner) selector.partner = withSubs(params.partner);
   if (params.localizer) selector.localizer = withSubs(params.localizer);
   selector = Object.cleanEmptyStrings(selector);
   return Object.cleanUndefined(selector);
