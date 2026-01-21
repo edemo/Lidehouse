@@ -398,7 +398,7 @@ Transactions.categoryHelpers('payment', {
         found.amount = paymentOnBill.amount;
         found.valueDate = paymentOnBill.valueDate;
         newPayments = oldPayments;
-      } else newPayments = oldPayments.concat([paymentOnBill]);
+      } else newPayments = oldPayments.concat([paymentOnBill]).sort((a, b) => a.valueDate.getTime() - b.valueDate.getTime());
     } else if (direction === -1) {
       if (found) {
         found.amount = 0;  // We do not remove the record, so that the records indexes remain stable
