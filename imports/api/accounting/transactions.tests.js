@@ -1859,7 +1859,9 @@ if (Meteor.isServer) {
         chai.assert.equal(payment1.status, 'void');
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.outstanding, 100);
-        paymentIdVoid = _.last(bill.getPayments()).id;
+        const billPayments = bill.getPayments();
+        voidedIndex = billPayments.findIndex(p => p.id === paymentId1);
+        paymentIdVoid = billPayments[voidedIndex + 1].id; // The voiding tx should be immediately following the voided tx
         paymentVoid = Transactions.findOne(paymentIdVoid);
         chai.assert.equal(paymentVoid.status, 'void');
         chai.assert.deepEqual(paymentVoid.debit, [{ amount: -100, account: '`861' }, { amount: -100, account: '`0454', localizer: '@', partner: bill.partnerContractCode(), subTx: 1 }]);
