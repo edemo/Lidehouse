@@ -7,9 +7,10 @@ import faker from 'faker';
 
 // import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { TemplatedMongoCollection } from '/imports/api/accounting/templates/templated-collection';
 
 // Declare store collection
-export const Sharedfolders = new Mongo.Collection('sharedfolders');
+export const Sharedfolders = new TemplatedMongoCollection('sharedfolders', 'name');
 
 Meteor.startup(function indexSharedfolders() {
   if (Meteor.isServer) {

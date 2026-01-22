@@ -22,17 +22,24 @@ Template.Shareddoc_store.viewmodel({
   sortBy: 'name',
   sortDirection: 1,
   viewMode: 'grid',
-  activeFolderId: undefined,
+  activeFolderId: '',
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = ModalStack.getVar('communityId');
       if (communityId) {
+        const community = Communities.findOne(communityId);
         instance.subscribe('shareddocs.ofCommunity', { communityId });
+        if (this.activeFolderId() !== '') {
+          const activeFolder = Sharedfolders.findOne(this.activeFolderId());
+          if (!activeFolder || ![communityId, community?.settings?.templateId].contains(activeFolder?.communityId)) {
+            this.activeFolderId('');  // when switching communities, we should unselect the old active folder
+          }
+        }
+        if (this.activeFolderId() === '') {
+          const mainFolder = Sharedfolders.findOneT({ communityId, content: 'main' });
+          if (mainFolder) this.activeFolderId(mainFolder._id);
+        }
       }
-    });
-    instance.autorun(() => {
-      const mainFolder = Sharedfolders.findOne({ content: 'main' });
-      if (mainFolder) this.activeFolderId(mainFolder._id);
     });
   },
   communityId() {
