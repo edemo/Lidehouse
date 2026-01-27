@@ -46,8 +46,8 @@ AccountingPeriods.necessaryClosingTxs = function necessaryClosingTxs(communityId
     const gainTx = _.extend({}, freeTxBase, {
       valueDate: period.endDate(),
       amount,
-      [amountSide]: [{ account: '`493', amount }],
-      [closingSide]: [{ account: '`419', amount }],
+      [amountSide]: [{ account: '`419', amount }],
+      [closingSide]: [{ account: '`493', amount }],
       notes: 'Mérleg szerinti eredmény',
     });
     txs.push(gainTx);
@@ -57,8 +57,8 @@ AccountingPeriods.necessaryClosingTxs = function necessaryClosingTxs(communityId
       valueDate: period.next().beginDate(),
       amount,
       notes: 'Eredménytartalék képzése',
-      [amountSide]: [{ account: '`419', amount }],
-      [closingSide]: [{ account: '`413', amount }],
+      [amountSide]: [{ account: '`413', amount }],
+      [closingSide]: [{ account: '`419', amount }],
     });
     txs.push(gainToReserveTx);
   }
