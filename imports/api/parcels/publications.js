@@ -47,7 +47,7 @@ Meteor.publishComposite('parcels.inCommunity', function parcelsOfCommunity(param
         if (!user.hasPermission('meters.inCommunity', { communityId })) {
           return this.ready();
         }
-        return Meters.find({ parcelId: parcel._id });
+        return Meters.find({ parcelId: parcel._id }); //, { fields: { 'readings': { $slice: -1 }, 'billings': { $slice: -1 } } });
       },
     }],
   };
