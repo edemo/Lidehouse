@@ -38,7 +38,7 @@ Template.Accounting_reconciliation.viewmodel({
 //      const moneyAccount = Accounts.findOneT({ communityId, name: 'Money accounts' });
 //      if (!moneyAccount) return;
 //      this.accountOptions(moneyAccount.nodeOptions(true));
-      const nodeOptions = Accounts.nodeOptionsOf(communityId, ['`38', '`43'], /*leafsOnly*/ true, /*addRootNode*/ false);
+      const nodeOptions = Accounts.nodeOptionsOf(communityId, ['`37', '`38', '`43'], /*leafsOnly*/ true, /*addRootNode*/ false);
       this.accountOptions(nodeOptions);
       if (this.accountOptions().length && !this.accountSelected()) {
         this.accountSelected(this.accountOptions()[1].value);
