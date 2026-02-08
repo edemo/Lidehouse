@@ -12,9 +12,9 @@ import './actions.js';
 Render.journalEntries = function (cellData, renderType, currentRow) {
   const entries = cellData;
   if (!entries || !entries.length) return `<span class="label label-danger label-xs">${__('Missing')}</span> `;
-  if (entries.length > 1) return `<span class="label label-warning label-xs">${__('Split')}</span> `;
-  const entry = entries[0];
-  return displayAccountSpecification(AccountSpecification.fromDoc(entry));
+  let result = displayAccountSpecification(AccountSpecification.fromDoc(entries[0]));
+  if (entries.length > 1) result += `<span class="label label-warning label-xs">+ ${__('Split')}</span> `;
+  return result;
 };
 
 Render.txdefName = function (cellData, renderType, currentRow) {
