@@ -6,6 +6,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
+import { Log } from '/imports/utils/log.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Clock } from '/imports/utils/clock.js';
 import { autoValueUpdate } from '/imports/api/mongo-utils.js';
@@ -79,9 +80,11 @@ StatementEntries.helpers({
     this.reconciledTransactions()?.forEach(tx => {
       if (tx) {
         tx.makeJournalEntries();
-        const correspondingJe = tx.journalEntries(true).find(j => j.account === this.account);
-        debugAssert(correspondingJe, `No corresponding je found in tx. \n se: ${JSON.stringify(this)}, tx: ${JSON.stringify(tx)}, tx.journalEntries: ${JSON.stringify(tx.journalEntries())} `);
-        reconciledAmount += correspondingJe.amount * Transactions.signOfPartnerSide(correspondingJe.side);
+        const correspondingJEs = tx.journalEntries(true).filter(j => j.account === this.account);
+        if(!correspondingJEs.length) Log.warning(`The statement entry is reconciled to a transaction that no longer has corresponding journal entries. \n se: ${JSON.stringify(this)}, tx: ${JSON.stringify(tx)}, tx.journalEntries: ${JSON.stringify(tx.journalEntries())} `);
+        correspondingJEs.forEach(correspondingJe => {
+          reconciledAmount += correspondingJe.amount * Transactions.signOfPartnerSide(correspondingJe.side);
+        })
       } else Log.warning(`The statement entry is reconciled to a transaction that no longer exists. se: ${JSON.stringify(this)}`);
     });
     return reconciledAmount;

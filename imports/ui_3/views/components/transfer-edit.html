@@ -1,3 +1,13 @@
+<template name="Transfer_edit_actionable">
+
+    {{>Transfer_edit doc=doc}}
+    
+    <div class="text-right" data-id="{{doc._id}}">
+        {{>Action_buttons_group collection='transactions' doc=doc actions='post,edit,delete' size='xl'}}
+    </div>
+    
+</template>
+
 <template name="Transfer_edit">
     {{#let afDoc=afDoc}}
     <div class="row">
@@ -5,7 +15,6 @@
         {{> afQuickField name="communityId" type="hidden"}}
         {{> afQuickField name="category" type="hidden"}}
         {{> afQuickField name="defId" type="hidden"}}
-        {{> afQuickField name="relation" type="hidden"}}
         <!-- hidden, needed for autoform doc data -->
         <div class="col-sm-7">
             {{> afQuickField name="valueDate" type=hiddenWhenReconciling defaultValue=defaultDate}}

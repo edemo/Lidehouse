@@ -28,7 +28,7 @@ Transactions.entities = {
   },
   transfer: {
     name: 'transfer',
-    viewForm: 'Transfer_edit',
+    viewForm: 'Transfer_edit_actionable',
     editForm: 'Transfer_edit',
     omitFields: () => ['debit', 'credit'],
     size: 'lg',

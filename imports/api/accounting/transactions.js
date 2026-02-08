@@ -516,7 +516,7 @@ if (Meteor.isServer) {
       Array.difference(oldDoc.getBills(), newDoc.getBills()).forEach(bp => oldDoc.registerOnBill(bp, -1));
       Array.difference(newDoc.getBills(), oldDoc.getBills()).forEach(bp => newDoc.registerOnBill(bp, +1));
     }
-    if (modifierChangesField(oldDoc, newDoc, ['amount'])) {
+    if (modifierChangesField(oldDoc, newDoc, ['amount', 'debit', 'credit'])) {
       newDoc.seId?.forEach((id) => {
         const sE = StatementEntries.findOne(id);
         const reconciled = sE.calculateReconciled();
