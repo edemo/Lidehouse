@@ -71,11 +71,13 @@ Txdefs.helpers({
   isAccountantTx() {
     return !_.contains(['bill', 'payment', 'receipt'], this.category);
   },
-  isReconciledTx() {
-    return this.touches('`38');
+  isReconciledTo(accountCode) {
+    return !_.contains(['opening', 'closing'], this.category) && this.touches(accountCode);
   },
   touches(accountCode) {
-    return _.contains(this.debit, accountCode) || _.contains(this.credit, accountCode);
+    if (this.debit.find(c => accountCode.startsWith(c))) return true;
+    if (this.credit.find(c => accountCode.startsWith(c))) return true;
+    return false;
   },
   conteerSide() {
     if (this.data?.side) return this.data.side;  // opening, closing txs

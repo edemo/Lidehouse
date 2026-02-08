@@ -104,7 +104,7 @@ StatementEntries.actions = {
     icon: 'fa fa-external-link',
     color: 'danger',
     visible: !doc.isReconciled() && user.hasPermission('statements.reconcile', doc),
-    subActions: !doc.txdef && Txdefs.findTfetch({ communityId: doc.communityId }).filter(td => td.isReconciledTx())
+    subActions: !doc.txdef && Txdefs.findTfetch({ communityId: doc.communityId }).filter(td => td.isReconciledTo(doc.account))
       .map(txdef => StatementEntries.actions.matchedReconcile({ txdef }, doc, user)),
   }),
   matchedReconcile: (options, doc, user = Meteor.userOrNull()) => ({
