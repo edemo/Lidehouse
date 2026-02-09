@@ -48,14 +48,15 @@ if (Meteor.isServer) {
         parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP01' });
         parcel2 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP02' });
         const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[3]);
+        const todayMoment = moment.utc().startOf('day');
         billId = FixtureA.builder.create('bill', {
           relation: 'member',
           partnerId,
           contractId: Contracts.findOne({ partnerId })._id,
           relationAccount: '`33',
-          issueDate: moment.utc().toDate(),
-          deliveryDate: moment.utc().subtract(1, 'weeks').toDate(),
-          dueDate: moment.utc().add(1, 'weeks').toDate(),
+          issueDate: todayMoment.toDate(),
+          deliveryDate: todayMoment.subtract(1, 'weeks').toDate(),
+          dueDate: todayMoment.add(1, 'weeks').toDate(),
           lines: [{
             title: 'Work 1',
             uom: 'piece',
