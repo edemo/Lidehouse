@@ -196,8 +196,13 @@ Accounts.directMove = function directMove(communityId, codeFrom, codeTo) {
 Accounts._move = function move(communityId, codeFrom, codeTo) {
   const Transactions = Mongo.Collection.get('transactions');
   const Balances = Mongo.Collection.get('balances');
+  const StatementEntries = Mongo.Collection.get('statementEntries');
   productionAssert(!Balances.findOne({ communityId, account: new RegExp('^' + codeTo),  $expr: { $ne: ['$debit', '$credit'] } }), `Account ${codeTo} is already used in community ${communityId}`);
                     // TODO: Could handle this case with balance merging
+  const accounts = Accounts.find({ communityId, account: new RegExp('^' + codeFrom) });
+  accounts.forEach(acc => {
+    Accounts.direct.update(acc._id, { $set: { code: acc.code.replace(codeFrom, codeTo) } });
+  });
   const txs = Transactions.find({ communityId });
   txs.forEach(tx => {
     const need1 = tx.moveTransactionAccounts(codeFrom, codeTo);
@@ -210,6 +215,10 @@ Accounts._move = function move(communityId, codeFrom, codeTo) {
   const bals = Balances.find({ communityId, account: new RegExp('^' + codeFrom) });
   bals.forEach(bal => {
     Balances.direct.update(bal._id, { $set: { account: bal.account.replace(codeFrom, codeTo) } });
+  });
+  const ses = StatementEntries.find({ communityId, account: new RegExp('^' + codeFrom) });
+  ses.forEach(se => {
+    StatementEntries.direct.update(se._id, { $set: { account: se.account.replace(codeFrom, codeTo) } });
   });
 };
 
