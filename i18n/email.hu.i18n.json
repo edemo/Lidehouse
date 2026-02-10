@@ -2,7 +2,7 @@
   "email": {
     "EnrollAccountSubject": "Meghívó a __name__ honline rendszerének használatához",
     "EnrollAccount": [
-      "A __name__  honlapjának adminisztrátora meghívja Önt a közösség honline rendszerébe, mint __role__.\n",
+      "A __name__ közösségi felületének adminisztrátora meghívja Önt a közösség honline rendszerébe, mint __role__.\n",
       "Ha elfogadja ezt a meghívást, akkor mostantól online",
       "- nyomon követheti a közösségben az eseményeket és a pénzügyeket,",
       "- megvitathatja az aktuális kérdéseket és szavazhat róluk,",
