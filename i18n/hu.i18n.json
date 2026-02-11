@@ -764,7 +764,7 @@
   "Partner may not be removed, until membership is using it": "A partner nem törölhető, amíg tagsághoz tartozik",
   "Partner may not be removed, until transaction is using it": "A partner nem törölhető, amíg tranzakcióhoz kapcsolódik",
   "Partner may not be removed, until contract is using it": "A partner nem törölhető, amíg szerződéshez kapcsolódik",
-  "Not possible to remove bill, while it has payments, remove the payments first": "A számla nem törölhető, amíg fizetés kapcsolódik hozzá. Előbb a fizetést törölje.",
+  "Not possible to remove bill, while it has payments, remove the payments first": "A számla nem törölhető, amíg fizetés kapcsolódik hozzá. Előbb a fizetést kell leválasztani a számláról (átkönyvelni más számlákhoz vagy törölni).",
   "Not possible to post bill, because the meter reading doesnt move from the latest reading":  "A számla nem küldhető könyvelésbe, mert a mérőóra állást nem az utolsó leszámlázott óraállástól mozgatja.",
   "Not possible to remove voided transaction": "Az érvénytelenített tranzakció nem törölhető",
   "Not possible to remove billing, if it was already applied, archive it instead": "Az előírás minta nem törölhető, ha már ki lett vetve. Archiváljon a törlés művelet helyett.",
