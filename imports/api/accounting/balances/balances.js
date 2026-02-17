@@ -176,7 +176,7 @@ Balances.get = function get(def, balanceType) {
     const prevPeriod = accountingPeriods.previous(defPeriod);
     if (!prevPeriod) return Balances.nullValue(_def);
 //    else console.log("Prev period is", prevPeriod, 'Closed:', accountingPeriods.isClosed(prevPeriod));
-    if (prevPeriod.type() === 'year' && accountingPeriods.isClosed(prevPeriod)) { // O balances should exist then, because the closing creates them
+    if (prevPeriod.type() === 'year' && (accountingPeriods.isClosed(prevPeriod) ||  Meteor.isClient)) {// O-balances should exist if prevYear is closed, because the closing creates them. Client does not subscribe to the prev year C-balances, so it must use the O-balances, wheather they exist or not.
       const thisYearPeriod = prevPeriod.next();
       const result = Balances._aggregateSubResults(_.extend({}, _def, { tag: 'O-' + thisYearPeriod.label }));
 //      console.log('O result:', result);
