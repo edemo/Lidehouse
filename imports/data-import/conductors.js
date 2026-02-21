@@ -300,6 +300,22 @@ export const Conductors = {
       };
     },
   },
+  meterReadings: {
+    default(options) {
+      return {
+        collectionName: 'meterReadings',
+        format: 'default',
+        phases: [{
+          collectionName: 'meterReadings',
+          options,
+          dictionary: {
+            communityId: { default: getActiveCommunityId() },
+//            date: { default: new Date() },
+          },
+        }],
+      };
+    },
+  },
   transactions: {
     default(options) {
       return {

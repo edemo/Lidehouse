@@ -330,6 +330,10 @@
       "label": "meter",
       "it": "the meter"
     },
+    "meterReading": {
+      "label": "meter reading",
+      "it": "the meter reading"
+    },
     "parcelBilling": {
       "label": "parcel billing",
       "it": "the parcel billing"

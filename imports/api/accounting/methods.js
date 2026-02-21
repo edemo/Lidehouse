@@ -13,6 +13,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/accounting/transactions.js';
 import { Balances } from '/imports/api/accounting/balances/balances.js';
 import { Meters } from '/imports/api/meters/meters.js';
+import { MeterReadings } from '/imports/api/meters/meter-readings/meter-readings.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Localizer } from '/imports/api/accounting/breakdowns/localizer.js';
 import { Templates } from '/imports/api/accounting/templates/templates.js';
@@ -99,9 +100,8 @@ export const post = new ValidatedMethod({
     if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {
       doc.getLines().forEach((line) => {
         if (line?.metering) {
-          Meters.methods.registerBilling._execute({ userId: this.userId }, { _id: line.metering.id,
-            billing: { date: line.metering.end.date, value: line.metering.end.value, billId: doc._id },
-          });
+          const billing = _.extend({ communityId: doc.communityId, meterId: line.metering.id, type: 'estimate', billId: doc._id }, line.metering.end);
+          MeterReadings.insert(billing);
         }
         if (line?.lateFeeBilling) {
           Transactions.update(line.lateFeeBilling.id, { $inc: { lateValueBilled: line.lateFeeBilling.value } }, { selector: { category: 'bill' } });

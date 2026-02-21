@@ -343,6 +343,10 @@
       "label": "mérőóra",
       "it": "a mérőórát"
     },
+    "meterReading": {
+      "label": "leolvasás",
+      "it": "a leolvasást"
+    },
     "parcelBilling": {
       "label": "előírás",
       "it": "az előírást"

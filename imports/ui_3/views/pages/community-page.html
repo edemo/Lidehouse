@@ -116,8 +116,8 @@
                     <tr data-id="{{_id}}">
                         <td>{{{this.identifier}}}</td>
                         <td>{{{displayMeterService this.service}}}</td>
-                        <td>{{>Active_period collection='meters' doc=this}}</td>
-                        <td>{{_ 'schemaMeters.lastRead.label'}}:
+                        <!--td>{{>Active_period collection='meters' doc=this}}</td-->
+                        <td>{{_ 'schemaMeters.lastReading.label'}}:
                             <small>{{displayDate this.lastReading.date}}</small> 
                             {{{displayReading this.lastReading.value this.decimals}}}
                             {{>Action_buttons_group collection='meters' doc=this actions='registerReading,editReadings' size='sm'}}

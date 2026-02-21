@@ -9,12 +9,14 @@ import { importCollectionFromFile } from '/imports/ui_3/views/components/import-
 import { BatchAction } from '/imports/api/batch-action.js';
 import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Meters } from './meters.js';
+import { MeterReadings } from './meter-readings/meter-readings.js';
+import '/imports/ui_3/views/components/meter-readings.js';
 import './methods.js';
 
 Meters.actions = {
   create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
     name: 'create',
-    label: __('new') + ' ' + __('meter'),
+    label: __('new') + ' ' + __('entities.meter.label'),
     icon: 'fa fa-plus',
     color: 'primary',
     visible: user.hasPermission('meters.insert', doc),
@@ -23,7 +25,6 @@ Meters.actions = {
         id: 'af.meter.create',
         collection: Meters,
         doc,
-        omitFields: ['readings'],
         type: 'method',
         meteormethod: 'meters.insert',
       });
@@ -56,7 +57,6 @@ Meters.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.meter.edit',
         collection: Meters,
-        omitFields: ['readings'],
         doc,
         type: 'method-update',
         meteormethod: 'meters.update',
@@ -69,15 +69,14 @@ Meters.actions = {
     icon: 'fa fa-pencil-square-o',
     visible: user.hasPermission('meters.update', doc),
     run() {
-      Modal.show('Autoform_modal', {
-        id: 'af.meter.editReadings',
-        collection: Meters,
-        fields: ['readings'],
-        doc,
+      ModalStack.setVar('meterId', doc._id);
+      Modal.show('Modal', {
+        id: 'meterReading.view',
+        title: `${doc?.identifier} (${doc.service}) ${__('meterReadings')}`,
         description: __('editMeterReadingsWarning', doc),
-        type: 'method-update',
-        meteormethod: 'meters.update',
-        singleMethodArgument: true,
+        body: 'Meter_readings',
+        bodyContext: { meter: doc },
+        size: 'md',
       });
     },
   }),
@@ -85,12 +84,14 @@ Meters.actions = {
     name: 'registerReading',
     icon: 'fa fa-camera',
     color: doc.lastReadingColor(),
-    visible: user.hasPermission('meters.registerReading', doc),
+    visible: user.hasPermission('meters.registerReading', doc) || user.hasPermission('meters.registerReading.unapproved', doc),
     run() {
       ModalStack.setVar('meterId', doc._id);
+      const omitFields = user.hasPermission('meters.registerReading', doc) ? undefined : ['reading.approved'];
       Modal.show('Autoform_modal', {
         id: 'af.meter.registerReading',
-        schema: Meters.registerReadingSchema,
+        schema: MeterReadings.registerReadingSchema,
+        omitFields,
         doc,
         type: 'method',
         meteormethod: 'meters.registerReading',
@@ -151,25 +152,9 @@ AutoForm.addHooks('af.meter.create', {
     return doc;
   },
 });
-AutoForm.addHooks('af.meter.view', {
-  docToForm(doc) {
-    doc.readings.reverse();
-    return doc;
-  },
-});
 AutoForm.addHooks('af.meter.edit', {
   formToModifier(modifier) {
     //    modifier.$set.approved = true;
-    return modifier;
-  },
-});
-AutoForm.addHooks('af.meter.editReadings', {
-  docToForm(doc) {
-    doc.readings.reverse();
-    return doc;
-  },
-  formToModifier(modifier) {
-    modifier.$set.readings.reverse();
     return modifier;
   },
 });

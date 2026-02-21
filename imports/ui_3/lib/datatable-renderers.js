@@ -43,7 +43,7 @@ export const Render = Meteor.isServer ? {} : {
       case false: return 0;
       case true: return 1;
       case undefined: return 2;
-      default: debugAssert(false); return undefined;
+      default: return 3;
     }
   },
   displayTitle(topicId) {

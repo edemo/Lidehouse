@@ -83,6 +83,10 @@ Template.Meters_table.viewmodel({
 });
 
 Template.Meters_box.viewmodel({
+  autorun() {
+    const parcels = this.templateInstance.data.parcels;
+    this.templateInstance.subscribe('meters.ofParcels', { parcelIds: parcels.map(p => p._id) });
+  },
   parcelDisplay() {
     const parcel = this.templateInstance.data.parcel;
     return parcel ? parcel.display() : __('unknown');

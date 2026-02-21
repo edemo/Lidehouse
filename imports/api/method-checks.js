@@ -57,15 +57,17 @@ export function checkPermissions(userId, permissionName, doc) {
   return user;
 }
 
-export function checkPermissionsWithApprove(userId, permissionName, doc) {
+export function checkPermissionsWithApprove(userId, permissionName, permissionDoc, insertDoc) {
+  // permissionDoc is checked for permissions - insertDoc will be updated with the approved flag
+  if (!insertDoc) insertDoc = permissionDoc;
   const user = Meteor.users.findOneOrNull(userId);
-  if (user.hasPermission(permissionName, doc)) {
-    doc.approved = true;
-  } else if (user.hasPermission(permissionName + '.unapproved', doc)) {
-    doc.approved = false;
+  if (user.hasPermission(permissionName, permissionDoc)) {
+    if (insertDoc.approved === undefined) insertDoc.approved = true;
+  } else if (user.hasPermission(permissionName + '.unapproved', permissionDoc)) {
+    insertDoc.approved = false;
   } else {
     throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-      `${permissionName}, ${userId}, ${JSON.stringify(doc)}`);
+      `${permissionName}, ${userId}, ${JSON.stringify(permissionDoc)}, ${JSON.stringify(insertDoc)}`);
   }
 }
 

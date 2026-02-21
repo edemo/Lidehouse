@@ -15,6 +15,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { sendPromoLaunchLink, sendPromoInviteLink } from '/imports/email/promo-send.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { Meters } from '/imports/api/meters/meters.js';
+import { MeterReadings } from '/imports/api/meters/meter-readings/meter-readings.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
@@ -174,6 +175,7 @@ export const remove = new ValidatedMethod({
       'Community cannot be deleted while it has active officers', `Found: {${officers.count()}}`);
     }
     // Once there are no active officers, the community can be purged
+    MeterReadings.remove({ communityId });
     Meters.remove({ communityId });
     Attachments.remove({ communityId });
     Shareddocs.remove({ communityId });  // permission check in package before hook - needs membership

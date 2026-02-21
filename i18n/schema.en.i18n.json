@@ -572,49 +572,26 @@
       "help": "A rendszer az itt beállított tizedesjegyszámig fogja engedni a mérőóraállások rögzítését.",
       "placeholder": "(eg. 3 or 0 if you want to supply only the whole number part)"
     },
-    "readings": {
-      "label": "Meter readings",
-      "$": {
-        "date": {
-          "label": "Date of reading",
-          "placeholder": "yyyy-mm-dd"
-        },
-        "value": {
-          "label": "Reading value",
-          "help": "Please put in the decimal separator correctly",
-          "placeholder": "(eg 1234.205)"
-        },
-        "photo": {
-          "label": "Photo (if applicable)",
-          "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
-        }
+    "reading": {
+      "label": "Reading"
+    },
+    "lastReading": {
+      "label": "Last reading",
+      "date": {
+        "label": "Date of reading"
+      },
+      "value": {
+        "label": "Read value"
       }
     },
-    "billings": {
-      "label": "Meter billings",
-      "$": {
-        "date": {
-          "label": "Date of billing",
-          "placeholder": "yyyy-mm-dd"
-        },
-        "type": {
-          "label": "Billing type"
-        },
-        "value": {
-          "label": "Billing value",
-          "placeholder": "(value on the meter)"
-        },
-        "readingId": {
-          "label": "Reading",
-          "placeholder": "(if not given, its an estimate)"
-        }
+    "lastBilling": {
+      "label": "Last billing",
+      "date": {
+        "label": "Date of billing"
+      },
+      "value": {
+        "label": "Billed value"
       }
-    },
-    "lastRead": {
-      "label": "Last read"
-    },
-    "lastBilled": {
-      "label": "Last billed"
     },
     "activeTime": {
       "label": "Active time period",
@@ -628,22 +605,35 @@
       }
     }
   },
-  "schemaReadings": {
-    "reading": {
-      "label": "Reading",
-      "date": {
-        "label": "Date of reading",
-        "placeholder": "yyyy-mm-dd"
-      },
-      "value": {
-        "label": "Reading value",
-        "help": "Please put in the decimal separator correctly",
-        "placeholder": "(eg 1234,05)"
-      },
-      "photo": {
-        "label": "Photo (if applicable)",
-        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+  "schemaMeterReadings" : {
+    "_": {
+      "label": "Meter reading"
+    },
+    "type": {
+      "label": "Type",
+      "options": {
+        "approved": "approved",
+        "unapproved": "unapproved",
+        "estimate": "estimate",
+        "billing": "billing"
       }
+    },
+    "date": {
+      "label": "Date of reading",
+      "placeholder": "yyyy-mm-dd"
+    },
+    "value": {
+      "label": "Reading value",
+      "help": "Please put in the decimal separator correctly",
+      "placeholder": "(eg 1234,05)"
+    },
+    "photo": {
+      "label": "Photo (if applicable)",
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+    },
+    "approved": {
+      "label": "Approved",
+      "help": "Check if the management personally validated the reading"
     }
   },
   "schemaMemberships": {

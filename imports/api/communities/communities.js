@@ -104,9 +104,6 @@ Communities.helpers({
   officialName() {
     return this.name;
   },
-  parcelTypeValues() {
-    return Object.keys(this.parcels);
-  },
   specificTermFor(text) {
     return Communities.specificTerms[this.settings.ownershipScheme][text] || text;
   },
@@ -232,6 +229,19 @@ Communities.helpers({
   },
   isActiveModule(moduleName) {
     return !this.settings?.modules || _.contains(this.settings.modules, moduleName);
+  },
+  parcelTypes() {
+    return Object.keys(this.parcels);
+  },
+  parcelGroups() {
+    const Parcels = Mongo.Collection.get("parcels");
+    const parcels = Parcels.find({ communityId: this._id }).fetch();
+    return _.without(_.uniq(_.pluck(parcels, 'group')), undefined);
+  },
+  meteredServices() {
+    const Meters = Mongo.Collection.get("meters");
+    const meters = Meters.find({ communityId: this._id }).fetch();
+    return _.without(_.uniq(_.pluck(meters, 'service')), undefined);
   },
   toString() {
     return this.name;

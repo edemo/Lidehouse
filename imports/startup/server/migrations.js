@@ -17,6 +17,7 @@ import '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
+import { MeterReadings } from '/imports/api/meters/meter-readings/meter-readings.js';
 import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
@@ -693,7 +694,7 @@ Migrations.add({
     /* ParcelBillings.find({}).forEach(billing => {
       let newBilllingType;
       if (billing.type) newBilllingType = [billing.type];
-      else newBilllingType = billing.community().parcelTypeValues();
+      else newBilllingType = billing.community().parcelTypes();
       ParcelBillings.direct.update(billing._id, { $set: { type: newBilllingType } });
     }); */
   },
@@ -1402,6 +1403,30 @@ Migrations.add({
     });
   },
 });
+
+Migrations.add({
+  version: 79,
+  name: 'MeterReadings into separate collection',
+  up() {
+    Meters.find({}).forEach(meter => {
+      meter.readings?.forEach(reading => {
+        MeterReadings.insert(_.extend({ type: 'reading', communityId: meter.communityId, meterId: meter._id}, reading));
+      })
+      meter.billings?.forEach(reading => {
+        MeterReadings.insert(_.extend({ type: 'estimate', communityId: meter.communityId, meterId: meter._id}, reading));
+      })
+    });
+  },
+});
+/*
+Migrations.add({
+  version: 80,
+  name: 'Remove the deprecated fields',
+  up() {
+    Meters.direct.update({}, { $unset: { readings: '', billings: '' } }, { multi: true });
+  },
+});
+*/
 
 // Use only direct db operations to avoid unnecessary hooks!
 

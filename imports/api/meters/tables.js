@@ -14,12 +14,14 @@ export function metersColumns() {
     { data: 'parcel()', title: __('schemaMeters.parcelId.label') },
     { data: '_id', title: __('Action buttons'), render: Render.actionButtons,
       createdCell: (cell, cellData, rowData) => ReactiveDatatable.renderWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'meters', actions: 'view,edit,editReadings,delete', size: 'sm' }, cell),
+      { doc: cellData, collection: 'meters', actions: 'view,edit,registerReading,editReadings,delete', size: 'sm' }, cell),
     },
-    { data: 'lastReading().date', title: __('schemaMeters.readings.$.date.label'), render: Render.formatDate },
-    { data: 'lastReading().value', title: __('schemaMeters.readings.$.value.label'), render: Render.formatNumber(3) },
-    { data: 'lastBilling().date', title: __('schemaMeters.billings.$.date.label'), render: Render.formatDate },
-    { data: 'lastBilling().value', title: __('schemaMeters.billings.$.value.label'), render: Render.formatNumber(3) },
+    { data: '_lastReading.date', title: __('schemaMeters.lastReading.date.label'), render: Render.formatDate },
+    { data: '_lastReading.value', title: __('schemaMeters.lastReading.value.label'), render: Render.formatNumber(3) },
+    { data: '_lastBilling.date', title: __('schemaMeters.lastBilling.date.label'), render: Render.formatDate },
+    { data: '_lastBilling.value', title: __('schemaMeters.lastBilling.value.label'), render: Render.formatNumber(3) },
+    { data: 'uom', title: __('schemaMeters.uom.label') },
+//    { data: 'decimals', title: __('schemaMeters.decimals.label') },
   ];
 
   return columns;

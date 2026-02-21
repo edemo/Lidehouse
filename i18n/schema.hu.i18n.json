@@ -574,49 +574,26 @@
       "help": "A rendszer az itt beállított tizedesjegyszámig fogja engedni a mérőóraállások rögzítését.",
       "placeholder": "(pl. 3 vagy 0 ha csak egész értéket lehessen megadni)"
     },
-    "readings": {
-      "label": "Leolvasások",
-      "$": {
-        "date": {
-          "label": "Leolvasás időpontja",
-          "placeholder": "éééé-hh-nn"
-        },
-        "value": {
-          "label": "Leolvasott óraállás",
-          "help": "Kérjük figyeljen a tizedesvessző megfelelő helyére, hogy a helyes állást rögzítsük",
-          "placeholder": "(pl. 1234,205)"
-        },
-        "photo": {
-          "label": "Fénykép (ha csatolni szeretne)",
-          "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
-        }
-      }
+    "reading": {
+      "label": "Leolvasás"
     },
-    "billings": {
-      "label": "Kiszámlázások",
-      "$": {
-        "date": {
-          "label": "Kiszámlázás időpontja",
-          "placeholder": "éééé-hh-nn"
-        },
-        "type": {
-          "label": "Számlázás típusa"
-        },
-        "value": {
-          "label": "Kiszámlázott óraállás",
-          "placeholder": "(mérőn olvasható érték)"
-        },
-        "readingId": {
-          "label": "Leolvasás",
-          "placeholder": "(ha nincs megadva, akkor becslés)"
-        }
-      }
+    "lastReading": {
+      "label": "Leolvasva",
+      "date": {
+        "label": "Leolvasás időpontja"
+      },
+      "value": {
+        "label": "Leolvasott óraállás"
+      }  
     },
-    "lastRead": {
-      "label": "Leolvasva"
-    },
-    "lastBilled": {
-      "label": "Számlázva"
+    "lastBilling": {
+      "label": "Kiszámlázva",
+      "date": {
+        "label": "Kiszámlázás időpontja"
+      },
+      "value": {
+        "label": "Kiszámlázott óraállás"
+      }  
     },
     "activeTime": {
       "label": "Aktív időszak",
@@ -630,23 +607,36 @@
       }
     }
   },
-  "schemaReadings": {
-    "reading": {
-      "label": "Leolvasás",
-      "date": {
-        "label": "Leolvasás időpontja",
-        "placeholder": "éééé-hh-nn"
-      },
-      "value": {
-        "label": "Óraállás",
-        "help": "Kérjük figyeljen a tizedesvessző megfelelő helyére, hogy a helyes állást rögzítsük",
-        "placeholder": "(pl. 1234,05)"
-      },
-      "photo": {
-        "label": "Fénykép (ha csatolni szeretne)",
-        "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
+  "schemaMeterReadings" : {
+    "_": {
+      "label": "Mérőóra leolvasás"
+    },
+    "type": {
+      "label": "Tipus",
+      "options": {
+        "approved": "ellenőrzött",
+        "unapproved": "diktálás",
+        "estimate": "becslés",
+        "billing": "számlázás"
       }
-    }
+    },
+    "date": {
+      "label": "Leolvasás időpontja",
+      "placeholder": "éééé-hh-nn"
+    },
+    "value": {
+      "label": "Óraállás",
+      "help": "Kérjük figyeljen a tizedesvessző megfelelő helyére, hogy a helyes állást rögzítsük",
+      "placeholder": "(pl. 1234,05)"
+    },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "placeholder": "Link megadás (pl. http://img.hu/kep.jpg)"
+    },
+    "approved": {
+      "label": "Ellenőrzött",
+      "help": "Bepipálva azt jelenti a képviselet olvasta le az óraállást, üresen hagyva azt jelenti a felhasználó diktálta"
+    }  
   },
   "schemaMemberships" : {
     "_": {

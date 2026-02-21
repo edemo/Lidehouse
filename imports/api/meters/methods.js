@@ -4,9 +4,9 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkUnique, checkModifier, checkPermissions, checkPermissionsWithApprove } from '/imports/api/method-checks.js';
-import { sanityCheckOnlyOneActiveAtAllTimes } from '/imports/api/behaviours/active-period.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Meters } from './meters.js';
+import { MeterReadings } from './meter-readings/meter-readings.js';
 
 export const insert = new ValidatedMethod({
   name: 'meters.insert',
@@ -34,7 +34,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Meters, _id);
-    checkModifier(doc, modifier, ['billings'], true);
+    checkModifier(doc, modifier, ['_lastReading', '_lastBilling'], true);
     checkPermissions(this.userId, 'meters.update', doc);
 
 //    const MetersStage = Meters.Stage();
@@ -43,79 +43,30 @@ export const update = new ValidatedMethod({
 //    sanityCheckOnlyOneActiveAtAllTimes(MetersStage, { parcelId: newDoc.parcelId, service: newDoc.service });
 //    MetersStage.commit();
 //    return result;
-    Meters.update(_id, modifier);
-  },
-});
-
-export const updateReadings = new ValidatedMethod({
-  name: 'meters.updateReadings',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    modifier: { type: Object, blackbox: true },
-  }).validator(),
-
-  run({ _id, modifier }) {
-    const doc = checkExists(Meters, _id);
-    checkModifier(doc, modifier, ['readings']);
-    checkPermissions(this.userId, 'meters.update', doc);
-
     return Meters.update(_id, modifier);
   },
 });
 
 export const registerReading = new ValidatedMethod({
   name: 'meters.registerReading',
-  validate: Meters.registerReadingSchema.validator(),
+  validate: MeterReadings.registerReadingSchema.validator(),
 
   run({ _id, reading }) {
-    const doc = checkExists(Meters, _id);
-    const user = checkPermissions(this.userId, 'meters.registerReading', doc);
-
-    const lastReading = doc.lastReading();
+    const meter = checkExists(Meters, _id);
+    const doc = _.extend({}, reading, { 
+      communityId: meter.communityId,
+      meterId: meter._id,
+      type: 'reading',
+    });
+    checkPermissionsWithApprove(this.userId, 'meters.registerReading', meter, doc);
+    const lastReading = meter._lastReading;
     if (lastReading && reading.date < lastReading.date) {
       throw new Meteor.Error('err_notAllowed', 'There is already a newer reading');
     }
     if (lastReading && reading.value < lastReading.value) {
       throw new Meteor.Error('err_notAllowed', 'There is already a higher reading');
     }
-
-    _.extend(reading, { approved: user.hasPermission('meters.update', doc) });
-    const modifier = { $push: { readings: reading } };
-
-    return Meters.update(_id, modifier);
-  },
-});
-/*
-export const estimateReading = new ValidatedMethod({
-  name: 'meters.estimate',
-  validate: Meters.registerReadingSchema.validator(),
-
-  run({ _id }) {
-    const doc = checkExists(Meters, _id);
-    checkPermissions(this.userId, 'meters.reading', doc);
-
-    const estimate = doc.getEstimate();
-    _.extend(estimate, { approved: false });
-    const modifier = { $push: { readings: estimate } };
-
-    return Meters.update(_id, modifier);
-  },
-});
-*/
-
-export const registerBilling = new ValidatedMethod({
-  name: 'meters.registerBilling',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    billing: { type: Meters.billingSchema },
-  }).validator(),
-
-  run({ _id, billing }) {
-    const doc = checkExists(Meters, _id);
-    checkPermissions(this.userId, 'parcelBillings.apply', doc);
-    const modifier = { $push: { billings: billing } };
-
-    return Meters.update(_id, modifier);
+    return MeterReadings.insert(doc);
   },
 });
 
@@ -132,10 +83,10 @@ export const remove = new ValidatedMethod({
       throw new Meteor.Error('err_unableToRemove', 'Meter cannot be deleted while it has unbilled amount',
        `Unbilled amount: {${doc.unbilledReadAmount()}}`);
     }
-    Meters.remove(_id);
+    return Meters.remove(_id);
   },
 });
 
 Meters.methods = Meters.methods || {};
-_.extend(Meters.methods, { insert, update, remove, registerReading, registerBilling });
+_.extend(Meters.methods, { insert, update, remove, registerReading });
 _.extend(Meters.methods, crudBatchOps(Meters));

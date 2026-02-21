@@ -14,24 +14,9 @@ import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { MeterReadings } from './meter-readings/meter-readings.js';
 
 export const Meters = new Mongo.Collection('meters');
-
-Meters.readingSchema = new SimpleSchema({
-  date: { type: Date, autoform: { defaultValue() { return Clock.currentDate(); }, readonly() { return !Meteor.userOrNull().hasPermission('meters.update') } } },
-  value: { type: Number, decimal: true },
-  photo: { type: String, optional: true, autoform: imageUpload() },
-  approved: { type: Boolean, optional: true, autoform: { type: 'hidden' } },
-});
-
-// Meters.billingTypeValues = ['reading', 'estimate'];
-Meters.billingSchema = new SimpleSchema({
-  date: { type: Date },
-  value: { type: Number, decimal: true },
-//  type: { type: String, allowedValues: Meters.billingTypeValues, autoform: allowedOptions() },
-//  readingId: { type: Number },   // pointer // if not present, it is an estimation
-  billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-});
 
 Meters.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
@@ -41,16 +26,11 @@ Meters.schema = new SimpleSchema({
   uom: { type: String, max: 15 },
   decimals: { type: Number, defaultValue: 3, max: 10, autoform: { autoValue: 3 } }, // how many decimals the readings accept and display
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
-  readings: { type: Array, optional: true, autoValue() {
-    if (this.isInsert && !this.isSet) {
-      const date = this.field('activeTime.begin').value || Clock.currentDate();
-      const value = 0;
-      return [{ date, value, approved: this.field('approved').value }];
-    } return undefined;
-  } },
-  'readings.$': { type: Meters.readingSchema },
-  billings: { type: Array, optional: true, autoform: { omit: true } },
-  'billings.$': { type: Meters.billingSchema },
+  readings: { type: [Object], optional: true, autoform: { omit: true } },  // deprecated
+  billings: { type: [Object], optional: true, autoform: { omit: true } },  // deprecated
+  // cached values:
+  _lastReading: { type: MeterReadings.readingSchema, optional: true, autoform: { omit: true } },  
+  _lastBilling: { type: MeterReadings.readingSchema, optional: true, autoform: { omit: true } },
 });
 
 Meters.idSet = [['communityId', 'identifier', 'service']];
@@ -70,32 +50,44 @@ Meters.helpers({
     return Parcels.findOne(this.parcelId);
   },
   entityName() {
-    return 'meter';
+    return 'meters';
+  },
+  getReadings() {
+    return MeterReadings.find({ meterId: this._id, type: 'reading' }, { sort: { date: 1 } });
+  },
+  getBillings() {
+    return MeterReadings.find({ meterId: this._id, type: 'estimate' }, { sort: { date: 1 } });
   },
   startReading() {
-    return _.first(this.readings);
+    const result = MeterReadings.findOne({ meterId: this._id, type: 'reading' }, { sort: { date: 1 } });
+    debugAssert(result, 'Meters should have at least an initial reading', this);
+    return MeterReadings.convertToReadingSchema(result);
+  },
+  calculateLastReading() {  
+    // Do not use the cache here - for purposes of calculating the cached value itself
+    const result = MeterReadings.findOne({ meterId: this._id, type: 'reading'}, { sort: { date: -1, createdAt: -1 } });
+    return result && MeterReadings.convertToReadingSchema(result);
   },
   lastReading(date) {
-    debugAssert(this.readings.length >= 1, 'Meters should have at least an initial reading');
-    if (!date) return _.last(this.readings);
-    let lastReading;
-    for (const r of this.readings) {
-      if (r.date <= date) lastReading = r;
+    debugAssert(this._lastReading, 'Meters should have at least an initial reading', this);
+    if (!date) return this._lastReading;
+    let result;
+    for (const r of this.getReadings().fetch()) {
+      if (r.date <= date) result = r;
       else break;
     }
-    productionAssert(lastReading, 'Meter has no reading before the date, looks like it did not exist at that time', { meter: this.toString(), date });
-    return lastReading;
+    productionAssert(result, 'Meter has no reading before the date, looks like it did not exist at that time', { meter: this.toString(), date });
+    return result;
   },
   lastBilling() {
-    if (!this.billings?.length) return this.startReading();
-    return _.last(this.billings);
+    return this._lastBilling || this.startReading();
   },
   lastReadingDate() {
-    return this.readings.length < 2 ? new Date(0) : this.lastReading().date;
+    return this.getReadings().count < 2 ? new Date(0) : this.lastReading().date;
     // The first reading is always the installation reading, so if it has 1 reading, it was never read
   },
   lastReadingColor() {
-    if (this.readings.length < 2) return 'danger';
+    if (this.getReadings().count < 2) return 'danger';
     const lastReadingDate = this.lastReading().date;
     const elapsedDays = moment().diff(moment(lastReadingDate), 'days');
     if (elapsedDays > 90) return 'warning';
@@ -114,19 +106,20 @@ Meters.helpers({
   getEstimatedValue(date = Clock.currentDate()) {
     let lastReading;      // The last reading before this date
     let lastReadingIndex;
-    this.readings.forEach((r, i) => {
+    const readings = this.getReadings().fetch();
+    readings.forEach((r, i) => {
       if (r.date <= date) { lastReading = r; lastReadingIndex = i; }
     });
     productionAssert(lastReading, 'Cannot estimate before any reading data is available');
-    if (this.readings.length > lastReadingIndex + 1) { // If there are readings after the estimation date
-      const nextReading = this.readings[lastReadingIndex + 1];
+    if (readings.length > lastReadingIndex + 1) { // If there are readings after the estimation date
+      const nextReading = readings[lastReadingIndex + 1];
       const proportion = moment(date).diff(moment(lastReading.date), 'days')
                         / moment(nextReading.date).diff(moment(lastReading.date), 'days');
       return lastReading.value + (nextReading.value - lastReading.value) * proportion;
     }
     // Else we are estimating after the very last reading
     if (lastReadingIndex === 0) return lastReading.value; // With only one initial reading, unable estimate consumption
-    const previousReading = this.readings[lastReadingIndex - 1];
+    const previousReading = readings[lastReadingIndex - 1];
     const usageDays = moment(lastReading.date).diff(moment(previousReading.date), 'days');
     let estimatedConsumption;
     if (usageDays === 0) estimatedConsumption = 0;
@@ -165,16 +158,25 @@ Meters.attachSchema(Meters.schema);
 Meters.attachBehaviour(ActivePeriod);
 Meters.attachBehaviour(Timestamped);
 
-Meters.registerReadingSchema = new SimpleSchema({
-  _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  identifier: { type: String, optional: true, autoform: { readonly: true } },
-  service: { type: String, optional: true, autoform: { readonly: true } },
-  reading: { type: Meters.readingSchema },
-});
-
 Meters.simpleSchema().i18n('schemaMeters');
-Meters.registerReadingSchema.i18n('schemaMeters');
-Meters.registerReadingSchema.i18n('schemaReadings');
+
+//-----------------------------------------------------------------------------
+
+// --- Before/after actions ---
+
+if (Meteor.isServer) {
+  Meters.before.insert(function (userId, doc) {
+    const date = doc.activeTime?.begin || Clock.currentDate();
+    const value = 0;
+    doc._lastBilling =  { date, value };
+  });
+
+  Meters.after.insert(function (userId, doc) {
+    const date = doc.activeTime?.begin || Clock.currentDate();
+    const value = 0;
+    Meters.methods.registerReading._execute({ userId }, { _id: doc._id, reading: { date, value, approved: doc.aproved } });  
+  });
+}
 
 // --- Factory ---
 

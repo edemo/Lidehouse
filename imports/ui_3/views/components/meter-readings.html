@@ -1,0 +1,17 @@
+<template name="Meter_readings">
+    <div class=" meterReadings">
+        <div class="row ">
+            <div class="col-sm-6 m-b-md">
+                <input type="checkbox" {{b "check: showApproved"}}/> <label>{{_ 'schemaMeterReadings.type.options.approved'}}</label>
+                <input type="checkbox" {{b "check: showUnapproved"}}/> <label>{{_ 'schemaMeterReadings.type.options.unapproved'}}</label>
+                <input type="checkbox" {{b "check: showBilling"}}/> <label>{{_ 'schemaMeterReadings.type.options.billing'}}</label>
+            </div>
+            <div class="col-sm-6 text-right m-b-md">
+                {{>Action_buttons_group collection='meterReadings' actions='create,import' size='md'}}
+            </div>
+        </div>
+        <div class="table-resposive meterReadings">
+            {{> ReactiveDatatable tableData=tableDataFn options=optionsFn }}
+        </div>
+    </div>
+</template>

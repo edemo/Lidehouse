@@ -51,6 +51,7 @@ if (Meteor.isServer) {
 
         chai.assert.isTrue(admin.hasPermission('meters.update', meter));
         chai.assert.isTrue(manager.hasPermission('meters.update', meter));
+        chai.assert.isFalse(owner.hasPermission('meters.update', meter));
       });
 
       it('Determines user`s parcelscoped permissions', function () {
@@ -58,8 +59,8 @@ if (Meteor.isServer) {
         const meter = Mongo.Collection.get('meters').findOne(meterId);
         const otherOwner = Meteor.users.findOne(Fixture.dummyUsers[2]);
 
-        chai.assert.isTrue(owner.hasPermission('meters.registerReading', meter));
-        chai.assert.isFalse(otherOwner.hasPermission('meters.registerReading', meter));
+        chai.assert.isTrue(owner.hasPermission('meters.registerReading.unapproved', meter));
+        chai.assert.isFalse(otherOwner.hasPermission('meters.registerReading.unapproved', meter));
       });
 
       it('Determines author permissions', function () {

@@ -46,8 +46,7 @@ ParcelBillings.projectionBaseOptions = function() {
 
 const chooseFromExistingParcelTypes = {
   options() {
-    const communityId = getActiveCommunityId();
-    const parcelTypes = Communities.findOne(communityId).parcelTypeValues();
+    const parcelTypes = getActiveCommunity()?.parcelTypes();
     return parcelTypes?.map(pt => ({ label: pt, value: pt })) || [];
   },
   type: 'select-checkbox',
@@ -55,8 +54,7 @@ const chooseFromExistingParcelTypes = {
 
 const chooseFromExistingGroups = {
   options() {
-    const parcels = Parcels.find({ communityId: getActiveCommunityId() }).fetch();
-    const groups = _.without(_.uniq(_.pluck(parcels, 'group')), undefined);
+    const groups = getActiveCommunity()?.parcelGroups();
     return groups?.map(g => ({ label: g, value: g })) || [];
   },
   firstOption: () => __('All'),
@@ -64,8 +62,7 @@ const chooseFromExistingGroups = {
 
 const chooseFromExistingServiceValues = {
   options() {
-    const meters = Meters.find({ communityId: getActiveCommunityId() }).fetch();
-    const serviceValues = _.without(_.uniq(_.pluck(meters, 'service')), undefined);
+    const serviceValues = getActiveCommunity()?.meteredServices();
     return serviceValues?.map(s => ({ label: s, value: s })) || [];
   },
   firstOption: () => __('(Select one)'),
