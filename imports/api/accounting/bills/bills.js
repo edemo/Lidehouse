@@ -319,7 +319,7 @@ Transactions.categoryHelpers('bill', {
     result *= (-1); // Outstanding means underpayment, so Overpayment is the opposite of it
     return result;
   },
-  currentLateness(currentDate = moment.utc().toDate()) {
+  currentLateness(currentDate = moment.utc().startOf('day').toDate()) {
     const lang = this.community().settings.language;
     const lateDays = moment.utc(currentDate).diff(this.dueDate, 'days');
     let lateValue = 0;

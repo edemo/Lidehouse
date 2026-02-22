@@ -98,7 +98,7 @@ if (Meteor.isServer) {
         bill = Transactions.findOne(billId);
         const memberPaymentDef = bill.correspondingPaymentTxdef();
         const bankAccount = Accounts.findOneT({ communityId: FixtureA.demoCommunityId, category: 'bank' });
-        paymentDate = moment(bill.dueDate).add(10, 'days').toDate();
+        paymentDate = moment.utc(bill.dueDate).add(10, 'days').toDate();
         payment = FixtureA.builder.build('payment', {
           defId: memberPaymentDef._id,
           relation: bill.relation,
@@ -138,7 +138,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.currentLateness(bill.deliveryDate).lateValue, 0);
         chai.assert.equal(bill.currentLateness(bill.dueDate).lateValue, 0);
         chai.assert.equal(bill.currentLateness(paymentDate).lateValue, 10 * bill.amount);
-        const laterDate = moment(paymentDate).add(44, 'days').toDate();
+        const laterDate = moment.utc(paymentDate).add(44, 'days').toDate();
         chai.assert.equal(bill.currentLateness(laterDate).lateValue, 10 * bill.amount);  // same, because it is fully paid already
         chai.assert.equal(bill.lateValueOutstanding, 0); // Date.now() is before the due date
       });
@@ -184,7 +184,7 @@ if (Meteor.isServer) {
       it('Calculates lateness on voided payment bill correctly', function () {
         chai.assert.equal(bill.lateValueBilled, undefined);
         chai.assert.equal(bill.currentLateness(paymentDate).lateValue, 10 * bill.amount);
-        const laterDate = moment(bill.dueDate).add(44, 'days').toDate();
+        const laterDate = moment.utc(bill.dueDate).add(44, 'days').toDate();
         chai.assert.equal(bill.currentLateness(laterDate).lateValue, 44 * bill.amount);  // increases, because it is not paid
         chai.assert.equal(bill.lateValueOutstanding, 0);  // Date.now() is before the due date
       });
@@ -243,7 +243,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.currentLateness(bill.deliveryDate).lateValue, 0);
         chai.assert.equal(bill.currentLateness(bill.dueDate).lateValue, 0);
         chai.assert.equal(bill.currentLateness(paymentDate).lateValue, 20 * bill.amount);
-        const laterDate = moment(paymentDate).add(44, 'days').toDate();
+        const laterDate = moment.utc(paymentDate).add(44, 'days').toDate();
         chai.assert.equal(bill.currentLateness(laterDate).lateValue, 20 * bill.amount);  // same, because it is fully paid already
         chai.assert.equal(bill.lateValueOutstanding, 0); // Date.now() is before the due date
       });
@@ -275,7 +275,8 @@ if (Meteor.isServer) {
       });
 
       it('Cannot modify a petrified bill', function () {
-        const oldDate = moment.utc().subtract(2, 'years').toDate();
+        const todayMoment = moment.utc().startOf('day');
+        const oldDate = todayMoment.subtract(2, 'years').toDate();
         const oldBillId = FixtureA.builder.create('bill', {
           issueDate: oldDate,
           deliveryDate: oldDate,
@@ -392,7 +393,7 @@ if (Meteor.isServer) {
         chai.assert.equal(parcel2.outstanding(), 1000);
         //lateness
         chai.assert.equal(bill.currentLateness(paymentDate).lateValue, 20 * bill.amount);
-        const laterDate = moment(bill.dueDate).add(44, 'days').toDate();
+        const laterDate = moment.utc(bill.dueDate).add(44, 'days').toDate();
         chai.assert.equal(bill.currentLateness(laterDate).lateValue, 44 * bill.amount);  // increases, because it is not paid
 
         FixtureA.builder.execute(Transactions.methods.update, { _id: paymentId, modifier: {
@@ -413,7 +414,8 @@ if (Meteor.isServer) {
       });
 
       it('Cannot modify a petrified payment', function () {
-        const oldDate = moment.utc().subtract(2, 'years').toDate();
+        const todayMoment = moment.utc().startOf('day');
+        const oldDate = todayMoment.subtract(2, 'years').toDate();
         const oldPaymentId = FixtureA.builder.create('payment', {
           valueDate: oldDate,
           partnerId: FixtureA.supplier,
@@ -460,7 +462,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.contract().balance(), -1300);
         //lateness
         chai.assert.equal(bill.currentLateness(paymentDate).lateValue, 20 * bill.amount);
-        const laterDate = moment(bill.dueDate).add(44, 'days').toDate();
+        const laterDate = moment.utc(bill.dueDate).add(44, 'days').toDate();
         chai.assert.equal(bill.currentLateness(laterDate).lateValue, 44 * bill.amount);  // increases, because it is not paid        
       });
 
@@ -528,10 +530,11 @@ if (Meteor.isServer) {
       let billId;
       let bill;
       before(function () {
+        const todayMoment = moment.utc().startOf('day');
         billId = FixtureA.builder.create('bill', {
           relation: 'supplier',
           partnerId: FixtureA.supplier,
-          dueDate: moment.utc().subtract(25, 'days').toDate(),
+          dueDate: todayMoment.subtract(25, 'days').toDate(),
           relationAccount: '`454',
           lines: [{
             title: 'The Work',
@@ -587,6 +590,7 @@ if (Meteor.isServer) {
       });
 
       it('Member bill relation side is posted to relevant subaccount', function () {
+        const todayMoment = moment.utc().startOf('day');
         const parcel1 = Parcels.findOne({ communityId: FixtureA.demoCommunityId, ref: 'AP01' });
         const partnerId = FixtureA.partnerId(FixtureA.dummyUsers[3]);
         const localizer = parcel1.code;
@@ -597,9 +601,9 @@ if (Meteor.isServer) {
           partnerId,
           contractId,
           relationAccount: '`33',
-          issueDate: moment.utc().toDate(),
-          deliveryDate: moment.utc().subtract(1, 'weeks').toDate(),
-          dueDate: moment.utc().add(1, 'weeks').toDate(),
+          issueDate: todayMoment.toDate(),
+          deliveryDate: todayMoment.subtract(1, 'weeks').toDate(),
+          dueDate: todayMoment.add(1, 'weeks').toDate(),
           lines: [{
             title: 'Work 1',
             uom: 'piece',
@@ -628,10 +632,10 @@ if (Meteor.isServer) {
       it('Can register Payments', function () {
         const bankAccount = '`381';
         bill = Transactions.findOne(billId);
-        const paymentDate1 = moment(bill.dueDate).add(10, 'days').toDate();
-        const betweenDate = moment(bill.dueDate).add(15, 'days').toDate();
-        const paymentDate2 = moment(bill.dueDate).add(20, 'days').toDate();
-        const laterDate = moment(bill.dueDate).add(44, 'days').toDate();
+        const paymentDate1 = moment.utc(bill.dueDate).add(10, 'days').toDate();
+        const betweenDate = moment.utc(bill.dueDate).add(15, 'days').toDate();
+        const paymentDate2 = moment.utc(bill.dueDate).add(20, 'days').toDate();
+        const laterDate = moment.utc(bill.dueDate).add(44, 'days').toDate();
 
         const paymentId1 = FixtureA.builder.create('payment', { bills: [{ id: billId, amount: 100 }], amount: 100, partnerId: FixtureA.supplier, valueDate: paymentDate1, payAccount: bankAccount });
         bill = Transactions.findOne(billId);

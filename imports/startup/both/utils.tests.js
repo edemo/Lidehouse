@@ -68,5 +68,35 @@ if (Meteor.isServer) {
       });
     });
 
+    describe('Date arithmetic', function () {
+      it('Moment can diff 2 dates', function () {
+        const now = new Date();
+        const yesterday = moment(now).subtract(1, 'day').toDate();
+        chai.assert.isTrue(yesterday < now);
+        chai.assert.isFalse(yesterday >= now);
+        
+        const nowMoment = moment.utc();
+        const yesterdayMoment = moment.utc(yesterday);
+        chai.assert.equal(nowMoment.diff(yesterdayMoment, 'days'), 1);
+        chai.assert.equal(nowMoment.diff(yesterdayMoment, 'hours'), 24);
+      });
+
+      it('Moment can diff 2 UTC dates', function () {
+        const now = moment.utc().toDate();
+        const yesterday = moment.utc(now).subtract(1, 'day').toDate();
+        chai.assert.equal(moment(now).diff(yesterday, 'days'), 1);
+        chai.assert.equal(moment(now).diff(yesterday, 'hours'), 24);
+        const tomorrow = moment.utc(now).add(1, 'day').toDate();
+        chai.assert.equal(moment(tomorrow).diff(now, 'days'), 1);
+        chai.assert.equal(moment(tomorrow).diff(now, 'hours'), 24);
+      });
+
+      it('Always use moment.utc() - otherwise js Date has time zone difference', function () {
+        const now = moment.utc().toDate();
+        const tomorrow = moment().add(1, 'day').toDate();
+        chai.assert.equal(moment(tomorrow).diff(now, 'days'), 1);
+        chai.assert.equal(moment(tomorrow).diff(now, 'hours'), 24);
+      });
+    });
   });
 }
