@@ -80,7 +80,8 @@ Partners.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    color: doc.isApproved?.() ? 'white' : (doc.community()?.needsJoinApproval() ? 'danger' : 'warning'),
+    color: doc.isApproved?.() ? (doc.user()?.personNameMismatch(doc.communityId) ? 'info' : 'white') 
+                              : (doc.community()?.needsJoinApproval() ? 'danger' : 'warning'),
     visible: user.hasPermission('partners.update', doc),
     run() {
       Modal.show('Autoform_modal', {
