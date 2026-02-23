@@ -7,7 +7,7 @@ import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
 import { importCollectionFromFile } from '/imports/ui_3/views/components/import-dialog.js';
 import { BatchAction } from '/imports/api/batch-action.js';
-import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId, defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import '/imports/api/meters/actions.js';
 import { MeterReadings } from './meter-readings.js';
@@ -55,7 +55,7 @@ MeterReadings.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: user.hasPermission('meterReadings.update', doc) && doc.date > doc.meter().lastBilling().date,
+    visible: user.hasPermission('meterReadings.update', doc) && doc?.meter()?.lastBilling() && doc.date > doc.meter().lastBilling().date,
     run() {
       const omitFields = user.hasPermission('meterReadings.update', doc) ? undefined : ['approved'];
       Modal.show('Autoform_modal', {
@@ -72,7 +72,7 @@ MeterReadings.actions = {
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',
-    visible: user.hasPermission('meterReadings.remove', doc) && doc.date > doc.meter().lastBilling().date,
+    visible: user.hasPermission('meterReadings.remove', doc) && doc?.meter()?.lastBilling() && doc.date > doc.meter().lastBilling().date,
     run() {
       Modal.confirmAndCall(MeterReadings.methods.remove, { _id: doc._id }, {
         action: 'delete',
@@ -83,8 +83,15 @@ MeterReadings.actions = {
   }),
 };
 
+MeterReadings.dummyDoc = {
+  communityId: getActiveCommunityId,
+  meter() { return {
+    lastBilling() { return undefined; },
+  }; },
+};
+
 MeterReadings.batchActions = {
-  delete: new BatchAction(MeterReadings.actions.delete, MeterReadings.methods.batch.remove),
+  delete: new BatchAction(MeterReadings.actions.delete, MeterReadings.methods.batch.remove, {}, MeterReadings.dummyDoc),
 };
 
 //-----------------------------------------------
