@@ -69,7 +69,7 @@ Meters.helpers({
     return result && MeterReadings.convertToReadingSchema(result);
   },
   lastReading(date) {
-    debugAssert(this._lastReading, 'Meters should have at least an initial reading', this);
+    // can happen when just creating the meter: debugAssert(this._lastReading, 'Meters should have at least an initial reading', this);
     if (!date) return this._lastReading;
     let result;
     for (const r of this.getReadings().fetch()) {
@@ -83,7 +83,7 @@ Meters.helpers({
     return this._lastBilling || this.startReading();
   },
   lastReadingDate() {
-    return this.getReadings().count < 2 ? new Date(0) : this.lastReading().date;
+    return this._lastReading.value === 0 ? new Date(0) : this.lastReading().date;
     // The first reading is always the installation reading, so if it has 1 reading, it was never read
   },
   lastReadingColor() {
