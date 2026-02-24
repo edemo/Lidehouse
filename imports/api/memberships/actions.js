@@ -99,7 +99,7 @@ Memberships.actions = {
     name: 'invite',
     label: !doc.userId ? 'invite' : (doc.user()?.isVerified() ? 'link' : 'reinvite'),
     icon: 'fa fa-user-plus',
-    color: doc.userId ? 'info' : 'warning',
+    color: doc.userId ? 'info' : (doc.partner().contact?.email ? 'primary' : 'warning'),
     visible: user.hasPermission(`${doc.entityName()}.update`, doc) && !doc.accepted,
     run() {
       const partner = doc.partner();

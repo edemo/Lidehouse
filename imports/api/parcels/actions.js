@@ -74,7 +74,7 @@ Parcels.actions = {
         const representor = doc.representorOrFirstOwner();
         if (representor) {
           if (!representor.accepted) {
-            if (!representor.userId) colorClass = 'warning';
+            if (!representor.userId) colorClass = representor.partner()?.contact?.email ? 'primary' : 'warning';
             else colorClass = 'info';
           }
         } else colorClass = 'danger';
