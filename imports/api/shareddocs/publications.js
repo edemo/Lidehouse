@@ -5,6 +5,15 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Shareddocs } from './shareddocs.js';
 
+Meteor.publish('shareddocs.summary', function () {
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.super) {
+    this.ready();
+    return;
+  }
+  return Shareddocs.find({}, { fields: { communityId: 1, size: 1 } });
+});
+
 Meteor.publish('shareddocs.ofCommunity', function (params) {
   new SimpleSchema({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },

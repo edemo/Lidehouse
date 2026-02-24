@@ -6,7 +6,7 @@
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-12">
-                <div class="ibox communities">
+                <div class="ibox">
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">{{_ 'Community finder note'}}</span>
                         <h2>{{_ 'Community finder'}}</h2>
@@ -23,9 +23,12 @@
                             </div>
                         </div>
                         <br>
-                        <div class="row">
+                        <div class="row communities">
                             <div class="col-xs-12 text-center">
                                 <button class="btn btn-primary js-create">{{_ 'createNew'}}</button>
+                                {{#if currentUser.super}}
+                                <button class="btn btn-default js-import">{{_ 'import'}}</button>
+                                {{/if}}
                             </div>
                         </div>
                     </div>

@@ -35,6 +35,12 @@
       "doing": "import",
       "done": "imported"
     },
+    "zip": {
+      "label": "export",
+      "do": "export",
+      "doing": "export",
+      "done": "exported"
+    },
     "join": {
       "label": "join",
       "done": "joined"

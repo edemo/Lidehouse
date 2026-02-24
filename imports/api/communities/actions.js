@@ -6,6 +6,7 @@ import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { UploadFS } from 'meteor/jalik:ufs';
 
 import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
@@ -28,10 +29,30 @@ Communities.actions = {
       });
     },
   }),
+  import: (options, doc, user= Meteor.userOrNull()) => ({
+    name: 'import',
+    icon: 'fa fa-upload',
+    visible: user.super,
+    run() {
+      UploadFS.selectFile(function (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          let data = e.target.result;
+          const json = JSON.parse(data);
+          Modal.confirmAndCall(Communities.methods.unzip, { data: json }, {
+            action: 'import',
+            entity: 'community',
+            message: `You are importing community ${_.pluck(json.communities, 'name')}`,
+          });
+        };
+        reader.readAsText(file);
+      });
+    }
+  }),
   view: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'view',
     icon: 'fa fa-eye',
-    visible: user.hasPermission('communities.inCommunity', doc),
+    visible: user.hasPermission('communities.details', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.community.view',
@@ -121,12 +142,40 @@ Communities.actions = {
       });
     },
   }),
+  zip: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'zip',
+    icon: 'fa fa-download',
+    visible: user.super,
+    run() {
+      Modal.confirmAndCall(Communities.methods.zip, { _id: doc._id }, {
+        action: 'zip',
+        entity: 'community',
+        message: 'It will create a large export file in your downloads folder',
+      }, (successful, data) => {
+        if (!successful) return;
+        const filename = `${doc.name}.export.json`;
+        const jsonString = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        // Create invisible <a> element to trigger download
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        link.style.display = "none";
+        // Add to DOM → click → remove
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);        
+      });
+    },
+  }),
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',
     visible: user.hasPermission('communities.remove', doc),
     run() {
-      Modal.confirmAndCall(Communities.methods.remove, { _id: doc._id }, {
+      Modal.confirmAndCall(Communities.methods.remove, { _id: doc._id, force: user.super }, {
         action: 'delete',
         entity: 'community',
         message: 'It will disappear forever',

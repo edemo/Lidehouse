@@ -230,6 +230,29 @@ Communities.helpers({
   isActiveModule(moduleName) {
     return !this.settings?.modules || _.contains(this.settings.modules, moduleName);
   },
+  lastActivity() { // TODO: needs subscription to last Transactions
+    let result = undefined;
+    ['topics', 'comments', 'transactions'].forEach(name => {
+      const collection = Mongo.Collection.get(name);
+      const lastDoc = collection.findOne({ comunityId: this.communityId }, { $sort: { createdAt: -1 } });
+      if (lastDoc && (!result || lastDoc.createdAt > result)) {
+        result = lastDoc.createdAt;
+      }
+    });
+    return result;
+  },
+  dataSize() {
+    let result = 0;
+    const Shareddocs = Mongo.Collection.get("shareddocs");
+    const shareddocs = Shareddocs.find({ communityId: this._id }).fetch();
+    shareddocs.forEach(doc => result += doc.size);
+    return result;
+  },
+  parcelCount() {
+    let result = 0;
+    Object.keys(this.parcels).forEach(k => result += this.parcels[k]);
+    return result;
+  },
   parcelTypes() {
     return Object.keys(this.parcels);
   },

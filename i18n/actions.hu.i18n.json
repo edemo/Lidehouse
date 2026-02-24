@@ -35,6 +35,12 @@
       "doing": "importálása",
       "done": "importálva"
     },
+    "zip": {
+      "label": "export",
+      "do": "exportálja",
+      "doing": "exportálása",
+      "done": "exportálva"
+    },
     "join": {
       "label": "csatlakozás",
       "done": "csatlakozva"

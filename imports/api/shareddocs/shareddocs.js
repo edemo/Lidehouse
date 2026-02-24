@@ -15,6 +15,7 @@ export const Shareddocs = new Mongo.Collection('shareddocs');
 function permissionsByFolders(userId, doc, permissions) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
+  if (user.super) return true;
   debugAssert(permissions.default, 'default folder permission required');
   const folder = Sharedfolders.findOne(doc.folderId);
   if (permissions[folder.content]) return user.hasPermission(permissions[folder.content], doc);

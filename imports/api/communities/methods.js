@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
@@ -7,35 +8,19 @@ import { Accounts as UserAccounts } from 'meteor/accounts-base';
 import { moment } from 'meteor/momentjs:moment';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { Fraction } from 'fractional';
 
 import { Log } from '/imports/utils/log.js';
+import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
 import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 import { __ } from '/imports/localization/i18n.js';
 import { sendPromoLaunchLink, sendPromoInviteLink } from '/imports/email/promo-send.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
-import { Meters } from '/imports/api/meters/meters.js';
-import { MeterReadings } from '/imports/api/meters/meter-readings/meter-readings.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Comments } from '/imports/api/comments/comments.js';
-import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Breakdowns } from '/imports/api/accounting/breakdowns/breakdowns.js';
-import { Txdefs } from '/imports/api/accounting/txdefs/txdefs.js';
-import { ParcelBillings } from '/imports/api/accounting/parcel-billings/parcel-billings.js';
-import { Transactions } from '/imports/api/accounting/transactions.js';
-import { Accounts } from '/imports/api/accounting/accounts/accounts.js';
-import { AccountingPeriods } from '/imports/api/accounting/periods/accounting-periods.js';
-import { Balances } from '/imports/api/accounting/balances/balances.js';
-import { Statements } from '/imports/api/accounting/statements/statements.js';
-import { StatementEntries } from '/imports/api/accounting/statement-entries/statement-entries.js';
 import { Partners } from '/imports/api/partners/partners.js';
-import { Contracts } from '/imports/api/contracts/contracts.js';
-import { Attachments } from '/imports/api/attachments/attachments.js';
-import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
-import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Communities } from './communities.js';
 
 export const create = new ValidatedMethod({
@@ -159,47 +144,144 @@ export const close = new ValidatedMethod({
   },
 });
 
+const userDataCollectionNames = [ 
+  'notifications',
+];
+  
+const communityDataCollectionNames = [ 
+  // in deletion order
+  'meterReadings',
+  'meters',
+  'attachments',
+  'shareddocs',
+  'memberships',
+  'comments',
+  'topics',
+  'agendas',
+  'delegations',
+  'transactions',
+  'parcelBillings',
+  'balances',
+  'statementEntries',
+  'statements',
+  'txdefs',
+  'parcels',
+  'partners',
+  'contracts',
+  'accounts',
+  'breakdowns',
+  'accountingPeriods',
+  'sharedfolders',
+  'settings',
+  'recognitions',
+  'reviews',
+  'deals',
+  'listings',
+];
+
 export const remove = new ValidatedMethod({
   name: 'communities.remove',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    force: { type: Boolean, optional: true }
   }).validator(),
-  run({ _id }) {
+  run({ _id, force }) {
     const doc = checkExists(Communities, _id);
     const communityId = _id;
     checkPermissions(this.userId, 'communities.remove', doc);
     // Community cannot be deleted while it has any active officers apart from the admin
     const officers = Memberships.findActive({ communityId, role: { $in: officerRoles } });
-    if (officers.count() > 1) {
+    if (!force && officers.count() > 1) {
       throw new Meteor.Error('err_unableToRemove',
       'Community cannot be deleted while it has active officers', `Found: {${officers.count()}}`);
     }
     // Once there are no active officers, the community can be purged
-    MeterReadings.remove({ communityId });
-    Meters.remove({ communityId });
-    Attachments.remove({ communityId });
-    Shareddocs.remove({ communityId });  // permission check in package before hook - needs membership
-    Memberships.remove({ communityId });
-    Comments.remove({ communityId });
-    Topics.remove({ communityId });
-    Agendas.remove({ communityId });
-    Delegations.remove({ communityId });
-    Transactions.remove({ communityId });
-    ParcelBillings.remove({ communityId });
-    Balances.remove({ communityId });
-    Statements.remove({ communityId });
-    StatementEntries.remove({ communityId });
-    Txdefs.remove({ communityId });
-    Parcels.remove({ communityId });
-    Partners.remove({ communityId });
-    Contracts.remove({ communityId });
-    Accounts.remove({ communityId });
-    Breakdowns.remove({ communityId });
-    AccountingPeriods.remove({ communityId });
-    Sharedfolders.remove({ communityId });
+    communityDataCollectionNames.forEach(name => {
+      collection = Mongo.Collection.get(name);
+      collection.remove({ communityId });
+    });
     return Communities.remove(communityId);
   },
 });
 
+export const zip = new ValidatedMethod({
+  name: 'communities.zip',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    withUploadedData: { type: Boolean, defaultValue: false },
+  }).validator({ clean: true }),
+  run({ _id, withUploadedData }) {
+    const communityId = _id;
+    const doc = checkExists(Communities, _id);
+    const user = Meteor.users.findOne(this.userId);
+    if (!user.super) return;
+    if (Meteor.isClient) return;
+
+    const result = {
+      communities: [doc],
+    };
+    communityDataCollectionNames.forEach(name => {
+      collection = Mongo.Collection.get(name);
+      debugAssert(collection, `Could not find collection ${name}`);
+      result[name] = collection.find({ communityId }).fetch();
+    });
+    const partners = Partners.find({ communityId }).fetch();
+    const userIds = _.without(_.uniq(_.pluck(partners, 'userId')), undefined);
+    result.users = Meteor.users.find({ _id: { $in: userIds } }).fetch();
+    
+    userDataCollectionNames.forEach(name => {
+      collection = Mongo.Collection.get(name);
+      debugAssert(collection, `Could not find collection ${name}`);
+      result[name] = collection.find({ userId: { $in: userIds } }).fetch();
+    });
+    if (withUploadedData) { // bringing the uploaded file chunks - TODO
+      result['uploadfs.files'] = [];
+      result['uploadfs.chunks'] = [];
+      const db = Communities.rawDatabase();
+      const filesColl = db.collection('uploadfs.files'); debugAssert(filesColl, `Could not find collection ${'uploadfs.files'}`);
+      const chunksColl = db.collection('uploadfs.chunks'); debugAssert(chunksColl, `Could not find collection ${'uploadfs.chunks'}`);
+      result.shareddocs.forEach(shareddoc => {
+        // TODO: async operation needed here
+        filesColl.find({ filename: shareddoc._id }).toArray((err, docs) => {
+          result['uploadfs.files'].push(...docs);
+        })
+        chunksColl.find({ files_id: shareddoc._id }).toArray((err, docs) => {
+          result['uploadfs.chunks'].push(...docs);
+        })
+      });
+    }
+    return result;
+  },
+});
+
+export const unzip = new ValidatedMethod({
+  name: 'communities.unzip',
+  validate: new SimpleSchema({
+    data: { type: Object, blackbox: true },
+  }).validator(),
+  run({ data }) {
+    productionAssert(data.communities.length === 1, "Multi communities export not supprted", data.communities);
+    const community = data.communities[0];
+    checkNotExists(Communities, community._id);
+    const user = Meteor.users.findOne(this.userId);
+    if (!user.super) return;
+    if (Meteor.isClient) return;
+
+    // Need to start with the users, so when a user duplicate is found, it throws an error, and importer has a chance to replaceAll that userId in the whole data file
+    const colectionNames = ['users', 'communities'].concat(userDataCollectionNames).concat(communityDataCollectionNames);
+    colectionNames.forEach(name => {
+      const collection = Mongo.Collection.get(name);
+      data[name].forEach(obj => {
+//        console.log("inserting", JSON.stringify(obj, null, 2));
+        if (name === 'memberships' && obj.ownership?.share) {
+          obj.ownership.share = new Fraction(obj.ownership.share.numerator, obj.ownership.share.denominator);
+        }
+        collection.direct.insert(obj, { validate: false, filter: false });
+      });
+    });
+    return community;
+  },
+});
+
 Communities.methods = Communities.methods || {};
-_.extend(Communities.methods, { create, launch, update, close, remove });
+_.extend(Communities.methods, { create, launch, update, close, remove, zip, unzip });
