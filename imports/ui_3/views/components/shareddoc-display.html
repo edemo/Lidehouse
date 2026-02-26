@@ -28,6 +28,8 @@
                     {{shortened name 44}}
                     <br/>
                     <small>{{_ 'createdAt'}}: {{displayDate this.uploadedAt}}</small>
+                    <br/>
+                    <small class="text-capitalize">{{_ 'size'}}: {{displayMB size 2 true}}</small>    
                 </div>
             </a>
             {{/if}}
@@ -61,6 +63,8 @@
         <a class="js-delete nav-item">
           <i class="fa fa-trash" title={{_ 'delete'}}></i>
         </a>
+        <br/>
+        {{displayMB size 2 true}}
       </div>
       {{/if}}
     </div>    

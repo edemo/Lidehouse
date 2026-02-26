@@ -36,6 +36,10 @@ export function displayNumber(number, decimals = 2, showZeros = true) {
   return numeral(number).format(formatString);
 }
 
+const MEGA =  1024 * 1024;
+export function displayMB(number, decimals = 2, showZeros = true) {
+  return displayNumber(number/MEGA, decimals, showZeros) + ' MB';
+}
 export function displayDate(time) {
   if (!time) return '---';
   return moment.utc(time).format('L');
@@ -115,6 +119,8 @@ if (Meteor.isClient) {
   Template.registerHelper('negativeClass', negativeClass);
 
   Template.registerHelper('displayNumber', displayNumber);
+
+  Template.registerHelper('displayMB', displayMB);
 
   Template.registerHelper('currentTime', function currentTime() {
     return moment().format('L LT');
