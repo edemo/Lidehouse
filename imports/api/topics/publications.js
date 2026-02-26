@@ -6,6 +6,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Votings } from '/imports/api/topics/votings/votings.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Partners } from '/imports/api/partners/partners.js';
@@ -16,7 +17,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 
 Meteor.publishComposite(null, function selfNotiBadges() {
   const user = Meteor.users.findOneOrNull(this.userId);
-  const communityIds = user.communityIds();
+  const communityIds = user.super ? Communities.find({}).map(c => c._id) : user.communityIds();
   if (communityIds.length <= 1) return this.ready();
 
   const selector = {

@@ -783,9 +783,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     partnerId: customer0,
   });
 
+  let maintainanceDate = moment(Clock.currentDate());
   [1, 2, 3, 4].forEach(m => {
-    Clock.tick(1, 'month');
-    const maintainanceDate = moment(Clock.currentDate());
+    maintainanceDate = maintainanceDate.add(1, 'month');
     const ticket = builder.create('ticket', {
       title: __('demo.contract.1.ticketTitle') + ' ' + maintainanceDate.format('YYYY MMM'),
       text: __('demo.contract.1.ticketText'),
