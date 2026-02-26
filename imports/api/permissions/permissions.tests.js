@@ -21,6 +21,7 @@ if (Meteor.isServer) {
   let Fixture;
   let communityId;
   let parcelId;
+  let meterId;
   let admin;
   let manager;
   let owner;
@@ -31,6 +32,7 @@ if (Meteor.isServer) {
       Fixture = freshFixture();
       communityId = Fixture.demoCommunityId;
       parcelId = Fixture.dummyParcels[0];
+      meterId = Fixture.builder.create('meter', { parcelId });
       admin = Meteor.users.findOne(Fixture.demoAdminId);
       manager = Meteor.users.findOne(Fixture.demoManagerId);
       owner = Meteor.users.findOne(Fixture.demoUserId);
@@ -46,7 +48,6 @@ if (Meteor.isServer) {
       });
 
       it('Determines user`s non-parcelscoped permissions', function () {
-        const meterId = Fixture.builder.create('meter', { parcelId });
         const meter = Mongo.Collection.get('meters').findOne(meterId);
 
         chai.assert.isTrue(admin.hasPermission('meters.update', meter));
@@ -55,7 +56,6 @@ if (Meteor.isServer) {
       });
 
       it('Determines user`s parcelscoped permissions', function () {
-        const meterId = Fixture.builder.create('meter', { parcelId });
         const meter = Mongo.Collection.get('meters').findOne(meterId);
         const otherOwner = Meteor.users.findOne(Fixture.dummyUsers[2]);
 
