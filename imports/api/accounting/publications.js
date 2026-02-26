@@ -60,11 +60,12 @@ Meteor.publish('transactions.byAccount', function transactionsInCommunity(params
   new SimpleSchema({
     communityId: { type: String },
     account: { type: String, optional: true },
+    partner: { type: String, optional: true },
     localizer: { type: String, optional: true },
     begin: { type: Date, optional: true },
     end: { type: Date, optional: true },
   }).validate(params);
-  const { communityId, account, localizer, begin, end } = params;
+  const { communityId, account, partner, localizer, begin, end } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     return this.ready();
