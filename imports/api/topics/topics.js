@@ -42,6 +42,7 @@ Topics.baseSchema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { type: 'markdown' } },
   notiLocalizer: { type: [String], optional: true, autoform: { type: 'hidden' } }, // autoform: Parcels.choosePhysical
+  notiUrgency: { type: String, optional: true, allowedValues: Topics.notiUrgencyValues, autoform: allowedOptions() },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
   movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 });
@@ -53,7 +54,6 @@ Topics.categoryChangeSchema = new SimpleSchema({
 Topics.extensionSchemas.news = new SimpleSchema({
   category: { type: String, defaultValue: 'news', autoform: { type: 'hidden', defaultValue: 'news' } },
   sticky: { type: Boolean, optional: true, defaultValue: false },
-  notiUrgency: { type: String, optional: true, allowedValues: Topics.notiUrgencyValues, autoform: allowedOptions() },
 });
 
 Topics.extensionSchemas.forum = new SimpleSchema({
@@ -244,10 +244,11 @@ Topics.helpers({
     let users = [];
     switch (this.category) {
       case 'ticket':
-        if (this.ticket?.urgency === 'high') users = this.community().ticketHandlers();
-        break;
+        if (this.ticket?.urgency === 'high') users = users.concat(this.community().ticketHandlers());
+      case 'forum':
+      case 'vote':
       case 'news':
-        if (this.notiUrgency === 'immediate') users = this.community().users();  // should be called .members()
+        if (this.notiUrgency === 'immediate') users = users.concat(this.community().users());  // should be called .members()
         break;
       default:
         break;
