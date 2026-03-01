@@ -14,7 +14,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkPermissions(this.userId, 'meterReadings.insert', doc);
-    productionAssert(doc.type === 'reading', 'Estimates cannot be inserted. Estimates are inserted automatically')
+    productionAssert(doc.type === 'reading', 'Estimates cannot be created manually');
     return MeterReadings.insert(doc);
   },
 });
@@ -29,7 +29,8 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(MeterReadings, _id);
 //    checkModifier(doc, modifier, ['_lastReading', '_lastBilling'], true);
-    checkPermissions(this.userId, 'meters.update', doc);
+    checkPermissions(this.userId, 'meterReadings.update', doc);
+    productionAssert(doc.type === 'reading', 'Estimates cannot be created manually');
     return MeterReadings.update(_id, modifier);
   },
 });
@@ -42,7 +43,8 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(MeterReadings, _id);
-    checkPermissions(this.userId, 'meters.remove', doc);
+    checkPermissions(this.userId, 'meterReadings.remove', doc);
+    productionAssert(doc.type === 'reading', 'Estimates cannot be created manually');
     return MeterReadings.remove(_id);
   },
 });
