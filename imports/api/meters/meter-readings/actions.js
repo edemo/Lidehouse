@@ -55,7 +55,7 @@ MeterReadings.actions = {
   edit: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: user.hasPermission('meterReadings.update', doc), // && doc.meter()?._lastReading.date === doc.date,
+    visible: doc.type === 'reading' && user.hasPermission('meterReadings.update', doc), // && doc.meter()?._lastReading.date === doc.date,
     run() {
       const omitFields = user.hasPermission('meterReadings.update', doc) ? undefined : ['approved'];
       Modal.show('Autoform_modal', {
@@ -72,7 +72,7 @@ MeterReadings.actions = {
   delete: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'delete',
     icon: 'fa fa-trash',
-    visible: user.hasPermission('meterReadings.remove', doc) && doc?.meter()?.lastBilling() && doc.date > doc.meter().lastBilling().date,
+    visible: doc.type === 'reading' && user.hasPermission('meterReadings.remove', doc), // && doc?.meter()?.lastBilling() && doc.date > doc.meter().lastBilling().date,
     run() {
       Modal.confirmAndCall(MeterReadings.methods.remove, { _id: doc._id }, {
         action: 'delete',
