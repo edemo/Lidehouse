@@ -13,6 +13,7 @@ import '/imports/ui_3/views/modals/autoform-modal.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { setMeAsParcelOwner } from '/imports/api/parcels/actions.js';
 import { Communities } from './communities.js';
+import './forms/community-edit.js';
 import './methods.js';
 
 Communities.actions = {
@@ -23,13 +24,15 @@ Communities.actions = {
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.community.create',
+        body: 'Community_edit',
         collection: Communities,
         type: 'method',
         meteormethod: 'communities.insert',
+        size: 'lg',
       });
     },
   }),
-  import: (options, doc, user= Meteor.userOrNull()) => ({
+  import: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'import',
     icon: 'fa fa-upload',
     visible: user.super,
@@ -56,9 +59,11 @@ Communities.actions = {
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.community.view',
+        body: 'Community_edit',
         collection: Communities,
         doc,
         type: 'readonly',
+        size: 'lg',
       });
     },
   }),
@@ -69,11 +74,13 @@ Communities.actions = {
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.community.edit',
+        body: 'Community_edit',
         collection: Communities,
         doc,
         type: 'method-update',
         meteormethod: 'communities.update',
         singleMethodArgument: true,
+        size: 'lg',
       });
     },
   }),
@@ -96,7 +103,7 @@ Communities.actions = {
   join: (options, doc, user = Meteor.userOrNull()) => ({
     name: 'join',
     icon: 'fa fa-suitcase',
-//    label: doc.settings?.joinable === 'withLink' ? 'join' : 'submit join request',
+    //    label: doc.settings?.joinable === 'withLink' ? 'join' : 'submit join request',
     visible: doc.settings && doc.joinable?.(),
     run() {
       const communityId = doc._id;
@@ -112,8 +119,8 @@ Communities.actions = {
           type = TAPi18n.__('schemaParcels.type.flat', {}, language);
           units = 100;
         }
-        Meteor.call('parcels.insert', 
-          { communityId, category: community.propertyCategory(), approved: false, ref: 'auto' , units, type },
+        Meteor.call('parcels.insert',
+          { communityId, category: community.propertyCategory(), approved: false, ref: 'auto', units, type },
           onSuccess(res => setMeAsParcelOwner(res, communityId, onSuccess(r => FlowRouter.go('App home')),
           )),
         );
@@ -166,7 +173,7 @@ Communities.actions = {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        URL.revokeObjectURL(url);        
+        URL.revokeObjectURL(url);
       });
     },
   }),

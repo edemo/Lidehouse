@@ -6,7 +6,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Clock } from '/imports/utils/clock';
 import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
-import { votingEditInstance } from '/imports/ui_3/views/modals/voting-edit.js';
+import { votingEditInstance } from './forms/voting-edit.js';
 import '/imports/api/topics/entities.js';
 
 AutoForm.addHooks('af.vote.create', {

@@ -7,10 +7,10 @@ import { ActionOptions } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import '/imports/api/topics/entities.js';
 import '/imports/api/topics/actions.js';
+import '/imports/api/topics/votings/forms/voting-edit.js';
 
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
-import '/imports/ui_3/views/modals/voting-edit.js';
 import '../common/page-heading.js';
 import '../components/topic-vote-box.js';
 import '../components/voting-list.html';
@@ -38,8 +38,8 @@ Template.Vote_topics.viewmodel({
     let topicsList = Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
     if (this.searchText()) {
       topicsList = topicsList.filter(t =>
-          t.title.toLowerCase().search(this.searchText().toLowerCase()) >= 0
-       || t.text.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+        t.title.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+        || t.text.toLowerCase().search(this.searchText().toLowerCase()) >= 0
       );
     }
     return topicsList;

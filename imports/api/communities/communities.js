@@ -40,8 +40,35 @@ const chooseTemplate = {
   },
 };
 
-Communities.settingsSchema = new SimpleSchema({
-  modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', defaultValue: _.without(Communities.availableModules, 'marketplace') } },
+Communities.baseSchema = new SimpleSchema([{
+  name: { type: String, max: 100 },
+  isTemplate: { type: Boolean, optional: true, autoform: { omit: true } },
+  description: { type: String, max: 5000, optional: true, autoform: { type: 'textarea', rows: 3 } },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
+}, AddressSchema, {
+  lot: { type: String, max: 100, optional: true },
+  regNo: { type: String, max: 100, optional: true },
+  management: { type: String, optional: true, autoform: { type: 'textarea', rows: 3 } },
+  taxNo: { type: String, max: 50, optional: true },
+  status: { type: String, allowedValues: Communities.statusValues, defaultValue: 'live', autoform: { type: 'hidden' } },
+  // cached fields:
+  parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
+  registeredUnits: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
+  billsUsed: { type: [String], defaultValue: [], allowedValues: Relations.values, autoform: { omit: true } },
+}]);
+
+const requiredBy = function (moduleName) {
+  return function () {
+    const modules = this.field('settings.modules');
+    const isActive = modules?.value?.includes(moduleName);
+    if (isActive && !this.value) {
+      return 'required';
+    }
+  };
+};
+
+Communities.genericSettingsSchema = new SimpleSchema({
+  modules: { type: [String], optional: true, allowedValues: Communities.availableModules, autoform: { type: 'select-checkbox', defaultValue: _.without(Communities.availableModules, 'finances', 'marketplace') } },
   joinable: { type: String, allowedValues: ['inviteOnly', 'withApproval', 'withLink'], defaultValue: 'withApproval', autoform: allowedOptions() },
   language: { type: String, allowedValues: availableLanguages, autoform: { firstOption: false } },
   ownershipScheme: { type: String, allowedValues: Communities.ownershipSchemeValues, autoform: { defaultValue: 'condominium' } },
@@ -49,9 +76,11 @@ Communities.settingsSchema = new SimpleSchema({
   parcelRefFormat: { type: String, optional: true },
   topicAgeDays: { type: Number, defaultValue: 365 },
   communalModeration: { type: Number, defaultValue: 0, autoform: { defaultValue() { return 0; } } },
-  // accounting
-  templateId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTemplate },
-  accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions() },
+});
+
+Communities.financesSettingsSchema = new SimpleSchema({
+  templateId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTemplate, optional: true, custom: requiredBy('finances') },
+  accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: allowedOptions(), optional: true, custom: requiredBy('finances') },
   paymentsToBills: { type: [String], allowedValues: Relations.values, defaultValue: Relations.mainValues, autoform: { type: 'select-checkbox-inline' } },
   paymentsWoStatement: { type: Boolean, optional: true },
   allowPostToGroupAccounts: { type: Boolean, optional: true },
@@ -61,28 +90,23 @@ Communities.settingsSchema = new SimpleSchema({
   sendBillEmail: { type: [String], optional: true, allowedValues: ['member', 'customer'], defaultValue: [], autoform: { type: 'select-checkbox-inline' } },
   enableMeterEstimationDays: { type: Number, defaultValue: 30 },
   latePaymentFees: { type: Boolean, optional: true },
-  // marketplace
-  marketplaceCurrency: { type: String, optional: true, max: 10 }, // If not specified the local currency will be used
-  giftEconomy: { type: Boolean,  optional: true },
 });
 
-Communities.schema = new SimpleSchema([{
-  name: { type: String, max: 100 },
-  isTemplate: { type: Boolean, optional: true, autoform: { omit: true } },
-  description: { type: String, max: 5000, optional: true, autoform: { type: 'textarea' } },
-  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: imageUpload() },
-}, AddressSchema, {
-  lot: { type: String, max: 100, optional: true },
-  regNo: { type: String, max: 100, optional: true },
-  management: { type: String, optional: true, autoform: { type: 'textarea' } },
-  taxNo: { type: String, max: 50, optional: true },
-  status: { type: String, allowedValues: Communities.statusValues, defaultValue: 'live', autoform: { type: 'hidden' } },
-  settings: { type: Communities.settingsSchema },
-  // cached fields:
-  parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
-  registeredUnits: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
-  billsUsed: { type: [String], defaultValue: [], allowedValues: Relations.values, autoform: { omit: true } },
-}]);
+Communities.marketplaceSettingsSchema = new SimpleSchema({
+  marketplaceCurrency: { type: String, optional: true, max: 10 }, // If not specified the local currency will be used
+  giftEconomy: { type: Boolean, optional: true },
+});
+
+Communities.settingsSchema = new SimpleSchema([
+  Communities.genericSettingsSchema,
+  Communities.financesSettingsSchema,
+  Communities.marketplaceSettingsSchema,
+]);
+
+Communities.schema = new SimpleSchema([
+  Communities.baseSchema,
+  { settings: { type: Communities.settingsSchema } },
+]);
 
 Communities.listingsFields = {
   name: 1,
@@ -111,7 +135,7 @@ Communities.helpers({
     return __(this.specificTermFor(text));
   },
   displayType() {
-   return this.specificTermFor('community');
+    return this.specificTermFor('community');
   },
   hasPhysicalLocations() {
     const scheme = this.settings?.ownershipScheme;
@@ -125,7 +149,7 @@ Communities.helpers({
   hasVotingUnits() {
     const scheme = this.settings?.ownershipScheme;
     if (!scheme) return;
-    switch(scheme) {
+    switch (scheme) {
       case 'condominium':
       case 'corporation':
       case 'basket-coop':
@@ -168,13 +192,13 @@ Communities.helpers({
   primaryBankAccount() {
     const Accounts = Mongo.Collection.get('accounts');
     const bankAccount = Accounts.findOneT({ communityId: this._id, templateId: this.settings?.templateId, category: 'bank', primary: true });
-//    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
+    //    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
     return bankAccount;
   },
   primaryCashAccount() {
     const Accounts = Mongo.Collection.get('accounts');
     const cashAccount = Accounts.findOneT({ communityId: this._id, templateId: this.settings?.templateId, category: 'cash', primary: true });
-//    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
+    //    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
     return cashAccount;
   },
   userWithRole(role) {

@@ -1,0 +1,23 @@
+<template name="Community_edit">
+    <div class="row">
+        <div class="col-xs-12 left-padded text-center">
+            <br>
+        </div>
+    </div>
+    <div class="row">
+        <form>
+            <div class="col-xs-12 col-md-6 col-lg-6">
+                {{#each fieldName in baseFields}}
+                {{> afQuickField name=fieldName}}
+                {{/each}}
+            </div>
+
+            <!-- right side -->
+            <div class="col-xs-12 col-md-6 col-lg-6">
+                {{#each fieldName in settingsFields}}
+                {{> afQuickField name=fieldName}}
+                {{/each}}
+            </div>
+        </form>
+    </div>
+</template>
