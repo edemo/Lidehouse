@@ -45,8 +45,8 @@ Accounts.bankExtensionSchema = new SimpleSchema({
   bank: { type: String, max: 100, optional: true },
   accountHolder: { type: String, max: 100, optional: true },
   BAN: { type: String, max: 100, optional: true },  // Bank Account Number
-//  sync: { type: String, defaultValue: 'none', allowedValues: Accounts.syncValues, autoform: _.extend({ value: 'none' }, autoformOptions) },
-//  protocol: { type: String, optional: true },
+  //  sync: { type: String, defaultValue: 'none', allowedValues: Accounts.syncValues, autoform: _.extend({ value: 'none' }, autoformOptions) },
+  //  protocol: { type: String, optional: true },
 });
 
 Meteor.startup(function indexAccounts() {
@@ -86,11 +86,11 @@ Accounts.toTechnical = function toTechnical(account) {
 };
 
 // TODO: Get these special accounts from configuration
-Accounts.carriedBaseAccounts = function carriedBaseAccounts(communityId) { 
+Accounts.carriedBaseAccounts = function carriedBaseAccounts(communityId) {
   return ['`1', '`2', '`3', '`4'];  // These carry their balance to the next period
 };
 
-Accounts.nonCarriedBaseAccounts = function nonCarriedBaseAccounts(communityId) { 
+Accounts.nonCarriedBaseAccounts = function nonCarriedBaseAccounts(communityId) {
   return ['`5', '`6', '`7', '`8', '`9'];  // These need to be closed out to zero at the period end
 };
 
@@ -162,7 +162,7 @@ Accounts.directMove = function directMove(communityId, codeFrom, codeTo) {
   const Transactions = Mongo.Collection.get('transactions');
   const Balances = Mongo.Collection.get('balances');
   productionAssert(!Balances.findOne({ communityId, account: new RegExp('^' + codeTo) }), `Account ${codeTo} is already used in community ${communityId}`);
-                    // TODO: Could handle this case with balance merging
+  // TODO: Could handle this case with balance merging
   const txs = Transactions.find({ communityId });
   console.log('Replacing', codeFrom, 'with', codeTo, 'in Tx count', txs.count());
   txs.forEach(tx => {
@@ -197,8 +197,8 @@ Accounts._move = function move(communityId, codeFrom, codeTo) {
   const Transactions = Mongo.Collection.get('transactions');
   const Balances = Mongo.Collection.get('balances');
   const StatementEntries = Mongo.Collection.get('statementEntries');
-  productionAssert(!Balances.findOne({ communityId, account: new RegExp('^' + codeTo),  $expr: { $ne: ['$debit', '$credit'] } }), `Account ${codeTo} is already used in community ${communityId}`);
-                    // TODO: Could handle this case with balance merging
+  productionAssert(!Balances.findOne({ communityId, account: new RegExp('^' + codeTo), $expr: { $ne: ['$debit', '$credit'] } }), `Account ${codeTo} is already used in community ${communityId}`);
+  // TODO: Could handle this case with balance merging
   const accounts = Accounts.find({ communityId, account: new RegExp('^' + codeFrom) });
   accounts.forEach(acc => {
     Accounts.direct.update(acc._id, { $set: { code: acc.code.replace(codeFrom, codeTo) } });
@@ -377,7 +377,7 @@ if (Meteor.isServer) {
   });
 
   Accounts.after.update(function (userId, doc, fieldNames, modifier, options) {
-    if (modifierChangesField(this.previous, this, ['code'])) {
+    if (modifierChangesField(this.previous, doc, ['code'])) {
       unmarkGroupAccountsUpward(this.previous);
       markGroupAccountsUpward(doc);
     }

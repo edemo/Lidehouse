@@ -65,7 +65,7 @@ Buckets.move = function move(communityId, codeFrom, codeTo) {
   const Listings = Mongo.Collection.get('listings');
   const listings = Listings.find({ communityId });
   console.log('Replacing', codeFrom, 'with', codeTo, 'in Listing count', listings.count());
-  Listings.update({ bucket: codeFrom }, { $set: { bucket: codeTo }});
+  Listings.update({ bucket: codeFrom }, { $set: { bucket: codeTo } });
 };
 
 Buckets.moveTemplate = function move(templateId, codeFrom, codeTo) {
@@ -159,7 +159,7 @@ if (Meteor.isServer) {
   });
 
   Buckets.after.update(function (userId, doc, fieldNames, modifier, options) {
-    if (modifierChangesField(this.previous, this, ['code'])) {
+    if (modifierChangesField(this.previous, doc, ['code'])) {
       unmarkGroupBucketsUpward(this.previous);
       markGroupBucketsUpward(doc);
     }

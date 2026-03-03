@@ -7,6 +7,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
 import { Log } from '/imports/utils/log.js';
+import { modifierChangesField } from '/imports/api/mongo-utils.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -46,25 +47,28 @@ Contracts.ccIdSchema = new SimpleSchema({
 });
 
 Contracts.memberSchema = new SimpleSchema({
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
-    autoform: { ...noUpdate, ...choosePartnerOfParcel, value: () => {
-      const leadParcelId = AutoForm.getFieldValue('leadParcelId');
-      return leadParcelId && Contracts.findOneActive({ parcelId: leadParcelId })?.partnerId;
-    } },
+  partnerId: {
+    type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
+    autoform: {
+      ...choosePartnerOfParcel, value: () => {
+        const leadParcelId = AutoForm.getFieldValue('leadParcelId');
+        return leadParcelId && Contracts.findOneActive({ parcelId: leadParcelId })?.partnerId;
+      }
+    },
   },
   delegateId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // DEPRICATED
   cc: { type: [Contracts.ccIdSchema], optional: true },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id,  optional: true, autoform: { ...noUpdate, ...chooseProperty, type: () => (ModalStack.getVar('parcelId') ? 'hidden' : undefined) } },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty, type: () => (ModalStack.getVar('parcelId') ? 'hidden' : undefined) } },
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...chooseProperty } },
-//  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
-  habitants: { type: Number, optional: true, autoform: { ...noUpdate, type: () => (getActiveCommunity()?.hasPhysicalLocations() ?  undefined : 'hidden') } },
+  //  membershipId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  habitants: { type: Number, optional: true, autoform: { ...noUpdate, type: () => (getActiveCommunity()?.hasPhysicalLocations() ? undefined : 'hidden') } },
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
 
 Contracts.idSet = [['parcelId']];
 
 Contracts.modifiableFields = [
-  // 'partnerId' and 'leadParcelId' are definitely not allowed to change! - you should create new Contract in that case
+  'partnerId', //  'leadParcelId' not allowed to change! - you should create new Contract in that case
   'title',
   'text',
   'billingPeriod',
@@ -73,7 +77,7 @@ Contracts.modifiableFields = [
   'accounting.account',
   'accounting.localizer',
   'cc',
-//  'habitants',
+  //  'habitants',
 ];
 
 Contracts.publicFields = {
@@ -133,10 +137,10 @@ Contracts.helpers({
     const Topics = Mongo.Collection.get('topics');
     return Topics.find({ communityId: this.communityId, categeory: 'ticket', 'ticket.contractId': this._id });
   },
-//  membership() {
-//    const Memberships = Mongo.Collection.get('memberships');
-//    return Memberships.findOne(this.membershipId);
-//  },
+  //  membership() {
+  //    const Memberships = Mongo.Collection.get('memberships');
+  //    return Memberships.findOne(this.membershipId);
+  //  },
   parcel() {
     if (this.parcelId) return Parcels.findOne(this.parcelId);
     return undefined;
@@ -253,6 +257,26 @@ Contracts.simpleSchema({ relation: 'supplier' }).i18n('schemaPartners');    // f
 Contracts.simpleSchema({ relation: 'member' }).i18n('schemaContracts');
 Contracts.simpleSchema({ relation: 'member' }).i18n('schemaPartners');    // for relation translation
 
+// --- Before/after actions ---
+
+if (Meteor.isServer) {
+  Contracts.after.insert(function (userId, doc) {
+  });
+
+  Contracts.after.update(function (userId, doc, fieldNames, modifier, options) {
+    const Transactions = Mongo.Collection.get('transactions');
+    const oldDoc = this.previous;
+    const newDoc = doc;
+    if (modifierChangesField(oldDoc, newDoc, ['partnerId'])) {
+      Transactions.find({ partnerId: oldDoc.partnerId }).forEach(tx => {
+        tx.partnerId = newDoc.partnerId; // Plus the journalEntries also need to be regenerated
+        Transactions.update({ _id: tx._id }, { $set: { partnerId: newDoc.partnerId } }, { selector: { category: 'bill' } });
+        if (tx.isPosted()) Transactions.methods.post._execute({ userId }, { _id: tx._id });
+      });
+    }
+  });
+}
+
 // ---------------------------------------
 
 Factory.define('contract', Contracts, {
@@ -273,7 +297,7 @@ export const chooseContract = {
     if (result) return result;
     const communityId = AutoForm.getFieldValue('communityId');
     const relation = AutoForm.getFieldValue('relation');
-    const partnerId = AutoForm.getFieldValue('partnerId')|| AutoForm.getFieldValue('ticket.partnerId');
+    const partnerId = AutoForm.getFieldValue('partnerId') || AutoForm.getFieldValue('ticket.partnerId');
     const selector = { communityId, relation, partnerId };
     const contractId = partnerId && Contracts.findOne(Object.cleanUndefined(selector))?._id;
     if (AutoForm.getCurrentDataForForm(selfId)?.type !== 'method') return undefined; // method === input form      
