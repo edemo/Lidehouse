@@ -13,15 +13,16 @@ import { Communities } from '/imports/api/communities/communities.js';
 export const chooseTxdef = {
   options() {
     const communityId = ModalStack.getVar('communityId');
-    const txdefs = Txdefs.findTfetch({ communityId }).filter(td => td.isReconciledTo('`38'));
+    const statementEntry = ModalStack.getVar('statementEntry');
+    const txdefs = Txdefs.findTfetch({ communityId }).filter(td => td.isReconciledTo(statementEntry.account));
     const options = txdefs.map(txdef => ({ label: __(txdef.name), value: txdef._id }));
     return options;
   },
   firstOption: () => __('(Select one)'),
-//    return false;
-//    const txdef = ModalStack.getVar('txdef');
-//    return txdef._id;
-//  },
+  //    return false;
+  //    const txdef = ModalStack.getVar('txdef');
+  //    return txdef._id;
+  //  },
 };
 
 export const chooseTransaction = {
@@ -51,7 +52,7 @@ export const chooseTransaction = {
 export const reconciliationSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...chooseTransaction } },
-// on the form only:
+  // on the form only:
   defId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...chooseTxdef } },
 });
 
