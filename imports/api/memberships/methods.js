@@ -117,7 +117,7 @@ export const linkUser = new ValidatedMethod({
       } else if (doc.accepted === false) {
         Memberships.update(doc._id, { $set: { accepted: true } }, { selector: { role: doc.role } });
         sendAddedToRoleInfoEmail(linkedUser, doc.communityId, doc.role);
-       // now we auto-accept it for him (if he is already verified user), we could send acceptance request email instead of info
+        // now we auto-accept it for him (if he is already verified user), we could send acceptance request email instead of info
       }
       return;   // thats all, user is already linked
     }
@@ -160,10 +160,10 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    const contract = doc.contract();
+    const contract = doc.synchronizedContract();
     if (contract) {
       Contracts.methods.remove._execute({ userId: this.userId }, { _id: contract._id }); // This will possibly throw, if contract still has balance
-//      throw new Meteor.Error('err_unableToRemove', 'Membership cannot be deleted while it has a corresponding contract, please delete the contract first');
+      //      throw new Meteor.Error('err_unableToRemove', 'Membership cannot be deleted while it has a corresponding contract, please delete the contract first');
     }
     const MembershipsStage = Memberships.Stage();
     const result = MembershipsStage.remove(_id);
