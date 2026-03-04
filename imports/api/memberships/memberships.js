@@ -31,7 +31,8 @@ Memberships.baseSchema = new SimpleSchema({
   accepted: { type: Boolean, autoform: { omit: true }, defaultValue: false },  // person accepted this membership
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...choosePartner } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  role: { type: String, allowedValues() { return everyRole; },
+  role: {
+    type: String, allowedValues() { return everyRole; },
     autoform: _.extend({}, noUpdate, {
       options() {
         return Roles.find({ name: { $in: officerRoles } }).map(function option(r) { return { label: __(r.name), value: r._id }; });
@@ -136,8 +137,8 @@ Memberships.helpers({
     if (!this.partnerId) return undefined;
     return Partners.findOne(this.partnerId);
   },
-  contract() {
-    return Contracts.findOneActive({ partnerId: this.partnerId, parcelId: this.parcelId });
+  synchronizedContract() {
+    return Contracts.findOne({ partnerId: this.partnerId, parcelId: this.parcelId, 'activeTime.begin': this.activeTime?.begin, 'activeTime.end': this.activeTime?.end });
   },
   user() {
     return this.userId && Meteor.users.findOne(this.userId);
@@ -237,18 +238,18 @@ if (Meteor.isServer) {
   });
 
   Memberships.after.update(function (userId, doc, fieldNames, modifier, options) {
-    const tdoc = this.transform(doc);
-    const contract = tdoc.contract();
+    const oldDoc = this.transform(this.previous);
+    const contract = oldDoc.synchronizedContract();
     if (contract) {  // keep contract's (active time) in sync
       try { // throws Error: After filtering out keys not in the schema, your modifier is now empty
         Contracts.update(contract._id, modifier, { selector: { relation: 'member' } });
-      } catch (err) {}
+      } catch (err) { }
     }
   });
 
   Memberships.after.remove(function (userId, doc) {
     const tdoc = this.transform(doc);
-    const contract = tdoc.contract();
+    const contract = tdoc.synchronizedContract();
     if (contract) Contracts.remove(contract._id);
   });
 }
