@@ -165,11 +165,11 @@ Meters.simpleSchema().i18n('schemaMeters');
 // --- Before/after actions ---
 
 if (Meteor.isServer) {
-  Meters.before.insert(function (userId, doc) {
-    const date = doc.activeTime?.begin || Clock.currentDate();
-    const value = 0;
-    doc._lastBilling =  { date, value };
-  });
+//  Meters.before.insert(function (userId, doc) {
+//    const date = doc.activeTime?.begin || Clock.currentDate();
+//    const value = 0;
+//    doc._lastBilling =  { date, value };
+//  });
 
   Meters.after.insert(function (userId, doc) {
     const date = doc.activeTime?.begin || Clock.currentDate();
