@@ -138,6 +138,7 @@ Memberships.helpers({
     return Partners.findOne(this.partnerId);
   },
   synchronizedContract() {
+    if (this.role !== 'owner') return undefined;
     return Contracts.findOne({ partnerId: this.partnerId, parcelId: this.parcelId, 'activeTime.begin': this.activeTime?.begin, 'activeTime.end': this.activeTime?.end });
   },
   user() {
