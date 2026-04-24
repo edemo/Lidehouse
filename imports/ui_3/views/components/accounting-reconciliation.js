@@ -58,7 +58,7 @@ Template.Accounting_reconciliation.viewmodel({
       columns: transactionColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
-      ...DatatablesExportButtons,
+      ...DatatablesSelectButtons(Transactions)
     });
   },*/
   communityId() {

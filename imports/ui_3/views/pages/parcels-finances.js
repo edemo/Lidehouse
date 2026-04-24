@@ -9,6 +9,7 @@ import { Session } from 'meteor/session';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { parcelFinancesColumns } from '/imports/api/parcels/tables.js';
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Transactions } from '/imports/api/accounting/transactions.js';
@@ -72,11 +73,13 @@ Template.Parcels_finances.viewmodel({
     return () => self.relevantParcels();
   },
   parcelFinancesOptionsFn() {
+    const communityId = ModalStack.getVar('communityId');
+    const community = Communities.findOne(communityId);
     return () => ({
       columns: parcelFinancesColumns(),
       order: [[4, 'desc']],
       language: datatables_i18n[TAPi18n.getLanguage()],
-      ...DatatablesExportButtons,
+      ...DatatablesExportButtons(community, 'Parcel balances'),
     });
   },
   beginDate() {

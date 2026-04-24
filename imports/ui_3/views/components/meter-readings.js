@@ -4,7 +4,6 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
-import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { MeterReadings } from '/imports/api/meters/meter-readings/meter-readings.js';
 import { meterReadingsColumns } from '/imports/api/meters/meter-readings/tables.js';
@@ -48,7 +47,7 @@ Template.Meter_readings.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesExportButtons,
+      ...DatatablesExportButtons(community, 'meterReadings'),
     });
   },
 });

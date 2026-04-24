@@ -5,7 +5,9 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { ParcelBillings } from '/imports/api/accounting/parcel-billings/parcel-billings.js';
 import { parcelBillingsAppliesColumns } from '/imports/api/accounting/parcel-billings/tables.js';
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
@@ -24,13 +26,15 @@ Template.ParcelBillings_lastApplies.viewmodel({
     return this.tableData;
   },
   optionsFn() {
+    const communityId = ModalStack.getVar('communityId');
+    const community = Communities.findOne(communityId);
     return () => ({
       columns: parcelBillingsAppliesColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesExportButtons,
+      ...DatatablesExportButtons(community, 'Parcel billing last applications'),
     });
   },
 });

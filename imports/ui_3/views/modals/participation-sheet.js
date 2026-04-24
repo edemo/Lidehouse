@@ -32,7 +32,7 @@ Template.Participation_sheet.viewmodel({
         columns: participationSheetColumns(),
         language: datatables_i18n[TAPi18n.getLanguage()],
         pageLength: 250,
-        ...DatatablesExportButtons,
+        ...DatatablesExportButtons(this.templateInstance.data.community, 'Participation sheet'),
       });
     },
   });
