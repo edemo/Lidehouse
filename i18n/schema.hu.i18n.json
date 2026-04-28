@@ -836,7 +836,7 @@
     },    
     "notiLocalizer": {
       "label": "Értesítési hely",
-      "help": "Megjelölhet egy vagy több helyet (épület, emeletek, albetétek) amiket érint ez a téma, hogy kapjanak róla értesítőt. Hagyja üresen, ha nem kívánja helyileg korlátozni az értesítéseket."
+      "help": "Megjelölhet egy helyet (épület, emelet, albetét) amit érint ez a téma, hogy kapjanak róla értesítőt. Hagyja üresen, ha nem kívánja helyileg korlátozni az értesítéseket."
     },    
     "shareddocs": {
       "label": "Dokumentumok (ha csatolni szeretne)",
@@ -959,7 +959,7 @@
         }
       },
       "localizer": {
-        "label": "Értesítési hely"
+        "label": "Hiba helye"
       },
       "partnerId": {
         "label": "Szolgáltató partner"

@@ -834,7 +834,7 @@
     },
     "notiLocalizer": {
       "label": "Notification place",
-      "help": "You may specify one or more places (building, floors, units) where the notifications should go to. Leave it blank if you do not wish to localize the notifications"
+      "help": "You may specify a place (building, floors, units) where the notifications should go to. Leave it blank if you do not wish to localize the notifications"
     },
     "shareddocs": {
       "label": "Documents (if applicable)",
@@ -951,7 +951,7 @@
         }
       },
       "localizer": {
-        "label": "Location"
+        "label": "Place of issue"
       },
       "partnerId": {
         "label": "Servicing partner"
