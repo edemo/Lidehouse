@@ -146,6 +146,9 @@ Communities.helpers({
     if (this.hasPhysicalLocations()) return '@property';
     return '%property';
   },
+  propertyRootCode() {
+    return this.propertyCategory()[0];
+  },
   hasVotingUnits() {
     const scheme = this.settings?.ownershipScheme;
     if (!scheme) return;

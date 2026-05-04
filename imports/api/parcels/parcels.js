@@ -267,7 +267,8 @@ _.extend(Parcels, {
     return {
       options() {
         const communityId = ModalStack.getVar('communityId');
-        return Parcels.nodeOptionsOf(communityId, code, leafsOnly);
+        const community = Communities.findOne(communityId);
+        return Parcels.nodeOptionsOf(communityId, code || community.propertyRootCode(), leafsOnly);
       },
       firstOption: false,
     };

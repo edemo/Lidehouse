@@ -130,12 +130,7 @@ const chooseParcelBilling = {
 };
 
 function chooseParcelBillingLocalizer() {
-  return _.extend(Parcels.chooseSubNode('@'), {
-    type: () => {
-      const communityId = ModalStack.getVar('communityId');
-      const community = Communities.findOne(communityId);
-      return community?.hasPhysicalLocations() ? undefined : 'hidden';
-    },
+  return _.extend(Parcels.chooseSubNode(), {
     value: () => {
       const activeParcelBillingId = ModalStack.getVar('parcelBillingId');
       const localizer = activeParcelBillingId
