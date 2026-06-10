@@ -72,7 +72,7 @@ export const post = new ValidatedMethod({
 // Allowing repost action
 //   if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
     doc.validateForPost?.();
-    if (!doc.isPosted() && doc.category === 'bill') {
+    if (!doc.isPosted() && Meteor.isServer && doc.category === 'bill') {
       doc.lines?.forEach(line => {
         if (line?.metering) {
           const meter = Meters.findOne(line.metering.id);
