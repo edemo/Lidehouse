@@ -9,6 +9,7 @@ import faker from 'faker';
 
 import { __ } from '/imports/localization/i18n.js';
 import { roundCurrency } from '/imports/localization/localization';
+import { PerformanceLogger } from '/imports/utils/performance-logger.js';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { debugAssert, productionAssert } from '/imports/utils/assert.js';
 import { dateSelector } from '/imports/api/utils';
@@ -524,8 +525,8 @@ if (Meteor.isServer) {
       });
     }
     if (modifierChangesField(oldDoc, newDoc, ['valueDate', 'debit', 'credit', 'postedAt'])) {
-      if (oldDoc.postedAt) oldDoc.updateBalances(-1);
-      if (newDoc.postedAt) newDoc.updateBalances(+1);
+      if (oldDoc.postedAt) PerformanceLogger.call("updateBalancesOld", oldDoc.updateBalances, oldDoc, -1);
+      if (newDoc.postedAt) PerformanceLogger.call("updateBalancesNew", newDoc.updateBalances, newDoc, +1);
     }
 });
 
