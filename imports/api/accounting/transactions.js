@@ -355,12 +355,12 @@ Transactions.helpers({
         const partner = entry.partner;
         const localizer = entry.localizer;
         const changeAmount = entry.amount * directionSign;
-        PerformanceLogger.call("increaseBalance normal", Balances.increase, Balances, { communityId, account, tag }, entry.side, changeAmount);
+        Balances.increase({ communityId, account, tag }, entry.side, changeAmount);
         if (partner) {
-          PerformanceLogger.call("increaseBalance partner", Balances.increase, Balances, { communityId, account, partner, tag }, entry.side, changeAmount);
+          Balances.increase({ communityId, account, partner, tag }, entry.side, changeAmount);
         }
         if (localizer) {
-          PerformanceLogger.call("increaseBalance localizer", Balances.increase, Balances, { communityId, account, localizer, tag }, entry.side, changeAmount);
+          Balances.increase({ communityId, account, localizer, tag }, entry.side, changeAmount);
         }
       });
     });
