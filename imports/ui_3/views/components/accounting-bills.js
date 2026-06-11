@@ -47,6 +47,10 @@ Template.Accounting_bills.viewmodel({
       const communityId = this.communityId();
       instance.subscribe('parcelBillings.inCommunity', { communityId });
       instance.subscribe('balances.inCommunity', { communityId, partners: [], tag: 'T', notNull: true });
+      const params = this.transactionsSubscriptionParams();
+      if (params) {
+        instance.subscribe('transactions.inCommunity', params);
+      }
     });
   },
   paymentsWoStatement() {
