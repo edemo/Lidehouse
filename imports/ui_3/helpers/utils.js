@@ -47,7 +47,8 @@ export function displayDate(time) {
 
 export function defaultBeginDate() {
 //    return moment().startOf('year').format('YYYY-MM-DD');
-  return moment().subtract(1, 'year').format('YYYY-MM-DD');
+//  return moment().subtract(1, 'year').format('YYYY-MM-DD');
+  return moment().subtract(3, 'month').format('YYYY-MM-DD');
 }
 
 export function defaultEndDate() {
