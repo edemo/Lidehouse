@@ -17,7 +17,8 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 
 Meteor.publishComposite(null, function selfNotiBadges() {
   const user = Meteor.users.findOneOrNull(this.userId);
-  const communityIds = user.super ? Communities.find({}).map(c => c._id) : user.communityIds();
+  const communityIds = user.super ? Communities.find({ status: { $ne: 'closed' }}).map(c => c._id)
+    : user.communityIds().filter(cid => Communities.findOne(cid).status !== 'closed');
   if (communityIds.length <= 1) return this.ready();
 
   const selector = {
