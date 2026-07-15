@@ -8,6 +8,7 @@ import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { UploadFS } from 'meteor/jalik:ufs';
 
+import { getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
 import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -26,6 +27,7 @@ Communities.actions = {
         id: 'af.community.create',
         body: 'Community_edit',
         collection: Communities,
+        doc: getActiveCommunity(),
         type: 'method',
         meteormethod: 'communities.insert',
         size: 'lg',
