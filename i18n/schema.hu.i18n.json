@@ -1638,6 +1638,14 @@
       }
     }
   },
+  "schemaMyBillsExport": {
+    "begin": {
+      "label": "Mettől"
+    },
+    "end": {
+      "label": "Meddig"
+    }
+  },
   "schemaParcelBillings": {
     "ids": {
       "label": "Kivetendő előírások"
