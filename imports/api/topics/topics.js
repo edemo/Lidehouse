@@ -278,7 +278,7 @@ Topics.topicsWithUnseenEvents = function topicsWithUnseenEvents(userId, communit
   debugAssert(communityId);
   debugAssert(seenType);
   const user = Meteor.users.findOne(userId);
-  return Topics.find({ communityId, status: { $ne: 'closed' },
+  return Topics.find({ communityId, status: { $nin: ['closed', 'deleted'] },
     $or: [
       { participantIds: { $exists: false } },
       { participantIds: userId },
