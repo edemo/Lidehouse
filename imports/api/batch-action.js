@@ -1,4 +1,6 @@
 import { _ } from 'meteor/underscore';
+
+import { debugAssert } from '/imports/utils/assert.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { __ } from '/imports/localization/i18n.js';
 
@@ -24,16 +26,30 @@ export class BatchAction {
     return _.every(docs, doc => this.action(this.options, doc).visible);
   }
 
+  mapIds(docs) {
+    const self = this;
+    const result = [];
+    _.each(docs, doc => {
+      let tDoc = doc;
+      if (self.transform) {
+        tDoc = _.clone(doc);
+        self.transform(tDoc);
+      }
+      let ids;
+      if (typeof tDoc._id === 'string') ids = [tDoc._id];
+      else if (typeof tDoc._id === 'object' && Array.isArray(tDoc._id)) ids = tDoc._id;
+      else debugAssert(false);
+      _.each(ids, id => {
+        const newDoc = { _id: id, ...self.options };
+        result.push(newDoc);
+      });
+    });
+    return result;
+  }
+
   run(docs) {
     const self = this;
-    Modal.confirmAndCall(self.method, {
-      args: _.map(docs, doc => {
-        let newDoc = _.clone(doc);
-        if (self.transform) self.transform(newDoc);
-        newDoc = { _id: newDoc._id, ...self.options };
-        return newDoc;
-      }),
-    }, {
+    Modal.confirmAndCall(self.method, { args: self.mapIds(docs) }, {
       action: this.sampleAction.name,
       entity: docs[0]?.entityName?.() || 'document',
       message: __('This operation will be performed on many documents', docs.length),
