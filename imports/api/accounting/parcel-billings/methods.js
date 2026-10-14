@@ -75,6 +75,7 @@ export const apply = new ValidatedMethod({
             } else return;
           }
           const payerPartner = payerContract.partner();
+          productionAssert(payerPartner, 'Unable to pay for parcel - no payer partner on the contract', { parcel: parcel?.ref });
 
           billsToSend[leadParcel._id] = billsToSend[leadParcel._id] || {
             communityId: parcelBilling.communityId,
