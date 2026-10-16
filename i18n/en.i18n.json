@@ -224,5 +224,7 @@
   "welcomeMessage": "Please set your most important settings. You will be able to change these settings later on the profile page, where you can also enter your personal information.",
   "Name mismatch notification": ["Your profile name (<strong>__userName__</strong>) does not match the name registered with the management (which is <strong>__personName__</strong>).<br /><br />",
     "If you typed incorrect data here on the profile page, please correct it here, otherwise if the management knows your name incorrectly, and you are not __personName__, then please contact your managament, so they can fix it.",
-    "Meanwhile in __communityName__ the other owners will see you commenting and voting officially in the name of: __personName__."]
+    "Meanwhile in __communityName__ the other owners will see you commenting and voting officially in the name of: __personName__."],
+  "Download my bills": "Download my bills",
+  "Download": "Download"
 }
