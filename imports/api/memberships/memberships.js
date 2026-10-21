@@ -152,6 +152,10 @@ Memberships.helpers({
   isRepresentor() {
     return (this.ownership && this.ownership.representor);
   },
+  coVoterships() {
+    if (this.isRepresentor()) return undefined;
+    else return Memberships.findActive({ communityId: this.communityId, approved: true, role: 'owner', parcelId: this.parcelId }).fetch().filter(m => m._id !== this._id);
+  },
   isVoting() {
     if (!this.ownership) return false;
     debugAssert(this.parcelId);

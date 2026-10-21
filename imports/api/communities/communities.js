@@ -237,7 +237,7 @@ Communities.helpers({
   },
   voterships() {
     const Memberships = Mongo.Collection.get('memberships');
-    const voterships = Memberships.findActive({ communityId: this._id, approved: true, role: 'owner', userId: { $exists: true } })
+    const voterships = Memberships.findActive({ communityId: this._id, approved: true, role: 'owner' })
       .fetch().filter(ownership => ownership.isVoting());
     return voterships;
   },

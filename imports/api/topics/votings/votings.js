@@ -243,6 +243,16 @@ Topics.categoryHelpers('vote', {
         delegations = delegations.concat(
             Delegations.find({ sourceId: voterId, scope: 'community', scopeObjectId: self.communityId }).fetch()
         );
+        const coVoterships = votership.coVoterships();
+        if (coVoterships) {
+          coVoterships.forEach(coVotership => {
+            delegations = delegations.concat({
+              sourceId: voterId,
+              targetId: coVotership.partnerId,
+    //        communityId: community._id, scope: 'community', scopeObjectId:  community._id,
+            }); 
+          });
+        }
         for (const delegation of delegations) {
           if (!_.contains(votePath, delegation.targetId)) {
             votePath.push(delegation.targetId);
