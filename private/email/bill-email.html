@@ -5,6 +5,13 @@
                 <td class="project-title">
                     <p><strong>{{_ 'email.Dear'}} {{bill.partner.displayName}}{{_ 'email.glyphAfterDear'}}</strong></p>
                     <br>
+                    {{#if community.settings.billWarningMessage}}
+                        <div class="content-block indigo">
+                            <h2 class="text-capitalize text-left warning">{{_ 'Warning'}}:</h2>
+                            <p>{{community.settings.billWarningMessage}}</p>
+                        </div>
+                        <br>
+                    {{/if}}
                     {{#let link=(urlFor 'Parcels finances')}}
                     <p>{{{_ 'email.BillText' link=link}}}</p>
                     {{/let}}

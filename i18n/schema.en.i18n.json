@@ -265,6 +265,10 @@
         "label": "Enable meter estimation after (days)",
         "help": "If there was no reading registered with meter within this many days, before a billing takes place, then the system will estimate the reading for the bill. Eg. if you put 30 here, then any meters that have not been read within a month will estimate their reading, and those that have reading will use the reading. Use 0 to always use estimation, use a very large number if you never wish to use an estimation."
       },
+      "billWarningMessage": {
+        "label": "Warning message on outgoing bills",
+        "help": "If you wish to display a Warning message in the header of the outgpoing bills -like bank account number has changed-, you can set it here / otherwise just leave it blank."
+      },
       "latePaymentFees": {
         "label": "Late payment fees"
       },
