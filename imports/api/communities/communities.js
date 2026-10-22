@@ -48,7 +48,7 @@ Communities.baseSchema = new SimpleSchema([{
 }, AddressSchema, {
   lot: { type: String, max: 100, optional: true },
   regNo: { type: String, max: 100, optional: true },
-  management: { type: String, max: 200, optional: true, autoform: { type: 'textarea', rows: 3 } },
+  management: { type: String, max: 5000, optional: true, autoform: { type: 'textarea', rows: 3 } },
   taxNo: { type: String, max: 50, optional: true },
   status: { type: String, allowedValues: Communities.statusValues, defaultValue: 'live', autoform: { type: 'hidden' } },
   // cached fields:
