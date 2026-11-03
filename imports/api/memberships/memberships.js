@@ -158,6 +158,7 @@ Memberships.helpers({
   },
   isVoting() {
     if (!this.ownership) return false;
+    if (!this.ownership.share.numerator) return false;
     debugAssert(this.parcelId);
     const parcel = Parcels.findOne(this.parcelId);
     if (parcel.isLed()) return false;
