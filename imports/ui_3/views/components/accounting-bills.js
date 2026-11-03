@@ -149,8 +149,11 @@ Template.Accounting_bills.viewmodel({
     });
   },
   contractsFilterSelector() {
-    const selector = { communityId: this.communityId() };
-    selector.relation = this.activePartnerRelation();
+    const selector = { 
+      communityId: this.communityId(), 
+      partnerId: { $exists: true }, // led contracts should not be listed
+      relation: this.activePartnerRelation(),
+    };
     return selector;
   },
 /*   partnersSubscriptionFn() {
@@ -162,9 +165,9 @@ Template.Accounting_bills.viewmodel({
   contractsTableDataFn() {
     const self = this;
     return () => {
-      let partners = Contracts.findActive(self.contractsFilterSelector()).fetch();
-      if (self.unreconciledOnly()) partners = partners.filter(p => p.balance());
-      return partners;
+      let contracts = Contracts.findActive(self.contractsFilterSelector()).fetch();
+      if (self.unreconciledOnly()) contracts = contracts.filter(p => p.balance());
+      return contracts;
     };
   },
   contractsOptionsFn() {

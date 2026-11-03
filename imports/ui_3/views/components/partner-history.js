@@ -82,6 +82,7 @@ Template.Partner_history.viewmodel({
     if (!this.contractToView()) return {};
     const result = {};
     const contract = Contracts.findOne(this.contractToView());
+    if (!contract?.partnerId) return {} // led contracts should not be listed
     result.beginBalance = Balances.get(this.beginBalanceDef()).total() * (-1);
     const selector = Transactions.makeFilterSelector(this.subscribeParams());
     const txs = Transactions.find(selector, { sort: [['valueDate', 'asc'], ['createdAt', 'asc']] });
