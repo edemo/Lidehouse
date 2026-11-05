@@ -25,6 +25,7 @@ Meteor.publishComposite(null, function selfNotiBadges() {
     communityId: { $in: communityIds },
     status: { $nin: ['closed', 'deleted'] },
     category: { $in: ['vote', 'forum', 'news', 'ticket', 'room'] },
+    updatedAt: { $gte: user.lastTimeSeenAll() },
     // Filter for 'No participantIds (meaning everyone), or contains userId'
     $or: [
       { participantIds: { $exists: false } },
@@ -38,7 +39,7 @@ Meteor.publishComposite(null, function selfNotiBadges() {
     },
     children: [{
       find(topic) {
-        return Comments.find({ topicId: topic._id }, { limit: 1, fields: { communityId: 1, topicId: 1, createdAt: 1 }, sort: { createdAt: -1 } });
+        return Comments.find({ topicId: topic._id, createdAt: { $gte: user.lastTimeSeenAll() } }, { limit: 1, fields: { communityId: 1, topicId: 1, createdAt: 1 }, sort: { createdAt: -1 } });
       },
     }],
   };
