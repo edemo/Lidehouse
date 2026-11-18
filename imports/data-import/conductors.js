@@ -473,6 +473,26 @@ export const Conductors = {
         }],
       };
     },
+    'Gránit'(options) {
+      _.extend(options.dictionary, {
+        ref: { label: 'TRAN AZON' },
+        refType: { label: 'LEIRAS' },
+        valueDate: { label: 'ERTEKNAP' },
+        amount: { label: 'OSSZEG DEV' },
+        name: { label: 'KEDV' },
+        contraBAN: { label: 'ELLENSZAMLA' },
+        note: { label: 'KOZL' },
+      });
+      return {
+        collectionName: 'statementEntries',
+        format: 'Gránit',
+        phases: [{
+          collectionName: 'statementEntries',
+          options,
+          dictionary: options.dictionary,
+        }],
+      };
+    },
     'MagNet'(options) {
       _.extend(options.dictionary, {
         ref: { label: 'Tranz szám' },
