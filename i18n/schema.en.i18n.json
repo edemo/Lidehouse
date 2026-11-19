@@ -1631,6 +1631,14 @@
       }
     }
   },
+  "schemaMyBillsExport": {
+    "begin": {
+      "label": "From"
+    },
+    "end": {
+      "label": "To"
+    }
+  },
   "schemaParcelBillings": {
     "ids": {
       "label": "Applied billings"

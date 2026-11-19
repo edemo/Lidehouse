@@ -6,6 +6,9 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { moment } from 'meteor/momentjs:moment';
 import { Session } from 'meteor/session';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { AutoForm } from 'meteor/aldeed:autoform';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -24,6 +27,12 @@ import '/imports/ui_3/views/components/balance-report.js';
 import '/imports/ui_3/views/components/disclaimer.js';
 
 import './parcels-finances.html';
+
+const myBillsExportSchema = new SimpleSchema({
+  begin: { type: Date },
+  end: { type: Date },
+});
+myBillsExportSchema.i18n('schemaMyBillsExport');
 
 Template.Parcels_finances.viewmodel({
   showAllParcels: false,
@@ -141,5 +150,39 @@ Template.Parcels_finances.events({
   'click .parcels .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
     instance.viewmodel.showAllParcels(!oldVal);
+  },
+  'click .js-export-my-bills'(event, instance) {
+    Modal.show('Autoform_modal', {
+      id: 'af.myBillsExport.create',
+      title: __('Download my bills'),
+      schema: myBillsExportSchema,
+      doc: {
+        begin: moment().startOf('month').toDate(),
+        end: moment().endOf('month').toDate(),
+      },
+      type: 'method',
+      meteormethod: 'accounting.myBillsExport',
+      btnOK: __('Download'),
+    });
+  },
+});
+
+AutoForm.addHooks('af.myBillsExport.create', {
+  onSuccess(formType, result) {
+    Modal.hide(this.template.parent());
+    const filename = 'my-bills-export.json';
+    const jsonString = JSON.stringify(result, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    // Create invisible <a> element to trigger download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.style.display = 'none';
+    // Add to DOM → click → remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   },
 });

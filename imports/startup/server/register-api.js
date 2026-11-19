@@ -33,6 +33,7 @@ import '/imports/api/topics/rooms/publications.js';
 import '/imports/api/topics/feedbacks/publications.js';
 import '/imports/api/comments/methods.js';
 import '/imports/api/accounting/methods.js';
+import '/imports/api/accounting/my-bills-export.js';
 import '/imports/api/accounting/publications.js';
 import '/imports/api/accounting/accounts/methods.js';
 import '/imports/api/accounting/accounts/publications.js';
