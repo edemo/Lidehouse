@@ -477,7 +477,7 @@ export const Conductors = {
       _.extend(options.dictionary, {
         ref: { label: 'TRAN AZON' },
         refType: { label: 'LEIRAS' },
-        valueDate: { label: 'ERTEKNAP' },
+        valueDate: { label: 'KONYVELES DATUM' },
         amount: { label: 'OSSZEG DEV' },
         name: { label: 'KEDV' },
         contraBAN: { label: 'ELLENSZAMLA' },
